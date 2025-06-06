@@ -1,12 +1,10 @@
 name: "CodeQL Analysis"
 
 on:
-  push:
-#     branches: [ "main" ]
-#   pull_request:
-#     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
   schedule:
-    - cron: '0 5 * * SUN'
+    - cron: '0 5 * * *'
 
 jobs:
   analyze:
@@ -55,68 +53,69 @@ jobs:
       with:
         category: "/language:${{matrix.language}}"
 
+  pyflakes:
+    name: Py Flake8
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' # Specify the Python version you want to use
+      - name: Install dependencies
+        shell: bash
+        run: pip install flake8 flake8-sarif
+      - name: Run Flake8
+        shell: bash
+        run: |
+          flake8 --version
+          flake8 --output-file=.flake-output.sarif --format=sarif --config=.flake8-config || true
+          cat .flake-output.sarif
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: .flake-output.sarif
+          category: "/language:python"
+
   cppcheck:
     name: Cppcheck
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+      packages: read
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        submodules: 'recursive'
-        clean: true
-        fetch-depth: 0 # Fetch all history and tags
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+          clean: true
+          fetch-depth: 0 # Fetch all history and tags
+      - name: Setup Cppcheck
+        run: |
+          echo "set man-db/auto-update false" | sudo debconf-communicate; sudo dpkg-reconfigure man-db
+          TEMP_DEB="$(mktemp)" && \
+          wget -O "$TEMP_DEB" 'https://launchpad.net/ubuntu/+archive/primary/+files/cppcheck_2.17.1-1_amd64.deb' && \
+          sudo dpkg -i "$TEMP_DEB" && \
+          rm -f "$TEMP_DEB"
+      - name: Run Cppcheck with reviewdog
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          cd forge/csrc
+          cppcheck --std=c++17 --check-level=exhaustive --enable=warning,information --platform=unix64 --suppress=uninitMemberVar -j 4 -i test --output-file=../../.cppcheck-output.sarif --output-format=sarif .
+          cd ../..
+          cat .cppcheck-output.sarif
+          # Convert security-severity to string for compatibility with CodeQL
+          jq '.runs[].tool.driver.rules[].properties |= (if has("security-severity") then .["security-severity"] |= tostring else . end)' .cppcheck-output.sarif > .output_updated.sarif
+          mv .output_updated.sarif .cppcheck-output.sarif
 
-    - name: Run Cppcheck
-      run: |
-        sudo apt-get install -y cppcheck
-        cd forge/csrc
-        cppcheck --std=c++17 --check-level=exhaustive --enable=warning,information --platform=unix64 --suppress=uninitMemberVar .
-
-#   analyze-cpp:
-#     name: Analyze c-cpp
-#     runs-on: builder
-#     permissions:
-#         # required for all workflows
-#         security-events: write
-#         packages: read
-#         actions: read
-#         contents: read
-
-#     strategy:
-#         fail-fast: false
-
-#     steps:
-#       - name: Setup
-#         id: cache-path
-#         shell: bash
-#         run: sudo apt-get update && apt-get install -y ca-certificates software-properties-common build-essential
-
-#       - name: Git safe dir
-#         shell: bash
-#         run: |
-#           git config --system --add safe.directory ${{ steps.cache-path.outputs.work-dir }}
-#           chown -R root:root ${{ steps.cache-path.outputs.work-dir }}
-
-#       - name: Checkout repository
-#         uses: actions/checkout@v4
-#         with:
-#           submodules: 'recursive'
-#           clean: true
-#           fetch-depth: 0 # Fetch all history and tags
-
-#       - name: Cleanup submodules
-#         run: |
-#             git submodule foreach --recursive git clean -ffdx
-#             git submodule foreach --recursive git reset --hard
-
-#         # Initializes the CodeQL tools for scanning.
-#       - name: Initialize CodeQL
-#         uses: github/codeql-action/init@v3
-#         with:
-#           languages: c-cpp
-#           build-mode: none
-
-#       - name: Perform CodeQL Analysis
-#         uses: github/codeql-action/analyze@v3
-#         with:
-#           category: "/language:c-cpp"
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: .cppcheck-output.sarif
+          category: "/language:c-cpp"
