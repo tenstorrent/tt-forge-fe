@@ -80,6 +80,8 @@ class FailingReasonsRegister:
         ("pow", FailingReasons.DATA_MISMATCH),
         ("pow", FailingReasons.SPECIAL_VALUES),
         ("pow", FailingReasons.UNSUPPORTED_SPECIAL_CASE),
+        ("remainder", FailingReasons.DATA_MISMATCH),
+        ("remainder", FailingReasons.SPECIAL_VALUES),
         ("repeat_interleave", FailingReasons.INFERENCE_FAILED),
         ("repeat_interleave", FailingReasons.DATA_MISMATCH),
         ("repeat_interleave", FailingReasons.COMPILATION_FAILED),
