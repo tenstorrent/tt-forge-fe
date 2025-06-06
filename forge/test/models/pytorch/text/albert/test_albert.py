@@ -72,7 +72,18 @@ def test_albert_masked_lm_pytorch(size, variant):
         return_tensors="pt",
     )
 
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    # Manually create token_type_ids and position_ids to avoid dynamic graph behavior
+    batch_size, seq_len = input_tokens["input_ids"].shape
+    input_tokens["token_type_ids"] = torch.zeros((batch_size, seq_len), dtype=torch.long)
+    input_tokens["position_ids"] = torch.arange(seq_len).unsqueeze(0).expand(batch_size, -1)
+
+    inputs = [
+        input_tokens["input_ids"],
+        input_tokens["attention_mask"],
+        input_tokens["token_type_ids"],
+        input_tokens["position_ids"],
+    ]
+
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
@@ -84,9 +95,9 @@ def test_albert_masked_lm_pytorch(size, variant):
         verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
     )
 
-    # post processing
+    # Post-processing
     logits = co_out[0]
-    mask_token_index = (input_tokens.input_ids == tokenizer.mask_token_id)[0].nonzero(as_tuple=True)[0]
+    mask_token_index = (input_tokens["input_ids"] == tokenizer.mask_token_id)[0].nonzero(as_tuple=True)[0]
     predicted_token_id = logits[0, mask_token_index].argmax(axis=-1)
     print("The predicted token for the [MASK] is: ", tokenizer.decode(predicted_token_id))
 
@@ -145,7 +156,17 @@ def test_albert_token_classification_pytorch(size, variant):
         return_tensors="pt",
     )
 
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    # Manually create token_type_ids and position_ids to avoid dynamic graph behavior
+    batch_size, seq_len = input_tokens["input_ids"].shape
+    input_tokens["token_type_ids"] = torch.zeros((batch_size, seq_len), dtype=torch.long)
+    input_tokens["position_ids"] = torch.arange(seq_len).unsqueeze(0).expand(batch_size, -1)
+
+    inputs = [
+        input_tokens["input_ids"],
+        input_tokens["attention_mask"],
+        input_tokens["token_type_ids"],
+        input_tokens["position_ids"],
+    ]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -197,7 +218,18 @@ def test_albert_question_answering_pytorch(variant):
 
     # Data preprocessing
     input_tokens = tokenizer(question, text, return_tensors="pt")
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+
+    # Manually create token_type_ids and position_ids to avoid dynamic graph behavior
+    batch_size, seq_len = input_tokens["input_ids"].shape
+    input_tokens["token_type_ids"] = torch.zeros((batch_size, seq_len), dtype=torch.long)
+    input_tokens["position_ids"] = torch.arange(seq_len).unsqueeze(0).expand(batch_size, -1)
+
+    inputs = [
+        input_tokens["input_ids"],
+        input_tokens["attention_mask"],
+        input_tokens["token_type_ids"],
+        input_tokens["position_ids"],
+    ]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -237,7 +269,17 @@ def test_albert_sequence_classification_pytorch(variant):
 
     # Data preprocessing
     input_tokens = tokenizer(input_text, return_tensors="pt")
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    # Manually create token_type_ids and position_ids to avoid dynamic graph behavior
+    batch_size, seq_len = input_tokens["input_ids"].shape
+    input_tokens["token_type_ids"] = torch.zeros((batch_size, seq_len), dtype=torch.long)
+    input_tokens["position_ids"] = torch.arange(seq_len).unsqueeze(0).expand(batch_size, -1)
+
+    inputs = [
+        input_tokens["input_ids"],
+        input_tokens["attention_mask"],
+        input_tokens["token_type_ids"],
+        input_tokens["position_ids"],
+    ]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
