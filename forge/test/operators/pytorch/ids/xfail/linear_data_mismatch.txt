@@ -1,0 +1,20 @@
+# xfail_linear_DATA_MISMATCH ids
+
+linear-FROM_ANOTHER_OP-{'in_features': 10000, 'out_features': 365, 'bias': True}-(1, 10000)-None-None
+linear-FROM_ANOTHER_OP-{'in_features': 10000, 'out_features': 365, 'bias': False}-(1, 10000)-None-None
+linear-FROM_ANOTHER_OP-{'in_features': 10000, 'out_features': 65, 'bias': True}-(1, 10000)-None-None
+linear-FROM_ANOTHER_OP-{'in_features': 10000, 'out_features': 65, 'bias': False}-(1, 10000)-None-None
+linear-FROM_ANOTHER_OP-{'in_features': 10000, 'out_features': 1, 'bias': True}-(1, 10000)-None-None
+linear-FROM_ANOTHER_OP-{'in_features': 10000, 'out_features': 1, 'bias': False}-(1, 10000)-None-None
+linear-FROM_HOST-{'in_features': 10000, 'out_features': 365, 'bias': True}-(1, 10000)-None-None
+linear-FROM_HOST-{'in_features': 10000, 'out_features': 365, 'bias': False}-(1, 10000)-None-None
+linear-FROM_HOST-{'in_features': 10000, 'out_features': 65, 'bias': True}-(1, 10000)-None-None
+linear-FROM_HOST-{'in_features': 10000, 'out_features': 65, 'bias': False}-(1, 10000)-None-None
+linear-FROM_HOST-{'in_features': 10000, 'out_features': 1, 'bias': True}-(1, 10000)-None-None
+linear-FROM_HOST-{'in_features': 10000, 'out_features': 1, 'bias': False}-(1, 10000)-None-None
+linear-CONST_EVAL_PASS-{'in_features': 10000, 'out_features': 365, 'bias': True}-(1, 10000)-None-None
+linear-CONST_EVAL_PASS-{'in_features': 10000, 'out_features': 365, 'bias': False}-(1, 10000)-None-None
+linear-CONST_EVAL_PASS-{'in_features': 10000, 'out_features': 65, 'bias': True}-(1, 10000)-None-None
+linear-CONST_EVAL_PASS-{'in_features': 10000, 'out_features': 65, 'bias': False}-(1, 10000)-None-None
+linear-CONST_EVAL_PASS-{'in_features': 10000, 'out_features': 1, 'bias': True}-(1, 10000)-None-None
+linear-CONST_EVAL_PASS-{'in_features': 10000, 'out_features': 1, 'bias': False}-(1, 10000)-None-None
