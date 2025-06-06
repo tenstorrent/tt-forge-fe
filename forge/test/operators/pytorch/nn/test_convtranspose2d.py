@@ -1,16 +1,12 @@
 # SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-# Tests for testing of linear operators
-#
-# In this test we test pytorch conv2d operator
-
 from dataclasses import dataclass
 from functools import reduce
 import math
+import os
 import random
 import pytest
-import os
 
 from typing import List, Dict, Type, Optional, Any
 from loguru import logger
@@ -20,7 +16,7 @@ import forge
 import forge.op
 
 from forge.verify.config import VerifyConfig
-from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
+from forge.verify.value_checkers import AllCloseValueChecker
 
 from test.operators.utils import (
     InputSourceFlags,
@@ -32,11 +28,11 @@ from test.operators.utils import (
     FailingReasons,
     TestCollection,
     TestCollectionCommon,
-    TestPlanUtils,
 )
 from test.operators.utils.compat import TestDevice, TestTensorsUtils
-from test.operators.utils.test_data import TestCollectionTorch
 from test.operators.utils.utils import PytorchUtils
+from test.operators.utils.test_data import TestCollectionTorch
+from test.operators.utils.plan import TestPlanUtils
 from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 
@@ -46,7 +42,7 @@ class ModelFromAnotherOp(torch.nn.Module):
 
     def __init__(self, operator, opname, shape, kwargs):
         super(ModelFromAnotherOp, self).__init__()
-        self.testname = "Conv2d_pytorch_operator_" + opname + "_test_op_src_from_another_op"
+        self.testname = "ConvTranspose2d_pytorch_operator_" + opname + "_test_op_src_from_another_op"
         self.operator = operator
         self.opname = opname
         self.shape = shape
@@ -55,7 +51,7 @@ class ModelFromAnotherOp(torch.nn.Module):
         self.ct1 = self.operator(**self.kwargs)
 
     def forward(self, x: torch.Tensor):
-        # we use Add operator to create one operands which is input for the Conv2d operator
+        # we use Add operator to create one operands which is input for the ConvTranspose2d operator
         add = torch.add(x, x)
         output = self.ct1(add)
         return output
@@ -67,7 +63,7 @@ class ModelDirect(torch.nn.Module):
 
     def __init__(self, operator, opname, shape, kwargs):
         super(ModelDirect, self).__init__()
-        self.testname = "Conv2d_pytorch_operator_" + opname + "_test_op_src_from_host"
+        self.testname = "ConvTranspose2d_pytorch_operator_" + opname + "_test_op_src_from_host"
         self.operator = operator
         self.opname = opname
         self.shape = shape
@@ -86,7 +82,7 @@ class ModelConstEvalPass(torch.nn.Module):
 
     def __init__(self, operator, opname, shape, kwargs, dtype):
         super(ModelConstEvalPass, self).__init__()
-        self.testname = "Conv2d_pytorch_operator_" + opname + "_test_op_src_const_eval_pass"
+        self.testname = "ConvTranspose2d_pytorch_operator_" + opname + "_test_op_src_const_eval_pass"
         self.operator = operator
         self.opname = opname
         self.shape = shape
@@ -147,10 +143,6 @@ class TestVerification:
         input_shapes = tuple([test_vector.input_shape for _ in range(number_of_operands)])
         logger.trace(f"***input_shapes: {input_shapes}")
 
-        # We don't test int data type as there is no sense for conv2d operator
-        # Using AllCloseValueChecker
-        verify_config = VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2))
-
         VerifyUtils.verify(
             model=pytorch_model,
             test_device=test_device,
@@ -161,22 +153,22 @@ class TestVerification:
             pcc=test_vector.pcc,
             warm_reset=warm_reset,
             deprecated_verification=False,
-            verify_config=verify_config,
+            verify_config=VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2)),
             value_range=ValueRanges.SMALL,
         )
 
 
 @dataclass
-class Conv2DParams:
+class ConvTranspose2DParams:
     in_channels: int
     out_channels: int
     kernel_size: tuple
     stride: int = 1
     padding: int = 0
-    dilation: int = 1
+    output_padding: int = 0
     groups: int = 1
     bias: bool = True
-    padding_mode: str = "zeros"
+    dilation: int = 1
     dtype: torch.dtype = None
 
     max_kernel_height = 100
@@ -300,6 +292,24 @@ class Conv2DParams:
                     results.append((k, d))
         return results
 
+    def is_output_shape_valid(self, H_in, W_in):
+        k_h = self.kernel_size if type(self.kernel_size) == int else self.kernel_size[0]
+        k_w = self.kernel_size if type(self.kernel_size) == int else self.kernel_size[1]
+        p_h = self.padding if type(self.padding) == int else self.padding[0]
+        p_w = self.padding if type(self.padding) == int else self.padding[1]
+        s_h = self.stride if type(self.stride) == int else self.stride[0]
+        s_w = self.stride if type(self.stride) == int else self.stride[1]
+        d_h = self.dilation if type(self.dilation) == int else self.dilation[0]
+        d_w = self.dilation if type(self.dilation) == int else self.dilation[1]
+        op_h = self.output_padding if type(self.output_padding) == int else self.output_padding[0]
+        op_w = self.output_padding if type(self.output_padding) == int else self.output_padding[1]
+
+        H_out = (H_in - 1) * s_h - 2 * p_h + d_h * (k_h - 1) + op_h + 1
+        W_out = (W_in - 1) * s_w - 2 * p_w + d_w * (k_w - 1) + op_w + 1
+        if H_out <= 0 or W_out <= 0:
+            return False
+        return True
+
 
 class TestParamsData:
 
@@ -312,8 +322,6 @@ class TestParamsData:
         kwarg_list = []
         kwarg_list.extend(cls.generate_kwargs_no_zero_padding_unit_strides(test_vector, bias))
         kwarg_list.extend(cls.generate_kwargs_zero_padding_unit_strides(test_vector, bias))
-        kwarg_list.extend(cls.generate_kwargs_same_output_as_input(test_vector, bias))
-        kwarg_list.extend(cls.generate_kwargs_output_bigger_than_input(test_vector, bias))
         kwarg_list.extend(cls.generate_kwargs_no_zero_padding_no_unit_strides(test_vector, bias))
         kwarg_list.extend(cls.generate_kwargs_zero_padding_no_unit_strides(test_vector, bias))
         kwarg_list.extend(cls.generate_kwargs_no_zero_padding_unit_strides_dilation(test_vector, bias))
@@ -324,20 +332,14 @@ class TestParamsData:
         return kwarg_list
 
     @classmethod
-    def generate_kwargs_single(cls, test_vector: TestVector, bias: bool = True):
-        kwarg_list = []
-        kwarg_list.extend(cls.generate_kwargs_all_type_padding_unit_strides(test_vector, bias))
-        return kwarg_list
-
-    @classmethod
     def generate_kwargs_no_zero_padding_unit_strides(cls, test_vector: TestVector, bias: bool = True):
         rng = random.Random(sum(test_vector.input_shape))
         N, C_in, H_in, W_in = test_vector.input_shape
         # prepare params
-        conv2DParams = Conv2DParams(
+        conv2DParams = ConvTranspose2DParams(
             in_channels=C_in,
             out_channels=rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
-            kernel_size=Conv2DParams.get_kernel_param(rng, H_in, W_in),
+            kernel_size=ConvTranspose2DParams.get_kernel_param(rng, H_in, W_in),
             bias=bias,
             dtype=test_vector.dev_data_format,
         )
@@ -349,64 +351,15 @@ class TestParamsData:
         rng = random.Random(sum(test_vector.input_shape))
         N, C_in, H_in, W_in = test_vector.input_shape
         # prepare params
-        conv2DParams = Conv2DParams(
+        conv2DParams = ConvTranspose2DParams(
             in_channels=C_in,
             out_channels=rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
-            kernel_size=Conv2DParams.get_kernel_param(rng, H_in, W_in),
+            kernel_size=ConvTranspose2DParams.get_kernel_param(rng, H_in, W_in),
             padding=rng.randint(1, 4),
             bias=bias,
         )
-        return conv2DParams.to_kwargs_list()
-
-    @classmethod
-    def generate_kwargs_same_output_as_input(cls, test_vector: TestVector, bias: bool = True):
-        rng = random.Random(sum(test_vector.input_shape))
-        N, C_in, H_in, W_in = test_vector.input_shape
-        # Half (same) padding
-        # o = (i - k) + 2p + 1 = i - k + 2p + 1
-        # o = i
-        # => -k + 2p + 1 = 0
-        # => p = (k - 1) / 2, k <> 1
-        # prepare params
-        kernel_size = Conv2DParams.get_kernel_param(rng, H_in, W_in, k_min_h=2, k_min_w=2, odd=True)
-        if kernel_size[0] == 1 or kernel_size[1] == 1:
+        if conv2DParams.is_output_shape_valid(H_in, W_in) == False:
             return []
-        padding_h = ((kernel_size[0] - 1) if (kernel_size[0] - 1) > 0 else 1) // 2
-        padding_w = ((kernel_size[1] - 1) if (kernel_size[1] - 1) > 0 else 1) // 2
-        padding = (padding_h, padding_w)
-        conv2DParams = Conv2DParams(
-            in_channels=C_in,
-            out_channels=rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
-            kernel_size=kernel_size,
-            padding=padding,
-            bias=bias,
-        )
-        return conv2DParams.to_kwargs_list()
-
-    @classmethod
-    def generate_kwargs_output_bigger_than_input(cls, test_vector: TestVector, bias: bool = True):
-        rng = random.Random(sum(test_vector.input_shape))
-        N, C_in, H_in, W_in = test_vector.input_shape
-        # Full padding
-        # o = (i - k) + 2p + 1 = i - k + 2p + 1
-        # p = k − 1
-        # => o = i - k + 2k - 2 + 1
-        # => o = i + k - 1
-        # o > i, k <> 1
-        # prepare params
-        kernel_size = Conv2DParams.get_kernel_param(rng, H_in, W_in, k_min_h=2, k_min_w=2)
-        if kernel_size[0] == 1 and kernel_size[1] == 1:
-            return []
-        padding_h = kernel_size[0] - 1
-        padding_w = kernel_size[1] - 1
-        padding = (padding_h, padding_w)
-        conv2DParams = Conv2DParams(
-            in_channels=C_in,
-            out_channels=rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
-            kernel_size=kernel_size,
-            padding=padding,
-            bias=bias,
-        )
         return conv2DParams.to_kwargs_list()
 
     @classmethod
@@ -417,9 +370,9 @@ class TestParamsData:
         if H_in == 1 and W_in == 1:
             return []
         # prepare params
-        kernel_size = Conv2DParams.get_kernel_param(rng, H_in, W_in)
-        stride = Conv2DParams.get_non_unit_stride_param(rng, H_in, W_in, kernel_size[0], kernel_size[1])
-        conv2DParams = Conv2DParams(
+        kernel_size = ConvTranspose2DParams.get_kernel_param(rng, H_in, W_in)
+        stride = ConvTranspose2DParams.get_non_unit_stride_param(rng, H_in, W_in, kernel_size[0], kernel_size[1])
+        conv2DParams = ConvTranspose2DParams(
             in_channels=C_in,
             out_channels=rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
             kernel_size=kernel_size,
@@ -436,9 +389,9 @@ class TestParamsData:
         if H_in == 1 and W_in == 1:
             return []
         # prepare params
-        kernel_size = Conv2DParams.get_kernel_param(rng, H_in, W_in)
-        stride = Conv2DParams.get_non_unit_stride_param(rng, H_in, W_in, kernel_size[0], kernel_size[1])
-        conv2DParams = Conv2DParams(
+        kernel_size = ConvTranspose2DParams.get_kernel_param(rng, H_in, W_in)
+        stride = ConvTranspose2DParams.get_non_unit_stride_param(rng, H_in, W_in, kernel_size[0], kernel_size[1])
+        conv2DParams = ConvTranspose2DParams(
             in_channels=C_in,
             out_channels=rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
             kernel_size=kernel_size,
@@ -446,39 +399,9 @@ class TestParamsData:
             padding=rng.randint(1, 4),
             bias=bias,
         )
+        if conv2DParams.is_output_shape_valid(H_in, W_in) == False:
+            return []
         return conv2DParams.to_kwargs_list()
-
-    @classmethod
-    def generate_kwargs_all_type_padding_unit_strides(cls, test_vector: TestVector, bias: bool = True):
-        rng = random.Random(sum(test_vector.input_shape))
-        N, C_in, H_in, W_in = test_vector.input_shape
-        # prepare params
-        out_channels = rng.randint(1, C_in + 10)  # it can be less, equal or greater than in_channels
-        kernel_size = Conv2DParams.get_kernel_param(rng, H_in, W_in)
-        padding_list = []
-        padding_list.append(rng.randint(1, 15))
-        padding_list.append("valid")
-        padding_list.append("same")
-        padding_mode_list = [
-            "zeros",  # already tested in previous cases but we test it again because of valid and same padding
-            "reflect",
-            "replicate",
-            "circular",
-        ]
-        # create kwargs
-        kwarg_list = []
-        for padding in padding_list:
-            for padding_mode in padding_mode_list:
-                conv2DParams = Conv2DParams(
-                    in_channels=C_in,
-                    out_channels=out_channels,
-                    kernel_size=kernel_size,
-                    padding=padding,
-                    padding_mode=padding_mode,
-                    bias=bias,
-                )
-                kwarg_list.append(conv2DParams.__dict__)
-        return kwarg_list
 
     @classmethod
     def generate_kwargs_no_zero_padding_unit_strides_dilation(cls, test_vector: TestVector, bias: bool = True):
@@ -488,8 +411,8 @@ class TestParamsData:
         # k_eff = k + (k − 1)(d − 1).
         k_eff_h = rng.randint(H_in // 2 if H_in // 2 > 0 else 1, H_in)
         k_eff_w = rng.randint(W_in // 2 if W_in // 2 > 0 else 1, W_in)
-        possible_k_d_h = Conv2DParams.find_k_d(k_eff_h)
-        possible_k_d_w = Conv2DParams.find_k_d(k_eff_w)
+        possible_k_d_h = ConvTranspose2DParams.find_k_d(k_eff_h)
+        possible_k_d_w = ConvTranspose2DParams.find_k_d(k_eff_w)
         if not possible_k_d_h or not possible_k_d_w:
             return []
         k_d_h = rng.choice(possible_k_d_h)
@@ -500,7 +423,7 @@ class TestParamsData:
         dilation_h = k_d_h[1]
         dilation_w = k_d_w[1]
         dilation = (dilation_h, dilation_w)
-        conv2DParams = Conv2DParams(
+        conv2DParams = ConvTranspose2DParams(
             in_channels=C_in,
             out_channels=rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
             kernel_size=kernel_size,
@@ -517,8 +440,8 @@ class TestParamsData:
         # k_eff = k + (k − 1)(d − 1).
         k_eff_h = rng.randint(H_in // 2 if H_in // 2 > 0 else 1, H_in)
         k_eff_w = rng.randint(W_in // 2 if W_in // 2 > 0 else 1, W_in)
-        possible_k_d_h = Conv2DParams.find_k_d(k_eff_h)
-        possible_k_d_w = Conv2DParams.find_k_d(k_eff_w)
+        possible_k_d_h = ConvTranspose2DParams.find_k_d(k_eff_h)
+        possible_k_d_w = ConvTranspose2DParams.find_k_d(k_eff_w)
         if not possible_k_d_h or not possible_k_d_w:
             return []
         k_d_h = rng.choice(possible_k_d_h)
@@ -529,7 +452,7 @@ class TestParamsData:
         dilation_h = k_d_h[1]
         dilation_w = k_d_w[1]
         dilation = (dilation_h, dilation_w)
-        conv2DParams = Conv2DParams(
+        conv2DParams = ConvTranspose2DParams(
             in_channels=C_in,
             out_channels=rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
             kernel_size=kernel_size,
@@ -550,8 +473,8 @@ class TestParamsData:
         # k_eff = k + (k − 1)(d − 1) = k + kd - k - d + 1 = kd - d + 1 = d(k - 1) + 1
         k_eff_h = rng.randint(H_in // 2 if H_in // 2 > 0 else 1, H_in)
         k_eff_w = rng.randint(W_in // 2 if W_in // 2 > 0 else 1, W_in)
-        possible_k_d_h = Conv2DParams.find_k_d(k_eff_h)
-        possible_k_d_w = Conv2DParams.find_k_d(k_eff_w)
+        possible_k_d_h = ConvTranspose2DParams.find_k_d(k_eff_h)
+        possible_k_d_w = ConvTranspose2DParams.find_k_d(k_eff_w)
         if not possible_k_d_h or not possible_k_d_w:
             return []
         k_d_h = rng.choice(possible_k_d_h)
@@ -562,12 +485,12 @@ class TestParamsData:
         dilation_h = k_d_h[1]
         dilation_w = k_d_w[1]
         dilation = (dilation_h, dilation_w)
-        conv2DParams = Conv2DParams(
+        conv2DParams = ConvTranspose2DParams(
             in_channels=C_in,
             out_channels=rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
             kernel_size=kernel_size,
             dilation=dilation,
-            stride=Conv2DParams.get_non_unit_stride_param(rng, H_in, W_in, k_eff_h, k_eff_w),
+            stride=ConvTranspose2DParams.get_non_unit_stride_param(rng, H_in, W_in, k_eff_h, k_eff_w),
             padding=rng.randint(1, 4),
             bias=bias,
         )
@@ -578,13 +501,13 @@ class TestParamsData:
         rng = random.Random(sum(test_vector.input_shape))
         N, C_in, H_in, W_in = test_vector.input_shape
         # prepare params
-        groups = Conv2DParams.get_groups_param(C_in, C_in, mode="depthwise")
+        groups = ConvTranspose2DParams.get_groups_param(C_in, C_in, mode="depthwise")
         if groups == 1:
             return []  # skip: already tested in previous cases
-        conv2DParams = Conv2DParams(
+        conv2DParams = ConvTranspose2DParams(
             in_channels=C_in,
             out_channels=C_in,
-            kernel_size=Conv2DParams.get_kernel_param(rng, H_in, W_in),
+            kernel_size=ConvTranspose2DParams.get_kernel_param(rng, H_in, W_in),
             groups=groups,
             bias=bias,
         )
@@ -598,13 +521,13 @@ class TestParamsData:
         C_out = rng.randint(1, C_in + 10)
         while C_out == C_in:
             C_out = rng.randint(1, C_in + 10)
-        groups = Conv2DParams.get_groups_param(C_in, C_out, mode="grouped")
+        groups = ConvTranspose2DParams.get_groups_param(C_in, C_out, mode="grouped")
         if groups == 1 or groups == C_in:
             return []
-        conv2DParams = Conv2DParams(
+        conv2DParams = ConvTranspose2DParams(
             in_channels=C_in,
             out_channels=C_out,
-            kernel_size=Conv2DParams.get_kernel_param(rng, H_in, W_in),
+            kernel_size=ConvTranspose2DParams.get_kernel_param(rng, H_in, W_in),
             groups=groups,
             bias=bias,
         )
@@ -617,7 +540,7 @@ class TestCollectionData:
 
     all = TestCollection(
         operators=[
-            "conv2d",  # 00
+            "conv_transpose_2d",  # 00
         ],
         input_sources=TestCollectionCommon.all.input_sources,
         # only 4D input tensors are supported
@@ -644,8 +567,11 @@ class TestIdsData:
 
     __test__ = False  # Avoid collecting TestIdsData as a pytest test
 
-    failed_inference_froze = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/test_conv2d_ids_failed_inference_froze.txt"
+    failed_killed = TestPlanUtils.load_test_ids_from_file(
+        f"{os.path.dirname(__file__)}/test_convtranspose2d_ids_failed_killed.txt"
+    )
+    failed_fatal_python_error = TestPlanUtils.load_test_ids_from_file(
+        f"{os.path.dirname(__file__)}/test_convtranspose2d_ids_failed_fatal_python_error.txt"
     )
 
 
@@ -675,18 +601,6 @@ TestParamsData.test_plan = TestPlan(
             operators=TestCollectionData.all.operators,
             input_sources=TestCollectionData.all.input_sources,
             input_shapes=TestCollectionData.all.input_shapes,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs_same_output_as_input(test_vector),
-        ),
-        TestCollection(
-            operators=TestCollectionData.all.operators,
-            input_sources=TestCollectionData.all.input_sources,
-            input_shapes=TestCollectionData.all.input_shapes,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs_output_bigger_than_input(test_vector),
-        ),
-        TestCollection(
-            operators=TestCollectionData.all.operators,
-            input_sources=TestCollectionData.all.input_sources,
-            input_shapes=TestCollectionData.all.input_shapes,
             kwargs=lambda test_vector: TestParamsData.generate_kwargs_no_zero_padding_no_unit_strides(test_vector),
         ),
         TestCollection(
@@ -698,8 +612,10 @@ TestParamsData.test_plan = TestPlan(
         TestCollection(
             operators=TestCollectionData.all.operators,
             input_sources=TestCollectionData.all.input_sources,
-            input_shapes=TestCollectionData.single.input_shapes,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs_all_type_padding_unit_strides(test_vector),
+            input_shapes=TestCollectionData.all.input_shapes,
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs_no_zero_padding_unit_strides_dilation(
+                test_vector
+            ),
         ),
         TestCollection(
             operators=TestCollectionData.all.operators,
@@ -712,14 +628,6 @@ TestParamsData.test_plan = TestPlan(
             input_sources=TestCollectionData.all.input_sources,
             input_shapes=TestCollectionData.all.input_shapes,
             kwargs=lambda test_vector: TestParamsData.generate_kwargs_zero_padding_no_unit_strides_dilation(
-                test_vector
-            ),
-        ),
-        TestCollection(
-            operators=TestCollectionData.all.operators,
-            input_sources=TestCollectionData.all.input_sources,
-            input_shapes=TestCollectionData.all.input_shapes,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs_no_zero_padding_unit_strides_dilation(
                 test_vector
             ),
         ),
@@ -742,13 +650,6 @@ TestParamsData.test_plan = TestPlan(
             input_shapes=TestCollectionData.all.input_shapes,
             kwargs=lambda test_vector: TestParamsData.generate_kwargs_all(test_vector, bias=False),
         ),
-        TestCollection(
-            operators=TestCollectionData.all.operators,
-            input_sources=TestCollectionData.all.input_sources,
-            input_shapes=TestCollectionData.single.input_shapes,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs_single(test_vector, bias=False),
-        ),
-        # Using bias=False for data format and math fidelity tests because its more stable at the moment
         # Test Data formats collection:
         TestCollection(
             operators=TestCollectionData.all.operators,
@@ -764,22 +665,37 @@ TestParamsData.test_plan = TestPlan(
             ],
             math_fidelities=TestCollectionCommon.single.math_fidelities,
         ),
-        # Test math fidelity collection:
         TestCollection(
             operators=TestCollectionData.all.operators,
             input_sources=TestCollectionData.single.input_sources,
             input_shapes=TestCollectionData.single.input_shapes,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs_no_zero_padding_unit_strides(
-                test_vector, bias=False
-            ),
-            dev_data_formats=TestCollectionData.single.dev_data_formats,  # Can't use it because it's unsupported data format
-            math_fidelities=TestCollectionCommon.all.math_fidelities,
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs_no_zero_padding_unit_strides(test_vector),
+            dev_data_formats=[
+                item
+                for item in TestCollectionData.float.dev_data_formats  # no sense to test with int data formats
+                if item not in TestCollectionData.single.dev_data_formats
+            ],
+            math_fidelities=TestCollectionData.single.math_fidelities,
+        ),
+        # Test plan:
+        # 6. Math fidelity
+        TestCollection(
+            operators=TestCollectionData.all.operators,
+            input_sources=TestCollectionData.single.input_sources,
+            input_shapes=TestCollectionData.single.input_shapes,
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs_no_zero_padding_unit_strides(test_vector),
+            dev_data_formats=TestCollectionData.single.dev_data_formats,
+            math_fidelities=TestCollectionData.all.math_fidelities,
         ),
     ],
     failing_rules=[
         TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_inference_froze,
+            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_killed,
             skip_reason=FailingReasons.INFERENCE_FROZE,
+        ),
+        TestCollection(
+            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_fatal_python_error,
+            skip_reason=FailingReasons.FATAL_ERROR,
         ),
         *TestIdsDataLoader.build_failing_rules(operators=TestCollectionData.all.operators),
     ],
