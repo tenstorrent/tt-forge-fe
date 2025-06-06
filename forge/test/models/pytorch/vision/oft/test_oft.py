@@ -20,6 +20,7 @@ from forge.verify.verify import verify
 from third_party.tt_forge_models.oft import ModelLoader  # isort:skip
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Getting hang at generate_initial_graph pass")
 def test_oft():

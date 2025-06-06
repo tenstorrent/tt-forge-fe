@@ -39,19 +39,19 @@ variants = [
     ),
     pytest.param(
         "Qwen/Qwen2.5-3B",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model"), pytest.mark.out_of_memory],
     ),
     pytest.param(
         "Qwen/Qwen2.5-3B-Instruct",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model"), pytest.mark.out_of_memory],
     ),
     pytest.param(
         "Qwen/Qwen2.5-7B",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model"), pytest.mark.out_of_memory],
     ),
     pytest.param(
         "Qwen/Qwen2.5-7B-Instruct",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model"), pytest.mark.out_of_memory],
     ),
 ]
 
@@ -102,6 +102,7 @@ def test_qwen_clm(variant):
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["Qwen/Qwen2-7B"])
 def test_qwen2_token_classification(variant):

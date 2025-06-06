@@ -34,6 +34,7 @@ class StableDiffusionXLWrapper(torch.nn.Module):
         return noise_pred
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.skip(
     reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"

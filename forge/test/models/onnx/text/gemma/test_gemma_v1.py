@@ -13,6 +13,7 @@ import onnx
 import torch
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",

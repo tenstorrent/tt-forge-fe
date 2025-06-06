@@ -22,6 +22,7 @@ from test.utils import download_model
 variants = ["mistralai/Mistral-7B-v0.1"]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mistral(variant):
@@ -66,6 +67,7 @@ def test_mistral(variant):
 variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
 @pytest.mark.parametrize("variant", variants)

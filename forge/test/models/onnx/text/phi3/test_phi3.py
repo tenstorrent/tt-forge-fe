@@ -18,6 +18,7 @@ from test.models.models_utils import build_optimum_cli_command
 variants = ["microsoft/phi-3-mini-4k-instruct", "microsoft/Phi-3-mini-128k-instruct"]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="Transient test - Out of memory due to other tests in CI pipeline")

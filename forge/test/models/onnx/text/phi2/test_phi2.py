@@ -16,6 +16,7 @@ import subprocess
 variants = ["microsoft/phi-2"]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Transient test - Out of memory due to other tests in CI pipeline")
 @pytest.mark.parametrize("variant", variants)

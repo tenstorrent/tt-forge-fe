@@ -18,6 +18,7 @@ from forge.verify.verify import verify
 variants = ["ministral/Ministral-3b-instruct"]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(

@@ -16,6 +16,7 @@ import onnx
 variants = ["microsoft/Phi-3.5-mini-instruct"]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.skip("Transient test - Out of memory due to other tests in CI pipeline")
 @pytest.mark.parametrize("variant", variants)

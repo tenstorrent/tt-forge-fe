@@ -127,29 +127,48 @@ LlamaModel._update_causal_mask = _update_causal_mask
 
 
 variants = [
-    pytest.param("meta-llama/Meta-Llama-3-8B", marks=pytest.mark.skip(reason="Segmentation Fault")),
-    pytest.param("meta-llama/Meta-Llama-3-8B-Instruct", marks=pytest.mark.skip(reason="Segmentation Fault")),
-    pytest.param("meta-llama/Llama-3.1-8B", marks=pytest.mark.skip(reason="Segmentation Fault")),
-    pytest.param("meta-llama/Llama-3.1-8B-Instruct", marks=pytest.mark.skip(reason="Segmentation Fault")),
+    pytest.param(
+        "meta-llama/Meta-Llama-3-8B", marks=[pytest.mark.skip(reason="Segmentation Fault"), pytest.mark.out_of_memory]
+    ),
+    pytest.param(
+        "meta-llama/Meta-Llama-3-8B-Instruct",
+        marks=[pytest.mark.skip(reason="Segmentation Fault"), pytest.mark.out_of_memory],
+    ),
+    pytest.param(
+        "meta-llama/Llama-3.1-8B", marks=[pytest.mark.skip(reason="Segmentation Fault"), pytest.mark.out_of_memory]
+    ),
+    pytest.param(
+        "meta-llama/Llama-3.1-8B-Instruct",
+        marks=[pytest.mark.skip(reason="Segmentation Fault"), pytest.mark.out_of_memory],
+    ),
     pytest.param("meta-llama/Llama-3.2-1B", marks=pytest.mark.xfail),
     pytest.param("meta-llama/Llama-3.2-1B-Instruct", marks=pytest.mark.xfail),
     pytest.param(
         "meta-llama/Llama-3.2-3B",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB during compile time)"
-        ),
+        marks=[
+            pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB during compile time)"
+            ),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "meta-llama/Llama-3.2-3B-Instruct",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-        ),
+        marks=[
+            pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+            ),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "huggyllama/llama-7b",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-        ),
+        marks=[
+            pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+            ),
+            pytest.mark.out_of_memory,
+        ],
     ),
 ]
 
@@ -222,52 +241,76 @@ def test_llama3_causal_lm(variant):
 variants = [
     pytest.param(
         "meta-llama/Meta-Llama-3-8B",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-        ),
+        marks=[
+            pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+            ),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "meta-llama/Meta-Llama-3-8B-Instruct",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-        ),
+        marks=[
+            pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+            ),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "meta-llama/Llama-3.1-8B",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-        ),
+        marks=[
+            pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+            ),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "meta-llama/Llama-3.1-8B-Instruct",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-        ),
+        marks=[
+            pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+            ),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "meta-llama/Llama-3.2-1B",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-        ),
+        marks=[
+            pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+            ),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param("meta-llama/Llama-3.2-1B-Instruct"),
     pytest.param(
         "meta-llama/Llama-3.2-3B",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
-        ),
+        marks=[
+            pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
+            ),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "meta-llama/Llama-3.2-3B-Instruct",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-        ),
+        marks=[
+            pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+            ),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "huggyllama/llama-7b",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-        ),
+        marks=[
+            pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+            ),
+            pytest.mark.out_of_memory,
+        ],
     ),
 ]
 
