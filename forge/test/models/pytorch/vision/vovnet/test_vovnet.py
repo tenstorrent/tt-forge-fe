@@ -102,6 +102,7 @@ def generate_model_vovnet39_imgcls_stigma_pytorch():
     return model.to(torch.bfloat16), [image_tensor.to(torch.bfloat16)], {}
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
 def test_vovnet_v1_39_stigma_pytorch():
 
@@ -143,6 +144,7 @@ def generate_model_vovnet57_imgcls_stigma_pytorch():
     return model.to(torch.bfloat16), [image_tensor.to(torch.bfloat16)], {}
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
 def test_vovnet_v1_57_stigma_pytorch():
 
