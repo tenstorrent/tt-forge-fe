@@ -14,6 +14,9 @@ import os
 import zipfile
 from io import BytesIO
 
+import matplotlib as mpl
+import matplotlib.cm as cm
+import numpy as np
 import PIL.Image as pil
 import requests
 import torch
@@ -141,7 +144,28 @@ def load_input(feed_height, feed_width):
     image_url = "https://raw.githubusercontent.com/nianticlabs/monodepth2/master/assets/test_image.jpg"
     response = requests.get(image_url)
     input_image = Image.open(BytesIO(response.content)).convert("RGB")
+    original_width, original_height = input_image.size
     input_image_resized = input_image.resize((feed_width, feed_height), pil.LANCZOS)
     input_tensor = transforms.ToTensor()(input_image_resized).unsqueeze(0)
 
-    return input_tensor
+    return input_tensor, original_width, original_height
+
+
+def postprocess_and_save_disparity_map(co_out, original_height, original_width, variant):
+    disp = co_out[0].to(torch.float32)
+    disp_resized = torch.nn.functional.interpolate(
+        disp, (original_height, original_width), mode="bilinear", align_corners=False
+    )
+
+    # Saving colormapped depth image
+    disp_resized_np = disp_resized.squeeze().cpu().numpy()
+    vmax = np.percentile(disp_resized_np, 95)
+    normalizer = mpl.colors.Normalize(vmin=disp_resized_np.min(), vmax=vmax)
+    mapper = cm.ScalarMappable(norm=normalizer, cmap="magma")
+    colormapped_im = (mapper.to_rgba(disp_resized_np)[:, :, :3] * 255).astype(np.uint8)
+    im = pil.fromarray(colormapped_im)
+
+    save_path = "forge/test/models/pytorch/vision/monodepth2/results"
+    os.makedirs(save_path, exist_ok=True)
+    name_dest_im = f"{save_path}/{variant}_pred_disp_vis.png"
+    im.save(name_dest_im)
