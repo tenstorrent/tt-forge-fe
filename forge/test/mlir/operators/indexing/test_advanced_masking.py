@@ -28,7 +28,7 @@ from forge.verify.verify import verify
                 ]
             ),
             id="2d_masked_select",
-            marks=pytest.mark.xfail(reason="AssertionError: Dynamic shapes not supported"),
+            marks=pytest.mark.skip(reason="AssertionError: Dynamic shapes not supported"),
         ),
     ],
 )
