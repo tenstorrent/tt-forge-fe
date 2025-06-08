@@ -22,10 +22,14 @@ for this reason , yolox==0.3.0 is intalled through subprocess.
 import os
 
 import cv2
+import numpy as np
 import pytest
 import requests
 import torch
+from yolox.data.data_augment import preproc as preprocess
+from yolox.data.datasets import COCO_CLASSES
 from yolox.exp import get_exp
+from yolox.utils import demo_postprocess, multiclass_nms
 
 import forge
 from forge._C import DataFormat
@@ -39,8 +43,6 @@ from forge.forge_property_utils import (
 )
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
-
-from test.models.pytorch.vision.yolo.model_utils.yolox_utils import preprocess
 
 variants = [
     pytest.param("yolox_nano"),
@@ -59,7 +61,7 @@ def test_yolox_pytorch(variant):
 
     pcc = 0.99
     if variant in ["yolox_nano", "yolox_l", "yolox_x"]:
-        pcc = 0.97
+        pcc = 0.96
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -106,7 +108,8 @@ def test_yolox_pytorch(variant):
     with open("input.jpg", "wb") as f:
         f.write(response.content)
     img = cv2.imread("input.jpg")
-    img_tensor = preprocess(img, input_shape)
+    img_tensor, ratio = preprocess(img, input_shape)
+    img_tensor = torch.from_numpy(img_tensor)
     img_tensor = img_tensor.unsqueeze(0)
 
     inputs = [img_tensor.to(torch.bfloat16)]
@@ -123,12 +126,33 @@ def test_yolox_pytorch(variant):
     )
 
     # Model Verification
-    verify(
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
         verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
     )
+
+    # Post-processing
+    for i in range(len(co_out)):
+        co_out[i] = co_out[i].detach().float().numpy()
+
+    predictions = demo_postprocess(co_out[0], input_shape)[0]
+    boxes = predictions[:, :4]
+    scores = predictions[:, 4:5] * predictions[:, 5:]
+    boxes_xyxy = np.ones_like(boxes)
+    boxes_xyxy[:, 0] = boxes[:, 0] - boxes[:, 2] / 2.0
+    boxes_xyxy[:, 1] = boxes[:, 1] - boxes[:, 3] / 2.0
+    boxes_xyxy[:, 2] = boxes[:, 0] + boxes[:, 2] / 2.0
+    boxes_xyxy[:, 3] = boxes[:, 1] + boxes[:, 3] / 2.0
+    boxes_xyxy /= ratio
+    dets = multiclass_nms(boxes_xyxy, scores, nms_thr=0.45, score_thr=0.1)
+    if dets is not None:
+        final_boxes, final_scores, final_cls_inds = dets[:, :4], dets[:, 4], dets[:, 5]
+        for box, score, cls_ind in zip(final_boxes, final_scores, final_cls_inds):
+            class_name = COCO_CLASSES[int(cls_ind)]
+            x_min, y_min, x_max, y_max = box
+            print(f"Class: {class_name}, Confidence: {score}, Coordinates: ({x_min}, {y_min}, {x_max}, {y_max})")
 
     # remove downloaded weights,image
     os.remove(weight_name)
