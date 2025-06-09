@@ -26,7 +26,7 @@ def extract_test_case_info(xml_file):
             # Iterate over all <testcase> elements within the current <testsuite>
             for testcase in testsuite.findall("testcase"):
                 try:
-                    test_cases_info[testcase.get("name")] = float(time_str)
+                    test_cases_info[testcase.get("name")] = float(testcase.get("time", 0))
                 except ValueError:
                     print(f"Warning: Non-numeric time value encountered in {xml_file} for test case '{name}'")
 
