@@ -1566,15 +1566,15 @@ class FailingReasons(Enum):
         ],
     )
 
-    TVM_RUNTIME = FailingReason(
-        description="TVM runtime error",
+    UNASSIGNED_PADDING_VARIABLE = FailingReason(
+        description="Unassigned padding variable",
         checks=[
             # >       op_attrs["padding"] = padding
             # E       UnboundLocalError: local variable 'padding' referenced before assignment
             # forge/forge/tvm_calls/relay/op/forge_passes.py:197: UnboundLocalError
             ExceptionCheck(
                 class_name="UnboundLocalError",
-                component=ComponentChecker.TVM.value,
+                component=ComponentChecker.NONE.value,
                 message=[
                     M.starts_with("local variable 'padding' referenced before assignment"),
                 ],
@@ -1583,6 +1583,12 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/tvm_calls/relay/op/forge_passes.py:")),
                 ],
             ),
+        ],
+    )
+
+    TVM_RUNTIME = FailingReason(
+        description="TVM runtime error",
+        checks=[
             # squeeze	tvm.error.InternalError: Traceback (most recent call last):
             # >       raise py_err
             # E       tvm.error.InternalError: Traceback (most recent call last):
@@ -1611,6 +1617,12 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("/tvm/_ffi/base.py:")),
                 ],
             ),
+        ],
+    )
+
+    ASSERT_STRIDE = FailingReason(
+        description="Assert stride error",
+        checks=[
             #     def populate_conv2d_transpose_args(graph, nid, compiler_cfg):
             #         ...
             # >       assert all([stride == strides[0] for stride in strides])
@@ -1628,6 +1640,12 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/tvm_to_python.py:")),
                 ],
             ),
+        ],
+    )
+
+    ASSERT_GROUPS = FailingReason(
+        description="Assert groups error",
+        checks=[
             # >       assert groups == 1 or (in_channel is not None and groups == in_channel), "Only supports group of 1 or in_channel"
             # E       AssertionError: Only supports group of 1 or in_channel
             # forge/forge/tvm_to_python.py:697: AssertionError
@@ -1645,6 +1663,12 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/tvm_to_python.py:")),
                 ],
             ),
+        ],
+    )
+
+    ASSERT_DIM = FailingReason(
+        description="Assert dim error",
+        checks=[
             #     def populate_conv2d_transpose_args(graph, nid, compiler_cfg):
             #         ...
             #         dilation = [int(dilation) for dilation in node["attrs"]["dilation"][0]]
