@@ -66,6 +66,7 @@ def process_directory(directory):
                 # Check if it's a JUnit XML report by looking for <testsuite> tag
                 try:
                     test_cases_info = extract_test_case_info(xml_file_path)
+                    print(f"test cases info {test_cases_info}")
                     all_test_cases.update(test_cases_info)
                 except Exception as e:
                     print(f"Error reading file {xml_file_path}: {e}")
