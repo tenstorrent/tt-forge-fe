@@ -26,7 +26,7 @@ def extract_test_case_info(xml_file):
             # Iterate over all <testcase> elements within the current <testsuite>
             for testcase in testsuite.findall("testcase"):
                 try:
-                    path = testsuite.get("classname").replace(".", "/")
+                    path = testcase.get("classname").replace(".", "/")
                     name = testcase.get("name")
                     test_cases_info[f"{path}.py::{name}"] = float(testcase.get("time", 0))
                 except ValueError:
