@@ -2,8 +2,14 @@
 
 This document describes how to build the tt-forge-fe project on your local machine. The following topics are covered:
 
-* Configuring Hardware
-* Installing Dependencies
+* [Configuring Hardware](#configuring-hardware)
+* [Installing Dependencies](#installing-dependencies)
+* [Building the Environment](#building-the-environment)
+* [Build Forge](#build-forge)
+* [Building the Docs](#building-the-docs)
+* [Build Cleanup](#build-cleanup)
+* [Useful Build Environment Variables](#useful-build-environment-variables)
+* [Run tt-forge-fe Using a Docker Image](#run-tt-forge-fe-using-a-docker-image)
 
 ## Configuring Hardware
 This walkthrough assumes you are using Ubuntu 22.04.
@@ -51,7 +57,22 @@ sudo ln -s /usr/bin/clang++-17 /usr/bin/clang++
 clang -v
 ```
 
-3. Delete any non-11 paths:
+Look for the line that starts with `Selected GCC installation:`. If it is something other than GCC 11, install GCC 11 using:
+
+```bash
+sudo apt-get install gcc-11 lib32stdc++-11-dev lib32gcc-11-dev
+```
+
+3. You **do not** need to uninstall other versions of GCC. Instead, you can use `update-alternatives` to configure the system to prefer GCC 11:
+
+```bash
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 100
+```
+
+This approach lets multiple GCC versions coexist on your system and you can switch between them a needed.
+
+4. Delete any non-11 paths:
 
 ```bash
 sudo rm -rf /usr/bin/../lib/gcc/x86_64-linux-gnu/12
