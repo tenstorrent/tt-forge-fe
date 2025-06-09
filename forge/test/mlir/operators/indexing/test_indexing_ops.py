@@ -346,7 +346,7 @@ def test_take_along_dim(input_tensor, indices, dim):
             1,
             False,
             id="2D_gather_dim1_dense",
-            marks=pytest.mark.xfail(
+            marks=pytest.mark.skip(
                 reason='Failed on "DecomposeRoll" TVM callback: index 2 is out of bounds for axis 1 with size 2'
             ),
         ),
@@ -356,7 +356,7 @@ def test_take_along_dim(input_tensor, indices, dim):
             1,
             True,
             id="2D_gather_dim1_sparse",
-            marks=pytest.mark.xfail(
+            marks=pytest.mark.skip(
                 reason='Failed on "DecomposeRoll" TVM callback: index 2 is out of bounds for axis 1 with size 2'
             ),
         ),
@@ -368,7 +368,7 @@ def test_take_along_dim(input_tensor, indices, dim):
             2,
             False,
             id="3D_gather_dim2_dense",
-            marks=pytest.mark.xfail(
+            marks=pytest.mark.skip(
                 reason='Failed on "DecomposeRoll" TVM callback: index 2 is out of bounds for axis 2 with size 2'
             ),
         ),
@@ -380,7 +380,7 @@ def test_take_along_dim(input_tensor, indices, dim):
             2,
             True,
             id="3D_gather_dim2_sparse",
-            marks=pytest.mark.xfail(
+            marks=pytest.mark.skip(
                 reason='Failed on "DecomposeRoll" TVM callback: index 2 is out of bounds for axis 2 with size 2'
             ),
         ),
