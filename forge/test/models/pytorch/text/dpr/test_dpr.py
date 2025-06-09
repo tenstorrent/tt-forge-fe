@@ -11,6 +11,7 @@ from transformers import (
     DPRReader,
     DPRReaderTokenizer,
 )
+from transformers.models.dpr.modeling_dpr import DPREncoder
 
 import forge
 from forge.forge_property_utils import (
@@ -23,11 +24,21 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
+from test.models.models_utils import (
+    dpr_context_encoder_forward_with_position_ids,
+    dpr_encoder_forward_with_position_ids,
+    dpr_question_encoder_forward_with_position_ids,
+)
 from test.utils import download_model
 
+DPREncoder.forward = dpr_encoder_forward_with_position_ids
+DPRContextEncoder.forward = dpr_context_encoder_forward_with_position_ids
+DPRQuestionEncoder.forward = dpr_question_encoder_forward_with_position_ids
+
+
 params = [
-    pytest.param("facebook/dpr-ctx_encoder-single-nq-base", marks=[pytest.mark.xfail]),
-    pytest.param("facebook/dpr-ctx_encoder-multiset-base", marks=[pytest.mark.xfail]),
+    pytest.param("facebook/dpr-ctx_encoder-single-nq-base", marks=[pytest.mark.push]),
+    pytest.param("facebook/dpr-ctx_encoder-multiset-base"),
 ]
 
 
@@ -63,7 +74,11 @@ def test_dpr_context_encoder_pytorch(variant):
         return_tensors="pt",
     )
 
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"]]
+    batch_size = 1
+    seq_len = 128
+    position_ids = torch.arange(seq_len).unsqueeze(0).expand(batch_size, -1)
+
+    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"], position_ids]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -79,14 +94,11 @@ def test_dpr_context_encoder_pytorch(variant):
     print("embeddings", co_out)
 
 
-params = [
-    pytest.param("facebook/dpr-question_encoder-single-nq-base", marks=[pytest.mark.xfail]),
-    pytest.param("facebook/dpr-question_encoder-multiset-base", marks=[pytest.mark.xfail]),
-]
+variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-question_encoder-multiset-base"]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", params)
+@pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_question_encoder_pytorch(variant):
 
     # Record Forge Property
@@ -117,7 +129,11 @@ def test_dpr_question_encoder_pytorch(variant):
         return_tensors="pt",
     )
 
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"]]
+    batch_size = 1
+    seq_len = 128
+    position_ids = torch.arange(seq_len).unsqueeze(0).expand(batch_size, -1)
+
+    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"], position_ids]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
