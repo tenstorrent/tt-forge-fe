@@ -18,7 +18,9 @@ jobs:
           fetch-depth: 0
           # ref: main
       - uses: actions/setup-python@v5
-      - id: get-test-durations
+        with:
+          python-version: '3.10'
+    - id: get-test-durations
         run: |
           repo="tenstorrent/tt-forge-fe"
           wf_name="on-nightly.yml"
