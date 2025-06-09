@@ -39,7 +39,7 @@ class CMakeBuild(build_ext):
             "Ninja",
             "-B",
             str(build_dir),
-            "-DCMAKE_BUILD_TYPE=Release",
+            "-DCMAKE_BUILD_TYPE=Asan",
             "-DCMAKE_INSTALL_PREFIX=" + str(install_dir),
             "-DCMAKE_C_COMPILER=clang",
             "-DCMAKE_CXX_COMPILER=clang++",
