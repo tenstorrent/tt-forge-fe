@@ -20,28 +20,20 @@ def extract_test_case_info(xml_file):
     try:
         tree = ET.parse(xml_file)
         root = tree.getroot()
-
-        # Namespace map for parsing JUnit XML
-        namespace = {"ns": "http://xmlns.jenkins.io/manifests/junit"}
-
         test_cases_info = {}
 
-        # Iterate through each testcase element in the XML file
-        for testcase in root.findall("ns:testsuites/ns:testsuite/ns:testcase", namespace):
-            name = testcase.get("name")
-            time_str = testcase.get("time", "0")  # Default to 0 if time not specified
-
-            try:
-                time_seconds = float(time_str)
-                test_cases_info[name] = time_seconds
-            except ValueError:
-                print(f"Warning: Non-numeric time value encountered in {xml_file} for test case '{name}'")
-
-        return test_cases_info
+        for testsuite in root.findall("testsuite"):
+            # Iterate over all <testcase> elements within the current <testsuite>
+            for testcase in testsuite.findall("testcase"):
+                try:
+                    test_cases_info[testcase.get("name")] = float(time_str)
+                except ValueError:
+                    print(f"Warning: Non-numeric time value encountered in {xml_file} for test case '{name}'")
 
     except ET.ParseError as e:
         print(f"Error parsing XML file {xml_file}: {e}")
-        return {}
+
+    return test_cases_info
 
 
 def process_directory(directory):
