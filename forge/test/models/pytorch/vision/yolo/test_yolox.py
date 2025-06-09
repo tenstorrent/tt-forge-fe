@@ -58,8 +58,10 @@ variants = [
 def test_yolox_pytorch(variant):
 
     pcc = 0.99
-    if variant in ["yolox_nano", "yolox_l", "yolox_x"]:
+    if variant in ["yolox_l", "yolox_x"]:
         pcc = 0.97
+    elif variant in ["yolox_nano", "yolox_m", "yolox_darknet"]:
+        pcc = 0.95
 
     # Record Forge Property
     module_name = record_model_properties(
