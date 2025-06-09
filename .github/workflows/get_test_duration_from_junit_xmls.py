@@ -27,7 +27,7 @@ def extract_test_case_info(xml_file):
         test_cases_info = {}
 
         # Iterate through each testcase element in the XML file
-        for testcase in root.findall("ns:testsuite/ns:testcase", namespace):
+        for testcase in root.findall("ns:testsuites/ns:testsuite/ns:testcase", namespace):
             name = testcase.get("name")
             time_str = testcase.get("time", "0")  # Default to 0 if time not specified
 
@@ -56,11 +56,8 @@ def process_directory(directory):
     """
     all_test_cases = {}
 
-    print(f"Procees dir {directory}")
     for subdir, _, files in os.walk(directory):
-        print(f"Walk subdir: {subdir}")
         for file in files:
-            print(f"File: {file}")
             if file.endswith(".xml"):
                 xml_file_path = os.path.join(subdir, file)
                 # Check if it's a JUnit XML report by looking for <testsuite> tag
