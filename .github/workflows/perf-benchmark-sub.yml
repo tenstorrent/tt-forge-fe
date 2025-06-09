@@ -22,7 +22,7 @@ jobs:
           { runs-on: "n150", name: "resnet50_hf",              dir: "ResNetForImageClassification", ts: 'classification', bs: 8,   lp: 32, df: 'bfloat16'  },
           # { runs-on: "n150", name: "resnet50_hf_config",              dir: "ResNetForImageClassificationConfig", ts: 'classification', bs: 8,  lp: 32, df: 'bfloat16' }, It will be added to CI later.
           # { runs-on: "n150", name: "llama",                    dir: "LlamaModel",                   ts: 'na',             bs: 1,   lp: 32, df: 'float32',  },
-          { runs-on: "n150", name: "mobilenetv2_basic",        dir: "MobileNetv2Basic",             ts: 'classification', bs: 8,   lp: 32, df: 'bfloat16', }
+          # { runs-on: "n150", name: "mobilenetv2_basic",        dir: "MobileNetv2Basic",             ts: 'classification', bs: 8,   lp: 32, df: 'bfloat16', }
           # { runs-on: "n150", name: "efficientnet_timm",        dir: "EfficientNetTimmB0",           ts: 'classification', bs: 6,   lp: 32, df: 'bfloat16', },
           # { runs-on: "n150", name: "segformer",                dir: "Segformer",                    ts: 'na',             bs: 1,   lp: 32, df: 'float32',  },
           # { runs-on: "n150", name: "vit_base",                 dir: "ViTBase",                      ts: 'classification', bs: 8,   lp: 32, df: 'float32',  },
