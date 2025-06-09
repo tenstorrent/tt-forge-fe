@@ -149,31 +149,31 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     mlir_config.set_custom_config("override-output-layout=conv2d_454.dc.conv2d.2=dram:interleaved:tile:8x8:bf16")  # 396
     mlir_config.set_custom_config("override-output-layout=conv2d_470.dc.conv2d.2=dram:interleaved:tile:8x8:bf16")  # 398
 
-    mlir_config.set_custom_config("override-output-layout=conv2d_486.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 400
-    mlir_config.set_custom_config("override-output-layout=conv2d_503.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 401
-    mlir_config.set_custom_config("override-output-layout=conv2d_519.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 403
-    mlir_config.set_custom_config("override-output-layout=conv2d_535.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 405
-    mlir_config.set_custom_config("override-output-layout=conv2d_552.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 406
-    mlir_config.set_custom_config("override-output-layout=conv2d_568.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 408
-    mlir_config.set_custom_config("override-output-layout=conv2d_584.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 410
-    mlir_config.set_custom_config("override-output-layout=conv2d_601.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 411
-    mlir_config.set_custom_config("override-output-layout=conv2d_617.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 413
-    mlir_config.set_custom_config("override-output-layout=conv2d_633.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 415
+    # mlir_config.set_custom_config("override-output-layout=conv2d_486.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 400
+    # mlir_config.set_custom_config("override-output-layout=conv2d_503.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 401
+    # mlir_config.set_custom_config("override-output-layout=conv2d_519.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 403
+    # mlir_config.set_custom_config("override-output-layout=conv2d_535.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 405
+    # mlir_config.set_custom_config("override-output-layout=conv2d_552.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 406
+    # mlir_config.set_custom_config("override-output-layout=conv2d_568.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 408
+    # mlir_config.set_custom_config("override-output-layout=conv2d_584.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 410
+    # mlir_config.set_custom_config("override-output-layout=conv2d_601.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 411
+    # mlir_config.set_custom_config("override-output-layout=conv2d_617.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 413
+    # mlir_config.set_custom_config("override-output-layout=conv2d_633.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 415
 
-    mlir_config.set_custom_config("override-output-layout=conv2d_650.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 416
-    mlir_config.set_custom_config("override-output-layout=conv2d_666.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 418
-    mlir_config.set_custom_config("override-output-layout=conv2d_682.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 420
-    mlir_config.set_custom_config("override-output-layout=conv2d_699.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 421
-    mlir_config.set_custom_config("override-output-layout=conv2d_715.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 423
-    mlir_config.set_custom_config("override-output-layout=conv2d_731.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 425
-    mlir_config.set_custom_config("override-output-layout=conv2d_746.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 343
-    mlir_config.set_custom_config("override-output-layout=conv2d_763.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 430
-    mlir_config.set_custom_config("override-output-layout=conv2d_779.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 432
-    mlir_config.set_custom_config("override-output-layout=conv2d_795.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 434
+    # mlir_config.set_custom_config("override-output-layout=conv2d_650.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 416
+    # mlir_config.set_custom_config("override-output-layout=conv2d_666.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 418
+    # mlir_config.set_custom_config("override-output-layout=conv2d_682.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 420
+    # mlir_config.set_custom_config("override-output-layout=conv2d_699.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 421
+    # mlir_config.set_custom_config("override-output-layout=conv2d_715.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 423
+    # mlir_config.set_custom_config("override-output-layout=conv2d_731.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 425
+    # mlir_config.set_custom_config("override-output-layout=conv2d_746.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 343
+    # mlir_config.set_custom_config("override-output-layout=conv2d_763.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 430
+    # mlir_config.set_custom_config("override-output-layout=conv2d_779.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 432
+    # mlir_config.set_custom_config("override-output-layout=conv2d_795.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 434
 
-    mlir_config.set_custom_config("override-output-layout=conv2d_812.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 439
-    mlir_config.set_custom_config("override-output-layout=conv2d_828.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 441
-    mlir_config.set_custom_config("override-output-layout=conv2d_844.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 443
+    # mlir_config.set_custom_config("override-output-layout=conv2d_812.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 439
+    # mlir_config.set_custom_config("override-output-layout=conv2d_828.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 441
+    # mlir_config.set_custom_config("override-output-layout=conv2d_844.dc.conv2d.2=dram:interleaved:tile:8x8:bf16") # 443
 
     compiler_cfg.mlir_config = mlir_config
 
