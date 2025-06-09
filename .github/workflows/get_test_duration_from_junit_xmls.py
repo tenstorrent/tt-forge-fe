@@ -60,7 +60,7 @@ def process_directory(directory):
     for subdir, _, files in os.walk(directory):
         print(f"Walk subdir: {subdir}")
         for file in files:
-            printf(f"File: {file}")
+            print(f"File: {file}")
             if file.endswith(".xml"):
                 xml_file_path = os.path.join(subdir, file)
                 # Check if it's a JUnit XML report by looking for <testsuite> tag
