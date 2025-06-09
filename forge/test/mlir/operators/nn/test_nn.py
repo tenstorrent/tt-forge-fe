@@ -840,3 +840,32 @@ def test_resize1d(data, output_size, align_corners, forge_tmp_path):
     compiled_model = forge.compile(framework_model, sample_inputs=[x])
 
     verify([x], framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "shape, output_size",
+    [
+        ((1, 64, 27), 54),
+        ((1, 3, 12), 48),
+        ((1, 1, 8), 24),
+        ((2, 36, 5), 50),
+        ((4, 4, 7), 56),
+    ],
+)
+@pytest.mark.xfail(
+    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - resize1d"
+)
+def test_upsample_linear1d(shape, output_size):
+    class upsample_linear1d(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            return nn.functional.interpolate(x, size=output_size, mode="linear")
+
+    inputs = [torch.rand(shape)]
+
+    framework_model = upsample_linear1d()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
