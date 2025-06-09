@@ -56,8 +56,11 @@ def process_directory(directory):
     """
     all_test_cases = {}
 
+    print(f"Procees dir {directory}")
     for subdir, _, files in os.walk(directory):
+        print(f"Walk subdir: {subdir}")
         for file in files:
+            printf(f"File: {file}")
             if file.endswith(".xml"):
                 xml_file_path = os.path.join(subdir, file)
                 # Check if it's a JUnit XML report by looking for <testsuite> tag
@@ -76,11 +79,12 @@ def main():
         sys.exit(1)
 
     root_directory = sys.argv[1]
-    test_case_data = process_directory(root_directory)
+    output_file = sys.argv[2]
+    print(f"Dir to process {root_directory}, output file {output_file}")
 
+    test_case_data = process_directory(root_directory)
     json_output = json.dumps(test_case_data, indent=4)
 
-    output_file = sys.argv[2]
     with open(output_file, "w") as f:
         f.write(json_output)
 
