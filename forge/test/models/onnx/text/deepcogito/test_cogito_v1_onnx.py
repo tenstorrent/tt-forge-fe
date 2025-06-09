@@ -16,6 +16,7 @@ from forge.forge_property_utils import Framework, Source, Task, ModelArch, recor
 from test.models.pytorch.text.deepcogito.model_utils.model import get_input_model
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.skip(reason="Skipping due to CI/CD Limitations")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["deepcogito/cogito-v1-preview-llama-3B"])

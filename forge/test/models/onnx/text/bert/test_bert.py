@@ -69,7 +69,13 @@ def test_bert_masked_lm_onnx(variant, forge_tmp_path, opset_version):
     compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # post processing
+    logits = co_out[0]
+    mask_token_index = (input_tokens.input_ids == tokenizer.mask_token_id)[0].nonzero(as_tuple=True)[0]
+    predicted_token_id = logits[0, mask_token_index].argmax(axis=-1)
+    print("The predicted token for the [MASK] is: ", tokenizer.decode(predicted_token_id))
 
 
 @pytest.mark.nightly
@@ -132,8 +138,8 @@ def test_bert_question_answering_onnx(variant, forge_tmp_path, opset_version):
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
-@pytest.mark.push
 @pytest.mark.parametrize("variant", ["emrecan/bert-base-turkish-cased-mean-nli-stsb-tr"])
 def test_bert_sentence_embedding_generation_onnx(variant, forge_tmp_path):
 

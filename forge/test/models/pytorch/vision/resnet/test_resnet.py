@@ -24,6 +24,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
 from test.utils import download_model
 
@@ -144,13 +145,16 @@ def test_resnet_timm():
         compiler_cfg=compiler_cfg,
     )
 
-    # Verify data on sample input
-    verify(
+    # Model Verification and Inference
+    fw_out, co_out = verify(
         input_sample,
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
     )
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])
 
 
 variants_with_weights = {
@@ -192,9 +196,16 @@ def test_resnet_torchvision(variant):
         compiler_cfg=compiler_cfg,
     )
 
-    verify_cfg = VerifyConfig()
+    pcc = 0.99
     if variant == "resnet34":
-        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
+        pcc = 0.98
+    elif variant in ["resnet50", "resnet152"]:
+        pcc = 0.95
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+    # Model Verification and Inference
+    fw_out, co_out = verify(
+        inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc))
+    )
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])

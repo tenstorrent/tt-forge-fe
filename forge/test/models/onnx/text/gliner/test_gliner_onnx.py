@@ -15,6 +15,7 @@ from forge.forge_property_utils import Framework, ModelArch, Source, Task, recor
 variants = ["urchade/gliner_multi-v2.1"]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Segmentation Fault")
 @pytest.mark.parametrize("variant", variants)
