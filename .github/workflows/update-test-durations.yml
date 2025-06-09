@@ -1,0 +1,74 @@
+name: Update Test Durations
+
+on:
+  workflow_dispatch:
+
+permissions:
+  packages: write
+  checks: write
+
+jobs:
+  update_test_durations:
+    runs-on: ubuntu-latest
+    env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # ref: main
+      - uses: actions/setup-python@v5
+      - id: get-test-durations
+        run: |
+          repo="tenstorrent/tt-forge-fe"
+          wf_name="on-nightly.yml"
+
+          # get json of the last 10 workflow runs
+          gh run list --workflow $wf_name -R $repo -b main -L 5 --status completed --json attempt,conclusion,databaseId >runs.json
+
+          counter=0
+          while true; do
+            # Check the status of 'conclusion'
+            conclusion=$(jq -r '.[$counter].conclusion' runs.json)
+
+            if [ "$conclusion" != "success"] && [ "$conclusion" != "failure" ]; then
+              ((counter++))
+
+              # Exit if the counter reaches 5
+              if [ $counter -ge 5 ]; then
+                echo "Counter reached 5. Exiting with code 1."
+                exit 1
+              fi
+            else
+              break
+            fi
+          done
+          curr_wf_id=$(jq -r '.[$counter].databaseId' runs.json)
+          curr_wf_att$(jq -r '.[$counter].attempt' runs.json)
+
+          gh run download $curr_wf_id --attempt $curr_wf_att --pattern "test-reports-*" -R $repo -D ${{runner.temp}}/reports
+          python .github/workflows/get_test_duration_from_junit_xmls.py ${{runner.temp}}/reports .test_durations_new
+          echo "----- NEW DURATIONS"
+          cat .test_durations_new
+          echo "----- DIFF"
+          diff .test_durations .test_durations_new
+
+          echo "TODAY=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+          echo "curr_wf_id=$curr_wf_id" >> $GITHUB_OUTPUT
+          echo "curr_wf_att=$curr_wf_att" >> $GITHUB_OUTPUT
+          echo "curr_wf_link=\"https://github.com/$repo/actions/runs/$curr_wf_id/attempts/$curr_wf_att\"" >> $GITHUB_OUTPUT
+
+    #   - name: Create Pull Request
+    #     uses: peter-evans/create-pull-request@v7
+    #     id: create-pr
+    #     with:
+    #       branch: test-durations-update
+    #       committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+    #       author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+    #       base: main
+    #       commit-message: "Update test durations based on latest nightly ${{ steps.get-test-durations.output.TODAY }}"
+    #       title: "Update test durations based on latest nightly ${{ steps.get-test-durations.output.TODAY }}"
+    #       body: "This PR updates test durations based on latest nightly (${{steps.get-test-durations.output.curr_wf_link}})"
+    #       labels: tooling
+    #       delete-branch: true
+    #       token: ${{ secrets.GH_TOKEN }}
