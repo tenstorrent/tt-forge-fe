@@ -629,3 +629,20 @@ def extract_models_ops_test_params(pytest_file_path: str):
                 )
 
     return results
+
+
+def find_dirs_with_files(root: str, extensions: List[str] = None) -> List[str]:
+    """
+    Recursively search under `root`, returning directories that contain
+    at least one file ending with any of the `extensions`.
+    """
+    if extensions is None:
+        extensions = [".json", ".xlsx"]
+
+    found = []
+    for dirpath, _, filenames in os.walk(root):
+        # Check if any filename ends with one of our extensions
+        if any(fname.lower().endswith(ext) for fname in filenames for ext in extensions):
+            found.append(dirpath)
+
+    return sorted(found)

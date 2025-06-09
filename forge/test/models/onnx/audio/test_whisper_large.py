@@ -28,6 +28,7 @@ class Wrapper(torch.nn.Module):
 variants = ["openai/whisper-large-v3"]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
 @pytest.mark.parametrize("variant", variants, ids=variants)

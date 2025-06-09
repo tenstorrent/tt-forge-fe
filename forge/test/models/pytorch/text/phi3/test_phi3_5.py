@@ -21,6 +21,7 @@ from test.utils import download_model
 variants = ["microsoft/Phi-3.5-mini-instruct"]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Test skipped due to segmentation fault issue")
 @pytest.mark.parametrize("variant", variants)

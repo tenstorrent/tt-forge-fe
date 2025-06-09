@@ -26,6 +26,7 @@ from test.utils import download_model
 variants = ["microsoft/phi-4"]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="Skipped due to kill at consteval compilation stage")
@@ -59,6 +60,7 @@ def test_phi_4_causal_lm_pytorch(variant):
     verify(sample_inputs, framework_model, compiled_model)
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="Skipped due to kill at consteval compilation stage")
@@ -92,6 +94,7 @@ def test_phi_4_token_classification_pytorch(variant):
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="Skipped due to kill at consteval compilation stage")
