@@ -55,16 +55,8 @@ def create_ttir(ttir_path):
 
     """
 
-    # Read the TTIR file
-    try:
-        with open(ttir_path, "r") as file:
-            content = file.read()
-    except FileNotFoundError:
-        print(f"Error: TTIR file '{ttir_path}' not found.")
-        return
-    except Exception as e:
-        print(f"Unexpected error: {e}")
-        return
+    with open(ttir_path, "r") as file:
+        content = file.read()
 
     # Content is a string separated by newlines
     content = content.split("\n")
