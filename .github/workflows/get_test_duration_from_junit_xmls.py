@@ -4,6 +4,7 @@
 import os
 import xml.etree.ElementTree as ET
 import json
+import sys
 
 
 def extract_test_case_info(xml_file):
