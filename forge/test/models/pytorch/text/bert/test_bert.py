@@ -28,9 +28,22 @@ from test.models.pytorch.text.bert.model_utils.utils import mean_pooling
 from test.utils import download_model
 
 
+class BertWrapper(torch.nn.Module):
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+        self.config = model.config
+
+    def forward(self, input_ids, attention_mask=None):
+        batch_size, seq_len = input_ids.shape
+        token_type_ids = torch.zeros_like(input_ids)
+        position_ids = torch.arange(seq_len, device=input_ids.device).unsqueeze(0).expand(batch_size, -1)
+        return self.model(input_ids, attention_mask, token_type_ids, position_ids)
+
+
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["bert-base-uncased"])
-@pytest.mark.xfail
+@pytest.mark.push
 def test_bert_masked_lm_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
@@ -44,6 +57,7 @@ def test_bert_masked_lm_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = BertTokenizer.from_pretrained(variant)
     framework_model = BertForMaskedLM.from_pretrained(variant, return_dict=False)
+    framework_model = BertWrapper(framework_model)
 
     # Load data sample
     sample_text = "The capital of France is [MASK]."
@@ -57,13 +71,7 @@ def test_bert_masked_lm_pytorch(variant):
         return_tensors="pt",
     )
 
-    batch_size = 1
-    seq_len = 128
-    input_ids = tokenized["input_ids"]
-    attention_mask = tokenized["attention_mask"]
-    token_type_ids = torch.zeros_like(input_ids)
-    position_ids = torch.arange(seq_len).unsqueeze(0).expand(batch_size, -1)
-    inputs = [input_ids, attention_mask, token_type_ids, position_ids]
+    inputs = [tokenized["input_ids"], tokenized["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -86,6 +94,7 @@ def generate_model_bert_qa_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
     model = download_model(BertForQuestionAnswering.from_pretrained, variant, return_dict=False)
+    framework_model = BertWrapper(model)
 
     # Load data sample from SQuADv1.1
     context = """Super Bowl 50 was an American football game to determine the champion of the National Football League
@@ -109,19 +118,9 @@ def generate_model_bert_qa_hf_pytorch(variant):
         return_tensors="pt",
     )
 
-    # Manually create token_type_ids and position_ids to avoid dynamic graph behavior
-    batch_size, seq_len = input_tokens["input_ids"].shape
-    input_tokens["token_type_ids"] = torch.zeros((batch_size, seq_len), dtype=torch.long)
-    input_tokens["position_ids"] = torch.arange(seq_len).unsqueeze(0).expand(batch_size, -1)
+    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
-    inputs = [
-        input_tokens["input_ids"],
-        input_tokens["attention_mask"],
-        input_tokens["token_type_ids"],
-        input_tokens["position_ids"],
-    ]
-
-    return model, inputs, tokenizer
+    return framework_model, inputs, tokenizer
 
 
 variants = [
@@ -169,6 +168,7 @@ def generate_model_bert_seqcls_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
     model = download_model(BertForSequenceClassification.from_pretrained, variant, return_dict=False)
+    framework_model = BertWrapper(model)
 
     # Load data sample
     review = "the movie was great!"
@@ -182,7 +182,7 @@ def generate_model_bert_seqcls_hf_pytorch(variant):
         return_tensors="pt",
     )
 
-    return model, [input_tokens["input_ids"]], {}
+    return framework_model, [input_tokens["input_ids"]], {}
 
 
 @pytest.mark.nightly
@@ -247,6 +247,7 @@ def test_bert_token_classification_pytorch(variant):
     )
 
     framework_model, sample_text, inputs, input_tokens = generate_model_bert_tkcls_hf_pytorch(variant)
+    framework_model = BertWrapper(framework_model)
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
