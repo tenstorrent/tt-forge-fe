@@ -44,7 +44,6 @@ class FailingReasonsRegister:
         ("layer_norm", FailingReasons.INTERNAL_TVM_ERROR),
         ("layer_norm", FailingReasons.UNSUPPORTED_DIMENSION),
         ("linear", FailingReasons.DATA_MISMATCH),
-        ("linear", FailingReasons.MICROBATCHING_UNSUPPORTED),
         ("log", FailingReasons.SPECIAL_VALUES),
         ("log1p", FailingReasons.DATA_MISMATCH),
         ("log1p", FailingReasons.DTYPE_MISMATCH),
