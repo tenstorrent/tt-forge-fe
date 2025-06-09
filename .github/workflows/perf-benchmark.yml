@@ -33,7 +33,7 @@ jobs:
             # Check the status of 'conclusion'
             conclusion=$(jq -r ".[$counter].conclusion" runs.json)
 
-            if [ "$conclusion" != "success"] && [ "$conclusion" != "failure" ]; then
+            if [ "$conclusion" != "success" ] && [ "$conclusion" != "failure" ]; then
               ((counter++))
 
               # Exit if the counter reaches 5
@@ -46,7 +46,7 @@ jobs:
             fi
           done
           curr_wf_id=$(jq -r ".[$counter].databaseId" runs.json)
-          curr_wf_att$(jq -r ".[$counter].attempt" runs.json)
+          curr_wf_att=$(jq -r ".[$counter].attempt" runs.json)
 
           gh run download $curr_wf_id --attempt $curr_wf_att --pattern "test-reports-*" -R $repo -D ${{runner.temp}}/reports
           python .github/workflows/get_test_duration_from_junit_xmls.py ${{runner.temp}}/reports .test_durations_new
