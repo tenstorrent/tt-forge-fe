@@ -755,11 +755,13 @@ def run_post_initial_graph_pass(context: CompileContext) -> CompileDepth:
     dump_graph(graph, graph_name, "decomposed_graph")
     extract_unique_op_configuration(context.graph, context.stage.name.upper())
 
-    next_stage = CompileDepth.OPTIMIZED_GRAPH
     if compiler_cfg.match_subgraph_patterns:
-        next_stage = CompileDepth.POST_PATTERN_MATCHER
-
-    return next_stage
+        return CompileDepth.POST_PATTERN_MATCHER
+    if compiler_cfg.enable_optimization_passes:
+        return CompileDepth.OPTIMIZED_GRAPH
+    if context.training:
+        return CompileDepth.AUTOGRAD
+    return CompileDepth.POST_AUTOGRAD_PASS
 
 
 def run_consteval_pass(context: CompileContext) -> CompileDepth:
@@ -809,7 +811,12 @@ def run_post_pattern_matcher(context: CompileContext) -> CompileDepth:
     if match_result.is_subgraph_loopable:
         dump_graph(graph, graph_name, "looped_graph")
 
-    return CompileDepth.OPTIMIZED_GRAPH
+    if compiler_cfg.enable_optimization_passes:
+        return CompileDepth.OPTIMIZED_GRAPH
+    if context.training:
+        return CompileDepth.AUTOGRAD
+
+    return CompileDepth.POST_AUTOGRAD_PASS
 
 
 def run_optimization_pass(context: CompileContext) -> CompileDepth:
