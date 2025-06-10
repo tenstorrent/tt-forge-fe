@@ -922,7 +922,6 @@ def test_zero(hidden_dim):
         (8,),
     ],
 )
-@pytest.mark.xfail
 def test_zeros_like(input_shape):
     class ZerosLikeModel(torch.nn.Module):
         def forward(self, x):

@@ -654,7 +654,6 @@ def test_unique_consecutive(input_tensor, return_inverse, return_counts, dim):
         ),
     ],
 )
-@pytest.mark.xfail(reason="BinaryOpType cannot be mapped to BcastOpMath")
 @pytest.mark.push
 def test_where(input_tensor1, input_tensor2):
     class WhereModule(nn.Module):
