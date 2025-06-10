@@ -71,3 +71,25 @@ jobs:
           cat .test_durations_new
 
           echo "TODAY=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        id: create-pr
+        with:
+          branch: test-durations-update
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+          base: main
+          commit-message: "Update test durations based on latest nightly ${{ steps.get-test-durations.output.TODAY }}"
+          title: "Update test durations based on latest nightly ${{ steps.get-test-durations.output.TODAY }}"
+          body: "This PR updates test durations based on latest nightly (${{steps.get-test-durations.output.curr_nightly_wf_link}}) and latest push (${{steps.get-test-durations.output.curr_push_wf_link}})"
+          labels: tooling
+          delete-branch: true
+          token: ${{ secrets.GH_TOKEN }}
+
+      - name: Generate Summary
+        run: |
+          echo "## Test duration report" >> $GITHUB_STEP_SUMMARY
+          echo "Used [Nightly](<${{steps.get-test-durations.output.curr_nightly_wf_link}}>)" >> $GITHUB_STEP_SUMMARY
+          echo "And [Push](<${{steps.get-test-durations.output.curr_push_wf_link}}>)" >> $GITHUB_STEP_SUMMARY
+          echo "Generated test durations in [Pull Request](<${{steps.create-pr.output.pull-request-url}}>)" >> $GITHUB_STEP_SUMMARY
