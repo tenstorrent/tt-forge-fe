@@ -87,5 +87,4 @@ def test_xception_timm(variant):
     fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post Processing
-    if variant == "xception71.tf_in1k":
-        post_processing(co_out)
+    post_processing(co_out)

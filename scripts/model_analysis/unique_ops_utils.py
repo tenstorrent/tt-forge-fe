@@ -22,6 +22,7 @@ from utils import (
     filter_tests,
     extract_models_ops_test_params,
     check_path,
+    find_dirs_with_files,
 )
 
 
@@ -63,12 +64,10 @@ def generate_and_export_unique_ops_tests(
             framework_and_model_name_to_tests[framework_name] = {model_name: [test]}
 
     # Generate unique op test for the all collected test and save the models unique ops test information in the unique_ops_output_directory_path
-    model_output_dir_paths = []
     for framework_name, model_name_to_tests in framework_and_model_name_to_tests.items():
         for model_name, tests in model_name_to_tests.items():
             model_output_dir_path = os.path.join(unique_ops_output_directory_path, framework_name, model_name)
             os.makedirs(model_output_dir_path, exist_ok=True)
-            model_output_dir_paths.append(model_output_dir_path)
             for test in tests:
                 logger.info(f"Running the tests : {test}")
                 test_file_path, test_case_name = extract_test_file_path_and_test_case_func(test)
@@ -127,11 +126,9 @@ def generate_and_export_unique_ops_tests(
                     logger.error(error_message)
                     dump_logs(test_log_file_path, error_message)
 
-    return model_output_dir_paths
-
 
 def extract_unique_op_tests_from_models(
-    model_output_dir_paths: List[str],
+    models_unique_ops_config_output_dir_path: List[str],
     unique_ops_config_file_path: str,
     use_constant_value: bool = True,
     convert_param_and_const_to_activation: bool = False,
@@ -142,6 +139,8 @@ def extract_unique_op_tests_from_models(
     op configuration again by using the exported unique op configuration test details and models metadata
     """
 
+    model_variants_dir_paths = find_dirs_with_files(models_unique_ops_config_output_dir_path)
+
     # Dictionary to store all the operations found in model variants
     models_operations = {}
     unique_op_count = 0
@@ -149,102 +148,101 @@ def extract_unique_op_tests_from_models(
     # Dictionary to store constants (name and tensor) used in the model variants
     models_constants = {}
 
+    processed_variants = set()
+
     # Iterate through all provided model directories
-    for model_output_dir_path in model_output_dir_paths:
+    for model_variant_dir_path in model_variants_dir_paths:
 
-        # Extract the model name from the directory path
-        model_name = model_output_dir_path.split("/")[-1]
+        # Look for `.xlsx` and `.json` file containing unique operation details and metadata
+        model_variant_tvm_generated_unique_op_xslx_file_path = None
+        model_variant_tvm_generated_unique_op_metadata_file_path = None
+        for f in os.listdir(model_variant_dir_path):
+            if f.endswith(".xlsx"):
+                model_variant_tvm_generated_unique_op_xslx_file_path = os.path.join(model_variant_dir_path, f)
+            elif f.endswith(".json"):
+                model_variant_tvm_generated_unique_op_metadata_file_path = os.path.join(model_variant_dir_path, f)
 
-        # List all model variants in the directory
-        model_variants = os.listdir(model_output_dir_path)
+        # Skip if either `.xlsx` or `.json` file is missing
+        if (
+            model_variant_tvm_generated_unique_op_xslx_file_path is None
+            or model_variant_tvm_generated_unique_op_metadata_file_path is None
+        ):
+            continue
 
-        # Process each model variant
-        for model_variant in model_variants:
+        # Read the `.xlsx` file contains model variant unique op configuration details
+        model_variant_df = pd.read_excel(
+            model_variant_tvm_generated_unique_op_xslx_file_path,
+            header=0,
+            usecols=[
+                "Op",
+                "Operand_Names",
+                "Operand_Shapes",
+                "Operand_Types",
+                "Operand_Dtypes",
+                "Args",
+                "Testfile",
+            ],
+        )
 
-            if model_variant == "model_script_logs":
-                continue
+        if model_variant_df.empty:
+            continue
 
-            model_variant_dir_path = os.path.join(model_output_dir_path, model_variant)
+        # Read the `.json` file contains model variant metadata information
+        with open(model_variant_tvm_generated_unique_op_metadata_file_path, "r") as json_file:
+            model_variant_metadata = json.load(json_file)
 
-            # Look for `.xlsx` and `.json` file containing unique operation details and metadata
-            model_variant_tvm_generated_unique_op_xslx_file_path = None
-            model_variant_tvm_generated_unique_op_metadata_file_path = None
-            for f in os.listdir(model_variant_dir_path):
-                if f.endswith(".xlsx"):
-                    model_variant_tvm_generated_unique_op_xslx_file_path = os.path.join(model_variant_dir_path, f)
-                elif f.endswith(".json"):
-                    model_variant_tvm_generated_unique_op_metadata_file_path = os.path.join(model_variant_dir_path, f)
+        if use_constant_value:
+            # Load model variants parameters and buffers as tensors from specified files
+            named_parameters = torch.load(model_variant_metadata["named_params_file_name"])
+            if model_variant_metadata["param_file_name"] is not None:
+                serialized_params = torch.load(model_variant_metadata["param_file_name"])
+                named_parameters.update(serialized_params)
+            named_buffers = torch.load(model_variant_metadata["named_buffers_file_name"])
+            named_parameters.update(named_buffers)
 
-            # Skip if either `.xlsx` or `.json` file is missing
-            if (
-                model_variant_tvm_generated_unique_op_xslx_file_path is None
-                or model_variant_tvm_generated_unique_op_metadata_file_path is None
-            ):
-                continue
+        framework = model_variant_metadata["framework"]
+        variant_name = model_variant_metadata["module_name"]
 
-            # Read the `.xlsx` file contains model variant unique op configuration details
-            model_variant_df = pd.read_excel(
-                model_variant_tvm_generated_unique_op_xslx_file_path,
-                header=0,
-                usecols=[
-                    "Op",
-                    "Operand_Names",
-                    "Operand_Shapes",
-                    "Operand_Types",
-                    "Operand_Dtypes",
-                    "Args",
-                    "Testfile",
-                ],
+        if framework and variant_name and (framework, variant_name) in processed_variants:
+            logger.info(f"Already processed {model_variant_dir_path}")
+            continue
+
+        processed_variants.add((framework, variant_name))
+
+        # Process each row in the `.xlsx` file to extract operation configurations
+        for index, row in model_variant_df.iterrows():
+            row = row.to_dict()
+            unique_op_count += 1
+
+            operand_names = ast.literal_eval(row["Operand_Names"])
+            operand_types = ast.literal_eval(row["Operand_Types"])
+            operand_types = [NodeType.from_json(operand_type) for operand_type in operand_types]
+            operand_shapes = ast.literal_eval(row["Operand_Shapes"])
+
+            # Prepare metadata associated with the operation
+            metadata = {}
+            metadata["model_variant_info"] = {}
+            metadata["model_variant_info"]["variant_name"] = variant_name
+            metadata["model_variant_info"]["framework"] = framework
+            if not pd.isna(row["Testfile"]):
+                metadata["model_variant_info"]["Testfile"] = row["Testfile"]
+
+            # Create an Operation object with op name, shape, nodetype, dtype, arguments and operation metadata
+            models_operations[unique_op_count] = Operation(
+                function_name=row["Op"],
+                input_names=operand_names,
+                args=ast.literal_eval(row["Args"]),
+                input_shapes=operand_shapes,
+                input_dtypes=ast.literal_eval(row["Operand_Dtypes"]),
+                input_node_types=operand_types,
+                metadata=metadata,
             )
 
-            # Read the `.json` file contains model variant metadata information
-            with open(model_variant_tvm_generated_unique_op_metadata_file_path, "r") as json_file:
-                model_variant_metadata = json.load(json_file)
-
             if use_constant_value:
-                # Load model variants parameters and buffers as tensors from specified files
-                named_parameters = torch.load(model_variant_metadata["named_params_file_name"])
-                if model_variant_metadata["param_file_name"] is not None:
-                    serialized_params = torch.load(model_variant_metadata["param_file_name"])
-                    named_parameters.update(serialized_params)
-                named_buffers = torch.load(model_variant_metadata["named_buffers_file_name"])
-                named_parameters.update(named_buffers)
-
-            # Process each row in the `.xlsx` file to extract operation configurations
-            for index, row in model_variant_df.iterrows():
-                row = row.to_dict()
-                unique_op_count += 1
-
-                operand_names = ast.literal_eval(row["Operand_Names"])
-                operand_types = ast.literal_eval(row["Operand_Types"])
-                operand_types = [NodeType.from_json(operand_type) for operand_type in operand_types]
-                operand_shapes = ast.literal_eval(row["Operand_Shapes"])
-
-                # Prepare metadata associated with the operation
-                metadata = {}
-                metadata["model_variant_info"] = {}
-                metadata["model_variant_info"]["model_name"] = model_name
-                metadata["model_variant_info"]["variant_name"] = model_variant_metadata["module_name"]
-                metadata["model_variant_info"]["framework"] = model_variant_metadata["framework"]
-                if not pd.isna(row["Testfile"]):
-                    metadata["model_variant_info"]["Testfile"] = row["Testfile"]
-
-                # Create an Operation object with op name, shape, nodetype, dtype, arguments and operation metadata
-                models_operations[unique_op_count] = Operation(
-                    function_name=row["Op"],
-                    input_names=operand_names,
-                    args=ast.literal_eval(row["Args"]),
-                    input_shapes=operand_shapes,
-                    input_dtypes=ast.literal_eval(row["Operand_Dtypes"]),
-                    input_node_types=operand_types,
-                    metadata=metadata,
-                )
-
-                if use_constant_value:
-                    # Store tensor which has constant nodetype as operands
-                    for operand_type, operand_name in zip(operand_types, operand_names):
-                        if operand_type == NodeType.Constant:
-                            models_constants[operand_name] = named_parameters[operand_name]
+                # Store tensor which has constant nodetype as operands
+                for operand_type, operand_name in zip(operand_types, operand_names):
+                    if operand_type == NodeType.Constant:
+                        models_constants[operand_name] = named_parameters[operand_name]
 
     # Extract unique operation configuration configuration across all the model variants
     unique_operations = UniqueOperations.create_unique_operations(

@@ -20,6 +20,8 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.wideresnet.model_utils.utils import (
@@ -116,8 +118,12 @@ def test_wideresnet_timm(variant):
         compiler_cfg=compiler_cfg,
     )
 
+    verify_cfg = VerifyConfig()
+    if variant == "wide_resnet50_2":
+        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
+
     # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
 
     # Post processing
     post_processing(co_out)

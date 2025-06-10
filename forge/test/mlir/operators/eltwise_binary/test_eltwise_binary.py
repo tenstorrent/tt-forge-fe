@@ -8,41 +8,17 @@ from torch import nn
 import forge
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
-from forge.verify import DepricatedVerifyConfig
+from forge.verify import DeprecatedVerifyConfig
 
 
 @pytest.mark.parametrize(
     "shape, dim",
     [
         ((10,), 0),
-        pytest.param(
-            (5, 10),
-            1,
-            marks=pytest.mark.xfail(
-                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
-            ),
-        ),
-        pytest.param(
-            (3, 5, 10),
-            2,
-            marks=pytest.mark.xfail(
-                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
-            ),
-        ),
-        pytest.param(
-            (2, 3, 5, 10),
-            3,
-            marks=pytest.mark.xfail(
-                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
-            ),
-        ),
-        pytest.param(
-            (1, 6, 20, 50, 64),
-            4,
-            marks=pytest.mark.xfail(
-                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
-            ),
-        ),
+        ((5, 10), 1),
+        ((3, 5, 10), 2),
+        ((2, 3, 5, 10), 3),
+        ((1, 6, 20, 50, 64), 4),
     ],
 )
 @pytest.mark.push
@@ -450,7 +426,7 @@ def test_floordiv(bucket_size):
     compiled_model = forge.compile(
         framework_model,
         sample_inputs=inputs,
-        verify_cfg=DepricatedVerifyConfig(verify_forge_codegen_vs_framework=True),
+        verify_cfg=DeprecatedVerifyConfig(verify_forge_codegen_vs_framework=True),
     )
     verify(inputs, framework_model, compiled_model)
 

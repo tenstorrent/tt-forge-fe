@@ -972,7 +972,7 @@ class ForgeWriter(PythonWriter):
             if markers_with_reasons is not None:
                 marker_str_list = []
                 for marker_with_reason in markers_with_reasons:
-                    marker_str = f'pytest.mark.{marker_with_reason["maker_name"]}'
+                    marker_str = f'pytest.mark.{marker_with_reason["marker_name"]}'
                     marker_reason = marker_with_reason["reason"]
                     if marker_reason is not None:
                         marker_str += f'(reason="{marker_reason}")'
@@ -1078,7 +1078,13 @@ class ForgeWriter(PythonWriter):
         if module_metadata is not None and len(module_metadata) != 0:
             self.wl("record_single_op_operands_info(framework_model, inputs)")
             self.wl("")
-        self.wl("compiled_model = compile(framework_model, sample_inputs=inputs)")
+        self.wl("compiler_cfg = forge.config.CompilerConfig()")
+        self.wl('if "default_df_override" in metadata.keys():')
+        self.indent += 1
+        self.wl('compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])')
+        self.indent -= 1
+        self.wl("")
+        self.wl("compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)")
         self.wl("")
         self.wl(
             "verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"

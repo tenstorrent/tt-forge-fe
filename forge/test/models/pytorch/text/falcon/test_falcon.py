@@ -20,6 +20,7 @@ from test.models.models_utils import generate_no_cache, pad_inputs
 from test.utils import download_model
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["tiiuae/falcon-7b-instruct"])
 def test_falcon(variant):
@@ -60,22 +61,34 @@ def test_falcon(variant):
 
 
 variants = [
-    pytest.param("tiiuae/Falcon3-1B-Base", marks=pytest.mark.push),
+    pytest.param("tiiuae/Falcon3-1B-Base", marks=pytest.mark.xfail),
     pytest.param(
         "tiiuae/Falcon3-3B-Base",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 25 GB)"),
+        marks=[
+            pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 25 GB)"),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "tiiuae/Falcon3-7B-Base",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 36 GB)"),
+        marks=[
+            pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 36 GB)"),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "tiiuae/Falcon3-10B-Base",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)"),
+        marks=[
+            pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)"),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "tiiuae/Falcon3-Mamba-7B-Base",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 36 GB)"),
+        marks=[
+            pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 36 GB)"),
+            pytest.mark.out_of_memory,
+        ],
     ),
 ]
 

@@ -181,27 +181,45 @@ variants = [
     pytest.param("hrnet_w30"),
     pytest.param(
         "hrnet_w32",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 22 GB)")],
+        marks=[
+            pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 22 GB)"),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "hrnet_w40",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 24 GB)")],
+        marks=[
+            pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 24 GB)"),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "hrnet_w44",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 26 GB)")],
+        marks=[
+            pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 26 GB)"),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "hrnet_w48",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 27 GB)")],
+        marks=[
+            pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 27 GB)"),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "hrnet_w64",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 30 GB)")],
+        marks=[
+            pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 30 GB)"),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "hrnet_w18.ms_aug_in1k",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 29 GB)")],
+        marks=[
+            pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 29 GB)"),
+            pytest.mark.out_of_memory,
+        ],
     ),
 ]
 

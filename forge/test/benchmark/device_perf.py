@@ -42,7 +42,7 @@ def create_device_perf(device_perf_path, perf_report_path):
 
 def create_ttir(ttir_path):
     """
-    Create a TTIR file from the given path. TTIR is a JSON file that contains the model's information.
+    Create a TTIR file from the given path. TTIR is a text file that contains the model's information.
 
     Parameters:
     ----------
@@ -55,30 +55,11 @@ def create_ttir(ttir_path):
 
     """
 
-    # Read the TTIR the JSON file
-    try:
-        with open(ttir_path, "r") as file:
-            data = json.load(file)
-    except FileNotFoundError:
-        print(f"Error: TTIR file '{ttir_path}' not found.")
-        return
-    except json.JSONDecodeError:
-        print(f"Error: TTIR file '{ttir_path}' contains invalid JSON.")
-        return
-    except Exception as e:
-        print(f"Unexpected error: {e}")
-        return
+    with open(ttir_path, "r") as file:
+        content = file.read()
 
-    # Make string from the JSON data
-    # This JSON has should have the following structure:
-    #   {
-    #       'content': 'string'
-    #       'module': 'string'
-    #   }
-
-    # Content is actually what we want to write to the TTIR file, module is the name of the module
-    # Content is a string separated by newlines, we will create a list of strings from it, and modify it
-    content = data["content"].split("\n")
+    # Content is a string separated by newlines
+    content = content.split("\n")
 
     # The first line of the content is system descriptor, we don't need it
     # The second line is the definition of the module with attrubutes, we need to empty the attributes field

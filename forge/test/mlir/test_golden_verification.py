@@ -6,7 +6,7 @@ import torch
 from torch import nn
 
 import forge
-from forge.verify.verify import verify, verify_backward, DepricatedVerifyConfig
+from forge.verify.verify import verify, verify_backward, DeprecatedVerifyConfig
 from forge.config import CompileDepth
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
@@ -40,7 +40,7 @@ def test_matmul_and_add(batch_size, outer_dim_x, outer_dim_y, inner_dim):
     ]
 
     framework_model = MatmulAdd()
-    verify_cfg = DepricatedVerifyConfig()
+    verify_cfg = DeprecatedVerifyConfig()
     verify_cfg.verify_all = True
     verify_cfg.enable_op_level_comparision = True
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, verify_cfg=verify_cfg)
@@ -71,7 +71,7 @@ def test_constant_add(batch_size, lhs, rhs):
 
     framework_model = ConstAdd()
 
-    verify_cfg = DepricatedVerifyConfig()
+    verify_cfg = DeprecatedVerifyConfig()
     verify_cfg.verify_all = True
     verify_cfg.enable_op_level_comparision = True
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, verify_cfg=verify_cfg)
@@ -113,7 +113,7 @@ def test_matmuls(shapes, train, verify_stage):
     framework_model = Matmul()
     framework_model.train() if train else framework_model.eval()
 
-    verify_cfg = DepricatedVerifyConfig()
+    verify_cfg = DeprecatedVerifyConfig()
     if verify_stage == "ALL":
         verify_cfg.verify_all = True
     else:

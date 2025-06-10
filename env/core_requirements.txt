@@ -16,7 +16,7 @@ jaxlib==0.4.30
 loguru==0.5.3
 matplotlib==3.5.1
 networkx==2.8.5
-numpy==1.23.1
+numpy==1.26.4
 onnx>=1.15.0
 onnxruntime>=1.16.3
 opencv-python-headless==4.10.0.84
@@ -27,8 +27,8 @@ protobuf==3.20.3
 pybind11==2.6.2
 pyinstrument>=4.1.1
 scipy>=1.8.0
-tensorflow==2.13
-tensorboard==2.13
+tensorflow==2.15
+tensorboard==2.15
 tf2onnx==1.15.1
 transformers==4.47.0
 # To avoid warning during the import
@@ -39,6 +39,7 @@ ultralytics==8.3.91
 keras>=2.13.1
 paddlepaddle==2.6.2
 paddlenlp==2.8.1
+aistudio-sdk==0.2.6
 pytorch_forecasting==1.0.0
 patool
 openpyxl==3.1.5

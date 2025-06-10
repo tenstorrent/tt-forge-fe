@@ -37,7 +37,7 @@ from forge.parameter import Parameter
 from forge.forgeglobal import state_changed, clear_state_changed
 import forge.query as query
 from forge.tensor import Tensor, to_pt_tensors, AnyTensor
-from forge.verify import DepricatedVerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
+from forge.verify import DeprecatedVerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
 from forge.forge_property_utils import (
     ExecutionStage,
     record_execution,
@@ -113,7 +113,7 @@ class CompileContext:
     modules: List[Module]
     graph_name: str
     compiler_cfg: CompilerConfig
-    verify_cfg: DepricatedVerifyConfig
+    verify_cfg: DeprecatedVerifyConfig
     microbatch_size: int
     microbatch_count: int
     inputs: Union[torch.Tensor, List[torch.Tensor]]
@@ -186,7 +186,7 @@ def compile_main(
     training: bool = False,
     attach_to: Optional[CompiledModel] = None,
     compiler_cfg: CompilerConfig = CompilerConfig(),
-    verify_cfg: DepricatedVerifyConfig = DepricatedVerifyConfig(),
+    verify_cfg: DeprecatedVerifyConfig = DeprecatedVerifyConfig(),
 ) -> CompiledModel:
     """
     Main entry point for compiling modules from different frameworks for Tenstorrent devices.
@@ -317,7 +317,7 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
                 context.input_grads,
                 context.outputs,
                 context.intermediate_tensors,  # intermediate golden tensors
-                verify_cfg,  # DepricatedVerifyConfig
+                verify_cfg,  # DeprecatedVerifyConfig
                 False,
                 losses=context.losses,
                 targets=context.targets,
@@ -449,7 +449,7 @@ def forge_compile_torch(
         graph_name=module_name,
         inputs=inputs,
         compiler_cfg=compiler_cfg,
-        verify_cfg=DepricatedVerifyConfig.disabled(),
+        verify_cfg=DeprecatedVerifyConfig.disabled(),
         microbatch_size=1,
         microbatch_count=1,
         graph=graph,
@@ -463,7 +463,7 @@ def forge_compile(
     *inputs: Union[Tensor, List[Any], Dict[str, Any]],
     targets: List[Tensor] = [],
     compiler_cfg: CompilerConfig = CompilerConfig(),
-    verify_cfg: Optional[DepricatedVerifyConfig] = None,
+    verify_cfg: Optional[DeprecatedVerifyConfig] = None,
     losses: Optional[List[Tensor]] = None,
     microbatch_size: int = 1,
     microbatch_count: int = 1,
@@ -491,7 +491,7 @@ def forge_compile(
     targets: List[Tensor], optional
         Optional list of target tensors, if this device has a loss module
 
-    verify_cfg: Optional[DepricatedVerifyConfig]
+    verify_cfg: Optional[DeprecatedVerifyConfig]
         If set, automatic verification vs. pytorch golden result will be performed, with given parameters
         must contain data.
 
@@ -504,7 +504,7 @@ def forge_compile(
 
     inputs = list(inputs)
     if verify_cfg is None:
-        verify_cfg = DepricatedVerifyConfig.disabled()  # no verification config provided, disable by default
+        verify_cfg = DeprecatedVerifyConfig.disabled()  # no verification config provided, disable by default
 
     compiler_cfg.apply_env_config_overrides()
 
@@ -588,7 +588,7 @@ def generate_compile_results(
 
     Parameters
     ----------
-    verify_cfg: DepricatedVerifyConfig
+    verify_cfg: DeprecatedVerifyConfig
         Value verification config
 
     initial_graph: Graph
@@ -755,11 +755,13 @@ def run_post_initial_graph_pass(context: CompileContext) -> CompileDepth:
     dump_graph(graph, graph_name, "decomposed_graph")
     extract_unique_op_configuration(context.graph, context.stage.name.upper())
 
-    next_stage = CompileDepth.OPTIMIZED_GRAPH
     if compiler_cfg.match_subgraph_patterns:
-        next_stage = CompileDepth.POST_PATTERN_MATCHER
-
-    return next_stage
+        return CompileDepth.POST_PATTERN_MATCHER
+    if compiler_cfg.enable_optimization_passes:
+        return CompileDepth.OPTIMIZED_GRAPH
+    if context.training:
+        return CompileDepth.AUTOGRAD
+    return CompileDepth.POST_AUTOGRAD_PASS
 
 
 def run_consteval_pass(context: CompileContext) -> CompileDepth:
@@ -809,7 +811,12 @@ def run_post_pattern_matcher(context: CompileContext) -> CompileDepth:
     if match_result.is_subgraph_loopable:
         dump_graph(graph, graph_name, "looped_graph")
 
-    return CompileDepth.OPTIMIZED_GRAPH
+    if compiler_cfg.enable_optimization_passes:
+        return CompileDepth.OPTIMIZED_GRAPH
+    if context.training:
+        return CompileDepth.AUTOGRAD
+
+    return CompileDepth.POST_AUTOGRAD_PASS
 
 
 def run_optimization_pass(context: CompileContext) -> CompileDepth:
@@ -1036,7 +1043,7 @@ def convert_to_forge_module(
     module: AnyModule,
     module_inputs: Union[AnyTensor, List[AnyTensor]],
     compiler_cfg: CompilerConfig,
-    verify_cfg: DepricatedVerifyConfig,
+    verify_cfg: DeprecatedVerifyConfig,
 ) -> ForgeModule:
     """
     Converts given module to a Forge module, along with the module_inputs (which will be converted to Forge tensors).

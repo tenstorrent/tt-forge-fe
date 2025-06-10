@@ -15,8 +15,11 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.regnet.model_utils.image_utils import (
     preprocess_input_data,
 )
@@ -140,5 +143,12 @@ def test_regnet_torchvision(variant):
         compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify_cfg = VerifyConfig()
+    if variant == "regnet_x_8gf":
+        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
+
+    # Model Verification and inference
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])

@@ -41,9 +41,12 @@ variants = [
     ),
     pytest.param(
         "EleutherAI/gpt-neo-2.7B",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB during compile time)"
-        ),
+        marks=[
+            pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB during compile time)"
+            ),
+            pytest.mark.out_of_memory,
+        ],
     ),
 ]
 
@@ -106,9 +109,12 @@ def test_gptneo_causal_lm(variant):
 variants = [
     pytest.param(
         "EleutherAI/gpt-neo-125M",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
-        ),
+        marks=[
+            pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
+            ),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "EleutherAI/gpt-neo-1.3B",
@@ -116,9 +122,12 @@ variants = [
     ),
     pytest.param(
         "EleutherAI/gpt-neo-2.7B",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
-        ),
+        marks=[
+            pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
+            ),
+            pytest.mark.out_of_memory,
+        ],
     ),
 ]
 
@@ -142,7 +151,7 @@ def test_gptneo_sequence_classification(variant):
 
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.pad_token = tokenizer.eos_token
-    model = download_model(GPTNeoForSequenceClassification.from_pretrained, variant, torchscript=True)
+    model = download_model(GPTNeoForSequenceClassification.from_pretrained, variant, torchscript=True, use_cache=False)
 
     # Load data sample
     review = "the movie was great!"

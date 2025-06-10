@@ -23,6 +23,7 @@ from test.models.pytorch.vision.monodepth2.model_utils.utils import (
     download_model,
     load_input,
     load_model,
+    postprocess_and_save_disparity_map,
 )
 
 variants = [
@@ -54,11 +55,11 @@ def test_monodepth2(variant):
     download_model(variant)
     framework_model, height, width = load_model(variant)
     framework_model.to(torch.bfloat16)
-    input_tensor = load_input(height, width)
+    input_tensor, original_width, original_height = load_input(height, width)
 
     inputs = [input_tensor.to(torch.bfloat16)]
     data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override, enable_optimization_passes=True)
 
     pcc = 0.99
 
@@ -71,9 +72,12 @@ def test_monodepth2(variant):
     )
 
     # Model Verification
-    verify(
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
         verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
     )
+
+    # Post-process and save result
+    postprocess_and_save_disparity_map(co_out, original_height, original_width, variant)

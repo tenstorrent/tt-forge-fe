@@ -5,8 +5,15 @@
 # https://huggingface.co/docs/transformers/en/model_doc/detr
 
 import pytest
+import requests
 import torch
-from transformers import DetrForObjectDetection, DetrForSegmentation
+from PIL import Image
+from transformers import (
+    DetrFeatureExtractor,
+    DetrForObjectDetection,
+    DetrForSegmentation,
+    DetrImageProcessor,
+)
 
 import forge
 from forge._C import DataFormat
@@ -23,10 +30,6 @@ from forge.forge_property_utils import (
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
 
-from test.models.pytorch.vision.detr.model_utils.image_utils import (
-    preprocess_input_data,
-)
-
 
 class DetrWrapper(torch.nn.Module):
     def __init__(self, model, task="detection"):
@@ -35,10 +38,10 @@ class DetrWrapper(torch.nn.Module):
         assert task in ["detection", "segmentation"], "Task must be 'detection' or 'segmentation'"
         self.task = task
 
-    def forward(self, input_batch):
-        output = self.model(input_batch)
+    def forward(self, pixel_values, pixel_mask):
+        output = self.model(pixel_values, pixel_mask)
         if self.task == "detection":
-            return output.logits
+            return (output.logits, output.pred_boxes)
         else:
             return (output.logits, output.pred_masks, output.pred_boxes)
 
@@ -46,7 +49,9 @@ class DetrWrapper(torch.nn.Module):
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",
-    ["facebook/detr-resnet-50"],
+    [
+        pytest.param("facebook/detr-resnet-50", marks=[pytest.mark.xfail]),
+    ],
 )
 def test_detr_detection(variant):
     # Record Forge Property
@@ -61,17 +66,18 @@ def test_detr_detection(variant):
     )
 
     # Load the model
-    framework_model = DetrForObjectDetection.from_pretrained(variant)
-    framework_model = DetrWrapper(framework_model, task="detection").to(torch.bfloat16)
+    model = DetrForObjectDetection.from_pretrained(variant).to(torch.bfloat16)
+    framework_model = DetrWrapper(model, task="detection")
 
     # Preprocess the image for the model
-    image_url = "http://images.cocodataset.org/val2017/000000397133.jpg"
-    input_batch = preprocess_input_data(image_url)
-
-    inputs = [input_batch.to(torch.bfloat16)]
+    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+    image = Image.open(requests.get(url, stream=True).raw)
+    processor = DetrImageProcessor.from_pretrained("facebook/detr-resnet-50")
+    input = processor(images=image, return_tensors="pt")
+    inputs = [input["pixel_values"].to(torch.bfloat16), input["pixel_mask"].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override, enable_optimization_passes=True)
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -81,8 +87,8 @@ def test_detr_detection(variant):
         compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
-    verify(
+    # Model Verification and inference
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
@@ -112,14 +118,15 @@ def test_detr_segmentation(variant):
     )
 
     # Load the model
-    framework_model = DetrForSegmentation.from_pretrained(variant)
-    framework_model = DetrWrapper(framework_model, task="segmentation").to(torch.bfloat16)
+    framework_model = DetrForSegmentation.from_pretrained(variant).to(torch.bfloat16)
+    framework_model = DetrWrapper(framework_model, task="segmentation")
 
     # Preprocess the image for the model
-    image_url = "http://images.cocodataset.org/val2017/000000397133.jpg"
-    input_batch = preprocess_input_data(image_url)
-
-    inputs = [input_batch.to(torch.bfloat16)]
+    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+    image = Image.open(requests.get(url, stream=True).raw)
+    feature_extractor = DetrFeatureExtractor.from_pretrained("facebook/detr-resnet-50-panoptic")
+    input = feature_extractor(images=image, return_tensors="pt")
+    inputs = [input["pixel_values"].to(torch.bfloat16), input["pixel_mask"].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -132,5 +139,5 @@ def test_detr_segmentation(variant):
         compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model)

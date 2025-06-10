@@ -408,6 +408,45 @@ def test_embedding(vocab_size, token_num, embedding_dim):
     "in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode, input_shape",
     [
         pytest.param(
+            11,
+            11,
+            (21, 2),
+            1,
+            0,
+            1,
+            True,
+            (2, 15),
+            "zeros",
+            (1, 11, 45, 17),
+            marks=pytest.mark.xfail(reason="ConvTranspose2d: Assert dim error"),
+        ),
+        pytest.param(
+            32,
+            38,
+            (9, 9),
+            1,
+            0,
+            2,
+            True,
+            1,
+            "zeros",
+            (1, 32, 32, 64),
+            marks=pytest.mark.xfail(reason="ConvTranspose2d: Assert groups error"),
+        ),
+        pytest.param(
+            11,
+            11,
+            (14, 5),
+            (6, 2),
+            0,
+            1,
+            True,
+            1,
+            "zeros",
+            (1, 11, 45, 17),
+            marks=pytest.mark.xfail(reason="ConvTranspose2d: Assert stride error"),
+        ),
+        pytest.param(
             16,
             33,
             (3, 3),
@@ -762,3 +801,81 @@ def test_grid_sample(img, grid, align_corners, test_device):
     grid = torch.randn(grid)
     output = model(img, grid)
     compiled_model = forge.compile(model, sample_inputs=[img, grid], module_name="grid_sample")
+
+
+@pytest.mark.xfail(
+    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - adaptive_max_pool2d"
+)  # https://github.com/tenstorrent/tt-mlir/issues/3630
+@pytest.mark.parametrize(
+    "input_shape",
+    [
+        (1, 256, 60, 80),
+        (1, 256, 30, 40),
+        (1, 256, 15, 20),
+        (1, 56, 150, 200),
+        (1, 5, 2, 18),
+    ],
+)
+@pytest.mark.push
+def test_adaptive_maxpool2d(input_shape):
+    class Adaptive_Maxpool2d(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.pool = nn.AdaptiveMaxPool2d((3, 3))
+
+        def forward(self, x):
+            return self.pool(x)
+
+    x = torch.randn(*input_shape)
+    inputs = [x]
+    model = Adaptive_Maxpool2d()
+
+    compiled_model = forge.compile(model, sample_inputs=inputs)
+    verify(inputs, model, compiled_model)
+
+
+import onnx
+
+
+@pytest.mark.parametrize(
+    "data, output_size",
+    [
+        ((1, 3, 64), 128),
+        ((1, 3, 128), 64),
+        ((1, 1, 32), 32),
+        ((2, 3, 50), 100),
+        ((4, 3, 75), 150),
+    ],
+)
+@pytest.mark.xfail
+@pytest.mark.parametrize("align_corners", [True, False])
+def test_resize1d(data, output_size, align_corners, forge_tmp_path):
+    class Resize1DModule(nn.Module):
+        def __init__(self, output_size, mode="linear", align_corners=True):
+            super(Resize1DModule, self).__init__()
+            self.output_size = output_size
+            self.mode = mode
+            self.align_corners = align_corners
+
+        def forward(self, x):
+            # x shape: (N, C, W)
+            return F.interpolate(x, size=self.output_size, mode=self.mode, align_corners=self.align_corners)
+
+    x = torch.randn(data)
+    model = Resize1DModule(mode="linear", align_corners=align_corners, output_size=output_size)
+    onnx_path = f"{forge_tmp_path}/reize_1d.onnx"
+    torch.onnx.export(
+        model,
+        x,
+        onnx_path,
+        input_names=["input"],
+        output_names=["output"],
+        opset_version=17,
+    )
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule("resize_1d", onnx_model, onnx_path)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=[x])
+
+    verify([x], framework_model, compiled_model)

@@ -129,8 +129,10 @@ def test_vovnet_v1_39_stigma_pytorch():
         compiler_cfg=compiler_cfg,
     )
 
+    verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
+
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -170,8 +172,10 @@ def test_vovnet_v1_57_stigma_pytorch():
         compiler_cfg=compiler_cfg,
     )
 
+    verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
+
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])

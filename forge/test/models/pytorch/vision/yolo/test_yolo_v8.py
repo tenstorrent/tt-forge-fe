@@ -13,6 +13,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -24,17 +25,28 @@ from test.models.pytorch.vision.yolo.model_utils.yolo_utils import (
     load_yolo_model_and_image,
 )
 
+variants = ["yolov8x", "yolov8n"]
+
 
 @pytest.mark.nightly
-def test_yolov8():
+@pytest.mark.parametrize("variant", variants)
+def test_yolov8(variant):
+
+    if variant in ["yolov8x"]:
+        group = ModelGroup.RED
+        priority = ModelPriority.P2
+    else:
+        group = ModelGroup.GENERALITY
+
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.YOLOV8,
-        variant="default",
+        variant=variant,
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
         group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
 
     # Load  model and input
@@ -46,7 +58,7 @@ def test_yolov8():
 
     data_format_override = DataFormat.Float16_b
 
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override, enable_optimization_passes=True)
     # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,

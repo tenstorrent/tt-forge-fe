@@ -18,7 +18,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
-from forge.verify.verify import DepricatedVerifyConfig, verify
+from forge.verify.verify import DeprecatedVerifyConfig, verify
 
 from test.models.pytorch.vision.mgp_str_base.model_utils.utils import (
     load_input,
@@ -60,13 +60,13 @@ def test_mgp_scene_text_recognition(variant):
     inputs = [inputs[0].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override, enable_optimization_passes=True)
 
     # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,
         sample_inputs=inputs,
-        verify_cfg=DepricatedVerifyConfig(verify_forge_codegen_vs_framework=True),
+        verify_cfg=DeprecatedVerifyConfig(verify_forge_codegen_vs_framework=True),
         module_name=module_name,
         compiler_cfg=compiler_cfg,
     )

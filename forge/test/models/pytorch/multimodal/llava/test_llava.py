@@ -42,6 +42,7 @@ def load_model(variant):
 variants = ["llava-hf/llava-1.5-7b-hf"]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_llava(variant):
