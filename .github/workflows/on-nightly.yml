@@ -28,7 +28,7 @@ on:
           - 'Yes'
           - 'No'
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 22 * * *'  # Runs at 22:00 UTC every day
 
 permissions:
   packages: write
