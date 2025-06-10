@@ -25,6 +25,7 @@ jobs:
         run: |
           repo="tenstorrent/tt-forge-fe"
           wf_name="on-nightly.yml"
+          $conclusions="success,failure"
 
           # get json of the last 10 workflow runs
           gh run list --workflow $wf_name -R $repo -b main -L 5 --status completed --json attempt,conclusion,databaseId >runs.json
@@ -34,7 +35,9 @@ jobs:
             # Check the status of 'conclusion'
             conclusion=$(jq -r ".[$counter].conclusion" runs.json)
 
-            if [ "$conclusion" != "success" ] && [ "$conclusion" != "failure" ]; then
+            if echo "$conclusions" | grep -q -w "$conclusion"; then
+              break
+            else
               ((counter++))
 
               # Exit if the counter reaches 5
@@ -42,8 +45,6 @@ jobs:
                 echo "Counter reached 5. Exiting with code 1."
                 exit 1
               fi
-            else
-              break
             fi
           done
           curr_wf_id=$(jq -r ".[$counter].databaseId" runs.json)
