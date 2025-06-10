@@ -13,7 +13,6 @@ jobs:
     permissions:
       # required for all workflows
       security-events: write
-      packages: read
       actions: read
       contents: read
 
@@ -31,14 +30,8 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        # submodules: 'recursive'
         clean: true
-        fetch-depth: 1 # Fetch all history and tags
-
-    - name: Set cache path
-      id: cache-path
-      shell: bash
-      run: echo "work-dir=$(pwd)" >> $GITHUB_OUTPUT
+        fetch-depth: 1
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
@@ -87,14 +80,12 @@ jobs:
     permissions:
       security-events: write
       contents: read
-      packages: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
           clean: true
-          fetch-depth: 0 # Fetch all history and tags
+          fetch-depth: 1
       - name: Setup Cppcheck
         run: |
           echo "set man-db/auto-update false" | sudo debconf-communicate; sudo dpkg-reconfigure man-db

@@ -1,5 +1,18 @@
 [flake8]
-ignore = E501
+max-line-length = 120
+
+# E262 inline comment should start with '# ' (used in shapes)
+# E501 line too long
+# W503 line break before binary operator
+# E241 multiple spaces after ':' (used in shapes)
+# E731 do not assign a lambda expression, use a def
+# E302 expected 2 blank lines, found 1
+# E266 too many leading '#' for block comment
+# E722 do not use bare 'except'
+# E402 module level import not at top of file
+# E203 whitespace before ':'
+# F405 'match_einsum_pattern' may be undefined, or defined from star imports
+ignore = E262,E501,W503,E241,E731,E302,E266,E722,E402,E203,F405
 exclude =
     .git,
     __pycache__
