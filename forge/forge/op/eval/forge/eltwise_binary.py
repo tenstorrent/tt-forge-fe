@@ -349,28 +349,7 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
 
 
 def decompose_post_optimize(op_type, attr, dc, inputs):
-    operand0, operand1 = inputs[0], inputs[1]
-    orig_op0_shape = operand0.shape.as_list()
-    orig_op1_shape = operand1.shape.as_list()
-    if op_type == "minimum":
-        negative_one = (
-            torch.ones(
-                [
-                    1,
-                ]
-            )
-            * -1
-        )
-        negative_one_tensor = dc.tensor(negative_one)
-
-        neg_op0 = dc.op("multiply", [operand0, negative_one_tensor])
-        neg_op1 = dc.op("multiply", [operand1, negative_one_tensor])
-
-        binary_max = dc.op("maximum", [neg_op0, neg_op1])
-
-        result = dc.op("multiply", [binary_max, negative_one_tensor])
-        dc.fuse(result)
-        return
+    pass
 
 
 def initial_flops_estimate(type, attr, ops):
