@@ -24,36 +24,50 @@ jobs:
         id: get-test-durations
         run: |
           repo="tenstorrent/tt-forge-fe"
-          wf_name="on-nightly.yml"
-          $conclusions="success,failure"
+          curr_wf_id=""
+          curr_wf_att=""
 
-          # get json of the last 10 workflow runs
-          gh run list --workflow $wf_name -R $repo -b main -L 5 --status completed --json attempt,conclusion,databaseId >runs.json
+          get_test_results_from_wf() {
+            local wf_name="$1"
+            local conclusions="$2"
+            local num=5
 
-          counter=0
-          while true; do
-            # Check the status of 'conclusion'
-            conclusion=$(jq -r ".[$counter].conclusion" runs.json)
+            # get json of the last $num workflow runs
+            gh run list --workflow $wf_name -R $repo -b main -L $num --status completed --json attempt,conclusion,databaseId >runs.json
 
-            if echo "$conclusions" | grep -q -w "$conclusion"; then
-              break
-            else
-              ((counter++))
+            counter=0
+            while true; do
+              # Check the status of 'conclusion'
+              conclusion=$(jq -r ".[$counter].conclusion" runs.json)
 
-              # Exit if the counter reaches 5
-              if [ $counter -ge 5 ]; then
-                echo "Counter reached 5. Exiting with code 1."
-                exit 1
+              if echo "$conclusions" | grep -q -w "$conclusion"; then
+                break
+              else
+                ((counter++))
+
+                # Exit if the counter reaches $num
+                if [ $counter -ge $num ]; then
+                  echo "ERROR: Did not found good workflow within last $num. Exiting."
+                  exit 1
+                fi
               fi
-            fi
-          done
-          curr_wf_id=$(jq -r ".[$counter].databaseId" runs.json)
-          curr_wf_att=$(jq -r ".[$counter].attempt" runs.json)
+            done
+            curr_wf_id=$(jq -r ".[$counter].databaseId" runs.json)
+            curr_wf_att=$(jq -r ".[$counter].attempt" runs.json)
 
-          gh run download $curr_wf_id --pattern "test-reports-*" -R $repo -D ${{runner.temp}}/reports
+            gh run download $curr_wf_id --pattern "test-reports-*" -R $repo -D ${{runner.temp}}/reports
+          }
+
+          # get test results from the last nightly that was success or failure
+          get_test_results_from_wf "on-nightly.yml" "success,failure"
+          echo "curr_nightly_wf_link='https://github.com/$repo/actions/runs/$curr_wf_id/attempts/$curr_wf_att'" >> $GITHUB_OUTPUT
+
+          # get test results from the last successful push
+          get_test_results_from_wf "on-push.yml" "success"
+          echo "curr_push_wf_link='https://github.com/$repo/actions/runs/$curr_wf_id/attempts/$curr_wf_att'" >> $GITHUB_OUTPUT
+
           python .github/workflows/get_test_duration_from_junit_xmls.py ${{runner.temp}}/reports .test_durations_new
           echo "----- NEW DURATIONS"
           cat .test_durations_new
 
           echo "TODAY=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
-          echo "curr_wf_link='https://github.com/$repo/actions/runs/$curr_wf_id/attempts/$curr_wf_att'" >> $GITHUB_OUTPUT
