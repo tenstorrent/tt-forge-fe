@@ -70,12 +70,11 @@ jobs:
           get_test_results_from_wf "on-push.yml" "success" "push"
 
           python .github/workflows/get_test_duration_from_junit_xmls.py ${{runner.temp}}/reports .test_durations
+          echo "" >> .test_durations
           echo "----- NEW DURATIONS"
           cat .test_durations
 
           echo "TODAY=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
-
-      - uses: pre-commit/action@v3.0.1
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
