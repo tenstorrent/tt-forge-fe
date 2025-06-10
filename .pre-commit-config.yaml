@@ -35,3 +35,7 @@ repos:
       - id: isort
         files: ^forge/test/models/pytorch  # Targets only pytorch models tests
         args: ["--settings-path", ".isort.cfg", "--filter-files"]
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.3.1
+    hooks:
+      - id: autoflake
