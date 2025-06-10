@@ -10,8 +10,6 @@ permissions:
 jobs:
   update_test_durations:
     runs-on: ubuntu-latest
-    env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -22,6 +20,8 @@ jobs:
           python-version: '3.10'
       - name: Process nightly test durations
         id: get-test-durations
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           repo="tenstorrent/tt-forge-fe"
 
@@ -52,7 +52,7 @@ jobs:
             done
             curr_wf_id=$(jq -r ".[$counter].databaseId" runs.json)
             curr_wf_att=$(jq -r ".[$counter].attempt" runs.json)
-            echo "curr_$3_wf_link=\"https://github.com/$repo/actions/runs/$curr_wf_id/attempts/$curr_wf_att\"" >> $GITHUB_OUTPUT
+            echo "curr_$3_wf_link=\"https://github.com/$repo/actions/runs/$curr_wf_id/attempts/$curr_wf_att\"" >> "$GITHUB_OUTPUT"
             rm -f runs.json
 
             gh run download $curr_wf_id --pattern "test-reports-*" -R $repo -D ${{runner.temp}}/reports
@@ -68,7 +68,7 @@ jobs:
           echo "----- NEW DURATIONS"
           cat .test_durations_new
 
-          echo "TODAY=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+          echo "TODAY=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
@@ -94,6 +94,6 @@ jobs:
       - name: Generate Summary
         run: |
           echo "## Test duration report" >> $GITHUB_STEP_SUMMARY
-          echo "Used [Nightly](<${{ steps.get-test-durations.output.curr_nightly_wf_link }}>)" >> $GITHUB_STEP_SUMMARY
-          echo "And [Push](<${{ steps.get-test-durations.output.curr_push_wf_link }}>)" >> $GITHUB_STEP_SUMMARY
-          echo "Generated test durations in [Pull Request](<${{ steps.create-pr.output.pull-request-url }}>)" >> $GITHUB_STEP_SUMMARY
+          echo "Used [Nightly](${{ steps.get-test-durations.output.curr_nightly_wf_link }})" >> $GITHUB_STEP_SUMMARY
+          echo "And [Push](${{ steps.get-test-durations.output.curr_push_wf_link }})" >> $GITHUB_STEP_SUMMARY
+          echo "Generated test durations in [Pull Request](${{ steps.create-pr.output.pull-request-url }})" >> $GITHUB_STEP_SUMMARY
