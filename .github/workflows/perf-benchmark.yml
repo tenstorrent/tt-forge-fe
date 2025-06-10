@@ -24,8 +24,6 @@ jobs:
         id: get-test-durations
         run: |
           repo="tenstorrent/tt-forge-fe"
-          curr_wf_id=""
-          curr_wf_att=""
 
           get_test_results_from_wf() {
             local wf_name="$1"
@@ -54,17 +52,16 @@ jobs:
             done
             curr_wf_id=$(jq -r ".[$counter].databaseId" runs.json)
             curr_wf_att=$(jq -r ".[$counter].attempt" runs.json)
+            echo "curr_$3_wf_link='https://github.com/$repo/actions/runs/$curr_wf_id/attempts/$curr_wf_att'" >> $GITHUB_OUTPUT
 
             gh run download $curr_wf_id --pattern "test-reports-*" -R $repo -D ${{runner.temp}}/reports
           }
 
           # get test results from the last nightly that was success or failure
-          get_test_results_from_wf "on-nightly.yml" "success,failure"
-          echo "curr_nightly_wf_link='https://github.com/$repo/actions/runs/$curr_wf_id/attempts/$curr_wf_att'" >> $GITHUB_OUTPUT
+          get_test_results_from_wf "on-nightly.yml" "success,failure" "nightly"
 
           # get test results from the last successful push
-          get_test_results_from_wf "on-push.yml" "success"
-          echo "curr_push_wf_link='https://github.com/$repo/actions/runs/$curr_wf_id/attempts/$curr_wf_att'" >> $GITHUB_OUTPUT
+          get_test_results_from_wf "on-push.yml" "success" "push"
 
           python .github/workflows/get_test_duration_from_junit_xmls.py ${{runner.temp}}/reports .test_durations_new
           echo "----- NEW DURATIONS"
@@ -86,6 +83,12 @@ jobs:
           labels: tooling
           delete-branch: true
           token: ${{ secrets.GH_TOKEN }}
+
+      - name: Enable Pull Request Automerge
+        if: ${{ steps.create-pr.outputs.pull-request-number }}
+        run: gh pr merge --squash --auto "${{ steps.create-pr.outputs.pull-request-number }}"
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Generate Summary
         run: |
