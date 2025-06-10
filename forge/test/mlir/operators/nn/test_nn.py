@@ -840,3 +840,43 @@ def test_resize1d(data, output_size, align_corners, forge_tmp_path):
     compiled_model = forge.compile(framework_model, sample_inputs=[x])
 
     verify([x], framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "dim, input_shape",
+    [
+        (0, (3, 4)),
+        (1, (3, 4)),
+        (0, (2, 5)),
+        (1, (2, 5)),
+        (1, (2, 3, 4)),
+    ],
+)
+def test_scatter_elements(dim, input_shape):
+    class ScatterElementsModule(nn.Module):
+        def __init__(self, dim):
+            super().__init__()
+            self.dim = dim
+
+        def forward(self, data, index, updates):
+            # Clone to avoid in-place modification
+            result = data.clone()
+            result.scatter_(self.dim, index, updates)
+            return result
+
+    data = torch.randn(*input_shape)
+    index_upper = input_shape[dim]
+    if index_upper <= 1:
+        index_upper = 1
+    else:
+        index_upper -= 1
+
+    index = torch.randint(0, input_shape[dim] + 1, size=input_shape, dtype=torch.int64)
+    index = torch.clamp(index, 0, input_shape[dim] - 1)
+    updates = torch.randn(*input_shape)
+
+    inputs = [data, index, updates]
+
+    model = ScatterElementsModule(dim=1)
+    compiled_model = forge.compile(model, sample_inputs=inputs)
+    verify(inputs, model, compiled_model)
