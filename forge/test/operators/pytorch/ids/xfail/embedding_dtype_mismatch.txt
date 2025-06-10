@@ -1,4 +1,4 @@
-# xfail_embedding_DATA_MISMATCH ids
+# xfail_embedding_DTYPE_MISMATCH ids
 
 embedding-FROM_ANOTHER_OP-{'num_embeddings': 28178, 'embedding_dim': 10000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int32}-(17, 41)-torch.int32-None
 embedding-FROM_ANOTHER_OP-{'num_embeddings': 24753, 'embedding_dim': 1000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int32}-(89, 3)-torch.int32-None
