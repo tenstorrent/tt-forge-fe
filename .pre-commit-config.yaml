@@ -4,6 +4,11 @@ repos:
     hooks:
       - id: check-copyright
         args: ['--config', '.github/check-spdx.yml']
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.3.1
+    hooks:
+      - id: autoflake
+        args: [--remove-all-unused-imports,  --expand-star-imports, --remove-duplicate-keys, --remove-unused-variables, --in-place, -j 4, --ignore-init-module-imports]
   - repo: https://github.com/psf/black
     rev: 23.12.1
     hooks:
@@ -35,8 +40,3 @@ repos:
       - id: isort
         files: ^forge/test/models/pytorch  # Targets only pytorch models tests
         args: ["--settings-path", ".isort.cfg", "--filter-files"]
-  - repo: https://github.com/PyCQA/autoflake
-    rev: v2.3.1
-    hooks:
-      - id: autoflake
-        args: [--remove-all-unused-imports,  --expand-star-imports, --remove-duplicate-keys, --remove-unused-variables, --in-place]
