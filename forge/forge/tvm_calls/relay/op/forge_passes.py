@@ -4846,6 +4846,57 @@ class DecomposeMeshgrid(DFPatternCallback):
         return tvm.relay.Tuple(broadcasted_grids)
 
 
+class DecomposeScatterElements(DFPatternCallback):
+    def __init__(self):
+        super().__init__()
+        self.base = wildcard()
+        self.index = wildcard()
+        self.src = wildcard()
+        self.pattern = is_op("scatter_elements")(self.base, self.index, self.src)
+
+    def callback(self, pre, post, node_map):
+        from tvm.relay.frontend.common import infer_type
+
+        base = infer_type(node_map[self.base][0])
+        index = infer_type(node_map[self.index][0])
+        src = infer_type(node_map[self.src][0])
+        dim = int(pre.attrs.axis)
+
+        base_shape = base.checked_type.shape
+        dtype = base.checked_type.dtype
+        index_dtype = index.checked_type.dtype  # ← usually "int64"
+
+        if not isinstance(base_shape[dim], tvm.tir.IntImm):
+            raise ValueError("Dynamic scatter dim not supported.")
+
+        num_classes = base_shape[dim].value
+
+        # Step 1: Create arange [0, num_classes) with same dtype as index
+        range_tensor = tvm.relay.arange(
+            tvm.relay.const(0, dtype=index_dtype), tvm.relay.const(num_classes, dtype=index_dtype), dtype=index_dtype
+        )
+        range_reshaped = tvm.relay.reshape(range_tensor, [1] * dim + [num_classes])
+
+        # Step 2: Expand index to match broadcast shape
+        index_exp = tvm.relay.expand_dims(index, axis=dim)
+
+        # Step 3: Build one-hot mask manually via equality (index == class idx)
+        one_hot = tvm.relay.equal(index_exp, range_reshaped)
+        one_hot = tvm.relay.cast(one_hot, src.checked_type.dtype)
+
+        # Step 4: Multiply src into the one-hot mask
+        src_exp = tvm.relay.expand_dims(src, axis=dim + 1)
+        one_hot_scaled = tvm.relay.multiply(one_hot, src_exp)
+
+        # Step 5: Reduce across the new axis to sum into correct bins
+        scatter_sum = tvm.relay.sum(one_hot_scaled, axis=dim)
+
+        # Step 6: Add into base
+        result = tvm.relay.add(base, scatter_sum)
+
+        return result
+
+
 class DecomposeDepthToSpace(DFPatternCallback):
     def __init__(self):
         super().__init__()
@@ -4935,6 +4986,7 @@ def run_forge_compile_passes(
     return run_pattern_callbacks(
         relay_module,
         [
+            DecomposeScatterElements(),
             DecomposeDepthToSpace(),
             DecomposeZerosToFull(),
             DecomposeMeshgrid(),
