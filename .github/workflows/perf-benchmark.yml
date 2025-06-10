@@ -53,10 +53,6 @@ jobs:
           python .github/workflows/get_test_duration_from_junit_xmls.py ${{runner.temp}}/reports .test_durations_new
           echo "----- NEW DURATIONS"
           cat .test_durations_new
-          echo "----- DIFF"
-          diff .test_durations .test_durations_new
 
           echo "TODAY=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
-          echo "curr_wf_id=$curr_wf_id" >> $GITHUB_OUTPUT
-          echo "curr_wf_att=$curr_wf_att" >> $GITHUB_OUTPUT
-          echo "curr_wf_link=\"https://github.com/$repo/actions/runs/$curr_wf_id/attempts/$curr_wf_att\"" >> $GITHUB_OUTPUT
+          echo "curr_wf_link='https://github.com/$repo/actions/runs/$curr_wf_id/attempts/$curr_wf_att'" >> $GITHUB_OUTPUT
