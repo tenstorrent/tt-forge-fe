@@ -33,6 +33,7 @@ MODELS = {
     "yolo_v4": models.yolo_v4.yolo_v4_benchmark,
     "yolo_v9": models.yolo_v9.yolo_v9_benchmark,
     "yolo_v10": models.yolo_v10.yolo_v10_benchmark,
+    "unet": models.unet.unet_benchmark,
 }
 
 

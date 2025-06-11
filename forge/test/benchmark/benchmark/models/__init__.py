@@ -15,3 +15,4 @@ from .yolo_v8 import yolo_v8_benchmark
 from .yolo_v9 import yolo_v9_benchmark
 from .yolo_v4 import yolo_v4_benchmark
 from .yolo_v10 import yolo_v10_benchmark
+from .unet import unet_benchmark
