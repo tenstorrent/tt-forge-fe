@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from typing import Optional, Union, Tuple, List
+from typing import Union, Tuple
 
 from ..tensor import Tensor
 from ..parameter import Parameter

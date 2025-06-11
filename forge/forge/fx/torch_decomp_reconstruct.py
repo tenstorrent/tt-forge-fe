@@ -4,7 +4,7 @@
 
 import torch
 from torch.fx import subgraph_rewriter
-from typing import Any, Tuple
+from typing import Tuple
 
 # Decompose
 def decompose_split(self: torch.Tensor, split_size: int, dim: int = 0) -> Tuple[torch.Tensor, ...]:

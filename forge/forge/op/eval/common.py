@@ -5,7 +5,7 @@
 import os
 import struct
 
-from typing import List, Tuple, Union
+from typing import List, Tuple
 from math import prod
 
 import torch

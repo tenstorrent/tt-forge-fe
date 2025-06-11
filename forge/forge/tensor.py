@@ -9,7 +9,6 @@ import paddle
 import torch
 import tensorflow as tf
 import numpy as np
-import math
 from loguru import logger
 import copy
 import jax
@@ -20,8 +19,6 @@ from .forgeglobal import TILE_DIM, align_up_tile, round_up_div
 from forge._C import DataFormat
 from forge._C.graph import OpType, RuntimeTensorTransform, RuntimeTensorTransformType, get_constant_input_value
 from forge.utils import detach_tensors
-from functools import reduce
-from operator import mul
 from .utils import align_up
 
 from forge.tvm_utils import map_tf_dtype_to_pt, map_pt_dtype_to_tf

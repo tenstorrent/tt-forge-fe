@@ -10,7 +10,6 @@ import forge
 from forge.utils import align_up_tile, align_up, round_up_div, clamp
 from ...forgeglobal import TILE_DIM
 from forge._C import DataFormat, compress_sparse_tensor_and_strip_info, SparseCOO, SparseFORGE, MathFidelity
-from math import gcd
 
 
 def conv2d_padding_to_canonical(padding, kernel_size):
@@ -1372,7 +1371,6 @@ def should_fracture_conv_at_op_level(attr, dc, inputs):
 def visualize_sparse(sparses, file_path, grid_r=1, ts=1):
     import matplotlib
     import matplotlib.pyplot as plt
-    import os
 
     if type(sparses) is not list:
         sparses = [sparses]

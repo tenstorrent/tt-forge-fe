@@ -2,8 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import typing
-from math import sqrt
 import os
 
 from forge._C import DataFormat

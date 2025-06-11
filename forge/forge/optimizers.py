@@ -6,7 +6,6 @@ Training optimizers
 """
 
 from typing import Dict, List, Optional, Tuple
-import copy
 
 import numpy as np
 import torch

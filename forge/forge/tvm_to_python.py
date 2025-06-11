@@ -3,8 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import re
 import json
-from typing import Dict, List
-from enum import Enum
 
 from loguru import logger
 

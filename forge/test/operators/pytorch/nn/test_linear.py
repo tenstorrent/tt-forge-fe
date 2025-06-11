@@ -7,11 +7,10 @@
 # In this test we test pytorch linear operator
 
 
-from functools import reduce
 import random
 import pytest
 
-from typing import List, Dict, Type, Optional, Any
+from typing import List, Dict
 from loguru import logger
 
 import torch

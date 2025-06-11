@@ -4,7 +4,6 @@
 
 # Failing rules for element-wise binary operators
 
-import os
 
 import forge
 import torch

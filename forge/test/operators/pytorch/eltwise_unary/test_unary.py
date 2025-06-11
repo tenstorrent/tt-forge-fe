@@ -48,7 +48,6 @@
 #    (/) Few representative values
 #    (/) Reuse inputs for selected operators
 
-import os
 import torch
 
 from typing import List, Dict

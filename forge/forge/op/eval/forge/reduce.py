@@ -10,7 +10,6 @@ from .nop import Nop
 from ..lforge.nop import Nop as ForgeNop
 import torch
 import numpy as np
-import math
 
 
 def eval(type, attr, ops):

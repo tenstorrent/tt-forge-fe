@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from typing import Union, Tuple
+from typing import Union
 import torch
 
 from forge._C import DataFormat

@@ -2,8 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 from argparse import ArgumentError
-from json.encoder import py_encode_basestring
-from ssl import OP_NO_RENEGOTIATION
 from ..common import to_torch_operands
 from ..sparse_utils import (
     create_index_sparse_picker_matrix,
@@ -22,8 +20,6 @@ from ..sparse_utils import (
 import numpy as np
 import torch
 import math
-import ast
-import os
 from loguru import logger
 import forge
 from forge.tensor import change_rank
