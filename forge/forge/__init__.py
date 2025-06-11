@@ -2,6 +2,16 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
+import numpy as np
+
+np.bool = bool
+np.int = int
+np.float = float
+np.complex = complex
+np.object = object
+np.str = str
+np.long = int
+np.unicode = str
 
 # Set home directory paths for forge and forge
 def set_home_paths():

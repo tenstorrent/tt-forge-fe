@@ -110,3 +110,47 @@ def test_clamp(input_shape, clamp_min, clamp_max, dtype):
 
     compiled_model = forge.compile(onnx_model, inputs)
     verify(inputs, model, compiled_model)
+
+
+@pytest.mark.xfail
+def test_slice_and_sdpa():
+    class slice_and_sdpa(nn.Module):
+        def __init__(
+            self,
+        ):
+            super(slice_and_sdpa, self).__init__()
+
+        def forward(self, query_states, key_states, value_states, attention_mask):
+
+            causal_mask = attention_mask
+            if attention_mask is not None:
+                causal_mask = causal_mask[:, :, :, : key_states.shape[-2]]
+
+            attn_output = torch.nn.functional.scaled_dot_product_attention(
+                query_states,
+                key_states,
+                value_states,
+                attn_mask=causal_mask,
+                dropout_p=0.0,
+                is_causal=False,
+                scale=1.0,
+            )
+
+            return attn_output
+
+    query_layer = torch.randn(1, 12, 256, 64)
+    key_layer = torch.randn(1, 12, 256, 64)
+    value_layer = torch.randn(1, 12, 256, 64)
+    attention_mask = torch.randn(1, 12, 256, 256)
+    model = slice_and_sdpa()
+
+    inputs = [query_layer, key_layer, value_layer, attention_mask]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        model,
+        inputs,
+    )
+
+    # Model Verification
+    verify(inputs, model, compiled_model)
