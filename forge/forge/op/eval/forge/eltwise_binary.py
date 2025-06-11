@@ -9,12 +9,9 @@ from forge.tensor import Tensor
 import numpy as np
 import torch
 from .transpose import TransposeTM
-from ..lforge.exp import Exp as ForgeExp
 from .reciprocal import Reciprocal
 from .log import Log
-from ..lforge.log import Log as ForgeLog
 from .nop import Nop
-from ..lforge.nop import Nop as ForgeNop
 
 from ..common import to_torch_operands
 from forge.utils import align_up_tile
@@ -84,99 +81,8 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
 
 
 def lower(type, attr, lc, ops, outputs):
-    assert len(ops) == 2, "Eltwise binary should have two inputs"
-
-    if type in ["greater", "less", "greater_equal", "less_equal", "equal", "not_equal"]:
-
-        A = ops[0]
-        B = ops[1]
-        in_shape = A.shape.as_list()
-        # we have to amplify the difference between A and B to make sure absolute diff is greater than 1.
-        amplification = 1e10
-
-        if len(in_shape) > 4:
-            raise RuntimeError("Shape size is out of range.")
-        if len(in_shape) < 4:
-            in_shape = (4 - len(in_shape)) * [1] + in_shape
-
-        in_shape[-1] = ((in_shape[-1] - 1) // TILE_DIM + 1) * TILE_DIM
-        in_shape[-2] = ((in_shape[-2] - 1) // TILE_DIM + 1) * TILE_DIM
-
-        one = lc.tensor(torch.ones(in_shape))
-        amplifier = lc.tensor(torch.zeros(in_shape) + amplification)
-
-        def ge(A, B):
-            diff = lc.op("subtract", (A, B))
-            # diff = A - B
-            diff = lc.op("multiply", (diff, amplifier))
-            # diff = (A - B) * amplifier
-            diff_one = lc.op("add", (diff, one))
-            # diff + 1.0
-            res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=1.0, relu_mode="min"), (diff_one,))
-            # res = ReLU(diff + 1.0, 1.0)
-            res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=1.0, relu_mode="max"), (res,))
-            # res = Inv_ReLU(res, 1.0)
-            return res
-
-        def le(A, B):
-            return ge(B, A)
-
-        def gt(A, B):
-            return lc.op("subtract", (one, le(A, B)))
-
-        def lt(A, B):
-            return lc.op("subtract", (one, ge(A, B)))
-
-        def ne(A, B):
-            return lc.op("add", (gt(A, B), lt(A, B)))
-
-        def eq(A, B):
-            return lc.op("subtract", (one, ne(A, B)))
-
-        if type == "greater":
-            gt(A, B)
-        elif type == "greater_equal":
-            ge(A, B)
-        elif type == "less":
-            lt(A, B)
-        elif type == "less_equal":
-            le(A, B)
-        elif type == "equal":
-            eq(A, B)
-        else:
-            ne(A, B)
-    elif type == "power":
-        # lc.op("power_binary", ops, attr)  # 'power' backend op is unary
-        ln_x = lc.op(ForgeLog.create(), [ops[0]])
-        y_ln_x = lc.op("multiply", (ops[1], ln_x))
-        approximate_mode = "true" if "FORGE_EXP_APPROX" in os.environ else "false"
-        lc.op(ForgeExp.create(approximate_mode=approximate_mode), [y_ln_x])
-    else:
-        # Find proper tile sizes
-        if bool(int(os.environ.get("FORGE_ENABLE_TINY_TILE", "0"))):
-            node_shape = lc.forge_shape()
-            tile_height = calculate_tile_size(node_shape[-2])
-            tile_width = calculate_tile_size(node_shape[-1])
-        else:
-            tile_height, tile_width = TILE_DIM, TILE_DIM
-
-        ops0_dims = len(ops[0].shape)
-        ops1_dims = len(ops[1].shape)
-        if ops0_dims == 5 and ops1_dims < 5:
-            while ops1_dims < 5:
-                ops[1] = lc.op(
-                    ForgeNop.create(unsqueeze="unsqueeze", unsqueeze_dim=ops1_dims), [ops[1]], tag="dont_remove"
-                )
-                ops1_dims += 1
-        elif ops1_dims == 5 and ops0_dims < 5:
-            while ops0_dims < 5:
-                ops[0] = lc.op(
-                    ForgeNop.create(unsqueeze="unsqueeze", unsqueeze_dim=ops0_dims), [ops[0]], tag="dont_remove"
-                )
-                ops0_dims += 1
-        lc.op(type, ops, attr, {}, "", tile_height, TILE_DIM)  # straight 1-1 for all other binaries
-
-    assert type != "take", "Take should be constevaled"
+    # TODO: Implement mlir lowering here.
+    assert False
 
 
 def backward(op_type, attr, ac, operand, inputs, output, grad):

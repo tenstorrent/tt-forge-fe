@@ -13,7 +13,6 @@ from ....forgeglobal import TILE_DIM
 from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from ..lforge.exp import Exp as ForgeExp
 
 
 class Exp(PyEltwiseUnaryOp):
@@ -44,9 +43,8 @@ class Exp(PyEltwiseUnaryOp):
         return ac.op("multiply", (output, grad))
 
     def lower(self, lc, tensors, outputs):
-        assert len(tensors) == 1, "Exp should  have one input"
-        approximate_mode = "true" if "FORGE_EXP_APPROX" in os.environ else "false"
-        lc.op(ForgeExp.create(approximate_mode=approximate_mode), tensors)
+        # TODO: Implement mlir lowering here.
+        assert False
 
     def initial_flops_estimate(self, tensor_shapes):
         flops = 0

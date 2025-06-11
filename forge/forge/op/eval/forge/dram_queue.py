@@ -21,7 +21,8 @@ def shape(type, attr, ops):
 
 
 def lower(type, attr, lc, ops, outputs):
-    lc.op(type, ops, attr)
+    # TODO: Implement mlir lowering here.
+    assert False
 
 
 def backward(type, attr, ac, operand, inputs, output, grad):

@@ -13,7 +13,6 @@ from ....forgeglobal import TILE_DIM
 from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from ..lforge.reciprocal import Reciprocal as ForgeReciprocal
 
 
 class Reciprocal(PyEltwiseUnaryOp):
@@ -40,9 +39,8 @@ class Reciprocal(PyEltwiseUnaryOp):
         return shape, []
 
     def lower(self, lc, tensors, outputs):
-        assert len(tensors) == 1, "Reciprocal should  have one input"
-        approximate_mode = "true" if "FORGE_EXP_APPROX" in os.environ else "false"
-        lc.op(ForgeReciprocal.create(approximate_mode=approximate_mode), tensors)
+        # TODO: Implement mlir lowering here.
+        assert False
 
     def backward(self, ac, operand, inputs, output, grad):
         assert len(inputs) == 1, "Reciprocal should have one input"
