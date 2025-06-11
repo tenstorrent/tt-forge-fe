@@ -21,15 +21,6 @@ using TileDim = tt::TileDim;
 std::tuple<Shape, std::vector<DimBroadcast>> get_op_shape(
     OpType type, std::vector<Shape> &operands, TileDim tile_dim = TileDim::Dim32x32);
 
-inline Shape get_tm_shape(OpType type, Shape operand)
-{
-    Shape shape;
-    std::vector<Shape> operands = {operand};
-    std::vector<DimBroadcast> bcast;
-    std::tie(shape, bcast) = ::get_op_shape(type, operands, operand.get_tile_dim());
-    return shape;
-}
-
 NodeContext insert_backward(
     autograd_context context,
     OpType type,

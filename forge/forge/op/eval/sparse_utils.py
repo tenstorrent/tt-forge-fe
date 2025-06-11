@@ -9,7 +9,6 @@ from loguru import logger
 import forge
 from forge.utils import align_up_tile, align_up, round_up_div, clamp
 from ...forgeglobal import TILE_DIM
-from ...tensor import narrow_forge_tensor_to_pytorch, pad_pytorch_tensor_to_forge
 from forge._C import DataFormat, compress_sparse_tensor_and_strip_info, SparseCOO, SparseFORGE, MathFidelity
 from math import gcd
 
