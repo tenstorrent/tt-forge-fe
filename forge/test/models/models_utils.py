@@ -11,6 +11,14 @@ from tabulate import tabulate
 import json
 from typing import Optional, Tuple
 from transformers import Cache
+from typing import List
+from surya.common.util import mark_step
+from tqdm import tqdm
+from surya.settings import settings
+from surya.detection import DetectionPredictor
+from surya.input.processing import convert_if_not_rgb
+from surya.recognition.schema import OCRResult
+import torch.nn.functional as F
 
 # Mean Pooling - Take attention mask into account for correct averaging
 def mean_pooling(model_output, attention_mask):
@@ -260,3 +268,170 @@ def Gemma2DecoderLayer_patched_forward(
         outputs += (present_key_value,)
 
     return outputs
+
+
+def __call__without_post_processing(
+    self,
+    images: List[Image.Image],
+    langs: List[List[str] | None],
+    det_predictor: DetectionPredictor | None = None,
+    detection_batch_size: int | None = None,
+    recognition_batch_size: int | None = None,
+    highres_images: List[Image.Image] | None = None,
+    bboxes: List[List[List[int]]] | None = None,
+    polygons: List[List[List[List[int]]]] | None = None,
+    sort_lines: bool = True,
+) -> List[OCRResult]:
+    assert len(images) == len(langs), "You need to pass in one list of languages for each image"
+    images = convert_if_not_rgb(images)
+    if highres_images is not None:
+        assert len(images) == len(highres_images), "You need to pass in one highres image for each image"
+
+    highres_images = convert_if_not_rgb(highres_images) if highres_images is not None else [None] * len(images)
+
+    if bboxes is None and polygons is None:
+        assert (
+            det_predictor is not None
+        ), "You need to pass in a detection predictor if you don't provide bboxes or polygons"
+
+        # Detect then slice
+        flat = self.detect_and_slice_bboxes(
+            images, langs, det_predictor, detection_batch_size=detection_batch_size, highres_images=highres_images
+        )
+    else:
+        if bboxes is not None:
+            assert len(images) == len(bboxes), "You need to pass in one list of bboxes for each image"
+        if polygons is not None:
+            assert len(images) == len(polygons), "You need to pass in one list of polygons for each image"
+
+        flat = self.slice_bboxes(images, langs, bboxes=bboxes, polygons=polygons)
+
+    output = self.batch_recognition(flat["slices"], flat["langs"], batch_size=recognition_batch_size)
+
+    return output
+
+
+def batch_recognition_without_post_processing(
+    self, images: List[Image.Image], languages: List[List[str] | None], batch_size=None
+):
+    assert all(isinstance(image, Image.Image) for image in images)
+    assert len(images) == len(languages)
+
+    if len(images) == 0:
+        return [], []
+
+    if batch_size is None:
+        batch_size = self.get_batch_size()
+
+    # Sort images by width, so similar length ones go together
+    sorted_pairs = sorted(enumerate(images), key=lambda x: x[1].width, reverse=False)
+    indices, images = zip(*sorted_pairs)
+    indices = list(indices)
+    images = list(images)
+
+    batch_predictions_all = []
+    sequence_scores_all = []
+
+    for i in tqdm(range(0, len(images), batch_size), desc="Recognizing Text", disable=self.disable_tqdm):
+        batch_images = images[i : i + batch_size]
+        batch_images = [image.convert("RGB") for image in batch_images]  # also copies the images
+        current_batch_size = len(batch_images)
+        batch_langs = languages[i : i + current_batch_size]
+        processed_batch = self.processor(text=[""] * len(batch_images), images=batch_images, langs=batch_langs)
+
+        batch_pixel_values = processed_batch["pixel_values"]
+        batch_langs = processed_batch["langs"]
+        batch_pixel_values, batch_decoder_input = self.prepare_input(batch_langs, batch_pixel_values, batch_size)
+
+        token_count = 0
+        inference_token_count = batch_decoder_input.shape[-1]
+
+        decoder_position_ids = (
+            torch.ones_like(batch_decoder_input[0, :], dtype=torch.int64, device=self.model.device).cumsum(0) - 1
+        )
+        self.model.decoder.model._setup_cache(self.model.config, batch_size, self.model.device, self.model.dtype)
+        self.model.text_encoder.model._setup_cache(self.model.config, batch_size, self.model.device, self.model.dtype)
+
+        # Batch pixel values is the real current batch size
+        sequence_scores = torch.zeros(
+            batch_pixel_values.shape[0], dtype=torch.bool, device=self.model.device
+        ).unsqueeze(1)
+        all_done = torch.zeros(batch_pixel_values.shape[0], dtype=torch.bool, device=self.model.device)
+        batch_predictions = torch.zeros(
+            batch_pixel_values.shape[0], dtype=torch.int64, device=self.model.device
+        ).unsqueeze(1)
+        device_pad_token = torch.tensor(self.processor.tokenizer.pad_token_id, device=self.model.device)
+
+        with settings.INFERENCE_MODE():
+            encoder_hidden_states = self.model.encoder(pixel_values=batch_pixel_values).last_hidden_state
+
+            text_encoder_input_ids = (
+                torch.arange(
+                    self.model.text_encoder.config.query_token_count,
+                    device=encoder_hidden_states.device,
+                    dtype=torch.long,
+                )
+                .unsqueeze(0)
+                .expand(encoder_hidden_states.size(0), -1)
+            )
+
+            encoder_text_hidden_states = self.model.text_encoder(
+                input_ids=text_encoder_input_ids,
+                cache_position=None,
+                attention_mask=None,
+                encoder_hidden_states=encoder_hidden_states,
+                encoder_attention_mask=None,
+                use_cache=False,
+            ).hidden_states
+
+            while token_count < settings.RECOGNITION_MAX_TOKENS - 1:
+                is_prefill = token_count == 0
+                # TODO: add attention mask
+                return_dict = self.model.decoder(
+                    input_ids=batch_decoder_input,
+                    encoder_hidden_states=encoder_text_hidden_states,
+                    cache_position=decoder_position_ids,
+                    use_cache=True,
+                    prefill=is_prefill,
+                )
+
+                decoder_position_ids = decoder_position_ids[-1:] + 1
+                logits = return_dict["logits"]  # Ignore batch padding
+
+                preds = torch.argmax(logits[:, -1], dim=-1)
+                scores = torch.max(F.softmax(logits[:, -1], dim=-1), dim=-1).values.unsqueeze(1)
+                done = (preds == self.processor.tokenizer.eos_id) | (preds == self.processor.tokenizer.pad_id)
+                all_done = all_done | done
+                all_done_cpu = all_done.cpu()
+
+                # Confidence score for the current token
+                scores = scores.masked_fill(all_done, 0)
+                sequence_scores = torch.cat([sequence_scores, scores], dim=1)
+
+                # Account for possible padding
+                if all_done_cpu[:current_batch_size].all():
+                    break
+
+                batch_decoder_input = preds.unsqueeze(1)
+
+                # If this batch item is done, input a pad token
+                batch_decoder_input = torch.where(all_done.unsqueeze(1), device_pad_token, batch_decoder_input)
+
+                batch_predictions = torch.cat([batch_predictions, batch_decoder_input], dim=1)
+                token_count += inference_token_count
+
+                inference_token_count = batch_decoder_input.shape[-1]
+                mark_step()
+
+        sequence_scores = torch.sum(sequence_scores, dim=-1) / torch.sum(sequence_scores != 0, dim=-1)
+
+        sequence_scores = sequence_scores.cpu()[:current_batch_size]
+        batch_predictions = batch_predictions.cpu()[:current_batch_size, 1:]  # Remove the start token
+
+        print("batch_predictions", batch_predictions)
+        print("sequence_scores", sequence_scores)
+
+        batch_predictions_all.append(batch_predictions)
+        sequence_scores_all.append(sequence_scores)
+
+    return (*batch_predictions_all, *sequence_scores_all)
