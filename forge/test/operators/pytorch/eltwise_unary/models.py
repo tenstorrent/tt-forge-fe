@@ -43,6 +43,7 @@ class ModelConstEvalPass(nn.Module):
             dev_data_format=dtype,
             value_range=value_range,
         )
+        self.register_buffer("constant", self.c)
 
     def forward(self, x):
         cc = self.operator(self.c, **self.kwargs)
