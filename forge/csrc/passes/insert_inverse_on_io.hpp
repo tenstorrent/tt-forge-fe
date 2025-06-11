@@ -17,6 +17,7 @@ namespace tt::passes
 // Returns true if any ops were commuted to input
 bool insert_inverse_on_inputs(graphlib::Graph *graph);
 bool insert_inverse_on_outputs(graphlib::Graph *graph);
+bool insert_inverse_suboptimal(graphlib::Graph *graph);
 bool insert_inverse_on_downstream_tms(graphlib::Graph *graph);
 
 std::vector<std::pair<graphlib::Edge, std::pair<graphlib::Shape, graphlib::Shape>>> all_edges_to_input_nodes_commutable(

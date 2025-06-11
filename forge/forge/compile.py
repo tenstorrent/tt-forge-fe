@@ -781,6 +781,8 @@ def run_consteval_pass(context: CompileContext) -> CompileDepth:
 
     run_consteval_graph_pass(graph)
     dump_graph(graph, graph_name, "consteval_graph")
+    run_optimization_graph_passes(graph)
+    dump_graph(graph, graph_name, "second_erase_inverse_ops")
     extract_unique_op_configuration(context.graph, context.stage.name.upper())
 
     return CompileDepth.PRE_LOWERING_PASS

@@ -123,6 +123,12 @@ void run_optimization_graph_passes(graphlib::Graph *graph)
                 skip_erase_redundant = true;
         }
         if (not attempt_update)
+        {
+            attempt_update = passes::insert_inverse_suboptimal(graph);
+            if (attempt_update)
+                std::cout << "**** WOW it did something" << std::endl;
+        }
+        if (not attempt_update)
             attempt_update = passes::insert_inverse_on_inputs(graph);
         if (not attempt_update)
         {

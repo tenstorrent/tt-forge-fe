@@ -214,6 +214,102 @@ std::vector<IOEdgeInfo> all_edges_to_input_nodes_commutable(
     return input_edges;
 }
 
+std::pair<int, bool, std::unique_ptr<IOEdgeInfo>> find_furthest_commutable_edge(
+    graphlib::Graph *graph,
+    graphlib::OpNode *initial_op,
+    graphlib::Shape commute_shape,
+    graphlib::OpNode *from = nullptr,
+    graphlib::OpNode *previous_op = nullptr)
+{
+    graphlib::OpNode *iter = from ? from : initial_op;
+    auto clone_shape = initial_op->shape();
+    std::unique_ptr<IOEdgeInfo> furthest_edge = nullptr;
+    int uncommutable_count = 0;
+    std::cout << "Finding furthest commutable edge from: " << initial_op->name() << "Currently at : " << iter->name()
+              << std::endl;
+
+    while (true)
+    {
+        graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(iter);
+        if (!op)
+            break;
+
+        if (previous_op)
+        {
+            handle_shape_change_through_bcast(graph, initial_op, previous_op, op, &commute_shape, &clone_shape);
+        }
+
+        bool can_commute = can_commute_past_op(op, initial_op, graph, &commute_shape, &clone_shape);
+        bool found_inverse = are_compatible_ops(graph, initial_op, op, &commute_shape);
+
+        if (found_inverse)
+        {
+            return {0, nullptr};  // Found exact inverse, cancelable
+        }
+
+        // If we hit a non-commutable op, stop
+        if (!can_commute && op != initial_op)
+        {
+            uncommutable_count += 1;
+
+            if (previous_op)
+            {
+                const auto &edges = graph->user_data_edges(previous_op);
+                for (const auto &e : edges)
+                {
+                    if (e.consumer_node_id == op->id())
+                    {
+                        // We do not want to add an inverse on the op unless it cancels out on all forks coming to that
+                        // op
+                        if (not all_producer_forks_have_equivalent(graph, initial_op, commute_shape, previous_op))
+                        {
+                            std::cout << "not all producer forks have equivalent inverse for " << previous_op->name()
+                                      << std::endl;
+                            break;
+                        }
+                        furthest_edge = std::make_unique<IOEdgeInfo>(e, std::make_pair(commute_shape, clone_shape));
+                    }
+                }
+            }
+            break;
+        }
+
+        std::vector<graphlib::Node *> users = graph->data_users(op);
+        if (users.empty())
+            break;
+
+        // Handle forks
+        if (users.size() > 1)
+        {
+            for (graphlib::Node *user : users)
+            {
+                auto *user_op = dynamic_cast<graphlib::OpNode *>(user);
+                if (!user_op)
+                    continue;
+
+                auto [uc_count, edge_info] =
+                    find_furthest_commutable_edge(graph, initial_op, commute_shape, user_op, op);
+
+                uncommutable_count += uc_count;
+
+                if (edge_info && !furthest_edge)
+                {
+                    furthest_edge = std::move(edge_info);
+                }
+            }
+
+            return {uncommutable_count, std::move(furthest_edge)};
+        }
+
+        // Continue traversing
+        previous_op = op;
+        iter = dynamic_cast<graphlib::OpNode *>(users[0]);
+        if (!iter)
+            break;
+    }
+
+    return {uncommutable_count, std::move(furthest_edge)};
+}
 std::pair<bool, std::unique_ptr<IOEdgeInfo>> find_commutable_output_edge(
     graphlib::Graph *graph,
     graphlib::OpNode *initial_op,
@@ -411,6 +507,75 @@ bool insert_inverse_on_inputs(graphlib::Graph *graph)
                 continue;
 
             add_inverse_to_input_edges(graph, op, input_edges);
+            attempt_update = true;
+            updated_anything = true;
+            break;
+        }
+    }
+    return updated_anything;
+}
+
+void add_inverse_to_edge(graphlib::Graph *graph, graphlib::OpNode *initial_op, IOEdgeInfo edge_and_shape)
+{
+    auto edge = edge_and_shape.first;
+    auto commute_shape = edge_and_shape.second.first;
+    auto clone_shape = edge_and_shape.second.second;
+
+    auto name = initial_op->name() + "_commute_clone" + std::to_string(edge.edge_creation_id);
+    auto *clone_0 = graph->add_node(initial_op->clone(name), graph->get_subgraph_id_for_node(initial_op->id()));
+    graphlib::OpNode *clone_0_op = dynamic_cast<graphlib::OpNode *>(clone_0);
+    update_reshape_attr(clone_0_op, commute_shape);
+    clone_0->set_shape(commute_shape);
+    log_trace(LogGraphCompiler, "  Commute clone 0: {} set to shape: {}", name, commute_shape);
+
+    auto [incoming_edge, outgoing_edge] = insert_node_on_edge(graph, edge, clone_0);
+    convert_implicit_to_explicit_bcasts(graph, incoming_edge);
+
+    // Set output df to match producer
+    clone_0->set_output_df(graph->node_by_id(incoming_edge.producer_node_id)->output_df());
+
+    name = initial_op->name() + "_commute_clone" + std::to_string(outgoing_edge.edge_creation_id);
+    auto *clone_1 = graph->add_node(initial_op->clone(name), graph->get_subgraph_id_for_node(initial_op->id()));
+    graphlib::OpNode *clone_1_op = dynamic_cast<graphlib::OpNode *>(clone_1);
+    clone_1_op->as<graphlib::TaggedNode>()->tag("dont_erase");
+    clone_1_op->as<graphlib::TaggedNode>()->tag("dont_erase");
+    update_reshape_attr(clone_1_op, clone_shape);
+    clone_1->set_shape(clone_shape);
+    log_trace(LogGraphCompiler, "  Commute clone 1: {}", name);
+
+    auto [incoming_edge_1, outgoing_edge_1] = insert_node_on_edge(graph, outgoing_edge, clone_1);
+    handle_change_rank(graph, clone_1);
+
+    // Set output df to match producer
+    clone_1->set_output_df(graph->node_by_id(incoming_edge_1.producer_node_id)->output_df());
+}
+
+bool insert_inverse_suboptimal(graphlib::Graph *graph)
+{
+    bool attempt_update = true;
+    bool updated_anything = false;
+
+    while (attempt_update)
+    {
+        attempt_update = false;
+        for (auto *node : graphlib::topological_sort(*graph))
+        {
+            graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(node);
+            if (!op)
+                continue;
+
+            if (op->as<graphlib::TaggedNode>()->has_tag("dont_erase"))
+                continue;
+
+            if (op->op_name() != "reshape" && op->op_name() != "transpose")
+                continue;
+
+            auto [uncommutable_count, edge_info] =
+                find_furthest_commutable_edge(graph, op, shape_of_only_operand(graph, op));
+            if (!edge_info || uncommutable_count > 1)
+                continue;
+
+            add_inverse_to_edge(graph, op, *edge_info);
             attempt_update = true;
             updated_anything = true;
             break;
