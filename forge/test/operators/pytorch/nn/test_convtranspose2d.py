@@ -2,13 +2,12 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 from dataclasses import dataclass
-from functools import reduce
 import math
 import os
 import random
 import pytest
 
-from typing import List, Dict, Type, Optional, Any
+from typing import List, Dict
 from loguru import logger
 
 import torch
@@ -19,7 +18,6 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AllCloseValueChecker
 
 from test.operators.utils import (
-    InputSourceFlags,
     VerifyUtils,
     ValueRanges,
     InputSource,

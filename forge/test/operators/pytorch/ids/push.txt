@@ -1,0 +1,10 @@
+# xfail_conv_transpose_2d_ASSERT_DIM ids
+conv_transpose_2d-FROM_ANOTHER_OP-{'in_channels': 11, 'out_channels': 11, 'kernel_size': (21, 2), 'stride': 1, 'padding': 0, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': (2, 15), 'dtype': None}-(1, 11, 45, 17)-None-None
+
+
+# xfail_conv_transpose_2d_ASSERT_GROUPS ids
+conv_transpose_2d-FROM_ANOTHER_OP-{'in_channels': 32, 'out_channels': 38, 'kernel_size': (9, 9), 'stride': 1, 'padding': 0, 'output_padding': 0, 'groups': 2, 'bias': True, 'dilation': 1, 'dtype': None}-(1, 32, 32, 64)-None-None
+
+
+# xfail_conv_transpose_2d_ASSERT_STRIDE ids
+conv_transpose_2d-FROM_ANOTHER_OP-{'in_channels': 11, 'out_channels': 11, 'kernel_size': (14, 5), 'stride': (6, 2), 'padding': 0, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': None}-(1, 11, 45, 17)-None-None
