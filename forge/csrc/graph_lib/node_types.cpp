@@ -349,8 +349,8 @@ bool OpNode::should_pair_with_sparse(const OpNode *sparse_op_node, const Graph *
     return false;
 }
 
-py::function OpNode::py_attr(char const *attr_name) const { return op_type().py_attr(attr_name, get_ir_level()); }
-py::function OpNode::py_attr(char const *attr_name) { return op_type().py_attr(attr_name, get_ir_level()); }
+py::function OpNode::py_attr(char const *attr_name) const { return op_type().py_attr(attr_name); }
+py::function OpNode::py_attr(char const *attr_name) { return op_type().py_attr(attr_name); }
 
 InputNode::InputNode(const std::string &name, InputNodeType input_type, bool requires_grad) :
     QueueNode(name, QueueNodeType::Input, NodeType::kInput), input_type_(input_type), requires_grad_(requires_grad)
@@ -419,22 +419,21 @@ std::unique_ptr<Node> OutputNode::clone(std::string const &name) const
     return node;
 }
 
-static py::function get_f_instance(IRLevel ir_level)
+static py::function get_f_instance()
 {
-    auto eval_module =
-        py::module_::import((ir_level == IRLevel::IR_FORGE) ? "forge.op.eval.lforge" : "forge.op.eval.forge");
+    auto eval_module = py::module_::import("forge.op.eval.forge");
     return eval_module.attr("get_f_instance");
 }
 
-py::function OpType::py_attr(char const *name, IRLevel ir_level) const
+py::function OpType::py_attr(char const *name) const
 {
-    auto instance = get_f_instance(ir_level)(this);
+    auto instance = get_f_instance()(this);
     return instance.attr(name);
 }
 
-py::function OpType::py_attr(char const *name, IRLevel ir_level)
+py::function OpType::py_attr(char const *name)
 {
-    auto instance = get_f_instance(ir_level)(this);
+    auto instance = get_f_instance()(this);
     return instance.attr(name);
 }
 

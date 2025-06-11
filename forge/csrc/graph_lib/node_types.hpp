@@ -424,8 +424,8 @@ struct OpType
         return std::get<T>(get_attr(name));
     }
 
-    py::function py_attr(char const *name, IRLevel ir_level) const;
-    py::function py_attr(char const *name, IRLevel ir_level);
+    py::function py_attr(char const *name) const;
+    py::function py_attr(char const *name);
 
     void set_attr(std::string const &name, Attr attr) { named_attrs[name] = attr; }
 
