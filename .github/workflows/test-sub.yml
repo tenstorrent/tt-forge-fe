@@ -156,7 +156,7 @@ jobs:
         shell: bash
         run: |
           source env/activate
-          pytest -svv --splits ${{ inputs.test_group_cnt }} \
+          python3 -X faulthandler -m pytest -svv  -p no:faulthandler --splits ${{ inputs.test_group_cnt }} \
                  --group ${{ matrix.test_group_id }} \
                  --splitting-algorithm least_duration \
                  -m "${{ inputs.test_mark }}" \
