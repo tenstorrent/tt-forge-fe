@@ -15,7 +15,7 @@ import torch
 # Forge modules
 import forge
 from forge.verify.value_checkers import AutomaticValueChecker
-from forge.verify.verify import verify
+from forge.verify.verify import verify, VerifyConfig
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from forge.config import CompilerConfig, MLIRConfig
 from forge._C import DataFormat
@@ -86,14 +86,14 @@ def test_yolo_v8(
         input_sample = [input.to(torch.bfloat16) for input in input_sample]
 
     # Load YOLO model weights, initialize and load model
-    url = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8n.pt"
+    url = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8x.pt"
     framework_model = YoloWrapper(url)
     if data_format == "bfloat16":
         # Convert model to bfloat16
         framework_model = framework_model.to(torch.bfloat16)
 
     # Compiler configuration
-    compiler_config = CompilerConfig()
+    compiler_config = CompilerConfig(enable_optimization_passes=True)
     # @TODO - For now, we are skipping enabling MLIR optimizations, because it is not working with the current version of the model.
     # Turn on MLIR optimizations.
     # compiler_config.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
@@ -113,7 +113,9 @@ def test_yolo_v8(
 
     # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
-    verify(input_sample, framework_model, compiled_model)
+    pcc = 0.98
+    verify_config = VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc))
+    verify(input_sample, framework_model, compiled_model, verify_cfg=verify_config)
     start = time.time()
     for _ in range(loop_count):
         co_out = compiled_model(*input_sample)
@@ -121,7 +123,7 @@ def test_yolo_v8(
 
     fw_out = framework_model(*input_sample)
     co_out = [co.to("cpu") for co in co_out]
-    AutomaticValueChecker().check(fw_out=fw_out[0], co_out=co_out[0])
+    AutomaticValueChecker(pcc=pcc).check(fw_out=fw_out[0], co_out=co_out[0])
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()

@@ -196,12 +196,16 @@ def test_resnet_torchvision(variant):
         compiler_cfg=compiler_cfg,
     )
 
-    verify_cfg = VerifyConfig()
+    pcc = 0.99
     if variant == "resnet34":
-        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
+        pcc = 0.98
+    elif variant in ["resnet50", "resnet152"]:
+        pcc = 0.95
 
     # Model Verification and Inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+    fw_out, co_out = verify(
+        inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc))
+    )
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])

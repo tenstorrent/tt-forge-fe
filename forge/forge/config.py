@@ -56,6 +56,8 @@ class CompilerConfig:
     enable_recompute: bool = False
     # invokes pattern_matcher to compact isomorphic subgraphs
     match_subgraph_patterns: Optional[int] = None
+    # enable optimization passes (soon to be removed, only until mlir creates proper optimization passes for resnet)
+    enable_optimization_passes: bool = False
 
     # enable promotion of nodes to be constant evaluated where possible
     enable_consteval: bool = True

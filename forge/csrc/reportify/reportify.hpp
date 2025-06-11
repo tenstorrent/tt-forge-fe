@@ -37,8 +37,6 @@ json create_json_for_graph(
     const graphlib::Graph* graph,
     std::function<bool(graphlib::Node*)> node_filter = [](graphlib::Node*) { return true; });
 
-json create_json_for_mlir(const std::string& module_name, mlir::Operation* operation);
-
 void dump_graph(
     const std::string& test_name,
     const std::string& graph_prefix,

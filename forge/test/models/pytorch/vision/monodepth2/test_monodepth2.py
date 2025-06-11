@@ -59,7 +59,7 @@ def test_monodepth2(variant):
 
     inputs = [input_tensor.to(torch.bfloat16)]
     data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override, enable_optimization_passes=True)
 
     pcc = 0.99
 

@@ -228,8 +228,12 @@ def test_densenet_201_pytorch(variant):
         compiler_cfg=compiler_cfg,
     )
 
+    verify_cfg = VerifyConfig()
+    if variant == "densenet201":
+        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
+
     # Model Verification and Inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])

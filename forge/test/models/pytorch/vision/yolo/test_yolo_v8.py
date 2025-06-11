@@ -13,6 +13,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -45,7 +46,7 @@ def test_yolov8(variant):
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
         group=ModelGroup.RED,
-        priority=priority,
+        priority=ModelPriority.P1,
     )
 
     # Load  model and input
@@ -57,7 +58,7 @@ def test_yolov8(variant):
 
     data_format_override = DataFormat.Float16_b
 
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override, enable_optimization_passes=True)
     # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,

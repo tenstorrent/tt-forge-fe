@@ -15,7 +15,10 @@ variants = [
     pytest.param("google/vit-base-patch16-224"),
     pytest.param(
         "google/vit-large-patch16-224",
-        marks=[pytest.mark.skip(reason="Transient failure - Out of memory due to other tests in CI pipeline")],
+        marks=[
+            pytest.mark.skip(reason="Transient failure - Out of memory due to other tests in CI pipeline"),
+            pytest.mark.out_of_memory,
+        ],
     ),
 ]
 

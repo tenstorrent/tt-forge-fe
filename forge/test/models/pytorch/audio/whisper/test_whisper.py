@@ -40,9 +40,12 @@ variants = [
     ),
     pytest.param(
         "openai/whisper-large",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 21 GB during compile time)"
-        ),
+        marks=[
+            pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 21 GB during compile time)"
+            ),
+            pytest.mark.out_of_memory,
+        ],
     ),
 ]
 

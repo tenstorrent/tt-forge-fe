@@ -27,7 +27,6 @@
 #include "passes/hoist_transforms_to_inputs.hpp"
 #include "passes/insert_inverse_on_io.hpp"
 #include "passes/link_past_cache_ios.hpp"
-#include "passes/lower_concat_to_runtime_transform.hpp"
 #include "passes/lowering_context.hpp"
 #include "passes/mlir_compiler.hpp"
 #include "passes/move_requantize.hpp"
@@ -89,16 +88,16 @@ run_post_initial_graph_passes(
 
     auto inserted_node_id_mapping = decompose_tt_forge_graph(graph, "get_f_forge_decompose", compiler_cfg);
     auto chip_id_assignments = passes::fracture(graph, fracture_groups);
+
+    passes::bypass_nop_tms(graph);
     passes::apply_user_data_format_override(graph, compiler_cfg_object);
+
     return std::make_tuple(inserted_node_id_mapping, chip_id_assignments);
 }
 
 void run_optimization_graph_passes(graphlib::Graph *graph)
 {
     passes::print_graph(graph, "PRE OPTIMIZE");
-    passes::lower_concat_to_runtime_transform(graph);
-
-    passes::bypass_nop_tms(graph);
 
     // Erase all inverse ops possible.
     // Then, if no inverse ops are erased, then attempt to insert inverse ops on the output.
