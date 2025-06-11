@@ -791,6 +791,12 @@ def test_argmax(shape, dim, keepdim):
         ("bhwc,wkc->bhwk", [(2, 16, 16, 32), (16, 64, 32)]),
         ("bhwc,wkc->bhwk", [(5, 10, 10, 20), (10, 40, 20)]),
         ("bhwc,wkc->bhwk", [(6, 12, 12, 128), (12, 256, 128)]),
+        ("bchw,bkc->bkhw", [(2, 4, 1, 1), (2, 1, 4)]),
+        ("bchw,bkc->bkhw", [(1, 4, 1, 1), (1, 2, 4)]),
+        ("bmchw,bnmc->bmhwn", [(1, 2, 2, 1, 1), (1, 1, 2, 2)]),
+        ("bmchw,bnmc->bmhwn", [(1, 5, 10, 1, 1), (1, 1, 5, 10)]),
+        ("bmnk,bkmc->bnmc", [(1, 4, 6, 8), (1, 8, 4, 16)]),
+        ("bmnk,bkmc->bnmc", [(1, 6, 8, 16), (1, 16, 6, 32)]),
     ],
 )
 @pytest.mark.push
@@ -922,7 +928,6 @@ def test_zero(hidden_dim):
         (8,),
     ],
 )
-@pytest.mark.xfail
 def test_zeros_like(input_shape):
     class ZerosLikeModel(torch.nn.Module):
         def forward(self, x):

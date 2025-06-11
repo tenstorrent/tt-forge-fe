@@ -2153,6 +2153,75 @@ class DecomposeEinsum(DFPatternCallback):
             final_result = tvm.relay.concatenate(results, axis=2)
 
             return final_result
+
+        elif match_einsum_pattern("bmchw,bnmc->bmhwn", equation):
+            assert len(node_map[self.act][0]) == 2
+
+            srcA = node_map[self.act][0][0]  # (b, m, c, h, w)
+            srcB = node_map[self.act][0][1]  # (b, n, m, c)
+
+            # Transpose B to match A's dims: (b, n, m, c) -> (b, m, c, n)
+            B_perm = tvm.relay.transpose(srcB, axes=(0, 2, 3, 1))
+
+            # Expand A: (b, m, c, h, w) → (b, m, c, h, w, 1)
+            A_exp = tvm.relay.expand_dims(srcA, axis=-1)
+
+            # Expand B: (b, m, c, n) → (b, m, c, 1, 1, n)
+            B_exp = tvm.relay.expand_dims(B_perm, axis=3)  # (b, m, c, 1, n)
+            B_exp = tvm.relay.expand_dims(B_exp, axis=3)  # (b, m, c, 1, 1, n)
+
+            # Multiply and sum over `c`
+            multiplied = tvm.relay.multiply(A_exp, B_exp)  # (b, m, c, h, w, n)
+            result = tvm.relay.sum(multiplied, axis=2)  # sum over c → (b, m, h, w, n)
+
+            return result
+
+        elif match_einsum_pattern("bchw,bkc->bkhw", equation):
+            assert len(node_map[self.act][0]) == 2
+            A = node_map[self.act][0][0]  # (b, c, h, w)
+            B = node_map[self.act][0][1]  # (b, k, c)
+
+            A_shape = pre.args[0][0].checked_type.shape  # (b, c, h, w)
+            B_shape = pre.args[0][1].checked_type.shape  # (b, k, c)
+
+            b, c, h, w = A_shape
+            _, k, _ = B_shape
+
+            # Transpose A: (b, c, h, w) → (b, h, w, c)
+            A_perm = tvm.relay.transpose(A, axes=(0, 2, 3, 1))  # (b, h, w, c)
+            A_exp = tvm.relay.expand_dims(A_perm, axis=1)  # (b, 1, h, w, c)
+
+            # Expand B to match (b, k, 1, 1, c)
+            B_exp = tvm.relay.expand_dims(B, axis=2)  # (b, k, 1, c)
+            B_exp = tvm.relay.expand_dims(B_exp, axis=2)  # (b, k, 1, 1, c)
+
+            # Multiply and reduce over c
+            multiplied = tvm.relay.multiply(A_exp, B_exp)
+            result = tvm.relay.sum(multiplied, axis=4)  # (b, k, h, w)
+
+            return result
+
+        elif match_einsum_pattern("bmnk,bkmc->bnmc", equation):
+            assert len(node_map[self.act][0]) == 2
+
+            srcA = node_map[self.act][0][0]  # (b, m, n, k)
+            srcB = node_map[self.act][0][1]  # (b, k, m, c)
+
+            # Transpose B → (b, m, k, c) to align with A
+            B_perm = tvm.relay.transpose(srcB, axes=(0, 2, 1, 3))
+
+            # Expand A → (b, m, n, k, 1)
+            A_exp = tvm.relay.expand_dims(srcA, axis=-1)
+
+            # Expand B → (b, m, 1, k, c)
+            B_exp = tvm.relay.expand_dims(B_perm, axis=2)
+
+            # Multiply and reduce over k → (b, m, n, c)
+            multiplied = tvm.relay.multiply(A_exp, B_exp)
+            reduced = tvm.relay.sum(multiplied, axis=3)
+            result = tvm.relay.transpose(reduced, axes=(0, 2, 1, 3))
+            return result
+
         else:
             assert False, f"TVM einsum decomposition does not support {equation} yet."
 
