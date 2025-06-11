@@ -157,6 +157,7 @@ jobs:
         run: |
           source env/activate
           apt-get update && apt-get install -y gdb
+          ulimit -c unlimited
           gdb -batch -ex "run" -ex "bt" --args python3 -X faulthandler -m pytest -svv -p no:faulthandler --splits ${{ inputs.test_group_cnt }} \
                  --group ${{ matrix.test_group_id }} \
                  --splitting-algorithm least_duration \
@@ -165,6 +166,10 @@ jobs:
                  --log-memory-usage \
                  2>&1 | tee pytest.log
 
+      - name: Find core dumps
+        shell: bash
+        run: |
+          ls | grep core | xargs cat | tee -a pytest.log
       - name: Upload Test Log
         uses: actions/upload-artifact@v4
         if: success() || failure()
