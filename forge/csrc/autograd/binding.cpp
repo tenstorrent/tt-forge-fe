@@ -10,8 +10,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> get_op_shape(
 {
     int tile_height = tt::graphlib::get_row_size_from_tile_size(tile_dim);
     int tile_width = tt::graphlib::get_col_size_from_tile_size(tile_dim);
-    auto eval_module =
-        is_forge ? py::module_::import("forge.op.eval.lforge") : py::module_::import("forge.op.eval.forge");
+    auto eval_module = py::module_::import("forge.op.eval.forge");
     py::function forge_shape = is_forge ? eval_module.attr("get_f_forge_shape")(type, tile_height, tile_width)
                                         : eval_module.attr("get_f_forge_shape")(type);
 
