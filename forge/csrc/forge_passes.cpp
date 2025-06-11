@@ -125,8 +125,8 @@ void run_optimization_graph_passes(graphlib::Graph *graph)
         if (not attempt_update)
         {
             attempt_update = passes::insert_inverse_suboptimal(graph);
-            if (attempt_update)
-                std::cout << "**** WOW it did something" << std::endl;
+            // if (attempt_update)
+            //     std::cout << "**** WOW it did something" << std::endl;
         }
         if (not attempt_update)
             attempt_update = passes::insert_inverse_on_inputs(graph);

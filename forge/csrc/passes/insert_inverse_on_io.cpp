@@ -214,7 +214,7 @@ std::vector<IOEdgeInfo> all_edges_to_input_nodes_commutable(
     return input_edges;
 }
 
-std::pair<int, bool, std::unique_ptr<IOEdgeInfo>> find_furthest_commutable_edge(
+std::tuple<int, bool, std::unique_ptr<IOEdgeInfo>> find_furthest_commutable_edge(
     graphlib::Graph *graph,
     graphlib::OpNode *initial_op,
     graphlib::Shape commute_shape,
@@ -225,8 +225,10 @@ std::pair<int, bool, std::unique_ptr<IOEdgeInfo>> find_furthest_commutable_edge(
     auto clone_shape = initial_op->shape();
     std::unique_ptr<IOEdgeInfo> furthest_edge = nullptr;
     int uncommutable_count = 0;
-    std::cout << "Finding furthest commutable edge from: " << initial_op->name() << "Currently at : " << iter->name()
-              << std::endl;
+    bool found_cancelable_inverse = false;
+
+    // std::cout << "Finding furthest commutable edge from: " << initial_op->name()
+    //           << " Currently at: " << iter->name() << std::endl;
 
     while (true)
     {
@@ -244,7 +246,9 @@ std::pair<int, bool, std::unique_ptr<IOEdgeInfo>> find_furthest_commutable_edge(
 
         if (found_inverse)
         {
-            return {0, nullptr};  // Found exact inverse, cancelable
+            // At least one branch has a cancelable match
+            // std::cout << " Found cancelable inverse for " << initial_op->name() << " at " << op->name() << std::endl;
+            return {0, true, nullptr};
         }
 
         // If we hit a non-commutable op, stop
@@ -259,12 +263,10 @@ std::pair<int, bool, std::unique_ptr<IOEdgeInfo>> find_furthest_commutable_edge(
                 {
                     if (e.consumer_node_id == op->id())
                     {
-                        // We do not want to add an inverse on the op unless it cancels out on all forks coming to that
-                        // op
-                        if (not all_producer_forks_have_equivalent(graph, initial_op, commute_shape, previous_op))
+                        if (!all_producer_forks_have_equivalent(graph, initial_op, commute_shape, previous_op))
                         {
-                            std::cout << "not all producer forks have equivalent inverse for " << previous_op->name()
-                                      << std::endl;
+                            // std::cout << "Not all producer forks have equivalent inverse for "
+                            //           << previous_op->name() << std::endl;
                             break;
                         }
                         furthest_edge = std::make_unique<IOEdgeInfo>(e, std::make_pair(commute_shape, clone_shape));
@@ -287,10 +289,11 @@ std::pair<int, bool, std::unique_ptr<IOEdgeInfo>> find_furthest_commutable_edge(
                 if (!user_op)
                     continue;
 
-                auto [uc_count, edge_info] =
+                auto [uc_count, found_inverse_in_branch, edge_info] =
                     find_furthest_commutable_edge(graph, initial_op, commute_shape, user_op, op);
 
                 uncommutable_count += uc_count;
+                found_cancelable_inverse |= found_inverse_in_branch;
 
                 if (edge_info && !furthest_edge)
                 {
@@ -298,17 +301,17 @@ std::pair<int, bool, std::unique_ptr<IOEdgeInfo>> find_furthest_commutable_edge(
                 }
             }
 
-            return {uncommutable_count, std::move(furthest_edge)};
+            return {uncommutable_count, found_cancelable_inverse, std::move(furthest_edge)};
         }
 
-        // Continue traversing
+        // Continue traversal
         previous_op = op;
         iter = dynamic_cast<graphlib::OpNode *>(users[0]);
         if (!iter)
             break;
     }
 
-    return {uncommutable_count, std::move(furthest_edge)};
+    return {uncommutable_count, found_cancelable_inverse, std::move(furthest_edge)};
 }
 std::pair<bool, std::unique_ptr<IOEdgeInfo>> find_commutable_output_edge(
     graphlib::Graph *graph,
@@ -570,10 +573,14 @@ bool insert_inverse_suboptimal(graphlib::Graph *graph)
             if (op->op_name() != "reshape" && op->op_name() != "transpose")
                 continue;
 
-            auto [uncommutable_count, edge_info] =
+            auto [uncommutable_count, found_inverse, edge_info] =
                 find_furthest_commutable_edge(graph, op, shape_of_only_operand(graph, op));
-            if (!edge_info || uncommutable_count > 1)
+            if (!edge_info || !found_inverse || uncommutable_count > 1)
+            {
+                // std::cout<<"couldnt find inverse for "<<op->name()<<" uncommutable count:
+                // "<<uncommutable_count<<std::endl;
                 continue;
+            }
 
             add_inverse_to_edge(graph, op, *edge_info);
             attempt_update = true;
