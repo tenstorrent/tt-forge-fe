@@ -22,7 +22,6 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AllCloseValueChecker
 
 from test.operators.utils import (
-    InputSourceFlags,
     VerifyUtils,
     ValueRanges,
     InputSource,

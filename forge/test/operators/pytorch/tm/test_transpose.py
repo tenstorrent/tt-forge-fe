@@ -62,8 +62,7 @@ import forge
 import forge.op
 
 
-from test.operators.utils import InputSourceFlags, VerifyUtils
-from test.operators.utils import ShapeUtils
+from test.operators.utils import VerifyUtils
 from test.operators.utils import InputSource
 from test.operators.utils import TestVector
 from test.operators.utils import TestPlan
