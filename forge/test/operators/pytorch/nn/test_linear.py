@@ -19,7 +19,10 @@ import forge
 import forge.op
 
 from forge.verify.config import VerifyConfig
+from forge.config import CompilerConfig
 from forge.verify.value_checkers import AllCloseValueChecker
+
+from forge._C import DataFormat
 
 from test.operators.utils import (
     InputSourceFlags,
@@ -31,6 +34,7 @@ from test.operators.utils import (
     FailingReasons,
     TestCollection,
     TestCollectionCommon,
+    TestCollectionTorch,
 )
 from test.operators.utils.compat import TestDevice, TestTensorsUtils
 from test.operators.utils.utils import PytorchUtils
@@ -50,6 +54,7 @@ class ModelFromAnotherOp(torch.nn.Module):
         self.kwargs = {
             "in_features": kwargs["in_features"],
             "out_features": kwargs["out_features"],
+            "dtype": kwargs["dtype"],
         }
 
         self.l1 = self.operator(**self.kwargs)
@@ -74,6 +79,7 @@ class ModelDirect(torch.nn.Module):
         self.kwargs = {
             "in_features": kwargs["in_features"],
             "out_features": kwargs["out_features"],
+            "dtype": kwargs["dtype"],
         }
 
         self.l1 = self.operator(**self.kwargs)
@@ -87,7 +93,7 @@ class ModelConstEvalPass(torch.nn.Module):
 
     model_name = "model_op_src_const_eval_pass"
 
-    def __init__(self, operator, opname, shape, kwargs, dtype):
+    def __init__(self, operator, opname, shape, kwargs, dtype):  # TODO: remove this dtype argument
         super(ModelConstEvalPass, self).__init__()
         self.testname = "Linear_pytorch_operator_" + opname + "_test_op_src_const_eval_pass"
         self.operator = operator
@@ -96,6 +102,7 @@ class ModelConstEvalPass(torch.nn.Module):
         self.kwargs = {
             "in_features": kwargs["in_features"],
             "out_features": kwargs["out_features"],
+            "dtype": kwargs["dtype"],
         }
 
         self.constant = torch.rand(self.shape, dtype=dtype)
@@ -150,6 +157,13 @@ class TestVerification:
                 kwargs=kwargs,
             )
 
+        dtype = kwargs.get("dtype")
+        compiler_cfg = CompilerConfig()
+
+        if dtype is torch.bfloat16:
+            pytorch_model.to(dtype)
+            compiler_cfg.default_df_override = DataFormat.Float16_b
+
         input_shapes = tuple([test_vector.input_shape for _ in range(number_of_operands)])
         logger.trace(f"***input_shapes: {input_shapes}")
 
@@ -197,6 +211,7 @@ class TestParamsData:
                         "in_features": in_features,
                         "out_features": out_features,
                         "bias": bias,
+                        "dtype": test_vector.dev_data_format,
                     }
                 )
         return kwarg_list
@@ -212,14 +227,14 @@ class TestCollectionData:
         ],
         input_sources=TestCollectionCommon.all.input_sources,
         input_shapes=TestCollectionCommon.all.input_shapes,
-        dev_data_formats=TestCollectionCommon.all.dev_data_formats,
+        dev_data_formats=TestCollectionTorch.all.dev_data_formats,
         math_fidelities=TestCollectionCommon.all.math_fidelities,
     )
 
     single = TestCollection(
         input_sources=TestCollectionCommon.single.input_sources,
         input_shapes=TestCollectionCommon.single.input_shapes,
-        dev_data_formats=TestCollectionCommon.single.dev_data_formats,
+        dev_data_formats=TestCollectionTorch.single.dev_data_formats,
         math_fidelities=TestCollectionCommon.single.math_fidelities,
     )
 
@@ -247,7 +262,12 @@ TestParamsData.test_plan = TestPlan(
             input_sources=TestCollectionData.single.input_sources,
             input_shapes=TestCollectionData.single.input_shapes,
             kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
-            dev_data_formats=TestCollectionCommon.float.dev_data_formats,
+            # dev_data_formats=TestCollectionTorch.float.dev_data_formats,
+            dev_data_formats=[
+                item
+                for item in TestCollectionTorch.float.dev_data_formats
+                if item not in TestCollectionTorch.single.dev_data_formats
+            ],
             math_fidelities=TestCollectionData.single.math_fidelities,
         ),
         # Test plan:
@@ -263,6 +283,10 @@ TestParamsData.test_plan = TestPlan(
     ],
     failing_rules=[
         *TestIdsDataLoader.build_failing_rules(operators=TestCollectionData.all.operators),
+        TestCollection(
+            dev_data_formats=[torch.float16],
+            skip_reason=FailingReasons.FATAL_ERROR,
+        ),
         # # E   RuntimeError: The expanded size of the tensor (x) must match the existing size (y) at non-singleton dimension 0.  Target sizes: [x].  Tensor sizes: [y]
         # TestCollection(
         #     input_sources=TestCollectionData.all.input_sources,
