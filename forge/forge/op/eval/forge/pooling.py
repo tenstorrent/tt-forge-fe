@@ -155,7 +155,8 @@ class MaxPool2d(PyOp):
         pass
 
     def lower(self, lc, tensors, outputs):
-        pass
+        # TODO: Implement mlir lowering here.
+        assert False
 
     def is_tm(self) -> bool:
         return False

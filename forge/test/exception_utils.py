@@ -122,7 +122,7 @@ compiler_exception_rules = [
         "post_initial_graph_passes",
         [
             "RuntimeError",
-            "has_newstyle_interface(std::get<std::string>(type), false)",
+            "has_newstyle_interface(std::get<std::string>(type))",
             "decomposing a type with old OpType interface, expects new OpType interface",
         ],
     ),

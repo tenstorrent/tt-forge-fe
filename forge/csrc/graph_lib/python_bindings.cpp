@@ -712,18 +712,9 @@ void GraphModule(py::module &m_graph)
 
 py::object eval_relu(py::object tensor, graphlib::OpType type);
 
-py::object eval_op(
-    graphlib::OpType type, std::vector<py::object> inputs, graphlib::IRLevel ir_level, bool evaluate_output_relu = true)
+py::object eval_op(graphlib::OpType type, std::vector<py::object> inputs, bool evaluate_output_relu = true)
 {
-    py::object eval_module;
-
-    switch (ir_level)
-    {
-        case graphlib::IRLevel::IR_TT_FORGE: eval_module = py::module_::import("forge.op.eval.forge"); break;
-        case graphlib::IRLevel::IR_FORGE: eval_module = py::module_::import("forge.op.eval.lforge"); break;
-        case graphlib::IRLevel::IR_CONSTEVAL: eval_module = py::module_::import("forge.op.eval.forge"); break;
-    }
-
+    py::object eval_module = py::module_::import("forge.op.eval.forge");
     py::function forge_eval = eval_module.attr("get_f_forge_eval")(std::ref(type));
 
     log_trace(LogEval, "  eval_op: {}", type);
@@ -746,14 +737,6 @@ py::object eval_op(
     py::object common_module = py::module_::import("forge.op.eval");
     common_module.attr("eval_debug_print")(type.op, inputs, result);
 
-    if (has_requant and ir_level == graphlib::IRLevel::IR_FORGE and type.op == "matmul")
-    {
-        std::vector<py::object> requant_inps = {result, inputs.back()};
-        graphlib::OpType requant("requantization", {type.forge_attrs.at("zero_point")});
-        auto requant_eval = eval_module.attr("get_f_forge_eval")(requant);
-        result = requant_eval(requant_inps);
-    }
-
     if (evaluate_output_relu)
         result = eval_relu(result, type);
 
@@ -775,7 +758,7 @@ py::object eval_relu(py::object tensor, graphlib::OpType type)
                                     : "min";
 
         graphlib::OpType relu("relu", {relu_threshold, relu_mode});
-        tensor = eval_op(relu, inputs, graphlib::IRLevel::IR_TT_FORGE);
+        tensor = eval_op(relu, inputs);
     }
     return tensor;
 }
@@ -794,7 +777,7 @@ py::object eval_golden_transforms(graphlib::Node *node, py::object tensor, bool 
         //
         if (!eval_for_output || (op_type.op != "reshape" && op_type.op != "transpose"))
         {
-            tensor = eval_op(op_type, {tensor}, graphlib::IRLevel::IR_TT_FORGE);
+            tensor = eval_op(op_type, {tensor});
         }
     }
 
@@ -813,7 +796,7 @@ void eval_partial_datacopy_golden_transforms(
 
     for (auto const &op_type : golden_transforms)
     {
-        output_tensor = eval_op(op_type, {output_tensor}, graphlib::IRLevel::IR_TT_FORGE);
+        output_tensor = eval_op(op_type, {output_tensor});
     }
 
     if (ret.at(output_index).ptr() == nullptr)
@@ -823,7 +806,7 @@ void eval_partial_datacopy_golden_transforms(
     else
     {
         graphlib::OpType overlay("add");
-        ret.at(output_index) = eval_op(overlay, {ret.at(output_index), output_tensor}, graphlib::IRLevel::IR_TT_FORGE);
+        ret.at(output_index) = eval_op(overlay, {ret.at(output_index), output_tensor});
     }
 }
 
@@ -872,12 +855,6 @@ py::object create_constant_tensor(float constant_value, std::pair<int, int> cons
     return eval_module.attr("create_constant_tensor_from_value")(constant_value, constant_dims, df);
 }
 
-py::object create_constant_tensor(const std::vector<float> &tile_value, DataFormat df)
-{
-    py::object eval_module = py::module_::import("forge.op.eval");
-    return eval_module.attr("create_constant_tensor_from_tile")(tile_value, df);
-}
-
 py::object create_constant_tensor(const std::vector<float> &tensor_value, const Shape &tensor_shape, tt::DataFormat df)
 {
     py::object eval_module = py::module_::import("forge.op.eval");
@@ -891,13 +868,13 @@ void dump_tensor(py::object tensor, std::string filename)
 }
 
 // Evaluate TMs
-py::object eval_tms(py::object tensor, const std::vector<graphlib::OpType> &tms, graphlib::IRLevel ir_level)
+py::object eval_tms(py::object tensor, const std::vector<graphlib::OpType> &tms)
 {
     for (graphlib::OpType tm : tms)
     {
         std::vector<py::object> inputs;
         inputs.push_back(tensor);
-        tensor = eval_op(tm, inputs, ir_level);
+        tensor = eval_op(tm, inputs);
     }
     return tensor;
 }
@@ -922,7 +899,7 @@ std::vector<py::object> eval_operand_tms(
         graphlib::Node *operand = graph->node_by_id(input_edge.producer_node_id);
         log_trace(
             LogEval, "  Operand[{}]: {} {}", input_edge.consumer_input_port_id, operand->name(), operand->shape());
-        tensor = eval_tms(tensor, graph->get_edge_attributes(input_edge)->get_tms(), graph->get_ir_level());
+        tensor = eval_tms(tensor, graph->get_edge_attributes(input_edge)->get_tms());
         inputs.push_back(tensor);
     }
     return inputs;
@@ -977,6 +954,7 @@ py::object consteval_input(
             }
 
             TT_ASSERT(not input_value.is_none());
+
             node_outputs.insert({node->id(), {input_value}});
             continue;
         }
@@ -998,7 +976,7 @@ py::object consteval_input(
         TT_ASSERT(relu_match == type.forge_attrs.end(), "ConstEval doesn't support relu");
 
         std::vector<py::object> inputs = eval_operand_tms(consteval_graph, node, node_outputs);
-        output = eval_op(op_node->op_type(), inputs, consteval_graph->get_ir_level());
+        output = eval_op(op_node->op_type(), inputs);
 
         node_outputs[op_node->id()].push_back(output);
     }
@@ -1057,13 +1035,13 @@ py::object eval_reinterpret_shape(Graph *graph, Node *node, py::object input_val
         node->name(),
         node->shape(),
         runtime_tensor_transform.reinterpreted_shape);
-    std::vector<graphlib::OpType::Attr> attr;
 
+    std::vector<graphlib::OpType::Attr> attr;
     auto vec = runtime_tensor_transform.reinterpreted_shape.as_vector();
     for (auto dim : vec) attr.emplace_back((int)dim);
 
     graphlib::OpType reinterpret_shape("reshape", attr);
-    return eval_op(reinterpret_shape, {input_value}, graph->get_ir_level());
+    return eval_op(reinterpret_shape, {input_value});
 }
 
 py::object eval_embedding_index(Graph *, Node *, py::object input_value) { return input_value; }
@@ -1116,7 +1094,7 @@ py::object eval_unpad(Graph *graph, Node *node, py::object input_value)
     attr.emplace_back(orig_c);
 
     graphlib::OpType unpad("forge_unpad", attr);
-    return eval_op(unpad, {input_value}, graph->get_ir_level());
+    return eval_op(unpad, {input_value});
 }
 
 py::object eval_prestride(Graph *graph, Node *node, py::object input_value)
@@ -1150,7 +1128,7 @@ py::object eval_prestride(Graph *graph, Node *node, py::object input_value)
     attr.emplace_back(static_cast<int>(runtime_tensor_transform.original_shape[-1]));
 
     graphlib::OpType prestride_act("conv2d_prestride_act", attr);
-    return eval_op(prestride_act, {input_value}, graph->get_ir_level());
+    return eval_op(prestride_act, {input_value});
 }
 
 py::object eval_concatenate(
@@ -1198,17 +1176,12 @@ py::object eval_concatenate(
                 (size_t) runtime_tensor_transform.concat_index == i)
             {
                 concat_inputs.push_back(input_values[i]);
-                if (graph->get_ir_level() == graphlib::IRLevel::IR_FORGE)
-                {
-                    int length_at_dim = nodes[i]->shape()[runtime_tensor_transform.concat_dim];
-                    attr.emplace_back(length_at_dim);
-                }
             }
         }
     }
 
     graphlib::OpType prestride_act("concatenate", attr);
-    return eval_op(prestride_act, concat_inputs, graph->get_ir_level());
+    return eval_op(prestride_act, concat_inputs);
 }
 
 std::vector<py::object> eval_runtime_tensor_transform(
@@ -1277,11 +1250,6 @@ py::object get_constant_input_value(graphlib::Node *node)
         auto constant_value = cnode->constant_value();
         auto constant_dims = cnode->constant_dims();
         return create_constant_tensor(constant_value, constant_dims, node->output_df());
-    }
-    else if (cnode->is_single_tile())
-    {
-        auto constant_tile = cnode->tile_value();
-        return create_constant_tensor(constant_tile, node->output_df());
     }
     else if (cnode->is_tensor())
     {
@@ -1499,8 +1467,7 @@ eval_graph(
         if (node->node_type() == NodeType::kForgeNaryTM)
         {
             std::vector<py::object> inputs = eval_operand_tms(graph, node, node_outputs);
-            py::object obj =
-                eval_op(node->as<graphlib::ForgeNaryTMNode>()->op_type(), inputs, graph->get_ir_level(), false);
+            py::object obj = eval_op(node->as<graphlib::ForgeNaryTMNode>()->op_type(), inputs, false);
             node_outputs[node->id()].push_back(obj);
             continue;
         }
@@ -1516,8 +1483,7 @@ eval_graph(
 
             std::vector<py::object> inputs = eval_operand_tms(graph, node, node_outputs);
 
-            py::object obj = eval_op(
-                op_node->op_type(), inputs, graph->get_ir_level(), false);  // Don't Eval relu for intermediate checking
+            py::object obj = eval_op(op_node->op_type(), inputs, false);  // Don't Eval relu for intermediate checking
 
             auto gradient_edges = graph->operand_edges(
                 node, [](const auto &edge) { return edge.edge_type == graphlib::EdgeType::kAutogradFwdToGradient; });
@@ -1538,8 +1504,7 @@ eval_graph(
                 }
             }
 
-            auto golden_node_id =
-                (graph->get_ir_level() == graphlib::IRLevel::IR_FORGE) ? node->tt_forge_id() : node->id();
+            auto golden_node_id = node->id();
             if (op_node->has_golden_id())
             {
                 golden_node_id = op_node->golden_id();  // if a different intermediate node is used as a reference...
@@ -1559,8 +1524,7 @@ eval_graph(
                 if (gradient_edges.size() > 0)
                 {
                     Node *producer = graph->node_by_id(gradient_edges.at(0).producer_node_id);
-                    auto node_id = (graph->get_ir_level() == graphlib::IRLevel::IR_FORGE) ? producer->tt_forge_id()
-                                                                                          : producer->id();
+                    auto node_id = producer->id();
                     auto golden_fwd = intermediate_golden_tensors.find(node_id);
                     if (golden_fwd != intermediate_golden_tensors.end())
                     {

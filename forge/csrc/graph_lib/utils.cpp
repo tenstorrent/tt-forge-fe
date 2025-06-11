@@ -1448,29 +1448,6 @@ graphlib::Shape default_tm_evaluator(graphlib::OpType const &tm, graphlib::Shape
     return shape;
 }
 
-graphlib::Shape post_tms_shape(
-    graphlib::Shape input_shape,
-    std::vector<OpType> const &tms,
-    std::function<graphlib::Shape(graphlib::OpType const &, graphlib::Shape, graphlib::IRLevel)> tm_evaluator,
-    graphlib::IRLevel ir_level)
-{
-    for (OpType const &tm : tms)
-    {
-        input_shape = tm_evaluator(tm, input_shape, ir_level);
-    }
-    return input_shape;
-}
-
-graphlib::Shape post_tms_shape(
-    Graph const *graph,
-    graphlib::Edge edge,
-    std::function<graphlib::Shape(graphlib::OpType const &, graphlib::Shape, graphlib::IRLevel)> tm_evaluator)
-{
-    graphlib::Shape producer_shape = graph->node_by_id(edge.producer_node_id)->shape();
-    auto const &tms = graph->get_edge_attributes(edge)->get_tms();
-    return post_tms_shape(producer_shape, tms, tm_evaluator, graph->get_ir_level());
-}
-
 std::pair<int, int> get_padding(graphlib::Graph const *graph, graphlib::Node const *node)
 {
     graphlib::ForgeOpNode const *op = dynamic_cast<graphlib::ForgeOpNode const *>(node);
