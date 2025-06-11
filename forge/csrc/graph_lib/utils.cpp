@@ -2342,8 +2342,7 @@ bool is_linked_queue(const graphlib::Graph *graph, const graphlib::Node *node)
                              not graph
                                      ->user_edges(
                                          node,
-                                         [](graphlib::Edge e)
-                                         {
+                                         [](graphlib::Edge e) {
                                              return e.edge_type == graphlib::EdgeType::kPartialDataCopy or
                                                     e.edge_type == graphlib::EdgeType::kSubgraphLink;
                                          })
@@ -2352,8 +2351,7 @@ bool is_linked_queue(const graphlib::Graph *graph, const graphlib::Node *node)
                             not graph
                                     ->operand_edges(
                                         node,
-                                        [](graphlib::Edge e)
-                                        {
+                                        [](graphlib::Edge e) {
                                             return e.edge_type == graphlib::EdgeType::kPartialDataCopy or
                                                    e.edge_type == graphlib::EdgeType::kSubgraphLink;
                                         })
