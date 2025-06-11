@@ -45,7 +45,6 @@ class EdgeAttributes;
 enum class IRLevel
 {
     IR_TT_FORGE,
-    IR_FORGE,
     IR_CONSTEVAL,
 };
 

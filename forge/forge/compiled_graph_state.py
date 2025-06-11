@@ -109,11 +109,11 @@ class CompiledGraphState:
                 constant_to_tensor[name] = opt_param.value()
 
         post_const_eval_constants: Dict[str, torch.Tensor] = get_post_const_eval_tensors(
-            graph, constant_to_tensor, consteval_trace, ordered_constant_node_names, is_forge=False
+            graph, constant_to_tensor, consteval_trace, ordered_constant_node_names
         )
 
         post_const_eval_parameters: Dict[str, torch.Tensor] = get_post_const_eval_tensors(
-            graph, constant_to_tensor, consteval_trace, ordered_parameter_node_names, is_forge=False
+            graph, constant_to_tensor, consteval_trace, ordered_parameter_node_names
         )
 
         return CompiledGraphState(

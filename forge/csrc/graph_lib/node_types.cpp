@@ -445,9 +445,6 @@ std::unique_ptr<Node> ConstantInputNode::clone(std::string const &name) const
         case ConstantInputNodeType::SingleValue:
             node = create_node<ConstantInputNode>(this->name(), this->constant_value_);
             break;
-        case ConstantInputNodeType::SingleTile:
-            node = create_node<ConstantInputNode>(this->name(), this->tile_value_);
-            break;
         case ConstantInputNodeType::Tensor:
             node = create_node<ConstantInputNode>(this->name(), this->tensor_handle_, this->tensor_shape_);
             break;
@@ -468,11 +465,6 @@ bool ConstantInputNode::equivalent(const ConstantInputNode *other) const
 
     if (is_single_value())
         return constant_value() == other->constant_value();
-
-    if (is_single_tile())
-    {
-        return tile_value() == other->tile_value();
-    }
 
     TT_ASSERT(is_tensor());
     return compare_tensors(tensor(), other->tensor());

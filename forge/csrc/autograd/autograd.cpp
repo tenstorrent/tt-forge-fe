@@ -569,7 +569,7 @@ NodeContext autograd_engine::create_optimizer_op(
     {
         operand_shapes.push_back(graph->node_by_id(n.id)->shape());
     }
-    std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(type, operand_shapes, false);
+    std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(type, operand_shapes);
 
     node->set_shape(Shape(std::get<0>(shape_data)));
     node->set_optimizer();

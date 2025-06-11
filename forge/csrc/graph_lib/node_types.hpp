@@ -221,7 +221,6 @@ class InputNode : public QueueNode
 enum ConstantInputNodeType
 {
     SingleValue,
-    SingleTile,
     Tensor,
 };
 
@@ -247,14 +246,6 @@ class ConstantInputNode : public InputNode
         dim_c_(dim_c)
     {
     }
-    ConstantInputNode(const std::string &name, std::vector<float> const &tile_value) :
-        InputNode(name, InputNodeType::Constant, NodeType::kInput),
-        node_type_(ConstantInputNodeType::SingleTile),
-        tile_value_(tile_value),
-        dim_r_(-1),
-        dim_c_(-1)
-    {
-    }
     ConstantInputNode(const std::string &name, std::shared_ptr<void> tensor_handle, Shape const &tensor_shape) :
         InputNode(name, InputNodeType::Constant, NodeType::kInput),
         node_type_(ConstantInputNodeType::Tensor),
@@ -268,7 +259,6 @@ class ConstantInputNode : public InputNode
 
     virtual std::unique_ptr<Node> clone(std::string const &name = "") const override;
     bool is_single_value() const { return this->node_type_ == ConstantInputNodeType::SingleValue; }
-    bool is_single_tile() const { return this->node_type_ == ConstantInputNodeType::SingleTile; }
     bool is_tensor() const { return this->node_type_ == ConstantInputNodeType::Tensor; }
     float constant_value() const
     {
@@ -279,11 +269,6 @@ class ConstantInputNode : public InputNode
     {
         TT_ASSERT(is_single_value());
         return std::make_pair(dim_r_, dim_c_);
-    }
-    const std::vector<float> &tile_value() const
-    {
-        TT_ASSERT(is_single_tile());
-        return tile_value_;
     }
     std::shared_ptr<void> tensor() const
     {
@@ -542,7 +527,7 @@ class OpNode : public TaggedNode
     {
         return py_attr(attr_name)(args...).template cast<T>();
     }
-    IRLevel get_ir_level() const { return (node_type() == NodeType::kPyOp) ? IRLevel::IR_TT_FORGE : IRLevel::IR_FORGE; }
+    IRLevel get_ir_level() const { return IRLevel::IR_TT_FORGE; }
     const std::string &op_name() const { return op_type_.op; }
     const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attr; }
     OpType::Attrs &named_attrs() { return op_type_.named_attrs; }

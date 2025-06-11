@@ -106,16 +106,6 @@ def create_constant_tensor_from_value(
     return tensor
 
 
-def create_constant_tensor_from_tile(tile: List[float], is_forge: bool, df: DataFormat) -> torch.Tensor:
-
-    assert is_forge, "Tile tensors should only be created for forge graphs"
-    assert len(tile) == TILE_DIM * TILE_DIM, "Incorrect number of elements in tile"
-    tensor = torch.FloatTensor(tile)
-    tensor = tensor.reshape(1, 1, TILE_DIM, TILE_DIM)
-    tensor = tensor.type(forge_dataformat_to_pytorch_dtype(df))
-    return tensor
-
-
 def create_constant_tensor_from_tensor(
     tensor_values: List[float], tensor_shape: List[int], is_forge: bool, df: DataFormat
 ) -> torch.Tensor:
@@ -128,11 +118,9 @@ def create_constant_tensor_from_tensor(
     return tensor
 
 
-def create_constant_tensor(flat_data: List[float], shape: List[int], is_forge: bool, df: DataFormat) -> torch.Tensor:
+def create_constant_tensor(flat_data: List[float], shape: List[int], df: DataFormat) -> torch.Tensor:
     tensor = torch.FloatTensor(flat_data)
     tensor = tensor.reshape(*shape)
-    if is_forge:
-        tensor = pad_pytorch_tensor_to_forge(tensor)
     tensor = tensor.type(forge_dataformat_to_pytorch_dtype(df))
     return tensor
 

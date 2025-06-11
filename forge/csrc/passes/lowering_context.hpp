@@ -55,7 +55,6 @@ class LoweringContext
     NodeContext tm(graphlib::OpType const &op_type, NodeContext const &operand);
     NodeContext nary_tm(graphlib::OpType const &op_type, std::vector<NodeContext> const &operands);
     NodeContext constant(float value, std::pair<int, int> rc_dims);
-    NodeContext constant_tile(std::vector<float> value);
     NodeContext tensor(std::shared_ptr<void> value, graphlib::Shape shape, DataFormat df = DataFormat::Invalid);
     NodeContext tensor_with_blob(
         std::shared_ptr<void> value,

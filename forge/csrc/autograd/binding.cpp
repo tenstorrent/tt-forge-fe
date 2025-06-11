@@ -5,8 +5,7 @@
 
 #include <vector>
 
-std::tuple<Shape, std::vector<DimBroadcast>> get_op_shape(
-    OpType type, std::vector<Shape> &operands, bool is_forge, TileDim tile_dim)
+std::tuple<Shape, std::vector<DimBroadcast>> get_op_shape(OpType type, std::vector<Shape> &operands, TileDim tile_dim)
 {
     auto eval_module = py::module_::import("forge.op.eval.forge");
     py::function forge_shape = eval_module.attr("get_f_forge_shape")(type);

@@ -1343,14 +1343,14 @@ def remove_microbatch(tensors: Tuple[Union[torch.Tensor, Tensor], ...]) -> Tuple
 
 
 def get_constant_inputs(
-    constant_nodes, device_constant_and_parameters, consteval_trace, name: str, is_forge: bool
+    constant_nodes, device_constant_and_parameters, consteval_trace, name: str
 ) -> Dict[str, torch.Tensor]:
 
     consteval_graph = consteval_trace.get(name, None)
 
     if consteval_graph is None:
         if name in constant_nodes:
-            return {name: get_constant_input_value(constant_nodes[name], is_forge)}
+            return {name: get_constant_input_value(constant_nodes[name])}
         return {name: device_constant_and_parameters[name]}
 
     values = {}
@@ -1358,13 +1358,13 @@ def get_constant_inputs(
         node = consteval_graph["nodes"][node_name]
         if node["opcode"] == "Input":
             if node_name in constant_nodes:
-                values[node_name] = get_constant_input_value(constant_nodes[node_name], is_forge)
+                values[node_name] = get_constant_input_value(constant_nodes[node_name])
             else:
                 values[node_name] = device_constant_and_parameters[node_name]
     return values
 
 
-def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor], is_forge: bool) -> torch.Tensor:
+def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]) -> torch.Tensor:
     import forge.op.eval.forge as eval_module
 
     consteval_graph = consteval_trace.get(name, None)
@@ -1385,12 +1385,6 @@ def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]
         node = consteval_graph["nodes"][node_name]
         if node["opcode"] == "Input":
             input_value = inputs[node_name]
-
-            if is_forge:
-                input_value = narrow_forge_tensor_to_pytorch(
-                    input_value, node["cache"]["shape"], has_microbatch_dim=False
-                )
-
             node_to_tensor[node_name] = input_value
         elif node["opcode"] in {"ForgeOp", "ForgeOp"}:
             inputs_after_tms: List[torch.Tensor] = []
@@ -1408,13 +1402,11 @@ def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]
             output = node_to_tensor[node["input_nodes"][0]]
 
     assert output is not None, "Expect a valid tensor output out of consteval"
-    if is_forge:
-        output = pad_pytorch_tensor_to_forge(output, [], tile_r=tile_r, tile_c=tile_c)
     return output
 
 
-def consteval_input(consteval_trace, name: str, inputs: Dict[str, torch.Tensor], is_forge: bool) -> torch.Tensor:
-    const_eval_tensor = consteval_tensor(consteval_trace, name, inputs, is_forge)
+def consteval_input(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]) -> torch.Tensor:
+    const_eval_tensor = consteval_tensor(consteval_trace, name, inputs)
     # This: "torch.empty(const_eval_tensor.shape).copy_(const_eval_tensor)" will create tensor with contiguous memory layout consistent with its current shape.
     # We are doing this because constant input tensors should have memory layout consistent with their shape.
     # Sometimes, the stride is inconsistent with shape because some consteval operations might change the shape but not the stride.
@@ -1423,30 +1415,18 @@ def consteval_input(consteval_trace, name: str, inputs: Dict[str, torch.Tensor],
     return torch.empty(const_eval_tensor.shape, dtype=const_eval_tensor.dtype).copy_(const_eval_tensor)
 
 
-def consteval_shape(compiled_graph_state, name: str, tensor: torch.Tensor, is_forge: bool = False) -> torch.Tensor:
-    consteval_graph = compiled_graph_state.consteval_trace.get(name, None)
-    if consteval_graph is None:
-        return tensor.shape
-
-    for node_name in consteval_graph["topological_sorted_nodes"]:
-        node = consteval_graph["nodes"][node_name]
-        if node["opcode"] == "Output":
-            return node["cache"]["shape"]
-    assert False, "No output node found in consteval graph"
-
-
 def compare_tensors(t0, t1):
     return torch.equal(t0, t1)
 
 
-def const_eval_tensor(inputs, consteval_trace, input_name, is_forge=True):
+def const_eval_tensor(inputs, consteval_trace, input_name):
     contains_recorded_operations = consteval_trace[input_name]
     if contains_recorded_operations:
         value = detach_tensors(
-            [consteval_input(consteval_trace, input_name, inputs, is_forge)], fix_non_contiguous=True
+            [consteval_input(consteval_trace, input_name, inputs)], fix_non_contiguous=True
         )[0]
     else:
-        value = pad_pytorch_tensor_to_forge(inputs[input_name], []) if is_forge else inputs[input_name]
+        value = inputs[input_name]
     # cast if necessary
     forge_dtype = pytorch_dtype_to_forge_dataformat(value.dtype)
     if value.dtype != forge_dataformat_to_pytorch_dtype(forge_dtype):
@@ -1475,7 +1455,7 @@ def get_device_constant_and_parameters(
 
 
 def get_post_const_eval_tensors(
-    graph, device_constant_and_parameters, consteval_trace, ordered_input_names, is_forge=True
+    graph, device_constant_and_parameters, consteval_trace, ordered_input_names
 ) -> Dict[str, torch.Tensor]:
     post_const_eval_constants: Dict[str, torch.Tensor] = {}
 
@@ -1484,14 +1464,13 @@ def get_post_const_eval_tensors(
     for input_name in ordered_input_names:
         # Load input constant tensors for consteval
         inputs = get_constant_inputs(
-            constant_nodes, device_constant_and_parameters, consteval_trace, input_name, is_forge
+            constant_nodes, device_constant_and_parameters, consteval_trace, input_name
         )
 
         post_const_eval_constants[input_name] = const_eval_tensor(
             inputs,
             consteval_trace,
             input_name,
-            is_forge,
         )
 
     return post_const_eval_constants

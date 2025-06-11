@@ -129,7 +129,6 @@ void PassesModule(py::module &m_passes)
         .def("set_output_df", &tt::LoweringContext::set_output_df)
         .def("set_runtime_tensor_transform", &tt::LoweringContext::set_runtime_tensor_transform)
         .def("constant", &tt::LoweringContext::constant)
-        .def("constant_tile", &tt::LoweringContext::constant_tile)
         .def(
             "tensor",
             [](tt::LoweringContext &self, py::object tensor, DataFormat df)
