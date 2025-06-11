@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Reference: https://huggingface.co/state-spaces/mamba-2.8b-hf
 
+import types
+
 import pytest
 import torch
 from transformers import AutoTokenizer, MambaForCausalLM
@@ -17,6 +19,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import DeprecatedVerifyConfig, verify
 
+from test.models.models_utils import slow_forward_static
 from test.utils import download_model
 
 
@@ -80,6 +83,12 @@ def test_mamba(variant):
     # Prepare input
     prompt = "Hey how are you doing?"
     inputs = [tokenizer(prompt, return_tensors="pt")["input_ids"]]
+    model = torch.nn.Embedding(model.config.vocab_size, model.config.hidden_size)
+    input_embeds = model(tokenizer(prompt, return_tensors="pt")["input_ids"])
+    _, seq_len, _ = input_embeds.shape
+    for block in framework_model.model.backbone.layers:
+        block.mixer._static_seq_len = seq_len
+        block.mixer.slow_forward = types.MethodType(slow_forward_static, block.mixer)
 
     # Forge compile framework model
     compiled_model = forge.compile(
