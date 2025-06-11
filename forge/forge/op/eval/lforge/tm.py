@@ -81,7 +81,7 @@ def eval(type, attr, ops):
                     result.append(t_ops[0].select(dim, offset + i))
                 else:
                     result.append(zero_slice)
-        return forge.tensor.pad_pytorch_tensor_to_forge(torch.stack(result, dim=dim), [])
+        return torch.stack(result, dim=dim)
 
     if type == "gather":
         assert len(attr) == 5, "Gather should have 5 attributes"
@@ -99,7 +99,7 @@ def eval(type, attr, ops):
                 offset += 1
             else:
                 result.append(zero_slice)
-        return forge.tensor.pad_pytorch_tensor_to_forge(torch.stack(result, dim=dim), [])
+        return torch.stack(result, dim=dim)
 
     if type == "hslice":
         assert len(attr) == 1, "HSlice should have one attribute, the slice size"

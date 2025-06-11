@@ -60,8 +60,7 @@ Shape Node::shape_of_operand(const Graph* graph, const Node* operand, bool ignor
             if (ignore_broadcasts and tm.op == "broadcast")
                 continue;
             std::vector<Shape> shapes = {operand_shape};
-            std::tuple<Shape, std::vector<DimBroadcast>> shape_data =
-                get_op_shape(tm, shapes, graph->get_ir_level() == IRLevel::IR_FORGE);
+            std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(tm, shapes);
             operand_shape = std::get<0>(shape_data);
             TT_ASSERT(std::get<1>(shape_data).size() == 0, "TMs should not cause broadcasts");
         }
