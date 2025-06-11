@@ -14,7 +14,6 @@ from forge._C import DataFormat, MathFidelity
 from forge._C.graph import UBlockOrder, Shape
 from forge._C.backend_api import get_op_model_param
 from .tm import eval as tm_eval
-from forge.tensor import pad_pytorch_tensor_to_forge
 from forge._C.backend_api import get_op_model_execution_cycles
 
 from ..common import to_torch_operands, op_model_to_desc, get_compiler_cached_cycles
@@ -102,9 +101,6 @@ def eval(type, attr, ops):
         torch.manual_seed(seed)
         ret = torch.nn.functional.dropout(ret, p=p, training=bool(training))
         torch.set_rng_state(rng_state)
-
-        # Re-pad if previously tilized
-        ret = pad_pytorch_tensor_to_forge(ret, [])
 
         # Re-t-stream
         if is_r_major:
