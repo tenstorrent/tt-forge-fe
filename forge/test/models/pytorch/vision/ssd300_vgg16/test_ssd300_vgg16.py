@@ -75,8 +75,8 @@ def test_ssd300_vgg16(variant):
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "detection", weight_name)
-    model = SSDWrapper(framework_model)
-    model.to(torch.bfloat16)
+    framework_model = SSDWrapper(framework_model)
+    framework_model.to(torch.bfloat16)
     inputs = [inputs[0].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
@@ -91,10 +91,10 @@ def test_ssd300_vgg16(variant):
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post Processing
-    postprocessor = Postprocessor(model)
+    postprocessor = Postprocessor(framework_model)
     detection_fw, detection_co = postprocessor.process(fw_out, co_out, inputs)
 
     # Run model on sample data and print results
