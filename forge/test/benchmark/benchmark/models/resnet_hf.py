@@ -111,19 +111,141 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
         compiler_cfg.default_df_override = DataFormat.Float16_b
 
     # Turn on MLIR optimizations.
-    compiler_cfg.mlir_config = (
-        MLIRConfig().set_enable_optimizer(True).set_enable_fusing(True).set_enable_memory_layout_analysis(False)
-    )
+    mlir_config = MLIRConfig()
+    mlir_config.set_enable_optimizer(True)
+    mlir_config.set_enable_fusing(True)
+    mlir_config.set_enable_memory_layout_analysis(True)
+
+    custom_config = "override-output-layout="
+
+
+    custom_config += "conv2d_0.dc.conv2d.2=dram:interleaved:tile:8x8:bf16"  # 148
+
+    custom_config += ","
+
+    # custom_config += "conv2d_64.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 275
+    # custom_config += "conv2d_226.dc.conv2d.2=dram:interleaved:tile:8x8:bf16"  # 291
+
+    # custom_config += ","
+
+    # custom_config += "conv2d_437.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 312
+    # custom_config += "conv2d_746.dc.conv2d.2=dram:interleaved:tile:8x8:bf16"  # 343
+
+    # custom_config += ","
+
+    # custom_config += "conv2d_17.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 356
+    # custom_config += "conv2d_33.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 358
+    # custom_config += "conv2d_49.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 360
+    # custom_config += "conv2d_81.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 361
+    # custom_config += "conv2d_97.dc.conv2d.2=dram:interleaved:tile:8x8:bf16"  # 363
+
+    # custom_config += ","
+
+    # custom_config += "conv2d_113.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 365
+    # custom_config += "conv2d_130.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 366
+    # custom_config += "conv2d_146.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 368
+    # custom_config += "conv2d_162.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 370
+    # custom_config += "conv2d_179.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 371
+    # custom_config += "conv2d_195.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 373
+    # custom_config += "conv2d_211.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 375
+    # custom_config += "conv2d_243.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 376
+    # custom_config += "conv2d_259.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 378
+    # custom_config += "conv2d_275.dc.conv2d.2=dram:interleaved:tile:8x8:bf16"  # 380
+
+    # custom_config += ","
+
+    # custom_config += "conv2d_292.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 381
+    # custom_config += "conv2d_308.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 383
+    # custom_config += "conv2d_324.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 385
+    # custom_config += "conv2d_341.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 386
+    # custom_config += "conv2d_357.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 388
+    # custom_config += "conv2d_373.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 390
+    # custom_config += "conv2d_390.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 391
+    # custom_config += "conv2d_406.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 393
+    # custom_config += "conv2d_422.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 395
+    # custom_config += "conv2d_454.dc.conv2d.2=dram:interleaved:tile:8x8:bf16"  # 396
+
+    # custom_config += ","
+
+    # custom_config += "conv2d_470.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 398
+    # custom_config += "conv2d_486.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 400
+
+    # custom_config += "conv2d_503.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 401
+    # custom_config += "conv2d_519.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 403
+    # custom_config += "conv2d_535.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 405
+
+    # -------------- OVDE SE DOGODI PRVOBITNA RIKAVELA 10.06.2025. --------------
+    # -------------- OVDE SE DOGODI PRVOBITNA RIKAVELA SE VISE NE JAVLJA U OVOJ KONFIGURACIJI 11.06.2025. --------------
+
+    # custom_config += "conv2d_552.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 406
+    # custom_config += "conv2d_568.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 408
+    # custom_config += "conv2d_584.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 410
+    # custom_config += "conv2d_601.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 411
+    # custom_config += "conv2d_617.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 413
+
+    # -------------- HANG-UJE PRE RESETA, OD PRETHODNIH KONFIGURACIJA 11.06.2025. --------------
+
+    # -------------- NE HANG-UJE NAKON RESETA, OD PRETHODNIH KONFIGURACIJA, PRVI RUN 11.06.2025. --------------
+    # -------------- HANG-UJE NAKON RESETA, OD PRETHODNIH KONFIGURACIJA, DRUGI RUN 11.06.2025. --------------
+
+    # -------------- OVDE SE DOGODI PRVOBITNA RIKAVELA NAKON RESETA, 11.06.2025. --------------
+
+    # Device 0: Not done phys cores: (x=18,y=21) (x=18,y=20) (x=18,y=22) (x=18,y=18) (x=19,y=18) (x=20,y=18) (x=22,y=19) (x=21,y=18) (x=22,y=18) (x=20,y=19) (x=23,y=18) (x=21,y=19) (x=24,y=18) (x=18,y=23) (x=18,y=19) (x=19,y=19)
+
+    # custom_config += "conv2d_633.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 415
+    # custom_config += "conv2d_650.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 416
+    # custom_config += "conv2d_666.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 418
+    # custom_config += "conv2d_682.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 420
+    # custom_config += "conv2d_699.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 421
+    # custom_config += "conv2d_715.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 423
+    # custom_config += "conv2d_731.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 425
+    # custom_config += "conv2d_763.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 430
+    # custom_config += "conv2d_779.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 432
+    # custom_config += "conv2d_795.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 434
+
+    # custom_config += "conv2d_812.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 439
+    custom_config += "conv2d_828.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 441
+    custom_config += "conv2d_844.dc.conv2d.2=dram:interleaved:tile:8x8:bf16"  # 443
+
+    # -------------- NISU SHARDOVANE PRVA I POSLEDNJA KONVOLUCIJA, PROSAO PRVI RUN, NAKON RESETA, 11.06.2025. --------------
+    # -------------- NISU SHARDOVANE PRVA I POSLEDNJA KONVOLUCIJA, HANGOVAO DRUGI RUN, NAKON RESETA, 11.06.2025. --------------
+
+
+    # -------------- NISU SHARDOVANE PRVA I POSLEDNJE DVE KONVOLUCIJE, PAO S GRESKOM ELFFILE, PRVI RUN, NAKON RESETA, 11.06.2025. --------------
+    # -------------- NISU SHARDOVANE PRVA I POSLEDNJE DVE KONVOLUCIJE, PROSAO, DRUGI RUN, NAKON RESETA, 11.06.2025. --------------
+    # -------------- NISU SHARDOVANE PRVA I POSLEDNJE DVE KONVOLUCIJE, HANG, TRECI RUN, NAKON RESETA, 11.06.2025. --------------
+    # -------------- NISU SHARDOVANE PRVA I POSLEDNJE DVE KONVOLUCIJE, Read 0xffffffff from PCIE, CETVRTI RUN, NAKON RESETA, 11.06.2025. --------------
+    # -------------- NISU SHARDOVANE PRVA I POSLEDNJE DVE KONVOLUCIJE, Read 0xffffffff from PCIE, PETI RUN, NAKON RESETA, 11.06.2025. --------------
+
+    mlir_config.set_custom_config(custom_config)
+    compiler_cfg.mlir_config = mlir_config
 
     # Enable Forge FE optimizations
     compiler_cfg.enable_optimization_passes = True
 
+    print(203 * "=")
+    print(100 * "-" + " 1 " + 100 * "-")
+    print(203 * "=")
+
     compiled_model = forge.compile(framework_model, sample_inputs=inputs[0], compiler_cfg=compiler_cfg)
+
+    print(203 * "=")
+    print(100 * "-" + " 2 " + 100 * "-")
+    print(203 * "=")
 
     # Enable program cache on all devices
     settings = DeviceSettings()
     settings.enable_program_cache = True
+
+    print(203 * "=")
+    print(100 * "-" + " 3 " + 100 * "-")
+    print(203 * "=")
+
     configure_devices(device_settings=settings)
+
+    print(203 * "=")
+    print(100 * "-" + " 4 " + 100 * "-")
+    print(203 * "=")
 
     # Run for the first time to warm up the model. This is required to get accurate performance numbers.
     compiled_model(inputs[0])
