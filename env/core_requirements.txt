@@ -19,7 +19,7 @@ networkx==2.8.5
 numpy==1.26.4
 onnx>=1.15.0
 onnxruntime>=1.16.3
-opencv-python-headless==4.10.0.84
+opencv-python-headless==4.11.0.86
 # This is needed to avoid issue https://yyz-gitlab.local.tenstorrent.com/devops/devops/-/issues/95
 pandas==1.5.3
 prettytable==3.0.0
