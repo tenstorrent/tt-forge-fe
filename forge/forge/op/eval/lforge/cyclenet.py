@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import argparse
 import pandas as pd
 import torch
 import torch.nn as nn

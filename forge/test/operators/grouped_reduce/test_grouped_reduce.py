@@ -39,8 +39,6 @@ WDIM_FIXED = True
 
 np.random.seed(100)
 
-from functools import reduce
-
 
 def factors(n):
     facs = set()

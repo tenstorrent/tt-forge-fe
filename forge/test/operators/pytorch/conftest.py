@@ -71,7 +71,6 @@ def pytest_runtest_makereport(item: _pytest.python.Function, call: _pytest.runne
         except Exception as e:
             logger.error(f"Failed to log test vector properties: {e}")
             logger.exception(e)
-            pass
 
 
 def log_test_vector_properties(

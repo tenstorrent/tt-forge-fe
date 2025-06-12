@@ -54,18 +54,16 @@
 
 import pytest
 
-from typing import List, Dict, Type, Optional, Any
+from typing import List, Dict
 from loguru import logger
 
-import random
 import torch
 import forge
 import forge.op
-import os
 
 from forge.op_repo import TensorShape
 
-from test.operators.utils import InputSourceFlags, VerifyUtils
+from test.operators.utils import VerifyUtils
 from test.operators.utils import ShapeUtils
 from test.operators.utils import InputSource
 from test.operators.utils import TestVector
@@ -73,7 +71,6 @@ from test.operators.utils import TestPlan
 from test.operators.utils import FailingReasons
 from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
-from test.operators.utils import TestPlanUtils
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import ValueRanges
 from test.operators.utils.utils import PytorchUtils

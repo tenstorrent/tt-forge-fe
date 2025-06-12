@@ -3,11 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import forge
-import math
 import torch
 import pytest
-import random
-import os
 
 from typing import List, Dict
 from loguru import logger
@@ -17,12 +14,10 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
 from forge.verify.verify import verify as forge_verify
 
-from test.operators.utils import InputSourceFlags, VerifyUtils
+from test.operators.utils import VerifyUtils
 from test.operators.utils import InputSource
 from test.operators.utils import TestVector
 from test.operators.utils import TestPlan
-from test.operators.utils import TestPlanUtils
-from test.operators.utils import FailingReasons
 from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon

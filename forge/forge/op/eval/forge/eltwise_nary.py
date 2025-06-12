@@ -3,10 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 from typing import List, Tuple
 from math import gcd
-import ast
-import os
 import torch
-import math
 import forge
 from ..common import to_torch_operands
 from .transpose import TransposeTM
@@ -302,16 +299,4 @@ def find_gcd(list):
 
 
 def decompose_post_optimize(type, attr, dc, inputs):
-    if type == "where":
-
-        condition = inputs[0]
-        x = inputs[1]
-        y = inputs[2]
-        one = dc.tensor(torch.ones((1,)))
-        not_condition = dc.op("subtract", [one, condition])
-
-        t0 = dc.op("multiply", [condition, x])
-        t1 = dc.op("multiply", [not_condition, y])
-
-        add = dc.op("add", [t0, t1])
-        dc.fuse(add)
+    pass

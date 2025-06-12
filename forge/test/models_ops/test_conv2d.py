@@ -38929,28 +38929,25 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D181,
-            [((1, 3, 224, 224), torch.float32)],
-            {
-                "model_names": [
-                    "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
-                    "pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf",
-                    "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-                    "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
-                ],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D181,
+        [((1, 3, 224, 224), torch.float32)],
+        {
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                "pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf",
+                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D96,
@@ -40519,23 +40516,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D181,
-            [((1, 3, 240, 240), torch.float32)],
-            {
-                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D181,
+        [((1, 3, 240, 240), torch.float32)],
+        {
+            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D96,
@@ -52449,23 +52443,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D562,
-            [((1, 672, 14, 14), torch.float32), ((672, 1, 5, 5), torch.float32)],
-            {
-                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[1, 1, 2, 2]",
-                    "dilation": "1",
-                    "groups": "672",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D562,
+        [((1, 672, 14, 14), torch.float32), ((672, 1, 5, 5), torch.float32)],
+        {
+            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 2, 2]",
+                "dilation": "1",
+                "groups": "672",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D73,
@@ -52728,27 +52719,24 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D570,
-            [((1, 96, 112, 112), torch.float32), ((96, 1, 3, 3), torch.float32)],
-            {
-                "model_names": [
-                    "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
-                    "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-                    "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
-                ],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "96",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D570,
+        [((1, 96, 112, 112), torch.float32), ((96, 1, 3, 3), torch.float32)],
+        {
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "96",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D571,
@@ -52793,26 +52781,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D572,
-            [((1, 144, 56, 56), torch.float32), ((144, 1, 3, 3), torch.float32)],
-            {
-                "model_names": [
-                    "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-                    "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
-                ],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "144",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D572,
+        [((1, 144, 56, 56), torch.float32), ((144, 1, 3, 3), torch.float32)],
+        {
+            "model_names": [
+                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "144",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D573,
@@ -52832,23 +52817,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D574,
-            [((1, 144, 56, 56), torch.float32), ((144, 1, 5, 5), torch.float32)],
-            {
-                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[1, 1, 2, 2]",
-                    "dilation": "1",
-                    "groups": "144",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D574,
+        [((1, 144, 56, 56), torch.float32), ((144, 1, 5, 5), torch.float32)],
+        {
+            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 2, 2]",
+                "dilation": "1",
+                "groups": "144",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D575,
@@ -52892,23 +52874,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D577,
-            [((1, 240, 28, 28), torch.float32), ((240, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "240",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D577,
+        [((1, 240, 28, 28), torch.float32), ((240, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "240",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D578,
@@ -53198,23 +53177,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D181,
-            [((1, 3, 300, 300), torch.float32)],
-            {
-                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D181,
+        [((1, 3, 300, 300), torch.float32)],
+        {
+            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D568,
@@ -53261,23 +53237,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D572,
-            [((1, 144, 150, 150), torch.float32), ((144, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "144",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D572,
+        [((1, 144, 150, 150), torch.float32), ((144, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "144",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D52,
@@ -53414,23 +53387,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D584,
-            [((1, 288, 38, 38), torch.float32), ((288, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "288",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D584,
+        [((1, 288, 38, 38), torch.float32), ((288, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "288",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D153,
@@ -53687,23 +53657,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D181,
-            [((1, 3, 380, 380), torch.float32)],
-            {
-                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D181,
+        [((1, 3, 380, 380), torch.float32)],
+        {
+            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D568,
@@ -53750,23 +53717,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D572,
-            [((1, 144, 190, 190), torch.float32), ((144, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "144",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D572,
+        [((1, 144, 190, 190), torch.float32), ((144, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "144",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D52,
@@ -53903,23 +53867,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D592,
-            [((1, 336, 48, 48), torch.float32), ((336, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "336",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D592,
+        [((1, 336, 48, 48), torch.float32), ((336, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "336",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D66,
@@ -54041,23 +54002,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D593,
-            [((1, 960, 24, 24), torch.float32), ((960, 1, 5, 5), torch.float32)],
-            {
-                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[1, 1, 2, 2]",
-                    "dilation": "1",
-                    "groups": "960",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D593,
+        [((1, 960, 24, 24), torch.float32), ((960, 1, 5, 5), torch.float32)],
+        {
+            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 2, 2]",
+                "dilation": "1",
+                "groups": "960",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D79,
@@ -54179,23 +54137,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D181,
-            [((1, 3, 260, 260), torch.float32)],
-            {
-                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D181,
+        [((1, 3, 260, 260), torch.float32)],
+        {
+            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D568,
@@ -54242,23 +54197,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D570,
-            [((1, 96, 130, 130), torch.float32), ((96, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "96",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D570,
+        [((1, 96, 130, 130), torch.float32), ((96, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "96",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D108,
@@ -54680,23 +54632,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D570,
-            [((1, 96, 120, 120), torch.float32), ((96, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "96",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D570,
+        [((1, 96, 120, 120), torch.float32), ((96, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "96",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D571,
@@ -54713,23 +54662,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D574,
-            [((1, 144, 60, 60), torch.float32), ((144, 1, 5, 5), torch.float32)],
-            {
-                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[1, 1, 2, 2]",
-                    "dilation": "1",
-                    "groups": "144",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D574,
+        [((1, 144, 60, 60), torch.float32), ((144, 1, 5, 5), torch.float32)],
+        {
+            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 2, 2]",
+                "dilation": "1",
+                "groups": "144",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D575,
@@ -54746,23 +54692,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D577,
-            [((1, 240, 30, 30), torch.float32), ((240, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "240",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D577,
+        [((1, 240, 30, 30), torch.float32), ((240, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "240",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D578,
@@ -61956,23 +61899,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D861,
-            [((1, 64, 112, 112), torch.float32), ((64, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "64",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D861,
+        [((1, 64, 112, 112), torch.float32), ((64, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "64",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D862,
@@ -62031,23 +61971,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D865,
-            [((1, 128, 56, 56), torch.float32), ((128, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "128",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D865,
+        [((1, 128, 56, 56), torch.float32), ((128, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "128",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D672,
@@ -62086,23 +62023,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D867,
-            [((1, 256, 28, 28), torch.float32), ((256, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "256",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D867,
+        [((1, 256, 28, 28), torch.float32), ((256, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "256",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D673,
@@ -62141,23 +62075,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D869,
-            [((1, 512, 14, 14), torch.float32), ((512, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "512",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D869,
+        [((1, 512, 14, 14), torch.float32), ((512, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "512",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D870,
@@ -62178,23 +62109,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D871,
-            [((1, 3, 192, 192), torch.float32)],
-            {
-                "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D871,
+        [((1, 3, 192, 192), torch.float32)],
+        {
+            "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D553,
@@ -62226,23 +62154,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D873,
-            [((1, 48, 96, 96), torch.float32), ((48, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "48",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D873,
+        [((1, 48, 96, 96), torch.float32), ((48, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "48",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D874,
@@ -62274,23 +62199,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D570,
-            [((1, 96, 48, 48), torch.float32), ((96, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "96",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D570,
+        [((1, 96, 48, 48), torch.float32), ((96, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "96",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D876,
@@ -62337,23 +62259,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D877,
-            [((1, 192, 24, 24), torch.float32), ((192, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "192",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D877,
+        [((1, 192, 24, 24), torch.float32), ((192, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "192",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D368,
@@ -62400,23 +62319,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D880,
-            [((1, 384, 12, 12), torch.float32), ((384, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "384",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D880,
+        [((1, 384, 12, 12), torch.float32), ((384, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "384",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D881,
@@ -62518,23 +62434,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D877,
-            [((1, 192, 28, 28), torch.float32), ((192, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "192",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D877,
+        [((1, 192, 28, 28), torch.float32), ((192, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "192",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D879,
@@ -62595,23 +62508,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D886,
-            [((1, 576, 14, 14), torch.float32), ((576, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "576",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D886,
+        [((1, 576, 14, 14), torch.float32), ((576, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "576",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D887,
@@ -62633,23 +62543,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D871,
-            [((1, 3, 160, 160), torch.float32)],
-            {
-                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D871,
+        [((1, 3, 160, 160), torch.float32)],
+        {
+            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D553,
@@ -62696,23 +62603,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D570,
-            [((1, 96, 80, 80), torch.float32), ((96, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "96",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D570,
+        [((1, 96, 80, 80), torch.float32), ((96, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "96",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D108,
@@ -62759,23 +62663,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D572,
-            [((1, 144, 40, 40), torch.float32), ((144, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "144",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D572,
+        [((1, 144, 40, 40), torch.float32), ((144, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "144",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D110,
@@ -62837,23 +62738,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D572,
-            [((1, 144, 20, 20), torch.float32), ((144, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "144",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D572,
+        [((1, 144, 20, 20), torch.float32), ((144, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "144",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D112,
@@ -62960,23 +62858,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D892,
-            [((1, 432, 10, 10), torch.float32), ((432, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "432",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D892,
+        [((1, 432, 10, 10), torch.float32), ((432, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "432",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D279,
@@ -63083,23 +62978,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D897,
-            [((1, 3, 96, 96), torch.float32)],
-            {
-                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D897,
+        [((1, 3, 96, 96), torch.float32)],
+        {
+            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D606,
@@ -63146,23 +63038,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D873,
-            [((1, 48, 48, 48), torch.float32), ((48, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "48",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D873,
+        [((1, 48, 48, 48), torch.float32), ((48, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "48",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D898,
@@ -63209,23 +63098,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D873,
-            [((1, 48, 24, 24), torch.float32), ((48, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "48",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D873,
+        [((1, 48, 24, 24), torch.float32), ((48, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "48",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D262,
@@ -63272,23 +63158,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D570,
-            [((1, 96, 12, 12), torch.float32), ((96, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "96",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D570,
+        [((1, 96, 12, 12), torch.float32), ((96, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "96",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D264,
@@ -63410,23 +63293,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D877,
-            [((1, 192, 6, 6), torch.float32), ((192, 1, 3, 3), torch.float32)],
-            {
-                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[2, 2]",
-                    "padding": "[0, 0, 1, 1]",
-                    "dilation": "1",
-                    "groups": "192",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D877,
+        [((1, 192, 6, 6), torch.float32), ((192, 1, 3, 3), torch.float32)],
+        {
+            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 1, 1]",
+                "dilation": "1",
+                "groups": "192",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
+        },
     ),
     (
         Conv2D57,

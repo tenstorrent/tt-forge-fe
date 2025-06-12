@@ -23,40 +23,43 @@ from forge.verify.verify import verify
 variants = [
     pytest.param(
         "Qwen/Qwen2.5-0.5B",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "Qwen/Qwen2.5-0.5B-Instruct",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "Qwen/Qwen2.5-1.5B",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "Qwen/Qwen2.5-1.5B-Instruct",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "Qwen/Qwen2.5-3B",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model"), pytest.mark.out_of_memory],
     ),
     pytest.param(
         "Qwen/Qwen2.5-3B-Instruct",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model"), pytest.mark.out_of_memory],
     ),
     pytest.param(
         "Qwen/Qwen2.5-7B",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model"), pytest.mark.out_of_memory],
     ),
     pytest.param(
         "Qwen/Qwen2.5-7B-Instruct",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model"), pytest.mark.out_of_memory],
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-14B-Instruct",
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-32B-Instruct",
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-72B-Instruct",
+        marks=[pytest.mark.xfail],
     ),
 ]
 
 
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.xfail
 @pytest.mark.nightly
 def test_qwen_clm(variant):
     if variant in [
@@ -64,6 +67,7 @@ def test_qwen_clm(variant):
         "Qwen/Qwen2.5-1.5B-Instruct",
         "Qwen/Qwen2.5-3B-Instruct",
         "Qwen/Qwen2.5-7B-Instruct",
+        "Qwen/Qwen2.5-72B-Instruct",
     ]:
         group = ModelGroup.RED
     else:
@@ -78,6 +82,17 @@ def test_qwen_clm(variant):
         source=Source.HUGGINGFACE,
         group=group,
     )
+
+    if variant in [
+        "Qwen/Qwen2.5-3B",
+        "Qwen/Qwen2.5-3B-Instruct",
+        "Qwen/Qwen2.5-7B",
+        "Qwen/Qwen2.5-7B-Instruct",
+        "Qwen/Qwen2.5-14B-Instruct",
+        "Qwen/Qwen2.5-32B-Instruct",
+        "Qwen/Qwen2.5-72B-Instruct",
+    ]:
+        raise RuntimeError("Requires multi-chip support")
 
     # Load model and tokenizer
     framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")

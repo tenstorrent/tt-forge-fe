@@ -137,10 +137,7 @@ variants = [
     pytest.param(
         "meta-llama/Llama-3.1-8B", marks=[pytest.mark.skip(reason="Segmentation Fault"), pytest.mark.out_of_memory]
     ),
-    pytest.param(
-        "meta-llama/Llama-3.1-8B-Instruct",
-        marks=[pytest.mark.skip(reason="Segmentation Fault"), pytest.mark.out_of_memory],
-    ),
+    pytest.param("meta-llama/Llama-3.1-8B-Instruct", marks=pytest.mark.xfail),
     pytest.param("meta-llama/Llama-3.2-1B", marks=pytest.mark.xfail),
     pytest.param("meta-llama/Llama-3.2-1B-Instruct", marks=pytest.mark.xfail),
     pytest.param(
@@ -152,15 +149,7 @@ variants = [
             pytest.mark.out_of_memory,
         ],
     ),
-    pytest.param(
-        "meta-llama/Llama-3.2-3B-Instruct",
-        marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-            ),
-            pytest.mark.out_of_memory,
-        ],
-    ),
+    pytest.param("meta-llama/Llama-3.2-3B-Instruct", marks=pytest.mark.xfail),
     pytest.param(
         "huggyllama/llama-7b",
         marks=[
@@ -170,6 +159,7 @@ variants = [
             pytest.mark.out_of_memory,
         ],
     ),
+    pytest.param("meta-llama/Meta-Llama-3.1-70B", marks=pytest.mark.xfail),
 ]
 
 
@@ -180,6 +170,7 @@ def test_llama3_causal_lm(variant):
         "meta-llama/Llama-3.1-8B-Instruct",
         "meta-llama/Llama-3.2-1B-Instruct",
         "meta-llama/Llama-3.2-3B-Instruct",
+        "meta-llama/Meta-Llama-3.1-70B",
     ]:
         group = ModelGroup.RED
     else:
@@ -194,6 +185,15 @@ def test_llama3_causal_lm(variant):
         source=Source.HUGGINGFACE,
         group=group,
     )
+
+    if variant in [
+        "meta-llama/Meta-Llama-3.1-70B",
+        "meta-llama/Llama-3.2-3B-Instruct",
+        "meta-llama/Llama-3.2-1B-Instruct",
+    ]:
+        raise RuntimeError("Requires multi-chip support")
+    elif variant == "meta-llama/Llama-3.1-8B-Instruct":
+        raise RuntimeError("Segmentation Fault")
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -357,3 +357,28 @@ def test_llama3_sequence_classification(variant):
     predicted_value = co_out[0].argmax(-1).item()
 
     print(f"Prediction : {framework_model.config.id2label[predicted_value]}")
+
+
+variants = [
+    "meta-llama/Llama-3.2-90B-Vision-Instruct",
+    "meta-llama/Llama-3.1-8B-Instruct",
+]
+
+
+@pytest.mark.nightly
+@pytest.mark.xfail
+@pytest.mark.parametrize("variant", variants)
+def test_llama3(variant):
+
+    # Record Forge Property
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.LLAMA3,
+        variant=variant,
+        task=Task.SEQUENCE_CLASSIFICATION,
+        source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+    )
+
+    # Force the test to fail explicitly
+    raise RuntimeError("Requires multi-chip support")
