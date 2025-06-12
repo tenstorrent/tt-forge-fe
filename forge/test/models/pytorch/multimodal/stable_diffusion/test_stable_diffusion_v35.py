@@ -45,26 +45,18 @@ class StableDiffusionWrapper(torch.nn.Module):
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize(
     "variant",
     [
         pytest.param(
             "stable-diffusion-3.5-medium",
-            marks=pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-            ),
         ),
         pytest.param(
             "stable-diffusion-3.5-large",
-            marks=pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 54 GB during compile time)"
-            ),
         ),
         pytest.param(
             "stable-diffusion-3.5-large-turbo",
-            marks=pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 54 GB during compile time)"
-            ),
         ),
     ],
 )
@@ -78,6 +70,8 @@ def test_stable_diffusion_v35(variant):
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
     )
+
+    raise RuntimeError("Requires multi-chip support")
 
     # Load pipeline
     pipe = load_pipe(variant, variant_type="v35")

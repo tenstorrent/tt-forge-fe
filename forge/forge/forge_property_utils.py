@@ -219,6 +219,13 @@ class ModelArch(BaseEnum):
     CENTERNET = ("centernet", "Centernet")
     SURYAOCR = ("surya_ocr", "Surya_OCR")
     TRANSFUSER = ("transfuser", "Transfuser")
+    BEVDEPTH = ("bevdepth", "Bevdepth")
+    POINTPILLARS = ("pointpillars", "Pointpillars")
+    BEVFORMER = ("bevformer", "Bevformer")
+    FLUX = ("flux", "Flux")
+    PIXTRAL = ("pixtral", "Pixtral")
+    SOLAR = ("solar", "Solar")
+    VADV2 = ("vadv2", "Vadv2")
 
 
 def build_module_name(
