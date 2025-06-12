@@ -116,12 +116,12 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     mlir_config.set_enable_fusing(True)
     mlir_config.set_enable_memory_layout_analysis(True)
 
-    custom_config = "override-output-layout="
+    # custom_config = "override-output-layout="
 
 
-    custom_config += "conv2d_0.dc.conv2d.2=dram:interleaved:tile:8x8:bf16"  # 148
+    # custom_config += "conv2d_0.dc.conv2d.2=dram:interleaved:tile:8x8:bf16"  # 148
 
-    custom_config += ","
+    # custom_config += ","
 
     # custom_config += "conv2d_64.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 275
     # custom_config += "conv2d_226.dc.conv2d.2=dram:interleaved:tile:8x8:bf16"  # 291
@@ -204,8 +204,8 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     # custom_config += "conv2d_795.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 434
 
     # custom_config += "conv2d_812.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 439
-    custom_config += "conv2d_828.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 441
-    custom_config += "conv2d_844.dc.conv2d.2=dram:interleaved:tile:8x8:bf16"  # 443
+    # custom_config += "conv2d_828.dc.conv2d.2=dram:interleaved:tile:8x8:bf16,"  # 441
+    # custom_config += "conv2d_844.dc.conv2d.2=dram:interleaved:tile:8x8:bf16"  # 443
 
     # -------------- NISU SHARDOVANE PRVA I POSLEDNJA KONVOLUCIJA, PROSAO PRVI RUN, NAKON RESETA, 11.06.2025. --------------
     # -------------- NISU SHARDOVANE PRVA I POSLEDNJA KONVOLUCIJA, HANGOVAO DRUGI RUN, NAKON RESETA, 11.06.2025. --------------
@@ -217,7 +217,7 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     # -------------- NISU SHARDOVANE PRVA I POSLEDNJE DVE KONVOLUCIJE, Read 0xffffffff from PCIE, CETVRTI RUN, NAKON RESETA, 11.06.2025. --------------
     # -------------- NISU SHARDOVANE PRVA I POSLEDNJE DVE KONVOLUCIJE, Read 0xffffffff from PCIE, PETI RUN, NAKON RESETA, 11.06.2025. --------------
 
-    mlir_config.set_custom_config(custom_config)
+    # mlir_config.set_custom_config(custom_config)
     compiler_cfg.mlir_config = mlir_config
 
     # Enable Forge FE optimizations
