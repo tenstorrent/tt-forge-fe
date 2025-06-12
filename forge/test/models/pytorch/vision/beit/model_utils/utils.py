@@ -1,8 +1,7 @@
 # SPDX-FileCopyrightText: (c) 2024 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-import requests
-from PIL import Image
+from datasets import load_dataset
 from transformers import BeitForImageClassification, BeitImageProcessor
 
 
@@ -13,8 +12,8 @@ def load_model(variant):
 
 
 def load_input(variant):
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    dataset = load_dataset("cifar10", split="test")
+    image = dataset[0]["img"]
     processor = BeitImageProcessor.from_pretrained(variant)
     inputs = processor(images=image, return_tensors="pt")
     return [inputs["pixel_values"]]

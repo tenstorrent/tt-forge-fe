@@ -1,13 +1,8 @@
 # SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-import os
-import urllib
-
-import requests
-import torch
 import torchvision.transforms as transforms
-from PIL import Image
+from datasets import load_dataset
 
 from test.models.pytorch.vision.dla.model_utils import dla_model
 
@@ -17,8 +12,8 @@ def load_dla_model(variant):
     func = getattr(dla_model, variant)
 
     # Load data sample
-    url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    dataset = load_dataset("cifar10", split="test")
+    image = dataset[0]["img"]
 
     # Preprocessing
     transform = transforms.Compose(
@@ -37,21 +32,3 @@ def load_dla_model(variant):
     inputs = [img_tensor]
 
     return framework_model, inputs
-
-
-url = "https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt"
-
-
-def post_processing(output, top_k=5):
-
-    probabilities = torch.nn.functional.softmax(output[0][0], dim=0)
-    urllib.request.urlretrieve(url, "imagenet_classes.txt")
-
-    with open("imagenet_classes.txt", "r") as f:
-        categories = [s.strip() for s in f.readlines()]
-    topk_prob, topk_catid = torch.topk(probabilities, top_k)
-    for i in range(topk_prob.size(0)):
-        print(categories[topk_catid[i]], topk_prob[i].item())
-
-    # Cleanup
-    os.remove("imagenet_classes.txt")

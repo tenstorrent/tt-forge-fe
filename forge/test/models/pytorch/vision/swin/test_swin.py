@@ -58,8 +58,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(variant):
     framework_model.eval()
 
     # STEP 2: Prepare input samples
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    inputs = load_image(url, feature_extractor)
+    inputs = load_image(feature_extractor)
     inputs = [inputs[0].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
@@ -105,8 +104,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(variant):
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2Model.from_pretrained(variant)
 
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    inputs = load_image(url, feature_extractor)
+    inputs = load_image(feature_extractor)
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -140,8 +138,7 @@ def test_swin_v2_tiny_image_classification(variant):
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2ForImageClassification.from_pretrained(variant)
 
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    inputs = load_image(url, feature_extractor)
+    inputs = load_image(feature_extractor)
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -168,8 +165,7 @@ def test_swin_v2_tiny_masked(variant):
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2ForMaskedImageModeling.from_pretrained(variant)
 
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    inputs = load_image(url, feature_extractor)
+    inputs = load_image(feature_extractor)
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)

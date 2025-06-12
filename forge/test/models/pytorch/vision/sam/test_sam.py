@@ -27,15 +27,15 @@ from test.models.pytorch.vision.sam.model_utils.model import (
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "facebook/sam-vit-huge",
-            marks=[pytest.mark.skip(reason="Skipping due to CI/CD Limitations"), pytest.mark.skip_model_analysis],
-        ),
-        pytest.param(
-            "facebook/sam-vit-large",
-            marks=[pytest.mark.skip(reason="Skipping due to CI/CD Limitations"), pytest.mark.skip_model_analysis],
-        ),
-        pytest.param("facebook/sam-vit-base", marks=pytest.mark.xfail()),
+        # pytest.param(
+        #     "facebook/sam-vit-huge",
+        #     marks=[pytest.mark.skip(reason="Skipping due to CI/CD Limitations"), pytest.mark.skip_model_analysis],
+        # ),
+        # pytest.param(
+        #     "facebook/sam-vit-large",
+        #     marks=[pytest.mark.skip(reason="Skipping due to CI/CD Limitations"), pytest.mark.skip_model_analysis],
+        # ),
+        pytest.param("facebook/sam-vit-base"),
     ],
 )
 @pytest.mark.nightly
