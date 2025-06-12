@@ -129,6 +129,11 @@ class FailingRulesData:
         *TestIdsDataLoader.build_failing_rules(operators=["div"]),
     ]
 
+    remainder = [
+        common,
+        *TestIdsDataLoader.build_failing_rules(operators=["remainder"]),
+    ]
+
     ge = [
         common,
         *TestIdsDataLoader.build_failing_rules(operators=["ge"]),
