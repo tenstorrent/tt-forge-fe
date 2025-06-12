@@ -26,7 +26,6 @@ from test.utils import download_model
     [
         pytest.param(
             "openai/clip-vit-base-patch32",
-            marks=[pytest.mark.xfail],
         ),
     ],
 )
