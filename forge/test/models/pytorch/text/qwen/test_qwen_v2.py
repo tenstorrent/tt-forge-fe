@@ -13,6 +13,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -21,40 +22,19 @@ from forge.verify.verify import verify
 
 # Variants for testing
 variants = [
-    pytest.param(
-        "Qwen/Qwen2.5-0.5B",
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-0.5B-Instruct",
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-1.5B",
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-1.5B-Instruct",
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-3B",
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-3B-Instruct",
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-7B",
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-7B-Instruct",
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-14B-Instruct",
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-32B-Instruct",
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-72B-Instruct",
-        marks=[pytest.mark.xfail],
-    ),
+    "Qwen/Qwen2.5-0.5B",
+    "Qwen/Qwen2.5-0.5B-Instruct",
+    "Qwen/Qwen2.5-1.5B",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "Qwen/Qwen2.5-3B",
+    "Qwen/Qwen2.5-3B-Instruct",
+    "Qwen/Qwen2.5-7B",
+    "Qwen/Qwen2.5-7B-Instruct",
+    "Qwen/Qwen2.5-7B-Instruct-1M",
+    "Qwen/Qwen2.5-14B-Instruct",
+    "Qwen/Qwen2.5-14B-Instruct-1M",
+    "Qwen/Qwen2.5-32B-Instruct",
+    "Qwen/Qwen2.5-72B-Instruct",
 ]
 
 
@@ -67,11 +47,17 @@ def test_qwen_clm(variant):
         "Qwen/Qwen2.5-1.5B-Instruct",
         "Qwen/Qwen2.5-3B-Instruct",
         "Qwen/Qwen2.5-7B-Instruct",
+        "Qwen/Qwen2.5-7B-Instruct-1M",
+        "Qwen/Qwen2.5-14B-Instruct",
+        "Qwen/Qwen2.5-14B-Instruct-1M",
+        "Qwen/Qwen2.5-32B-Instruct",
         "Qwen/Qwen2.5-72B-Instruct",
     ]:
         group = ModelGroup.RED
+        priority = ModelPriority.P1
     else:
         group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -81,6 +67,7 @@ def test_qwen_clm(variant):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=group,
+        priority=priority,
     )
 
     if variant in [
@@ -91,6 +78,8 @@ def test_qwen_clm(variant):
         "Qwen/Qwen2.5-14B-Instruct",
         "Qwen/Qwen2.5-32B-Instruct",
         "Qwen/Qwen2.5-72B-Instruct",
+        "Qwen/Qwen2.5-7B-Instruct-1M",
+        "Qwen/Qwen2.5-14B-Instruct-1M",
     ]:
         raise RuntimeError("Requires multi-chip support")
 
@@ -148,3 +137,33 @@ def test_qwen2_token_classification(variant):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
+
+
+variants = [
+    "Qwen/Qwen2.5-VL-3B-Instruct",
+    "Qwen/Qwen2.5-VL-7B-Instruct",
+    "Qwen/Qwen2.5-VL-72B-Instruct",
+    "Qwen/QVQ-72B-Preview",
+]
+
+
+@pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
+@pytest.mark.xfail
+def test_qwen2_conditional_generation(variant):
+
+    # Record Forge Property
+    record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.QWENV2,
+        variant=variant,
+        task=Task.CONDITIONAL_GENERATION,
+        source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
+    )
+
+    if variant in ["Qwen/Qwen2.5-VL-72B-Instruct", "Qwen/QVQ-72B-Preview"]:
+        raise RuntimeError("Requires transformers>=4.49.0 and multi-chip support")
+    else:
+        raise RuntimeError("Requires transformers>=4.49.0")

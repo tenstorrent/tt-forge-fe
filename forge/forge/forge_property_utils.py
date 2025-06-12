@@ -75,6 +75,10 @@ class Task(BaseEnum):
     REALTIME_MAP_CONSTRUCTION = ("realtime_map_construction", "Realtime Map Construction")
     PLANNING_ORIENTED_DRIVING = ("planning_oriented_driving", "Planning-Oriented Driving")
     OPTICAL_CHARACTER_RECOGNITION = ("optical_character_recognition", "Optical Character Recognition")
+    NOVEL_VIEW_SYNTHESIS = ("novel_view_synthesis", "Novel View Synthesis")
+    BRAIN_TUMOR_SEGMENTATION = ("brain_tumor_segmentation", "Brain Tumor Segmentation")
+    TEXT_TO_VIDEO_GENERATION = ("text_to_video_generation", "Text-to-Video generation")
+    SENETNCE_SEGMENTATION = ("sentence_segmentation", "Sentence Segmentation")
 
 
 class Source(BaseEnum):
@@ -226,6 +230,13 @@ class ModelArch(BaseEnum):
     PIXTRAL = ("pixtral", "Pixtral")
     SOLAR = ("solar", "Solar")
     VADV2 = ("vadv2", "Vadv2")
+    QWENV3 = ("qwen_v3", "Qwen_v3")
+    GAUSSIAN_SPLATTING = ("gaussian_splatting", "Gaussian Splatting")
+    DETR3D = ("detr_3D", "Detr-3D")
+    MOCHIV1 = ("mochi-1", "Mochi-1")
+    TRANKIT = ("trankit", "Trankit")
+    MPLUGOWL2 = ("mplug_owl2", "mPLUG-Owl2")
+    LLAMA4 = ("llama4", "Llama-4")
 
 
 def build_module_name(

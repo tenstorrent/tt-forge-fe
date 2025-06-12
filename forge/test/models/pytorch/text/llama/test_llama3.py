@@ -22,6 +22,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -138,6 +139,7 @@ variants = [
         "meta-llama/Llama-3.1-8B", marks=[pytest.mark.skip(reason="Segmentation Fault"), pytest.mark.out_of_memory]
     ),
     pytest.param("meta-llama/Llama-3.1-8B-Instruct", marks=pytest.mark.xfail),
+    pytest.param("meta-llama/Meta-Llama-3.1-8B-Instruct", marks=pytest.mark.xfail),
     pytest.param("meta-llama/Llama-3.2-1B", marks=pytest.mark.xfail),
     pytest.param("meta-llama/Llama-3.2-1B-Instruct", marks=pytest.mark.xfail),
     pytest.param(
@@ -160,6 +162,8 @@ variants = [
         ],
     ),
     pytest.param("meta-llama/Meta-Llama-3.1-70B", marks=pytest.mark.xfail),
+    pytest.param("meta-llama/Meta-Llama-3.1-70B-Instruct", marks=pytest.mark.xfail),
+    pytest.param("meta-llama/Llama-3.3-70B-Instruct", marks=pytest.mark.xfail),
 ]
 
 
@@ -171,10 +175,23 @@ def test_llama3_causal_lm(variant):
         "meta-llama/Llama-3.2-1B-Instruct",
         "meta-llama/Llama-3.2-3B-Instruct",
         "meta-llama/Meta-Llama-3.1-70B",
+        "meta-llama/Meta-Llama-3.1-70B-Instruct",
+        "meta-llama/Llama-3.3-70B-Instruct",
+        "meta-llama/Meta-Llama-3.1-8B-Instruct",
     ]:
         group = ModelGroup.RED
     else:
         group = ModelGroup.GENERALITY
+
+    if variant in [
+        "meta-llama/Meta-Llama-3.1-70B",
+        "meta-llama/Meta-Llama-3.1-70B-Instruct",
+        "meta-llama/Llama-3.3-70B-Instruct",
+        "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    ]:
+        priority = ModelPriority.P1
+    else:
+        priority = ModelPriority.P2
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -184,12 +201,16 @@ def test_llama3_causal_lm(variant):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=group,
+        priority=priority,
     )
 
     if variant in [
         "meta-llama/Meta-Llama-3.1-70B",
         "meta-llama/Llama-3.2-3B-Instruct",
         "meta-llama/Llama-3.2-1B-Instruct",
+        "meta-llama/Meta-Llama-3.1-70B-Instruct",
+        "meta-llama/Llama-3.3-70B-Instruct",
+        "meta-llama/Meta-Llama-3.1-8B-Instruct",
     ]:
         raise RuntimeError("Requires multi-chip support")
     elif variant == "meta-llama/Llama-3.1-8B-Instruct":
@@ -357,28 +378,3 @@ def test_llama3_sequence_classification(variant):
     predicted_value = co_out[0].argmax(-1).item()
 
     print(f"Prediction : {framework_model.config.id2label[predicted_value]}")
-
-
-variants = [
-    "meta-llama/Llama-3.2-90B-Vision-Instruct",
-    "meta-llama/Llama-3.1-8B-Instruct",
-]
-
-
-@pytest.mark.nightly
-@pytest.mark.xfail
-@pytest.mark.parametrize("variant", variants)
-def test_llama3(variant):
-
-    # Record Forge Property
-    module_name = record_model_properties(
-        framework=Framework.PYTORCH,
-        model=ModelArch.LLAMA3,
-        variant=variant,
-        task=Task.SEQUENCE_CLASSIFICATION,
-        source=Source.HUGGINGFACE,
-        group=ModelGroup.RED,
-    )
-
-    # Force the test to fail explicitly
-    raise RuntimeError("Requires multi-chip support")
