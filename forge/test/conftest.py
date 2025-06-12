@@ -5,6 +5,7 @@ import os
 from typing import List, Dict, Tuple
 from loguru import logger
 import subprocess
+import fnmatch
 
 import numpy as np
 import pytest
@@ -539,6 +540,56 @@ def pytest_runtest_logreport(report):
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_collection_modifyitems(config, items):
+
+    patterns = config.getoption("--tests_to_filter")
+    if patterns:
+        selected = []
+        deselected = []
+        seen_files = set()
+
+        # Precompile pattern types
+        file_patterns = []
+        test_patterns = []
+        for p in patterns:
+            if "::" in p:
+                test_patterns.append(p)
+            else:
+                # Normalize file paths
+                file_patterns.append(os.path.normpath(p))
+
+        for item in items:
+            # Extract file path and full test ID
+            file_path = os.path.normpath(str(item.fspath))
+            full_test_id = item.nodeid
+
+            # Check for file matches
+            file_match = any(
+                fnmatch.fnmatch(file_path, pattern)
+                or fnmatch.fnmatch(file_path, pattern + ".py")
+                or pattern in file_path
+                for pattern in file_patterns
+            )
+
+            # Check for full test ID matches
+            test_match = any(
+                fnmatch.fnmatch(full_test_id, pattern) or pattern in full_test_id for pattern in test_patterns
+            )
+
+            if file_match or test_match:
+                selected.append(item)
+                # Track which files had matches
+                seen_files.add(file_path)
+            else:
+                deselected.append(item)
+
+        # Handle partial file patterns (e.g., directory/*.py)
+        for pattern in file_patterns:
+            if not any(pattern in f for f in seen_files):
+                pytest.exit(f"No tests found matching file pattern: {pattern}", returncode=2)
+
+        config.hook.pytest_deselected(items=deselected)
+        items[:] = selected
+
     yield
 
     marker = config.getoption("-m")
