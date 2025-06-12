@@ -221,6 +221,7 @@ class TestCollectionData:
             "add",  #                   #00
             "div",  #                   #01
             # "divide",  #              #02     - Alias for div.
+            "remainder",  #             #12
             "mul",  #                   #03
             # "multiply",  #            #04     - Alias for mul.
             "sub",  #                   #05
@@ -253,7 +254,6 @@ class TestCollectionData:
             "logaddexp",  #             #09                         - NotImplementedError: The following operators are not implemented: ['aten::logaddexp']
             "logaddexp2",  #            #10                         - NotImplementedError: The following operators are not implemented: ['aten::logaddexp2']
             "nextafter",  #             #11                         - NotImplementedError: The following operators are not implemented: ['aten::nextafter']
-            "remainder",  #             #12                         - AssertionError: Encountered unsupported op types. Check error logs for more details         # working with model const
             "fmax",  #                  #13                         - NotImplementedError: The following operators are not implemented: ['aten::fmax']
             "fmin",  #                  #14                         - NotImplementedError: The following operators are not implemented: ['aten::fmin']
             "eq",  #                    #15                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: equal          # working with model const
@@ -268,7 +268,6 @@ class TestCollectionData:
             "arctan2",
             "floor_divide",
             "fmod",
-            "remainder",
             "eq",
             "ne",
             "le",
@@ -454,6 +453,10 @@ class TestPlansData:
         VerifyUtils=DivVerifyUtils,
     )
 
+    remainder: TestPlan = BinaryTestPlanBuilder.build_test_plan(
+        "remainder", value_range=ValueRanges.SMALL, quick_mix=False
+    )
+
     ge: TestPlan = BinaryTestPlanBuilder.build_test_plan("ge", value_range=ValueRanges.SMALL, quick_mix=False)
 
     ne: TestPlan = BinaryTestPlanBuilder.build_test_plan("ne", value_range=ValueRanges.SMALL, quick_mix=False)
@@ -520,5 +523,6 @@ def get_test_plans() -> List[Union[TestPlan, TestSuite]]:
         TestPlansData.mul,
         TestPlansData.div,
         TestPlansData.ge,
+        TestPlansData.remainder,
         TestPlansData.not_implemented,
     ]
