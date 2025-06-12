@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-from math import gamma
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -291,7 +290,6 @@ def lower(op_type, attr, lc, ops, outputs):
         No return value.
 
     """
-    pass
 
 
 def backward(op_type, attr, ac, operand, inputs, output, grad):

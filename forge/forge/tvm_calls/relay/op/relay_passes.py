@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-import logging
 
 import tvm
 from tvm import relay
@@ -12,7 +11,6 @@ from tvm.relay import transform, analysis
 from tvm.relay.dataflow_pattern import wildcard, is_op
 
 import numpy as np
-import math
 import numpy as np
 from tvm.relay.dataflow_pattern import *
 import os

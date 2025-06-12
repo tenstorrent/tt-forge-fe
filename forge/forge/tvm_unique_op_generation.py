@@ -5,7 +5,7 @@ import os
 import json
 from enum import Enum
 from loguru import logger
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 from collections.abc import MutableMapping
 from collections import Counter
 

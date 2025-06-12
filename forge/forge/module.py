@@ -1,10 +1,9 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
 from abc import ABC, abstractmethod
-from typing import Optional, Tuple, List, Dict, TypeAlias, get_args
-from collections import deque, OrderedDict
+from typing import Optional, Tuple, List, Dict, TypeAlias
+from collections import OrderedDict
 import itertools
 
 import flax
@@ -75,7 +74,6 @@ class Module(ABC):
         List[Parameter]
             List of all parameters in this module
         """
-        pass
 
 
 class PyTorchModule(Module):
@@ -960,7 +958,6 @@ class ForgeModule(Module):
         """
         Loads parameters and buffers from the model pt file and sets them to the ForgeModule parameters and constants data members.
         """
-        pass
 
 
 class IntQueueHandle:

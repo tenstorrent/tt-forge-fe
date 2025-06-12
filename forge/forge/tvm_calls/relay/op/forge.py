@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-import logging
 import torch
 from forge.forge_property_utils import ExecutionStage, record_execution
 
@@ -26,7 +25,6 @@ from .relay_passes import run_relay_compile_passes
 from .utils import *
 
 
-import math
 import numpy as np
 from tvm.relay.dataflow_pattern import *
 

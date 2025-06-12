@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import torch
-from .utils import *
+from .utils import MNISTLinear
 import forge
 import pytest
 from forge.verify.verify import verify

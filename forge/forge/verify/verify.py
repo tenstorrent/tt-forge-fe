@@ -7,7 +7,7 @@ Verify by evaluating the forge graph
 """
 
 import os
-from typing import Tuple, Dict, List, Any, Union, Optional
+from typing import Tuple, Dict, List, Any
 
 from forge.module import FrameworkModule
 from loguru import logger

@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import onnx
 import requests
-import os
 import torch
 from PIL import Image
 from torchvision import transforms

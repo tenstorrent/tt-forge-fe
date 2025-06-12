@@ -7,7 +7,6 @@ import forge.op
 from forge import ForgeModule
 
 import torch
-import os
 
 from forge.verify.backend import verify_module
 from forge import DeprecatedVerifyConfig
