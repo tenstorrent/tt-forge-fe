@@ -111,7 +111,6 @@ def test_mlp_mixer_timm_pytorch(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_mlp_mixer_pytorch():
 
     # Record Forge Property
