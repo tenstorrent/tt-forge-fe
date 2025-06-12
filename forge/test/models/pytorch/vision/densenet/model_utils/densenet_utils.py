@@ -2,8 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import urllib
-import urllib.request
 
 import skimage
 import torch
@@ -11,6 +9,7 @@ import torchvision
 import torchxrayvision as xrv
 from loguru import logger
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from torchvision.transforms import (
     CenterCrop,
     Compose,
@@ -23,9 +22,8 @@ from torchvision.transforms import (
 
 def get_input_img():
     try:
-        url, filename = ("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        input_image = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
+        img = Image.open(str(input_image)).convert("RGB")
 
         transform = Compose(
             [
@@ -54,10 +52,10 @@ def get_input_img():
 
 def get_input_img_hf_xray():
     try:
-        img_url = "https://huggingface.co/spaces/torchxrayvision/torchxrayvision-classifier/resolve/main/16747_3_1.jpg"
-        img_path = "xray.jpg"
-        urllib.request.urlretrieve(img_url, img_path)
-        img = skimage.io.imread(img_path)
+        img_path = get_file(
+            "https://huggingface.co/spaces/torchxrayvision/torchxrayvision-classifier/resolve/main/16747_3_1.jpg"
+        )
+        img = skimage.io.imread(str(img_path))
         img = xrv.datasets.normalize(img, 255)
         # Check that images are 2D arrays
         if len(img.shape) > 2:

@@ -34,8 +34,7 @@ def test_detr_detection_onnx(variant, forge_tmp_path):
     framework_model.eval()
 
     # Prepare input
-    image_url = "http://images.cocodataset.org/val2017/000000397133.jpg"
-    input_batch = preprocess_input_data(image_url)
+    input_batch = preprocess_input_data()
     inputs = [input_batch]
 
     # Export model to ONNX
@@ -72,8 +71,7 @@ def test_detr_segmentation_onnx(variant, forge_tmp_path):
     framework_model.eval()
 
     # Prepare input
-    image_url = "http://images.cocodataset.org/val2017/000000397133.jpg"
-    input_batch = preprocess_input_data(image_url)
+    input_batch = preprocess_input_data()
     inputs = [input_batch]
 
     # Export model to ONNX

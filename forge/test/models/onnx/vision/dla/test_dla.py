@@ -6,7 +6,7 @@ import os
 import requests
 import pytest
 import torchvision.transforms as transforms
-from PIL import Image
+from datasets import load_dataset
 
 from test.models.pytorch.vision.dla.model_utils.utils import post_processing
 import forge
@@ -44,8 +44,8 @@ def test_dla_onnx(variant, tmp_path):
     )
 
     # Load data sample
-    url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    dataset = load_dataset("cifar10", split="test[:1]")
+    image = dataset[0]["img"]
 
     # Preprocessing
     transform = transforms.Compose(

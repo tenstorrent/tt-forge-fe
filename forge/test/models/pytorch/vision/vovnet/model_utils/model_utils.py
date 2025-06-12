@@ -1,12 +1,12 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import urllib
 
 import timm
 import torch
 from loguru import logger
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from torchvision import transforms
@@ -14,8 +14,8 @@ from torchvision import transforms
 
 def get_image():
     try:
-        torch.hub.download_url_to_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-        input_image = Image.open("dog.jpg")
+        file_path = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
+        input_image = Image.open(file_path).convert("RGB")
         preprocess = transforms.Compose(
             [
                 transforms.Resize(256),
@@ -41,9 +41,8 @@ def preprocess_steps(model_type):
     transform = create_transform(**config)
 
     try:
-        url, filename = ("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        file_path = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
+        img = Image.open(file_path).convert("RGB")
         img_tensor = transform(img).unsqueeze(0)  # transform and add batch dimension
     except:
         logger.warning(
@@ -64,9 +63,8 @@ def preprocess_timm_model(model_name):
     transform = create_transform(**config)
 
     try:
-        url, filename = ("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        file_path = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
+        img = Image.open(file_path).convert("RGB")
         img_tensor = transform(img).unsqueeze(0)  # transform and add batch dimension
     except:
         logger.warning(

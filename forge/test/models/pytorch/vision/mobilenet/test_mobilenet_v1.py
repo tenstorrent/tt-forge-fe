@@ -2,9 +2,8 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import requests
 import torch
-from PIL import Image
+from datasets import load_dataset
 from transformers import AutoImageProcessor, AutoModelForImageClassification
 
 import forge
@@ -69,8 +68,8 @@ def generate_model_mobilenetv1_imgcls_hf_pytorch(variant):
     # tt_model = forge.PyTorchModule("mobilenet_v1__hf_075_192", model)
 
     # Image load and pre-processing into pixel_values
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    dataset = load_dataset("cifar10", split="test[:1]")
+    image = dataset[0]["img"]
     inputs = preprocessor(images=image, return_tensors="pt")
 
     image_tensor = inputs.pixel_values
@@ -115,8 +114,8 @@ def generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant):
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
 
     # Image load and pre-processing into pixel_values
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    dataset = load_dataset("cifar10", split="test[:1]")
+    image = dataset[0]["img"]
     inputs = preprocessor(images=image, return_tensors="pt")
 
     image_tensor = inputs.pixel_values

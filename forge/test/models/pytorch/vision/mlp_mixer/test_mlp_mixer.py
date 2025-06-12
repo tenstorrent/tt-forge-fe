@@ -2,12 +2,12 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import requests
 import timm
 import torch
 from loguru import logger
 from mlp_mixer_pytorch import MLPMixer
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
@@ -87,14 +87,16 @@ def test_mlp_mixer_timm_pytorch(variant):
             "mixer_l16_224_in21k",
             "mixer_b16_224.goog_in21k",
         ]:
-            url = (
+            input_image = get_file(
                 "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/beignets-task-guide.png"
             )
             use_1k_labels = False
         else:
-            url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
+            input_image = get_file(
+                "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
+            )
             use_1k_labels = True
-        image = Image.open(requests.get(url, stream=True).raw).convert("RGB")
+        image = Image.open(str(input_image)).convert("RGB")
     except:
         logger.warning(
             "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"

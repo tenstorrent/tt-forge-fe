@@ -2,10 +2,10 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import requests
 import torch
 from loguru import logger
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from transformers import (
     AutoImageProcessor,
     PerceiverForImageClassificationConvProcessing,
@@ -29,8 +29,8 @@ from forge.verify.verify import verify
 def get_sample_data(model_name):
     image_processor = AutoImageProcessor.from_pretrained(model_name)
     try:
-        url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-        image = Image.open(requests.get(url, stream=True).raw)
+        input_image = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
+        image = Image.open(str(input_image))
         pixel_values = image_processor(images=image, return_tensors="pt").pixel_values
     except:
         logger.warning(
