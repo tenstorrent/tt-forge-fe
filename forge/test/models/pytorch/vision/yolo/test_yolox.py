@@ -39,6 +39,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
+from third_party.tt_forge_models.tools.utils import get_file
 
 from test.models.pytorch.vision.yolo.model_utils.yolox_utils import preprocess
 
@@ -103,11 +104,8 @@ def test_yolox_pytorch(variant):
     else:
         input_shape = (640, 640)
 
-    url = "http://images.cocodataset.org/val2017/000000397133.jpg"
-    response = requests.get(url)
-    with open("input.jpg", "wb") as f:
-        f.write(response.content)
-    img = cv2.imread("input.jpg")
+    image_path = get_file("http://images.cocodataset.org/val2017/000000397133.jpg")
+    img = cv2.imread(str(image_path))
     img_tensor = preprocess(img, input_shape)
     img_tensor = img_tensor.unsqueeze(0)
 

@@ -2,11 +2,9 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import requests
-from PIL import Image
 
 import pytest
-
+from datasets import load_dataset
 import paddle
 from paddlenlp.transformers import BlipProcessor, BlipTextModel, BlipVisionModel, BlipModel
 
@@ -66,7 +64,8 @@ def test_blip_vision(variant):
     processor = BlipProcessor.from_pretrained(variant)
 
     # Prepare inputs
-    image = Image.open(requests.get("http://images.cocodataset.org/val2017/000000039769.jpg", stream=True).raw)
+    dataset = load_dataset("cifar10", split="test")
+    image = dataset[0]["img"]
     inputs = processor(images=image, return_tensors="pd", padding=True)
     inputs = [inputs["pixel_values"]]
 
@@ -107,7 +106,8 @@ def test_blip(variant):
     model = BlipWrapper(model)
 
     # Prepare inputs
-    image = Image.open(requests.get("http://images.cocodataset.org/val2017/000000039769.jpg", stream=True).raw)
+    dataset = load_dataset("cifar10", split="test")
+    image = dataset[0]["img"]
     text = [
         "cats sleeping",
         "snowy weather",

@@ -5,9 +5,8 @@
 # https://huggingface.co/docs/transformers/en/model_doc/detr
 
 import pytest
-import requests
 import torch
-from PIL import Image
+from datasets import load_dataset
 from transformers import (
     DetrFeatureExtractor,
     DetrForObjectDetection,
@@ -70,8 +69,8 @@ def test_detr_detection(variant):
     framework_model = DetrWrapper(model, task="detection")
 
     # Preprocess the image for the model
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    dataset = load_dataset("cifar10", split="test")
+    image = dataset[0]["img"]
     processor = DetrImageProcessor.from_pretrained("facebook/detr-resnet-50")
     input = processor(images=image, return_tensors="pt")
     inputs = [input["pixel_values"].to(torch.bfloat16), input["pixel_mask"].to(torch.bfloat16)]
@@ -122,8 +121,8 @@ def test_detr_segmentation(variant):
     framework_model = DetrWrapper(framework_model, task="segmentation")
 
     # Preprocess the image for the model
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    dataset = load_dataset("cifar10", split="test")
+    image = dataset[0]["img"]
     feature_extractor = DetrFeatureExtractor.from_pretrained("facebook/detr-resnet-50-panoptic")
     input = feature_extractor(images=image, return_tensors="pt")
     inputs = [input["pixel_values"].to(torch.bfloat16), input["pixel_mask"].to(torch.bfloat16)]

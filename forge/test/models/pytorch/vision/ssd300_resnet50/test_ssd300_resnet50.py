@@ -5,6 +5,7 @@ import numpy as np
 import pytest
 import requests
 import torch
+from PIL import Image
 
 import forge
 from forge._C import DataFormat
@@ -17,6 +18,7 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
+from third_party.tt_forge_models.tools.utils import get_file
 
 from test.models.pytorch.vision.ssd300_resnet50.model_utils.image_utils import (
     prepare_input,
@@ -49,7 +51,8 @@ def test_pytorch_ssd300_resnet50():
     framework_model.eval()
 
     # STEP 3 : prepare input
-    img = "http://images.cocodataset.org/val2017/000000397133.jpg"
+    input_image = get_file("http://images.cocodataset.org/val2017/000000397133.jpg")
+    img = Image.open(str(input_image))
     HWC = prepare_input(img)
     CHW = np.swapaxes(np.swapaxes(HWC, 0, 2), 1, 2)
     batch = np.expand_dims(CHW, axis=0)

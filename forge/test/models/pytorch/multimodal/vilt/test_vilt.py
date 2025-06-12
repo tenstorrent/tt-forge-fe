@@ -2,7 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import requests
 import torch
 from PIL import Image
 from transformers import (
@@ -24,6 +23,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
+from third_party.tt_forge_models.tools.utils import get_file
 
 from test.models.pytorch.multimodal.vilt.model_utils.model import (
     ViLtEmbeddingWrapper,
@@ -31,8 +31,8 @@ from test.models.pytorch.multimodal.vilt.model_utils.model import (
 )
 from test.utils import download_model
 
-url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-image = Image.open(requests.get(url, stream=True).raw)
+image_file = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
+image = Image.open(str(image_file))
 
 text1 = "How many cats are there?"
 text2 = "a bunch of cats laying on a [MASK]."
