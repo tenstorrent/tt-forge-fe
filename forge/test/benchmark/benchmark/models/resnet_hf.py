@@ -118,7 +118,6 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
 
     # custom_config = "override-output-layout="
 
-
     # custom_config += "conv2d_0.dc.conv2d.2=dram:interleaved:tile:8x8:bf16"  # 148
 
     # custom_config += ","
@@ -210,7 +209,6 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     # -------------- NISU SHARDOVANE PRVA I POSLEDNJA KONVOLUCIJA, PROSAO PRVI RUN, NAKON RESETA, 11.06.2025. --------------
     # -------------- NISU SHARDOVANE PRVA I POSLEDNJA KONVOLUCIJA, HANGOVAO DRUGI RUN, NAKON RESETA, 11.06.2025. --------------
 
-
     # -------------- NISU SHARDOVANE PRVA I POSLEDNJE DVE KONVOLUCIJE, PAO S GRESKOM ELFFILE, PRVI RUN, NAKON RESETA, 11.06.2025. --------------
     # -------------- NISU SHARDOVANE PRVA I POSLEDNJE DVE KONVOLUCIJE, PROSAO, DRUGI RUN, NAKON RESETA, 11.06.2025. --------------
     # -------------- NISU SHARDOVANE PRVA I POSLEDNJE DVE KONVOLUCIJE, HANG, TRECI RUN, NAKON RESETA, 11.06.2025. --------------
@@ -228,6 +226,8 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     print(203 * "=")
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs[0], compiler_cfg=compiler_cfg)
+
+    compiled_model.save("resnet_hf_compiled_model.ttnn")
 
     print(203 * "=")
     print(100 * "-" + " 2 " + 100 * "-")
