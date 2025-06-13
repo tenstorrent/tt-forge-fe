@@ -36,9 +36,9 @@ on:
       run_id:
         description: 'Run id the workflow where to find installation (or undefined if build is not successful)'
         value: ${{ jobs.build-conclusion.outputs.run_id }}
-      wheel-name:
-        description: "The name of the built wheel"
-        value: ${{ jobs.forge-build.outputs.wheel-name }}
+      wheel-artifact-name:
+        description: "The name of the built wheel's artifact"
+        value: ${{ jobs.forge-build.outputs.wheel-artifact-name }}
 
 permissions:
   packages: write
@@ -63,9 +63,9 @@ jobs:
       image: ${{ inputs.docker-image }}
     
     env: 
-      WHEEL_NAME: "forge-wheel"
+      WHEEL_ARTIFACT_NAME: "forge-wheel"
     outputs: 
-      wheel-name: ${{ steps.set-wheel-name.outputs.wheel-name }}
+      wheel-artifact-name: ${{ steps.set-wheel-name.outputs.wheel-artifact-name }}
 
     steps:
 
@@ -137,13 +137,13 @@ jobs:
       id: set-wheel-name
       shell: bash
       run: |
-        echo "wheel-name=$WHEEL_NAME" >> "$GITHUB_OUTPUT"
+        echo "wheel-artifact-name=$WHEEL_ARTIFACT_NAME" >> "$GITHUB_OUTPUT"
 
     - name: Upload Build
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
-        name: ${{ env.WHEEL_NAME }}
+        name: ${{ env.WHEEL_ARTIFACT_NAME }}
         path: dist/*.whl
 
 
