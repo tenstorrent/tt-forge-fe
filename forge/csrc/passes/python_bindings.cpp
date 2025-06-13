@@ -89,34 +89,6 @@ void PassesModule(py::module &m_passes)
             py::arg("operand"),
             py::arg("attrs") = std::vector<int>{},
             py::arg("forge_attrs") = ForgeOpAttrs{})
-        .def(
-            "nary_tm",
-            [](tt::LoweringContext &self,
-               std::variant<std::string, py::object> const &type,
-               std::vector<NodeContext> const &operands,
-               std::vector<graphlib::OpType::Attr> const &attrs = {},
-               ForgeOpAttrs const &forge_attrs = {})
-            {
-                if (std::holds_alternative<std::string>(type))
-                {
-                    TT_LOG_ASSERT(
-                        not has_newstyle_interface(std::get<std::string>(type)),
-                        "Error lowering a type with old OpType interface, expects new OpType interface {}",
-                        std::get<std::string>(type));
-                    return self.nary_tm(graphlib::OpType(std::get<std::string>(type), attrs, forge_attrs), operands);
-                }
-                else
-                {
-                    TT_ASSERT(attrs.size() == 0, "Illegal mixing of API modes");
-                    TT_ASSERT(forge_attrs.size() == 0, "Illegal mixing of API modes");
-                    auto const &op_type = std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
-                    return self.nary_tm(op_type, operands);
-                }
-            },
-            py::arg("type"),
-            py::arg("operands"),
-            py::arg("attrs") = std::vector<int>{},
-            py::arg("forge_attrs") = ForgeOpAttrs{})
         .def("shape", &tt::LoweringContext::shape, py::arg("node"), py::arg("use_new_graph") = false)
         .def(
             "set_broadcast_dim",
