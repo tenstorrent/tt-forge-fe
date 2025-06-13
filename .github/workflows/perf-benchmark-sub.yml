@@ -132,7 +132,7 @@ jobs:
       shell: bash
       run: |
         source env/activate
-        pip install tt_tvm*.whl --force-reinstall
+        pip install tvm*.whl --force-reinstall
         pip install tt_forge*.whl --force-reinstall
 
     - name: Run Perf Benchmark
