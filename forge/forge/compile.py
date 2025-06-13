@@ -16,7 +16,6 @@ from forge.config import (
 )
 from forge._C import (
     link_past_cache_ios,
-    move_index_to_mm_weights,
     run_post_initial_graph_passes,
     run_optimization_graph_passes,
     run_post_optimize_decompose_graph_passes,
@@ -694,18 +693,6 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
     context.graph.set_microbatch(context.microbatch_size)
     dump_graph(context.graph, context.graph_name, "initial_graph")
     extract_unique_op_configuration(context.graph, context.stage.name.upper())
-    if context.compiler_cfg.enable_link_past_cache_ios:
-        # move index ops to weights if applicable
-        move_index_to_mm_weights(context.graph)
-
-        # link past cache ios will change the number on inputs / outputs, so it is called before we clone the initial graph
-        new_params = link_past_cache_ios(context.graph)
-        inputs_to_remove = []
-        for k, v in new_params.items():
-            context.dev.modules[-1].add_parameter(k, Parameter(context.inputs[v].value(), requires_grad=False, name=k))
-            inputs_to_remove.append(context.inputs[v])
-        for i in inputs_to_remove:
-            context.inputs.remove(i)
 
     context.initial_graph_copy = context.graph.clone()  # save the original graph for verification and analysis
     context.input_grads = []

@@ -66,8 +66,6 @@ void GraphModule(py::module &m_graph)
         .value("kInput", tt::graphlib::NodeType::kInput)
         .value("kOutput", tt::graphlib::NodeType::kOutput)
         .value("kPyOp", tt::graphlib::NodeType::kPyOp)
-        .value("kForgeOp", tt::graphlib::NodeType::kForgeOp)
-        .value("kForgeNaryTM", tt::graphlib::NodeType::kForgeNaryTM)
         .value("kQueue", tt::graphlib::NodeType::kQueue)
         .export_values();
 
@@ -1464,15 +1462,7 @@ eval_graph(
             continue;
         }
 
-        if (node->node_type() == NodeType::kForgeNaryTM)
-        {
-            std::vector<py::object> inputs = eval_operand_tms(graph, node, node_outputs);
-            py::object obj = eval_op(node->as<graphlib::ForgeNaryTMNode>()->op_type(), inputs, false);
-            node_outputs[node->id()].push_back(obj);
-            continue;
-        }
-
-        if ((node->node_type() != NodeType::kPyOp) && (node->node_type() != NodeType::kForgeOp))
+        if (node->node_type() != NodeType::kPyOp)
             continue;
 
         graphlib::OpNode *op_node = node->as<graphlib::OpNode>();
@@ -1707,7 +1697,7 @@ eval_graph(
         for (auto &[node_id, output_tensor] : node_outputs)
         {
             auto node = graph->node_by_id(node_id);
-            if ((node->node_type() == NodeType::kPyOp) || (node->node_type() == NodeType::kForgeOp))
+            if (node->node_type() == NodeType::kPyOp)
             {
                 dump_tensor(output_tensor.at(0), dump_tensors_path + "/" + "intermediates." + node->name());
             }

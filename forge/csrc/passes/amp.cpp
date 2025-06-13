@@ -138,22 +138,6 @@ DataFormat get_reduced_precision_format(const DataFormat& from_df, std::uint32_t
     return is_a_data_format(from_df) ? bits_to_a_df.at(target_mantissa_bits) : bits_to_b_df.at(target_mantissa_bits);
 }
 
-bool feeds_sparse_matmul(const graphlib::Graph* graph, const graphlib::Node* node)
-{
-    for (auto user : graph->data_users(node))
-    {
-        if (user->node_type() == graphlib::NodeType::kForgeOp)
-        {
-            auto op = user->as<graphlib::ForgeOpNode>();
-            if (op->is_sparse_matmul())
-            {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 void configure_node_from_properties(const Graph* graph, Node* node, const AMPNodeProperties& properties)
 {
     if (properties.output_df.has_value())
@@ -161,16 +145,13 @@ void configure_node_from_properties(const Graph* graph, Node* node, const AMPNod
         if (node->node_type() == graphlib::kInput and
             node->as<graphlib::InputNode>()->input_type() == graphlib::InputNodeType::Constant)
         {
-            if (not feeds_sparse_matmul(graph, node))
-            {
-                log_debug(
-                    LogGraphCompiler,
-                    "\t{} setting output_df from {} to {}",
-                    node->name(),
-                    node->output_df(),
-                    properties.output_df.value());
-                node->set_output_df(properties.output_df.value());
-            }
+            log_debug(
+                LogGraphCompiler,
+                "\t{} setting output_df from {} to {}",
+                node->name(),
+                node->output_df(),
+                properties.output_df.value());
+            node->set_output_df(properties.output_df.value());
         }
         else
         {
@@ -181,115 +162,6 @@ void configure_node_from_properties(const Graph* graph, Node* node, const AMPNod
                 node->output_df(),
                 properties.output_df.value());
             node->set_output_df(properties.output_df.value());
-        }
-    }
-
-    if (auto math_op = dynamic_cast<graphlib::ForgeOpNode*>(node); math_op != nullptr)
-    {
-        if (properties.intermediate_df.has_value())
-        {
-            log_debug(
-                LogGraphCompiler,
-                "\t{} setting intermediate_df from {} to {}",
-                node->name(),
-                math_op->intermediate_df(),
-                properties.intermediate_df.value());
-            math_op->set_intermediate_df(properties.intermediate_df.value());
-        }
-        if (properties.accumulate_df.has_value())
-        {
-            log_debug(
-                LogGraphCompiler,
-                "\t{} setting accumulate_df from {} to {}",
-                node->name(),
-                math_op->accumulate_df(),
-                properties.accumulate_df.value());
-            math_op->set_accumulate_df(properties.accumulate_df.value());
-        }
-        if (properties.math_fidelity.has_value())
-        {
-            log_debug(
-                LogGraphCompiler,
-                "\t{} setting math_fidelity from {} to {}",
-                node->name(),
-                math_op->math_fidelity(),
-                properties.math_fidelity.value());
-            math_op->set_math_fidelity(properties.math_fidelity.value());
-        }
-        if (properties.input_df.has_value() and not math_op->is_sparse_matmul())
-        {
-            auto data_operands = graph->data_operands(node);
-            const auto& input_df_config = properties.input_df.value();
-            if (const DataFormat* input_data_format = std::get_if<DataFormat>(&input_df_config); input_data_format)
-            {
-                for (Node* data_operand : data_operands)
-                {
-                    log_debug(
-                        LogGraphCompiler,
-                        "\t{}: for input operand {} setting output_df from {} to {}.",
-                        node->name(),
-                        data_operand->name(),
-                        data_operand->output_df(),
-                        properties.output_df.value());
-                    data_operand->set_output_df(*input_data_format);
-                }
-            }
-            else if (const InputIndexToConfig* input_df_map = std::get_if<InputIndexToConfig>(&input_df_config);
-                     input_df_map)
-            {
-                for (const auto& [input_index, data_format_and_target_activations] : *input_df_map)
-                {
-                    auto [data_format, target_activations] = data_format_and_target_activations;
-                    if (input_index < data_operands.size())
-                    {
-                        Node* operand = data_operands[input_index];
-                        if (auto input_operand = dynamic_cast<graphlib::InputNode*>(operand);
-                            target_activations or input_operand)
-                        {
-                            log_debug(
-                                LogGraphCompiler,
-                                "\t Operand Index: {} is {} and setting from {} to {} ",
-                                input_index,
-                                operand->name(),
-                                operand->output_df(),
-                                data_format);
-                            operand->set_output_df(data_format);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                log_error("AMP: unhandled std::variant access on AMPNodeProperties::input_df");
-            }
-        }
-        if (properties.input_parameter_indices_to_optimize.has_value())
-        {
-            auto data_operands = graph->data_operands(node);
-            const auto& input_parameter_indices_to_optimize = properties.input_parameter_indices_to_optimize.value();
-
-            Node* reference_operand = data_operands.at(0);
-
-            for (auto [input_index, target_mantissa_bits] : input_parameter_indices_to_optimize)
-            {
-                if (input_index < data_operands.size())
-                {
-                    if (auto operand = dynamic_cast<graphlib::InputNode*>(data_operands[input_index]);
-                        operand and operand->is_parameter())
-                    {
-                        DataFormat lowered_precision =
-                            get_reduced_precision_format(reference_operand->output_df(), target_mantissa_bits);
-                        log_debug(
-                            LogGraphCompiler,
-                            "\t Operand Index: {} is {} and setting from {} to {} ",
-                            input_index,
-                            operand->name(),
-                            operand->output_df(),
-                            lowered_precision);
-                        operand->set_output_df(lowered_precision);
-                    }
-                }
-            }
         }
     }
 }
@@ -309,22 +181,7 @@ std::unordered_map<std::string, AMPNodeProperties> get_node_to_amp_properties(Gr
 
     for (Node* node : graph->nodes())
     {
-        if (node->node_type() == graphlib::NodeType::kForgeOp)
-        {
-            graphlib::ForgeOpNode* op = node->as<graphlib::ForgeOpNode>();
-            node_to_amp_properties[node->name()] = AMPNodeProperties(
-                op->op_name(),
-                node->get_epoch_type(),
-                node->output_df(),
-                op->intermediate_df(),
-                op->accumulate_df(),
-                op->math_fidelity(),
-                std::nullopt,
-                std::nullopt,
-                op->is_gradient_op());
-        }
-        else if (
-            node->node_type() == graphlib::NodeType::kInput or node->node_type() == graphlib::NodeType::kOutput or
+        if (node->node_type() == graphlib::NodeType::kInput or node->node_type() == graphlib::NodeType::kOutput or
             node->node_type() == graphlib::NodeType::kQueue)
         {
             node_to_amp_properties[node->name()] =
@@ -648,7 +505,6 @@ void run_automatic_mixed_precision(
     apply_configuration(graph, user_properties);
 
     // Revalidate; Fix illegal situations; automatic propagation
-    configure_a_b_format_conversion(graph, device_config, default_df_override);
     satisfy_data_format_constraints(graph, device_config.supports_fp32_accumulation());
 
     const_tag_propagation(graph);

@@ -101,37 +101,34 @@ NodeContext LoweringContext::op(
     int tile_height,
     int tile_width)
 {
-    Node *lowered_node = lower_node<graphlib::ForgeOpNode>(op_type, operands);
-    TileDim target_tile_dim = graphlib::get_tile_dim_from_height_width(tile_height, tile_width);
+    TT_ASSERT(!"Whole lowering context will be deleted in next iteration.");
+    return {nullptr};
 
-    lowered_node->set_tile_dim(target_tile_dim);  // propagate TileDim to forge op
-    if (tag != "")
-        lowered_node->as<graphlib::TaggedNode>()->tag(tag);
+    // Node *lowered_node = lower_node<graphlib::ForgeOpNode>(op_type, operands);
+    // TileDim target_tile_dim = graphlib::get_tile_dim_from_height_width(tile_height, tile_width);
 
-    return NodeContext(lowered_node);
-}
+    // lowered_node->set_tile_dim(target_tile_dim);  // propagate TileDim to forge op
+    // if (tag != "")
+    // lowered_node->as<graphlib::TaggedNode>()->tag(tag);
 
-NodeContext LoweringContext::nary_tm(graphlib::OpType const &op_type, std::vector<NodeContext> const &operands)
-{
-    graphlib::ForgeNaryTMNode *tm = lower_node<graphlib::ForgeNaryTMNode>(op_type, operands);
-
-    graphlib::OpType nop_op_type = graphlib::OpType("nop", {}, {});
-    graphlib::ForgeOpNode *nop = lower_node<graphlib::ForgeOpNode>(nop_op_type, {tm});
-    return NodeContext(nop);
+    // return NodeContext(lowered_node);
 }
 
 // Insert new tm in lowered graph, from python
 NodeContext LoweringContext::tm(graphlib::OpType const &tm_op_type, NodeContext const &operand)
 {
-    graphlib::OpType nop_op_type = graphlib::OpType("nop", {}, {});
-    graphlib::ForgeOpNode *nop = lower_node<graphlib::ForgeOpNode>(nop_op_type, {operand});
+    TT_ASSERT(!"Whole lowering context will be deleted in next iteration.");
+    return {nullptr};
 
-    std::vector<graphlib::Edge> operands_edges = new_graph->operand_data_edges(nop);
-    TT_ASSERT(operands_edges.size() == 1);
-    graphlib::Edge edge = operands_edges[0];
-    new_graph->get_edge_attributes(edge)->append_tm(tm_op_type);
+    // graphlib::OpType nop_op_type = graphlib::OpType("nop", {}, {});
+    // graphlib::ForgeOpNode *nop = lower_node<graphlib::ForgeOpNode>(nop_op_type, {operand});
 
-    return NodeContext(nop);
+    // std::vector<graphlib::Edge> operands_edges = new_graph->operand_data_edges(nop);
+    // TT_ASSERT(operands_edges.size() == 1);
+    // graphlib::Edge edge = operands_edges[0];
+    // new_graph->get_edge_attributes(edge)->append_tm(tm_op_type);
+
+    // return NodeContext(nop);
 }
 
 void LoweringContext::set_output_df(NodeContext node, DataFormat df) { get_or_insert_node(node)->set_output_df(df); }
