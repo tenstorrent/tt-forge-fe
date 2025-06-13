@@ -147,7 +147,7 @@ PYBIND11_MODULE(_C, m)
     // Define RuntimeTestUtils module as a submodule to RuntimeModule.
     py::module m_runtime_testutils =
         m_runtime.def_submodule("runtime_testutils", "Submodule defining runtime test functions");
-    RuntimeTestUtilsModule(m_runtime);
+    RuntimeTestUtilsModule(m_runtime_testutils);
 
     py::module_ m_verif = m.def_submodule("verif", "Submodule defining verification and test utilities");
     VerifModule(m_verif);
