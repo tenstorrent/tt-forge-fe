@@ -108,6 +108,43 @@ void tt_assert_message(std::ostream& os, T const& t, Ts const&... ts)
     tt_assert_message(os, ts...);
 }
 
+template <typename... Args>
+void format_as_fallback(std::stringstream& ss, Args const&... args)
+{
+    if constexpr (sizeof...(Args) > 0)
+    {
+        auto tuple = std::tuple<const Args&...>(args...);
+        using First = std::decay_t<decltype(std::get<0>(tuple))>;
+
+        if constexpr (std::is_convertible_v<First, std::string_view> && sizeof...(Args) > 1)
+        {
+            auto format_args = std::apply(
+                [&](auto const& fmt, auto const&... rest)
+                {
+                    if constexpr ((fmt::is_formattable<std::decay_t<decltype(rest)>>::value && ...))
+                    {
+                        return fmt::format(fmt::runtime(fmt), rest...);
+                    }
+                    else
+                    {
+                        return std::string();
+                    }
+                },
+                tuple);
+
+            if (!format_args.empty())
+            {
+                ss << format_args;
+                return;
+            }
+        }
+
+        // Fallback
+        ss << "info:\n";
+        tt_assert_message(ss, args...);
+    }
+}
+
 template <bool fmt_present, typename... Ts>
 void tt_assert(
     char const* file,
@@ -117,8 +154,6 @@ void tt_assert(
     std::string_view format_str,
     Ts const&... messages)
 {
-    (void)format_str;  // Fix warning about unused
-
     std::stringstream trace_message_ss = {};
     trace_message_ss << assert_type << " @ " << file << ":" << line << ": " << condition_str << std::endl;
     if constexpr (fmt_present)
@@ -128,7 +163,7 @@ void tt_assert(
     else if constexpr (sizeof...(messages) > 0)
     {
         trace_message_ss << "info:" << std::endl;
-        tt_assert_message(trace_message_ss, messages...);
+        format_as_fallback(trace_message_ss, messages...);
     }
 
     if (env_as<bool>("TT_ASSERT_ABORT"))
@@ -137,7 +172,7 @@ void tt_assert(
         abort();
     }
 
-    trace_message_ss << "backtrace:\n";
+    trace_message_ss << "\nbacktrace:\n";
     trace_message_ss << tt::assert::backtrace_to_string(100, 3, " --- ");
     trace_message_ss << std::flush;
 

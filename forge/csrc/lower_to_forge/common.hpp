@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
+#include <fmt/ostream.h>
+
 #include <array>
 #include <cstdint>
 #include <map>
@@ -262,3 +264,11 @@ struct PytorchTensorDesc
 };
 
 }  // namespace tt
+
+namespace fmt
+{
+template <>
+struct formatter<tt::DataFormat> : ostream_formatter
+{
+};
+}  // namespace fmt
