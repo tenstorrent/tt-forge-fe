@@ -38,7 +38,7 @@ on:
         value: ${{ jobs.build-conclusion.outputs.run_id }}
       wheel-name:
         description: "The name of the built wheel"
-        value: ${{ jobs.build-ttxla-release-whl.outputs.wheel-name }}
+        value: ${{ jobs.forge-build.outputs.wheel-name }}
 
 permissions:
   packages: write
