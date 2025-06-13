@@ -21,7 +21,7 @@ void RuntimeTestUtilsModule(py::module &m_runtime_testutils)
                std::vector<tt::Tensor> &inputs,
                std::vector<tt::Tensor> &consts_and_params,
                std::vector<tt::Tensor> &outputs)
-            { return tt::runtime_test::test_so(so_path, func_name, inputs, consts_and_params, outputs); })
+            { return tt::runtime_testutils::test_so(so_path, func_name, inputs, consts_and_params, outputs); })
         .def(
             "get_persistent_inputs",
             [](ProgramType program_type, ModelState &model_state) -> std::vector<tt::Tensor>

@@ -16,6 +16,6 @@ namespace py = pybind11;
 namespace tt
 {
 
-void RuntimeTestUtilsModule(py::module &m_runtime_test);
+void RuntimeTestUtilsModule(py::module &m_runtime_testutils);
 
 }  // namespace tt
