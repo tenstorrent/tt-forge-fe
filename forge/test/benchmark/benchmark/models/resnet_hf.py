@@ -111,9 +111,12 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
         compiler_cfg.default_df_override = DataFormat.Float16_b
 
     # Turn on MLIR optimizations.
-    compiler_cfg.mlir_config = (
-        MLIRConfig().set_enable_optimizer(True).set_enable_fusing(True).set_enable_memory_layout_analysis(False)
-    )
+    mlir_config = MLIRConfig()
+    mlir_config.set_enable_optimizer(True)
+    mlir_config.set_enable_fusing(True)
+    mlir_config.set_enable_memory_layout_analysis(True)
+
+    compiler_cfg.mlir_config = mlir_config
 
     # Enable Forge FE optimizations
     compiler_cfg.enable_optimization_passes = True
