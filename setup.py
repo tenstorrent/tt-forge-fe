@@ -81,7 +81,7 @@ packages = [p for p in find_packages("forge") if not p.startswith("test")]
 
 
 setup(
-    name="forge",
+    name="tt_forge_fe",
     version=version,
     install_requires=requirements,
     packages=packages,

@@ -137,7 +137,7 @@ jobs:
         run: |
           source env/activate
           pip install tvm*.whl --force-reinstall
-          pip install forge*.whl --force-reinstall
+          pip install tt_forge_fe*.whl --force-reinstall
 
 
       - name: Extract and Export Unique Ops Configuration
