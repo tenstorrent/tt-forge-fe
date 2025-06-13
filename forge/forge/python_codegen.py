@@ -399,10 +399,6 @@ class ForgeWriter(PythonWriter):
             self.wl("tensor = tensor.reshape((1, 1))")
             self.indent -= 1
             self.wl("tensor.requires_grad = False")
-            self.wl("if not torch.is_floating_point(tensor):")
-            self.indent += 1
-            self.wl("tensor = tensor.float()")
-            self.indent -= 1
             self.wl("self.set_constant(name, tensor)")
             self.indent -= 1
 
