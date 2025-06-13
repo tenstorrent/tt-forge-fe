@@ -543,32 +543,9 @@ def pytest_runtest_logreport(report):
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_collection_modifyitems(config, items):
-    yield
-
-    marker = config.getoption("-m")
-    if marker and marker == "not skip_model_analysis":  # If a marker is specified
-        print("Automatic Model Analysis Collected tests: ")
-        test_count = 0
-        for item in items:
-            if "skip_model_analysis" not in item.keywords:
-                test_file_path = item.location[0]
-                test_name = item.location[2]
-                print(f"{test_file_path}::{test_name}")
-                test_count += 1
-        print(f"Automatic Model Analysis Collected test count: {test_count}")
-        if test_count == 0:  # Warn if no tests match the marker
-            print(f"Warning: No tests found with marker '{marker}'.")
-
-    splits = config.getoption("splits")
-    group = config.getoption("group")
-    if splits is not None and group is not None:
-        nodeids = [item.nodeid for item in items]
-        if nodeids:
-            print("\nCollected tests after splits and group:")
-            for n in nodeids:
-                print(n)
-
+    
     patterns = config.getoption("--tests_to_filter")
+    print("patterns=",patterns)
     if not patterns:
         return
 
@@ -613,7 +590,33 @@ def pytest_collection_modifyitems(config, items):
             pytest.exit(f"No tests found matching file pattern: {pattern}", returncode=2)
 
     config.hook.pytest_deselected(items=deselected)
+    print("selected=",selected)
     items[:] = selected
+
+    yield
+
+    marker = config.getoption("-m")
+    if marker and marker == "not skip_model_analysis":  # If a marker is specified
+        print("Automatic Model Analysis Collected tests: ")
+        test_count = 0
+        for item in items:
+            if "skip_model_analysis" not in item.keywords:
+                test_file_path = item.location[0]
+                test_name = item.location[2]
+                print(f"{test_file_path}::{test_name}")
+                test_count += 1
+        print(f"Automatic Model Analysis Collected test count: {test_count}")
+        if test_count == 0:  # Warn if no tests match the marker
+            print(f"Warning: No tests found with marker '{marker}'.")
+
+    splits = config.getoption("splits")
+    group = config.getoption("group")
+    if splits is not None and group is not None:
+        nodeids = [item.nodeid for item in items]
+        if nodeids:
+            print("\nCollected tests after splits and group:")
+            for n in nodeids:
+                print(n)
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)

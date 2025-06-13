@@ -29,24 +29,23 @@ on:
         description: 'Filter specific tests (comma-separated): Generate models ops tests only for the specified test commands'
         required: false
         type: string
-
       ops_to_filter:
         description: 'Filter specific operations (comma-separated): Generate models ops tests only for the specified Forge operations'
         required: false
         type: string
-
       override_existing_ops:
         description: 'Merge with existing ops: Extract unique ops config from existing models ops tests directory, combine with new filtered tests config, then regenerate all models ops tests'
         required: false
         type: boolean
         default: false
-
+  push:
+    branches: [ "pchandrasekaran/enhance_model_analysis" ]
 
 permissions:
   packages: write
   checks: write
 
-run-name: "Model Analysis Ops Test Generation (${{inputs.runs-on}}-${{inputs.test_group_cnt}})"
+# run-name: "Model Analysis Ops Test Generation (${{inputs.runs-on}}-${{inputs.test_group_cnt}})"
 
 jobs:
 
@@ -59,9 +58,6 @@ jobs:
     needs: docker-build
     if: always()
     outputs:
-      test_group_cnt: ${{ steps.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ steps.set-inputs.outputs.test_group_ids }}
-      runs-on: ${{ steps.set-inputs.outputs.runs-on }}
       tests_to_filter: ${{ steps.set-inputs.outputs.tests_to_filter }}
       ops_to_filter: ${{ steps.set-inputs.outputs.ops_to_filter }}
       override_existing_ops: ${{ steps.set-inputs.outputs.override_existing_ops }}
@@ -69,27 +65,27 @@ jobs:
       - name: Inputs Management
         id: set-inputs
         run: |
-          echo "test_group_cnt=${{ inputs.test_group_cnt }}" >> $GITHUB_OUTPUT
-          echo "test_group_ids=[$(seq -s ',' 1 ${{ inputs.test_group_cnt }})]" >> $GITHUB_OUTPUT
-          echo "runs-on=[{\"runs-on\": \"${{ inputs.runs-on }}\"}]" >> $GITHUB_OUTPUT
+          tests_to_filter='forge/test/models/pytorch/text/albert/test_albert.py::test_albert_masked_lm_pytorch[base-v1],forge/test/models/pytorch/text/codegen,forge/test/models/pytorch/text/xglm/test_xglm.py'
+          ops_to_filter='Add,Transpose'
+          override_existing_ops=true
 
           # Convert tests_to_filter from comma-separated to space-separated
-          if [ -n "${{ inputs.tests_to_filter }}" ] && [ "${{ inputs.tests_to_filter }}" != "" ]; then
-            tests_to_filter=$(echo "${{ inputs.tests_to_filter }}" | tr ',' ' ' | xargs)
+          if [ -n "$tests_to_filter" ]; then
+            tests_to_filter=$(echo "$tests_to_filter" | tr ',' ' ' | xargs)
           else
             tests_to_filter=""
           fi
           echo "tests_to_filter=$tests_to_filter" >> $GITHUB_OUTPUT
 
           # Convert ops_to_filter from comma-separated to space-separated
-          if [ -n "${{ inputs.ops_to_filter }}" ] && [ "${{ inputs.ops_to_filter }}" != "" ]; then
-            ops_to_filter=$(echo "${{ inputs.ops_to_filter }}" | tr ',' ' ' | xargs)
+          if [ -n "$ops_to_filter" ]; then
+            ops_to_filter=$(echo "$ops_to_filter" | tr ',' ' ' | xargs)
           else
             ops_to_filter=""
           fi
           echo "ops_to_filter=$ops_to_filter" >> $GITHUB_OUTPUT
 
-          if [[ "${{ inputs.override_existing_ops }}" == "true" && -n "$tests_to_filter" ]]; then
+          if [[ "$override_existing_ops" == "true" && -n "$tests_to_filter" ]]; then
             echo "override_existing_ops=true" >> $GITHUB_OUTPUT
           else
             echo "override_existing_ops=false" >> $GITHUB_OUTPUT
@@ -114,10 +110,7 @@ jobs:
     secrets: inherit
     with:
       test_mark: 'not (skip_model_analysis or out_of_memory)'
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: ${{ needs.set-inputs.outputs.runs-on }}
       run_id: ${{ needs.build.outputs.run_id }}
       tests_to_filter: ${{ needs.set-inputs.outputs.tests_to_filter }}
       allow-fail: true
@@ -130,7 +123,7 @@ jobs:
       - build
       - extract-unique-ops-configuration
 
-    runs-on: ["in-service", "${{ inputs.runs-on }}"]
+    runs-on: ["in-service", "runner"]
 
     container:
       image: ${{ needs.docker-build.outputs.docker-image }}
@@ -215,10 +208,10 @@ jobs:
           ops_to_filter="${{ needs.set-inputs.outputs.ops_to_filter }}"
           override_existing_ops="${{ needs.set-inputs.outputs.override_existing_ops }}"
 
-          if [ -n "${{ ops_to_filter }}" ] && [ "${{ ops_to_filter }}" != "" ]; then
-            command_args+=("--ops_to_filter" "${{ needs.set-inputs.outputs.ops_to_filter }}")
+          if [ -n "$ops_to_filter" ]; then
+            command_args+=("--ops_to_filter" "$ops_to_filter")
           fi
-          if [ -n "${{ override_existing_ops }}" ] && [ "${{ override_existing_ops }}" == "true"]; then
+          if [ "$override_existing_ops" == "true"]; then
             command_args+=("--override_existing_ops")
           fi
 
