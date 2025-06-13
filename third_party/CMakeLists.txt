@@ -1,7 +1,7 @@
 ### Build tt-mlir ###
 include(ExternalProject)
 
-set(METAL_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/third_party/tt-metal/src/tt-metal-build/lib")
+set(METAL_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/build/lib")
 
 set(TTMLIR_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tt-mlir")
 set(TTMLIR_BUILD_DIR "${TTMLIR_SOURCE_DIR}/build")

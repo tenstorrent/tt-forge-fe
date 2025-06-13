@@ -67,7 +67,7 @@ set(TORCH_LIB_DIR "${TTFORGE_VENV_DIR}/lib/${TTFORGE_PYTHON_VERSION}/site-packag
 
 add_library(ttforge_csrc SHARED)
 
-set(METAL_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/third_party/tt-metal/src/tt-metal-build/lib")
+set(METAL_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/build/lib")
 
 # Because _ttnn library doesn't have lib prefix, this is workaround to make linking work
 add_library(ttnn SHARED IMPORTED)
