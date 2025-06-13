@@ -4,7 +4,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-#include "runtime-testutils.hpp"
+#include "runtime_testutils.hpp"
 
 #include "runtime/tensor.hpp"
 #include "runtime/tt_device.hpp"

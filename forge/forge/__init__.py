@@ -33,13 +33,20 @@ def set_home_paths():
     if "TT_METAL_HOME" not in os.environ:
         if in_wheel_path.exists():
             os.environ["TT_METAL_HOME"] = str(in_wheel_path)
+            os.environ["FORGE_IN_WHEEL"] = "1"
         elif in_source_path.exists():
             os.environ["TT_METAL_HOME"] = str(in_source_path)
+            os.environ["FORGE_IN_SOURCE"] = "1"
         else:
             logger.error(
                 f"TT_METAL_HOME environment variable is not set. Tried setting it to {in_wheel_path} and {in_source_path}, but neither exists. Something is wrong with the installation."
             )
             exit(1)
+
+    if not "FORGE_IN_WHEEL" in os.environ and not "FORGE_IN_SOURCE" in os.environ:
+        logger.error(
+            f"Neither FORGE_IN_WHEEL nor FORGE_IN_SOURCE environment variables are set. Please set one of them to indicate whether you are running from a wheel or from source."
+        )
 
     if pathlib.Path(os.environ["TT_METAL_HOME"]) not in [in_wheel_path, in_source_path]:
         if pathlib.Path(os.environ["TT_METAL_HOME"]).exists():

@@ -6,14 +6,14 @@
 
 #include "runtime/state.hpp"
 #include "runtime/tensor.hpp"
-#include "runtime/testutils/runtime-testutils.hpp"
+#include "runtime/testutils/runtime_testutils.hpp"
 
 namespace tt
 {
 
-void RuntimeTestModule(py::module &m_runtime_test)
+void RuntimeTestUtilsModule(py::module &m_runtime_testutils)
 {
-    m_runtime_test
+    m_runtime_testutils
         .def(
             "test_so",
             [](std::string so_path,
