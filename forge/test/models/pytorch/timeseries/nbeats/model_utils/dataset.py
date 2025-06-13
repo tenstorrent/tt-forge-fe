@@ -157,7 +157,7 @@ class ElectricityDataset:
                 raw[ignored_first_values:],
             )
         )
-        data = np.array(parsed_values).astype(np.float)
+        data = np.array(parsed_values).astype(float)
 
         # aggregate to hourly
         aggregated = []
