@@ -13,28 +13,32 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 
-variants = ["meta-llama/Llama-3.2-11B-Vision-Instruct", "meta-llama/Llama-3.2-90B-Vision-Instruct"]
+variants = [
+    "Qwen/Qwen3-32B",
+    "Qwen/Qwen3-30B-A3B",
+    "Qwen/QwQ-32B",
+    "Qwen/Qwen3-14B",
+    "Qwen/Qwen3-0.6B",
+    "Qwen/Qwen3-1.7B",
+    "Qwen/Qwen3-4B",
+    "Qwen/Qwen3-8B",
+]
 
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 @pytest.mark.xfail
-def test_llama_vision_Instruct(variant):
-
-    if variant == "meta-llama/Llama-3.2-90B-Vision-Instruct":
-        priority = ModelPriority.P1
-    else:
-        priority = ModelPriority.P2
+def test_qwen3(variant):
 
     # Record Forge Property
-    module_name = record_model_properties(
+    record_model_properties(
         framework=Framework.PYTORCH,
-        model=ModelArch.LLAMA3_2,
+        model=ModelArch.QWENV3,
         variant=variant,
-        task=Task.MULTIMODAL_TEXT_GENERATION,
+        task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
-        priority=priority,
+        priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Requires multi-chip support")
+    raise RuntimeError("Requires transformers>=4.51.0")

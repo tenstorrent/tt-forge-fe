@@ -13,28 +13,23 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 
-variants = ["meta-llama/Llama-3.2-11B-Vision-Instruct", "meta-llama/Llama-3.2-90B-Vision-Instruct"]
+variants = ["genmo/mochi-1-preview"]
 
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 @pytest.mark.xfail
-def test_llama_vision_Instruct(variant):
-
-    if variant == "meta-llama/Llama-3.2-90B-Vision-Instruct":
-        priority = ModelPriority.P1
-    else:
-        priority = ModelPriority.P2
+def test_mochi(variant):
 
     # Record Forge Property
-    module_name = record_model_properties(
+    record_model_properties(
         framework=Framework.PYTORCH,
-        model=ModelArch.LLAMA3_2,
+        model=ModelArch.MOCHIV1,
         variant=variant,
-        task=Task.MULTIMODAL_TEXT_GENERATION,
+        task=Task.TEXT_TO_VIDEO_GENERATION,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
-        priority=priority,
+        priority=ModelPriority.P1,
     )
 
     raise RuntimeError("Requires multi-chip support")
