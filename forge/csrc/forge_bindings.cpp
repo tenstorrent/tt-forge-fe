@@ -144,7 +144,7 @@ PYBIND11_MODULE(_C, m)
     py::module m_runtime = m.def_submodule("runtime", "Submodule defining runtime functions");
     RuntimeModule(m_runtime);
 
-    // Define Run
+    // Define RuntimeTestUtils module as a submodule to RuntimeModule.
     py::module m_runtime_testutils =
         m_runtime.def_submodule("runtime_testutils", "Submodule defining runtime test functions");
     RuntimeTestUtilsModule(m_runtime);

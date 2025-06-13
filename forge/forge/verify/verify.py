@@ -27,7 +27,7 @@ import forge._C.graph as pygraph
 from forge._C.runtime import Tensor as CTensor, ProgramType
 from forge._C.runtime_test import test_so, get_persistent_inputs
 from forge.compiled_graph_state import CompiledModel
-from forge.verify.compare import compare_tensor_to_golden, determine_consistency_limits
+from forge.verify.compare import compare_tensor_to_golden
 from forge.verify.utils import convert_to_supported_pytorch_dtype
 from forge.forge_property_utils import (
     ExecutionStage,
@@ -406,11 +406,9 @@ def verify(
         so_path = compiled_model.export_to_shared_object()
         # Run .so
         all_outputs = compiled_model.runtime_model_state.get_outputs(ProgramType.Forward)
-        # consts_and_params = compiled_model.runtime_model_state.get_persistent_inputs(ProgramType.Forward)
         consts_and_params = get_persistent_inputs(ProgramType.Forward, compiled_model.runtime_model_state)
         fwd_func_name = "forward"
         is_success = test_so(
-            # is_success = compiled_model.runtime_model_state.test_so(
             so_path,
             fwd_func_name,
             compiled_model.inputs,
