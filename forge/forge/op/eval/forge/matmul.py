@@ -155,7 +155,7 @@ def shape(type, attr, ops):
     return output_dim, broadcast
 
 
-def lower(type, attr, forge_attr, lc, ops, outputs):
+def lower(type, attr, forge_attr, ops, outputs):
     # TODO: Implement mlir lowering here.
     assert False
 

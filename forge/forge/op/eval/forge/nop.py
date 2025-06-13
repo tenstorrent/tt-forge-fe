@@ -40,6 +40,6 @@ class Nop(PyEltwiseUnaryOp):
         assert operand == 0, "Invalid operand index"
         return ac.op(Nop.create(), [grad])
 
-    def lower(self, lc, tensors, outputs):
+    def lower(self, tensors, outputs):
         # TODO: Implement mlir lowering here.
         assert False

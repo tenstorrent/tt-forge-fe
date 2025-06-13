@@ -37,7 +37,7 @@ class Reciprocal(PyEltwiseUnaryOp):
         shape = tensor_shapes[0]
         return shape, []
 
-    def lower(self, lc, tensors, outputs):
+    def lower(self, tensors, outputs):
         # TODO: Implement mlir lowering here.
         assert False
 

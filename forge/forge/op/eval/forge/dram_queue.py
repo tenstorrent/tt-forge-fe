@@ -20,7 +20,7 @@ def shape(type, attr, ops):
     return ops[0], []
 
 
-def lower(type, attr, lc, ops, outputs):
+def lower(type, attr, ops, outputs):
     # TODO: Implement mlir lowering here.
     assert False
 

@@ -43,7 +43,7 @@ class Log(PyEltwiseUnaryOp):
         recip = ac.op(Reciprocal.create(), (inputs[0],))
         return ac.op("multiply", (recip, grad))
 
-    def lower(self, lc, tensors, outputs):
+    def lower(self, tensors, outputs):
         # TODO: Implement mlir lowering here.
         assert False
 

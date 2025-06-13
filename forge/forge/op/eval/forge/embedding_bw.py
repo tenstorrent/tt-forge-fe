@@ -27,7 +27,7 @@ def shape(type, attr, tensor_shapes):
     return tensor_shapes[1], []
 
 
-def lower(type, attr, lc, ops, outputs):
+def lower(type, attr, ops, outputs):
     assert False, "embedding_bw should not be lowered"
 
 

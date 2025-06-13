@@ -44,7 +44,7 @@ class Abs(PyEltwiseUnaryOp):
         stretched = ac.op("multiply", (subtract, ac.constant(2.0)))
         return ac.op("multiply", (stretched, grad))
 
-    def lower(self, lc, tensors, outputs):
+    def lower(self, tensors, outputs):
         # TODO: Implement mlir lowering here.
         assert False
 
