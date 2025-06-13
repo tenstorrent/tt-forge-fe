@@ -144,8 +144,9 @@ jobs:
       run: |
         source env/activate
         mkdir -p ${{ steps.strings.outputs.perf_report_path }}
-        TT_METAL_WATCHER=120 python forge/test/benchmark/benchmark.py -m ${{ matrix.build.name }} -ts ${{ matrix.build.ts }} -bs ${{ matrix.build.bs }} -df ${{ matrix.build.df }} -lp ${{ matrix.build.lp }} -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}.json
+        python forge/test/benchmark/benchmark.py -m ${{ matrix.build.name }} -ts ${{ matrix.build.ts }} -bs ${{ matrix.build.bs }} -df ${{ matrix.build.df }} -lp ${{ matrix.build.lp }} -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}.json
         python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/${{ matrix.build.dir }}/mlir_reports/ttir.mlir
+        cat ~/testify/ll-sw/${{ matrix.build.dir }}/mlir_reports/ttnn.mlir
 
     - name: Install and run TTRT
       shell: bash
