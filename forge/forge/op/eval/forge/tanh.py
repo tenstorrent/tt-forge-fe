@@ -42,7 +42,7 @@ class Tanh(PyEltwiseUnaryOp):
         res = ac.op("multiply", (subtract, grad))
         return res
 
-    def lower(self, lc, tensors, outputs):
+    def lower(self, tensors, outputs):
         # TODO: Implement mlir lowering here.
         assert False
 

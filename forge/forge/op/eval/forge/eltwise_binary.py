@@ -80,7 +80,7 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
     return tuple(output_shape), broadcast
 
 
-def lower(type, attr, lc, ops, outputs):
+def lower(type, attr, ops, outputs):
     # TODO: Implement mlir lowering here.
     assert False
 

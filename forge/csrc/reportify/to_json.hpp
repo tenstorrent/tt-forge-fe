@@ -18,11 +18,6 @@ void to_json(json& j, variant<Ts...> const& v)
 
 namespace tt
 {
-inline void to_json(json& j, DramLoc const& dram_loc) { j = std::make_pair(dram_loc.channel, dram_loc.address); }
-}  // namespace tt
-
-namespace tt
-{
 namespace graphlib
 {
 void to_json(json& j, UBlockOrder const& ublock_order);

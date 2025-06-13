@@ -45,7 +45,7 @@ class Sqrt(PyEltwiseUnaryOp):
         mult = ac.op("multiply", (rec, ac.constant(0.5)))
         return ac.op("multiply", (mult, grad))
 
-    def lower(self, lc, tensors, outputs):
+    def lower(self, tensors, outputs):
         # TODO: Implement mlir lowering here.
         assert False
 

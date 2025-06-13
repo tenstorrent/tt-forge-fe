@@ -162,7 +162,7 @@ class Conv2d(PyOp):
     def backward(self, ac, operand, inputs, output, grad):
         pass
 
-    def lower(self, lc, tensors, outputs):
+    def lower(self, tensors, outputs):
         # TODO: Implement mlir lowering here.
         assert False
 

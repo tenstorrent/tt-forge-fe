@@ -4,7 +4,7 @@
 import torch
 from typing import List, Tuple, Union
 from forge._C.graph import NodeContext, OpType
-from forge._C.passes import LoweringContext, DecomposingContext
+from forge._C.passes import DecomposingContext
 from forge._C.autograd import AutogradContext
 
 
@@ -80,7 +80,6 @@ class PyOp(OpTypeWrapper):
 
     def lower(
         self,
-        lowering_context: LoweringContext,
         tensors: List[NodeContext],
         outputs: List[NodeContext],
     ):

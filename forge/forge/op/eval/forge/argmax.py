@@ -61,7 +61,7 @@ class Argmax(PyEltwiseUnaryOp):
     def backward(self, ac, operand, inputs, output, grad):
         raise RuntimeError("Argmax does not require grad and does not have a backwards function")
 
-    def lower(self, lc, tensors, outputs):
+    def lower(self, tensors, outputs):
         # TODO: Implement mlir lowering here.
         assert False
 
