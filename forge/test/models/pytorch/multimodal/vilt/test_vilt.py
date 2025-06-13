@@ -2,9 +2,8 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import requests
 import torch
-from PIL import Image
+from datasets import load_dataset
 from transformers import (
     ViltConfig,
     ViltForMaskedLM,
@@ -31,8 +30,8 @@ from test.models.pytorch.multimodal.vilt.model_utils.model import (
 )
 from test.utils import download_model
 
-url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-image = Image.open(requests.get(url, stream=True).raw)
+dataset = load_dataset("cifar10", split="test")
+image = dataset[0]["img"]
 
 text1 = "How many cats are there?"
 text2 = "a bunch of cats laying on a [MASK]."

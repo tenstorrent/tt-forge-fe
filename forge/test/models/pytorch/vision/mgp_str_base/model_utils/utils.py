@@ -2,10 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import requests
-
-# From: https://huggingface.co/alibaba-damo/mgp-str-base
-from PIL import Image
+from datasets import load_dataset
 from transformers import MgpstrForSceneTextRecognition, MgpstrProcessor
 
 
@@ -16,8 +13,8 @@ def load_model(variant):
 
 
 def load_input(variant):
-    url = "https://i.postimg.cc/ZKwLg2Gw/367-14.png"
-    image = Image.open(requests.get(url, stream=True).raw).convert("RGB")
+    dataset = load_dataset("cifar10", split="test")
+    image = dataset[0]["img"]
     processor = MgpstrProcessor.from_pretrained(variant)
     inputs = processor(
         images=image,

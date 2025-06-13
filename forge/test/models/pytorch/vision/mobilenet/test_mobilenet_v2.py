@@ -1,14 +1,12 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import urllib
 
 import pytest
-import requests
 import timm
 import torch
+from datasets import load_dataset
 from loguru import logger
-from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from transformers import (
@@ -82,8 +80,8 @@ def generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant):
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
 
     # Image load and pre-processing into pixel_values
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    dataset = load_dataset("cifar10", split="test")
+    image = dataset[0]["img"]
     inputs = preprocessor(images=image, return_tensors="pt")
     image_tensor = inputs.pixel_values
 
@@ -93,7 +91,7 @@ def generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["google/mobilenet_v2_0.35_96"])
 def test_mobilenetv2_96(variant):
-    pytest.skip("Hitting segmentation fault in MLIR")
+    # pytest.skip("Hitting segmentation fault in MLIR")
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -126,8 +124,8 @@ def generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant):
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
 
     # Image load and pre-processing into pixel_values
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    dataset = load_dataset("cifar10", split="test")
+    image = dataset[0]["img"]
     inputs = preprocessor(images=image, return_tensors="pt")
     image_tensor = inputs.pixel_values
 
@@ -171,8 +169,8 @@ def generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant):
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
 
     # Image load and pre-processing into pixel_values
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    dataset = load_dataset("cifar10", split="test")
+    image = dataset[0]["img"]
     inputs = preprocessor(images=image, return_tensors="pt")
 
     image_tensor = inputs.pixel_values
@@ -219,12 +217,8 @@ def generate_model_mobilenetV2_imgcls_timm_pytorch(variant):
     try:
         config = resolve_data_config({}, model=model)
         transform = create_transform(**config)
-        url, filename = (
-            "https://github.com/pytorch/hub/raw/master/images/dog.jpg",
-            "dog.jpg",
-        )
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        dataset = load_dataset("cifar10", split="test")
+        img = dataset[0]["img"]
         image_tensor = transform(img).unsqueeze(0)  # transform and add batch dimension
     except:
         logger.warning(
@@ -280,12 +274,8 @@ def generate_model_mobilenetV2_semseg_hf_pytorch(variant):
     try:
         config = resolve_data_config({}, model=framework_model)
         transform = create_transform(**config)
-        url, filename = (
-            "https://github.com/pytorch/hub/raw/master/images/dog.jpg",
-            "dog.jpg",
-        )
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        dataset = load_dataset("cifar10", split="test")
+        img = dataset[0]["img"]
         img_tensor = transform(img).unsqueeze(0)
     except:
         logger.warning(

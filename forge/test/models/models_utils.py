@@ -4,6 +4,7 @@
 import torch
 import requests
 from PIL import Image
+from datasets import load_dataset
 from torchvision import transforms
 from transformers import AutoImageProcessor
 import torch
@@ -11,6 +12,7 @@ from tabulate import tabulate
 import json
 from typing import Optional, Tuple
 from transformers import Cache
+from third_party.tt_forge_models.tools.utils import get_file
 
 # Mean Pooling - Take attention mask into account for correct averaging
 def mean_pooling(model_output, attention_mask):
@@ -19,8 +21,9 @@ def mean_pooling(model_output, attention_mask):
     return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
 
 
-def preprocess_input_data(image_url):
-    input_image = Image.open(requests.get(image_url, stream=True).raw).convert("RGB")
+def preprocess_input_data():
+    input_image = get_file("http://images.cocodataset.org/val2017/000000397133.jpg")
+    input_image = Image.open(str(input_image))
     input_tensor = transforms.ToTensor()(input_image)
     input_batch = input_tensor.unsqueeze(0)
     return input_batch
@@ -61,8 +64,8 @@ def build_optimum_cli_command(variant, tmp_path):
 
 
 def get_sample_data(model_name):
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    dataset = load_dataset("cifar10", split="test")
+    image = dataset[0]["img"]
     image_processor = AutoImageProcessor.from_pretrained(model_name)
     pixel_values = image_processor(images=image, return_tensors="pt").pixel_values
     return [pixel_values]

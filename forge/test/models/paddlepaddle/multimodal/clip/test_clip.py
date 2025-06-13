@@ -1,8 +1,7 @@
 # SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-import requests
-from PIL import Image
+from datasets import load_dataset
 
 import pytest
 
@@ -66,7 +65,8 @@ def test_clip_vision(variant):
     processor = CLIPProcessor.from_pretrained(variant)
 
     # Prepare inputs
-    image = Image.open(requests.get("http://images.cocodataset.org/val2017/000000039769.jpg", stream=True).raw)
+    dataset = load_dataset("cifar10", split="test")
+    image = dataset[0]["img"]
     inputs = processor(images=image, return_tensors="pd")
     inputs = [inputs["pixel_values"]]
 
@@ -100,7 +100,8 @@ def test_clip(variant):
         "a photo of cats in bed",
         "a photo of dog in snow",
     ]
-    image = Image.open(requests.get("http://images.cocodataset.org/val2017/000000039769.jpg", stream=True).raw)
+    dataset = load_dataset("cifar10", split="test")
+    image = dataset[0]["img"]
     inputs = processor(images=image, text=text, return_tensors="pd")
     inputs = [inputs["input_ids"], inputs["pixel_values"]]
 
