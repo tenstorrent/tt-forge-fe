@@ -12,7 +12,6 @@ from ....forgeglobal import TILE_DIM
 from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from ..lforge.abs import Abs as ForgeAbs
 from .nop import Nop
 
 
@@ -48,7 +47,8 @@ class CumulativeSum(PyEltwiseUnaryOp):
             return ac.op(Nop.create(), (grad,))
 
     def lower(self, lc, tensors, outputs):
-        return None
+        # TODO: Implement mlir lowering here.
+        assert False
 
     def initial_flops_estimate(self, tensor_shapes):
         flops = 0

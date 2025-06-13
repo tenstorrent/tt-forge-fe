@@ -943,7 +943,6 @@ def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]
         node = consteval_graph["nodes"][node_name]
         if node["opcode"] == "Input":
             input_value = inputs[node_name]
-
             node_to_tensor[node_name] = input_value
         elif node["opcode"] in {"ForgeOp", "ForgeOp"}:
             inputs_after_tms: List[torch.Tensor] = []
@@ -972,22 +971,6 @@ def consteval_input(consteval_trace, name: str, inputs: Dict[str, torch.Tensor])
     # For example, if we had transpose in consteval graph, output tensor would have stride same as input.
     # However, since we store that input as constant tensor, its shape defines its stride.
     return torch.empty(const_eval_tensor.shape, dtype=const_eval_tensor.dtype).copy_(const_eval_tensor)
-
-
-def consteval_shape(
-    compiled_graph_state,
-    name: str,
-    tensor: torch.Tensor,
-) -> torch.Tensor:
-    consteval_graph = compiled_graph_state.consteval_trace.get(name, None)
-    if consteval_graph is None:
-        return tensor.shape
-
-    for node_name in consteval_graph["topological_sorted_nodes"]:
-        node = consteval_graph["nodes"][node_name]
-        if node["opcode"] == "Output":
-            return node["cache"]["shape"]
-    assert False, "No output node found in consteval graph"
 
 
 def compare_tensors(t0, t1):

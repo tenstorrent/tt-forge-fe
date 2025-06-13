@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import os
 
 import torch
 import torch.nn.functional
@@ -13,7 +12,6 @@ from ....forgeglobal import TILE_DIM
 from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from ..lforge.log import Log as ForgeLog
 from .reciprocal import Reciprocal
 
 
@@ -46,23 +44,8 @@ class Log(PyEltwiseUnaryOp):
         return ac.op("multiply", (recip, grad))
 
     def lower(self, lc, tensors, outputs):
-        assert len(tensors) == 1, "Log should  have one input"
-
-        if bool(int(os.environ.get("FORGE_ENABLE_TINY_TILE", "0"))):
-            node_shape = list(tensors[0].shape)
-            tile_height = calculate_tile_size(node_shape[-2])
-            tile_width = calculate_tile_size(node_shape[-1])
-            vector = "" if tile_height == TILE_DIM else "r"
-        else:
-            vector = None
-            tile_height, tile_width = TILE_DIM, TILE_DIM
-
-        lc.op(
-            ForgeLog.create(vector=vector),
-            tensors,
-            tile_height=tile_height,
-            tile_width=tile_width,
-        )
+        # TODO: Implement mlir lowering here.
+        assert False
 
     def initial_flops_estimate(self, tensor_shapes):
         flops = 0

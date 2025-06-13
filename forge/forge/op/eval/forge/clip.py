@@ -12,7 +12,6 @@ from ....forgeglobal import TILE_DIM
 from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from ..lforge.nop import Nop as ForgeNop
 
 
 class Clip(PyEltwiseUnaryOp):
@@ -49,50 +48,8 @@ class Clip(PyEltwiseUnaryOp):
         return ac.op("multiply", (stretched, grad))
 
     def lower(self, lc, tensors, outputs):
-        assert len(tensors) == 1, "Clip should  have one input"
-
-        min_value = self.min
-        max_value = self.max
-
-        # Inf protection
-        if max_value > 65504.0:
-            max_value = 65504.0
-
-        if (min_value == 0) and (max_value >= 0):
-            res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=max_value, relu_mode="max"), (tensors[0],))
-            return
-
-        shape = list(tensors[0].shape.as_list())
-        # Align up to tile
-        shape[-2] = ((shape[-2] - 1) // TILE_DIM + 1) * TILE_DIM
-        shape[-1] = ((shape[-1] - 1) // TILE_DIM + 1) * TILE_DIM
-        # Align up to 4 dimensions
-        if len(shape) > 4:
-            raise RuntimeError("Operator clip, operand must have number of dimensions less or equal to 4. ")
-        if len(shape) < 4:
-            shape = (4 - len(shape)) * [1] + shape
-
-        min_value_tensor = lc.tensor(torch.zeros(shape) + min_value)
-        max_value_tensor = lc.tensor(torch.zeros(shape) + max_value)
-        diff_tensor = lc.tensor(torch.zeros(shape) + max_value - min_value)
-
-        # General Formula/Algorithm
-        # y = ReLU(x - min_value) + min_value
-        # y = ReLU(0.0 - y + max_value) - max_value
-        # y = 0.0 - y
-
-        res = lc.op("subtract", (tensors[0], min_value_tensor))
-        # x - min_value
-        res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=0.0, relu_mode="min"), (res,))
-
-        # ReLU(x - min_value)
-        res = lc.op("subtract", (diff_tensor, res))
-        # diff_value - ReLU(x - min_value), diff = max - min
-        res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=0.0, relu_mode="min"), (res,))
-
-        # ReLU(diff_value - ReLU(x - min_value))
-        lc.op("subtract", (max_value_tensor, res))
-        # max_value - ReLU(diff_value - ReLU(x - min_value))
+        # TODO: Implement mlir lowering here.
+        assert False
 
     def backward(self, ac, operand, inputs, output, grad):
         x = inputs[0]

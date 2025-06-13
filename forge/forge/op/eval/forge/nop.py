@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import os
 
 import torch
 import torch.nn.functional
@@ -13,7 +12,6 @@ from ....forgeglobal import TILE_DIM
 from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from ..lforge.nop import Nop as ForgeNop
 
 
 class Nop(PyEltwiseUnaryOp):
@@ -43,13 +41,5 @@ class Nop(PyEltwiseUnaryOp):
         return ac.op(Nop.create(), [grad])
 
     def lower(self, lc, tensors, outputs):
-        assert len(tensors) == 1, "Nop should  have one input"
-
-        if bool(int(os.environ.get("FORGE_ENABLE_TINY_TILE", "0"))):
-            node_shape = list(tensors[0].shape)
-            tile_height = calculate_tile_size(node_shape[-2])
-            tile_width = calculate_tile_size(node_shape[-1])
-        else:
-            tile_height, tile_width = TILE_DIM, TILE_DIM
-
-        lc.op(ForgeNop.create(), tensors, tile_height=tile_height, tile_width=tile_width)
+        # TODO: Implement mlir lowering here.
+        assert False

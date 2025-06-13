@@ -216,19 +216,6 @@ graphlib::Edge clone_input_forking_edge(
 
 graphlib::Shape default_tm_evaluator(graphlib::OpType const &tm, graphlib::Shape shape, graphlib::IRLevel ir_level);
 
-graphlib::Shape post_tms_shape(
-    graphlib::Shape input_shape,
-    std::vector<OpType> const &tms,
-    std::function<graphlib::Shape(graphlib::OpType const &, graphlib::Shape, graphlib::IRLevel)> tm_evaluator =
-        default_tm_evaluator,
-    graphlib::IRLevel ir_level = IRLevel::IR_FORGE);
-
-graphlib::Shape post_tms_shape(
-    Graph const *graph,
-    graphlib::Edge edge,
-    std::function<graphlib::Shape(graphlib::OpType const &, graphlib::Shape, graphlib::IRLevel)> tm_evaluator =
-        default_tm_evaluator);
-
 std::pair<int, int> get_padding(graphlib::Graph const *graph, graphlib::Node const *node);
 
 // Calculate node shape from operand shapes, using python callback

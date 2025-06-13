@@ -2,7 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import os
 
 from forge._C import DataFormat
 import torch
@@ -157,116 +156,8 @@ def shape(type, attr, ops):
 
 
 def lower(type, attr, forge_attr, lc, ops, outputs):
-    assert len(ops) in [2, 3, 4], "Matrix multiply should have two or three inputs"
-    assert len(attr) <= 2, "Matrix multiply should have zero to two attributes (accumulate, z_bcast_factor, zero_point)"
-    has_requant = "requant" in forge_attr and forge_attr["requant"]
-
-    accumulate = (len(attr) >= 2) and bool(attr[0]) if has_requant else (len(attr) >= 1) and bool(attr[0])
-
-    forge_attrs = {}
-    if "sfpu_op" in forge_attr and os.environ.get("FORGE_FUSE_MATMUL_GELU", "0") != "0":
-        forge_attrs["sfpu_op"] = "gelu"
-    if accumulate:
-        forge_attrs["accumulate"] = True
-
-    if has_requant:
-        forge_attrs["requant"] = True
-        forge_attrs["zero_point"] = attr[-1]
-        if len(ops) == 4:
-            forge_attrs["bias"] = True
-    else:
-        if len(ops) == 3:
-            forge_attrs["bias"] = True
-
-    if type == "sparse_matmul":
-        in0 = ops[0]
-        in1 = ops[1]
-
-        picker = lc.get_pytorch_tensor(in0)
-        zdim = 1 if len(picker.shape) < 3 else picker.shape[-3]
-
-        z_bcast_factor = 1 if len(attr) < 2 else attr[1]  # set in sparse matmul's decompose
-
-        # We can fully fracture kH * kW
-        max_fracture_factor = z_bcast_factor if is_kernel_fracturing_candidate(ops, z_bcast_factor) else 1
-
-        # # TODO: this shouldn't be a sqrt but kW, though we don't have that info here currently
-        # fracture_factor = int(sqrt(z_bcast_factor)) if is_kernel_fracturing_candidate(ops, z_bcast_factor) else 1
-
-        sparse_forge = create_sparse_forge(picker, z_bcast_factor, max_fracture_factor)
-
-        # Set grid_r to smallest valid solution (MaxUblocksR)
-        # Hardcode most of the values to 1, potentially add some solvers to choose valid combos if some limitations hit
-        u_rt = 1
-        u_kt = 1
-        u_ct = 1
-        t_factor_r = 1
-        t_factor_c = 1
-        fracture_factor = 1
-        grid_r = round_up_div(picker.shape[-2], TILE_DIM)
-        grid_c = 1  # this is always 1 by default, before balancing, needed for forge eval
-
-        sparse_tile_ptr_bits = sparse_forge.get_sparse_tile_ptr_bits(grid_r, t_factor_r, u_rt)
-        sparse_ublock_idx_bits = sparse_forge.get_sparse_ublock_idx_bits(grid_r, t_factor_r, u_rt)
-        sparse, encodings, _s_shape, _e_shape, _num_strips = sparse_forge.get_sparse_tiles_and_encodings(grid_r)
-        sparse, encodings = shapeify_sparse_tiles_and_encodings(
-            sparse=sparse, encodings=encodings, grid_r=grid_r, fracture_factor=fracture_factor
-        )
-
-        sparse_is_binary = (sparse.numel() == (torch.sum(sparse == 1) + torch.sum(sparse == 0))).item()
-        sparse_is_int = (sparse.numel() == (torch.sum(sparse == 1) + torch.sum(sparse == 0))).item() and (
-            ops[0].output_df == DataFormat.Int8 or ops[0].output_df == DataFormat.Int32
-        )
-
-        if sparse_is_int:
-            target_df = DataFormat.Int8
-        elif sparse_is_binary:
-            target_df = DataFormat.Bfp2_b
-        else:
-            target_df = DataFormat.Float16_b
-
-        in0 = lc.tensor_with_sparse_forge(sparse, sparse_forge, target_df)
-        in2 = lc.tensor(encodings, DataFormat.RawUInt32)
-
-        is_sparse = True
-        forge_attrs["identity"] = True
-        forge_attrs["num_sparse_tiles"] = sparse.shape[-1] // TILE_DIM
-        forge_attrs["num_index_tiles"] = encodings.shape[-1] // TILE_DIM
-        forge_attrs["sparse_tile_ptr_bits"] = sparse_tile_ptr_bits
-        forge_attrs["sparse_ublock_idx_bits"] = sparse_ublock_idx_bits
-        forge_attrs["fracture_factor"] = fracture_factor
-        # We need fracture_factor in attributes as well, since shape() function doesn't get forge attrs
-        lc.op(
-            "matmul",
-            [in0, in1, in2],
-            (
-                accumulate,
-                is_sparse,
-                sparse_tile_ptr_bits,
-                1,
-                zdim,
-                picker.shape[-2],
-                in1.shape[-1],
-                fracture_factor,
-                u_rt,
-                u_kt,
-                u_ct,
-                grid_c,
-                t_factor_r,
-                t_factor_c,
-                sparse_ublock_idx_bits,
-            ),
-            forge_attrs,
-        )
-    else:
-        # Find proper tile sizes
-        if bool(int(os.environ.get("FORGE_ENABLE_TINY_TILE", "0"))):
-            node_shape = lc.forge_shape()
-            tile_height = calculate_tile_size(node_shape[-2])
-            tile_width = TILE_DIM
-        else:
-            tile_height, tile_width = TILE_DIM, TILE_DIM
-        lc.op(type, ops, attr, forge_attrs, "", tile_height, tile_width)  # straight 1-1 for matmul
+    # TODO: Implement mlir lowering here.
+    assert False
 
 
 def decompose(type, attr, dc, inputs):
