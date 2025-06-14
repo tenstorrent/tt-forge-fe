@@ -101,7 +101,7 @@ void Node::clone(Node const* other, std::string const& name)
 
 std::string Node::get_type() const
 {
-    if (node_type_ == NodeType::kPyOp or node_type_ == NodeType::kForgeOp)
+    if (node_type_ == NodeType::kPyOp)
     {
         OpNode const* op = this->as<OpNode>();
         return node_type_to_string(node_type_) + "::" + op->op_name();
@@ -134,8 +134,6 @@ std::string node_type_to_string(const NodeType& node_type)
         case NodeType::kInput: return "Input";
         case NodeType::kOutput: return "Output";
         case NodeType::kQueue: return "Queue";
-        case NodeType::kForgeOp: return "ForgeOp";
-        case NodeType::kForgeNaryTM: return "ForgeNaryTM";
         case NodeType::kPyOp: return "ForgeOp";
         default: TT_ASSERT(false, "Invalid node type");
     }
