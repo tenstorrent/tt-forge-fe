@@ -24,7 +24,6 @@ from test.utils import download_model
 variants = [
     pytest.param(
         "openai/whisper-tiny",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "openai/whisper-base",
@@ -32,11 +31,9 @@ variants = [
     ),
     pytest.param(
         "openai/whisper-small",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "openai/whisper-medium",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "openai/whisper-large",
