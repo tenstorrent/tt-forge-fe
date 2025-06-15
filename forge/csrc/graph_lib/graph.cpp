@@ -529,10 +529,8 @@ void Graph::copy_node_attributes(Node *src, Node *dst)
 {
     dst->set_epoch_type(src->get_epoch_type());
     dst->set_output_df(src->output_df());
-    if (((dst->node_type() == NodeType::kForgeOp) && (src->node_type() == NodeType::kForgeOp) &&
-         src->as<OpNode>()->is_gradient_op()) ||
-        ((dst->node_type() == NodeType::kPyOp) && (src->node_type() == NodeType::kPyOp) &&
-         src->as<OpNode>()->is_gradient_op()))
+    if ((dst->node_type() == NodeType::kPyOp) && (src->node_type() == NodeType::kPyOp) &&
+        src->as<OpNode>()->is_gradient_op())
         dst->as<OpNode>()->set_gradient_op();
 }
 

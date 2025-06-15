@@ -31,7 +31,7 @@ const TaggedNode *Node::as<TaggedNode>() const
 template <>
 const OpNode *Node::as<OpNode>() const
 {
-    TT_ASSERT(this->node_type() == NodeType::kPyOp || this->node_type() == NodeType::kForgeOp);
+    TT_ASSERT(this->node_type() == NodeType::kPyOp);
     return dynamic_cast<OpNode const *>(this);
 }
 
@@ -40,20 +40,6 @@ const PyOpNode *Node::as<PyOpNode>() const
 {
     TT_ASSERT(this->node_type() == NodeType::kPyOp);
     return dynamic_cast<PyOpNode const *>(this);
-}
-
-template <>
-const ForgeOpNode *Node::as<ForgeOpNode>() const
-{
-    TT_ASSERT(this->node_type() == NodeType::kForgeOp);
-    return dynamic_cast<ForgeOpNode const *>(this);
-}
-
-template <>
-const ForgeNaryTMNode *Node::as<ForgeNaryTMNode>() const
-{
-    TT_ASSERT(this->node_type() == NodeType::kForgeNaryTM);
-    return dynamic_cast<ForgeNaryTMNode const *>(this);
 }
 
 template <>
@@ -67,7 +53,7 @@ TaggedNode *Node::as<TaggedNode>()
 template <>
 OpNode *Node::as<OpNode>()
 {
-    TT_ASSERT(this->node_type() == NodeType::kPyOp || this->node_type() == NodeType::kForgeOp);
+    TT_ASSERT(this->node_type() == NodeType::kPyOp);
     return dynamic_cast<OpNode *>(this);
 }
 
@@ -76,20 +62,6 @@ PyOpNode *Node::as<PyOpNode>()
 {
     TT_ASSERT(this->node_type() == NodeType::kPyOp);
     return dynamic_cast<PyOpNode *>(this);
-}
-
-template <>
-ForgeOpNode *Node::as<ForgeOpNode>()
-{
-    TT_ASSERT(this->node_type() == NodeType::kForgeOp);
-    return dynamic_cast<ForgeOpNode *>(this);
-}
-
-template <>
-ForgeNaryTMNode *Node::as<ForgeNaryTMNode>()
-{
-    TT_ASSERT(this->node_type() == NodeType::kForgeNaryTM);
-    return dynamic_cast<ForgeNaryTMNode *>(this);
 }
 
 template <>
@@ -208,60 +180,6 @@ std::vector<int> create_permute_xy_order(const int rank)
     order[rank - 2] = rank - 1;
     order[rank - 1] = rank - 2;
     return order;
-}
-
-std::unique_ptr<Node> ForgeOpNode::clone(std::string const &name) const
-{
-    std::unique_ptr<ForgeOpNode> node = create_node<ForgeOpNode>(this->name(), this->op_type());
-    node->Node::clone(this, name);
-    node->set_gradient_op(this->is_gradient_op());
-    node->set_golden_transforms(this->get_golden_transforms());
-    node->set_intermediate_df(this->intermediate_df());
-    node->set_accumulate_df(this->accumulate_df());
-    node->set_math_fidelity(this->math_fidelity());
-    node->add_tags(this->as<TaggedNode>()->get_tags());
-    return node;
-}
-
-void ForgeOpNode::copy_lowered_op_attributes(PyOpNode *node)
-{
-    epoch_type_ = node->get_epoch_type();
-    set_gradient_op(node->is_gradient_op());
-    set_output_df(node->output_df());
-    set_intermediate_df(node->output_df());  // by default, same as output
-    // accumulate df will not be set here, we'll have an overall default
-
-    // If there are golden transforms, they operate on forge shapes,
-    // so we need to insert narrowing in order make FORGE compatible
-    set_golden_transforms(node->get_golden_transforms());
-    if (not get_golden_transforms().empty())
-    {
-        int r = node->shape().size() > 1 ? node->shape()[-2] : 1;
-        int c = node->shape()[-1];
-        if ((r % Shape::FORGE_TILE_DIM) != 0)
-            add_golden_transform(graphlib::OpType("narrow", {-2, 0, r, r}, {}));
-        if ((c % Shape::FORGE_TILE_DIM) != 0)
-            add_golden_transform(graphlib::OpType("narrow", {-1, 0, c, c}, {}));
-    }
-
-    if (node->has_golden_id())
-        set_golden_id(node->golden_id());
-    this->as<graphlib::TaggedNode>()->add_tags(node->as<graphlib::TaggedNode>()->get_tags());
-}
-
-void ForgeOpNode::copy_parent_op_attributes(ForgeOpNode *node)
-{
-    epoch_type_ = node->get_epoch_type();
-    set_output_df(node->output_df());
-    set_intermediate_df(node->intermediate_df());
-    set_accumulate_df(node->accumulate_df());
-}
-
-void ForgeNaryTMNode::copy_lowered_op_attributes(PyOpNode *node)
-{
-    epoch_type_ = node->get_epoch_type();
-    set_output_df(node->output_df());
-    this->as<graphlib::TaggedNode>()->add_tags(node->as<graphlib::TaggedNode>()->get_tags());
 }
 
 std::unique_ptr<Node> PyOpNode::clone(std::string const &name) const
