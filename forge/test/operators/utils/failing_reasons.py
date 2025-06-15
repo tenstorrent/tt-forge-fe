@@ -125,8 +125,12 @@ class ComponentChecker(Enum):
             ExceptionCheck(
                 error_log=[
                     M.contains("lib/libtt_metal.so"),
-                    M.contains("lib/_ttnn.so"),
+                    M.any(
+                        M.contains("lib/_ttnn.so"),
+                        M.contains("lib/_ttnncpp.so"),
+                    ),
                     M.contains("lib/libTTMLIRRuntime.so"),
+                    M.neg(M.contains("lib/libTTMLIRCompiler.so")),
                     M.contains("forge/_C.so"),
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
@@ -136,6 +140,7 @@ class ComponentChecker(Enum):
                     M.contains("lib/libtt_metal.so"),
                     M.contains("lib/_ttnn.so"),
                     M.neg(M.contains("lib/libTTMLIRRuntime.so")),  # no MLIR runtime
+                    M.neg(M.contains("lib/libTTMLIRCompiler.so")),
                     M.contains("forge/_C.so"),
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
@@ -154,16 +159,7 @@ class ComponentChecker(Enum):
                         M.contains("lib/_ttnncpp.so"),
                     ),
                     M.contains("lib/libTTMLIRRuntime.so"),
-                    M.contains("forge/_C.so"),
-                    M.last_line(M.contains("forge/compiled_graph_state.py:")),
-                ],
-            ),
-            ExceptionCheck(
-                error_log=[
-                    M.contains("lib/libTTMLIRCompiler.so"),
-                    M.neg(M.contains("lib/libtt_metal.so")),
-                    M.contains("lib/_ttnn.so"),
-                    M.contains("lib/libTTMLIRRuntime.so"),
+                    M.neg(M.contains("lib/libTTMLIRCompiler.so")),
                     M.contains("forge/_C.so"),
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
@@ -177,8 +173,14 @@ class ComponentChecker(Enum):
             ExceptionCheck(
                 error_log=[
                     M.neg(M.contains("lib/libtt_metal.so")),
-                    M.neg(M.contains("lib/_ttnn.so")),
+                    M.neg(
+                        M.any(
+                            M.contains("lib/_ttnn.so"),
+                            M.contains("lib/_ttnncpp.so"),
+                        ),
+                    ),
                     M.contains("lib/libTTMLIRRuntime.so"),
+                    M.neg(M.contains("lib/libTTMLIRCompiler.so")),
                     M.contains("forge/_C.so"),
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
@@ -192,8 +194,14 @@ class ComponentChecker(Enum):
             ExceptionCheck(
                 error_log=[
                     M.neg(M.contains("lib/libtt_metal.so")),
-                    M.neg(M.contains("lib/_ttnn.so")),
+                    M.neg(
+                        M.any(
+                            M.contains("lib/_ttnn.so"),
+                            M.contains("lib/_ttnncpp.so"),
+                        ),
+                    ),
                     M.neg(M.contains("lib/libTTMLIRRuntime.so")),
+                    M.neg(M.contains("lib/libTTMLIRCompiler.so")),
                     M.neg(M.contains("forge/_C.so")),  # Python code
                     M.any(
                         M.last_line(M.contains("forge/verify/compare.py:")),
@@ -217,8 +225,14 @@ class ComponentChecker(Enum):
             ExceptionCheck(
                 error_log=[
                     M.neg(M.contains("lib/libtt_metal.so")),
-                    M.neg(M.contains("lib/_ttnn.so")),
+                    M.neg(
+                        M.any(
+                            M.contains("lib/_ttnn.so"),
+                            M.contains("lib/_ttnncpp.so"),
+                        ),
+                    ),
                     M.neg(M.contains("lib/libTTMLIRRuntime.so")),
+                    M.neg(M.contains("lib/libTTMLIRCompiler.so")),
                     M.contains("forge/_C.so"),  # C code
                     M.any(
                         M.last_line(M.contains("forge/verify/compare.py:")),
@@ -237,8 +251,14 @@ class ComponentChecker(Enum):
             ExceptionCheck(
                 error_log=[
                     M.neg(M.contains("lib/libtt_metal.so")),
-                    M.neg(M.contains("lib/_ttnn.so")),
+                    M.neg(
+                        M.any(
+                            M.contains("lib/_ttnn.so"),
+                            M.contains("lib/_ttnncpp.so"),
+                        ),
+                    ),
                     M.neg(M.contains("lib/libTTMLIRRuntime.so")),
+                    M.neg(M.contains("lib/libTTMLIRCompiler.so")),
                     M.neg(M.contains("forge/_C.so")),
                     M.any(
                         M.last_line(M.contains("/tvm/relay/frontend/pytorch.py:")),
