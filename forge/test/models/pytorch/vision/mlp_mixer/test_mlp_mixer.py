@@ -2,12 +2,11 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import requests
 import timm
 import torch
+from datasets import load_dataset
 from loguru import logger
 from mlp_mixer_pytorch import MLPMixer
-from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
@@ -81,8 +80,8 @@ def test_mlp_mixer_timm_pytorch(variant):
     transform = create_transform(**config)
 
     try:
-        url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
-        image = Image.open(requests.get(url, stream=True).raw).convert("RGB")
+        dataset = load_dataset("cifar10", split="test")
+        image = dataset[0]["img"]
     except:
         logger.warning(
             "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"

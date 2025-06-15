@@ -20,6 +20,8 @@ from torchvision.transforms import (
     Resize,
 )
 
+from third_party.tt_forge_models.tools.utils import get_file
+
 
 def get_input_img():
     try:
@@ -54,10 +56,10 @@ def get_input_img():
 
 def get_input_img_hf_xray():
     try:
-        img_url = "https://huggingface.co/spaces/torchxrayvision/torchxrayvision-classifier/resolve/main/16747_3_1.jpg"
-        img_path = "xray.jpg"
-        urllib.request.urlretrieve(img_url, img_path)
-        img = skimage.io.imread(img_path)
+        img_path = get_file(
+            "https://huggingface.co/spaces/torchxrayvision/torchxrayvision-classifier/resolve/main/16747_3_1.jpg"
+        )
+        img = skimage.io.imread(str(img_path))
         img = xrv.datasets.normalize(img, 255)
         # Check that images are 2D arrays
         if len(img.shape) > 2:

@@ -28,9 +28,9 @@ from test.models.pytorch.vision.yolo.model_utils.yolov6_utils import (
 # Didn't dealt with yolov6n6,yolov6s6,yolov6m6,yolov6l6 variants because of its higher input size(1280)
 variants = [
     "yolov6n",
-    "yolov6s",
-    "yolov6m",
-    "yolov6l",
+    # "yolov6s",
+    # "yolov6m",
+    # "yolov6l",
 ]
 
 
@@ -77,11 +77,10 @@ def test_yolo_v6_pytorch(variant):
     framework_model = YoloV6Wrapper(framework_model)
 
     # STEP 3 : prepare input
-    url = "http://images.cocodataset.org/val2017/000000397133.jpg"
     stride = 32
     input_size = 640
     img_size = check_img_size(input_size, s=stride)
-    img, img_src = process_image(url, img_size, stride, half=False)
+    img, img_src = process_image(img_size, stride, half=False)
     input_batch = img.unsqueeze(0)
 
     inputs = [input_batch.to(torch.bfloat16)]

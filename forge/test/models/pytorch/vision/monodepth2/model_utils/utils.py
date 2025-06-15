@@ -12,15 +12,13 @@
 import hashlib
 import os
 import zipfile
-from io import BytesIO
 
 import matplotlib as mpl
 import matplotlib.cm as cm
 import numpy as np
 import PIL.Image as pil
-import requests
 import torch
-from PIL import Image
+from datasets import load_dataset
 from six.moves import urllib
 from torchvision import transforms
 
@@ -141,13 +139,11 @@ def load_model(variant):
 
 def load_input(feed_height, feed_width):
 
-    image_url = "https://raw.githubusercontent.com/nianticlabs/monodepth2/master/assets/test_image.jpg"
-    response = requests.get(image_url)
-    input_image = Image.open(BytesIO(response.content)).convert("RGB")
+    dataset = load_dataset("cifar10", split="test")
+    input_image = dataset[0]["img"]
     original_width, original_height = input_image.size
     input_image_resized = input_image.resize((feed_width, feed_height), pil.LANCZOS)
     input_tensor = transforms.ToTensor()(input_image_resized).unsqueeze(0)
-
     return input_tensor, original_width, original_height
 
 
