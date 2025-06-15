@@ -11,7 +11,8 @@ set(TT_MLIR_ROOT_DIR ${CMAKE_SOURCE_DIR}/third_party/tt-mlir)
 set(TTMLIR_INCLUDE_DIRS
     ${TT_MLIR_ROOT_DIR}/include
     ${TT_MLIR_ROOT_DIR}/build/include
-    ${TT_MLIR_ROOT_DIR}/runtime/include)
+    ${TT_MLIR_ROOT_DIR}/tools/ttnn-standalone
+)
 
 set(TTFORGE_CSRC_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -66,7 +67,7 @@ set(TORCH_LIB_DIR "${TTFORGE_VENV_DIR}/lib/${TTFORGE_PYTHON_VERSION}/site-packag
 
 add_library(ttforge_csrc SHARED)
 
-set(METAL_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/third_party/tt-metal/src/tt-metal-build/lib")
+set(METAL_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/build/lib")
 
 # Because _ttnn library doesn't have lib prefix, this is workaround to make linking work
 add_library(ttnn SHARED IMPORTED)
@@ -80,11 +81,13 @@ target_link_libraries(ttforge_csrc PRIVATE
     reportify
     tt_torch_device
     runtime
+    runtime_testutils
     ttforge_csrc_objs
     verif
 
     TTMLIRCompiler
     TTMLIRRuntime
+    TTNNCompileSo
 
     xml2
     curses

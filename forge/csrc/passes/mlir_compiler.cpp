@@ -3,7 +3,13 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "mlir_compiler.hpp"
 
+#include <cstdlib>
+#include <filesystem>
+#include <fstream>
+#include <iostream>
 #include <memory>
+#include <sstream>
+#include <string>
 
 #include "graph_lib/defines.hpp"
 #include "lower_to_mlir.hpp"
@@ -29,6 +35,7 @@
 #pragma clang diagnostic pop
 
 // TTMLIR headers
+#include "compile_so.hpp"
 #include "mlir/Target/Cpp/CppEmitter.h"
 #include "tt/runtime/types.h"
 #include "tt_torch_device/tt_device.hpp"
@@ -40,6 +47,8 @@
 
 // Reportify headers
 #include "reportify/reportify.hpp"
+
+namespace fs = std::filesystem;
 
 namespace tt::passes
 {
@@ -119,6 +128,61 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
         tt::log_info(LogMLIRCompiler, "C++ code generated successfully.");
         return cpp_source;
     }
+    else if constexpr (output == MLIROutputKind::SharedObject)
+    {
+        std::string cpp_source;
+        llvm::raw_string_ostream rso(cpp_source);
+
+        log_info(LogMLIRCompiler, "Generating a shared object from MLIR module.");
+
+        mlir::LogicalResult res = mlir::emitc::translateToCpp(mlir_module.get(), rso);
+        if (mlir::failed(res))
+        {
+            throw std::runtime_error("Failed to generate C++ code.");
+        }
+        rso.flush();
+
+        tt::log_info(LogMLIRCompiler, "C++ code for SharedObject generated successfully.");
+
+        const char* TT_METAL_HOME = std::getenv("TT_METAL_HOME");
+        const char* FORGE_HOME = std::getenv("FORGE_HOME");
+        if (TT_METAL_HOME == nullptr)
+        {
+            throw std::runtime_error("TT_METAL_HOME environment variable is not set.");
+        }
+        if (FORGE_HOME == nullptr)
+        {
+            throw std::runtime_error("FORGE_HOME environment variable is not set.");
+        }
+
+        fs::path metal_src_dir;
+        fs::path metal_lib_dir;
+        fs::path standalone_dir;
+        if (std::getenv("FORGE_IN_WHEEL"))
+        {
+            metal_src_dir = fs::path(std::string(TT_METAL_HOME));
+            metal_lib_dir = fs::path(std::string(FORGE_HOME)) / "forge/lib";
+            standalone_dir = fs::path(std::string(FORGE_HOME)) / "forge/tools/ttnn-standalone";
+        }
+        else if (std::getenv("FORGE_IN_SOURCE"))
+        {
+            metal_src_dir = fs::path(std::string(TT_METAL_HOME));
+            metal_lib_dir = fs::path(std::string(TT_METAL_HOME)).parent_path() / "tt-metal/build/lib";
+            standalone_dir =
+                fs::path(std::string(FORGE_HOME)).parent_path() / "third_party/tt-mlir/tools/ttnn-standalone";
+        }
+        else
+        {
+            throw std::runtime_error("Neither FORGE_IN_WHEEL nor FORGE_IN_SOURCE environment variables are set.");
+        }
+
+        std::string soPathStr = compileCppToSo(
+            cpp_source, "/tmp/", metal_src_dir.string(), metal_lib_dir.string(), standalone_dir.string());
+
+        tt::log_info(LogMLIRCompiler, "SharedObject generated successfully at path: {}.", soPathStr);
+
+        return soPathStr;
+    }
 }
 
 runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module, const std::optional<MLIRConfig>& mlir_config)
@@ -129,6 +193,12 @@ runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module, const std::optio
 std::string run_mlir_compiler_to_cpp(tt::ForgeGraphModule& module, const std::optional<MLIRConfig>& mlir_config)
 {
     return run_mlir_compiler_generic<MLIROutputKind::Cpp>(module, mlir_config);
+}
+
+std::string run_mlir_compiler_to_shared_object(
+    tt::ForgeGraphModule& module, const std::optional<MLIRConfig>& mlir_config)
+{
+    return run_mlir_compiler_generic<MLIROutputKind::SharedObject>(module, mlir_config);
 }
 
 void to_json(::nlohmann::json& j, const MLIRConfig& p)
@@ -149,4 +219,5 @@ void from_json(const ::nlohmann::json& j, MLIRConfig& p)
     j.at("enable_fusing").get_to(p.enable_fusing);
     j.at("custom_config").get_to(p.custom_config);
 }
+
 }  // namespace tt::passes
