@@ -21,22 +21,26 @@ from forge.forge_property_utils import (
 import pytest
 
 
-class Avgpool3D0(ForgeModule):
+class Resize1D0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
-    def forward(self, avgpool3d_input_0):
-        avgpool3d_output_1 = forge.op.AvgPool3d(
-            "",
-            avgpool3d_input_0,
-            kernel_size=[5, 1, 1],
-            stride=[1, 1, 1],
-            padding=[0, 0, 0, 0, 0, 0],
-            ceil_mode=False,
-            count_include_pad=True,
-            channel_last=0,
+    def forward(self, resize1d_input_0):
+        resize1d_output_1 = forge.op.Resize1d(
+            "", resize1d_input_0, size=27, method="linear", align_corners=False, channel_last=0
         )
-        return avgpool3d_output_1
+        return resize1d_output_1
+
+
+class Resize1D1(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize1d_input_0):
+        resize1d_output_1 = forge.op.Resize1d(
+            "", resize1d_input_0, size=127, method="linear", align_corners=False, channel_last=0
+        )
+        return resize1d_output_1
 
 
 def ids_func(param):
@@ -46,43 +50,23 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    pytest.param(
-        (
-            Avgpool3D0,
-            [((1, 1, 100, 54, 54), torch.float32)],
-            {
-                "model_names": ["pt_alexnet_base_img_cls_osmr"],
-                "pcc": 0.99,
-                "args": {
-                    "kernel_size": "[5, 1, 1]",
-                    "stride": "[1, 1, 1]",
-                    "padding": "[0, 0, 0, 0, 0, 0]",
-                    "ceil_mode": "False",
-                    "count_include_pad": "True",
-                    "channel_last": "0",
-                },
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    (
+        Resize1D0,
+        [((1, 64, 27), torch.float32)],
+        {
+            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"],
+            "pcc": 0.99,
+            "args": {"size": "27", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+        },
     ),
-    pytest.param(
-        (
-            Avgpool3D0,
-            [((1, 1, 260, 27, 27), torch.float32)],
-            {
-                "model_names": ["pt_alexnet_base_img_cls_osmr"],
-                "pcc": 0.99,
-                "args": {
-                    "kernel_size": "[5, 1, 1]",
-                    "stride": "[1, 1, 1]",
-                    "padding": "[0, 0, 0, 0, 0, 0]",
-                    "ceil_mode": "False",
-                    "count_include_pad": "True",
-                    "channel_last": "0",
-                },
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    (
+        Resize1D1,
+        [((1, 64, 127), torch.float32)],
+        {
+            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"],
+            "pcc": 0.99,
+            "args": {"size": "127", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+        },
     ),
 ]
 
@@ -91,7 +75,7 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes):
 
-    record_forge_op_name("AvgPool3d")
+    record_forge_op_name("Resize1d")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
@@ -130,11 +114,10 @@ def test_module(forge_module_and_shapes_dtypes):
 
     record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs)
+    compiler_cfg = forge.config.CompilerConfig()
+    if "default_df_override" in metadata.keys():
+        compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])
 
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-    )
+    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
