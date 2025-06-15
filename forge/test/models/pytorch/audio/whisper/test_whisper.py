@@ -27,7 +27,6 @@ variants = [
     ),
     pytest.param(
         "openai/whisper-base",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "openai/whisper-small",
