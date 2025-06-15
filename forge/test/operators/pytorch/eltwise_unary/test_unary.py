@@ -338,7 +338,7 @@ TestParamsData.test_plan_implemented = TestPlan(
         ),
         # ValueError: Dtype mismatch: framework_model.dtype=torch.float32, compiled_model.dtype=torch.int32
         TestCollection(
-            operators=["sqrt", "exp", "reciprocal", "rsqrt", "log", "log1p", "sigmoid", "cos", "sin", "tanh"],
+            operators=["sqrt", "exp", "reciprocal", "rsqrt", "log", "sigmoid", "cos", "sin", "tanh"],
             input_sources=TestCollectionCommon.single.input_sources,
             input_shapes=TestCollectionCommon.single.input_shapes,
             dev_data_formats=[
@@ -374,52 +374,52 @@ TestParamsData.test_plan_implemented = TestPlan(
         #     failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
         # ),
         # *********** clamp failing rules ***********
-        # RuntimeError: value cannot be converted to type at::BFloat16 without overflow
-        TestCollection(
-            operators=["clamp"],
-            input_sources=TestCollectionCommon.single.input_sources,
-            input_shapes=TestCollectionCommon.single.input_shapes,
-            kwargs=[
-                {"min": 0.2},
-                {"max": 0.2},
-            ],
-            dev_data_formats=TestCollectionTorch.single.dev_data_formats,
-            failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
-        ),
-        # ValueError: Dtype mismatch: framework_model.dtype=torch.float32, compiled_model.dtype=torch.int32
-        TestCollection(
-            operators=["clamp"],
-            input_sources=TestCollectionCommon.single.input_sources,
-            input_shapes=TestCollectionCommon.single.input_shapes,
-            kwargs=[
-                {"min": 0.0, "max": 0.5},
-                {"min": 0.2},
-                {"max": 0.2},
-            ],
-            dev_data_formats=[
-                torch.int8,
-                torch.int32,
-                torch.int64,
-            ],
-            math_fidelities=TestCollectionCommon.single.math_fidelities,
-            failing_reason=FailingReasons.DTYPE_MISMATCH,
-        ),
-        # Unsupported DataType!
-        TestCollection(
-            operators=["clamp"],
-            input_sources=TestCollectionCommon.single.input_sources,
-            input_shapes=TestCollectionCommon.single.input_shapes,
-            kwargs=[
-                {"min": 0.5, "max": 0.0},
-            ],
-            dev_data_formats=[
-                torch.int8,
-                torch.int32,
-                torch.int64,
-            ],
-            math_fidelities=TestCollectionCommon.single.math_fidelities,
-            failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
-        ),
+        # # RuntimeError: value cannot be converted to type at::BFloat16 without overflow
+        # TestCollection(
+        #     operators=["clamp"],
+        #     input_sources=TestCollectionCommon.single.input_sources,
+        #     input_shapes=TestCollectionCommon.single.input_shapes,
+        #     kwargs=[
+        #         {"min": 0.2},
+        #         {"max": 0.2},
+        #     ],
+        #     dev_data_formats=TestCollectionTorch.single.dev_data_formats,
+        #     failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
+        # ),
+        # # ValueError: Dtype mismatch: framework_model.dtype=torch.float32, compiled_model.dtype=torch.int32
+        # TestCollection(
+        #     operators=["clamp"],
+        #     input_sources=TestCollectionCommon.single.input_sources,
+        #     input_shapes=TestCollectionCommon.single.input_shapes,
+        #     kwargs=[
+        #         {"min": 0.0, "max": 0.5},
+        #         {"min": 0.2},
+        #         {"max": 0.2},
+        #     ],
+        #     dev_data_formats=[
+        #         torch.int8,
+        #         torch.int32,
+        #         torch.int64,
+        #     ],
+        #     math_fidelities=TestCollectionCommon.single.math_fidelities,
+        #     failing_reason=FailingReasons.DTYPE_MISMATCH,
+        # ),
+        # # Unsupported DataType!
+        # TestCollection(
+        #     operators=["clamp"],
+        #     input_sources=TestCollectionCommon.single.input_sources,
+        #     input_shapes=TestCollectionCommon.single.input_shapes,
+        #     kwargs=[
+        #         {"min": 0.5, "max": 0.0},
+        #     ],
+        #     dev_data_formats=[
+        #         torch.int8,
+        #         torch.int32,
+        #         torch.int64,
+        #     ],
+        #     math_fidelities=TestCollectionCommon.single.math_fidelities,
+        #     failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+        # ),
         # # AllClose ValueChecker
         # TestCollection(
         #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.clamp_all_close_value_checker,
@@ -443,14 +443,14 @@ TestParamsData.test_plan_implemented = TestPlan(
         #     failing_reason=FailingReasons.DATA_MISMATCH,
         # ),
         # ************ cumsum failing rules ***********
-        # RuntimeError: ... !has_special_values(a)
-        TestCollection(
-            operators=["cumsum"],
-            input_sources=[InputSource.FROM_ANOTHER_OP],
-            input_shapes=[(10, 1000, 100)],
-            kwargs=[{"dim": 2}],
-            failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
-        ),
+        # # RuntimeError: ... !has_special_values(a)
+        # TestCollection(
+        #     operators=["cumsum"],
+        #     input_sources=[InputSource.FROM_ANOTHER_OP],
+        #     input_shapes=[(10, 1000, 100)],
+        #     kwargs=[{"dim": 2}],
+        #     failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
+        # ),
         # # AllClose ValueChecker
         # TestCollection(
         #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.cumsum_all_close_value_checker,
