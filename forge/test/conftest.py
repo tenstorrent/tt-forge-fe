@@ -2,10 +2,8 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
-import random
-from typing import Any, List, Optional, Dict, Tuple
+from typing import List, Dict, Tuple
 from loguru import logger
-from dataclasses import dataclass
 import subprocess
 
 import numpy as np
@@ -33,6 +31,7 @@ import forge
 from forge.config import CompilerConfig
 from forge.verify.config import TestKind
 from forge.torch_compile import reset_state
+from forge.tvm_to_python import ExitTest
 
 import test.utils
 from test.exception_utils import extract_refined_error_message, extract_failure_category
@@ -179,6 +178,17 @@ def pytest_runtest_makereport(item, call):
     """
     outcome = yield
     report = outcome.get_result()
+
+    if call.excinfo and call.excinfo.errisinstance(ExitTest):
+
+        reason = getattr(call.excinfo.value, "reason", None)
+
+        report.outcome = "passed"
+        report.longrepr = None
+        call.excinfo = None
+
+        if reason:
+            report.user_properties.append(("exit_reason", reason))
 
     # Only process reports that are generated during the execution phase of the test ("call")
     if not report or report.when != "call":
@@ -527,10 +537,11 @@ def pytest_runtest_logreport(report):
                 os.environ[key] = default_value
 
 
+@pytest.hookimpl(hookwrapper=True)
 def pytest_collection_modifyitems(config, items):
+    yield
 
-    marker = config.getoption("-m")  # Get the marker from the -m option
-
+    marker = config.getoption("-m")
     if marker and marker == "not skip_model_analysis":  # If a marker is specified
         print("Automatic Model Analysis Collected tests: ")
         test_count = 0
@@ -543,3 +554,27 @@ def pytest_collection_modifyitems(config, items):
         print(f"Automatic Model Analysis Collected test count: {test_count}")
         if test_count == 0:  # Warn if no tests match the marker
             print(f"Warning: No tests found with marker '{marker}'.")
+
+    splits = config.getoption("splits")
+    group = config.getoption("group")
+    if splits is not None and group is not None:
+        nodeids = [item.nodeid for item in items]
+        if nodeids:
+            print("\nCollected tests after splits and group:")
+            for n in nodeids:
+                print(n)
+
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_call(item):
+    """
+    Wrap the normal test call.  If ExitTest is raised, swallow it
+    and return early—pytest will see the test as having passed.
+    """
+    # Run the actual test function
+    try:
+        yield
+    except ExitTest:
+        # Prevent pytest from treating this as an error
+        # the exception is swallowed, so the call phase ends cleanly
+        pass

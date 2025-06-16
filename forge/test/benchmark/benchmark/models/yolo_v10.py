@@ -88,14 +88,14 @@ def test_yolo_v10(
         input_sample = [input.to(torch.bfloat16) for input in input_sample]
 
     # Load YOLO model weights, initialize and load model
-    url = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov10n.pt"
+    url = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov10x.pt"
     framework_model = YoloWrapper(url)
     if data_format == "bfloat16":
         # Convert model to bfloat16
         framework_model = framework_model.to(torch.bfloat16)
 
     # Compiler configuration
-    compiler_config = CompilerConfig()
+    compiler_config = CompilerConfig(enable_optimization_passes=True)
     # @TODO - For now, we are skipping enabling MLIR optimizations, because it is not working with the current version of the model.
     # Turn on MLIR optimizations.
     # compiler_config.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)

@@ -50,12 +50,12 @@ def test_yolov10(variant):
 
     # Load  model and input
     model, image_tensor = load_yolo_model_and_image(
-        "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov10n.pt"
+        "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov10x.pt"
     )
     framework_model = YoloWrapper(model).to(torch.bfloat16)
     image_tensor = image_tensor.to(torch.bfloat16)
     data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override, enable_optimization_passes=True)
 
     # Forge compile framework model
     compiled_model = forge.compile(

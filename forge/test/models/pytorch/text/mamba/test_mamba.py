@@ -35,15 +35,21 @@ variants = [
     pytest.param("state-spaces/mamba-790m-hf"),
     pytest.param(
         "state-spaces/mamba-2.8b-hf",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
-        ),
+        marks=[
+            pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
+            ),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "state-spaces/mamba-1.4b-hf",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
-        ),
+        marks=[
+            pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
+            ),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "state-spaces/mamba-370m-hf",
@@ -52,7 +58,6 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_mamba(variant):
 

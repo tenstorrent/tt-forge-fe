@@ -7,7 +7,7 @@ Verify by evaluating the forge graph
 """
 
 import os
-from typing import Tuple, Dict, List, Any, Union, Optional
+from typing import Tuple, Dict, List, Any
 
 from forge.module import FrameworkModule
 from loguru import logger
@@ -19,8 +19,6 @@ from forge.tensor import to_pt_tensors
 from ..tensor import (
     FrameworkTensor,
     Tensor,
-    pad_pytorch_tensor_to_forge,
-    narrow_forge_tensor_to_pytorch,
     pytorch_dtype_to_forge_dataformat,
     forge_dataformat_to_pytorch_dtype,
 )
@@ -51,8 +49,7 @@ def _run_pytorch_backward(outputs, losses):
     retain_graph = True
     for i, o in enumerate(outputs):
         if o.requires_grad:
-            loss = narrow_forge_tensor_to_pytorch(losses[i], o.value().shape)
-            o.value().backward(loss, retain_graph=retain_graph)
+            o.value().backward(losses[i], retain_graph=retain_graph)
 
 
 def get_intermediate_tensors(
@@ -60,15 +57,8 @@ def get_intermediate_tensors(
     inputs: Tuple[Tensor, ...],
     parameters: Dict[str, torch.Tensor],
     device: "TTDevice",
-    is_forge: bool,
 ):
     torch_inputs: List[torch.Tensor] = [i.value() for i in inputs]
-
-    if is_forge:
-        torch_inputs = [
-            pad_pytorch_tensor_to_forge(t, graph.get_tile_broadcast_dims_for_input(i))
-            for i, t in enumerate(torch_inputs)
-        ]
     intermediates = pygraph.get_intermediate_tensors(
         graph, torch_inputs, parameters, device, relative_atol=1.0, pcc=0.0
     )
@@ -84,7 +74,6 @@ def do_verify(
     outputs: Tuple[Tensor, ...],
     intermediate_golden_tensors: Dict,
     verify_cfg: DeprecatedVerifyConfig,
-    is_forge: bool,
     losses=None,
     targets: List[Tensor] = [],
     optimizer=None,

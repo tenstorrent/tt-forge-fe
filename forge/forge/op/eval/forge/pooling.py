@@ -2,8 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import torch
-import ast
-import os
 import math
 import torch.nn.functional as F
 from forge.forgeglobal import TILE_DIM
@@ -157,7 +155,8 @@ class MaxPool2d(PyOp):
         pass
 
     def lower(self, lc, tensors, outputs):
-        pass
+        # TODO: Implement mlir lowering here.
+        assert False
 
     def is_tm(self) -> bool:
         return False

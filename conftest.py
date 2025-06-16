@@ -7,7 +7,6 @@ import time
 import pytest
 import psutil
 import shutil
-import contextvars
 from loguru import logger
 from datetime import datetime
 from forge.forge_property_utils import (

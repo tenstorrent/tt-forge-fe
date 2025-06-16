@@ -14,3 +14,4 @@ from .models import yolo_v4
 from .models import yolo_v8
 from .models import yolo_v9
 from .models import yolo_v10
+from .models import unet

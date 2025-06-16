@@ -21,21 +21,17 @@ from test.models.pytorch.text.gemma.model_utils.model_utils import (
 )
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize(
     "variant",
     [
         pytest.param(
             "google/gemma-1.1-2b-it",
-            marks=pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 21 GB during compile time)"
-            ),
         ),
         pytest.param(
             "google/gemma-1.1-7b-it",
-            marks=pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-            ),
         ),
     ],
 )
@@ -50,6 +46,8 @@ def test_gemma_pytorch_v1(variant):
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
     )
+
+    raise RuntimeError("Requires multi-chip support")
 
     # Load model and tokenizer from HuggingFace
     tokenizer = AutoTokenizer.from_pretrained(variant)

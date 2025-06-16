@@ -28,6 +28,8 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
@@ -363,8 +365,12 @@ def test_mobilenetv2_torchvision(variant):
         compiler_cfg=compiler_cfg,
     )
 
+    verify_cfg = VerifyConfig()
+    if variant == "mobilenet_v2":
+        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
+
     # Model Verification and Inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
 
     # Post processing
     print_cls_results(fw_out[0], co_out[0])

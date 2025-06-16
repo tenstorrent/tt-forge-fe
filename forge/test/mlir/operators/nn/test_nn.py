@@ -408,6 +408,45 @@ def test_embedding(vocab_size, token_num, embedding_dim):
     "in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode, input_shape",
     [
         pytest.param(
+            11,
+            11,
+            (21, 2),
+            1,
+            0,
+            1,
+            True,
+            (2, 15),
+            "zeros",
+            (1, 11, 45, 17),
+            marks=pytest.mark.xfail(reason="ConvTranspose2d: Assert dim error"),
+        ),
+        pytest.param(
+            32,
+            38,
+            (9, 9),
+            1,
+            0,
+            2,
+            True,
+            1,
+            "zeros",
+            (1, 32, 32, 64),
+            marks=pytest.mark.xfail(reason="ConvTranspose2d: Assert groups error"),
+        ),
+        pytest.param(
+            11,
+            11,
+            (14, 5),
+            (6, 2),
+            0,
+            1,
+            True,
+            1,
+            "zeros",
+            (1, 11, 45, 17),
+            marks=pytest.mark.xfail(reason="ConvTranspose2d: Assert stride error"),
+        ),
+        pytest.param(
             16,
             33,
             (3, 3),
@@ -703,10 +742,7 @@ def test_avgpool2d_decompose_to_conv2d(shape, padding):
     [
         pytest.param((1, 1, 1, 1)),
         pytest.param((1, 1, 2, 2)),
-        pytest.param(
-            (1, 2, 1, 2),
-            marks=pytest.mark.xfail(reason="error: failed to legalize operation 'ttir.conv2d'"),
-        ),
+        pytest.param((1, 2, 1, 2)),
     ],
 )
 @pytest.mark.push

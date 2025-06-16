@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
-import ast
 import torch
 import math
 
@@ -165,7 +163,8 @@ class Conv2d(PyOp):
         pass
 
     def lower(self, lc, tensors, outputs):
-        pass
+        # TODO: Implement mlir lowering here.
+        assert False
 
     def is_tm(self) -> bool:
         return False

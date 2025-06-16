@@ -52,7 +52,7 @@
 # (/) Reuse inputs for selected operators
 
 
-from typing import Callable, List, Tuple, Dict, Union, Optional
+from typing import Callable, List, Dict, Union, Optional
 from loguru import logger
 
 import forge
@@ -62,13 +62,12 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
 
 from test.operators.utils import ValueRanges
-from test.operators.utils import InputSourceFlags, VerifyUtils
+from test.operators.utils import VerifyUtils
 from test.operators.utils import InputSource
 from test.operators.utils import TestVector
 from test.operators.utils import TestCollection
 from test.operators.utils import TestPlan
 from test.operators.utils import TestSuite
-from test.operators.utils import TestResultFailing
 from test.operators.utils import FailingRulesConverter
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import TestCollectionTorch

@@ -24,25 +24,24 @@ from test.utils import download_model
 variants = [
     pytest.param(
         "openai/whisper-tiny",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "openai/whisper-base",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "openai/whisper-small",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "openai/whisper-medium",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "openai/whisper-large",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 21 GB during compile time)"
-        ),
+        marks=[
+            pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 21 GB during compile time)"
+            ),
+            pytest.mark.out_of_memory,
+        ],
     ),
 ]
 

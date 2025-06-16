@@ -13,6 +13,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -45,19 +46,19 @@ def test_yolov8(variant):
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
         group=ModelGroup.RED,
-        priority=priority,
+        priority=ModelPriority.P1,
     )
 
     # Load  model and input
     model, image_tensor = load_yolo_model_and_image(
-        "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8n.pt"
+        "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8x.pt"
     )
     framework_model = YoloWrapper(model).to(torch.bfloat16)
     input = [image_tensor.to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
 
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override, enable_optimization_passes=True)
     # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,

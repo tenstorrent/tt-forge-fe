@@ -6,13 +6,12 @@
 # In this test we test pytorch conv2d operator
 
 from dataclasses import dataclass
-from functools import reduce
 import math
 import random
 import pytest
 import os
 
-from typing import List, Dict, Type, Optional, Any
+from typing import List, Dict
 from loguru import logger
 
 import torch
@@ -23,7 +22,6 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AllCloseValueChecker
 
 from test.operators.utils import (
-    InputSourceFlags,
     VerifyUtils,
     ValueRanges,
     InputSource,

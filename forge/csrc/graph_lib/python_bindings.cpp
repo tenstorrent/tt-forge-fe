@@ -53,13 +53,12 @@ eval_graph(
     bool return_intermediates,
     std::optional<py::object> optimizer = std::nullopt);
 
-py::object get_constant_input_value(graphlib::Node *node, bool is_forge);
+py::object get_constant_input_value(graphlib::Node *node);
 py::object eval_input(
     Node *node,
     std::unordered_map<std::string, py::object> inputs,
-    bool is_forge,
     graphlib::NodeEpochType epoch_type = graphlib::NodeEpochType::Forward);
-py::object eval_input_bw(Node *node, py::object inputs, bool is_forge);
+py::object eval_input_bw(Node *node, py::object inputs);
 
 void GraphModule(py::module &m_graph)
 {
@@ -713,18 +712,9 @@ void GraphModule(py::module &m_graph)
 
 py::object eval_relu(py::object tensor, graphlib::OpType type);
 
-py::object eval_op(
-    graphlib::OpType type, std::vector<py::object> inputs, graphlib::IRLevel ir_level, bool evaluate_output_relu = true)
+py::object eval_op(graphlib::OpType type, std::vector<py::object> inputs, bool evaluate_output_relu = true)
 {
-    py::object eval_module;
-
-    switch (ir_level)
-    {
-        case graphlib::IRLevel::IR_TT_FORGE: eval_module = py::module_::import("forge.op.eval.forge"); break;
-        case graphlib::IRLevel::IR_FORGE: eval_module = py::module_::import("forge.op.eval.lforge"); break;
-        case graphlib::IRLevel::IR_CONSTEVAL: eval_module = py::module_::import("forge.op.eval.forge"); break;
-    }
-
+    py::object eval_module = py::module_::import("forge.op.eval.forge");
     py::function forge_eval = eval_module.attr("get_f_forge_eval")(std::ref(type));
 
     log_trace(LogEval, "  eval_op: {}", type);
@@ -747,14 +737,6 @@ py::object eval_op(
     py::object common_module = py::module_::import("forge.op.eval");
     common_module.attr("eval_debug_print")(type.op, inputs, result);
 
-    if (has_requant and ir_level == graphlib::IRLevel::IR_FORGE and type.op == "matmul")
-    {
-        std::vector<py::object> requant_inps = {result, inputs.back()};
-        graphlib::OpType requant("requantization", {type.forge_attrs.at("zero_point")});
-        auto requant_eval = eval_module.attr("get_f_forge_eval")(requant);
-        result = requant_eval(requant_inps);
-    }
-
     if (evaluate_output_relu)
         result = eval_relu(result, type);
 
@@ -776,7 +758,7 @@ py::object eval_relu(py::object tensor, graphlib::OpType type)
                                     : "min";
 
         graphlib::OpType relu("relu", {relu_threshold, relu_mode});
-        tensor = eval_op(relu, inputs, graphlib::IRLevel::IR_TT_FORGE);
+        tensor = eval_op(relu, inputs);
     }
     return tensor;
 }
@@ -795,7 +777,7 @@ py::object eval_golden_transforms(graphlib::Node *node, py::object tensor, bool 
         //
         if (!eval_for_output || (op_type.op != "reshape" && op_type.op != "transpose"))
         {
-            tensor = eval_op(op_type, {tensor}, graphlib::IRLevel::IR_TT_FORGE);
+            tensor = eval_op(op_type, {tensor});
         }
     }
 
@@ -814,7 +796,7 @@ void eval_partial_datacopy_golden_transforms(
 
     for (auto const &op_type : golden_transforms)
     {
-        output_tensor = eval_op(op_type, {output_tensor}, graphlib::IRLevel::IR_TT_FORGE);
+        output_tensor = eval_op(op_type, {output_tensor});
     }
 
     if (ret.at(output_index).ptr() == nullptr)
@@ -824,7 +806,7 @@ void eval_partial_datacopy_golden_transforms(
     else
     {
         graphlib::OpType overlay("add");
-        ret.at(output_index) = eval_op(overlay, {ret.at(output_index), output_tensor}, graphlib::IRLevel::IR_TT_FORGE);
+        ret.at(output_index) = eval_op(overlay, {ret.at(output_index), output_tensor});
     }
 }
 
@@ -867,23 +849,16 @@ bool compare_tensor_to_golden(
         .cast<bool>();
 }
 
-py::object create_constant_tensor(float constant_value, std::pair<int, int> constant_dims, bool is_forge, DataFormat df)
+py::object create_constant_tensor(float constant_value, std::pair<int, int> constant_dims, DataFormat df)
 {
     py::object eval_module = py::module_::import("forge.op.eval");
-    return eval_module.attr("create_constant_tensor_from_value")(constant_value, constant_dims, is_forge, df);
+    return eval_module.attr("create_constant_tensor_from_value")(constant_value, constant_dims, df);
 }
 
-py::object create_constant_tensor(const std::vector<float> &tile_value, bool is_forge, DataFormat df)
+py::object create_constant_tensor(const std::vector<float> &tensor_value, const Shape &tensor_shape, tt::DataFormat df)
 {
     py::object eval_module = py::module_::import("forge.op.eval");
-    return eval_module.attr("create_constant_tensor_from_tile")(tile_value, is_forge, df);
-}
-
-py::object create_constant_tensor(
-    const std::vector<float> &tensor_value, const Shape &tensor_shape, bool is_forge, tt::DataFormat df)
-{
-    py::object eval_module = py::module_::import("forge.op.eval");
-    return eval_module.attr("create_constant_tensor_from_tensor")(tensor_value, tensor_shape.as_vector(), is_forge, df);
+    return eval_module.attr("create_constant_tensor_from_tensor")(tensor_value, tensor_shape.as_vector(), df);
 }
 
 void dump_tensor(py::object tensor, std::string filename)
@@ -893,13 +868,13 @@ void dump_tensor(py::object tensor, std::string filename)
 }
 
 // Evaluate TMs
-py::object eval_tms(py::object tensor, const std::vector<graphlib::OpType> &tms, graphlib::IRLevel ir_level)
+py::object eval_tms(py::object tensor, const std::vector<graphlib::OpType> &tms)
 {
     for (graphlib::OpType tm : tms)
     {
         std::vector<py::object> inputs;
         inputs.push_back(tensor);
-        tensor = eval_op(tm, inputs, ir_level);
+        tensor = eval_op(tm, inputs);
     }
     return tensor;
 }
@@ -924,17 +899,14 @@ std::vector<py::object> eval_operand_tms(
         graphlib::Node *operand = graph->node_by_id(input_edge.producer_node_id);
         log_trace(
             LogEval, "  Operand[{}]: {} {}", input_edge.consumer_input_port_id, operand->name(), operand->shape());
-        tensor = eval_tms(tensor, graph->get_edge_attributes(input_edge)->get_tms(), graph->get_ir_level());
+        tensor = eval_tms(tensor, graph->get_edge_attributes(input_edge)->get_tms());
         inputs.push_back(tensor);
     }
     return inputs;
 }
 
 py::object consteval_input(
-    Node *runtime_node,
-    std::unordered_map<std::string, py::object> inputs,
-    bool is_forge,
-    graphlib::NodeEpochType node_epoch_type)
+    Node *runtime_node, std::unordered_map<std::string, py::object> inputs, graphlib::NodeEpochType node_epoch_type)
 {
     TT_ASSERT(
         node_epoch_type == graphlib::NodeEpochType::Forward or node_epoch_type == graphlib::NodeEpochType::Backward);
@@ -951,16 +923,6 @@ py::object consteval_input(
         node_epoch_type_to_string(node_epoch_type),
         runtime_node->name());
     TT_ASSERT(consteval_graph->get_ir_level() == graphlib::IRLevel::IR_CONSTEVAL);
-
-    py::object tensor_module;
-    py::function narrow_forge_tensor_to_pytorch;
-    py::function pad_pytorch_tensor_to_forge;
-    if (is_forge)
-    {
-        tensor_module = py::module_::import("forge.tensor");
-        narrow_forge_tensor_to_pytorch = tensor_module.attr("narrow_forge_tensor_to_pytorch");
-        pad_pytorch_tensor_to_forge = tensor_module.attr("pad_pytorch_tensor_to_forge");
-    }
 
     if (node_epoch_type == graphlib::NodeEpochType::Backward)
     {
@@ -984,7 +946,7 @@ py::object consteval_input(
             auto input_node = node->as<graphlib::InputNode>();
             if (input_node->is_constant())
             {
-                input_value = get_constant_input_value(node, is_forge);
+                input_value = get_constant_input_value(node);
             }
             else
             {
@@ -993,10 +955,6 @@ py::object consteval_input(
 
             TT_ASSERT(not input_value.is_none());
 
-            if (is_forge)
-            {
-                input_value = narrow_forge_tensor_to_pytorch(input_value, node->shape().as_vector());
-            }
             node_outputs.insert({node->id(), {input_value}});
             continue;
         }
@@ -1018,29 +976,24 @@ py::object consteval_input(
         TT_ASSERT(relu_match == type.forge_attrs.end(), "ConstEval doesn't support relu");
 
         std::vector<py::object> inputs = eval_operand_tms(consteval_graph, node, node_outputs);
-        output = eval_op(op_node->op_type(), inputs, consteval_graph->get_ir_level());
+        output = eval_op(op_node->op_type(), inputs);
 
         node_outputs[op_node->id()].push_back(output);
     }
 
     TT_ASSERT(output.ptr() != nullptr, runtime_node->name());
 
-    if (is_forge)
-    {
-        output = pad_pytorch_tensor_to_forge(output, std::vector<int>{});
-    }
-
     return output;
 }
 
 py::object eval_input(
-    Node *node, std::unordered_map<std::string, py::object> inputs, bool is_forge, graphlib::NodeEpochType epoch_type)
+    Node *node, std::unordered_map<std::string, py::object> inputs, graphlib::NodeEpochType epoch_type)
 {
     graphlib::InputNode *input = node->as<graphlib::InputNode>();
 
     if (input->get_consteval_graph())
     {
-        return consteval_input(node, inputs, is_forge, epoch_type);
+        return consteval_input(node, inputs, epoch_type);
     }
 
     // Check if there is node->name() in inputs.
@@ -1052,10 +1005,10 @@ py::object eval_input(
     return inputs.at(node->name());
 }
 
-py::object eval_input_bw(Node *node, py::object input_value, bool is_forge)
+py::object eval_input_bw(Node *node, py::object input_value)
 {
     std::unordered_map<std::string, py::object> inputs = {{node->name(), input_value}};
-    return eval_input(node, inputs, is_forge, graphlib::NodeEpochType::Backward);
+    return eval_input(node, inputs, graphlib::NodeEpochType::Backward);
 }
 
 py::object eval_reinterpret_shape(Graph *graph, Node *node, py::object input_value, bool flip = false)
@@ -1082,23 +1035,13 @@ py::object eval_reinterpret_shape(Graph *graph, Node *node, py::object input_val
         node->name(),
         node->shape(),
         runtime_tensor_transform.reinterpreted_shape);
-    const bool is_forge = graph->get_ir_level() == graphlib::IRLevel::IR_FORGE;
+
     std::vector<graphlib::OpType::Attr> attr;
-    if (is_forge)
-    {
-        auto original = runtime_tensor_transform.original_shape.canonical();
-        auto reinterpreted = runtime_tensor_transform.reinterpreted_shape.canonical();
-        for (size_t i = 0; i < original.size(); ++i) attr.push_back((int)original[i]);
-        for (size_t i = 0; i < reinterpreted.size(); ++i) attr.push_back((int)reinterpreted[i]);
-    }
-    else
-    {
-        auto vec = runtime_tensor_transform.reinterpreted_shape.as_vector();
-        for (auto dim : vec) attr.emplace_back((int)dim);
-    }
+    auto vec = runtime_tensor_transform.reinterpreted_shape.as_vector();
+    for (auto dim : vec) attr.emplace_back((int)dim);
 
     graphlib::OpType reinterpret_shape("reshape", attr);
-    return eval_op(reinterpret_shape, {input_value}, graph->get_ir_level());
+    return eval_op(reinterpret_shape, {input_value});
 }
 
 py::object eval_embedding_index(Graph *, Node *, py::object input_value) { return input_value; }
@@ -1151,7 +1094,7 @@ py::object eval_unpad(Graph *graph, Node *node, py::object input_value)
     attr.emplace_back(orig_c);
 
     graphlib::OpType unpad("forge_unpad", attr);
-    return eval_op(unpad, {input_value}, graph->get_ir_level());
+    return eval_op(unpad, {input_value});
 }
 
 py::object eval_prestride(Graph *graph, Node *node, py::object input_value)
@@ -1185,7 +1128,7 @@ py::object eval_prestride(Graph *graph, Node *node, py::object input_value)
     attr.emplace_back(static_cast<int>(runtime_tensor_transform.original_shape[-1]));
 
     graphlib::OpType prestride_act("conv2d_prestride_act", attr);
-    return eval_op(prestride_act, {input_value}, graph->get_ir_level());
+    return eval_op(prestride_act, {input_value});
 }
 
 py::object eval_concatenate(
@@ -1233,17 +1176,12 @@ py::object eval_concatenate(
                 (size_t) runtime_tensor_transform.concat_index == i)
             {
                 concat_inputs.push_back(input_values[i]);
-                if (graph->get_ir_level() == graphlib::IRLevel::IR_FORGE)
-                {
-                    int length_at_dim = nodes[i]->shape()[runtime_tensor_transform.concat_dim];
-                    attr.emplace_back(length_at_dim);
-                }
             }
         }
     }
 
     graphlib::OpType prestride_act("concatenate", attr);
-    return eval_op(prestride_act, concat_inputs, graph->get_ir_level());
+    return eval_op(prestride_act, concat_inputs);
 }
 
 std::vector<py::object> eval_runtime_tensor_transform(
@@ -1302,7 +1240,7 @@ bool compare_tensors(std::shared_ptr<void> tensor0, std::shared_ptr<void> tensor
 /*
 Returns a value (tensor) of input node if node is ConstantInputNode.
 */
-py::object get_constant_input_value(graphlib::Node *node, bool is_forge)
+py::object get_constant_input_value(graphlib::Node *node)
 {
     TT_ASSERT(node->as<graphlib::InputNode>()->is_constant());
     graphlib::ConstantInputNode *cnode = node->as<graphlib::ConstantInputNode>();
@@ -1311,28 +1249,11 @@ py::object get_constant_input_value(graphlib::Node *node, bool is_forge)
     {
         auto constant_value = cnode->constant_value();
         auto constant_dims = cnode->constant_dims();
-        return create_constant_tensor(constant_value, constant_dims, is_forge, node->output_df());
-    }
-    else if (cnode->is_single_tile())
-    {
-        auto constant_tile = cnode->tile_value();
-        return create_constant_tensor(constant_tile, is_forge, node->output_df());
+        return create_constant_tensor(constant_value, constant_dims, node->output_df());
     }
     else if (cnode->is_tensor())
     {
         auto tensor = borrow_shared_py_object(cnode->tensor());
-        if (is_forge)
-        {
-            py::object tensor_module = py::module_::import("forge.tensor");
-            py::function pad_pytorch_tensor_to_forge = tensor_module.attr("pad_pytorch_tensor_to_forge");
-            tensor = pad_pytorch_tensor_to_forge(
-                tensor,
-                node->as<graphlib::InputNode>()->get_tile_broadcast_dims(),
-                false,  // squeeze
-                1,      // microbatch
-                node->shape().get_tile_height(),
-                node->shape().get_tile_width());
-        }
         return tensor;
     }
 
@@ -1372,7 +1293,6 @@ std::unordered_map<std::string, py::object> get_graph_input_mapping(
 {
     std::vector<std::string> ordered_input_names = graph->get_ordered_input_names();
     std::unordered_map<std::string, py::object> graph_inputs = parameters;
-    const bool is_forge = graph->get_ir_level() == graphlib::IRLevel::IR_FORGE;
 
     // Since input names are ordered in the graph, we use the same order to get the input tensors
     for (size_t i = 0; i < ordered_input_names.size(); ++i)
@@ -1402,7 +1322,7 @@ std::unordered_map<std::string, py::object> get_graph_input_mapping(
         graphlib::InputNode *input = node->as<graphlib::InputNode>();
         if (input->is_constant())
         {
-            graph_inputs.insert({input->name(), get_constant_input_value(input, is_forge)});
+            graph_inputs.insert({input->name(), get_constant_input_value(input)});
         }
         else if (input->is_optimizer_parameter())
         {
@@ -1486,8 +1406,6 @@ eval_graph(
     std::unordered_map<std::string, py::object> graph_inputs =
         get_graph_input_mapping(graph, inputs, parameters, optimizer);
 
-    const bool is_forge = graph->get_ir_level() == graphlib::IRLevel::IR_FORGE;
-
     // Populate parameters and constant tensor mapping automatically that were created during compile
     for (Node *node : tt::graphlib::topological_sort(*graph))
     {
@@ -1498,7 +1416,7 @@ eval_graph(
         if (input->is_constant())
         {
             log_debug(tt::LogTest, "Populating constant: {}", node->name());
-            node_outputs[node->id()].push_back(eval_input(node, graph_inputs, is_forge));
+            node_outputs[node->id()].push_back(eval_input(node, graph_inputs));
         }
         else if (input->is_parameter())
         {
@@ -1506,12 +1424,12 @@ eval_graph(
             if (param_name.empty())
                 param_name = node->name();
             log_debug(tt::LogTest, "Populating module parameter: {}", param_name);
-            node_outputs[node->id()].push_back(eval_input(node, graph_inputs, is_forge));
+            node_outputs[node->id()].push_back(eval_input(node, graph_inputs));
         }
         else if (input->is_optimizer_parameter())
         {
             log_debug(tt::LogTest, "Populating optimizer parameter: {}", node->name());
-            node_outputs[node->id()].push_back(eval_input(node, graph_inputs, is_forge));
+            node_outputs[node->id()].push_back(eval_input(node, graph_inputs));
         }
     }
 
@@ -1549,8 +1467,7 @@ eval_graph(
         if (node->node_type() == NodeType::kForgeNaryTM)
         {
             std::vector<py::object> inputs = eval_operand_tms(graph, node, node_outputs);
-            py::object obj =
-                eval_op(node->as<graphlib::ForgeNaryTMNode>()->op_type(), inputs, graph->get_ir_level(), false);
+            py::object obj = eval_op(node->as<graphlib::ForgeNaryTMNode>()->op_type(), inputs, false);
             node_outputs[node->id()].push_back(obj);
             continue;
         }
@@ -1566,8 +1483,7 @@ eval_graph(
 
             std::vector<py::object> inputs = eval_operand_tms(graph, node, node_outputs);
 
-            py::object obj = eval_op(
-                op_node->op_type(), inputs, graph->get_ir_level(), false);  // Don't Eval relu for intermediate checking
+            py::object obj = eval_op(op_node->op_type(), inputs, false);  // Don't Eval relu for intermediate checking
 
             auto gradient_edges = graph->operand_edges(
                 node, [](const auto &edge) { return edge.edge_type == graphlib::EdgeType::kAutogradFwdToGradient; });
@@ -1588,8 +1504,7 @@ eval_graph(
                 }
             }
 
-            auto golden_node_id =
-                (graph->get_ir_level() == graphlib::IRLevel::IR_FORGE) ? node->tt_forge_id() : node->id();
+            auto golden_node_id = node->id();
             if (op_node->has_golden_id())
             {
                 golden_node_id = op_node->golden_id();  // if a different intermediate node is used as a reference...
@@ -1609,8 +1524,7 @@ eval_graph(
                 if (gradient_edges.size() > 0)
                 {
                     Node *producer = graph->node_by_id(gradient_edges.at(0).producer_node_id);
-                    auto node_id = (graph->get_ir_level() == graphlib::IRLevel::IR_FORGE) ? producer->tt_forge_id()
-                                                                                          : producer->id();
+                    auto node_id = producer->id();
                     auto golden_fwd = intermediate_golden_tensors.find(node_id);
                     if (golden_fwd != intermediate_golden_tensors.end())
                     {
@@ -1659,7 +1573,7 @@ eval_graph(
                 Node *consumer_node = graph->node_by_id(loopback_edge.consumer_node_id);
                 if (consumer_node->node_type() == NodeType::kInput)
                 {
-                    updated_parameter_mapping[consumer_node->name()] = eval_input_bw(consumer_node, obj, is_forge);
+                    updated_parameter_mapping[consumer_node->name()] = eval_input_bw(consumer_node, obj);
                 }
             }
 
@@ -1672,7 +1586,7 @@ eval_graph(
                     py::object ret = eval_golden_transforms(node, obj);
                     if (producer->node_type() == NodeType::kInput)
                     {
-                        ret = eval_input_bw(producer, ret, is_forge);
+                        ret = eval_input_bw(producer, ret);
                         ret = eval_runtime_tensor_transform(graph, {producer}, {ret}, true).at(0);
                     }
 
@@ -1724,7 +1638,7 @@ eval_graph(
             {
                 py::object gradient = node_outputs.at(gradient_user_edge.consumer_node_id).at(0);
                 gradient = eval_golden_transforms(graph->node_by_id(gradient_user_edge.consumer_node_id), gradient);
-                gradient = eval_input_bw(node, gradient, is_forge);
+                gradient = eval_input_bw(node, gradient);
                 gradient = eval_runtime_tensor_transform(graph, {node}, {gradient}, true).at(0);
                 input_to_gradient_mapping[node->name()] = gradient;
             }
@@ -1784,7 +1698,7 @@ eval_graph(
         {
             if (input_to_gradient_mapping.find(node->name()) == input_to_gradient_mapping.end())
                 continue;
-            bwd_gradients.push_back(eval_input_bw(node, input_to_gradient_mapping.at(node->name()), is_forge));
+            bwd_gradients.push_back(eval_input_bw(node, input_to_gradient_mapping.at(node->name())));
         }
     }
 

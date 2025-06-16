@@ -18,7 +18,6 @@ class ValueChecker(ABC):
     @abstractmethod
     def check(self, fw_out, co_out):
         """Abstract method for performing the value check between two tensors."""
-        pass
 
 
 class AutomaticValueChecker(ValueChecker):

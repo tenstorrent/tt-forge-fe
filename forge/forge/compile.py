@@ -151,7 +151,7 @@ class CompileContext:
         return self.optimizer is not None and isinstance(self.optimizer, forge.optimizers.Optimizer)
 
 
-def calculate_grads(outputs: Tuple[Tensor, ...], intermediate_golden_tensors: Dict, is_forge: bool, losses=None):
+def calculate_grads(outputs: Tuple[Tensor, ...], intermediate_golden_tensors: Dict, losses=None):
     """
     Verify graph vs. pytorch golden
     """
@@ -318,7 +318,6 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
                 context.outputs,
                 context.intermediate_tensors,  # intermediate golden tensors
                 verify_cfg,  # DeprecatedVerifyConfig
-                False,
                 losses=context.losses,
                 targets=context.targets,
                 optimizer=context.optimizer,
@@ -715,7 +714,7 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
     for module in modules_:
         if isinstance(module, forge.module.Module):
             for p in module.get_parameters():
-                context.parameter_dict[p.get_name()] = p.value(is_forge=False)
+                context.parameter_dict[p.get_name()] = p.value()
         elif isinstance(module, torch.fx.GraphModule):
             for name, value in module.named_parameters():
                 context.parameter_dict[name] = value
@@ -755,11 +754,13 @@ def run_post_initial_graph_pass(context: CompileContext) -> CompileDepth:
     dump_graph(graph, graph_name, "decomposed_graph")
     extract_unique_op_configuration(context.graph, context.stage.name.upper())
 
-    next_stage = CompileDepth.OPTIMIZED_GRAPH
     if compiler_cfg.match_subgraph_patterns:
-        next_stage = CompileDepth.POST_PATTERN_MATCHER
-
-    return next_stage
+        return CompileDepth.POST_PATTERN_MATCHER
+    if compiler_cfg.enable_optimization_passes:
+        return CompileDepth.OPTIMIZED_GRAPH
+    if context.training:
+        return CompileDepth.AUTOGRAD
+    return CompileDepth.POST_AUTOGRAD_PASS
 
 
 def run_consteval_pass(context: CompileContext) -> CompileDepth:
@@ -809,7 +810,12 @@ def run_post_pattern_matcher(context: CompileContext) -> CompileDepth:
     if match_result.is_subgraph_loopable:
         dump_graph(graph, graph_name, "looped_graph")
 
-    return CompileDepth.OPTIMIZED_GRAPH
+    if compiler_cfg.enable_optimization_passes:
+        return CompileDepth.OPTIMIZED_GRAPH
+    if context.training:
+        return CompileDepth.AUTOGRAD
+
+    return CompileDepth.POST_AUTOGRAD_PASS
 
 
 def run_optimization_pass(context: CompileContext) -> CompileDepth:
@@ -901,7 +907,7 @@ def run_autograd_pass(context: CompileContext) -> CompileDepth:
     extract_unique_op_configuration(context.graph, context.stage.name.upper())
 
     # GOLDEN:
-    context.losses = calculate_grads(outputs, intermediate_tensors, False, context.losses)
+    context.losses = calculate_grads(outputs, intermediate_tensors, context.losses)
     # Append losses to inputs, because we need losses for calculating backward gradients.
     # Loss is one of the inputs of backward graph.
     context.inputs = append_losses_to_inputs(context.inputs, context.losses)

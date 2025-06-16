@@ -12,7 +12,7 @@ import math
 import random
 import pytest
 
-from typing import List, Dict, Type, Optional, Any
+from typing import List, Dict, Type
 
 import torch
 import forge
@@ -21,7 +21,6 @@ from loguru import logger
 
 
 from test.operators.utils import (
-    InputSourceFlags,
     VerifyUtils,
     InputSource,
     TestVector,

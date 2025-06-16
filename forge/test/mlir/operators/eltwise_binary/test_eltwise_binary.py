@@ -15,34 +15,10 @@ from forge.verify import DeprecatedVerifyConfig
     "shape, dim",
     [
         ((10,), 0),
-        pytest.param(
-            (5, 10),
-            1,
-            marks=pytest.mark.xfail(
-                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
-            ),
-        ),
-        pytest.param(
-            (3, 5, 10),
-            2,
-            marks=pytest.mark.xfail(
-                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
-            ),
-        ),
-        pytest.param(
-            (2, 3, 5, 10),
-            3,
-            marks=pytest.mark.xfail(
-                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
-            ),
-        ),
-        pytest.param(
-            (1, 6, 20, 50, 64),
-            4,
-            marks=pytest.mark.xfail(
-                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
-            ),
-        ),
+        ((5, 10), 1),
+        ((3, 5, 10), 2),
+        ((2, 3, 5, 10), 3),
+        ((1, 6, 20, 50, 64), 4),
     ],
 )
 @pytest.mark.push
@@ -76,13 +52,11 @@ def test_stack_and_view(shape, dim):
             "bqnc,bnchw->bqnhw",
             (1, 100, 8, 32),
             (1, 8, 32, 14, 20),
-            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.0451398042494029"),
         ),
         pytest.param(
             "bqnc,bnchw->bqnhw",
             (3, 99, 7, 31),
             (3, 7, 31, 15, 19),
-            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.008232882538975006"),
         ),
     ],
 )

@@ -3,8 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import re
 import json
-from typing import Dict, List
-from enum import Enum
 
 from loguru import logger
 
@@ -25,6 +23,14 @@ import importlib
 
 from forge.python_codegen import PyTorchWriter, ForgeWriter, PythonWriter, pytorch_df_from_str
 from forge.tvm_unique_op_generation import Operation, NodeType, extract_and_generate_unique_ops_tests
+
+
+class ExitTest(Exception):
+    """Signal to abort the current test and mark it PASSED."""
+
+    def __init__(self, reason=None):
+        super().__init__(reason)
+        self.reason = reason
 
 
 def import_from_path(module_name, file_path):
@@ -2824,13 +2830,7 @@ def compile_tvm_to_python(
                 writer.module_directory,
             )
 
-            # Exit python progrems without error
-            # - Two different exit methods depending on whether compile is run using
-            # pytest, or as a standalone python script
-            if "pytest" in sys.modules:
-                pytest.exit("Exiting test without error", returncode=0)
-            else:
-                sys.exit(0)
+            raise ExitTest("Extract the unique ops configuration and exited the test")
 
     if compiler_cfg.retain_tvm_python_files:
         save_writers_metadata(modules, flattened_pytorch_inputs, forge_inputs, graph_name)

@@ -56,15 +56,8 @@ def shape(type, attr, ops):
 
 
 def lower(type, attr, lc, ops, outputs):
-    assert len(ops) in [2, 3], "Depthwise matmul should have two or three inputs"
-    # assert len(attr) <= 2, "Matrix multiply should have zero to two attributes"
-
-    forge_attrs = {}
-
-    if len(ops) == 3:
-        forge_attrs["bias"] = True
-
-    lc.op(type, ops, attr, forge_attrs)
+    # TODO: Implement mlir lowering here.
+    assert False
 
 
 def decompose(type, attr, dc, inputs):

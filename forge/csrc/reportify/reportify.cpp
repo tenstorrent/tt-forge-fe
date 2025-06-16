@@ -85,18 +85,6 @@ json node_to_json(const graphlib::Node* node, const graphlib::Graph* graph)
         std::string port_key_string = "port_" + std::to_string(incoming_edge.consumer_input_port_id);
         std::string incoming_port_info = edge_type_string + ": " + incoming_node->name() + " (" + port_key_string + ")";
 
-        if (graph->get_ir_level() == graphlib::IRLevel::IR_FORGE and
-            (incoming_edge.edge_type == graphlib::EdgeType::kData or
-             incoming_edge.edge_type == graphlib::EdgeType::kDataLoopback))
-        {
-            auto edge_attrs = graph->get_edge_attributes(incoming_edge);
-            switch (edge_attrs->get_ublock_order())
-            {
-                case graphlib::UBlockOrder::R: incoming_port_info += " ublock_order(r)"; break;
-                case graphlib::UBlockOrder::C: incoming_port_info += " ublock_order(c)"; break;
-            }
-        }
-
         port_id_to_name_incoming.push_back(incoming_port_info);
 
         if (incoming_edge.edge_type != graphlib::EdgeType::kData and
@@ -153,10 +141,6 @@ json node_to_json(const graphlib::Node* node, const graphlib::Graph* graph)
             {
                 ret_json["constant_value"] = std::to_string(cnode->constant_value());
                 ret_json["constant_dims"] = cnode->constant_dims();
-            }
-            else if (cnode->is_single_tile())
-            {
-                ret_json["constant_tile"] = cnode->tile_value();
             }
             else if (cnode->is_tensor())
             {
@@ -407,27 +391,6 @@ json create_json_for_graph(const graphlib::Graph* graph, std::function<bool(grap
     return this_json;
 }
 
-json create_json_for_mlir(const std::string& module_name, mlir::Operation* operation)
-{
-    json this_json;
-
-    this_json["module"] = module_name;
-
-    std::string outputString;
-    llvm::raw_string_ostream outStream(outputString);
-
-    // Print the MLIR module
-    mlir::OpPrintingFlags printFlags;
-    printFlags.enableDebugInfo();
-
-    // Put data into string
-    operation->print(outStream, printFlags);
-    outStream.flush();
-    this_json["content"] = outputString;
-
-    return this_json;
-}
-
 JsonNamePairs create_jsons_for_graph(
     const std::string& graph_prefix, const graphlib::Graph* graph, std::function<bool(graphlib::Node*)> node_filter)
 {
@@ -435,19 +398,6 @@ JsonNamePairs create_jsons_for_graph(
 
     json this_json = create_json_for_graph(graph, node_filter);
     std::string this_name = graph_prefix + ".forge";
-    JsonNamePair this_json_name_pair = std::make_pair(this_json, this_name);
-    this_json_name_pairs.push_back(this_json_name_pair);
-
-    return this_json_name_pairs;
-}
-
-JsonNamePairs create_jsons_for_mlir(
-    const std::string& file_name, const std::string& module_name, mlir::Operation* operation)
-{
-    JsonNamePairs this_json_name_pairs;
-
-    json this_json = create_json_for_mlir(module_name, operation);
-    std::string this_name = file_name + ".mlir";
     JsonNamePair this_json_name_pair = std::make_pair(this_json, this_name);
     this_json_name_pairs.push_back(this_json_name_pair);
 
@@ -465,14 +415,15 @@ void dump_graph(
 }
 
 /**
- * @brief Dumps the MLIR's Operation to a JSON file.
+ * @brief Dumps the MLIR's Operation to a file.
  *
- * This function generates a JSON representation of the given MLIR operation and writes it to a file.
+ * This function generates a representation of the given MLIR operation and writes it to a file.
  * The file path is following: `$REPORTIFY_PATH$/$OPERATION_NAME$/mlir_reports/$FILE_NAME$.mlir`.
  * If the environment variable "FORGE_DISABLE_REPORTIFY_DUMP" is set to true, the function returns without performing
  * any action.
  *
- * @param name The name of the file to be saved (currently in use are 'ttir' and 'ttnn').
+ * @param file_name The name of the file to be saved (currently in use are 'ttir' and 'ttnn').
+ * @param module_name The name of the module to be saved.
  * @param operation A pointer to the MLIR operation to be dumped.
  */
 void dump_mlir(const std::string& file_name, const std::string& module_name, mlir::Operation* operation)
@@ -484,15 +435,25 @@ void dump_mlir(const std::string& file_name, const std::string& module_name, mli
     std::string report_path = get_mlir_reports_relative_directory();
     std::string full_report_path = build_report_path(path, module_name, report_path);
 
-    JsonNamePairs json_pairs = create_jsons_for_mlir(file_name, module_name, operation);
-    json root_json = json_pairs.back().first;
+    std::string outputString;
+    llvm::raw_string_ostream outStream(outputString);
 
-    std::string root_json_name = json_pairs.back().second;
-    std::transform(root_json_name.begin(), root_json_name.end(), root_json_name.begin(), ::tolower);
-    std::string root_json_path = full_report_path + root_json_name;
+    // Print MLIR module
+    mlir::OpPrintingFlags printFlags;
+    printFlags.enableDebugInfo();
+
+    operation->print(outStream, printFlags);
+    outStream.flush();
+
+    std::string root_file_name = file_name + ".mlir";
+    std::transform(root_file_name.begin(), root_file_name.end(), root_file_name.begin(), ::tolower);
+    std::string root_file_path = full_report_path + root_file_name;
 
     std::filesystem::create_directories(std::filesystem::path(full_report_path));
-    write_json_to_file(root_json_path, root_json);
+
+    std::ofstream o(root_file_path);
+    o << outputString;
+    o.flush();
 }
 
 }  // namespace reportify

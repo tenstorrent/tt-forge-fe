@@ -62,7 +62,8 @@ class Argmax(PyEltwiseUnaryOp):
         raise RuntimeError("Argmax does not require grad and does not have a backwards function")
 
     def lower(self, lc, tensors, outputs):
-        return None
+        # TODO: Implement mlir lowering here.
+        assert False
 
     def initial_flops_estimate(self, tensor_shapes):
         flops = 0

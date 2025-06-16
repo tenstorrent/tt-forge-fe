@@ -8,7 +8,6 @@
 # In this test we use pytorch tensors and operators to verify forge operators
 #
 
-import os
 import pytest
 import numpy as np
 

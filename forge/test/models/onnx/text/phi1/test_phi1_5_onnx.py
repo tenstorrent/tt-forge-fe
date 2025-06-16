@@ -2,7 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import random
 import onnx
 from transformers import AutoTokenizer, PhiForCausalLM
 import forge
@@ -17,6 +16,7 @@ import subprocess
 variants = ["microsoft/phi-1_5"]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Transient test - Out of memory due to other tests in CI pipeline")
 @pytest.mark.parametrize("variant", variants)

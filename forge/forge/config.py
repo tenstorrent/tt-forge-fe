@@ -4,8 +4,7 @@
 import os
 
 from enum import Enum
-from typing import Tuple, Dict, List, Optional, Union, Set
-from collections.abc import Iterable
+from typing import Tuple, Dict, List, Optional, Set
 from dataclasses import dataclass, field
 from forge._C import DataFormat, MathFidelity, AMPNodeProperties, MLIRConfig
 import forge.query as query
@@ -56,6 +55,8 @@ class CompilerConfig:
     enable_recompute: bool = False
     # invokes pattern_matcher to compact isomorphic subgraphs
     match_subgraph_patterns: Optional[int] = None
+    # enable optimization passes (soon to be removed, only until mlir creates proper optimization passes for resnet)
+    enable_optimization_passes: bool = False
 
     # enable promotion of nodes to be constant evaluated where possible
     enable_consteval: bool = True

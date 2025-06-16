@@ -26,8 +26,8 @@ from forge.verify.verify import verify
 from test.utils import download_model
 
 params = [
-    pytest.param("facebook/dpr-ctx_encoder-single-nq-base", marks=[pytest.mark.xfail]),
-    pytest.param("facebook/dpr-ctx_encoder-multiset-base"),
+    "facebook/dpr-ctx_encoder-single-nq-base",
+    "facebook/dpr-ctx_encoder-multiset-base",
 ]
 
 
@@ -79,11 +79,14 @@ def test_dpr_context_encoder_pytorch(variant):
     print("embeddings", co_out)
 
 
-variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-question_encoder-multiset-base"]
+params = [
+    "facebook/dpr-question_encoder-single-nq-base",
+    "facebook/dpr-question_encoder-multiset-base",
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", params)
 def test_dpr_question_encoder_pytorch(variant):
 
     # Record Forge Property

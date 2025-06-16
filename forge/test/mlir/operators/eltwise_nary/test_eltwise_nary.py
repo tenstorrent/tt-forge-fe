@@ -49,7 +49,6 @@ def test_meshgrid(shapes):
         ),
     ],
 )
-@pytest.mark.xfail(reason="Unsupported data format during lowering from TTForge to TTIR: Bfp2_b")
 @pytest.mark.push
 def test_where(condition, input, other):
     class Where(nn.Module):
