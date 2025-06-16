@@ -111,6 +111,7 @@ def test_gemma_pytorch_v2(variant):
         task=Task.QA,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
     if variant == "google/gemma-2-9b-it":
         raise RuntimeError("Requires multi-chip support")

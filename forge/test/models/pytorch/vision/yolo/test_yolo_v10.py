@@ -36,6 +36,7 @@ def test_yolov10(variant):
         priority = ModelPriority.P1
     else:
         group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -44,8 +45,8 @@ def test_yolov10(variant):
         variant=variant,
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
-        group=ModelGroup.RED,
-        priority=ModelPriority.P1,
+        group=group,
+        priority=priority,
     )
 
     # Load  model and input

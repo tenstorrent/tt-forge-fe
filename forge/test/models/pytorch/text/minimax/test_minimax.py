@@ -8,6 +8,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -29,6 +30,7 @@ def test_minimax_text(variant):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
 
     raise RuntimeError("Requires multi-chip support")
@@ -50,6 +52,7 @@ def test_minimax_vl(variant):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
 
     raise RuntimeError("Requires multi-chip support")

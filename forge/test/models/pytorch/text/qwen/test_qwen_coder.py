@@ -8,6 +8,8 @@ import forge
 from forge.forge_property_utils import (
     Framework,
     ModelArch,
+    ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -80,6 +82,13 @@ variants = [
 @pytest.mark.nightly
 def test_qwen_clm(variant):
 
+    if variant == "Qwen/Qwen2.5-Coder-32B-Instruct":
+        group = ModelGroup.RED
+        priority = ModelPriority.P1
+    else:
+        group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
+
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
@@ -87,6 +96,8 @@ def test_qwen_clm(variant):
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
+        group=group,
+        priority=priority,
     )
 
     if variant == "Qwen/Qwen2.5-Coder-32B-Instruct":

@@ -16,6 +16,8 @@ from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
     ModelArch,
+    ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -46,6 +48,8 @@ def test_resnet_hf(variant):
         variant="50",
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
 
     # Load tiny dataset

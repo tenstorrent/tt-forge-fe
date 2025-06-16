@@ -9,6 +9,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -45,6 +46,7 @@ def test_gemma_pytorch_v1(variant):
         task=Task.QA,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
 
     raise RuntimeError("Requires multi-chip support")
