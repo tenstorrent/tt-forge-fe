@@ -115,6 +115,7 @@ class TestVerification:
     ):
 
         operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
+        
         value_range = ValueRanges.LARGE
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
@@ -124,7 +125,7 @@ class TestVerification:
                 operator=operator,
                 shape=test_vector.input_shape,
                 kwargs=kwargs,
-                dtype=TestTensorsUtils.get_dtype_for_df(test_vector.dev_data_format),
+                dtype=test_vector.dev_data_format,
                 value_range=value_range,
             )
         else:

@@ -87,6 +87,7 @@ class ModelConstEvalPass(torch.nn.Module):
             dev_data_format=dtype,
             value_range=value_range,
         )
+        self.register_buffer("constant", self.c1)
 
     def forward(self, x: torch.Tensor):
         v1 = self.operator(self.c1, **self.kwargs)
@@ -116,6 +117,7 @@ class TestVerification:
         """Common verification function for all tests"""
 
         operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
+        
         value_range = ValueRanges.LARGE
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
@@ -126,7 +128,7 @@ class TestVerification:
                 opname=test_vector.operator,
                 shape=test_vector.input_shape,
                 kwargs=kwargs,
-                dtype=TestTensorsUtils.get_dtype_for_df(test_vector.dev_data_format),
+                dtype=test_vector.dev_data_format,
                 value_range=value_range,
             )
         else:
