@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-from math import gamma
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -268,30 +267,8 @@ def shape(op_type, attr, ops):
 
 
 def lower(op_type, attr, lc, ops, outputs):
-    """
-    Translates complex operations into simpler forge operations.
-
-    Parameters
-    ----------
-    op_type:
-        Type of the operation.
-
-    attr:
-        Operator attributes.
-
-    lc:
-        Lowering Context, Forge C++ API for breaking
-        Forge graph/subgraph into Forge operations.
-
-    ops:
-        Input operands, tensors.
-
-    Returns
-    -------
-        No return value.
-
-    """
-    pass
+    # TODO: Implement mlir lowering here.
+    assert False
 
 
 def backward(op_type, attr, ac, operand, inputs, output, grad):

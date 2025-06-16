@@ -15,7 +15,6 @@ from tabulate import tabulate
 from typing import List, Tuple, Optional, Generator, Callable
 from dataclasses import dataclass
 
-from test.operators.utils import DeviceUtils
 from test.operators.utils import InputSource
 from test.operators.utils import TestVector
 from test.operators.utils import TestCollection

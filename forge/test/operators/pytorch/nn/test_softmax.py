@@ -2,7 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import os
 import torch
 
 from typing import List, Dict
@@ -17,7 +16,6 @@ from test.operators.utils import ValueRanges
 from test.operators.utils import InputSource
 from test.operators.utils import TestVector
 from test.operators.utils import TestPlan
-from test.operators.utils import TestPlanUtils
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import TestCollectionTorch

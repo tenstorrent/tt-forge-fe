@@ -10,6 +10,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -69,12 +70,12 @@ variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_mistral_v0_3(variant):
 
     # Record Forge Property
-    module_name = record_model_properties(
+    record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.MISTRAL,
         variant=variant,
@@ -82,6 +83,8 @@ def test_mistral_v0_3(variant):
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
     )
+
+    raise RuntimeError("Requires multi-chip support")
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -104,3 +107,91 @@ def test_mistral_v0_3(variant):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
+
+
+variants = ["mistralai/Mistral-Nemo-Instruct-2407"]
+
+
+@pytest.mark.nightly
+@pytest.mark.xfail
+@pytest.mark.parametrize("variant", variants)
+def test_mistral_Nemo(variant):
+
+    # Record Forge Property
+    record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.MISTRAL,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+    )
+
+    raise RuntimeError("Requires multi-chip support")
+
+
+variants = ["mistralai/Mixtral-8x7B-Instruct-v0.1"]
+
+
+@pytest.mark.nightly
+@pytest.mark.xfail
+@pytest.mark.parametrize("variant", variants)
+def test_mistral_8x7b(variant):
+
+    # Record Forge Property
+    record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.MISTRAL,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+    )
+
+    raise RuntimeError("Requires multi-chip support")
+
+
+variants = ["mistralai/Mistral-Small-24B-Instruct-2501"]
+
+
+@pytest.mark.nightly
+@pytest.mark.xfail
+@pytest.mark.parametrize("variant", variants)
+def test_mistral_small_24b(variant):
+
+    # Record Forge Property
+    record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.MISTRAL,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        priority=ModelPriority.P1,
+        group=ModelGroup.RED,
+    )
+
+    # Force the test to fail explicitly
+    raise RuntimeError("Requires multi-chip support")
+
+
+variants = ["mistralai/Mistral-Large-Instruct-2411"]
+
+
+@pytest.mark.nightly
+@pytest.mark.xfail
+@pytest.mark.parametrize("variant", variants)
+def test_mistral_large(variant):
+
+    # Record Forge Property
+    record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.MISTRAL,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        priority=ModelPriority.P1,
+        group=ModelGroup.RED,
+    )
+
+    # Force the test to fail explicitly
+    raise RuntimeError("Requires multi-chip support")

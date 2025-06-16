@@ -83,8 +83,8 @@ jobs:
           shell: bash
           run: |
             source env/activate
-            pip install tvm*.whl --force-reinstall
-            pip install forge*.whl --force-reinstall
+            pip install tt_tvm*.whl --force-reinstall
+            pip install tt_forge_fe*.whl --force-reinstall
 
         - name: Run Test
           env:

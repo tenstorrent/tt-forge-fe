@@ -8,7 +8,6 @@ from random import Random
 import types
 import pytest
 import forge
-import re
 
 import os
 import importlib

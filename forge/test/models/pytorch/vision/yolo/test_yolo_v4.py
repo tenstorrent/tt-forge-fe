@@ -68,3 +68,20 @@ def test_yolo_v4():
 
     # Model Verification
     verify([input_sample], framework_model, compiled_model)
+
+
+@pytest.mark.nightly
+@pytest.mark.xfail
+def test_yolov4_tiny():
+
+    # Record Forge Property
+    record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.YOLOV4,
+        task=Task.OBJECT_DETECTION,
+        source=Source.GITHUB,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
+    )
+
+    raise RuntimeError("Test is currently not executable due to model code dependency.")

@@ -17,7 +17,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AllCloseValueChecker
 
 from test.operators.utils import FailingReasons
-from test.operators.utils import InputSourceFlags, VerifyUtils
+from test.operators.utils import VerifyUtils
 from test.operators.utils import InputSource
 from test.operators.utils import TestVector
 from test.operators.utils import TestPlan

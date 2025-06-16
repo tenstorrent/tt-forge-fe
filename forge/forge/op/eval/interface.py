@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import torch
-from typing import List, Tuple, Dict, Union, Optional
+from typing import List, Tuple, Union
 from forge._C.graph import NodeContext, OpType
 from forge._C.passes import LoweringContext, DecomposingContext
 from forge._C.autograd import AutogradContext

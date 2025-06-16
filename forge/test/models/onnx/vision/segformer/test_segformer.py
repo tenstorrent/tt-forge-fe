@@ -4,7 +4,6 @@
 
 import forge
 from transformers import AutoImageProcessor
-import os
 import pytest
 import onnx
 import torch

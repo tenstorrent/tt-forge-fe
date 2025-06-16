@@ -2,9 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import torch
-import ast
-import os
-import math
 import torch.nn.functional as F
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile
@@ -160,19 +157,8 @@ def shape(type, attr, ops):
 
 
 def lower(type, attr, lc, ops, outputs):
-    if type == "forge_quantize":
-        lc.op(
-            "quantization", ops, attr, {"zero_point": attr[0]}, "", TILE_DIM, TILE_DIM
-        )  # straight 1-1 for all other binaries
-    elif type == "forge_dequantize":
-        lc.op(
-            "dequantization", ops, attr, {"zero_point": attr[0]}, "", TILE_DIM, TILE_DIM
-        )  # straight 1-1 for all other binaries
-    elif type == "forge_requantize":
-        lc.op("requantization", ops, attr, {"zero_point": attr[0]}, "", TILE_DIM, TILE_DIM)
-
-    else:
-        raise RuntimeError(f"Unknown quantize type {type}")
+    # TODO: Implement mlir lowering here.
+    assert False
 
 
 def backward(type, attr, ac, operand, inputs, output, grad):

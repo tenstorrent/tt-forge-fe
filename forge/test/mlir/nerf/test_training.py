@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-import time
 
 from test.mlir.nerf.utils import NeRF
 import torch
@@ -13,7 +12,7 @@ import forge
 from forge.tensor import to_forge_tensors
 from forge.verify.compare import compare_with_golden
 from test.mlir.nerf.spherical_harmonics import eval_sh
-from test.mlir.utils import *
+from test.mlir.utils import copy_params
 
 
 @pytest.mark.push

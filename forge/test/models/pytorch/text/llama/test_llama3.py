@@ -22,6 +22,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -137,10 +138,8 @@ variants = [
     pytest.param(
         "meta-llama/Llama-3.1-8B", marks=[pytest.mark.skip(reason="Segmentation Fault"), pytest.mark.out_of_memory]
     ),
-    pytest.param(
-        "meta-llama/Llama-3.1-8B-Instruct",
-        marks=[pytest.mark.skip(reason="Segmentation Fault"), pytest.mark.out_of_memory],
-    ),
+    pytest.param("meta-llama/Llama-3.1-8B-Instruct", marks=pytest.mark.xfail),
+    pytest.param("meta-llama/Meta-Llama-3.1-8B-Instruct", marks=pytest.mark.xfail),
     pytest.param("meta-llama/Llama-3.2-1B", marks=pytest.mark.xfail),
     pytest.param("meta-llama/Llama-3.2-1B-Instruct", marks=pytest.mark.xfail),
     pytest.param(
@@ -152,15 +151,7 @@ variants = [
             pytest.mark.out_of_memory,
         ],
     ),
-    pytest.param(
-        "meta-llama/Llama-3.2-3B-Instruct",
-        marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-            ),
-            pytest.mark.out_of_memory,
-        ],
-    ),
+    pytest.param("meta-llama/Llama-3.2-3B-Instruct", marks=pytest.mark.xfail),
     pytest.param(
         "huggyllama/llama-7b",
         marks=[
@@ -170,6 +161,9 @@ variants = [
             pytest.mark.out_of_memory,
         ],
     ),
+    pytest.param("meta-llama/Meta-Llama-3.1-70B", marks=pytest.mark.xfail),
+    pytest.param("meta-llama/Meta-Llama-3.1-70B-Instruct", marks=pytest.mark.xfail),
+    pytest.param("meta-llama/Llama-3.3-70B-Instruct", marks=pytest.mark.xfail),
 ]
 
 
@@ -180,10 +174,24 @@ def test_llama3_causal_lm(variant):
         "meta-llama/Llama-3.1-8B-Instruct",
         "meta-llama/Llama-3.2-1B-Instruct",
         "meta-llama/Llama-3.2-3B-Instruct",
+        "meta-llama/Meta-Llama-3.1-70B",
+        "meta-llama/Meta-Llama-3.1-70B-Instruct",
+        "meta-llama/Llama-3.3-70B-Instruct",
+        "meta-llama/Meta-Llama-3.1-8B-Instruct",
     ]:
         group = ModelGroup.RED
     else:
         group = ModelGroup.GENERALITY
+
+    if variant in [
+        "meta-llama/Meta-Llama-3.1-70B",
+        "meta-llama/Meta-Llama-3.1-70B-Instruct",
+        "meta-llama/Llama-3.3-70B-Instruct",
+        "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    ]:
+        priority = ModelPriority.P1
+    else:
+        priority = ModelPriority.P2
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -193,7 +201,20 @@ def test_llama3_causal_lm(variant):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=group,
+        priority=priority,
     )
+
+    if variant in [
+        "meta-llama/Meta-Llama-3.1-70B",
+        "meta-llama/Llama-3.2-3B-Instruct",
+        "meta-llama/Llama-3.2-1B-Instruct",
+        "meta-llama/Meta-Llama-3.1-70B-Instruct",
+        "meta-llama/Llama-3.3-70B-Instruct",
+        "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    ]:
+        raise RuntimeError("Requires multi-chip support")
+    elif variant == "meta-llama/Llama-3.1-8B-Instruct":
+        raise RuntimeError("Segmentation Fault")
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

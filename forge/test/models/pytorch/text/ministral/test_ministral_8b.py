@@ -9,6 +9,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -23,7 +24,7 @@ variants = ["mistralai/Ministral-8B-Instruct-2410"]
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-@pytest.mark.skip(reason="Transient test - Out of memory due to other tests in CI pipeline")
+@pytest.mark.xfail
 def test_ministral_8b(variant):
 
     # Record Forge Property
@@ -34,7 +35,10 @@ def test_ministral_8b(variant):
         source=Source.HUGGINGFACE,
         task=Task.CAUSAL_LM,
         group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
+
+    raise RuntimeError("Requires multi-chip support")
 
     # Load model and tokenizer
     framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)

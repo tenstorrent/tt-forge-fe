@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import os
 
 import torch
 import torch.nn.functional
@@ -13,7 +12,6 @@ from ....forgeglobal import TILE_DIM
 from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from ..lforge import ethernet_datacopy as ForgeEthernetDataCopy
 
 
 class EthernetDatacopy(PyEltwiseUnaryOp):
@@ -42,18 +40,5 @@ class EthernetDatacopy(PyEltwiseUnaryOp):
         assert False, f"ethernet_datacopy not defined in eltwise unary backward."
 
     def lower(self, lc, tensors, outputs):
-        assert len(tensors) == 1, "ethernet_datacopy should  have one input"
-        # Find proper tile sizes
-        if bool(int(os.environ.get("FORGE_ENABLE_TINY_TILE", "0"))):
-            node_shape = list(tensors[0].shape)
-            tile_height = calculate_tile_size(node_shape[-2])
-            tile_width = calculate_tile_size(node_shape[-1])
-        else:
-            tile_height, tile_width = TILE_DIM, TILE_DIM
-
-        lc.op(
-            ForgeEthernetDataCopy.create(),
-            tensors,
-            tile_height=tile_height,
-            tile_width=tile_width,
-        )
+        # TODO: Implement mlir lowering here.
+        assert False

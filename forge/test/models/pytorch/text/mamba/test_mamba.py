@@ -58,7 +58,6 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_mamba(variant):
 

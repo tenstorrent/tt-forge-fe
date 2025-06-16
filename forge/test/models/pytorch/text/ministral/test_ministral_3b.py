@@ -9,6 +9,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -21,9 +22,7 @@ variants = ["ministral/Ministral-3b-instruct"]
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-@pytest.mark.skip(
-    reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB during compile time)"
-)
+@pytest.mark.xfail
 def test_ministral_3b(variant):
 
     # Record Forge Property
@@ -34,7 +33,10 @@ def test_ministral_3b(variant):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
+
+    raise RuntimeError("Requires multi-chip support")
 
     # Load tokenizer
     tokenizer = AutoTokenizer.from_pretrained(variant)

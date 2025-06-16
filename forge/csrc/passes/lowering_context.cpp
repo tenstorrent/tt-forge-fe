@@ -181,20 +181,6 @@ NodeContext LoweringContext::constant(float value, std::pair<int, int> rc_dims)
     return NodeContext(new_node);
 }
 
-NodeContext LoweringContext::constant_tile(std::vector<float> value)
-{
-    auto new_node = new_graph->add_node(
-        graphlib::create_node<graphlib::ConstantInputNode>(
-            "input_constant" + std::to_string(constant_index++) + "_" + node->name(), value),
-        subgraph_idx);
-
-    new_node->set_shape(graphlib::Shape::single_tile());
-    new_node->set_output_df(node->output_df());
-    new_node->as<graphlib::TaggedNode>()->add_tags(this->node->as<graphlib::TaggedNode>()->get_tags());
-
-    return NodeContext(new_node);
-}
-
 NodeContext LoweringContext::tensor(std::shared_ptr<void> tensor, graphlib::Shape shape, DataFormat df)
 {
     auto new_node = new_graph->add_node(

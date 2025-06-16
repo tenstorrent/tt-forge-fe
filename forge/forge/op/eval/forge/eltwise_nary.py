@@ -3,16 +3,12 @@
 # SPDX-License-Identifier: Apache-2.0
 from typing import List, Tuple
 from math import gcd
-import ast
-import os
 import torch
-import math
 import forge
 from ..common import to_torch_operands
 from .transpose import TransposeTM
 from .nop import Nop
 from .buffer import Buffer
-from ..lforge.splice import Splice
 from forge.forgeglobal import TILE_DIM, align_up_tile, is_tile_dim_aligned
 from ..sparse_utils import (
     create_flattened_padding_removal_sparse_picker_matrix,
@@ -175,35 +171,8 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
 
 
 def lower(type, attr, lc, ops, outputs):
-
-    if type == "conv_sum":
-        return lc.op(type, ops, attr, {"a": 0})
-
-    elif type == "concatenate":
-        assert len(attr) == 1, "Concatenate should have 1 attr"
-        axis = attr[0]
-        return lc.op(Splice.create_concatenate(axis, list(op.shape for op in ops)), ops)
-
-    elif type == "index_copy":
-        assert len(attr) == 1, "index_copy should have 1 attr"
-        dim = attr[0]
-
-        forge_attrs = {
-            "axis": dim,
-        }
-
-        return lc.op("index_copy", ops, attr, forge_attrs)
-
-    elif type == "where":
-        assert False, "Where is meant to be removed by consteval"
-
-    elif type == "interleave":
-        assert len(attr) == 2, "Interleave should have 2 attr"
-        axis, stride = attr
-        assert axis == -3 and stride == 1
-        return lc.op(Splice.create_interleave(axis, stride, list(op.shape for op in ops)), ops)
-
-    assert False, f"{type} not defined in eltwise_nary"
+    # TODO: Implement mlir lowering here.
+    assert False
 
 
 def backward(op_type, attr, ac, operand, inputs, output, grad):

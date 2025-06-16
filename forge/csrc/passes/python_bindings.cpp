@@ -13,10 +13,9 @@
 namespace tt
 {
 
-static bool has_newstyle_interface(std::string const &op_name, bool is_forge)
+static bool has_newstyle_interface(std::string const &op_name)
 {
-    py::object eval_module =
-        is_forge ? py::module_::import("forge.op.eval.lforge") : py::module_::import("forge.op.eval.forge");
+    py::object eval_module = py::module_::import("forge.op.eval.forge");
     return eval_module.attr("has_newstyle_interface")(op_name).cast<bool>();
 }
 
@@ -37,7 +36,7 @@ void PassesModule(py::module &m_passes)
                 if (std::holds_alternative<std::string>(type))
                 {
                     TT_LOG_ASSERT(
-                        not has_newstyle_interface(std::get<std::string>(type), true),
+                        not has_newstyle_interface(std::get<std::string>(type)),
                         "Error lowering a type with old OpType interface, expects new OpType interface {}",
                         std::get<std::string>(type));
                     return self.op(
@@ -73,7 +72,7 @@ void PassesModule(py::module &m_passes)
                 if (std::holds_alternative<std::string>(type))
                 {
                     TT_LOG_ASSERT(
-                        not has_newstyle_interface(std::get<std::string>(type), true),
+                        not has_newstyle_interface(std::get<std::string>(type)),
                         "Error lowering a type with old OpType interface, expects new OpType interface {}",
                         std::get<std::string>(type));
                     return self.tm(graphlib::OpType(std::get<std::string>(type), attrs, forge_attrs), operand);
@@ -101,7 +100,7 @@ void PassesModule(py::module &m_passes)
                 if (std::holds_alternative<std::string>(type))
                 {
                     TT_LOG_ASSERT(
-                        not has_newstyle_interface(std::get<std::string>(type), true),
+                        not has_newstyle_interface(std::get<std::string>(type)),
                         "Error lowering a type with old OpType interface, expects new OpType interface {}",
                         std::get<std::string>(type));
                     return self.nary_tm(graphlib::OpType(std::get<std::string>(type), attrs, forge_attrs), operands);
@@ -130,7 +129,6 @@ void PassesModule(py::module &m_passes)
         .def("set_output_df", &tt::LoweringContext::set_output_df)
         .def("set_runtime_tensor_transform", &tt::LoweringContext::set_runtime_tensor_transform)
         .def("constant", &tt::LoweringContext::constant)
-        .def("constant_tile", &tt::LoweringContext::constant_tile)
         .def(
             "tensor",
             [](tt::LoweringContext &self, py::object tensor, DataFormat df)
@@ -183,7 +181,7 @@ void PassesModule(py::module &m_passes)
                 if (std::holds_alternative<std::string>(type))
                 {
                     TT_LOG_ASSERT(
-                        not has_newstyle_interface(std::get<std::string>(type), false),
+                        not has_newstyle_interface(std::get<std::string>(type)),
                         "Error decomposing a type with old OpType interface, expects new OpType interface {}",
                         std::get<std::string>(type));
                     return self.op(
@@ -223,7 +221,7 @@ void PassesModule(py::module &m_passes)
                 if (std::holds_alternative<std::string>(type))
                 {
                     TT_LOG_ASSERT(
-                        not has_newstyle_interface(std::get<std::string>(type), false),
+                        not has_newstyle_interface(std::get<std::string>(type)),
                         "Error decomposing a type with old OpType interface, expects new OpType interface {}",
                         std::get<std::string>(type));
                     return self.op(

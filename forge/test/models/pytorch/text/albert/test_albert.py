@@ -41,19 +41,6 @@ params = [
 ]
 
 
-class AlbertWrapper(torch.nn.Module):
-    def __init__(self, model):
-        super().__init__()
-        self.model = model
-        self.config = model.config
-
-    def forward(self, input_ids, attention_mask):
-        batch_size, seq_len = input_ids.shape
-        token_type_ids = torch.zeros((batch_size, seq_len), dtype=torch.long, device=input_ids.device)
-        position_ids = torch.arange(seq_len, device=input_ids.device).unsqueeze(0).expand(batch_size, -1)
-        return self.model(input_ids, attention_mask, token_type_ids, position_ids)
-
-
 @pytest.mark.nightly
 @pytest.mark.parametrize("size,variant", params)
 def test_albert_masked_lm_pytorch(size, variant):
@@ -72,7 +59,6 @@ def test_albert_masked_lm_pytorch(size, variant):
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AlbertTokenizer.from_pretrained, model_ckpt)
     framework_model = download_model(AlbertForMaskedLM.from_pretrained, model_ckpt, return_dict=False)
-    framework_model = AlbertWrapper(framework_model)
 
     # Load data sample
     sample_text = "The capital of France is [MASK]."
@@ -147,7 +133,6 @@ def test_albert_token_classification_pytorch(size, variant):
     # Load ALBERT tokenizer and model from HuggingFace
     tokenizer = AlbertTokenizer.from_pretrained(model_ckpt)
     framework_model = AlbertForTokenClassification.from_pretrained(model_ckpt, return_dict=False)
-    framework_model = AlbertWrapper(framework_model)
 
     # Load data sample
     sample_text = "HuggingFace is a company based in Paris and New York"
@@ -206,7 +191,6 @@ def test_albert_question_answering_pytorch(variant):
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     framework_model = download_model(AlbertForQuestionAnswering.from_pretrained, variant, return_dict=False)
-    framework_model = AlbertWrapper(framework_model)
     framework_model.eval()
 
     # Load data sample
@@ -249,7 +233,6 @@ def test_albert_sequence_classification_pytorch(variant):
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AlbertTokenizer.from_pretrained, variant)
     framework_model = download_model(AlbertForSequenceClassification.from_pretrained, variant, return_dict=False)
-    framework_model = AlbertWrapper(framework_model)
     framework_model.eval()
 
     # Load data sample

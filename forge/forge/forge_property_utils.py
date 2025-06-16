@@ -72,6 +72,13 @@ class Task(BaseEnum):
     SENTENCE_EMBEDDING_GENERATION = ("sentence_embed_gen", "Sentence Embedding Generation")
     MULTIMODAL_TEXT_GENERATION = ("multimodal_text_gen", "Multimodal Text Generation")
     ATOMIC_ML = ("atomic_ml", "Atomic Machine Learning")
+    REALTIME_MAP_CONSTRUCTION = ("realtime_map_construction", "Realtime Map Construction")
+    PLANNING_ORIENTED_DRIVING = ("planning_oriented_driving", "Planning-Oriented Driving")
+    OPTICAL_CHARACTER_RECOGNITION = ("optical_character_recognition", "Optical Character Recognition")
+    NOVEL_VIEW_SYNTHESIS = ("novel_view_synthesis", "Novel View Synthesis")
+    BRAIN_TUMOR_SEGMENTATION = ("brain_tumor_segmentation", "Brain Tumor Segmentation")
+    TEXT_TO_VIDEO_GENERATION = ("text_to_video_generation", "Text-to-Video generation")
+    SENETNCE_SEGMENTATION = ("sentence_segmentation", "Sentence Segmentation")
 
 
 class Source(BaseEnum):
@@ -208,6 +215,28 @@ class ModelArch(BaseEnum):
     VGG19UNET = ("VGG19 UNet", "VGG19 UNet")
     WIDERESNET = ("wideresnet", "Wide ResNet")
     XCEPTION = ("xception", "Xception")
+    MAPTR = ("maptr", "MapTR")
+    PHI3_5_MOE = ("phi3.5_moe", "Phi-3.5-MoE")
+    UNIAD = ("uniad", "UniAD")
+    MINIMAX = ("minimax", "MiniMax")
+    MPLUGOWL = ("mplug_owl", "mPLUG-Owl")
+    CENTERNET = ("centernet", "Centernet")
+    SURYAOCR = ("surya_ocr", "Surya_OCR")
+    TRANSFUSER = ("transfuser", "Transfuser")
+    BEVDEPTH = ("bevdepth", "Bevdepth")
+    POINTPILLARS = ("pointpillars", "Pointpillars")
+    BEVFORMER = ("bevformer", "Bevformer")
+    FLUX = ("flux", "Flux")
+    PIXTRAL = ("pixtral", "Pixtral")
+    SOLAR = ("solar", "Solar")
+    VADV2 = ("vadv2", "Vadv2")
+    QWENV3 = ("qwen_v3", "Qwen_v3")
+    GAUSSIAN_SPLATTING = ("gaussian_splatting", "Gaussian Splatting")
+    DETR3D = ("detr_3D", "Detr-3D")
+    MOCHIV1 = ("mochi-1", "Mochi-1")
+    TRANKIT = ("trankit", "Trankit")
+    MPLUGOWL2 = ("mplug_owl2", "mPLUG-Owl2")
+    LLAMA4 = ("llama4", "Llama-4")
 
 
 def build_module_name(

@@ -231,3 +231,29 @@ def test_embedding(vocab_size, token_num, embedding_dim):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
 
     verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize("vocab_size", [3200])
+@pytest.mark.parametrize("token_num", [1])
+@pytest.mark.parametrize("embedding_dim", [3200])
+@pytest.mark.push
+def test_embedding_const_input(vocab_size, token_num, embedding_dim):
+    compiler_cfg = forge.config.CompilerConfig()
+    compiler_cfg.default_df_override = DataFormat.Float16_b
+
+    class ModelConstEvalPass(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.const = torch.randint(0, vocab_size, (1, token_num), dtype=torch.int32)
+            self.register_buffer("constant", self.const)
+            self.embedding = nn.Embedding(vocab_size, embedding_dim, dtype=torch.bfloat16)
+
+        def forward(self, x):
+            v1 = self.embedding(self.constant)
+            add = v1 + x
+            return add
+
+    inputs = [torch.randn(1, token_num, embedding_dim).to(torch.bfloat16)]
+    framework_model = ModelConstEvalPass().to(torch.bfloat16)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+    verify(inputs, framework_model, compiled_model)

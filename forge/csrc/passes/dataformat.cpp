@@ -230,7 +230,7 @@ void lower_fallback_data_formats(graphlib::Graph *graph, DataFormat fp32_fallbac
     }
 }
 
-// Inserts a cast node after every constant input node in the graph,
+// Inserts a cast node after every non-integer constant input node in the graph,
 // placing it on the first user edge and re-routing all other edges.
 // The cast node will convert outputs to the given DataFormat.
 static void insert_cast_on_const_input_nodes(graphlib::Graph *graph, DataFormat df_override)
@@ -243,7 +243,8 @@ static void insert_cast_on_const_input_nodes(graphlib::Graph *graph, DataFormat 
         if (user_edges.empty())
             continue;
 
-        if (input_node->input_type() != graphlib::InputNodeType::Constant || node->output_df() == df_override)
+        if (input_node->input_type() != graphlib::InputNodeType::Constant || node->output_df() == df_override ||
+            is_integer_data_format(node->output_df()))
             continue;
 
         // Generate cast node
@@ -287,7 +288,7 @@ void configure_output_data_formats(graphlib::Graph *graph, std::optional<DataFor
 {
     for (Node *node : graph->nodes())
     {
-        bool disallow_default_override = is_integer_data_format(node->output_df());
+        bool node_is_int = is_integer_data_format(node->output_df());
         bool node_is_input = node->node_type() == graphlib::NodeType::kInput;
         bool node_input_parameter = node->node_type() == graphlib::NodeType::kInput &&
                                     node->as<graphlib::InputNode>()->input_type() == graphlib::InputNodeType::Parameter;
@@ -304,10 +305,9 @@ void configure_output_data_formats(graphlib::Graph *graph, std::optional<DataFor
             if (node_input_activation)
             {
                 TT_ASSERT(
-                    node->output_df() == default_df_override || is_integer_data_format(node->output_df()),
+                    node->output_df() == default_df_override || node_is_int,
                     "Non integer Input activations should have output_df same as dataformat override which is: {}, but "
-                    "node "
-                    "output_df is: {}",
+                    "node output_df is: {}",
                     default_df_override.value(),
                     node->output_df());
             }
@@ -322,14 +322,14 @@ void configure_output_data_formats(graphlib::Graph *graph, std::optional<DataFor
                 bool consumer_is_cast = consumers[0]->node_type() == graphlib::NodeType::kPyOp &&
                                         consumers[0]->as<graphlib::PyOpNode>()->op_type().op == "cast";
                 TT_ASSERT(
-                    consumer_is_cast && consumers[0]->output_df() == default_df_override.value(),
-                    "Constant input node that doesn't have data format same as default_df_override {}, should have "
-                    "cast op as consumer with output_df same as default_df_override",
+                    (consumer_is_cast && consumers[0]->output_df() == default_df_override.value()) || node_is_int,
+                    "Non integer constant input node that doesn't have data format same as default_df_override {}, "
+                    "should have cast op as consumer with output_df same as default_df_override",
                     default_df_override.value());
             }
         }
 
-        if (default_df_override && !disallow_default_override && (!node_is_input || node_input_parameter))
+        if (default_df_override && !node_is_int && (!node_is_input || node_input_parameter))
         {
             node->set_output_df(preserve_lower_precision_cast(node->output_df(), *default_df_override));
         }
