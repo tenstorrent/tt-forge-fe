@@ -5,9 +5,10 @@
 # Model for binary operators
 
 
+import math
 import torch
 
-from test.operators.utils import ShapeUtils
+from test.operators.utils import TensorUtils
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -47,16 +48,26 @@ class ModelConstEvalPass(torch.nn.Module):
 
     model_name = "model_op_src_const_eval_pass"
 
-    def __init__(self, operator, opname, shape, kwargs):
+    def __init__(self, operator, opname, shape, kwargs, dtype, value_range):
         super(ModelConstEvalPass, self).__init__()
         self.testname = "pytorch_eltwise_binary_" + opname + "_model_const_eval_pass"
         self.operator = operator
         self.kwargs = kwargs
 
-        self.constant_shape = ShapeUtils.reduce_microbatch_size(shape)
-
-        self.c1 = torch.rand(*self.constant_shape) - 0.5
-        self.c2 = torch.rand(*self.constant_shape) - 0.5
+        self.c1 = TensorUtils.create_torch_constant(
+            input_shape=shape,
+            dev_data_format=dtype,
+            value_range=value_range,
+            random_seed=math.prod(shape),
+        )
+        self.c2 = TensorUtils.create_torch_constant(
+            input_shape=shape,
+            dev_data_format=dtype,
+            value_range=value_range,
+            random_seed=sum(shape),
+        )
+        self.register_buffer("constant1", self.c1)
+        self.register_buffer("constant2", self.c2)
 
     def forward(self, x, y):
         v1 = self.operator(self.c1, self.c2, **self.kwargs)

@@ -17,7 +17,7 @@ from test.operators.utils import VerifyUtils
 from test.operators.utils import InputSource
 from test.operators.utils import TestVector
 from test.operators.utils import TestPlan
-from test.operators.utils.compat import TestDevice, TestTensorsUtils
+from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import ValueRanges
@@ -46,6 +46,7 @@ class TestVerification:
     ):
 
         operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
+
         value_range = ValueRanges.LARGE
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
@@ -55,7 +56,7 @@ class TestVerification:
                 operator=operator,
                 shape=test_vector.input_shape,
                 kwargs=kwargs,
-                dtype=TestTensorsUtils.get_dtype_for_df(test_vector.dev_data_format),
+                dtype=test_vector.dev_data_format,
                 value_range=value_range,
             )
         else:

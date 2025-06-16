@@ -26,6 +26,7 @@ from forge.config import CompilerConfig
 from forge.verify.value_checkers import AllCloseValueChecker
 
 from test.operators.utils import (
+    TensorUtils,
     VerifyUtils,
     InputSource,
     TestVector,
@@ -52,7 +53,7 @@ class ModelFromAnotherOp(torch.nn.Module):
         self.kwargs = {
             "num_embeddings": kwargs["num_embeddings"],
             "embedding_dim": kwargs["embedding_dim"],
-            "dtype": kwargs["dtype"],
+            "dtype": kwargs["weight_dtype"],
         }
 
         self.embedding = self.operator(**self.kwargs)
@@ -77,7 +78,7 @@ class ModelDirect(torch.nn.Module):
         self.kwargs = {
             "num_embeddings": kwargs["num_embeddings"],
             "embedding_dim": kwargs["embedding_dim"],
-            "dtype": kwargs["dtype"],
+            "dtype": kwargs["weight_dtype"],
         }
 
         self.embedding = self.operator(**self.kwargs)
@@ -91,7 +92,7 @@ class ModelConstEvalPass(torch.nn.Module):
 
     model_name = "model_op_src_const_eval_pass"
 
-    def __init__(self, operator, opname, shape, kwargs):
+    def __init__(self, operator, opname, shape, kwargs, value_range):
         super(ModelConstEvalPass, self).__init__()
         self.testname = "Embedding_pytorch_operator_" + opname + "_test_op_src_const_eval_pass"
         self.operator = operator
@@ -100,10 +101,15 @@ class ModelConstEvalPass(torch.nn.Module):
         self.kwargs = {
             "num_embeddings": kwargs["num_embeddings"],
             "embedding_dim": kwargs["embedding_dim"],
-            "dtype": kwargs["dtype"],
+            "dtype": kwargs["weight_dtype"],
         }
 
-        self.const = torch.randint(0, self.kwargs["num_embeddings"] - 1, self.shape, dtype=kwargs["dev_data_format"])
+        self.const = TensorUtils.create_torch_constant(
+            input_shape=shape,
+            dev_data_format=kwargs.get("input_dtype"),
+            value_range=value_range,
+            random_seed=math.prod(shape),
+        )
         self.register_buffer("constant", self.const)
 
         self.embedding = self.operator(**self.kwargs)
@@ -138,17 +144,31 @@ class TestVerification:
 
         operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
 
+        min = 0
+        max = test_vector.kwargs["num_embeddings"] - 1
+        if test_vector.input_source == InputSource.FROM_ANOTHER_OP:
+            max = int(max / 2)
+        value_range = ValueRange(min, max)
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
         model_type = cls.MODEL_TYPES[test_vector.input_source]
-        pytorch_model = model_type(
-            operator=operator,
-            opname=test_vector.operator,
-            shape=test_vector.input_shape,
-            kwargs=kwargs,
-        )
+        if test_vector.input_source == InputSource.CONST_EVAL_PASS:
+            pytorch_model = model_type(
+                operator=operator,
+                opname=test_vector.operator,
+                shape=test_vector.input_shape,
+                kwargs=kwargs,
+                value_range=value_range,
+            )
+        else:
+            pytorch_model = model_type(
+                operator=operator,
+                opname=test_vector.operator,
+                shape=test_vector.input_shape,
+                kwargs=kwargs,
+            )
 
-        dtype = kwargs.get("dtype")
+        dtype = kwargs.get("weight_dtype")
         compiler_cfg = CompilerConfig()
 
         if dtype is torch.bfloat16:
@@ -158,12 +178,9 @@ class TestVerification:
         input_shapes = tuple([test_vector.input_shape for _ in range(number_of_operands)])
         logger.trace(f"***input_shapes: {input_shapes}")
 
-        min = 0
-        max = test_vector.kwargs["num_embeddings"] - 1
-        match test_vector.input_source:
-            case InputSource.FROM_ANOTHER_OP:
-                max = int(max / 2)
-        value_range = ValueRange(min, max)
+        # We test only int data type for inputs but we AllCloseValueChecker instead of AutomaticValueChecker because outputs of embedding operator are always float
+        # Using AllCloseValueChecker
+        verify_config = VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2))
 
         VerifyUtils.verify(
             model=pytorch_model,
@@ -176,7 +193,7 @@ class TestVerification:
             pcc=test_vector.pcc,
             warm_reset=warm_reset,
             deprecated_verification=False,
-            verify_config=VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2)),
+            verify_config=verify_config,
             value_range=value_range,
         )
 
@@ -197,7 +214,7 @@ class TestParamsData:
     def generate_kwargs(
         cls,
         test_vector: TestVector,
-        dtype: Type[torch.dtype] = None,
+        weight_dtype: Type[torch.dtype] = None,
         num_embeddings_min: int = 2,
         num_embeddings_max: int = 32000,
     ):
@@ -212,8 +229,8 @@ class TestParamsData:
                     {
                         "num_embeddings": num_embeddings,
                         "embedding_dim": embedding_dim,
-                        "dtype": dtype,
-                        "dev_data_format": test_vector.dev_data_format,
+                        "weight_dtype": weight_dtype,
+                        "input_dtype": test_vector.dev_data_format,
                     }
                 )
         return kwarg_list
@@ -264,7 +281,7 @@ TestParamsData.test_plan = TestPlan(
             input_sources=TestCollectionData.all.input_sources,
             input_shapes=TestCollectionData.single.input_shapes,
             dev_data_formats=TestCollectionData.single.dev_data_formats,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, dtype=torch.float32),
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, weight_dtype=torch.float32),
         ),
         # Case of num_embeddings range
         # between 32000 and 500000
@@ -285,14 +302,14 @@ TestParamsData.test_plan = TestPlan(
             input_sources=TestCollectionData.all.input_sources,
             input_shapes=TestCollectionData.all.input_shapes,
             dev_data_formats=TestCollectionData.all.dev_data_formats,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, dtype=torch.bfloat16),
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, weight_dtype=torch.bfloat16),
         ),
         # Case of all math fidelities
         TestCollection(
             operators=TestCollectionData.all.operators,
             input_sources=TestCollectionData.single.input_sources,
             input_shapes=TestCollectionData.single.input_shapes,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, dtype=torch.bfloat16),
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, weight_dtype=torch.bfloat16),
             dev_data_formats=TestCollectionData.single.dev_data_formats,
             math_fidelities=TestCollectionData.all.math_fidelities,
         ),
