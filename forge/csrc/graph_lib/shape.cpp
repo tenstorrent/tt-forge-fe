@@ -24,14 +24,7 @@ Shape::Shape(bool valid, Shape::Type type, std::vector<std::uint32_t> dims)
     dims_ = std::move(dims);
 }
 
-Shape Shape::create(std::vector<std::uint32_t> values)
-{
-    Shape s;
-    s.dims_ = values;
-    s.valid_ = true;
-    s.type_ = FREE;
-    return s;
-}
+Shape Shape::create(std::vector<std::uint32_t> values) { return Shape{true, FREE, std::move(values)}; }
 
 Shape Shape::create_forge(std::vector<std::uint32_t> values, int tile_height, int tile_width)
 {
