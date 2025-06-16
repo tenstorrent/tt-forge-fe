@@ -12,9 +12,9 @@ from transformers.models.llama.modeling_llama import (
     AttentionMaskConverter,
     Cache,
     LlamaModel,
-    StaticCache,
 )
-
+from torch.nn.attention.flex_attention import BlockMask
+from transformers.integrations.flex_attention import make_flex_block_causal_mask
 import forge
 from forge.verify.verify import verify
 
@@ -23,34 +23,34 @@ from test.models.models_utils import build_optimum_cli_command
 from test.utils import download_model
 import subprocess
 import onnx
+from typing import Union
 
 # Monkey Patching Casual Mask Update
 def _update_causal_mask(
     self,
-    attention_mask: torch.Tensor,
+    attention_mask: Union[torch.Tensor, "BlockMask"],
     input_tensor: torch.Tensor,
     cache_position: torch.Tensor,
     past_key_values: Cache,
-    output_attentions: bool,
+    output_attentions: bool = False,
 ):
-    # TODO: As of torch==2.2.0, the `attention_mask` passed to the model in `generate` is 2D and of dynamic length even when the static
-    # KV cache is used. This is an issue for torch.compile which then recaptures cudagraphs at each decode steps due to the dynamic shapes.
-    # (`recording cudagraph tree for symint key 13`, etc.), which is VERY slow. A workaround is `@torch.compiler.disable`, but this prevents using
-    # `fullgraph=True`. See more context in https://github.com/huggingface/transformers/pull/29114
-
     if self.config._attn_implementation == "flash_attention_2":
-        if attention_mask is not None and 0.0 in attention_mask:
+        if attention_mask is not None and (attention_mask == 0.0).any():
             return attention_mask
         return None
+    if self.config._attn_implementation == "flex_attention":
+        if isinstance(attention_mask, torch.Tensor):
+            attention_mask = make_flex_block_causal_mask(attention_mask)
+        return attention_mask
 
     # For SDPA, when possible, we will rely on its `is_causal` argument instead of its `attn_mask` argument, in
     # order to dispatch on Flash Attention 2. This feature is not compatible with static cache, as SDPA will fail
     # to infer the attention mask.
     past_seen_tokens = past_key_values.get_seq_length() if past_key_values is not None else 0
-    using_static_cache = isinstance(past_key_values, StaticCache)
+    using_compilable_cache = past_key_values.is_compileable if past_key_values is not None else False
 
     # When output attentions is True, sdpa implementation's forward method calls the eager implementation's forward
-    if self.config._attn_implementation == "sdpa" and not using_static_cache and not output_attentions:
+    if self.config._attn_implementation == "sdpa" and not using_compilable_cache and not output_attentions:
         if AttentionMaskConverter._ignore_causal_mask_sdpa(
             attention_mask,
             inputs_embeds=input_tensor,
@@ -59,11 +59,10 @@ def _update_causal_mask(
         ):
             return None
 
-    dtype, device = input_tensor.dtype, input_tensor.device
-    min_dtype = torch.finfo(dtype).min
+    dtype = input_tensor.dtype
     sequence_length = input_tensor.shape[1]
-    if using_static_cache:
-        target_length = past_key_values.get_max_length()
+    if using_compilable_cache:
+        target_length = past_key_values.get_max_cache_shape()
     else:
         target_length = (
             attention_mask.shape[-1]
@@ -71,22 +70,24 @@ def _update_causal_mask(
             else past_seen_tokens + sequence_length + 1
         )
 
+    batch_size = input_tensor.shape[0]
+
     if attention_mask is not None and attention_mask.dim() == 4:
-        # in this case we assume that the mask comes already in inverted form and requires no inversion or slicing
-        if attention_mask.max() != 0:
-            raise ValueError("Custom 4D attention mask should be passed in inverted form with max==0`")
+        # In this case we assume that the mask comes already in inverted form and requires no inversion or slicing.
         causal_mask = attention_mask
     else:
-        causal_mask = torch.full((sequence_length, target_length), fill_value=min_dtype, dtype=dtype, device=device)
-        # return causal_mask
+        min_dtype = torch.finfo(dtype).min
+        causal_mask = torch.full(
+            (sequence_length, target_length), fill_value=min_dtype, dtype=dtype, device=cache_position.device
+        )
         if sequence_length != 1:
             causal_mask = torch.triu(causal_mask, diagonal=1)
-        causal_mask *= torch.arange(target_length, device=device) > cache_position.reshape(-1, 1)
-        causal_mask = causal_mask[None, None, :, :].expand(input_tensor.shape[0], 1, -1, -1)
+        causal_mask *= torch.arange(target_length, device=cache_position.device) > cache_position.reshape(-1, 1)
+        causal_mask = causal_mask[None, None, :, :].expand(batch_size, 1, -1, -1)
         if attention_mask is not None:
             causal_mask = causal_mask.clone()  # copy to contiguous memory for in-place edit
             mask_length = attention_mask.shape[-1]
-            padding_mask = causal_mask[:, :, :, :mask_length] + attention_mask[:, None, None, :]
+            padding_mask = causal_mask[:, :, :, :mask_length] + attention_mask[:, None, None, :].to(causal_mask.device)
             padding_mask = padding_mask == 0
 
             # Replace Implace Slice Update
@@ -94,7 +95,7 @@ def _update_causal_mask(
             #     padding_mask, min_dtype
             # )
 
-            if causal_mask.shape[-1] < mask_length:
+            if causal_mask.shape[-1] > mask_length:
                 part_1 = causal_mask[:, :, :, :mask_length]
                 part_2 = causal_mask[:, :, :, mask_length:]
                 part_1 = part_1.masked_fill(padding_mask, min_dtype)
@@ -105,12 +106,13 @@ def _update_causal_mask(
     if (
         self.config._attn_implementation == "sdpa"
         and attention_mask is not None
-        and attention_mask.device.type == "cuda"
+        and attention_mask.device.type in ["cuda", "xpu", "npu"]
         and not output_attentions
     ):
         # Attend to all tokens in fully masked rows in the causal_mask, for example the relevant first rows when
         # using left padding. This is required by F.scaled_dot_product_attention memory-efficient attention path.
         # Details: https://github.com/pytorch/pytorch/issues/110213
+        min_dtype = torch.finfo(dtype).min
         causal_mask = AttentionMaskConverter._unmask_unattended(causal_mask, min_dtype)
 
     return causal_mask
