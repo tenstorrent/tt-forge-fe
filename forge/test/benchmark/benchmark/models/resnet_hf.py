@@ -120,6 +120,18 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs[0], compiler_cfg=compiler_cfg)
 
+    import subprocess
+    print("MLIR reports:")
+    print("========================================")
+    print("TTIR:")
+    print("========================================")
+    subprocess.run(["cat", "~/testify/ll-sw/ResNetForImageClassification/mlir_reports/ttir.mlir"])
+    
+    print("========================================")
+    print("TTNN:")
+    print("========================================")
+    subprocess.run(["cat", "~/testify/ll-sw/ResNetForImageClassification/mlir_reports/ttnn.mlir"])
+
     # Enable program cache on all devices
     settings = DeviceSettings()
     settings.enable_program_cache = True
