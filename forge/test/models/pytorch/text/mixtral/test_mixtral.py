@@ -13,18 +13,18 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 
-variants = ["upstage/SOLAR-10.7B-Instruct-v1.0"]
+variants = ["mistralai/Mixtral-8x7B-Instruct-v0.1"]
 
 
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-def test_solar(variant):
+def test_mixtral_8x7b(variant):
 
     # Record Forge Property
-    module_name = record_model_properties(
+    record_model_properties(
         framework=Framework.PYTORCH,
-        model=ModelArch.SOLAR,
+        model=ModelArch.MIXTRAL,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,

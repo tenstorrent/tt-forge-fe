@@ -11,6 +11,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -47,6 +48,7 @@ def test_phi3_5_vision(variant):
         task=Task.MULTIMODAL_TEXT_GENERATION,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
 
     raise RuntimeError("Requires multi-chip support")

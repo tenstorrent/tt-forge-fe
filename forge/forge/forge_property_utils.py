@@ -237,6 +237,7 @@ class ModelArch(BaseEnum):
     TRANKIT = ("trankit", "Trankit")
     MPLUGOWL2 = ("mplug_owl2", "mPLUG-Owl2")
     LLAMA4 = ("llama4", "Llama-4")
+    MIXTRAL = ("mixtral", "Mixtral")
 
 
 def build_module_name(

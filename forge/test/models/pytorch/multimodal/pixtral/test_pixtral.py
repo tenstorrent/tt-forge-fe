@@ -7,6 +7,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -28,6 +29,7 @@ def test_pixtral(variant):
         task=Task.IMAGE_TEXT_PAIRING,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
 
     raise RuntimeError("Requires multi-chip support")

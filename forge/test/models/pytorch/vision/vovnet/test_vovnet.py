@@ -203,6 +203,13 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_vovnet_timm_pytorch(variant):
 
+    if variant == "ese_vovnet19b_dw.ra_in1k":
+        group = (ModelGroup.RED,)
+        priority = (ModelPriority.P1,)
+    else:
+        group = (ModelGroup.GENERALITY,)
+        priority = (ModelPriority.P2,)
+
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
@@ -210,6 +217,8 @@ def test_vovnet_timm_pytorch(variant):
         variant=variant,
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
+        group=group,
+        priority=priority,
     )
 
     framework_model, inputs, _ = generate_model_vovnet_imgcls_timm_pytorch(
