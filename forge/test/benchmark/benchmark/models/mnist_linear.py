@@ -105,7 +105,10 @@ def test_mnist_linear(
     fw_out = framework_model(*inputs)
 
     compiler_cfg = CompilerConfig()
-    compiler_cfg.mlir_config = MLIRConfig().set_enable_optimizer(True).set_enable_memory_layout_analysis(True)
+    # Turn on MLIR optimizations.
+    compiler_cfg.mlir_config = (
+        MLIRConfig().set_enable_optimizer(True).set_enable_fusing(True).set_enable_memory_layout_analysis(True)
+    )
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
 
     # Enable program cache on all devices
