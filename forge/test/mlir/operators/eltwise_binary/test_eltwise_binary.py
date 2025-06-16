@@ -52,13 +52,11 @@ def test_stack_and_view(shape, dim):
             "bqnc,bnchw->bqnhw",
             (1, 100, 8, 32),
             (1, 8, 32, 14, 20),
-            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.0451398042494029"),
         ),
         pytest.param(
             "bqnc,bnchw->bqnhw",
             (3, 99, 7, 31),
             (3, 7, 31, 15, 19),
-            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.008232882538975006"),
         ),
     ],
 )
