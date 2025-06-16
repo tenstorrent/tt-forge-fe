@@ -105,7 +105,7 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
     # Compiler configuration
     compiler_config = CompilerConfig()
     # Turn on MLIR optimizations.
-    compiler_cfg.mlir_config = (
+    compiler_config.mlir_config = (
         MLIRConfig().set_enable_optimizer(True).set_enable_fusing(True).set_enable_memory_layout_analysis(True)
     )
     if data_format == "bfloat16":

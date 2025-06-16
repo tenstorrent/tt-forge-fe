@@ -98,7 +98,7 @@ def test_yolo_v4(
     # Compiler configuration
     compiler_config = CompilerConfig(enable_optimization_passes=True)
     # Turn on MLIR optimizations.
-    compiler_cfg.mlir_config = (
+    compiler_config.mlir_config = (
         MLIRConfig().set_enable_optimizer(True).set_enable_fusing(True).set_enable_memory_layout_analysis(True)
     )
     if data_format == "bfloat16":

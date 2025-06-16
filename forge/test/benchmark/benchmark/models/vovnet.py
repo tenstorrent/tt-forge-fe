@@ -120,7 +120,7 @@ def test_vovnet_osmr(
         compiler_config.default_df_override = DataFormat.Float16_b
 
     # Turn on MLIR optimizations.
-    compiler_cfg.mlir_config = (
+    compiler_config.mlir_config = (
         MLIRConfig().set_enable_optimizer(True).set_enable_fusing(True).set_enable_memory_layout_analysis(True)
     )
 

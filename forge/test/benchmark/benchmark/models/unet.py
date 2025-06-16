@@ -83,7 +83,7 @@ def test_unet(
     compiler_config = CompilerConfig()
     compiler_config.enable_optimization_passes = True
     # Turn on MLIR optimizations.
-    compiler_cfg.mlir_config = (
+    compiler_config.mlir_config = (
         MLIRConfig().set_enable_optimizer(True).set_enable_fusing(True).set_enable_memory_layout_analysis(True)
     )
 
