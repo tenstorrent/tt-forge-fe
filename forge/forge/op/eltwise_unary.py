@@ -6,7 +6,7 @@ import torch
 
 from forge._C import DataFormat
 from ..tensor import Tensor, pytorch_dtype_to_forge_dataformat
-from .common import ForgeOp as op
+from .common import ForgeOp as op, Op
 
 
 def Abs(name: str, operandA: Tensor) -> Tensor:
@@ -27,6 +27,7 @@ def Abs(name: str, operandA: Tensor) -> Tensor:
         Forge tensor
     """
 
+    return Op("abs", name, operandA).get_tensor()
     return op("abs", name, operandA).get_tensor()
 
 

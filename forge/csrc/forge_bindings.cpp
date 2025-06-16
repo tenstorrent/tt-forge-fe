@@ -21,6 +21,8 @@ namespace py = pybind11;
 #include "graph_lib/graph.hpp"
 #include "graph_lib/python_bindings.hpp"
 #include "lower_to_forge/common.hpp"
+#include "ops/op.hpp"
+#include "ops/python_bindings.hpp"
 #include "passes/amp.hpp"
 #include "passes/consteval.hpp"
 #include "passes/extract_unique_op_configuration.hpp"
@@ -116,6 +118,9 @@ PYBIND11_MODULE(_C, m)
                 };
                 return decode.at(encoded);
             });
+
+    py::module_ m_ops = m.def_submodule("ops", "Submodule defining forge ops.");
+    OpsModule(m_ops);
 
     py::module_ m_graph = m.def_submodule("graph", "Submodule defining forge graph functions");
     GraphModule(m_graph);
