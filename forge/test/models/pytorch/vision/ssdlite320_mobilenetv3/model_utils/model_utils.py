@@ -51,7 +51,6 @@ def postprocess_detections(
         image_scores = torch.cat(image_scores, dim=0)
         image_labels = torch.cat(image_labels, dim=0)
 
-        # non-maximum suppression
         keep = box_ops.batched_nms(image_boxes, image_scores, image_labels, 0.45)
         keep = keep[:200]
 
@@ -75,8 +74,6 @@ class Postprocessor:
             "bbox_regression": x[0],
             "cls_logits": x[1],
         }
-        anchors_fw = x[2]
-        anchors_co = y[2]
         co_head_outputs = {
             "bbox_regression": y[0],
             "cls_logits": y[1],
@@ -102,9 +99,9 @@ class Postprocessor:
             val = img.shape[-2:]
             original_image_sizes.append((val[0], val[1]))
         detections_fw = postprocess_detections(fw_head_outputs, anchors_fw, images.image_size)
-        detections_fw = self.model.transform.postprocess(detections_fw, images.image_size, original_image_sizes)
+        detections_fw_op = self.model.transform.postprocess(detections_fw, images.image_size, original_image_sizes)
 
         detections_co = postprocess_detections(co_head_outputs, anchors_co, images.image_size)
-        detections_co = self.model.transform.postprocess(detections_fw, images.image_size, original_image_sizes)
+        detections_co_op = self.model.transform.postprocess(detections_co, images.image_size, original_image_sizes)
 
-        return detections_fw, detections_co
+        return detections_fw_op, detections_co_op
