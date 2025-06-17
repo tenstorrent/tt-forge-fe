@@ -91,7 +91,7 @@ def test_ssdlite320_mobilenetv3(variant):
     )
 
     # Model Verification
-    verify(inputs, model, compiled_model)
+    fw_out, co_out = verify(inputs, model, compiled_model)
 
     # Post Processing
     postprocessor = Postprocessor(model)
