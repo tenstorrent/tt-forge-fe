@@ -75,7 +75,7 @@ variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
 def test_mistral_v0_3(variant):
 
     # Record Forge Property
-    record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.MISTRAL,
         variant=variant,

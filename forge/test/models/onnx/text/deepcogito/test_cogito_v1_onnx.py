@@ -6,8 +6,6 @@ import pytest
 import torch
 import onnx
 from onnx import external_data_helper
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from torch import nn
 
 import forge
 from forge.verify.verify import verify
@@ -62,14 +60,14 @@ def test_cogito_generation_onnx(forge_tmp_path, variant):
 
     # Load and validate ONNX model
     loaded_model = onnx.load(str(final_onnx), load_external_data=True)
-    onnx.checker.check_model(loaded_model)
+    onnx.checker.check_model(str(final_onnx))
 
     # Create Forge ONNX model
-    framework_model = forge.OnnxModule(module_name, loaded_model)
+    framework_model = forge.OnnxModule(module_name, loaded_model, onnx_path=final_onnx)
 
     # Compile with Forge
     compiled_model = forge.compile(
-        loaded_model,
+        framework_model,
         sample_inputs=sample_inputs,
         module_name=module_name,
     )
