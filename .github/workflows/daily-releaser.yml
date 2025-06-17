@@ -69,6 +69,7 @@ permissions:
   id-token: write
   contents: write
 
+
 jobs:
   daily-releaser:
     uses: tenstorrent/tt-forge/.github/workflows/daily-releaser.yml@jmcgrath/more-portable-changes-daily-releaser
