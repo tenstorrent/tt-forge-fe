@@ -54,12 +54,9 @@ def test_qwen1_5_causal_lm(variant):
     batch_size = 1
     prompt = ["My name is Jim Keller and"] * batch_size
 
-    inputs = tokenizer(prompt)
+    inputs = tokenizer(prompt, return_tensors="pt")
 
-    input_ids = torch.tensor(inputs["input_ids"])
-    attention_mask = torch.tensor(inputs["attention_mask"])
-
-    inputs = [input_ids, attention_mask]
+    inputs = [inputs["input_ids"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)

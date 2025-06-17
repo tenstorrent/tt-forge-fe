@@ -8,6 +8,8 @@ from transformers import (
     Qwen2ForTokenClassification,
 )
 
+from torch import nn
+
 import forge
 from forge.forge_property_utils import (
     Framework,
@@ -85,7 +87,6 @@ def test_qwen_clm(variant):
 
     # Load model and tokenizer
     framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")
-    framework_model.config.return_dict = False
     tokenizer = AutoTokenizer.from_pretrained(variant)
 
     # Prepare input
@@ -95,9 +96,16 @@ def test_qwen_clm(variant):
 
     # Tokenize and generate
     model_inputs = tokenizer([text], return_tensors="pt")
-    input_ids = model_inputs["input_ids"]
-    attention_mask = model_inputs["attention_mask"]
-    inputs = [input_ids, attention_mask]
+    inputs = [model_inputs["input_ids"]]
+        
+    class Wrapper(nn.Module):
+        def __init__(self, model):
+            super().__init__()
+            self.model = model
+        def forward(self, input_ids):
+            return self.model(input_ids).logits
+    
+    framework_model = Wrapper(framework_model)
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
