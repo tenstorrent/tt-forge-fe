@@ -52,7 +52,7 @@ def test_yolov8(variant):
 
     # Load  model and input
     model, image_tensor = load_yolo_model_and_image(
-        "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8x.pt"
+        f"https://github.com/ultralytics/assets/releases/download/v8.2.0/{variant}.pt"
     )
     framework_model = YoloWrapper(model).to(torch.bfloat16)
     input = [image_tensor.to(torch.bfloat16)]
