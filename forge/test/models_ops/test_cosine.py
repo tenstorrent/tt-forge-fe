@@ -39,53 +39,91 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Cosine0,
+        [((1, 7, 32), torch.float32)],
+        {"model_names": ["pt_phi1_microsoft_phi_1_clm_hf", "pt_phi_1_5_microsoft_phi_1_5_clm_hf"], "pcc": 0.99},
+    ),
+    (
+        Cosine0,
+        [((1, 29, 64), torch.float32)],
+        {
+            "model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf", "pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Cosine0,
         [((1, 588, 128), torch.float32)],
         {"model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"], "pcc": 0.99},
+    ),
+    (
+        Cosine0,
+        [((1, 256, 32), torch.float32)],
+        {
+            "model_names": [
+                "pt_phi2_microsoft_phi_2_clm_hf",
+                "pt_phi1_microsoft_phi_1_seq_cls_hf",
+                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
+                "pt_phi_1_5_microsoft_phi_1_5_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Cosine0,
+        [((1, 39, 64), torch.float32)],
+        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99},
+    ),
+    (
+        Cosine0,
+        [((1, 29, 128), torch.float32)],
+        {
+            "model_names": [
+                "pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf",
+                "pt_qwen_v2_qwen_qwen2_5_3b_clm_hf",
+                "pt_qwen_v2_qwen_qwen2_5_7b_clm_hf",
+                "pt_qwen_v2_qwen_qwen2_5_7b_instruct_1m_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Cosine0,
         [((1, 39, 128), torch.float32)],
         {
             "model_names": [
-                "pt_deepseek_deepseek_math_7b_instruct_qa_hf",
-                "pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf",
                 "pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf",
+                "pt_deepseek_deepseek_math_7b_instruct_qa_hf",
+                "pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf",
+                "pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf",
             ],
             "pcc": 0.99,
         },
     ),
     (
         Cosine0,
-        [((1, 596, 128), torch.float32)],
-        {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99},
+        [((64, 64, 128), torch.float32)],
+        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
     ),
     (
         Cosine0,
-        [((2, 128), torch.float32)],
+        [((1, 25, 34, 64), torch.bfloat16)],
         {
             "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
-                "pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf",
+                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
+                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
             ],
             "pcc": 0.99,
         },
     ),
     (
         Cosine0,
-        [((1, 44, 128), torch.float32)],
-        {"model_names": ["pt_cogito_deepcogito_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99},
-    ),
-    (
-        Cosine0,
-        [((1, 522, 256), torch.float32)],
+        [((1, 12, 32), torch.float32)],
         {
             "model_names": [
-                "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf",
-                "pt_falcon3_tiiuae_falcon3_10b_base_clm_hf",
-                "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf",
-                "pt_falcon3_tiiuae_falcon3_1b_base_clm_hf",
+                "pt_phi1_microsoft_phi_1_token_cls_hf",
+                "pt_phi_1_5_microsoft_phi_1_5_token_cls_hf",
+                "pt_phi2_microsoft_phi_2_pytdml_token_cls_hf",
+                "pt_phi2_microsoft_phi_2_token_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -94,22 +132,22 @@ forge_modules_and_shapes_dtypes_list = [
         Cosine0,
         [((1, 6, 64), torch.float32)],
         {
-            "model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf", "pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"],
+            "model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf", "pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
             "pcc": 0.99,
         },
     ),
-    (Cosine0, [((1, 334, 32), torch.float32)], {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99}),
     (
         Cosine0,
-        [((1, 207, 256), torch.float32)],
-        {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf", "pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99},
-    ),
-    (Cosine0, [((1, 7, 256), torch.float32)], {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99}),
-    (
-        Cosine0,
-        [((1, 107, 256), torch.float32)],
+        [((1, 35, 128), torch.float32)],
         {
-            "model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf", "pt_gemma_google_gemma_1_1_7b_it_qa_hf"],
+            "model_names": [
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
+            ],
             "pcc": 0.99,
         },
     ),
@@ -126,51 +164,93 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Cosine0,
-        [((1, 32, 128), torch.float32)],
-        {
-            "model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf", "pt_llama3_meta_llama_llama_3_2_3b_clm_hf"],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Cosine0,
-        [((1, 4, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_llama3_huggyllama_llama_7b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Cosine0,
-        [((1, 256, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
-                "pt_phi4_microsoft_phi_4_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Cosine0,
         [((1, 256, 64), torch.float32)],
         {
             "model_names": [
                 "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
                 "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
             ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Cosine0,
+        [((1, 35, 64), torch.float32)],
+        {"model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99},
+    ),
+    (
+        Cosine0,
+        [((1, 522, 256), torch.float32)],
+        {
+            "model_names": [
+                "pt_falcon3_tiiuae_falcon3_1b_base_clm_hf",
+                "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf",
+                "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (Cosine0, [((1, 207, 256), torch.float32)], {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99}),
+    (
+        Cosine0,
+        [((1, 44, 128), torch.float32)],
+        {"model_names": ["pt_cogito_deepcogito_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99},
+    ),
+    (Cosine0, [((1, 334, 32), torch.float32)], {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99}),
+    (Cosine0, [((1, 32, 128), torch.float32)], {"model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"], "pcc": 0.99}),
+    (
+        Cosine0,
+        [((1, 4, 128), torch.float32)],
+        {
+            "model_names": [
+                "pt_llama3_huggyllama_llama_7b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Cosine0,
+        [((1, 11, 32), torch.float32)],
+        {
+            "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Cosine0,
+        [((1, 5, 96), torch.float32)],
+        {"model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Cosine0,
+        [((1, 13, 96), torch.float32)],
+        {"model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Cosine0,
+        [((1, 256, 128), torch.float32)],
+        {
+            "model_names": [
+                "pt_phi4_microsoft_phi_4_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (Cosine0, [((1, 12, 128), torch.float32)], {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99}),
+    (Cosine0, [((1, 13, 128), torch.float32)], {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99}),
+    (
+        Cosine0,
+        [((1, 107, 256), torch.float32)],
+        {
+            "model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf", "pt_gemma_google_gemma_1_1_7b_it_qa_hf"],
             "pcc": 0.99,
         },
     ),
@@ -196,106 +276,10 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Cosine0,
-        [((1, 256, 32), torch.float32)],
-        {
-            "model_names": [
-                "pt_phi1_5_microsoft_phi_1_5_seq_cls_hf",
-                "pt_phi1_microsoft_phi_1_seq_cls_hf",
-                "pt_phi2_microsoft_phi_2_clm_hf",
-                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Cosine0,
-        [((1, 7, 32), torch.float32)],
-        {"model_names": ["pt_phi1_5_microsoft_phi_1_5_clm_hf", "pt_phi1_microsoft_phi_1_clm_hf"], "pcc": 0.99},
-    ),
-    (
-        Cosine0,
-        [((1, 12, 32), torch.float32)],
-        {
-            "model_names": [
-                "pt_phi1_5_microsoft_phi_1_5_token_cls_hf",
-                "pt_phi1_microsoft_phi_1_token_cls_hf",
-                "pt_phi2_microsoft_phi_2_pytdml_token_cls_hf",
-                "pt_phi2_microsoft_phi_2_token_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Cosine0,
-        [((1, 11, 32), torch.float32)],
-        {
-            "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Cosine0,
         [((1, 256, 96), torch.float32)],
         {"model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf"], "pcc": 0.99},
     ),
-    (
-        Cosine0,
-        [((1, 13, 96), torch.float32)],
-        {"model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"], "pcc": 0.99},
-    ),
-    (
-        Cosine0,
-        [((1, 5, 96), torch.float32)],
-        {"model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"], "pcc": 0.99},
-    ),
-    (Cosine0, [((1, 12, 128), torch.float32)], {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99}),
     (Cosine0, [((1, 6, 128), torch.float32)], {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99}),
-    (
-        Cosine0,
-        [((1, 29, 64), torch.float32)],
-        {
-            "model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf", "pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Cosine0,
-        [((1, 35, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Cosine0,
-        [((1, 35, 64), torch.float32)],
-        {"model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99},
-    ),
-    (
-        Cosine0,
-        [((1, 29, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_qwen_v2_qwen_qwen2_5_7b_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_5_3b_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Cosine0,
-        [((1, 39, 64), torch.float32)],
-        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99},
-    ),
-    (Cosine0, [((1, 13, 128), torch.float32)], {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99}),
 ]
 
 
@@ -342,11 +326,10 @@ def test_module(forge_module_and_shapes_dtypes):
 
     record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs)
+    compiler_cfg = forge.config.CompilerConfig()
+    if "default_df_override" in metadata.keys():
+        compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])
 
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-    )
+    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))

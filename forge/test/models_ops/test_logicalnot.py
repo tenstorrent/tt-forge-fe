@@ -21,14 +21,13 @@ from forge.forge_property_utils import (
 import pytest
 
 
-class Min0(ForgeModule):
+class Logicalnot0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("min0_const_1", shape=(1, 1), dtype=torch.int32)
 
-    def forward(self, min_input_0):
-        min_output_1 = forge.op.Min("", min_input_0, self.get_constant("min0_const_1"))
-        return min_output_1
+    def forward(self, logicalnot_input_0):
+        logicalnot_output_1 = forge.op.LogicalNot("", logicalnot_input_0)
+        return logicalnot_output_1
 
 
 def ids_func(param):
@@ -39,9 +38,9 @@ def ids_func(param):
 
 forge_modules_and_shapes_dtypes_list = [
     (
-        Min0,
-        [((2441216,), torch.int32)],
-        {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99},
+        Logicalnot0,
+        [((1, 25, 34), torch.bool)],
+        {"model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
 ]
 
@@ -50,7 +49,7 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes):
 
-    record_forge_op_name("Min")
+    record_forge_op_name("LogicalNot")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
@@ -89,11 +88,10 @@ def test_module(forge_module_and_shapes_dtypes):
 
     record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs)
+    compiler_cfg = forge.config.CompilerConfig()
+    if "default_df_override" in metadata.keys():
+        compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])
 
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-    )
+    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))

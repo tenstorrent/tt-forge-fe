@@ -26,7 +26,7 @@ class Conv2Dtranspose0(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2dtranspose0.weight_1",
-            forge.Parameter(*(512, 256, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512, 512, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2dtranspose_input_0):
@@ -49,7 +49,7 @@ class Conv2Dtranspose1(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2dtranspose1.weight_1",
-            forge.Parameter(*(256, 128, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512, 256, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2dtranspose_input_0):
@@ -72,7 +72,7 @@ class Conv2Dtranspose2(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2dtranspose2.weight_1",
-            forge.Parameter(*(128, 64, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 128, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2dtranspose_input_0):
@@ -95,7 +95,7 @@ class Conv2Dtranspose3(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2dtranspose3.weight_1",
-            forge.Parameter(*(64, 32, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 64, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2dtranspose_input_0):
@@ -116,16 +116,13 @@ class Conv2Dtranspose3(ForgeModule):
 class Conv2Dtranspose4(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2dtranspose4.weight_1",
-            forge.Parameter(*(4, 16, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("conv2dtranspose4_const_1", shape=(64, 64, 2, 2), dtype=torch.bfloat16)
 
     def forward(self, conv2dtranspose_input_0):
         conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
             "",
             conv2dtranspose_input_0,
-            self.get_parameter("conv2dtranspose4.weight_1"),
+            self.get_constant("conv2dtranspose4_const_1"),
             stride=2,
             padding=0,
             dilation=1,
@@ -139,16 +136,13 @@ class Conv2Dtranspose4(ForgeModule):
 class Conv2Dtranspose5(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2dtranspose5.weight_1",
-            forge.Parameter(*(16, 1, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("conv2dtranspose5_const_1", shape=(32, 32, 2, 2), dtype=torch.bfloat16)
 
     def forward(self, conv2dtranspose_input_0):
         conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
             "",
             conv2dtranspose_input_0,
-            self.get_parameter("conv2dtranspose5.weight_1"),
+            self.get_constant("conv2dtranspose5_const_1"),
             stride=2,
             padding=0,
             dilation=1,
@@ -164,7 +158,7 @@ class Conv2Dtranspose6(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2dtranspose6.weight_1",
-            forge.Parameter(*(1024, 512, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 64, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2dtranspose_input_0):
@@ -185,15 +179,16 @@ class Conv2Dtranspose6(ForgeModule):
 class Conv2Dtranspose7(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2dtranspose7_const_1", shape=(192, 192, 2, 2), dtype=torch.float32)
-        self.add_constant("conv2dtranspose7_const_2", shape=(192,), dtype=torch.float32)
+        self.add_parameter(
+            "conv2dtranspose7.weight_1",
+            forge.Parameter(*(64, 32, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2dtranspose_input_0):
         conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
             "",
             conv2dtranspose_input_0,
-            self.get_constant("conv2dtranspose7_const_1"),
-            self.get_constant("conv2dtranspose7_const_2"),
+            self.get_parameter("conv2dtranspose7.weight_1"),
             stride=2,
             padding=0,
             dilation=1,
@@ -207,15 +202,16 @@ class Conv2Dtranspose7(ForgeModule):
 class Conv2Dtranspose8(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2dtranspose8_const_1", shape=(96, 96, 2, 2), dtype=torch.float32)
-        self.add_constant("conv2dtranspose8_const_2", shape=(96,), dtype=torch.float32)
+        self.add_parameter(
+            "conv2dtranspose8.weight_1",
+            forge.Parameter(*(24, 24, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2dtranspose_input_0):
         conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
             "",
             conv2dtranspose_input_0,
-            self.get_constant("conv2dtranspose8_const_1"),
-            self.get_constant("conv2dtranspose8_const_2"),
+            self.get_parameter("conv2dtranspose8.weight_1"),
             stride=2,
             padding=0,
             dilation=1,
@@ -229,15 +225,16 @@ class Conv2Dtranspose8(ForgeModule):
 class Conv2Dtranspose9(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2dtranspose9_const_1", shape=(64, 64, 2, 2), dtype=torch.float32)
-        self.add_constant("conv2dtranspose9_const_2", shape=(64,), dtype=torch.float32)
+        self.add_parameter(
+            "conv2dtranspose9.weight_1",
+            forge.Parameter(*(24, 1, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2dtranspose_input_0):
         conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
             "",
             conv2dtranspose_input_0,
-            self.get_constant("conv2dtranspose9_const_1"),
-            self.get_constant("conv2dtranspose9_const_2"),
+            self.get_parameter("conv2dtranspose9.weight_1"),
             stride=2,
             padding=0,
             dilation=1,
@@ -251,15 +248,16 @@ class Conv2Dtranspose9(ForgeModule):
 class Conv2Dtranspose10(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2dtranspose10_const_1", shape=(32, 32, 2, 2), dtype=torch.float32)
-        self.add_constant("conv2dtranspose10_const_2", shape=(32,), dtype=torch.float32)
+        self.add_parameter(
+            "conv2dtranspose10.weight_1",
+            forge.Parameter(*(4, 16, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, conv2dtranspose_input_0):
         conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
             "",
             conv2dtranspose_input_0,
-            self.get_constant("conv2dtranspose10_const_1"),
-            self.get_constant("conv2dtranspose10_const_2"),
+            self.get_parameter("conv2dtranspose10.weight_1"),
             stride=2,
             padding=0,
             dilation=1,
@@ -273,15 +271,16 @@ class Conv2Dtranspose10(ForgeModule):
 class Conv2Dtranspose11(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2dtranspose11_const_1", shape=(128, 128, 2, 2), dtype=torch.float32)
-        self.add_constant("conv2dtranspose11_const_2", shape=(128,), dtype=torch.float32)
+        self.add_parameter(
+            "conv2dtranspose11.weight_1",
+            forge.Parameter(*(16, 1, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, conv2dtranspose_input_0):
         conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
             "",
             conv2dtranspose_input_0,
-            self.get_constant("conv2dtranspose11_const_1"),
-            self.get_constant("conv2dtranspose11_const_2"),
+            self.get_parameter("conv2dtranspose11.weight_1"),
             stride=2,
             padding=0,
             dilation=1,
@@ -295,19 +294,261 @@ class Conv2Dtranspose11(ForgeModule):
 class Conv2Dtranspose12(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2dtranspose12_const_1", shape=(256, 256, 2, 2), dtype=torch.float32)
-        self.add_constant("conv2dtranspose12_const_2", shape=(256,), dtype=torch.float32)
+        self.add_parameter(
+            "conv2dtranspose12.weight_1",
+            forge.Parameter(*(64, 32, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, conv2dtranspose_input_0):
         conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
             "",
             conv2dtranspose_input_0,
-            self.get_constant("conv2dtranspose12_const_1"),
-            self.get_constant("conv2dtranspose12_const_2"),
+            self.get_parameter("conv2dtranspose12.weight_1"),
             stride=2,
             padding=0,
             dilation=1,
             groups=1,
+            channel_last=0,
+            output_padding=[0, 0],
+        )
+        return conv2dtranspose_output_1
+
+
+class Conv2Dtranspose13(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2dtranspose13.weight_1",
+            forge.Parameter(*(512, 256, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2dtranspose_input_0):
+        conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
+            "",
+            conv2dtranspose_input_0,
+            self.get_parameter("conv2dtranspose13.weight_1"),
+            stride=2,
+            padding=0,
+            dilation=1,
+            groups=1,
+            channel_last=0,
+            output_padding=[0, 0],
+        )
+        return conv2dtranspose_output_1
+
+
+class Conv2Dtranspose14(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2dtranspose14.weight_1",
+            forge.Parameter(*(256, 128, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2dtranspose_input_0):
+        conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
+            "",
+            conv2dtranspose_input_0,
+            self.get_parameter("conv2dtranspose14.weight_1"),
+            stride=2,
+            padding=0,
+            dilation=1,
+            groups=1,
+            channel_last=0,
+            output_padding=[0, 0],
+        )
+        return conv2dtranspose_output_1
+
+
+class Conv2Dtranspose15(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2dtranspose15.weight_1",
+            forge.Parameter(*(128, 64, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2dtranspose_input_0):
+        conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
+            "",
+            conv2dtranspose_input_0,
+            self.get_parameter("conv2dtranspose15.weight_1"),
+            stride=2,
+            padding=0,
+            dilation=1,
+            groups=1,
+            channel_last=0,
+            output_padding=[0, 0],
+        )
+        return conv2dtranspose_output_1
+
+
+class Conv2Dtranspose16(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("conv2dtranspose16_const_1", shape=(192, 192, 2, 2), dtype=torch.bfloat16)
+
+    def forward(self, conv2dtranspose_input_0):
+        conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
+            "",
+            conv2dtranspose_input_0,
+            self.get_constant("conv2dtranspose16_const_1"),
+            stride=2,
+            padding=0,
+            dilation=1,
+            groups=1,
+            channel_last=0,
+            output_padding=[0, 0],
+        )
+        return conv2dtranspose_output_1
+
+
+class Conv2Dtranspose17(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("conv2dtranspose17_const_1", shape=(96, 96, 2, 2), dtype=torch.bfloat16)
+
+    def forward(self, conv2dtranspose_input_0):
+        conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
+            "",
+            conv2dtranspose_input_0,
+            self.get_constant("conv2dtranspose17_const_1"),
+            stride=2,
+            padding=0,
+            dilation=1,
+            groups=1,
+            channel_last=0,
+            output_padding=[0, 0],
+        )
+        return conv2dtranspose_output_1
+
+
+class Conv2Dtranspose18(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("conv2dtranspose18_const_1", shape=(128, 128, 2, 2), dtype=torch.bfloat16)
+
+    def forward(self, conv2dtranspose_input_0):
+        conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
+            "",
+            conv2dtranspose_input_0,
+            self.get_constant("conv2dtranspose18_const_1"),
+            stride=2,
+            padding=0,
+            dilation=1,
+            groups=1,
+            channel_last=0,
+            output_padding=[0, 0],
+        )
+        return conv2dtranspose_output_1
+
+
+class Conv2Dtranspose19(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2dtranspose19.weight_1",
+            forge.Parameter(*(1024, 512, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
+
+    def forward(self, conv2dtranspose_input_0):
+        conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
+            "",
+            conv2dtranspose_input_0,
+            self.get_parameter("conv2dtranspose19.weight_1"),
+            stride=2,
+            padding=0,
+            dilation=1,
+            groups=1,
+            channel_last=0,
+            output_padding=[0, 0],
+        )
+        return conv2dtranspose_output_1
+
+
+class Conv2Dtranspose20(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("conv2dtranspose20_const_1", shape=(256, 256, 2, 2), dtype=torch.bfloat16)
+
+    def forward(self, conv2dtranspose_input_0):
+        conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
+            "",
+            conv2dtranspose_input_0,
+            self.get_constant("conv2dtranspose20_const_1"),
+            stride=2,
+            padding=0,
+            dilation=1,
+            groups=1,
+            channel_last=0,
+            output_padding=[0, 0],
+        )
+        return conv2dtranspose_output_1
+
+
+class Conv2Dtranspose21(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2dtranspose21.weight_1",
+            forge.Parameter(*(64, 1, 4, 4), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
+
+    def forward(self, conv2dtranspose_input_0):
+        conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
+            "",
+            conv2dtranspose_input_0,
+            self.get_parameter("conv2dtranspose21.weight_1"),
+            stride=2,
+            padding=1,
+            dilation=1,
+            groups=64,
+            channel_last=0,
+            output_padding=[0, 0],
+        )
+        return conv2dtranspose_output_1
+
+
+class Conv2Dtranspose22(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2dtranspose22.weight_1",
+            forge.Parameter(*(128, 1, 4, 4), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
+
+    def forward(self, conv2dtranspose_input_0):
+        conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
+            "",
+            conv2dtranspose_input_0,
+            self.get_parameter("conv2dtranspose22.weight_1"),
+            stride=2,
+            padding=1,
+            dilation=1,
+            groups=128,
+            channel_last=0,
+            output_padding=[0, 0],
+        )
+        return conv2dtranspose_output_1
+
+
+class Conv2Dtranspose23(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2dtranspose23.weight_1",
+            forge.Parameter(*(256, 1, 4, 4), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
+
+    def forward(self, conv2dtranspose_input_0):
+        conv2dtranspose_output_1 = forge.op.Conv2dTranspose(
+            "",
+            conv2dtranspose_input_0,
+            self.get_parameter("conv2dtranspose23.weight_1"),
+            stride=2,
+            padding=1,
+            dilation=1,
+            groups=256,
             channel_last=0,
             output_padding=[0, 0],
         )
@@ -321,30 +562,27 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    pytest.param(
-        (
-            Conv2Dtranspose0,
-            [((1, 512, 16, 16), torch.float32)],
-            {
-                "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "2",
-                    "padding": "0",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                    "output_padding": "[0, 0]",
-                },
+    (
+        Conv2Dtranspose0,
+        [((1, 512, 32, 32), torch.bfloat16)],
+        {
+            "model_names": ["pt_vgg19_unet_default_sem_seg_github"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "2",
+                "padding": "0",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+        },
     ),
     (
         Conv2Dtranspose1,
-        [((1, 256, 32, 32), torch.float32)],
+        [((1, 512, 64, 64), torch.bfloat16)],
         {
-            "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
+            "model_names": ["pt_vgg19_unet_default_sem_seg_github"],
             "pcc": 0.99,
             "args": {
                 "stride": "2",
@@ -358,9 +596,9 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2Dtranspose2,
-        [((1, 128, 64, 64), torch.float32)],
+        [((1, 256, 128, 128), torch.bfloat16)],
         {
-            "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
+            "model_names": ["pt_vgg19_unet_default_sem_seg_github"],
             "pcc": 0.99,
             "args": {
                 "stride": "2",
@@ -374,9 +612,9 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2Dtranspose3,
-        [((1, 64, 128, 128), torch.float32)],
+        [((1, 128, 256, 256), torch.bfloat16)],
         {
-            "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
+            "model_names": ["pt_vgg19_unet_default_sem_seg_github"],
             "pcc": 0.99,
             "args": {
                 "stride": "2",
@@ -390,9 +628,9 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2Dtranspose4,
-        [((1, 4, 7, 7), torch.float32)],
+        [((1, 64, 14, 20), torch.bfloat16)],
         {
-            "model_names": ["pt_autoencoder_conv_img_enc_github"],
+            "model_names": ["pt_yolo_v6_yolov6n_obj_det_torchhub"],
             "pcc": 0.99,
             "args": {
                 "stride": "2",
@@ -406,7 +644,87 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2Dtranspose5,
-        [((1, 16, 14, 14), torch.float32)],
+        [((1, 32, 28, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v6_yolov6n_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "2",
+                "padding": "0",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose6,
+        [((1, 256, 64, 64), torch.float32)],
+        {
+            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "2",
+                "padding": "0",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose7,
+        [((1, 64, 128, 128), torch.float32)],
+        {
+            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github", "onnx_unet_base_img_seg_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "2",
+                "padding": "0",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose8,
+        [((1, 24, 120, 120), torch.float32)],
+        {
+            "model_names": ["TranslatedLayer"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "2",
+                "padding": "0",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose9,
+        [((1, 24, 240, 240), torch.float32)],
+        {
+            "model_names": ["TranslatedLayer"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "2",
+                "padding": "0",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose10,
+        [((1, 4, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_autoencoder_conv_img_enc_github"],
             "pcc": 0.99,
@@ -420,28 +738,201 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2Dtranspose6,
-            [((1, 1024, 14, 14), torch.float32)],
-            {
-                "model_names": ["pt_unet_carvana_base_img_seg_github"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "2",
-                    "padding": "0",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                    "output_padding": "[0, 0]",
-                },
+    (
+        Conv2Dtranspose11,
+        [((1, 16, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_autoencoder_conv_img_enc_github"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "2",
+                "padding": "0",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+        },
     ),
     (
-        Conv2Dtranspose0,
-        [((1, 512, 28, 28), torch.float32)],
+        Conv2Dtranspose1,
+        [((1, 512, 16, 16), torch.bfloat16)],
+        {
+            "model_names": ["pt_unet_base_img_seg_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "2",
+                "padding": "0",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose2,
+        [((1, 256, 32, 32), torch.bfloat16)],
+        {
+            "model_names": ["pt_unet_base_img_seg_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "2",
+                "padding": "0",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose3,
+        [((1, 128, 64, 64), torch.bfloat16)],
+        {
+            "model_names": ["pt_unet_base_img_seg_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "2",
+                "padding": "0",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose12,
+        [((1, 64, 128, 128), torch.bfloat16)],
+        {
+            "model_names": ["pt_unet_base_img_seg_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "2",
+                "padding": "0",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose13,
+        [((1, 512, 16, 16), torch.float32)],
+        {
+            "model_names": ["onnx_unet_base_img_seg_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "2",
+                "padding": "0",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose14,
+        [((1, 256, 32, 32), torch.float32)],
+        {
+            "model_names": ["onnx_unet_base_img_seg_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "2",
+                "padding": "0",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose15,
+        [((1, 128, 64, 64), torch.float32)],
+        {
+            "model_names": ["onnx_unet_base_img_seg_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "2",
+                "padding": "0",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose16,
+        [((1, 192, 14, 20), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "2",
+                "padding": "0",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose17,
+        [((1, 96, 28, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "2",
+                "padding": "0",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose18,
+        [((1, 128, 14, 20), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "2",
+                "padding": "0",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose4,
+        [((1, 64, 28, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "2",
+                "padding": "0",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose19,
+        [((1, 1024, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_unet_carvana_base_img_seg_github"],
             "pcc": 0.99,
@@ -457,7 +948,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2Dtranspose1,
-        [((1, 256, 56, 56), torch.float32)],
+        [((1, 512, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_unet_carvana_base_img_seg_github"],
             "pcc": 0.99,
@@ -473,7 +964,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2Dtranspose2,
-        [((1, 128, 112, 112), torch.float32)],
+        [((1, 256, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_unet_carvana_base_img_seg_github"],
             "pcc": 0.99,
@@ -488,10 +979,10 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2Dtranspose7,
-        [((1, 192, 14, 20), torch.float32)],
+        Conv2Dtranspose3,
+        [((1, 128, 112, 112), torch.bfloat16)],
         {
-            "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
+            "model_names": ["pt_unet_carvana_base_img_seg_github"],
             "pcc": 0.99,
             "args": {
                 "stride": "2",
@@ -505,9 +996,9 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2Dtranspose8,
-        [((1, 96, 28, 40), torch.float32)],
+        [((1, 24, 112, 112), torch.float32)],
         {
-            "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
+            "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
             "args": {
                 "stride": "2",
@@ -521,9 +1012,9 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2Dtranspose9,
-        [((1, 64, 14, 20), torch.float32)],
+        [((1, 24, 224, 224), torch.float32)],
         {
-            "model_names": ["pt_yolo_v6_yolov6n_obj_det_torchhub"],
+            "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
             "args": {
                 "stride": "2",
@@ -536,56 +1027,8 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2Dtranspose10,
-        [((1, 32, 28, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v6_yolov6n_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
-            },
-        },
-    ),
-    (
-        Conv2Dtranspose11,
-        [((1, 128, 14, 20), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
-            },
-        },
-    ),
-    (
-        Conv2Dtranspose9,
-        [((1, 64, 28, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
-            },
-        },
-    ),
-    (
-        Conv2Dtranspose12,
-        [((1, 256, 14, 20), torch.float32)],
+        Conv2Dtranspose20,
+        [((1, 256, 14, 20), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
             "pcc": 0.99,
@@ -600,8 +1043,8 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2Dtranspose11,
-        [((1, 128, 28, 40), torch.float32)],
+        Conv2Dtranspose18,
+        [((1, 128, 28, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
             "pcc": 0.99,
@@ -610,6 +1053,57 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose21,
+        [((1, 64, 28, 28), torch.bfloat16)],
+        {
+            "model_names": ["pt_monodle_base_obj_det_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {
+                "stride": "2",
+                "padding": "1",
+                "dilation": "1",
+                "groups": "64",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose22,
+        [((1, 128, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_monodle_base_obj_det_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {
+                "stride": "2",
+                "padding": "1",
+                "dilation": "1",
+                "groups": "128",
+                "channel_last": "0",
+                "output_padding": "[0, 0]",
+            },
+        },
+    ),
+    (
+        Conv2Dtranspose23,
+        [((1, 256, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_monodle_base_obj_det_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {
+                "stride": "2",
+                "padding": "1",
+                "dilation": "1",
+                "groups": "256",
                 "channel_last": "0",
                 "output_padding": "[0, 0]",
             },
@@ -661,11 +1155,10 @@ def test_module(forge_module_and_shapes_dtypes):
 
     record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs)
+    compiler_cfg = forge.config.CompilerConfig()
+    if "default_df_override" in metadata.keys():
+        compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])
 
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-    )
+    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
