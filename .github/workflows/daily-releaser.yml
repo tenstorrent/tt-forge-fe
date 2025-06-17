@@ -78,4 +78,4 @@ jobs:
       overwrite_releases: false
       repo: tt-forge-fe
       gha-token: ${{ secrets.GITHUB_TOKEN }}
-      slack-token: ${{ secrets.SLACK_TOKEN }}
+      slack-token: ${{ secrets.SLACK_NIGHTLY_FAIL }}
