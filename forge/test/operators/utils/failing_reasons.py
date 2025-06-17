@@ -119,23 +119,18 @@ class ComponentChecker(Enum):
         ],
     )
 
+    # Obsoleted binary names not used anymore:
+    #   - lib/_ttnn.so
+    #   - lib/libTTMLIRCompiler.so
+
     METAL = FailingReason(
         description="Metal",
         checks=[
             ExceptionCheck(
                 error_log=[
                     M.contains("lib/libtt_metal.so"),
-                    M.contains("lib/_ttnn.so"),
+                    M.contains("lib/_ttnncpp.so"),
                     M.contains("lib/libTTMLIRRuntime.so"),
-                    M.contains("forge/_C.so"),
-                    M.last_line(M.contains("forge/compiled_graph_state.py:")),
-                ],
-            ),
-            ExceptionCheck(
-                error_log=[
-                    M.contains("lib/libtt_metal.so"),
-                    M.contains("lib/_ttnn.so"),
-                    M.neg(M.contains("lib/libTTMLIRRuntime.so")),  # no MLIR runtime
                     M.contains("forge/_C.so"),
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
@@ -149,17 +144,7 @@ class ComponentChecker(Enum):
             ExceptionCheck(
                 error_log=[
                     M.neg(M.contains("lib/libtt_metal.so")),
-                    M.contains("lib/_ttnn.so"),
-                    M.contains("lib/libTTMLIRRuntime.so"),
-                    M.contains("forge/_C.so"),
-                    M.last_line(M.contains("forge/compiled_graph_state.py:")),
-                ],
-            ),
-            ExceptionCheck(
-                error_log=[
-                    M.contains("lib/libTTMLIRCompiler.so"),
-                    M.neg(M.contains("lib/libtt_metal.so")),
-                    M.contains("lib/_ttnn.so"),
+                    M.contains("lib/_ttnncpp.so"),
                     M.contains("lib/libTTMLIRRuntime.so"),
                     M.contains("forge/_C.so"),
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
@@ -174,7 +159,7 @@ class ComponentChecker(Enum):
             ExceptionCheck(
                 error_log=[
                     M.neg(M.contains("lib/libtt_metal.so")),
-                    M.neg(M.contains("lib/_ttnn.so")),
+                    M.neg(M.contains("lib/_ttnncpp.so")),
                     M.contains("lib/libTTMLIRRuntime.so"),
                     M.contains("forge/_C.so"),
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
@@ -189,7 +174,7 @@ class ComponentChecker(Enum):
             ExceptionCheck(
                 error_log=[
                     M.neg(M.contains("lib/libtt_metal.so")),
-                    M.neg(M.contains("lib/_ttnn.so")),
+                    M.neg(M.contains("lib/_ttnncpp.so")),
                     M.neg(M.contains("lib/libTTMLIRRuntime.so")),
                     M.neg(M.contains("forge/_C.so")),  # Python code
                     M.any(
@@ -214,7 +199,7 @@ class ComponentChecker(Enum):
             ExceptionCheck(
                 error_log=[
                     M.neg(M.contains("lib/libtt_metal.so")),
-                    M.neg(M.contains("lib/_ttnn.so")),
+                    M.neg(M.contains("lib/_ttnncpp.so")),
                     M.neg(M.contains("lib/libTTMLIRRuntime.so")),
                     M.contains("forge/_C.so"),  # C code
                     M.any(
@@ -234,7 +219,7 @@ class ComponentChecker(Enum):
             ExceptionCheck(
                 error_log=[
                     M.neg(M.contains("lib/libtt_metal.so")),
-                    M.neg(M.contains("lib/_ttnn.so")),
+                    M.neg(M.contains("lib/_ttnncpp.so")),
                     M.neg(M.contains("lib/libTTMLIRRuntime.so")),
                     M.neg(M.contains("forge/_C.so")),
                     M.any(
@@ -1120,7 +1105,7 @@ class FailingReasons(Enum):
         ],
     )
 
-    UNSUPORTED_AXIS = FailingReason(
+    UNSUPPORTED_AXIS = FailingReason(
         description="Unsupported axis parameter",
         checks=[
             # softmax	RuntimeError: TT_FATAL @ tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.get_dtype() == DataType::BFLOAT16 || input.get_dtype() == DataType::B
@@ -1145,7 +1130,6 @@ class FailingReasons(Enum):
             # E        --- tt::ModelState::run_program(tt::ProgramType, std::vector<tt::Tensor, std::allocator<tt::Tensor> >)
             # forge/forge/compiled_graph_state.py:310: RuntimeError
             ExceptionCheck(
-                # TODO move to UNSUPPORTED_DATA_FORMAT
                 class_name="RuntimeError",
                 component=ComponentChecker.TTNN.value,
                 message=[
@@ -1361,6 +1345,10 @@ class FailingReasons(Enum):
     # # RuntimeError: Fatal Python error: Aborted
     FATAL_ERROR = FailingReason(
         description="Fatal error occured",
+    )
+
+    HIGH_MEMORY = FailingReason(
+        description="High memory usage",
     )
 
     UNSUPPORTED_INPUT_SOURCE = FailingReason(
