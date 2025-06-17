@@ -83,7 +83,14 @@ packages = [p for p in find_packages("forge") if not p.startswith("test")]
 setup(
     name="tt_forge_fe",
     version=version,
-    install_requires=requirements,
+    install_requires=requirements,  
+    extras_require={
+        "torch": [
+            "--extra-index-url https://download.pytorch.org/whl/cpu",
+            "torch==2.7.0",
+            "torchvision==0.22.0",
+        ]
+    },
     packages=packages,
     package_dir={"forge": "forge/forge"},
     ext_modules=[forge_c],
