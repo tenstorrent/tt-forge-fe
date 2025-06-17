@@ -99,6 +99,3 @@ def test_ssd300_vgg16(variant):
 
     # Run model on sample data and print results
     print_cls_results(detection_fw[0], detection_co[0])
-
-
-
