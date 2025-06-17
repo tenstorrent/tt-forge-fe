@@ -1,0 +1,81 @@
+name: Daily Releaser
+
+on:
+  push:
+  schedule:
+  - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      draft:
+        type: boolean
+        default: true
+        description: Put PR in draft mode for testing
+      delete-drafts:
+        type: boolean
+        default: false
+        description: Delete drafts
+      repo:
+        type: string
+        description: 'Repo to release e.g tt-forge-fe'
+        required: false
+        default: ''
+      overwrite_releases:
+        type: boolean
+        default: false
+        description: Overwrite releases
+      slack-token:
+        type: string
+        description: 'Slack token'
+        required: false
+        default: ''
+      gha-token:
+        type: string
+        description: 'GHA token'
+        required: false
+        default: ''
+
+  workflow_call:
+    inputs:
+      draft:
+        type: boolean
+        default: true
+        description: Put PR in draft mode for testing
+      delete-drafts:
+        type: boolean
+        default: false
+        description: Delete drafts
+      repo:
+        type: string
+        description: 'Repo to release e.g tt-forge-fe'
+        required: false
+        default: ''
+      overwrite_releases:
+        type: boolean
+        default: false
+        description: Overwrite releases
+      slack-token:
+        type: string
+        description: 'Slack token'
+        required: false
+        default: ''
+      gha-token:
+        type: string
+        description: 'GHA token'
+        required: false
+        default: ''
+
+permissions:
+  pages: write
+  id-token: write
+  contents: write
+
+jobs:
+  daily-releaser:
+    uses: tenstorrent/tt-forge/.github/workflows/daily-releaser.yml@main
+    with:
+      draft: true
+      delete-drafts: false
+      overwrite_releases: false
+      repo: tt-forge-fe
+      gha-token: ${{ secrets.GITHUB_TOKEN }}
+      slack-token: ${{ secrets.SLACK_TOKEN }}
