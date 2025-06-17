@@ -23,6 +23,9 @@ def pytest_addoption(parser):
         default=False,
         help="log per-test memory usage into pytest-memory-usage.csv",
     )
+    parser.addoption(
+        "--tests_to_filter", nargs="+", type=str, help="List of test patterns to include (file paths or full test IDs)"
+    )
 
 
 @pytest.fixture(scope="function")
