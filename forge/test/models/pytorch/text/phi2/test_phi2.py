@@ -66,6 +66,9 @@ def test_phi2_clm(variant):
         priority=priority,
     )
 
+    if variant == "microsoft/phi-2":
+        raise RuntimeError("Requires multi-chip support")
+
     # Load PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
     config_dict = config.to_dict()
