@@ -71,7 +71,7 @@ permissions:
 
 jobs:
   daily-releaser:
-    uses: tenstorrent/tt-forge/.github/workflows/daily-releaser.yml@main
+    uses: tenstorrent/tt-forge/.github/workflows/daily-releaser.yml@jmcgrath/more-portable-changes-daily-releaser
     secrets: inherit
     with:
       draft: true
