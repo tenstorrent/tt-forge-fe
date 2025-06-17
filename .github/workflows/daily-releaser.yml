@@ -72,12 +72,10 @@ permissions:
 
 jobs:
   daily-releaser:
-    uses: tenstorrent/tt-forge/.github/workflows/daily-releaser.yml@jmcgrath/more-portable-changes-daily-releaser
+    uses: tenstorrent/tt-forge/.github/workflows/nightly-release.yml@jmcgrath/more-portable-changes-daily-releaser
     secrets: inherit
     with:
       draft: true
       delete-drafts: false
       overwrite_releases: false
       repo: tt-forge-fe
-      #gha-token: "${{ secrets.GH_TOKEN }}"
-      #slack-token: "${{ secrets.SLACK_NIGHTLY_FAIL }}"
