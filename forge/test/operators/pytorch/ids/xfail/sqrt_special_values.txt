@@ -151,7 +151,6 @@ sqrt-FROM_HOST-None-(14, 13, 89, 3)-None-None
 sqrt-CONST_EVAL_PASS-None-(1, 4)-None-None
 sqrt-CONST_EVAL_PASS-None-(1, 17)-None-None
 sqrt-CONST_EVAL_PASS-None-(1, 23)-None-None
-sqrt-CONST_EVAL_PASS-None-(1, 1)-None-None
 sqrt-CONST_EVAL_PASS-None-(1, 100)-None-None
 sqrt-CONST_EVAL_PASS-None-(1, 500)-None-None
 sqrt-CONST_EVAL_PASS-None-(1, 1000)-None-None
