@@ -10,10 +10,6 @@ on:
         type: boolean
         default: true
         description: Put PR in draft mode for testing
-      delete-drafts:
-        type: boolean
-        default: false
-        description: Delete drafts
       repo:
         type: string
         description: 'Repo to release e.g tt-forge-fe'
@@ -23,16 +19,6 @@ on:
         type: boolean
         default: false
         description: Overwrite releases
-      slack-token:
-        type: string
-        description: 'Slack token'
-        required: false
-        default: ''
-      gha-token:
-        type: string
-        description: 'GHA token'
-        required: false
-        default: ''
 
   workflow_call:
     inputs:
@@ -40,10 +26,6 @@ on:
         type: boolean
         default: true
         description: Put PR in draft mode for testing
-      delete-drafts:
-        type: boolean
-        default: false
-        description: Delete drafts
       repo:
         type: string
         description: 'Repo to release e.g tt-forge-fe'
@@ -53,16 +35,6 @@ on:
         type: boolean
         default: false
         description: Overwrite releases
-      slack-token:
-        type: string
-        description: 'Slack token'
-        required: false
-        default: ''
-      gha-token:
-        type: string
-        description: 'GHA token'
-        required: false
-        default: ''
 
 permissions:
   pages: write
