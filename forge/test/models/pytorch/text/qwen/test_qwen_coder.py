@@ -2,8 +2,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from transformers import AutoModelForCausalLM, AutoTokenizer
 from torch import nn
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import forge
 from forge.forge_property_utils import (
@@ -119,14 +119,15 @@ def test_qwen_clm(variant):
     # Tokenize and prepare inputs
     model_inputs = tokenizer([text], return_tensors="pt")
     inputs = [model_inputs["input_ids"]]
-    
+
     class Wrapper(nn.Module):
         def __init__(self, model):
             super().__init__()
             self.model = model
+
         def forward(self, input_ids):
             return self.model(input_ids).logits
-        
+
     framework_model = Wrapper(framework_model)
 
     # Forge compile framework model

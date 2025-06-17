@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-import torch
 from transformers import Qwen2Config, Qwen2ForCausalLM, Qwen2Tokenizer
 
 import forge
