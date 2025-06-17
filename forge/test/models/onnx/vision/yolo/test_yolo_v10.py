@@ -10,7 +10,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.onnx.vision.yolo.model_utils.yolo_utils import load_yolo_model_and_image, YoloWrapper
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 
 @pytest.mark.xfail
@@ -23,7 +23,6 @@ def test_yolov10(forge_tmp_path):
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
-        priority=ModelPriority.P1,
     )
 
     # Load  model and input

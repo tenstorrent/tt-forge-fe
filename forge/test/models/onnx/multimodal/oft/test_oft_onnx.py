@@ -7,7 +7,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.onnx.multimodal.oft.model_utils.oft_utils import get_inputs, get_models
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 
 @pytest.mark.skip_model_analysis
@@ -22,7 +22,6 @@ def test_oft(forge_tmp_path, variant):
         variant=variant.split("/")[-1],
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
-        priority=ModelPriority.P1,
     )
 
     # Load model and inputs

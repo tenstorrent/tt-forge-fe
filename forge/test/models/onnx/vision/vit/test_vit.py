@@ -8,7 +8,7 @@ import onnx
 import forge
 from transformers import ViTForImageClassification, AutoImageProcessor
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 
 variants = [
@@ -26,7 +26,6 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_vit_classify_224(variant, forge_tmp_path):
-    priority = ModelPriority.P1 if variant in ["google/vit-base-patch16-224"] else ModelPriority.P2
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -35,7 +34,6 @@ def test_vit_classify_224(variant, forge_tmp_path):
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
-        priority=priority,
     )
 
     # Load torch model and processor

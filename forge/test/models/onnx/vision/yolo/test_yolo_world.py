@@ -8,11 +8,10 @@ import torch
 import onnx
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.yolo.model_utils.yolovx_utils import WorldModelWrapper, get_test_input, load_world_model
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 
 @pytest.mark.xfail
@@ -28,12 +27,11 @@ def test_yolo_world_inference_onnx(tmp_path):
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
-        priority=ModelPriority.P1,
     )
 
     # Load framework_model and input
     framework_model = load_world_model(MODEL_URL)
-    framework_model = WorldModelWrapper(framework_model).to(torch.bfloat16)
+    framework_model = WorldModelWrapper(framework_model)
     inputs = get_test_input()
 
     # Export model to ONNX

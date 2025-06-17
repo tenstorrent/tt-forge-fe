@@ -12,7 +12,7 @@ import subprocess
 import onnx
 from forge.verify.verify import verify
 from test.utils import download_model
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 from test.models.models_utils import build_optimum_cli_command
 
 variants = ["microsoft/phi-3-mini-4k-instruct", "microsoft/Phi-3-mini-128k-instruct"]
@@ -23,7 +23,6 @@ variants = ["microsoft/phi-3-mini-4k-instruct", "microsoft/Phi-3-mini-128k-instr
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="Transient test - Out of memory due to other tests in CI pipeline")
 def test_phi3_causal_lm_onnx(variant, forge_tmp_path):
-    priority = ModelPriority.P1 if variant == "microsoft/phi-3-mini-4k-instruct" else ModelPriority.P2
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -32,7 +31,6 @@ def test_phi3_causal_lm_onnx(variant, forge_tmp_path):
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
-        priority=priority,
     )
 
     # Load tokenizer and model from HuggingFace
