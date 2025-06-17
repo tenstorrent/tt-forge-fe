@@ -48,6 +48,5 @@ jobs:
     secrets: inherit
     with:
       draft: true
-      delete-drafts: false
       overwrite_releases: false
       repo: tt-forge-fe
