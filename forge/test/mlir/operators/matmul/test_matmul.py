@@ -7,7 +7,7 @@ import torch
 from torch import nn
 
 import forge
-from forge.verify.verify import verify, VerifyConfig
+from forge.verify.verify import verify
 
 
 @pytest.mark.parametrize("batch_size", [1, 7, 32])
