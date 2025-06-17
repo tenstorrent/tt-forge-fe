@@ -1,4 +1,4 @@
-add_library(runtime_testutils STATIC runtime_testutils.cpp python_bindings.cpp)
+add_library(runtime_testutils STATIC testutils.cpp)
 add_dependencies(runtime_testutils runtime)
 
 target_link_libraries(runtime_testutils PUBLIC coverage_config)

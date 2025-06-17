@@ -82,4 +82,5 @@ std::string run_mlir_compiler_to_cpp(
 // Public API for lowering to MLIR, running MLIR passes and generating a shared object.
 std::string run_mlir_compiler_to_shared_object(
     tt::ForgeGraphModule& module, const std::optional<MLIRConfig>& mlir_config = std::nullopt);
+
 }  // namespace tt::passes

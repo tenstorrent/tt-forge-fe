@@ -9,7 +9,7 @@
 #include "runtime/tensor.hpp"
 #include "tt/runtime/types.h"
 
-namespace tt::runtime_testutils
+namespace tt::runtime::testutils
 {
 
 bool test_so(
@@ -31,4 +31,4 @@ std::vector<tt::runtime::Tensor> run_so_program(
 
 bool compareOuts(std::vector<tt::runtime::Tensor>& lhs, std::vector<tt::runtime::Tensor>& rhs);
 
-}  // namespace tt::runtime_testutils
+}  // namespace tt::runtime::testutils

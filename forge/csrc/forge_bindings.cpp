@@ -34,7 +34,6 @@ namespace py = pybind11;
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
 #include "runtime/python_bindings.hpp"
-#include "runtime/testutils/python_bindings.hpp"
 #include "shared_utils/sparse_matmul_utils.hpp"
 #include "tt_torch_device/python_bindings.hpp"
 #include "utils/ordered_associative_containers/ordered_map.hpp"
@@ -143,11 +142,6 @@ PYBIND11_MODULE(_C, m)
 
     py::module m_runtime = m.def_submodule("runtime", "Submodule defining runtime functions");
     RuntimeModule(m_runtime);
-
-    // Define RuntimeTestUtils module as a submodule to RuntimeModule.
-    py::module m_runtime_testutils =
-        m_runtime.def_submodule("runtime_testutils", "Submodule defining runtime test functions");
-    RuntimeTestUtilsModule(m_runtime_testutils);
 
     py::module_ m_verif = m.def_submodule("verif", "Submodule defining verification and test utilities");
     VerifModule(m_verif);
