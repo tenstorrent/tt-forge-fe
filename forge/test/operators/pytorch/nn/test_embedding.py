@@ -19,13 +19,17 @@ import forge
 import forge.op
 from loguru import logger
 
+from forge._C import DataFormat
+
+from forge.verify.config import VerifyConfig
+from forge.config import CompilerConfig
+from forge.verify.value_checkers import AllCloseValueChecker
 
 from test.operators.utils import (
     VerifyUtils,
     InputSource,
     TestVector,
     TestPlan,
-    FailingReasons,
     TestCollection,
     TestCollectionCommon,
 )
@@ -48,12 +52,10 @@ class ModelFromAnotherOp(torch.nn.Module):
         self.kwargs = {
             "num_embeddings": kwargs["num_embeddings"],
             "embedding_dim": kwargs["embedding_dim"],
+            "dtype": kwargs["dtype"],
         }
 
-        self.weight = torch.rand(
-            (self.kwargs["num_embeddings"], self.kwargs["embedding_dim"]), dtype=kwargs["weight_dtype"]
-        )
-        self.embedding = self.operator(**self.kwargs, _weight=self.weight)
+        self.embedding = self.operator(**self.kwargs)
 
     def forward(self, x: torch.Tensor):
         # we use Add operator to create one operands which is input for the embedding operator
@@ -75,12 +77,10 @@ class ModelDirect(torch.nn.Module):
         self.kwargs = {
             "num_embeddings": kwargs["num_embeddings"],
             "embedding_dim": kwargs["embedding_dim"],
+            "dtype": kwargs["dtype"],
         }
 
-        self.weight = torch.rand(
-            (self.kwargs["num_embeddings"], self.kwargs["embedding_dim"]), dtype=kwargs["weight_dtype"]
-        )
-        self.embedding = self.operator(**self.kwargs, _weight=self.weight)
+        self.embedding = self.operator(**self.kwargs)
 
     def forward(self, x: torch.Tensor):
         output = self.embedding(x)
@@ -100,14 +100,13 @@ class ModelConstEvalPass(torch.nn.Module):
         self.kwargs = {
             "num_embeddings": kwargs["num_embeddings"],
             "embedding_dim": kwargs["embedding_dim"],
+            "dtype": kwargs["dtype"],
         }
 
-        self.constant = torch.randint(0, self.kwargs["num_embeddings"] - 1, self.shape, dtype=torch.int32)
+        self.const = torch.randint(0, self.kwargs["num_embeddings"] - 1, self.shape, dtype=kwargs["dev_data_format"])
+        self.register_buffer("constant", self.const)
 
-        self.weight = torch.rand(
-            (self.kwargs["num_embeddings"], self.kwargs["embedding_dim"]), dtype=kwargs["weight_dtype"]
-        )
-        self.embedding = self.operator(**self.kwargs, _weight=self.weight)
+        self.embedding = self.operator(**self.kwargs)
 
     def forward(self, x: torch.Tensor):
         v1 = self.embedding(self.constant)
@@ -149,6 +148,13 @@ class TestVerification:
             kwargs=kwargs,
         )
 
+        dtype = kwargs.get("dtype")
+        compiler_cfg = CompilerConfig()
+
+        if dtype is torch.bfloat16:
+            pytorch_model.to(dtype)
+            compiler_cfg.default_df_override = DataFormat.Float16_b
+
         input_shapes = tuple([test_vector.input_shape for _ in range(number_of_operands)])
         logger.trace(f"***input_shapes: {input_shapes}")
 
@@ -164,10 +170,13 @@ class TestVerification:
             test_device=test_device,
             input_shapes=input_shapes,
             input_params=input_params,
+            compiler_cfg=compiler_cfg,
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             pcc=test_vector.pcc,
             warm_reset=warm_reset,
+            deprecated_verification=False,
+            verify_config=VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2)),
             value_range=value_range,
         )
 
@@ -183,32 +192,18 @@ class TestParamsData:
     MAX_EMBEDDING_DIM = 10000
 
     embedding_dims = [1000, 3200, MAX_EMBEDDING_DIM]
-    # weight_dtypes = [torch.bfloat16, torch.float32]
 
     @classmethod
-    def generate_kwargs(cls, test_vector: TestVector, weight_dtype: Type[torch.dtype]):
-        num_embedding_limit = 2**7 - 1  # 127
+    def generate_kwargs(
+        cls,
+        test_vector: TestVector,
+        dtype: Type[torch.dtype] = None,
+        num_embeddings_min: int = 2,
+        num_embeddings_max: int = 32000,
+    ):
+
         rng = random.Random(math.prod(test_vector.input_shape) + 1)
-        num_embeddings = []
-        match test_vector.dev_data_format:
-            case forge.DataFormat.RawUInt8:
-                num_embedding_limit = 2**8 - 1  # 255
-                num_embeddings = [rng.randint(2, num_embedding_limit)]
-            case forge.DataFormat.RawUInt16:
-                num_embedding_limit = 2**16 - 1  # 65535
-                num_embeddings = [rng.randint(2, num_embedding_limit)]
-            case forge.DataFormat.RawUInt32:
-                num_embedding_limit = 2**32 - 1  # 4294967295
-                num_embeddings = [rng.randint(2, 32000)]
-            case forge.DataFormat.Int8:
-                num_embedding_limit = 2**7 - 1  # 127
-                num_embeddings = [rng.randint(2, num_embedding_limit)]
-            case forge.DataFormat.UInt16:
-                num_embedding_limit = 2**16 - 1  # 65535
-                num_embeddings = [rng.randint(2, num_embedding_limit)]
-            case forge.DataFormat.Int32:
-                num_embedding_limit = 2**31 - 1  # 2147483647
-                num_embeddings = [rng.randint(2, 32000)]
+        num_embeddings = [rng.randint(num_embeddings_min, num_embeddings_max)]
 
         kwarg_list = []
         for num_embeddings in num_embeddings:
@@ -217,7 +212,8 @@ class TestParamsData:
                     {
                         "num_embeddings": num_embeddings,
                         "embedding_dim": embedding_dim,
-                        "weight_dtype": weight_dtype,
+                        "dtype": dtype,
+                        "dev_data_format": test_vector.dev_data_format,
                     }
                 )
         return kwarg_list
@@ -229,7 +225,7 @@ class TestCollectionData:
 
     all = TestCollection(
         operators=[
-            "embedding",  # 00
+            "embedding",
         ],
         input_sources=TestCollectionCommon.all.input_sources,
         input_shapes=[
@@ -238,7 +234,7 @@ class TestCollectionData:
             if reduce(lambda x, y: x * y, input_shape) * TestParamsData.MAX_EMBEDDING_DIM
             < TestParamsData.INPUT_SHAPE_THRESHOLD
         ],
-        dev_data_formats=TestCollectionCommon.int.dev_data_formats,
+        dev_data_formats=[torch.int32, torch.int64],
         math_fidelities=TestCollectionCommon.all.math_fidelities,
     )
 
@@ -246,7 +242,7 @@ class TestCollectionData:
         input_sources=TestCollectionCommon.single.input_sources,
         input_shapes=TestCollectionCommon.single.input_shapes,
         dev_data_formats=[
-            pytest.param(forge.DataFormat.Int32, id="Int32"),
+            pytest.param(torch.int32, id="int32"),  # TODO check this
         ],
         math_fidelities=TestCollectionCommon.single.math_fidelities,
     )
@@ -262,136 +258,47 @@ TestParamsData.test_plan = TestPlan(
         # 2. Operand source(s):
         # 3. Operand shapes type(s):
         # 4. Operand / output size of dimensions
+        # Case of weight dtype torch.float32
         TestCollection(
             operators=TestCollectionData.all.operators,
             input_sources=TestCollectionData.all.input_sources,
             input_shapes=TestCollectionData.single.input_shapes,
             dev_data_formats=TestCollectionData.single.dev_data_formats,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, torch.float32),
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, dtype=torch.float32),
         ),
+        # Case of num_embeddings range
+        # between 32000 and 500000
+        TestCollection(
+            operators=TestCollectionData.all.operators,
+            input_sources=TestCollectionData.all.input_sources,
+            input_shapes=TestCollectionData.single.input_shapes,
+            dev_data_formats=TestCollectionData.single.dev_data_formats,
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(
+                test_vector,
+                num_embeddings_min=32000,
+                num_embeddings_max=500000,
+            ),
+        ),
+        # Case of all sources and shapes from the test plan
         TestCollection(
             operators=TestCollectionData.all.operators,
             input_sources=TestCollectionData.all.input_sources,
             input_shapes=TestCollectionData.all.input_shapes,
             dev_data_formats=TestCollectionData.all.dev_data_formats,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, torch.bfloat16),
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, dtype=torch.bfloat16),
         ),
-        # Test plan:
-        # 6. Math fidelity
+        # Case of all math fidelities
         TestCollection(
             operators=TestCollectionData.all.operators,
             input_sources=TestCollectionData.single.input_sources,
             input_shapes=TestCollectionData.single.input_shapes,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, torch.bfloat16),
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, dtype=torch.bfloat16),
             dev_data_formats=TestCollectionData.single.dev_data_formats,
             math_fidelities=TestCollectionData.all.math_fidelities,
         ),
     ],
     failing_rules=[
-        *TestIdsDataLoader.build_failing_rules(operators=TestCollectionData.all.operators),
-        # # FLOAT32 ERRORS:
-        # # RuntimeError: Fatal error
-        # # FATAL | Input output tensor size mismatch in memcpy: 40000 * 4 != 240000 * 4
-        # TestCollection(
-        #     input_sources=[
-        #         InputSource.FROM_HOST,
-        #         InputSource.FROM_ANOTHER_OP,
-        #     ],
-        #     criteria=lambda test_vector: test_vector.kwargs["weight_dtype"] == torch.float32,
-        #     failing_reason=FailingReasons.INFERENCE_FAILED,
-        # ),
-        # # AssertionError: PCC check failed
-        # TestCollection(
-        #     input_sources=[
-        #         InputSource.CONST_EVAL_PASS,
-        #     ],
-        #     criteria=lambda test_vector: test_vector.kwargs["weight_dtype"] == torch.float32,
-        #     failing_reason=FailingReasons.DATA_MISMATCH,
-        # ),
-        # # BFLOAT16 ERRORS:
-        # # PCC ERRORS:
-        # # AssertionError: PCC check failed
-        # TestCollection(
-        #     input_sources=[
-        #         InputSource.FROM_HOST,
-        #     ],
-        #     input_shapes=[
-        #         (45, 17),
-        #         (9920, 1),
-        #         (17, 41),
-        #         (89, 3),
-        #         (11, 1, 23),
-        #     ],
-        #     failing_reason=FailingReasons.DATA_MISMATCH,
-        # ),
-        # TestCollection(
-        #     input_sources=[
-        #         InputSource.FROM_ANOTHER_OP,
-        #     ],
-        #     criteria=lambda test_vector: len(test_vector.input_shape) == 2
-        #     or test_vector.input_shape in ((1, 1, 23), (11, 1, 23)),
-        #     failing_reason=FailingReasons.DATA_MISMATCH,
-        # ),
-        # # RUNTIME ERRORS:
-        # # RuntimeError: Tensor 1 - data type mismatch: expected BFloat16, got Float32
-        # TestCollection(
-        #     input_sources=[
-        #         InputSource.CONST_EVAL_PASS,
-        #     ],
-        #     criteria=lambda test_vector: test_vector.kwargs["weight_dtype"] == torch.bfloat16,
-        #     failing_reason=FailingReasons.INFERENCE_FAILED,
-        # ),
-        # # ALLOCATION ERRORS:
-        # # RuntimeError: TT_THROW @ /home/kmilanovic/src/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/allocator.cpp:145: tt::exception
-        # TestCollection(
-        #     input_sources=[
-        #         InputSource.FROM_HOST,
-        #         InputSource.FROM_ANOTHER_OP,
-        #     ],
-        #     input_shapes=[
-        #         (9920, 1),
-        #     ],
-        #     kwargs=[
-        #         {
-        #             "embedding_dim": 10000,
-        #         },
-        #     ],
-        #     failing_reason=FailingReasons.ALLOCATION_FAILED,
-        # ),
-        # # FATAL ERRORS:
-        # # RuntimeError: Fatal error
-        # # FATAL | Input output tensor size mismatch in memcpy: 40000 * 4 != 240000 * 4
-        # TestCollection(
-        #     input_sources=[
-        #         InputSource.FROM_HOST,
-        #     ],
-        #     criteria=lambda test_vector: len(test_vector.input_shape) > 2
-        #     and test_vector.input_shape not in ((1, 1, 23), (11, 1, 23)),
-        #     failing_reason=FailingReasons.INFERENCE_FAILED,
-        # ),
-        # TestCollection(
-        #     input_sources=[
-        #         InputSource.FROM_ANOTHER_OP,
-        #     ],
-        #     criteria=lambda test_vector: len(test_vector.input_shape) > 2
-        #     and test_vector.input_shape not in ((1, 1, 23), (11, 1, 23)),
-        #     failing_reason=FailingReasons.INFERENCE_FAILED,
-        # ),
-        # SEGMENTATION FAULT ERROR
-        TestCollection(
-            input_sources=TestCollectionData.all.input_sources,
-            input_shapes=[
-                (9920, 1),
-                (1, 9920, 1),
-                (1, 1, 9920, 1),
-            ],
-            kwargs=[
-                {
-                    "embedding_dim": 10000,
-                },
-            ],
-            skip_reason=FailingReasons.SEG_FAULT,
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["embedding"]),
     ],
 )
 
