@@ -4,6 +4,7 @@ log1p-FROM_HOST-None-(1, 100)-None-None
 log1p-FROM_HOST-None-(1, 500)-None-None
 log1p-FROM_HOST-None-(1, 1000)-None-None
 log1p-FROM_HOST-None-(1, 1920)-None-None
+log1p-FROM_HOST-None-(1, 10000)-None-None
 log1p-FROM_HOST-None-(1, 64)-None-None
 log1p-FROM_HOST-None-(1, 96)-None-None
 log1p-FROM_HOST-None-(45, 17)-None-None
@@ -24,6 +25,3 @@ log1p-FROM_HOST-None-(1, 11, 64, 1)-None-None
 log1p-FROM_HOST-None-(1, 13, 89, 3)-None-None
 log1p-FROM_HOST-None-(4, 11, 1, 23)-None-None
 log1p-FROM_HOST-None-(5, 11, 64, 1)-None-None
-log1p-FROM_HOST-None-(1, 2, 3, 4)-torch.int8-HiFi4
-log1p-FROM_HOST-None-(1, 2, 3, 4)-torch.int32-HiFi4
-log1p-FROM_HOST-None-(1, 2, 3, 4)-torch.int64-HiFi4
