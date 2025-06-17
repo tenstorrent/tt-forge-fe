@@ -473,6 +473,12 @@ class ModelPriority(StrEnum):
     P2 = "P2"
 
 
+class Parallelism(StrEnum):
+    SINGLE_DEVICE = "single_device"
+    DATA_PARALLEL = "data_parallel"
+    PIPELINE_PARALLEL = "pipeline_parallel"
+
+
 @dataclass_json
 @dataclass
 class ModelInfo:
@@ -498,6 +504,7 @@ class Tags:
     failure_category: str = ""
     refined_error_message: str = ""
     group: Optional[str] = None
+    parallelism: Optional[Parallelism] = Parallelism.SINGLE_DEVICE.value
 
 
 @dataclass_json
@@ -1019,3 +1026,14 @@ def record_op_model_names(model_names: List[str]):
         return
 
     fph.add("tags.op_info.model_names", model_names)
+
+
+def record_parallelism(parallelism: Parallelism):
+    """
+    Records the paralleism property inside the tags.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    fph.add("tags.parallelism", parallelism.value)
