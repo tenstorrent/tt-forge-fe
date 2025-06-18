@@ -8,9 +8,12 @@ from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_m
 
 import forge
 from forge.verify.verify import verify
+from forge.config import CompilerConfig
+from forge._C import DataFormat
 from test.mlir.llama.utils.utils import load_model
 from typing import List, Tuple
 from loguru import logger
+import time
 
 
 def flatten_pastkv(past_key_values_list: List[Tuple[torch.Tensor, torch.Tensor]]) -> List[torch.Tensor]:
@@ -123,7 +126,7 @@ def calculate_attention_mask_and_postion_ids(
 ):
 
     # Calculate attention mask
-    attention_mask = torch.zeros(padded_past_key_values_seq_length + input_seq_length)
+    attention_mask = torch.zeros(padded_past_key_values_seq_length + input_seq_length, dtype=torch.long)
     attention_mask[:non_padding_past_key_values_seq_length] = 1
     attention_mask[-1] = 1
     attention_mask = attention_mask.unsqueeze(0)
@@ -248,31 +251,45 @@ def test_llama_prefill_on_cpu_decode_on_tt_no_cache(model_path, run_on_tt_device
 
 
 @pytest.mark.parametrize(
-    "model_path, run_on_tt_device",
+    "model_path, run_on_tt_device, num_hidden_layers",
     [
-        ("openlm-research/open_llama_3b", False),
-        ("meta-llama/Llama-3.2-1B", False),
+        ("openlm-research/open_llama_3b", False, None),
+        ("meta-llama/Llama-3.2-1B", False, None),
         pytest.param(
             "openlm-research/open_llama_3b",
             True,
-            marks=pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)"
-            ),
+            None,
+            marks=pytest.mark.nightly,
         ),
         pytest.param(
             "meta-llama/Llama-3.2-1B",
             True,
-            marks=pytest.mark.xfail(reason="BinaryOpType cannot be mapped to BcastOpMath"),
+            None,
+            marks=pytest.mark.push,
+        ),
+        # Minimal 1-layer config for TT CI
+        pytest.param(
+            "openlm-research/open_llama_3b",
+            True,
+            1,
+            marks=pytest.mark.push,
         ),
     ],
 )
-def test_llama_prefill_on_cpu_decode_on_tt_cache(model_path, run_on_tt_device):
-
+def test_llama_prefill_on_cpu_decode_on_tt_cache(model_path, run_on_tt_device, num_hidden_layers):
     use_fast = False if model_path == "openlm-research/open_llama_3b" else True
 
-    # Load Llama model and tokenizer
-    model, tokenizer = load_model(model_path, return_dict=True, use_cache=True, use_fast=False)
+    # Load model with optional override for num_hidden_layers
+    model, tokenizer = load_model(
+        model_path,
+        return_dict=True,
+        use_cache=True,
+        use_fast=use_fast,
+        num_hidden_layers=num_hidden_layers,
+    )
+
     framework_model = LlamaModelWrapper(model)
+    framework_model = framework_model.to(torch.bfloat16)
     framework_model.eval()
 
     if model_path == "openlm-research/open_llama_3b":
@@ -322,14 +339,25 @@ def test_llama_prefill_on_cpu_decode_on_tt_cache(model_path, run_on_tt_device):
             padded_past_key_values_seq_length, non_padding_seq_length, input_seq_length
         )
 
+        data_format_override = DataFormat.Float16_b
+        compiler_cfg = CompilerConfig(default_df_override=data_format_override)
         # Compile the model
+        start = time.perf_counter()
         compiled_model = forge.compile(
             framework_model,
             sample_inputs=[model_inputs[0], attention_mask, position_ids, *model_inputs[1:]],
+            compiler_cfg=compiler_cfg,
         )
+        end = time.perf_counter()
+        duration = end - start
+        minutes = int(duration // 60)
+        seconds = duration % 60
+
+        print(f"COMPILE Block took {minutes} min {seconds:.2f} sec")
 
     # Run decode stage on TT device and generate tokens by passing the last predicted token and the past key values.
     # untill the a specified maximum number of new tokens is reached or an end-of-sequence token is encountered.
+    start = time.perf_counter()
     for max_new_tokens_idx in range(max_new_tokens):
 
         non_padding_past_key_values_seq_length = non_padding_seq_length + max_new_tokens_idx
@@ -369,10 +397,15 @@ def test_llama_prefill_on_cpu_decode_on_tt_cache(model_path, run_on_tt_device):
         # to the first past key values tensor padding index on key_values_sequence_length dim (i.e -2).
         for idx in range(len(model_inputs[1:])):
             model_inputs[idx + 1][:, :, non_padding_past_key_values_seq_length, :] = model_inputs[idx + 1][:, :, -1, :]
-            model_inputs[idx + 1] = model_inputs[idx + 1][:, :, :-1, :]
+            model_inputs[idx + 1] = model_inputs[idx + 1][:, :, :-1, :].contiguous()
 
         generated_tokens = torch.cat([generated_tokens, next_token.unsqueeze(0)], dim=-1)
 
     # Generated text
+    end = time.perf_counter()
+    duration = end - start
+    minutes = int(duration // 60)
+    seconds = duration % 60
+    print(f"DECODE LOOP Block took {minutes} min {seconds:.2f} sec")
     generated_text = tokenizer.decode(generated_tokens[0], skip_special_tokens=True)
     print("generated_text=", generated_text)

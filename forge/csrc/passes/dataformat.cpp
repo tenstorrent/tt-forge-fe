@@ -261,7 +261,7 @@ static void insert_cast_on_const_input_nodes(graphlib::Graph *graph, DataFormat 
         cast_node->set_shape(node->shape());
 
         // First edge: insert cast node on it.
-        graphlib::insert_node_on_edge(graph, user_edges[0], cast_node);
+        graphlib::insert_node_on_edge(graph, user_edges[0], cast_node, true, true, 0, true);
         cast_node->set_output_df(df_override);
         TT_ASSERT(cast_node != nullptr, "Cast node should not be null");
 
