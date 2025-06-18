@@ -142,27 +142,13 @@ void configure_node_from_properties(const Graph* graph, Node* node, const AMPNod
 {
     if (properties.output_df.has_value())
     {
-        if (node->node_type() == graphlib::kInput and
-            node->as<graphlib::InputNode>()->input_type() == graphlib::InputNodeType::Constant)
-        {
-            log_debug(
-                LogGraphCompiler,
-                "\t{} setting output_df from {} to {}",
-                node->name(),
-                node->output_df(),
-                properties.output_df.value());
-            node->set_output_df(properties.output_df.value());
-        }
-        else
-        {
-            log_debug(
-                LogGraphCompiler,
-                "\t{} setting output_df from {} to {}",
-                node->name(),
-                node->output_df(),
-                properties.output_df.value());
-            node->set_output_df(properties.output_df.value());
-        }
+        log_debug(
+            LogGraphCompiler,
+            "\t{} setting output_df from {} to {}",
+            node->name(),
+            node->output_df(),
+            properties.output_df.value());
+        node->set_output_df(properties.output_df.value());
     }
 }
 
