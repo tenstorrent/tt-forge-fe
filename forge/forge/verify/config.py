@@ -257,6 +257,10 @@ class VerifyConfig:
     verify_values: bool = True  # Check output values
     value_checker: ValueChecker = AutomaticValueChecker()
 
+    # --- EmitC --- #
+    # When enabled, we convert model to C++, compile to dylib, run and compare results to canonical runtime path
+    verify_emitc_correctness: bool = False
+
     # --- Logging settings --- #
     dump_tensors: bool = False  # dump tensors to the bellow path
     dump_tensors_path: str = (

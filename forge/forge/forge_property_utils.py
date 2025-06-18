@@ -505,6 +505,7 @@ class Tags:
     refined_error_message: str = ""
     group: Optional[str] = None
     parallelism: Optional[Parallelism] = Parallelism.SINGLE_DEVICE.value
+    emitc_status: Optional[bool] = None
 
 
 @dataclass_json
@@ -665,6 +666,9 @@ class ForgePropertyHandler:
         self.record_execution_stage(execution_stage)
         self.record_execution_depth(ExecutionDepth.from_exec_stage(execution_stage))
 
+    def record_emitc_status(self, is_success: bool):
+        self.add("tags.emitc_status", is_success)
+
     def extract_node_type(self, operand):
         if isinstance(operand, forge.Parameter):
             return "Parameter"
@@ -788,6 +792,14 @@ def record_execution(execution_stage: ExecutionStage):
         return
 
     fph.record_execution(execution_stage)
+
+
+def record_emitc_status(is_success: bool):
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    fph.record_emitc_status(is_success)
 
 
 def record_compiler_config(compiler_config: CompilerConfig):

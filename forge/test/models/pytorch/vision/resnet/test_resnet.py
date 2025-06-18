@@ -79,7 +79,7 @@ def test_resnet_hf(variant):
         input_sample,
         framework_model,
         compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95), verify_emitc_correctness=True),
     )
 
     # Run model on sample data and print results
