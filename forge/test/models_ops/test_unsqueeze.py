@@ -66,15 +66,6 @@ class Unsqueeze4(ForgeModule):
         return unsqueeze_output_1
 
 
-class Unsqueeze5(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, unsqueeze_input_0):
-        unsqueeze_output_1 = forge.op.Unsqueeze("", unsqueeze_input_0, dim=4)
-        return unsqueeze_output_1
-
-
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -395,7 +386,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "onnx_dla_dla60x_c_visual_bb_torchvision",
                 "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
                 "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
-                "onnx_sam_facebook_sam_vit_base_img_seg_github",
                 "onnx_yolov8_default_obj_det_github",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_320x320",
                 "TranslatedLayer",
@@ -2623,7 +2613,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "onnx_dla_dla60x_c_visual_bb_torchvision",
                 "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
                 "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
-                "onnx_sam_facebook_sam_vit_base_img_seg_github",
                 "onnx_yolov8_default_obj_det_github",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_320x320",
                 "TranslatedLayer",
@@ -2675,7 +2664,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pd_resnet_18_img_cls_paddlemodels",
                 "onnx_dla_dla60x_c_visual_bb_torchvision",
                 "onnx_resnet_50_img_cls_hf",
-                "onnx_sam_facebook_sam_vit_base_img_seg_github",
                 "onnx_yolov8_default_obj_det_github",
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
                 "pd_resnet_152_img_cls_paddlemodels",
@@ -2779,7 +2767,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pd_resnet_18_img_cls_paddlemodels",
                 "onnx_dla_dla60x_c_visual_bb_torchvision",
                 "onnx_resnet_50_img_cls_hf",
-                "onnx_sam_facebook_sam_vit_base_img_seg_github",
                 "onnx_yolov8_default_obj_det_github",
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
                 "pd_resnet_152_img_cls_paddlemodels",
@@ -3389,7 +3376,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_sam_facebook_sam_vit_base_img_seg_github",
                 "pd_densenet_121_img_cls_paddlemodels",
                 "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
                 "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
@@ -3414,7 +3400,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_sam_facebook_sam_vit_base_img_seg_github",
                 "pd_densenet_121_img_cls_paddlemodels",
                 "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
                 "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
@@ -7292,76 +7277,6 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Unsqueeze4,
-        [((1, 14, 14, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "3"}},
-    ),
-    (
-        Unsqueeze1,
-        [((1, 14, 14, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "2"}},
-    ),
-    (
-        Unsqueeze2,
-        [((14, 14, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "0"}},
-    ),
-    (
-        Unsqueeze5,
-        [((300, 14, 14, 14), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "4"}},
-    ),
-    (
-        Unsqueeze4,
-        [((300, 14, 14, 14), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "3"}},
-    ),
-    (
-        Unsqueeze2,
-        [((64, 14), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "0"}},
-    ),
-    (
-        Unsqueeze1,
-        [((300, 14, 14), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "2"}},
-    ),
-    (
-        Unsqueeze4,
-        [((1, 64, 64, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "3"}},
-    ),
-    (
-        Unsqueeze1,
-        [((1, 64, 64, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "2"}},
-    ),
-    (
-        Unsqueeze2,
-        [((64, 64, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "0"}},
-    ),
-    (
-        Unsqueeze5,
-        [((12, 64, 64, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "4"}},
-    ),
-    (
-        Unsqueeze4,
-        [((12, 64, 64, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "3"}},
-    ),
-    (
-        Unsqueeze2,
-        [((64, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "0"}},
-    ),
-    (
-        Unsqueeze1,
-        [((12, 64, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "2"}},
-    ),
-    (
         Unsqueeze2,
         [((12, 64, 64), torch.float32)],
         {
@@ -7376,28 +7291,9 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Unsqueeze0,
-        [((1, 256, 64, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "1"}},
-    ),
-    (
-        Unsqueeze0,
-        [((1, 4096, 256), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "1"}},
-    ),
-    (
-        Unsqueeze2,
-        [((256, 64, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "0"}},
-    ),
-    (
         Unsqueeze1,
         [((1, 1, 32), torch.float32)],
-        {
-            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github", "pt_llama3_huggyllama_llama_7b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "2"},
-        },
+        {"model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"], "pcc": 0.99, "args": {"dim": "2"}},
     ),
     (
         Unsqueeze0,

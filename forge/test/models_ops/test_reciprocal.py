@@ -2142,16 +2142,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reciprocal0,
-        [((1, 1, 64, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Reciprocal0,
-        [((1, 1, 128, 128), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Reciprocal0,
         [((1, 8, 1), torch.float32)],
         {
             "model_names": [

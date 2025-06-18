@@ -1873,10 +1873,7 @@ forge_modules_and_shapes_dtypes_list = [
         Resize2D17,
         [((1, 512, 20, 20), torch.bfloat16)],
         {
-            "model_names": [
-                "pt_yolox_yolox_l_obj_det_torchhub",
-                "pt_yolov9_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolox_yolox_l_obj_det_torchhub", "pt_yolov9_default_obj_det_github"],
             "pcc": 0.99,
             "args": {
                 "sizes": "[40, 40]",

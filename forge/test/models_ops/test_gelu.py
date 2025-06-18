@@ -393,33 +393,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Gelu0,
-        [((1, 64, 64, 3072), torch.float32)],
-        {
-            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"],
-            "pcc": 0.99,
-            "args": {"approximate": '"none"'},
-        },
-    ),
-    (
-        Gelu0,
-        [((1, 64, 128, 128), torch.float32)],
-        {
-            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"],
-            "pcc": 0.99,
-            "args": {"approximate": '"none"'},
-        },
-    ),
-    (
-        Gelu0,
-        [((1, 32, 256, 256), torch.float32)],
-        {
-            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"],
-            "pcc": 0.99,
-            "args": {"approximate": '"none"'},
-        },
-    ),
-    (
-        Gelu0,
         [((1, 8, 3072), torch.float32)],
         {
             "model_names": [

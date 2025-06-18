@@ -432,17 +432,23 @@ class Layernorm17(ForgeModule):
 class Layernorm18(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("layernorm18_const_1", shape=(256,), dtype=torch.float32)
-        self.add_constant("layernorm18_const_2", shape=(256,), dtype=torch.float32)
+        self.add_parameter(
+            "layernorm18.weight_1",
+            forge.Parameter(*(768,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
+        self.add_parameter(
+            "layernorm18.weight_2",
+            forge.Parameter(*(768,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, layernorm_input_0):
         layernorm_output_1 = forge.op.Layernorm(
             "",
             layernorm_input_0,
-            self.get_constant("layernorm18_const_1"),
-            self.get_constant("layernorm18_const_2"),
+            self.get_parameter("layernorm18.weight_1"),
+            self.get_parameter("layernorm18.weight_2"),
             dim=-1,
-            epsilon=1e-06,
+            epsilon=0.0,
         )
         return layernorm_output_1
 
@@ -450,17 +456,23 @@ class Layernorm18(ForgeModule):
 class Layernorm19(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("layernorm19_const_1", shape=(256,), dtype=torch.float32)
-        self.add_constant("layernorm19_const_2", shape=(256,), dtype=torch.float32)
+        self.add_parameter(
+            "layernorm19.weight_1",
+            forge.Parameter(*(768,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
+        self.add_parameter(
+            "layernorm19.weight_2",
+            forge.Parameter(*(768,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, layernorm_input_0):
         layernorm_output_1 = forge.op.Layernorm(
             "",
             layernorm_input_0,
-            self.get_constant("layernorm19_const_1"),
-            self.get_constant("layernorm19_const_2"),
+            self.get_parameter("layernorm19.weight_1"),
+            self.get_parameter("layernorm19.weight_2"),
             dim=-1,
-            epsilon=1e-05,
+            epsilon=1e-06,
         )
         return layernorm_output_1
 
@@ -468,17 +480,23 @@ class Layernorm19(ForgeModule):
 class Layernorm20(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("layernorm20_const_1", shape=(768,), dtype=torch.float32)
-        self.add_constant("layernorm20_const_2", shape=(768,), dtype=torch.float32)
+        self.add_parameter(
+            "layernorm20.weight_1",
+            forge.Parameter(*(1024,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
+        self.add_parameter(
+            "layernorm20.weight_2",
+            forge.Parameter(*(1024,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, layernorm_input_0):
         layernorm_output_1 = forge.op.Layernorm(
             "",
             layernorm_input_0,
-            self.get_constant("layernorm20_const_1"),
-            self.get_constant("layernorm20_const_2"),
+            self.get_parameter("layernorm20.weight_1"),
+            self.get_parameter("layernorm20.weight_2"),
             dim=-1,
-            epsilon=1e-06,
+            epsilon=0.0,
         )
         return layernorm_output_1
 
@@ -488,11 +506,11 @@ class Layernorm21(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm21.weight_1",
-            forge.Parameter(*(768,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1536,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
         self.add_parameter(
             "layernorm21.weight_2",
-            forge.Parameter(*(768,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1536,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, layernorm_input_0):
@@ -502,7 +520,7 @@ class Layernorm21(ForgeModule):
             self.get_parameter("layernorm21.weight_1"),
             self.get_parameter("layernorm21.weight_2"),
             dim=-1,
-            epsilon=0.0,
+            epsilon=1e-05,
         )
         return layernorm_output_1
 
@@ -512,11 +530,11 @@ class Layernorm22(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm22.weight_1",
-            forge.Parameter(*(768,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
         self.add_parameter(
             "layernorm22.weight_2",
-            forge.Parameter(*(768,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, layernorm_input_0):
@@ -526,7 +544,7 @@ class Layernorm22(ForgeModule):
             self.get_parameter("layernorm22.weight_1"),
             self.get_parameter("layernorm22.weight_2"),
             dim=-1,
-            epsilon=1e-06,
+            epsilon=0.0,
         )
         return layernorm_output_1
 
@@ -536,11 +554,11 @@ class Layernorm23(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm23.weight_1",
-            forge.Parameter(*(1024,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
         self.add_parameter(
             "layernorm23.weight_2",
-            forge.Parameter(*(1024,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, layernorm_input_0):
@@ -550,7 +568,7 @@ class Layernorm23(ForgeModule):
             self.get_parameter("layernorm23.weight_1"),
             self.get_parameter("layernorm23.weight_2"),
             dim=-1,
-            epsilon=0.0,
+            epsilon=1e-05,
         )
         return layernorm_output_1
 
@@ -560,11 +578,11 @@ class Layernorm24(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm24.weight_1",
-            forge.Parameter(*(1536,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(768,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
         self.add_parameter(
             "layernorm24.weight_2",
-            forge.Parameter(*(1536,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(768,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, layernorm_input_0):
@@ -584,11 +602,11 @@ class Layernorm25(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm25.weight_1",
-            forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1024,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
         self.add_parameter(
             "layernorm25.weight_2",
-            forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1024,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, layernorm_input_0):
@@ -598,7 +616,7 @@ class Layernorm25(ForgeModule):
             self.get_parameter("layernorm25.weight_1"),
             self.get_parameter("layernorm25.weight_2"),
             dim=-1,
-            epsilon=0.0,
+            epsilon=1e-05,
         )
         return layernorm_output_1
 
@@ -608,11 +626,11 @@ class Layernorm26(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm26.weight_1",
-            forge.Parameter(*(256,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(322,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
         self.add_parameter(
             "layernorm26.weight_2",
-            forge.Parameter(*(256,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(322,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, layernorm_input_0):
@@ -630,21 +648,15 @@ class Layernorm26(ForgeModule):
 class Layernorm27(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "layernorm27.weight_1",
-            forge.Parameter(*(768,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
-        self.add_parameter(
-            "layernorm27.weight_2",
-            forge.Parameter(*(768,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("layernorm27_const_1", shape=(256,), dtype=torch.float32)
+        self.add_constant("layernorm27_const_2", shape=(256,), dtype=torch.float32)
 
     def forward(self, layernorm_input_0):
         layernorm_output_1 = forge.op.Layernorm(
             "",
             layernorm_input_0,
-            self.get_parameter("layernorm27.weight_1"),
-            self.get_parameter("layernorm27.weight_2"),
+            self.get_constant("layernorm27_const_1"),
+            self.get_constant("layernorm27_const_2"),
             dim=-1,
             epsilon=1e-05,
         )
@@ -656,11 +668,11 @@ class Layernorm28(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm28.weight_1",
-            forge.Parameter(*(1024,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(96,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
         self.add_parameter(
             "layernorm28.weight_2",
-            forge.Parameter(*(1024,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(96,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, layernorm_input_0):
@@ -680,11 +692,11 @@ class Layernorm29(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm29.weight_1",
-            forge.Parameter(*(322,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
         self.add_parameter(
             "layernorm29.weight_2",
-            forge.Parameter(*(322,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, layernorm_input_0):
@@ -704,11 +716,11 @@ class Layernorm30(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm30.weight_1",
-            forge.Parameter(*(96,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
         self.add_parameter(
             "layernorm30.weight_2",
-            forge.Parameter(*(96,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, layernorm_input_0):
@@ -728,11 +740,11 @@ class Layernorm31(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm31.weight_1",
-            forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1536,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
         self.add_parameter(
             "layernorm31.weight_2",
-            forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1536,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, layernorm_input_0):
@@ -750,23 +762,17 @@ class Layernorm31(ForgeModule):
 class Layernorm32(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "layernorm32.weight_1",
-            forge.Parameter(*(192,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
-        self.add_parameter(
-            "layernorm32.weight_2",
-            forge.Parameter(*(192,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("layernorm32_const_1", shape=(384,), dtype=torch.float32)
+        self.add_constant("layernorm32_const_2", shape=(384,), dtype=torch.float32)
 
     def forward(self, layernorm_input_0):
         layernorm_output_1 = forge.op.Layernorm(
             "",
             layernorm_input_0,
-            self.get_parameter("layernorm32.weight_1"),
-            self.get_parameter("layernorm32.weight_2"),
+            self.get_constant("layernorm32_const_1"),
+            self.get_constant("layernorm32_const_2"),
             dim=-1,
-            epsilon=1e-05,
+            epsilon=0.0,
         )
         return layernorm_output_1
 
@@ -776,11 +782,11 @@ class Layernorm33(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm33.weight_1",
-            forge.Parameter(*(1536,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2048,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
         self.add_parameter(
             "layernorm33.weight_2",
-            forge.Parameter(*(1536,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2048,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, layernorm_input_0):
@@ -798,17 +804,23 @@ class Layernorm33(ForgeModule):
 class Layernorm34(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("layernorm34_const_1", shape=(384,), dtype=torch.float32)
-        self.add_constant("layernorm34_const_2", shape=(384,), dtype=torch.float32)
+        self.add_parameter(
+            "layernorm34.weight_1",
+            forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+        self.add_parameter(
+            "layernorm34.weight_2",
+            forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, layernorm_input_0):
         layernorm_output_1 = forge.op.Layernorm(
             "",
             layernorm_input_0,
-            self.get_constant("layernorm34_const_1"),
-            self.get_constant("layernorm34_const_2"),
+            self.get_parameter("layernorm34.weight_1"),
+            self.get_parameter("layernorm34.weight_2"),
             dim=-1,
-            epsilon=0.0,
+            epsilon=1e-05,
         )
         return layernorm_output_1
 
@@ -816,23 +828,17 @@ class Layernorm34(ForgeModule):
 class Layernorm35(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "layernorm35.weight_1",
-            forge.Parameter(*(2048,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
-        self.add_parameter(
-            "layernorm35.weight_2",
-            forge.Parameter(*(2048,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("layernorm35_const_1", shape=(768,), dtype=torch.float32)
+        self.add_constant("layernorm35_const_2", shape=(768,), dtype=torch.float32)
 
     def forward(self, layernorm_input_0):
         layernorm_output_1 = forge.op.Layernorm(
             "",
             layernorm_input_0,
-            self.get_parameter("layernorm35.weight_1"),
-            self.get_parameter("layernorm35.weight_2"),
+            self.get_constant("layernorm35_const_1"),
+            self.get_constant("layernorm35_const_2"),
             dim=-1,
-            epsilon=1e-05,
+            epsilon=0.0,
         )
         return layernorm_output_1
 
@@ -842,11 +848,11 @@ class Layernorm36(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm36.weight_1",
-            forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1024,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
         self.add_parameter(
             "layernorm36.weight_2",
-            forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1024,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, layernorm_input_0):
@@ -856,7 +862,7 @@ class Layernorm36(ForgeModule):
             self.get_parameter("layernorm36.weight_1"),
             self.get_parameter("layernorm36.weight_2"),
             dim=-1,
-            epsilon=1e-05,
+            epsilon=0.0,
         )
         return layernorm_output_1
 
@@ -864,15 +870,21 @@ class Layernorm36(ForgeModule):
 class Layernorm37(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("layernorm37_const_1", shape=(768,), dtype=torch.float32)
-        self.add_constant("layernorm37_const_2", shape=(768,), dtype=torch.float32)
+        self.add_parameter(
+            "layernorm37.weight_1",
+            forge.Parameter(*(192,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
+        self.add_parameter(
+            "layernorm37.weight_2",
+            forge.Parameter(*(192,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, layernorm_input_0):
         layernorm_output_1 = forge.op.Layernorm(
             "",
             layernorm_input_0,
-            self.get_constant("layernorm37_const_1"),
-            self.get_constant("layernorm37_const_2"),
+            self.get_parameter("layernorm37.weight_1"),
+            self.get_parameter("layernorm37.weight_2"),
             dim=-1,
             epsilon=0.0,
         )
@@ -884,11 +896,11 @@ class Layernorm38(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm38.weight_1",
-            forge.Parameter(*(1024,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
         self.add_parameter(
             "layernorm38.weight_2",
-            forge.Parameter(*(1024,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, layernorm_input_0):
@@ -898,7 +910,7 @@ class Layernorm38(ForgeModule):
             self.get_parameter("layernorm38.weight_1"),
             self.get_parameter("layernorm38.weight_2"),
             dim=-1,
-            epsilon=0.0,
+            epsilon=1e-06,
         )
         return layernorm_output_1
 
@@ -908,11 +920,11 @@ class Layernorm39(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm39.weight_1",
-            forge.Parameter(*(192,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(261,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
         self.add_parameter(
             "layernorm39.weight_2",
-            forge.Parameter(*(192,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(261,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, layernorm_input_0):
@@ -922,7 +934,7 @@ class Layernorm39(ForgeModule):
             self.get_parameter("layernorm39.weight_1"),
             self.get_parameter("layernorm39.weight_2"),
             dim=-1,
-            epsilon=0.0,
+            epsilon=1e-05,
         )
         return layernorm_output_1
 
@@ -932,11 +944,11 @@ class Layernorm40(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm40.weight_1",
-            forge.Parameter(*(512,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1280,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
         self.add_parameter(
             "layernorm40.weight_2",
-            forge.Parameter(*(512,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1280,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, layernorm_input_0):
@@ -946,7 +958,7 @@ class Layernorm40(ForgeModule):
             self.get_parameter("layernorm40.weight_1"),
             self.get_parameter("layernorm40.weight_2"),
             dim=-1,
-            epsilon=1e-06,
+            epsilon=1e-05,
         )
         return layernorm_output_1
 
@@ -954,23 +966,17 @@ class Layernorm40(ForgeModule):
 class Layernorm41(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "layernorm41.weight_1",
-            forge.Parameter(*(261,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
-        self.add_parameter(
-            "layernorm41.weight_2",
-            forge.Parameter(*(261,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("layernorm41_const_1", shape=(1024,), dtype=torch.float32)
+        self.add_constant("layernorm41_const_2", shape=(1024,), dtype=torch.float32)
 
     def forward(self, layernorm_input_0):
         layernorm_output_1 = forge.op.Layernorm(
             "",
             layernorm_input_0,
-            self.get_parameter("layernorm41.weight_1"),
-            self.get_parameter("layernorm41.weight_2"),
+            self.get_constant("layernorm41_const_1"),
+            self.get_constant("layernorm41_const_2"),
             dim=-1,
-            epsilon=1e-05,
+            epsilon=0.0,
         )
         return layernorm_output_1
 
@@ -978,21 +984,15 @@ class Layernorm41(ForgeModule):
 class Layernorm42(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "layernorm42.weight_1",
-            forge.Parameter(*(1280,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
-        self.add_parameter(
-            "layernorm42.weight_2",
-            forge.Parameter(*(1280,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("layernorm42_const_1", shape=(32,), dtype=torch.float32)
+        self.add_constant("layernorm42_const_2", shape=(32,), dtype=torch.float32)
 
     def forward(self, layernorm_input_0):
         layernorm_output_1 = forge.op.Layernorm(
             "",
             layernorm_input_0,
-            self.get_parameter("layernorm42.weight_1"),
-            self.get_parameter("layernorm42.weight_2"),
+            self.get_constant("layernorm42_const_1"),
+            self.get_constant("layernorm42_const_2"),
             dim=-1,
             epsilon=1e-05,
         )
@@ -1002,8 +1002,8 @@ class Layernorm42(ForgeModule):
 class Layernorm43(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("layernorm43_const_1", shape=(1024,), dtype=torch.float32)
-        self.add_constant("layernorm43_const_2", shape=(1024,), dtype=torch.float32)
+        self.add_constant("layernorm43_const_1", shape=(160,), dtype=torch.float32)
+        self.add_constant("layernorm43_const_2", shape=(160,), dtype=torch.float32)
 
     def forward(self, layernorm_input_0):
         layernorm_output_1 = forge.op.Layernorm(
@@ -1012,7 +1012,7 @@ class Layernorm43(ForgeModule):
             self.get_constant("layernorm43_const_1"),
             self.get_constant("layernorm43_const_2"),
             dim=-1,
-            epsilon=0.0,
+            epsilon=1e-05,
         )
         return layernorm_output_1
 
@@ -1020,8 +1020,8 @@ class Layernorm43(ForgeModule):
 class Layernorm44(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("layernorm44_const_1", shape=(32,), dtype=torch.float32)
-        self.add_constant("layernorm44_const_2", shape=(32,), dtype=torch.float32)
+        self.add_constant("layernorm44_const_1", shape=(96,), dtype=torch.float32)
+        self.add_constant("layernorm44_const_2", shape=(96,), dtype=torch.float32)
 
     def forward(self, layernorm_input_0):
         layernorm_output_1 = forge.op.Layernorm(
@@ -1038,8 +1038,8 @@ class Layernorm44(ForgeModule):
 class Layernorm45(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("layernorm45_const_1", shape=(160,), dtype=torch.float32)
-        self.add_constant("layernorm45_const_2", shape=(160,), dtype=torch.float32)
+        self.add_constant("layernorm45_const_1", shape=(192,), dtype=torch.float32)
+        self.add_constant("layernorm45_const_2", shape=(192,), dtype=torch.float32)
 
     def forward(self, layernorm_input_0):
         layernorm_output_1 = forge.op.Layernorm(
@@ -1056,8 +1056,8 @@ class Layernorm45(ForgeModule):
 class Layernorm46(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("layernorm46_const_1", shape=(96,), dtype=torch.float32)
-        self.add_constant("layernorm46_const_2", shape=(96,), dtype=torch.float32)
+        self.add_constant("layernorm46_const_1", shape=(384,), dtype=torch.float32)
+        self.add_constant("layernorm46_const_2", shape=(384,), dtype=torch.float32)
 
     def forward(self, layernorm_input_0):
         layernorm_output_1 = forge.op.Layernorm(
@@ -1074,8 +1074,8 @@ class Layernorm46(ForgeModule):
 class Layernorm47(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("layernorm47_const_1", shape=(192,), dtype=torch.float32)
-        self.add_constant("layernorm47_const_2", shape=(192,), dtype=torch.float32)
+        self.add_constant("layernorm47_const_1", shape=(768,), dtype=torch.float32)
+        self.add_constant("layernorm47_const_2", shape=(768,), dtype=torch.float32)
 
     def forward(self, layernorm_input_0):
         layernorm_output_1 = forge.op.Layernorm(
@@ -1092,15 +1092,21 @@ class Layernorm47(ForgeModule):
 class Layernorm48(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("layernorm48_const_1", shape=(384,), dtype=torch.float32)
-        self.add_constant("layernorm48_const_2", shape=(384,), dtype=torch.float32)
+        self.add_parameter(
+            "layernorm48.weight_1",
+            forge.Parameter(*(32,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
+        self.add_parameter(
+            "layernorm48.weight_2",
+            forge.Parameter(*(32,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, layernorm_input_0):
         layernorm_output_1 = forge.op.Layernorm(
             "",
             layernorm_input_0,
-            self.get_constant("layernorm48_const_1"),
-            self.get_constant("layernorm48_const_2"),
+            self.get_parameter("layernorm48.weight_1"),
+            self.get_parameter("layernorm48.weight_2"),
             dim=-1,
             epsilon=1e-05,
         )
@@ -1110,15 +1116,21 @@ class Layernorm48(ForgeModule):
 class Layernorm49(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("layernorm49_const_1", shape=(768,), dtype=torch.float32)
-        self.add_constant("layernorm49_const_2", shape=(768,), dtype=torch.float32)
+        self.add_parameter(
+            "layernorm49.weight_1",
+            forge.Parameter(*(160,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
+        self.add_parameter(
+            "layernorm49.weight_2",
+            forge.Parameter(*(160,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, layernorm_input_0):
         layernorm_output_1 = forge.op.Layernorm(
             "",
             layernorm_input_0,
-            self.get_constant("layernorm49_const_1"),
-            self.get_constant("layernorm49_const_2"),
+            self.get_parameter("layernorm49.weight_1"),
+            self.get_parameter("layernorm49.weight_2"),
             dim=-1,
             epsilon=1e-05,
         )
@@ -1128,10 +1140,23 @@ class Layernorm49(ForgeModule):
 class Layernorm50(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "layernorm50.weight_1",
+            forge.Parameter(*(128,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+        self.add_parameter(
+            "layernorm50.weight_2",
+            forge.Parameter(*(128,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
-    def forward(self, layernorm_input_0, layernorm_input_1, layernorm_input_2):
+    def forward(self, layernorm_input_0):
         layernorm_output_1 = forge.op.Layernorm(
-            "", layernorm_input_0, layernorm_input_1, layernorm_input_2, dim=-1, epsilon=1e-05
+            "",
+            layernorm_input_0,
+            self.get_parameter("layernorm50.weight_1"),
+            self.get_parameter("layernorm50.weight_2"),
+            dim=-1,
+            epsilon=1e-05,
         )
         return layernorm_output_1
 
@@ -1141,11 +1166,11 @@ class Layernorm51(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm51.weight_1",
-            forge.Parameter(*(32,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
         self.add_parameter(
             "layernorm51.weight_2",
-            forge.Parameter(*(32,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, layernorm_input_0):
@@ -1165,11 +1190,11 @@ class Layernorm52(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm52.weight_1",
-            forge.Parameter(*(160,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(96,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
         self.add_parameter(
             "layernorm52.weight_2",
-            forge.Parameter(*(160,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(96,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, layernorm_input_0):
@@ -1189,11 +1214,11 @@ class Layernorm53(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm53.weight_1",
-            forge.Parameter(*(128,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
         self.add_parameter(
             "layernorm53.weight_2",
-            forge.Parameter(*(128,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, layernorm_input_0):
@@ -1213,11 +1238,11 @@ class Layernorm54(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm54.weight_1",
-            forge.Parameter(*(256,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1280,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
         self.add_parameter(
             "layernorm54.weight_2",
-            forge.Parameter(*(256,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1280,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, layernorm_input_0):
@@ -1227,7 +1252,7 @@ class Layernorm54(ForgeModule):
             self.get_parameter("layernorm54.weight_1"),
             self.get_parameter("layernorm54.weight_2"),
             dim=-1,
-            epsilon=1e-05,
+            epsilon=1e-06,
         )
         return layernorm_output_1
 
@@ -1237,11 +1262,11 @@ class Layernorm55(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm55.weight_1",
-            forge.Parameter(*(96,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(4544,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
         self.add_parameter(
             "layernorm55.weight_2",
-            forge.Parameter(*(96,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(4544,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, layernorm_input_0):
@@ -1261,11 +1286,11 @@ class Layernorm56(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm56.weight_1",
-            forge.Parameter(*(192,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(4096,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
         self.add_parameter(
             "layernorm56.weight_2",
-            forge.Parameter(*(192,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(4096,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, layernorm_input_0):
@@ -1285,11 +1310,11 @@ class Layernorm57(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "layernorm57.weight_1",
-            forge.Parameter(*(1280,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(64,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
         self.add_parameter(
             "layernorm57.weight_2",
-            forge.Parameter(*(1280,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(64,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, layernorm_input_0):
@@ -1298,78 +1323,6 @@ class Layernorm57(ForgeModule):
             layernorm_input_0,
             self.get_parameter("layernorm57.weight_1"),
             self.get_parameter("layernorm57.weight_2"),
-            dim=-1,
-            epsilon=1e-06,
-        )
-        return layernorm_output_1
-
-
-class Layernorm58(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_parameter(
-            "layernorm58.weight_1",
-            forge.Parameter(*(4544,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
-        self.add_parameter(
-            "layernorm58.weight_2",
-            forge.Parameter(*(4544,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
-
-    def forward(self, layernorm_input_0):
-        layernorm_output_1 = forge.op.Layernorm(
-            "",
-            layernorm_input_0,
-            self.get_parameter("layernorm58.weight_1"),
-            self.get_parameter("layernorm58.weight_2"),
-            dim=-1,
-            epsilon=1e-05,
-        )
-        return layernorm_output_1
-
-
-class Layernorm59(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_parameter(
-            "layernorm59.weight_1",
-            forge.Parameter(*(4096,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
-        self.add_parameter(
-            "layernorm59.weight_2",
-            forge.Parameter(*(4096,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
-
-    def forward(self, layernorm_input_0):
-        layernorm_output_1 = forge.op.Layernorm(
-            "",
-            layernorm_input_0,
-            self.get_parameter("layernorm59.weight_1"),
-            self.get_parameter("layernorm59.weight_2"),
-            dim=-1,
-            epsilon=1e-05,
-        )
-        return layernorm_output_1
-
-
-class Layernorm60(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_parameter(
-            "layernorm60.weight_1",
-            forge.Parameter(*(64,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
-        self.add_parameter(
-            "layernorm60.weight_2",
-            forge.Parameter(*(64,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
-
-    def forward(self, layernorm_input_0):
-        layernorm_output_1 = forge.op.Layernorm(
-            "",
-            layernorm_input_0,
-            self.get_parameter("layernorm60.weight_1"),
-            self.get_parameter("layernorm60.weight_2"),
             dim=-1,
             epsilon=1e-05,
         )
@@ -1841,42 +1794,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Layernorm18,
-        [((1, 1, 5, 256), torch.float32)],
-        {
-            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "epsilon": "1e-06"},
-        },
-    ),
-    (
-        Layernorm19,
-        [((1, 1, 5, 256), torch.float32)],
-        {
-            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "epsilon": "1e-05"},
-        },
-    ),
-    (
-        Layernorm20,
-        [((1, 64, 64, 768), torch.float32)],
-        {
-            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "epsilon": "1e-06"},
-        },
-    ),
-    (
-        Layernorm18,
-        [((1, 1, 4096, 256), torch.float32)],
-        {
-            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "epsilon": "1e-06"},
-        },
-    ),
-    (
-        Layernorm21,
         [((1, 197, 768), torch.bfloat16)],
         {
             "model_names": [
@@ -1890,7 +1807,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm22,
+        Layernorm19,
         [((1, 197, 768), torch.bfloat16)],
         {
             "model_names": ["pt_vit_vit_b_16_img_cls_torchvision"],
@@ -1899,7 +1816,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm21,
+        Layernorm18,
         [((1, 768), torch.bfloat16)],
         {
             "model_names": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"],
@@ -1908,7 +1825,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm23,
+        Layernorm20,
         [((1, 197, 1024), torch.bfloat16)],
         {
             "model_names": [
@@ -1929,7 +1846,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm23,
+        Layernorm20,
         [((1, 1024), torch.bfloat16)],
         {
             "model_names": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"],
@@ -1938,7 +1855,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm24,
+        Layernorm21,
         [((1, 32, 1536), torch.float32)],
         {
             "model_names": ["pt_bloom_bigscience_bloom_1b1_clm_hf"],
@@ -1947,7 +1864,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm25,
+        Layernorm22,
         [((1, 197, 384), torch.bfloat16)],
         {
             "model_names": ["pt_deit_facebook_deit_small_patch16_224_img_cls_hf"],
@@ -1956,7 +1873,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm26,
+        Layernorm23,
         [((1, 100, 256), torch.bfloat16)],
         {
             "model_names": [
@@ -1968,7 +1885,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm26,
+        Layernorm23,
         [((1, 850, 256), torch.bfloat16)],
         {
             "model_names": [
@@ -1980,7 +1897,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm27,
+        Layernorm24,
         [((1, 257, 768), torch.bfloat16)],
         {
             "model_names": ["pt_mgp_alibaba_damo_mgp_str_base_scene_text_recognition_hf"],
@@ -1989,7 +1906,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm27,
+        Layernorm24,
         [((1, 27, 768), torch.bfloat16)],
         {
             "model_names": ["pt_mgp_alibaba_damo_mgp_str_base_scene_text_recognition_hf"],
@@ -2007,7 +1924,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm28,
+        Layernorm25,
         [((1, 1, 1024), torch.bfloat16)],
         {
             "model_names": [
@@ -2020,7 +1937,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm28,
+        Layernorm25,
         [((1, 512, 1024), torch.bfloat16)],
         {
             "model_names": [
@@ -2033,7 +1950,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm29,
+        Layernorm26,
         [((1, 3025, 322), torch.bfloat16)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
@@ -2051,7 +1968,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm19,
+        Layernorm27,
         [((1, 100, 256), torch.float32)],
         {
             "model_names": [
@@ -2063,7 +1980,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm19,
+        Layernorm27,
         [((1, 280, 256), torch.float32)],
         {
             "model_names": [
@@ -2154,7 +2071,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm22,
+        Layernorm19,
         [((1, 196, 768), torch.bfloat16)],
         {
             "model_names": [
@@ -2169,7 +2086,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm27,
+        Layernorm24,
         [((1, 196, 768), torch.bfloat16)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -2188,7 +2105,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm30,
+        Layernorm28,
         [((1, 56, 56, 96), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -2197,7 +2114,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm31,
+        Layernorm29,
         [((1, 28, 28, 384), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -2206,7 +2123,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm32,
+        Layernorm30,
         [((1, 28, 28, 192), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -2215,7 +2132,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm27,
+        Layernorm24,
         [((1, 14, 14, 768), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -2224,7 +2141,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm31,
+        Layernorm29,
         [((1, 14, 14, 384), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -2233,7 +2150,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm33,
+        Layernorm31,
         [((1, 7, 7, 1536), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -2242,7 +2159,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm27,
+        Layernorm24,
         [((1, 7, 7, 768), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -2251,7 +2168,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm34,
+        Layernorm32,
         [((1, 13, 384), torch.float32)],
         {
             "model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"],
@@ -2278,7 +2195,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm22,
+        Layernorm19,
         [((1, 49, 768), torch.bfloat16)],
         {
             "model_names": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm"],
@@ -2287,7 +2204,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm27,
+        Layernorm24,
         [((1, 49, 768), torch.bfloat16)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -2349,12 +2266,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-1", "epsilon": "1e-05"}},
     ),
     (
-        Layernorm26,
+        Layernorm23,
         [((1, 28, 28, 256), torch.bfloat16)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-1", "epsilon": "1e-05"}},
     ),
     (
-        Layernorm28,
+        Layernorm25,
         [((1, 14, 14, 1024), torch.bfloat16)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-1", "epsilon": "1e-05"}},
     ),
@@ -2364,17 +2281,17 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-1", "epsilon": "1e-05"}},
     ),
     (
-        Layernorm35,
+        Layernorm33,
         [((1, 7, 7, 2048), torch.bfloat16)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-1", "epsilon": "1e-05"}},
     ),
     (
-        Layernorm28,
+        Layernorm25,
         [((1, 7, 7, 1024), torch.bfloat16)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-1", "epsilon": "1e-05"}},
     ),
     (
-        Layernorm36,
+        Layernorm34,
         [((1, 1, 384), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -2383,7 +2300,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm36,
+        Layernorm34,
         [((1, 1500, 384), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -2392,7 +2309,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm37,
+        Layernorm35,
         [((1, 6, 768), torch.float32)],
         {
             "model_names": ["onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
@@ -2401,12 +2318,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm37,
+        Layernorm35,
         [((1, 128, 768), torch.float32)],
         {"model_names": ["onnx_bert_bert_base_uncased_mlm_hf"], "pcc": 0.99, "args": {"dim": "-1", "epsilon": "0.0"}},
     ),
     (
-        Layernorm38,
+        Layernorm36,
         [((1, 128, 1024), torch.float32)],
         {
             "model_names": [
@@ -2430,7 +2347,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm39,
+        Layernorm37,
         [((1, 197, 192), torch.bfloat16)],
         {
             "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
@@ -2448,7 +2365,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm40,
+        Layernorm38,
         [((1, 49, 512), torch.bfloat16)],
         {
             "model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"],
@@ -2457,7 +2374,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm41,
+        Layernorm39,
         [((1, 50176, 261), torch.bfloat16)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf"],
@@ -2475,7 +2392,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm42,
+        Layernorm40,
         [((1, 2, 1280), torch.float32)],
         {
             "model_names": [
@@ -2487,7 +2404,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm43,
+        Layernorm41,
         [((1, 384, 1024), torch.float32)],
         {
             "model_names": ["onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf"],
@@ -2496,7 +2413,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm44,
+        Layernorm42,
         [((1, 16384, 32), torch.float32)],
         {
             "model_names": [
@@ -2508,7 +2425,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm44,
+        Layernorm42,
         [((1, 256, 32), torch.float32)],
         {
             "model_names": [
@@ -2532,7 +2449,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm45,
+        Layernorm43,
         [((1, 1024, 160), torch.float32)],
         {
             "model_names": [
@@ -2544,7 +2461,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm45,
+        Layernorm43,
         [((1, 256, 160), torch.float32)],
         {
             "model_names": [
@@ -2556,7 +2473,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm19,
+        Layernorm27,
         [((1, 256, 256), torch.float32)],
         {
             "model_names": [
@@ -2568,7 +2485,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm46,
+        Layernorm44,
         [((1, 4096, 96), torch.float32)],
         {
             "model_names": [
@@ -2580,7 +2497,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm47,
+        Layernorm45,
         [((1, 1024, 192), torch.float32)],
         {
             "model_names": [
@@ -2592,7 +2509,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm48,
+        Layernorm46,
         [((1, 256, 384), torch.float32)],
         {
             "model_names": [
@@ -2604,7 +2521,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm49,
+        Layernorm47,
         [((1, 64, 768), torch.float32)],
         {
             "model_names": [
@@ -2634,7 +2551,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm38,
+        Layernorm36,
         [((1, 384, 1024), torch.float32)],
         {
             "model_names": [
@@ -2651,7 +2568,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_opt_facebook_opt_125m_clm_hf"], "pcc": 0.99, "args": {"dim": "-1", "epsilon": "1e-05"}},
     ),
     (
-        Layernorm21,
+        Layernorm18,
         [((1, 201, 768), torch.bfloat16)],
         {
             "model_names": ["pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf"],
@@ -2660,7 +2577,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm33,
+        Layernorm31,
         [((1, 1536), torch.bfloat16)],
         {
             "model_names": ["pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf"],
@@ -2669,7 +2586,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm22,
+        Layernorm19,
         [((1, 50, 768), torch.bfloat16)],
         {
             "model_names": ["pt_vit_vit_b_32_img_cls_torchvision"],
@@ -2678,7 +2595,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm37,
+        Layernorm35,
         [((1, 197, 768), torch.float32)],
         {
             "model_names": ["onnx_vit_base_google_vit_base_patch16_224_img_cls_hf"],
@@ -2696,7 +2613,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm51,
+        Layernorm48,
         [((1, 16384, 32), torch.bfloat16)],
         {
             "model_names": [
@@ -2708,7 +2625,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm51,
+        Layernorm48,
         [((1, 256, 32), torch.bfloat16)],
         {
             "model_names": [
@@ -2732,7 +2649,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm52,
+        Layernorm49,
         [((1, 1024, 160), torch.bfloat16)],
         {
             "model_names": [
@@ -2744,7 +2661,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm52,
+        Layernorm49,
         [((1, 256, 160), torch.bfloat16)],
         {
             "model_names": [
@@ -2756,7 +2673,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm26,
+        Layernorm23,
         [((1, 256, 256), torch.bfloat16)],
         {
             "model_names": [
@@ -2768,7 +2685,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm53,
+        Layernorm50,
         [((1, 64, 64, 128), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -2777,7 +2694,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm54,
+        Layernorm51,
         [((1, 32, 32, 256), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -2804,7 +2721,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm55,
+        Layernorm52,
         [((1, 64, 64, 96), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -2813,7 +2730,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm56,
+        Layernorm53,
         [((1, 32, 32, 192), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -2822,7 +2739,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm36,
+        Layernorm34,
         [((1, 16, 16, 384), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -2840,12 +2757,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm21,
+        Layernorm18,
         [((1, 204, 768), torch.bfloat16)],
         {"model_names": ["pt_vilt_dandelin_vilt_b32_mlm_mlm_hf"], "pcc": 0.99, "args": {"dim": "-1", "epsilon": "0.0"}},
     ),
     (
-        Layernorm57,
+        Layernorm54,
         [((1, 1370, 1280), torch.bfloat16)],
         {
             "model_names": ["pt_vit_vit_h_14_img_cls_torchvision"],
@@ -2854,7 +2771,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm42,
+        Layernorm40,
         [((1, 1500, 1280), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_v3_clm_hf"],
@@ -2881,7 +2798,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm39,
+        Layernorm37,
         [((1, 1445, 192), torch.bfloat16)],
         {
             "model_names": ["pt_yolos_hustvl_yolos_tiny_obj_det_hf"],
@@ -2890,7 +2807,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm40,
+        Layernorm38,
         [((1, 196, 512), torch.bfloat16)],
         {
             "model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"],
@@ -2899,7 +2816,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm43,
+        Layernorm41,
         [((1, 197, 1024), torch.float32)],
         {
             "model_names": ["onnx_vit_base_google_vit_large_patch16_224_img_cls_hf"],
@@ -2908,7 +2825,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm58,
+        Layernorm55,
         [((1, 6, 4544), torch.float32)],
         {
             "model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
@@ -2917,12 +2834,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm59,
+        Layernorm56,
         [((1, 334, 4096), torch.float32)],
         {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99, "args": {"dim": "-1", "epsilon": "1e-05"}},
     ),
     (
-        Layernorm60,
+        Layernorm57,
         [((1, 334, 64, 64), torch.float32)],
         {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99, "args": {"dim": "-1", "epsilon": "1e-05"}},
     ),
@@ -2981,7 +2898,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm42,
+        Layernorm40,
         [((1, 256, 1280), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -2990,7 +2907,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm24,
+        Layernorm21,
         [((2, 1, 1536), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
@@ -2999,7 +2916,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm30,
+        Layernorm28,
         [((1, 3136, 96), torch.bfloat16)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -3009,7 +2926,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm31,
+        Layernorm29,
         [((1, 784, 384), torch.bfloat16)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -3019,7 +2936,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm32,
+        Layernorm30,
         [((1, 784, 192), torch.bfloat16)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -3029,7 +2946,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm31,
+        Layernorm29,
         [((1, 196, 384), torch.bfloat16)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -3039,7 +2956,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm33,
+        Layernorm31,
         [((1, 49, 1536), torch.bfloat16)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],

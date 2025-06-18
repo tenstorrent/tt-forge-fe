@@ -35,15 +35,6 @@ class Pad1(ForgeModule):
         super().__init__(name)
 
     def forward(self, pad_input_0):
-        pad_output_1 = forge.op.Pad("", pad_input_0, pad=(0, 6, 0, 6), mode="constant", channel_last=True, value=0.0)
-        return pad_output_1
-
-
-class Pad2(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, pad_input_0):
         pad_output_1 = forge.op.Pad("", pad_input_0, pad=(0, 0, 0, 0), mode="constant", channel_last=False, value=0.0)
         return pad_output_1
 
@@ -216,15 +207,6 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Pad1,
-        [((1, 64, 64, 768), torch.float32)],
-        {
-            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"],
-            "pcc": 0.99,
-            "args": {"pad": "(0, 6, 0, 6)", "mode": '"constant"', "channel_last": "True", "value": "0.0"},
-        },
-    ),
-    (
         Pad0,
         [((1, 512, 10, 32), torch.bfloat16)],
         {
@@ -355,7 +337,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Pad2,
+        Pad1,
         [((1, 64, 64, 96), torch.float32)],
         {
             "model_names": [
@@ -367,7 +349,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Pad2,
+        Pad1,
         [((1, 32, 32, 192), torch.float32)],
         {
             "model_names": [
@@ -379,7 +361,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Pad2,
+        Pad1,
         [((1, 16, 16, 384), torch.float32)],
         {
             "model_names": [
@@ -391,7 +373,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Pad2,
+        Pad1,
         [((1, 8, 8, 768), torch.float32)],
         {
             "model_names": [

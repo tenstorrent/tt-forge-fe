@@ -227,60 +227,6 @@ class Maxpool2D11(ForgeModule):
         maxpool2d_output_1 = forge.op.MaxPool2d(
             "",
             maxpool2d_input_0,
-            kernel_size=8,
-            stride=6,
-            padding=[0, 0, 0, 0],
-            dilation=1,
-            ceil_mode=False,
-            channel_last=0,
-        )
-        return maxpool2d_output_1
-
-
-class Maxpool2D12(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, maxpool2d_input_0):
-        maxpool2d_output_1 = forge.op.MaxPool2d(
-            "",
-            maxpool2d_input_0,
-            kernel_size=28,
-            stride=26,
-            padding=[0, 0, 0, 0],
-            dilation=1,
-            ceil_mode=False,
-            channel_last=0,
-        )
-        return maxpool2d_output_1
-
-
-class Maxpool2D13(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, maxpool2d_input_0):
-        maxpool2d_output_1 = forge.op.MaxPool2d(
-            "",
-            maxpool2d_input_0,
-            kernel_size=14,
-            stride=13,
-            padding=[0, 0, 0, 0],
-            dilation=1,
-            ceil_mode=False,
-            channel_last=0,
-        )
-        return maxpool2d_output_1
-
-
-class Maxpool2D14(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, maxpool2d_input_0):
-        maxpool2d_output_1 = forge.op.MaxPool2d(
-            "",
-            maxpool2d_input_0,
             kernel_size=1,
             stride=2,
             padding=[0, 0, 0, 0],
@@ -2536,10 +2482,7 @@ forge_modules_and_shapes_dtypes_list = [
         Maxpool2D7,
         [((1, 256, 20, 20), torch.bfloat16)],
         {
-            "model_names": [
-                "pt_yolov9_default_obj_det_github",
-                "pt_yolox_yolox_s_obj_det_torchhub",
-            ],
+            "model_names": ["pt_yolov9_default_obj_det_github", "pt_yolox_yolox_s_obj_det_torchhub"],
             "pcc": 0.99,
             "args": {
                 "kernel_size": "5",
@@ -2694,7 +2637,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Maxpool2D14,
+        Maxpool2D11,
         [((1, 256, 8, 8), torch.bfloat16)],
         {
             "model_names": ["pt_fpn_base_img_cls_torchvision"],

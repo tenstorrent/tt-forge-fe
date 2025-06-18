@@ -26,29 +26,11 @@ class Repeat0(ForgeModule):
         super().__init__(name)
 
     def forward(self, repeat_input_0):
-        repeat_output_1 = forge.op.Repeat("", repeat_input_0, repeats=[1, 1, 1, 1])
-        return repeat_output_1
-
-
-class Repeat1(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, repeat_input_0):
-        repeat_output_1 = forge.op.Repeat("", repeat_input_0, repeats=[1, 1, 1, 1, 1])
-        return repeat_output_1
-
-
-class Repeat2(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, repeat_input_0):
         repeat_output_1 = forge.op.Repeat("", repeat_input_0, repeats=[1, 1, 1])
         return repeat_output_1
 
 
-class Repeat3(ForgeModule):
+class Repeat1(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -66,33 +48,6 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Repeat0,
-        [((1, 1, 5, 256), torch.float32)],
-        {
-            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"],
-            "pcc": 0.99,
-            "args": {"repeats": "[1, 1, 1, 1]"},
-        },
-    ),
-    (
-        Repeat1,
-        [((1, 1, 256, 64, 64), torch.float32)],
-        {
-            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"],
-            "pcc": 0.99,
-            "args": {"repeats": "[1, 1, 1, 1, 1]"},
-        },
-    ),
-    (
-        Repeat0,
-        [((1, 256, 64, 64), torch.float32)],
-        {
-            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"],
-            "pcc": 0.99,
-            "args": {"repeats": "[1, 1, 1, 1]"},
-        },
-    ),
-    (
-        Repeat2,
         [((1, 100, 256), torch.bfloat16)],
         {
             "model_names": [
@@ -104,7 +59,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Repeat2,
+        Repeat0,
         [((1, 100, 256), torch.float32)],
         {
             "model_names": [
@@ -116,7 +71,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Repeat3,
+        Repeat1,
         [((1, 1, 32, 107, 160), torch.float32)],
         {
             "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -125,7 +80,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Repeat3,
+        Repeat1,
         [((1, 1, 64, 54, 80), torch.float32)],
         {
             "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -134,7 +89,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Repeat3,
+        Repeat1,
         [((1, 1, 128, 27, 40), torch.float32)],
         {
             "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -143,7 +98,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Repeat3,
+        Repeat1,
         [((1, 1, 256, 14, 20), torch.float32)],
         {
             "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -152,7 +107,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Repeat3,
+        Repeat1,
         [((1, 1, 32, 200, 267), torch.bfloat16)],
         {
             "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -162,7 +117,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Repeat3,
+        Repeat1,
         [((1, 1, 64, 100, 134), torch.bfloat16)],
         {
             "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -172,7 +127,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Repeat3,
+        Repeat1,
         [((1, 1, 128, 50, 67), torch.bfloat16)],
         {
             "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -182,7 +137,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Repeat3,
+        Repeat1,
         [((1, 1, 256, 25, 34), torch.bfloat16)],
         {
             "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],

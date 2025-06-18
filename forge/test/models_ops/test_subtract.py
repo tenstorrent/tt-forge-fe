@@ -788,16 +788,6 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Subtract0,
-        [((1, 256, 64, 64), torch.float32), ((1, 1, 64, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Subtract0,
-        [((1, 64, 128, 128), torch.float32), ((1, 1, 128, 128), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
         Subtract18,
         [((1, 2, 8400), torch.float32)],
         {"model_names": ["onnx_yolov8_default_obj_det_github", "onnx_yolov10_default_obj_det_github"], "pcc": 0.99},

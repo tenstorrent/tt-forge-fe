@@ -30,15 +30,6 @@ class Reducemax0(ForgeModule):
         return reducemax_output_1
 
 
-class Reducemax1(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reducemax_input_0):
-        reducemax_output_1 = forge.op.ReduceMax("", reducemax_input_0, dim=-1, keep_dim=False)
-        return reducemax_output_1
-
-
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]

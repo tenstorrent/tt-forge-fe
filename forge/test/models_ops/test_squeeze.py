@@ -93,15 +93,6 @@ class Squeeze7(ForgeModule):
         return squeeze_output_1
 
 
-class Squeeze8(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, squeeze_input_0):
-        squeeze_output_1 = forge.op.Squeeze("", squeeze_input_0, dim=4)
-        return squeeze_output_1
-
-
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -803,46 +794,6 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {"dim": "-1"},
         },
-    ),
-    (
-        Squeeze3,
-        [((1, 300, 196, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "-4"}},
-    ),
-    (
-        Squeeze0,
-        [((1, 14, 14, 14, 1), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Squeeze1,
-        [((300, 14, 1, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "-2"}},
-    ),
-    (
-        Squeeze2,
-        [((1, 14, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "-3"}},
-    ),
-    (
-        Squeeze3,
-        [((1, 12, 4096, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "-4"}},
-    ),
-    (
-        Squeeze0,
-        [((1, 64, 64, 64, 1), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Squeeze1,
-        [((12, 64, 1, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "-2"}},
-    ),
-    (
-        Squeeze2,
-        [((1, 64, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "-3"}},
     ),
     (
         Squeeze1,

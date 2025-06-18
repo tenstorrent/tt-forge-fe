@@ -26,7 +26,7 @@ class Broadcast0(ForgeModule):
         super().__init__(name)
 
     def forward(self, broadcast_input_0):
-        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-2, shape=64)
+        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-2, shape=6)
         return broadcast_output_1
 
 
@@ -35,7 +35,7 @@ class Broadcast1(ForgeModule):
         super().__init__(name)
 
     def forward(self, broadcast_input_0):
-        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-1, shape=64)
+        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-1, shape=32)
         return broadcast_output_1
 
 
@@ -44,38 +44,11 @@ class Broadcast2(ForgeModule):
         super().__init__(name)
 
     def forward(self, broadcast_input_0):
-        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-2, shape=6)
-        return broadcast_output_1
-
-
-class Broadcast3(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, broadcast_input_0):
-        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-1, shape=32)
-        return broadcast_output_1
-
-
-class Broadcast4(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, broadcast_input_0):
-        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-3, shape=512)
-        return broadcast_output_1
-
-
-class Broadcast5(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, broadcast_input_0):
         broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-3, shape=3)
         return broadcast_output_1
 
 
-class Broadcast6(ForgeModule):
+class Broadcast3(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -93,24 +66,6 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Broadcast0,
-        [((1, 256, 1, 1), torch.float32)],
-        {
-            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "shape": "64"},
-        },
-    ),
-    (
-        Broadcast1,
-        [((1, 256, 64, 1), torch.float32)],
-        {
-            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "shape": "64"},
-        },
-    ),
-    (
-        Broadcast2,
         [((1, 1, 1, 6), torch.int64)],
         {
             "model_names": ["onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
@@ -119,7 +74,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Broadcast3,
+        Broadcast1,
         [((64, 3, 64, 1), torch.float32)],
         {
             "model_names": [
@@ -133,7 +88,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Broadcast3,
+        Broadcast1,
         [((16, 6, 64, 1), torch.float32)],
         {
             "model_names": [
@@ -147,7 +102,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Broadcast3,
+        Broadcast1,
         [((4, 12, 64, 1), torch.float32)],
         {
             "model_names": [
@@ -161,7 +116,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Broadcast3,
+        Broadcast1,
         [((1, 24, 64, 1), torch.float32)],
         {
             "model_names": [
@@ -175,27 +130,27 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Broadcast3,
+        Broadcast1,
         [((64, 4, 64, 1), torch.float32)],
         {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-1", "shape": "32"}},
     ),
     (
-        Broadcast3,
+        Broadcast1,
         [((16, 8, 64, 1), torch.float32)],
         {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-1", "shape": "32"}},
     ),
     (
-        Broadcast3,
+        Broadcast1,
         [((4, 16, 64, 1), torch.float32)],
         {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-1", "shape": "32"}},
     ),
     (
-        Broadcast3,
+        Broadcast1,
         [((1, 32, 64, 1), torch.float32)],
         {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-1", "shape": "32"}},
     ),
     (
-        Broadcast5,
+        Broadcast2,
         [((1, 8, 1, 44, 128), torch.float32)],
         {
             "model_names": ["onnx_cogito_deepcogito_cogito_v1_preview_llama_3b_text_gen_hf"],
@@ -204,7 +159,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Broadcast6,
+        Broadcast3,
         [((1, 1, 1, 256), torch.int64)],
         {
             "model_names": [

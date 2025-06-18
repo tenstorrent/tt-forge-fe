@@ -442,7 +442,7 @@ class Matmul34(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul34.weight_1",
-            forge.Parameter(*(256, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1024, 1000), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -455,7 +455,7 @@ class Matmul35(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul35.weight_1",
-            forge.Parameter(*(256, 128), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1152, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -466,13 +466,10 @@ class Matmul35(ForgeModule):
 class Matmul36(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "matmul36.weight_1",
-            forge.Parameter(*(768, 2304), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("matmul36_const_0", shape=(1, 48), dtype=torch.float32)
 
-    def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul36.weight_1"))
+    def forward(self, matmul_input_1):
+        matmul_output_1 = forge.op.Matmul("", self.get_constant("matmul36_const_0"), matmul_input_1)
         return matmul_output_1
 
 
@@ -481,7 +478,7 @@ class Matmul37(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul37.weight_1",
-            forge.Parameter(*(128, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 97), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -494,7 +491,7 @@ class Matmul38(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul38.weight_1",
-            forge.Parameter(*(256, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(2048, 1000), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -505,39 +502,30 @@ class Matmul38(ForgeModule):
 class Matmul39(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "matmul39.weight_1",
-            forge.Parameter(*(2048, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("matmul39_const_0", shape=(1, 100, 256), dtype=torch.bfloat16)
 
-    def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul39.weight_1"))
+    def forward(self, matmul_input_1):
+        matmul_output_1 = forge.op.Matmul("", self.get_constant("matmul39_const_0"), matmul_input_1)
         return matmul_output_1
 
 
 class Matmul40(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "matmul40.weight_1",
-            forge.Parameter(*(256, 4), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("matmul40_const_1", shape=(1, 1, 12), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul40.weight_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul40_const_1"))
         return matmul_output_1
 
 
 class Matmul41(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "matmul41.weight_1",
-            forge.Parameter(*(256, 32), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("matmul41_const_1", shape=(1, 1, 6), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul41.weight_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul41_const_1"))
         return matmul_output_1
 
 
@@ -546,7 +534,7 @@ class Matmul42(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul42.weight_1",
-            forge.Parameter(*(1024, 1000), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -559,7 +547,7 @@ class Matmul43(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul43.weight_1",
-            forge.Parameter(*(1152, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -570,10 +558,13 @@ class Matmul43(ForgeModule):
 class Matmul44(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul44_const_0", shape=(1, 48), dtype=torch.float32)
+        self.add_parameter(
+            "matmul44.weight_1",
+            forge.Parameter(*(2048, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
-    def forward(self, matmul_input_1):
-        matmul_output_1 = forge.op.Matmul("", self.get_constant("matmul44_const_0"), matmul_input_1)
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul44.weight_1"))
         return matmul_output_1
 
 
@@ -582,7 +573,7 @@ class Matmul45(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul45.weight_1",
-            forge.Parameter(*(96, 97), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 92), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -595,7 +586,7 @@ class Matmul46(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul46.weight_1",
-            forge.Parameter(*(2048, 1000), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 4), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -606,43 +597,49 @@ class Matmul46(ForgeModule):
 class Matmul47(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul47_const_0", shape=(1, 100, 256), dtype=torch.bfloat16)
+        self.add_parameter(
+            "matmul47.weight_1",
+            forge.Parameter(*(512, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
-    def forward(self, matmul_input_1):
-        matmul_output_1 = forge.op.Matmul("", self.get_constant("matmul47_const_0"), matmul_input_1)
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul47.weight_1"))
         return matmul_output_1
 
 
 class Matmul48(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul48_const_1", shape=(1, 1, 12), dtype=torch.float32)
+        self.add_parameter(
+            "matmul48.weight_1",
+            forge.Parameter(*(320, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul48_const_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul48.weight_1"))
         return matmul_output_1
 
 
 class Matmul49(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul49_const_1", shape=(1, 1, 6), dtype=torch.float32)
+        self.add_parameter(
+            "matmul49.weight_1",
+            forge.Parameter(*(128, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul49_const_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul49.weight_1"))
         return matmul_output_1
 
 
 class Matmul50(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "matmul50.weight_1",
-            forge.Parameter(*(256, 92), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("matmul50_const_1", shape=(1, 1, 35), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul50.weight_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul50_const_1"))
         return matmul_output_1
 
 
@@ -651,7 +648,7 @@ class Matmul51(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul51.weight_1",
-            forge.Parameter(*(512, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(384, 384), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -664,7 +661,7 @@ class Matmul52(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul52.weight_1",
-            forge.Parameter(*(320, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(384, 1536), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -675,10 +672,13 @@ class Matmul52(ForgeModule):
 class Matmul53(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul53_const_1", shape=(1, 1, 35), dtype=torch.float32)
+        self.add_parameter(
+            "matmul53.weight_1",
+            forge.Parameter(*(1536, 384), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul53_const_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul53.weight_1"))
         return matmul_output_1
 
 
@@ -687,7 +687,7 @@ class Matmul54(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul54.weight_1",
-            forge.Parameter(*(384, 384), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(768, 30522), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -700,7 +700,7 @@ class Matmul55(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul55.weight_1",
-            forge.Parameter(*(384, 1536), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 251), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -713,7 +713,7 @@ class Matmul56(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul56.weight_1",
-            forge.Parameter(*(1536, 384), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(120, 360), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -726,7 +726,7 @@ class Matmul57(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul57.weight_1",
-            forge.Parameter(*(768, 30522), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(120, 120), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -739,7 +739,7 @@ class Matmul58(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul58.weight_1",
-            forge.Parameter(*(256, 251), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(120, 240), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -752,7 +752,7 @@ class Matmul59(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul59.weight_1",
-            forge.Parameter(*(120, 360), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(240, 120), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -765,7 +765,7 @@ class Matmul60(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul60.weight_1",
-            forge.Parameter(*(120, 120), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(120, 6625), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -776,13 +776,10 @@ class Matmul60(ForgeModule):
 class Matmul61(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "matmul61.weight_1",
-            forge.Parameter(*(120, 240), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("matmul61_const_1", shape=(1, 1, 4), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul61.weight_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul61_const_1"))
         return matmul_output_1
 
 
@@ -791,7 +788,7 @@ class Matmul62(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul62.weight_1",
-            forge.Parameter(*(240, 120), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1024, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -804,7 +801,7 @@ class Matmul63(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul63.weight_1",
-            forge.Parameter(*(120, 6625), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1024, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -815,10 +812,13 @@ class Matmul63(ForgeModule):
 class Matmul64(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul64_const_1", shape=(1, 1, 4), dtype=torch.float32)
+        self.add_parameter(
+            "matmul64.weight_1",
+            forge.Parameter(*(4096, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul64_const_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul64.weight_1"))
         return matmul_output_1
 
 
@@ -827,7 +827,7 @@ class Matmul65(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul65.weight_1",
-            forge.Parameter(*(1024, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32, 32), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -840,7 +840,7 @@ class Matmul66(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul66.weight_1",
-            forge.Parameter(*(1024, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32, 128), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -853,7 +853,7 @@ class Matmul67(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul67.weight_1",
-            forge.Parameter(*(4096, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 32), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -866,7 +866,7 @@ class Matmul68(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul68.weight_1",
-            forge.Parameter(*(32, 32), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(160, 160), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -879,7 +879,7 @@ class Matmul69(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul69.weight_1",
-            forge.Parameter(*(32, 128), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(160, 640), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -892,7 +892,7 @@ class Matmul70(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul70.weight_1",
-            forge.Parameter(*(128, 32), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(640, 160), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -905,7 +905,7 @@ class Matmul71(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul71.weight_1",
-            forge.Parameter(*(160, 160), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -918,7 +918,7 @@ class Matmul72(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul72.weight_1",
-            forge.Parameter(*(160, 640), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1024, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -931,7 +931,7 @@ class Matmul73(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul73.weight_1",
-            forge.Parameter(*(640, 160), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 96), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -944,7 +944,7 @@ class Matmul74(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul74.weight_1",
-            forge.Parameter(*(256, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -957,7 +957,7 @@ class Matmul75(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul75.weight_1",
-            forge.Parameter(*(1024, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 384), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -970,7 +970,7 @@ class Matmul76(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul76.weight_1",
-            forge.Parameter(*(96, 96), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(384, 96), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -983,7 +983,7 @@ class Matmul77(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul77.weight_1",
-            forge.Parameter(*(512, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(384, 192), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -996,7 +996,7 @@ class Matmul78(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul78.weight_1",
-            forge.Parameter(*(96, 384), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 192), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -1009,7 +1009,7 @@ class Matmul79(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul79.weight_1",
-            forge.Parameter(*(384, 96), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512, 6), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -1022,7 +1022,7 @@ class Matmul80(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul80.weight_1",
-            forge.Parameter(*(384, 192), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -1035,7 +1035,7 @@ class Matmul81(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul81.weight_1",
-            forge.Parameter(*(192, 192), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(768, 192), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -1048,7 +1048,7 @@ class Matmul82(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul82.weight_1",
-            forge.Parameter(*(512, 6), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(768, 384), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -1061,7 +1061,7 @@ class Matmul83(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul83.weight_1",
-            forge.Parameter(*(192, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512, 12), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -1074,7 +1074,7 @@ class Matmul84(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul84.weight_1",
-            forge.Parameter(*(768, 192), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1536, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -1087,7 +1087,7 @@ class Matmul85(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul85.weight_1",
-            forge.Parameter(*(768, 384), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512, 24), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -1100,7 +1100,7 @@ class Matmul86(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul86.weight_1",
-            forge.Parameter(*(512, 12), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1280, 1000), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -1113,7 +1113,7 @@ class Matmul87(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul87.weight_1",
-            forge.Parameter(*(1536, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 6625), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -1126,7 +1126,7 @@ class Matmul88(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul88.weight_1",
-            forge.Parameter(*(512, 24), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(160, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -1139,7 +1139,7 @@ class Matmul89(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul89.weight_1",
-            forge.Parameter(*(1280, 1000), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -1150,10 +1150,13 @@ class Matmul89(ForgeModule):
 class Matmul90(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul90_const_0", shape=(80, 512), dtype=torch.bfloat16)
+        self.add_parameter(
+            "matmul90.weight_1",
+            forge.Parameter(*(9216, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
-    def forward(self, matmul_input_1):
-        matmul_output_1 = forge.op.Matmul("", self.get_constant("matmul90_const_0"), matmul_input_1)
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul90.weight_1"))
         return matmul_output_1
 
 
@@ -1162,7 +1165,7 @@ class Matmul91(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul91.weight_1",
-            forge.Parameter(*(96, 6625), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(4096, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -1175,7 +1178,7 @@ class Matmul92(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul92.weight_1",
-            forge.Parameter(*(160, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(4096, 1000), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -1188,7 +1191,7 @@ class Matmul93(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul93.weight_1",
-            forge.Parameter(*(32, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(120, 97), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -1199,59 +1202,47 @@ class Matmul93(ForgeModule):
 class Matmul94(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "matmul94.weight_1",
-            forge.Parameter(*(9216, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("matmul94_const_1", shape=(1, 1, 522), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul94.weight_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul94_const_1"))
         return matmul_output_1
 
 
 class Matmul95(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "matmul95.weight_1",
-            forge.Parameter(*(4096, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("matmul95_const_1", shape=(1, 1, 207), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul95.weight_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul95_const_1"))
         return matmul_output_1
 
 
 class Matmul96(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "matmul96.weight_1",
-            forge.Parameter(*(4096, 1000), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("matmul96_const_1", shape=(1, 1, 44), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul96.weight_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul96_const_1"))
         return matmul_output_1
 
 
 class Matmul97(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "matmul97.weight_1",
-            forge.Parameter(*(120, 97), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("matmul97_const_1", shape=(1, 1, 334), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul97.weight_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul97_const_1"))
         return matmul_output_1
 
 
 class Matmul98(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul98_const_1", shape=(1, 1, 522), dtype=torch.float32)
+        self.add_constant("matmul98_const_1", shape=(1, 1, 32), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul98_const_1"))
@@ -1261,7 +1252,7 @@ class Matmul98(ForgeModule):
 class Matmul99(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul99_const_1", shape=(1, 1, 207), dtype=torch.float32)
+        self.add_constant("matmul99_const_1", shape=(1, 1, 11), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul99_const_1"))
@@ -1271,7 +1262,7 @@ class Matmul99(ForgeModule):
 class Matmul100(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul100_const_1", shape=(1, 1, 44), dtype=torch.float32)
+        self.add_constant("matmul100_const_1", shape=(1, 1, 5), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul100_const_1"))
@@ -1281,7 +1272,7 @@ class Matmul100(ForgeModule):
 class Matmul101(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul101_const_1", shape=(1, 1, 334), dtype=torch.float32)
+        self.add_constant("matmul101_const_1", shape=(1, 1, 13), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul101_const_1"))
@@ -1291,40 +1282,52 @@ class Matmul101(ForgeModule):
 class Matmul102(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul102_const_1", shape=(1, 1, 32), dtype=torch.float32)
+        self.add_parameter(
+            "matmul102.weight_1",
+            forge.Parameter(*(3072, 9216), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul102_const_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul102.weight_1"))
         return matmul_output_1
 
 
 class Matmul103(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul103_const_1", shape=(1, 1, 11), dtype=torch.float32)
+        self.add_parameter(
+            "matmul103.weight_1",
+            forge.Parameter(*(3072, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul103_const_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul103.weight_1"))
         return matmul_output_1
 
 
 class Matmul104(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul104_const_1", shape=(1, 1, 5), dtype=torch.float32)
+        self.add_parameter(
+            "matmul104.weight_1",
+            forge.Parameter(*(3072, 16384), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul104_const_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul104.weight_1"))
         return matmul_output_1
 
 
 class Matmul105(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul105_const_1", shape=(1, 1, 13), dtype=torch.float32)
+        self.add_parameter(
+            "matmul105.weight_1",
+            forge.Parameter(*(8192, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul105_const_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul105.weight_1"))
         return matmul_output_1
 
 
@@ -1333,7 +1336,7 @@ class Matmul106(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul106.weight_1",
-            forge.Parameter(*(3072, 9216), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(3072, 32064), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -1344,59 +1347,47 @@ class Matmul106(ForgeModule):
 class Matmul107(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "matmul107.weight_1",
-            forge.Parameter(*(3072, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("matmul107_const_1", shape=(1, 1, 107), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul107.weight_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul107_const_1"))
         return matmul_output_1
 
 
 class Matmul108(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "matmul108.weight_1",
-            forge.Parameter(*(3072, 16384), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("matmul108_const_1", shape=(1, 1, 10), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul108.weight_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul108_const_1"))
         return matmul_output_1
 
 
 class Matmul109(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "matmul109.weight_1",
-            forge.Parameter(*(8192, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("matmul109_const_1", shape=(1, 1, 8), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul109.weight_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul109_const_1"))
         return matmul_output_1
 
 
 class Matmul110(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "matmul110.weight_1",
-            forge.Parameter(*(3072, 32064), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("matmul110_const_1", shape=(1, 1, 135), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul110.weight_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul110_const_1"))
         return matmul_output_1
 
 
 class Matmul111(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul111_const_1", shape=(1, 1, 107), dtype=torch.float32)
+        self.add_constant("matmul111_const_1", shape=(1, 1, 128), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul111_const_1"))
@@ -1406,7 +1397,7 @@ class Matmul111(ForgeModule):
 class Matmul112(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul112_const_1", shape=(1, 1, 10), dtype=torch.float32)
+        self.add_constant("matmul112_const_1", shape=(4, 24), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul112_const_1"))
@@ -1416,50 +1407,10 @@ class Matmul112(ForgeModule):
 class Matmul113(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul113_const_1", shape=(1, 1, 8), dtype=torch.float32)
+        self.add_constant("matmul113_const_1", shape=(4, 72), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul113_const_1"))
-        return matmul_output_1
-
-
-class Matmul114(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("matmul114_const_1", shape=(1, 1, 135), dtype=torch.float32)
-
-    def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul114_const_1"))
-        return matmul_output_1
-
-
-class Matmul115(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("matmul115_const_1", shape=(1, 1, 128), dtype=torch.float32)
-
-    def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul115_const_1"))
-        return matmul_output_1
-
-
-class Matmul116(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("matmul116_const_1", shape=(4, 24), dtype=torch.float32)
-
-    def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul116_const_1"))
-        return matmul_output_1
-
-
-class Matmul117(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("matmul117_const_1", shape=(4, 72), dtype=torch.float32)
-
-    def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul117_const_1"))
         return matmul_output_1
 
 
@@ -4024,171 +3975,6 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_resnet_50_img_cls_hf", "onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
     ),
     (
-        Matmul34,
-        [((5, 256), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
-        [((8, 5, 32), torch.float32), ((8, 32, 5), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
-        [((8, 5, 5), torch.float32), ((8, 5, 32), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul35,
-        [((1, 1, 5, 256), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul36,
-        [((4900, 768), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
-        [((300, 196, 64), torch.float32), ((300, 64, 196), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
-        [((300, 14, 64), torch.float32), ((1, 64, 14), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
-        [((300, 196, 196), torch.float32), ((300, 196, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul24,
-        [((4900, 768), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul25,
-        [((4096, 768), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul26,
-        [((4096, 3072), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul36,
-        [((4096, 768), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
-        [((12, 4096, 64), torch.float32), ((12, 64, 4096), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
-        [((12, 64, 64), torch.float32), ((1, 64, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
-        [((12, 4096, 4096), torch.float32), ((12, 4096, 64), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul24,
-        [((4096, 768), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
-        [((4096, 2), torch.float32), ((2, 128), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul35,
-        [((4096, 256), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
-        [((8, 5, 16), torch.float32), ((8, 16, 4096), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul35,
-        [((1, 1, 4096, 256), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
-        [((8, 5, 4096), torch.float32), ((8, 4096, 16), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul37,
-        [((5, 128), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul38,
-        [((1, 1, 5, 256), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul39,
-        [((1, 1, 5, 2048), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul35,
-        [((5, 256), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
-        [((8, 4096, 16), torch.float32), ((8, 16, 5), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
-        [((8, 4096, 5), torch.float32), ((8, 5, 16), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul37,
-        [((4096, 128), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul34,
-        [((1, 256), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul34,
-        [((1, 1, 256), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul40,
-        [((1, 1, 256), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul41,
-        [((1, 1, 256), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
-        [((1, 4, 32), torch.float32), ((1, 32, 65536), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
         Matmul24,
         [((8, 768), torch.float32)],
         {
@@ -4249,7 +4035,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul42,
+        Matmul34,
         [((1, 1024), torch.float32)],
         {
             "model_names": [
@@ -4260,7 +4046,7 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (Matmul43, [((1, 1152), torch.float32)], {"model_names": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Matmul35, [((1, 1152), torch.float32)], {"model_names": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Matmul2,
         [((1, 288), torch.float32), ((288, 192), torch.float32)],
@@ -4273,7 +4059,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul44,
+        Matmul36,
         [((48, 192), torch.float32)],
         {
             "model_names": [
@@ -4306,12 +4092,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul45,
+        Matmul37,
         [((1, 25, 96), torch.float32)],
         {"model_names": ["pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Matmul46,
+        Matmul38,
         [((1, 2048), torch.float32)],
         {
             "model_names": [
@@ -4610,7 +4396,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul47,
+        Matmul39,
         [((256, 256), torch.bfloat16)],
         {
             "model_names": [
@@ -5000,7 +4786,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul48,
+        Matmul40,
         [((1, 16, 1), torch.float32)],
         {
             "model_names": [
@@ -5058,7 +4844,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99},
     ),
     (
-        Matmul49,
+        Matmul41,
         [((1, 32, 1), torch.float32)],
         {
             "model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf", "pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
@@ -5154,7 +4940,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul34,
+        Matmul42,
         [((100, 256), torch.float32)],
         {
             "model_names": [
@@ -5198,7 +4984,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul34,
+        Matmul42,
         [((1, 100, 256), torch.float32)],
         {
             "model_names": [
@@ -5209,7 +4995,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul34,
+        Matmul42,
         [((280, 256), torch.float32)],
         {
             "model_names": [
@@ -5231,7 +5017,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul34,
+        Matmul42,
         [((1, 280, 256), torch.float32)],
         {
             "model_names": [
@@ -5253,7 +5039,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul38,
+        Matmul43,
         [((1, 280, 256), torch.float32)],
         {
             "model_names": [
@@ -5264,7 +5050,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul39,
+        Matmul44,
         [((1, 280, 2048), torch.float32)],
         {
             "model_names": [
@@ -5297,7 +5083,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul38,
+        Matmul43,
         [((1, 100, 256), torch.float32)],
         {
             "model_names": [
@@ -5308,7 +5094,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul39,
+        Matmul44,
         [((1, 100, 2048), torch.float32)],
         {
             "model_names": [
@@ -5319,12 +5105,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul50,
+        Matmul45,
         [((100, 256), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_obj_det_hf"], "pcc": 0.99},
     ),
     (
-        Matmul40,
+        Matmul46,
         [((1, 100, 256), torch.float32)],
         {
             "model_names": [
@@ -5335,17 +5121,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul51,
+        Matmul47,
         [((1, 256, 512), torch.float32)],
         {"model_names": ["onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Matmul52,
+        Matmul48,
         [((1, 1024, 320), torch.float32)],
         {"model_names": ["onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Matmul37,
+        Matmul49,
         [((1, 4096, 128), torch.float32)],
         {"model_names": ["onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf"], "pcc": 0.99},
     ),
@@ -5742,7 +5528,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul53,
+        Matmul50,
         [((1, 64, 1), torch.float32)],
         {
             "model_names": [
@@ -6158,7 +5944,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul54,
+        Matmul51,
         [((13, 384), torch.float32)],
         {"model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"], "pcc": 0.99},
     ),
@@ -6173,12 +5959,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"], "pcc": 0.99},
     ),
     (
-        Matmul55,
+        Matmul52,
         [((1, 13, 384), torch.float32)],
         {"model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"], "pcc": 0.99},
     ),
     (
-        Matmul56,
+        Matmul53,
         [((1, 13, 1536), torch.float32)],
         {"model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"], "pcc": 0.99},
     ),
@@ -6724,9 +6510,9 @@ forge_modules_and_shapes_dtypes_list = [
     (Matmul25, [((1, 128, 768), torch.float32)], {"model_names": ["onnx_bert_bert_base_uncased_mlm_hf"], "pcc": 0.99}),
     (Matmul26, [((1, 128, 3072), torch.float32)], {"model_names": ["onnx_bert_bert_base_uncased_mlm_hf"], "pcc": 0.99}),
     (Matmul24, [((1, 128, 768), torch.float32)], {"model_names": ["onnx_bert_bert_base_uncased_mlm_hf"], "pcc": 0.99}),
-    (Matmul57, [((1, 128, 768), torch.float32)], {"model_names": ["onnx_bert_bert_base_uncased_mlm_hf"], "pcc": 0.99}),
+    (Matmul54, [((1, 128, 768), torch.float32)], {"model_names": ["onnx_bert_bert_base_uncased_mlm_hf"], "pcc": 0.99}),
     (
-        Matmul58,
+        Matmul55,
         [((100, 256), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
@@ -6747,7 +6533,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"], "pcc": 0.99},
     ),
     (
-        Matmul59,
+        Matmul56,
         [((1, 12, 120), torch.float32)],
         {
             "model_names": [
@@ -6780,7 +6566,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul60,
+        Matmul57,
         [((12, 120), torch.float32)],
         {
             "model_names": [
@@ -6791,7 +6577,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul61,
+        Matmul58,
         [((1, 12, 120), torch.float32)],
         {
             "model_names": [
@@ -6802,7 +6588,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul62,
+        Matmul59,
         [((1, 12, 240), torch.float32)],
         {
             "model_names": [
@@ -6813,7 +6599,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul63,
+        Matmul60,
         [((1, 12, 120), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
     ),
@@ -7029,7 +6815,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul64,
+        Matmul61,
         [((1, 32, 1), torch.float32)],
         {
             "model_names": [
@@ -7534,7 +7320,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"], "pcc": 0.99},
     ),
     (
-        Matmul65,
+        Matmul62,
         [((384, 1024), torch.float32)],
         {"model_names": ["onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf"], "pcc": 0.99},
     ),
@@ -7563,12 +7349,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul66,
+        Matmul63,
         [((1, 384, 1024), torch.float32)],
         {"model_names": ["onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf"], "pcc": 0.99},
     ),
     (
-        Matmul67,
+        Matmul64,
         [((1, 384, 4096), torch.float32)],
         {"model_names": ["onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf"], "pcc": 0.99},
     ),
@@ -7585,7 +7371,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul68,
+        Matmul65,
         [((1, 16384, 32), torch.float32)],
         {
             "model_names": [
@@ -7596,7 +7382,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul68,
+        Matmul65,
         [((256, 32), torch.float32)],
         {
             "model_names": [
@@ -7629,7 +7415,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul69,
+        Matmul66,
         [((1, 16384, 32), torch.float32)],
         {
             "model_names": [
@@ -7640,7 +7426,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul70,
+        Matmul67,
         [((1, 16384, 128), torch.float32)],
         {
             "model_names": [
@@ -7717,7 +7503,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul71,
+        Matmul68,
         [((1, 1024, 160), torch.float32)],
         {
             "model_names": [
@@ -7728,7 +7514,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul71,
+        Matmul68,
         [((256, 160), torch.float32)],
         {
             "model_names": [
@@ -7761,7 +7547,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul71,
+        Matmul68,
         [((1024, 160), torch.float32)],
         {
             "model_names": [
@@ -7772,7 +7558,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul72,
+        Matmul69,
         [((1, 1024, 160), torch.float32)],
         {
             "model_names": [
@@ -7783,7 +7569,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul73,
+        Matmul70,
         [((1, 1024, 640), torch.float32)],
         {
             "model_names": [
@@ -7794,7 +7580,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul34,
+        Matmul42,
         [((256, 256), torch.float32)],
         {
             "model_names": [
@@ -7828,7 +7614,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul74,
+        Matmul71,
         [((1, 256, 256), torch.float32)],
         {
             "model_names": [
@@ -7839,7 +7625,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul75,
+        Matmul72,
         [((1, 256, 1024), torch.float32)],
         {
             "model_names": [
@@ -7855,7 +7641,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99},
     ),
     (
-        Matmul76,
+        Matmul73,
         [((4096, 96), torch.float32)],
         {
             "model_names": [
@@ -7893,7 +7679,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul77,
+        Matmul74,
         [((225, 512), torch.float32)],
         {
             "model_names": [
@@ -7917,7 +7703,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul78,
+        Matmul75,
         [((1, 4096, 96), torch.float32)],
         {
             "model_names": [
@@ -7928,7 +7714,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul79,
+        Matmul76,
         [((1, 4096, 384), torch.float32)],
         {
             "model_names": [
@@ -7939,7 +7725,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul80,
+        Matmul77,
         [((1024, 384), torch.float32)],
         {
             "model_names": [
@@ -7950,7 +7736,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul81,
+        Matmul78,
         [((1024, 192), torch.float32)],
         {
             "model_names": [
@@ -7974,7 +7760,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul82,
+        Matmul79,
         [((225, 512), torch.float32)],
         {
             "model_names": [
@@ -7998,7 +7784,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul83,
+        Matmul80,
         [((1, 1024, 192), torch.float32)],
         {
             "model_names": [
@@ -8009,7 +7795,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul84,
+        Matmul81,
         [((1, 1024, 768), torch.float32)],
         {
             "model_names": [
@@ -8020,7 +7806,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul85,
+        Matmul82,
         [((256, 768), torch.float32)],
         {
             "model_names": [
@@ -8031,7 +7817,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul54,
+        Matmul51,
         [((256, 384), torch.float32)],
         {
             "model_names": [
@@ -8055,7 +7841,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul86,
+        Matmul83,
         [((225, 512), torch.float32)],
         {
             "model_names": [
@@ -8079,7 +7865,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul55,
+        Matmul52,
         [((1, 256, 384), torch.float32)],
         {
             "model_names": [
@@ -8090,7 +7876,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul56,
+        Matmul53,
         [((1, 256, 1536), torch.float32)],
         {
             "model_names": [
@@ -8101,7 +7887,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul87,
+        Matmul84,
         [((64, 1536), torch.float32)],
         {
             "model_names": [
@@ -8136,7 +7922,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul88,
+        Matmul85,
         [((225, 512), torch.float32)],
         {
             "model_names": [
@@ -8207,7 +7993,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_bert_bert_base_japanese_seq_cls_padlenlp"], "pcc": 0.99},
     ),
     (
-        Matmul89,
+        Matmul86,
         [((1, 1280), torch.float32)],
         {"model_names": ["pd_mobilenetv2_basic_img_cls_paddlemodels"], "pcc": 0.99},
     ),
@@ -8379,7 +8165,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99},
     ),
     (
-        Matmul53,
+        Matmul50,
         [((1, 32, 1), torch.float32)],
         {"model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99},
     ),
@@ -8574,7 +8360,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul91,
+        Matmul87,
         [((1, 25, 96), torch.float32)],
         {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
     ),
@@ -9435,23 +9221,23 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
     ),
     (
-        Matmul34,
+        Matmul42,
         [((1, 256, 256), torch.float32)],
         {"model_names": ["onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Matmul92,
+        Matmul88,
         [((1, 1024, 160), torch.float32)],
         {"model_names": ["onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Matmul93,
+        Matmul89,
         [((1, 16384, 32), torch.float32)],
         {"model_names": ["onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf"], "pcc": 0.99},
     ),
-    (Matmul94, [((1, 9216), torch.float32)], {"model_names": ["pd_alexnet_base_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Matmul95, [((1, 4096), torch.float32)], {"model_names": ["pd_alexnet_base_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Matmul96, [((1, 4096), torch.float32)], {"model_names": ["pd_alexnet_base_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Matmul90, [((1, 9216), torch.float32)], {"model_names": ["pd_alexnet_base_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Matmul91, [((1, 4096), torch.float32)], {"model_names": ["pd_alexnet_base_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Matmul92, [((1, 4096), torch.float32)], {"model_names": ["pd_alexnet_base_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Matmul2,
         [((1, 9, 768), torch.float32), ((768, 21128), torch.float32)],
@@ -9463,7 +9249,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_bert_chinese_roberta_base_qa_padlenlp"], "pcc": 0.99},
     ),
     (
-        Matmul97,
+        Matmul93,
         [((1, 12, 120), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels"], "pcc": 0.99},
     ),
@@ -9478,7 +9264,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"], "pcc": 0.99},
     ),
     (
-        Matmul98,
+        Matmul94,
         [((1, 128, 1), torch.float32)],
         {
             "model_names": [
@@ -9524,7 +9310,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((207, 2304), torch.float32), ((2304, 2048), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99},
     ),
-    (Matmul99, [((1, 128, 1), torch.float32)], {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99}),
+    (Matmul95, [((1, 128, 1), torch.float32)], {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99}),
     (
         Matmul2,
         [((207, 2304), torch.float32), ((2304, 1024), torch.float32)],
@@ -9636,7 +9422,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_vit_vit_b_16_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Matmul65,
+        Matmul62,
         [((197, 1024), torch.float32)],
         {"model_names": ["onnx_vit_base_google_vit_large_patch16_224_img_cls_hf"], "pcc": 0.99},
     ),
@@ -9651,12 +9437,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_vit_base_google_vit_large_patch16_224_img_cls_hf"], "pcc": 0.99},
     ),
     (
-        Matmul66,
+        Matmul63,
         [((1, 197, 1024), torch.float32)],
         {"model_names": ["onnx_vit_base_google_vit_large_patch16_224_img_cls_hf"], "pcc": 0.99},
     ),
     (
-        Matmul67,
+        Matmul64,
         [((1, 197, 4096), torch.float32)],
         {"model_names": ["onnx_vit_base_google_vit_large_patch16_224_img_cls_hf"], "pcc": 0.99},
     ),
@@ -9672,7 +9458,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul100,
+        Matmul96,
         [((1, 64, 1), torch.float32)],
         {"model_names": ["pt_cogito_deepcogito_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99},
     ),
@@ -9812,7 +9598,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 334, 4096), torch.float32), ((4096, 12288), torch.float32)],
         {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99},
     ),
-    (Matmul101, [((1, 16, 1), torch.float32)], {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99}),
+    (Matmul97, [((1, 16, 1), torch.float32)], {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99}),
     (
         Matmul2,
         [((64, 334, 64), torch.float32), ((64, 64, 334), torch.float32)],
@@ -9888,7 +9674,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((32, 4096), torch.float32), ((4096, 4096), torch.float32)],
         {"model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"], "pcc": 0.99},
     ),
-    (Matmul102, [((1, 64, 1), torch.float32)], {"model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"], "pcc": 0.99}),
+    (Matmul98, [((1, 64, 1), torch.float32)], {"model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"], "pcc": 0.99}),
     (
         Matmul2,
         [((32, 32, 128), torch.float32), ((32, 128, 32), torch.float32)],
@@ -9929,7 +9715,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul64,
+        Matmul61,
         [((1, 64, 1), torch.float32)],
         {
             "model_names": [
@@ -10066,7 +9852,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul103,
+        Matmul99,
         [((1, 16, 1), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -10316,12 +10102,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul104,
+        Matmul100,
         [((1, 48, 1), torch.float32)],
         {"model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"], "pcc": 0.99},
     ),
     (
-        Matmul105,
+        Matmul101,
         [((1, 48, 1), torch.float32)],
         {"model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"], "pcc": 0.99},
     ),
@@ -10377,7 +10163,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 12, 5120), torch.float32), ((5120, 7680), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99},
     ),
-    (Matmul48, [((1, 64, 1), torch.float32)], {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99}),
+    (Matmul40, [((1, 64, 1), torch.float32)], {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99}),
     (
         Matmul2,
         [((40, 12, 128), torch.float32), ((40, 128, 12), torch.float32)],
@@ -10567,7 +10353,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((13, 3584), torch.float32), ((3584, 3584), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99},
     ),
-    (Matmul105, [((1, 64, 1), torch.float32)], {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99}),
+    (Matmul101, [((1, 64, 1), torch.float32)], {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99}),
     (
         Matmul2,
         [((13, 3584), torch.float32), ((3584, 512), torch.float32)],
@@ -10644,7 +10430,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"], "pcc": 0.99},
     ),
     (
-        Matmul106,
+        Matmul102,
         [((1, 256, 3072), torch.float32)],
         {
             "model_names": [
@@ -10686,7 +10472,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul107,
+        Matmul103,
         [((256, 3072), torch.float32)],
         {
             "model_names": [
@@ -10698,7 +10484,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul108,
+        Matmul104,
         [((1, 256, 3072), torch.float32)],
         {
             "model_names": [
@@ -10710,7 +10496,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul109,
+        Matmul105,
         [((1, 256, 8192), torch.float32)],
         {
             "model_names": [
@@ -10722,7 +10508,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul110,
+        Matmul106,
         [((1, 256, 3072), torch.float32)],
         {
             "model_names": [
@@ -10739,7 +10525,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99},
     ),
     (
-        Matmul111,
+        Matmul107,
         [((1, 128, 1), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf", "pt_gemma_google_gemma_1_1_7b_it_qa_hf"],
@@ -10981,7 +10767,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_ministral_ministral_ministral_3b_instruct_clm_hf"], "pcc": 0.99},
     ),
     (
-        Matmul112,
+        Matmul108,
         [((1, 64, 1), torch.float32)],
         {"model_names": ["pt_ministral_ministral_ministral_3b_instruct_clm_hf"], "pcc": 0.99},
     ),
@@ -11021,7 +10807,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"], "pcc": 0.99},
     ),
     (
-        Matmul113,
+        Matmul109,
         [((1, 64, 1), torch.float32)],
         {"model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"], "pcc": 0.99},
     ),
@@ -11061,7 +10847,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"], "pcc": 0.99},
     ),
     (
-        Matmul114,
+        Matmul110,
         [((1, 64, 1), torch.float32)],
         {"model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"], "pcc": 0.99},
     ),
@@ -11096,7 +10882,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"], "pcc": 0.99},
     ),
     (
-        Matmul115,
+        Matmul111,
         [((1, 64, 1), torch.float32)],
         {"model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"], "pcc": 0.99},
     ),
@@ -11198,7 +10984,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 6, 5120), torch.float32), ((5120, 7680), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99},
     ),
-    (Matmul49, [((1, 64, 1), torch.float32)], {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99}),
+    (Matmul41, [((1, 64, 1), torch.float32)], {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99}),
     (
         Matmul2,
         [((40, 6, 128), torch.float32), ((40, 128, 6), torch.float32)],
@@ -11424,8 +11210,8 @@ forge_modules_and_shapes_dtypes_list = [
         [((1024, 256), torch.float32), ((256, 8), torch.float32)],
         {"model_names": ["pt_nbeats_trend_basis_clm_hf"], "pcc": 0.99},
     ),
-    (Matmul116, [((1024, 4), torch.float32)], {"model_names": ["pt_nbeats_trend_basis_clm_hf"], "pcc": 0.99}),
-    (Matmul117, [((1024, 4), torch.float32)], {"model_names": ["pt_nbeats_trend_basis_clm_hf"], "pcc": 0.99}),
+    (Matmul112, [((1024, 4), torch.float32)], {"model_names": ["pt_nbeats_trend_basis_clm_hf"], "pcc": 0.99}),
+    (Matmul113, [((1024, 4), torch.float32)], {"model_names": ["pt_nbeats_trend_basis_clm_hf"], "pcc": 0.99}),
     (
         Matmul2,
         [((1, 256, 512), torch.float32), ((512, 1024), torch.float32)],

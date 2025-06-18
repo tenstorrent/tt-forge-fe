@@ -501,31 +501,6 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Softmax1,
-        [((1, 8, 5, 5), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "3"}},
-    ),
-    (
-        Softmax3,
-        [((300, 196, 196), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "2"}},
-    ),
-    (
-        Softmax3,
-        [((12, 4096, 4096), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "2"}},
-    ),
-    (
-        Softmax1,
-        [((1, 8, 5, 4096), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "3"}},
-    ),
-    (
-        Softmax1,
-        [((1, 8, 4096, 5), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99, "args": {"dim": "3"}},
-    ),
-    (
         Softmax2,
         [((1, 16, 4, 8400), torch.float32)],
         {

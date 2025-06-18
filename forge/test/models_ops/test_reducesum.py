@@ -39,24 +39,6 @@ class Reducesum1(ForgeModule):
         return reducesum_output_1
 
 
-class Reducesum2(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reducesum_input_0):
-        reducesum_output_1 = forge.op.ReduceSum("", reducesum_input_0, dim=-4, keep_dim=True)
-        return reducesum_output_1
-
-
-class Reducesum3(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reducesum_input_0):
-        reducesum_output_1 = forge.op.ReduceSum("", reducesum_input_0, dim=-3, keep_dim=True)
-        return reducesum_output_1
-
-
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -90,24 +72,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pd_bert_bert_base_uncased_qa_padlenlp",
                 "pd_bert_chinese_roberta_base_mlm_padlenlp",
             ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reducesum0,
-        [((1, 14, 14, 14, 64), torch.float32)],
-        {
-            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reducesum0,
-        [((1, 64, 64, 64, 64), torch.float32)],
-        {
-            "model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },

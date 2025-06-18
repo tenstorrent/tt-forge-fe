@@ -2494,16 +2494,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Relu0,
-        [((1, 1, 5, 2048), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Relu0,
-        [((1, 1, 256), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Relu0,
         [((1, 256, 27, 27), torch.float32)],
         {"model_names": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99},
     ),

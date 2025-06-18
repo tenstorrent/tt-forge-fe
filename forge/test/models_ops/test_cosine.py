@@ -101,11 +101,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Cosine0,
-        [((64, 64, 128), torch.float32)],
-        {"model_names": ["onnx_sam_facebook_sam_vit_base_img_seg_github"], "pcc": 0.99},
-    ),
-    (
-        Cosine0,
         [((1, 25, 34, 64), torch.bfloat16)],
         {
             "model_names": [
