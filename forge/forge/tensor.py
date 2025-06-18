@@ -292,6 +292,7 @@ class Tensor(TensorBase):
             torch_tensor = torch.randint(low=0, high=2, size=shape, dtype=dtype)  # this will create boolean tensor
         elif dtype is None:
             torch_tensor = torch.rand(shape, dtype=torch.float32)
+            torch_tensor.requires_grad = requires_grad
         else:
             raise RuntimeError(f"[create_torch_tensor] - Unsupported dtype {dtype}")
 

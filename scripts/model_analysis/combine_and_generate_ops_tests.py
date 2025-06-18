@@ -54,6 +54,10 @@ def main():
             "and then combine it with unique ops configuration extracted for the list of models tests specified in the tests_to_filter and then generate models ops tests"
         ),
     )
+    parser.add_argument(
+        "--training_mode",
+        action="store_true",
+    )
 
     args = parser.parse_args()
 
