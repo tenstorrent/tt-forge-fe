@@ -13,7 +13,7 @@ if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
 fi
 
 echo "run ttmlir-opt on $1"
-./install/bin/ttmlir-opt --tt-register-device="system-desc-path=ttrt-artifacts/system_desc.ttsys" --ttir-to-ttnn-backend-pipeline $1 -o $3
+./install/bin/ttmlir-opt --ttcore-register-device="system-desc-path=ttrt-artifacts/system_desc.ttsys" --ttir-to-ttnn-backend-pipeline $1 -o $3
 if [ $? -ne 0 ]; then
     echo "Error: TTmlir opt command failed."
     exit 1
