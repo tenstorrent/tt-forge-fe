@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <tuple>
 #include <vector>
 
 #include "fmt/core.h"
