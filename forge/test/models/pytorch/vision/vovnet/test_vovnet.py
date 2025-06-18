@@ -204,11 +204,11 @@ variants = [
 def test_vovnet_timm_pytorch(variant):
 
     if variant == "ese_vovnet19b_dw.ra_in1k":
-        group = (ModelGroup.RED,)
-        priority = (ModelPriority.P1,)
+        group = ModelGroup.RED
+        priority = ModelPriority.P1
     else:
-        group = (ModelGroup.GENERALITY,)
-        priority = (ModelPriority.P2,)
+        group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
 
     # Record Forge Property
     module_name = record_model_properties(

@@ -49,9 +49,9 @@ def test_yolo_v4():
     )
 
     # Load model and input
-    framework_model = ModelLoader.load_model()
-    framework_model = Wrapper(framework_model)
-    input_sample = ModelLoader.load_inputs()
+    framework_model = ModelLoader.load_model(dtype_override=torch.bfloat16)
+    framework_model = Wrapper(framework_model).to(torch.bfloat16)
+    input_sample = ModelLoader.load_inputs(dtype_override=torch.bfloat16)
 
     # Configurations
     compiler_cfg = CompilerConfig()
