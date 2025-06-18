@@ -32,6 +32,7 @@ def generate_and_export_unique_ops_tests(
     extract_tvm_unique_ops_config: bool = False,
     timeout: int = 1200,
     tests_to_filter: Optional[List[str]] = None,
+    training: bool = False,
 ):
     """
     Collect all the tests that doesn't contain skip_model_analysis marker in the test_directory_or_file_path specified by the user

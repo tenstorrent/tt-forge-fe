@@ -986,12 +986,17 @@ def main():
         required=False,
         help="Specify the output directory path for saving models unique op tests outputs(i.e failure logs, xlsx file)",
     )
+    parser.add_argument(
+        "--training_mode",
+        action="store_true",
+    )
 
     args = parser.parse_args()
 
     model_output_dir_paths = generate_and_export_unique_ops_tests(
         test_directory_or_file_path=args.test_directory_or_file_path,
         unique_ops_output_directory_path=args.unique_ops_output_directory_path,
+        training_mode=args.training_mode,
     )
 
     unique_ops_config_across_all_models_file_path = os.path.join(
