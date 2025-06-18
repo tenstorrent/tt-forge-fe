@@ -5,6 +5,8 @@ add_custom_target(copy-docs-dir
 
 add_custom_target(docs
   COMMAND
+    python3 ${CMAKE_SOURCE_DIR}/scripts/generate_op_docs.py
+  COMMAND
     mdbook build
   WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
   DEPENDS
