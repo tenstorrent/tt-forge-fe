@@ -609,55 +609,6 @@ class PyOpNode : public OpNode
     void copy_parent_op_attributes(PyOpNode *node);
 };
 
-class ForgeOpNode : public OpNode
-{
-   private:
-    tt::DataFormat accumulate_df_ = tt::DataFormat::Float16_b;
-    tt::DataFormat intermediate_df_ = tt::DataFormat::Float16_b;
-    tt::MathFidelity math_fidelity_ = tt::MathFidelity::HiFi3;
-    std::shared_ptr<FusedOp> fused_op_ = nullptr;
-    bool buffering_op_ = false;
-
-   public:
-    ForgeOpNode(const std::string &name, const std::string &op_type) : OpNode(name, op_type, NodeType::kForgeOp) {}
-    ForgeOpNode(const std::string &name, OpType op_type) : OpNode(name, op_type, NodeType::kForgeOp) {}
-
-    tt::DataFormat intermediate_df() const { return intermediate_df_; }
-    void set_intermediate_df(tt::DataFormat df) { intermediate_df_ = df; }
-
-    tt::DataFormat accumulate_df() const { return accumulate_df_; }
-    void set_accumulate_df(tt::DataFormat df) { accumulate_df_ = df; }
-
-    tt::MathFidelity math_fidelity() const { return math_fidelity_; }
-    void set_math_fidelity(tt::MathFidelity mf) { math_fidelity_ = mf; }
-
-    void copy_lowered_op_attributes(PyOpNode *node);
-    void copy_parent_op_attributes(ForgeOpNode *node);
-
-    virtual std::unique_ptr<Node> clone(std::string const &name = "") const override;
-
-    void set_buffering_op(bool buffering_op) { buffering_op_ = buffering_op; }
-    bool is_buffering_op() const { return buffering_op_; }
-};
-
-class ForgeNaryTMNode : public Node
-{
-   private:
-    OpType op_type_;
-
-   public:
-    ForgeNaryTMNode(const std::string &name, OpType const &op_type) :
-        Node(name, NodeType::kForgeNaryTM), op_type_(op_type)
-    {
-    }
-    OpType const &op_type() const { return op_type_; }
-    void change_op_type(OpType const &new_op_type) { op_type_ = new_op_type; }
-    const std::string &tm_name() const { return op_type_.op; }
-    const std::vector<OpType::Attr> &tm_attrs() const { return op_type_.attr; }
-    const ForgeOpAttrs &forge_attrs() const { return op_type_.forge_attrs; }
-    void copy_lowered_op_attributes(PyOpNode *node);
-};
-
 // Modifiable edge attributes outside of Edge itself because Edge is mostly immutable in current
 // graph design
 class EdgeAttributes
