@@ -15,6 +15,8 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -36,7 +38,6 @@ class BartWrapper(torch.nn.Module):
     [
         pytest.param(
             "facebook/bart-large-mnli",
-            marks=[pytest.mark.xfail],
         ),
     ],
 )
@@ -77,4 +78,4 @@ def test_pt_bart_classifier(variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98)))

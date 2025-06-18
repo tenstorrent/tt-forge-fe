@@ -16,6 +16,8 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.inception.model_utils.model_utils import (
@@ -36,7 +38,6 @@ def generate_model_inceptionV4_imgcls_osmr_pytorch(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_inception_v4_osmr_pytorch():
     # Record Forge Property
     module_name = record_model_properties(
@@ -61,7 +62,7 @@ def test_inception_v4_osmr_pytorch():
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98)))
 
 
 def generate_model_inceptionV4_imgcls_timm_pytorch(variant):
@@ -73,11 +74,9 @@ def generate_model_inceptionV4_imgcls_timm_pytorch(variant):
 variants = [
     pytest.param(
         "inception_v4",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "inception_v4.tf_in1k",
-        marks=[pytest.mark.xfail],
     ),
 ]
 

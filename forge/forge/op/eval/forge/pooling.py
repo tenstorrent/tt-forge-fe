@@ -682,7 +682,7 @@ def decompose(type, attr, dc, inputs):
                 padding=padding if count_include_pad == False else [0, ceil_pad_right, 0, ceil_pad_bottom],
                 tile_align=False,
             )
-            undo_math_picker_tensor = dc.tensor(undo_math_picker)
+            undo_math_picker_tensor = dc.tensor(undo_math_picker.to_dense())
             result = dc.op("matmul", [undo_math_picker_tensor, result])
 
             if channel_last:
