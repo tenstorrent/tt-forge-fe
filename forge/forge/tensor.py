@@ -259,12 +259,16 @@ class Tensor(TensorBase):
 
     @classmethod
     def create_from_torch(
-        cls, torch_tensor: torch.Tensor, dev_data_format: Optional[DataFormat] = None, constant: bool = False
+        cls,
+        torch_tensor: torch.Tensor,
+        dev_data_format: Optional[DataFormat] = None,
+        constant: bool = False,
+        requires_grad=False,
     ) -> "TensorFromPytorch":
         """
         Create tensor from pytorch tensor, and set value
         """
-        return TensorFromPytorch(torch_tensor, dev_data_format, constant)
+        return TensorFromPytorch(torch_tensor, dev_data_format, constant, requires_grad)
 
     @classmethod
     def create_torch_tensor(
@@ -273,10 +277,12 @@ class Tensor(TensorBase):
         dtype: Optional[torch.dtype] = None,
         min_int: int = 0,
         max_int: int = 1000,
+        requires_grad: bool = False,
     ) -> torch.Tensor:
 
         if dtype in [torch.float16, torch.bfloat16, torch.float32, torch.float64]:
             torch_tensor = torch.rand(shape, dtype=dtype)
+            torch_tensor.requires_grad = requires_grad
         elif dtype in [torch.int8, torch.uint8, torch.int16, torch.int32, torch.int64]:
             if min_int == max_int:
                 torch_tensor = torch.full(size=shape, fill_value=max_int, dtype=dtype)
@@ -299,10 +305,11 @@ class Tensor(TensorBase):
         min_int: int = 0,
         max_int: int = 1000,
         constant: bool = False,
+        requires_grad: bool = False,
     ) -> "TensorFromPytorch":
 
         torch_tensor = Tensor.create_torch_tensor(
-            shape=tensor_shape, dtype=torch_dtype, min_int=min_int, max_int=max_int
+            shape=tensor_shape, dtype=torch_dtype, min_int=min_int, max_int=max_int, requires_grad=requires_grad
         )
 
         return TensorFromPytorch(
@@ -329,9 +336,12 @@ class TensorFromPytorch(Tensor):
     Tensor wrapper created from a conrete pytorch tensor
     """
 
-    def __init__(self, torch_tensor: torch.Tensor, dev_data_format: Optional[DataFormat], constant: bool):
+    def __init__(
+        self, torch_tensor: torch.Tensor, dev_data_format: Optional[DataFormat], constant: bool, requires_grad=False
+    ):
         super().__init__()
         self._value = torch_tensor
+        self._value.requires_grad_()
         self._data_format: DataFormat = (
             dev_data_format if dev_data_format is not None else pytorch_dtype_to_forge_dataformat(self._value.dtype)
         )
