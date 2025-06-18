@@ -49,7 +49,7 @@ def test_gemma_pytorch_v1(variant):
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Requires multi-chip support")
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and tokenizer from HuggingFace
     tokenizer = AutoTokenizer.from_pretrained(variant)

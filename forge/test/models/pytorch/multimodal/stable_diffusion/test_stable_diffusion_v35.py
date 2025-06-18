@@ -73,7 +73,7 @@ def test_stable_diffusion_v35(variant):
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Requires multi-chip support")
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load pipeline
     pipe = load_pipe(variant, variant_type="v35")

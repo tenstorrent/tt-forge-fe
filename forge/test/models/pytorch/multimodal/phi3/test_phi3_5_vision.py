@@ -51,7 +51,7 @@ def test_phi3_5_vision(variant):
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Requires multi-chip support")
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and processor
     model = download_model(

@@ -38,7 +38,7 @@ def test_ministral_8b(variant):
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Requires multi-chip support")
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and tokenizer
     framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)
