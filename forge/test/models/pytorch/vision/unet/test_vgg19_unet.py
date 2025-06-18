@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
+import torch
 
 import forge
 from forge._C import DataFormat
@@ -34,8 +35,8 @@ def test_vgg19_unet():
     )
 
     # Load model and input
-    framework_model = ModelLoader.load_model()
-    input_sample = ModelLoader.load_inputs()
+    framework_model = ModelLoader.load_model(dtype_override=torch.bfloat16)
+    input_sample = ModelLoader.load_inputs(dtype_override=torch.bfloat16)
 
     # Configurations
     compiler_cfg = CompilerConfig()
