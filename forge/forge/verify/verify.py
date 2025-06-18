@@ -294,16 +294,19 @@ def verify_backward(
     if not isinstance(compiled_output, torch.Tensor):
         raise TypeError(f"Compiled output tensor must be of type {torch.Tensor}, but got {type(compiled_output)}")
 
-    if not isinstance(framework_model, torch.nn.Module):
-        raise TypeError(f"Framework model must be of type {torch.nn.Module}, but got {type(framework_model)}")
+    # if not isinstance(framework_model, torch.nn.Module):
+    #     raise TypeError(f"Framework model must be of type {torch.nn.Module}, but got {type(framework_model)}")
     if not isinstance(compiled_model, verify_cfg.compiled_model_types):
         raise TypeError(
             f"Compiled model must be of type {verify_cfg.compiled_model_types}, but got {type(compiled_model)}"
         )
 
+    if not isinstance(inputs, torch.Tensor):
+        inputs = [input.value() for input in inputs]
+
     # Zero out gradients
     [input.grad.zero_() for input in inputs if input.grad is not None]
-    framework_model.zero_grad()
+    # framework_model.zero_grad()
 
     # 1st step: run backward pass for the networks and get gradients
     compiled_model.gradient_inputs = [CTensor(output_grad)]

@@ -138,6 +138,7 @@ class ForgeWriter(PythonWriter):
         self.contains_incompatible_np_floats = contains_incompatible_np_floats
         self.delete_inputs = delete_inputs
         self.dev = "TTDevice"
+        self.training = False
 
     def write_header(self, include_pytest_imports=False):
         self.wl("import forge")
@@ -152,7 +153,7 @@ class ForgeWriter(PythonWriter):
         if include_pytest_imports:
             self.wl("")
             self.wl("from forge import Tensor, compile")
-            self.wl("from forge.verify.verify import verify")
+            self.wl(f"from forge.verify.verify import verify{', verify_backward' if self.training else ''}")
             self.wl("from forge.verify.value_checkers import AutomaticValueChecker")
             self.wl("from forge.verify.config import VerifyConfig")
             self.wl(
@@ -1044,11 +1045,11 @@ class ForgeWriter(PythonWriter):
         )
         if need_model_parameter_function:
             self.wl(
-                "inputs = [Tensor.create_from_torch(named_parameters[operand_shape]) if isinstance(operand_shape, str) else Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int) for operand_shape, operand_dtype in operand_shapes_dtypes]"
+                f"inputs = [Tensor.create_from_torch(named_parameters[operand_shape]{', requires_grad=True' if self.training else ''}) if isinstance(operand_shape, str) else Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int, requires_grad=True) for operand_shape, operand_dtype in operand_shapes_dtypes]"
             )
         else:
             self.wl(
-                "inputs = [Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int) for operand_shape, operand_dtype in operand_shapes_dtypes]"
+                f"inputs = [Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int{', requires_grad=True' if self.training else ''}) for operand_shape, operand_dtype in operand_shapes_dtypes]"
             )
         self.wl("")
         self.wl(f"framework_model = forge_module(forge_module.__name__)")
@@ -1058,7 +1059,7 @@ class ForgeWriter(PythonWriter):
             self.wl("for name, parameter in framework_model._parameters.items():")
             self.indent += 1
             self.wl(
-                "parameter_tensor = Tensor.create_torch_tensor(shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int)"
+                f"parameter_tensor = Tensor.create_torch_tensor(shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int{', requires_grad=True' if self.training else ''})"
             )
             self.wl("framework_model.set_parameter(name, parameter_tensor)")
             self.indent -= 1
@@ -1080,11 +1081,20 @@ class ForgeWriter(PythonWriter):
         self.wl('compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])')
         self.indent -= 1
         self.wl("")
-        self.wl("compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)")
+        self.wl(
+            "compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, training=True)"
+        )
         self.wl("")
         self.wl(
-            "verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
+            "fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
         )
+        if self.training:
+            self.wl("co_out = co_out[0] if len(co_out) == 1 else co_out")
+            self.wl("fw_out = fw_out[0] if len(fw_out) == 1 else fw_out")
+            self.wl("grad = torch.rand_like(co_out)")
+            self.wl(
+                "verify_backward(inputs, grad, fw_out, co_out, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
+            )
         self.wl("")
         self.wl("")
         self.indent -= 1
