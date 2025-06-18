@@ -101,7 +101,7 @@ def test_qwen_clm(variant):
     )
 
     if variant == "Qwen/Qwen2.5-Coder-32B-Instruct":
-        raise RuntimeError("Requires multi-chip support")
+        pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and tokenizer
     framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")

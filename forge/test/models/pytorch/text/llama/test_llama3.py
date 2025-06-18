@@ -204,9 +204,9 @@ def test_llama3_causal_lm(variant):
         "meta-llama/Llama-3.3-70B-Instruct",
         "meta-llama/Meta-Llama-3.1-8B-Instruct",
     ]:
-        raise RuntimeError("Requires multi-chip support")
+        pytest.xfail(reason="Requires multi-chip support")
     elif variant == "meta-llama/Llama-3.1-8B-Instruct":
-        raise RuntimeError("Segmentation Fault")
+        pytest.xfail(reason="Segmentation Fault")
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

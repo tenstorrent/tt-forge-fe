@@ -36,7 +36,7 @@ def test_ministral_3b(variant):
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Requires multi-chip support")
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load tokenizer
     tokenizer = AutoTokenizer.from_pretrained(variant)

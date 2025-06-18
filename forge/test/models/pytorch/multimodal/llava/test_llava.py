@@ -60,7 +60,7 @@ def test_llava(variant):
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Requires multi-chip support")
+    pytest.xfail(reason="Requires multi-chip support")
 
     framework_model, processor = load_model(variant)
     image = "https://www.ilankelman.org/stopsigns/australia.jpg"
