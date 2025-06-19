@@ -46,7 +46,6 @@ class FailingReasonsRegister:
         ("layer_norm", FailingReasons.DTYPE_MISMATCH),
         ("layer_norm", FailingReasons.NOT_SUPPORTED_IN_TORCH),
         ("linear", FailingReasons.DATA_MISMATCH),
-        ("linear", FailingReasons.MICROBATCHING_UNSUPPORTED),
         ("log", FailingReasons.SPECIAL_VALUES),
         ("log1p", FailingReasons.DATA_MISMATCH),
         ("log1p", FailingReasons.DTYPE_MISMATCH),
