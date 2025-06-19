@@ -19,7 +19,7 @@ def load_timm_model_and_input(model_name):
     data_config = timm.data.resolve_model_data_config(model)
     transforms = timm.data.create_transform(**data_config, is_training=False)
     input_batch = transforms(img).unsqueeze(0)
-    return model, input_batch
+    return model, [input_batch]
 
 
 def load_vision_model_and_input(variant, task, weight_name):
