@@ -404,9 +404,6 @@ struct OpType
         return std::get<T>(get_attr(name));
     }
 
-    py::function py_attr(char const *name) const;
-    py::function py_attr(char const *name);
-
     void set_attr(std::string const &name, Attr attr) { named_attrs[name] = attr; }
 
     std::string as_string() const
@@ -510,18 +507,6 @@ class OpNode : public TaggedNode
     OpType &op_type() { return op_type_; }
     OpType const *op_type_ptr() const { return &op_type_; }
     OpType *op_type_ptr() { return &op_type_; }
-    py::function py_attr(char const *attr_name) const;
-    py::function py_attr(char const *attr_name);
-    template <typename T, typename... Args>
-    T py_attr(char const *attr_name, Args... args) const
-    {
-        return py_attr(attr_name)(args...).template cast<T>();
-    }
-    template <typename T, typename... Args>
-    T py_attr(char const *attr_name, Args... args)
-    {
-        return py_attr(attr_name)(args...).template cast<T>();
-    }
     IRLevel get_ir_level() const { return IRLevel::IR_TT_FORGE; }
     const std::string &op_name() const { return op_type_.op; }
     const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attr; }
