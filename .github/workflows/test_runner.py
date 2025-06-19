@@ -8,7 +8,7 @@ from pathlib import Path
 
 def run_pytest(args=None, crashed_tests=None):
     """Run pytest and return the output and exit code"""
-    cmd = ["pytest"] + ["--track-files"] + (args or [])
+    cmd = ["pytest"] + (args or [])
 
     # Add deselects from crashed tests file if it exists
     cmd.extend(f"--deselect={test}" for test in crashed_tests)
