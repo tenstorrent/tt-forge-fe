@@ -26,7 +26,7 @@ class Reducesum0(ForgeModule):
         super().__init__(name)
 
     def forward(self, reducesum_input_0):
-        reducesum_output_1 = forge.op.ReduceSum("", reducesum_input_0, dim=-2, keep_dim=True)
+        reducesum_output_1 = forge.op.ReduceSum("", reducesum_input_0, dim=-1, keep_dim=True)
         return reducesum_output_1
 
 
@@ -35,7 +35,7 @@ class Reducesum1(ForgeModule):
         super().__init__(name)
 
     def forward(self, reducesum_input_0):
-        reducesum_output_1 = forge.op.ReduceSum("", reducesum_input_0, dim=-1, keep_dim=True)
+        reducesum_output_1 = forge.op.ReduceSum("", reducesum_input_0, dim=-2, keep_dim=True)
         return reducesum_output_1
 
 
@@ -48,70 +48,36 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Reducesum0,
-        [((1, 100, 8, 32, 280), torch.float32)],
+        [((1, 12, 11, 11), torch.float32)],
         {
             "model_names": [
-                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reducesum1,
-        [((64, 3, 64, 32), torch.float32)],
-        {
-            "model_names": [
-                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
-                "pt_swin_swin_v2_s_img_cls_torchvision",
-                "pt_swin_swin_v2_t_img_cls_torchvision",
+                "pd_albert_chinese_tiny_mlm_padlenlp",
+                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
+                "pd_roberta_rbt4_ch_clm_padlenlp",
+                "pd_bert_chinese_roberta_base_qa_padlenlp",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
     (
-        Reducesum1,
-        [((16, 6, 64, 32), torch.float32)],
+        Reducesum0,
+        [((1, 12, 9, 9), torch.float32)],
         {
             "model_names": [
-                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
-                "pt_swin_swin_v2_s_img_cls_torchvision",
-                "pt_swin_swin_v2_t_img_cls_torchvision",
+                "pd_ernie_1_0_qa_padlenlp",
+                "pd_ernie_1_0_seq_cls_padlenlp",
+                "pd_bert_bert_base_uncased_mlm_padlenlp",
+                "pd_roberta_rbt4_ch_seq_cls_padlenlp",
+                "pd_bert_bert_base_uncased_qa_padlenlp",
+                "pd_bert_chinese_roberta_base_mlm_padlenlp",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
     (
-        Reducesum1,
-        [((4, 12, 64, 32), torch.float32)],
-        {
-            "model_names": [
-                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
-                "pt_swin_swin_v2_s_img_cls_torchvision",
-                "pt_swin_swin_v2_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reducesum1,
-        [((1, 24, 64, 32), torch.float32)],
-        {
-            "model_names": [
-                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
-                "pt_swin_swin_v2_s_img_cls_torchvision",
-                "pt_swin_swin_v2_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reducesum1,
+        Reducesum0,
         [((1, 12, 8, 8), torch.float32)],
         {
             "model_names": [
@@ -124,38 +90,16 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reducesum1,
-        [((1, 12, 11, 11), torch.float32)],
+        Reducesum0,
+        [((1, 25, 97), torch.float32)],
         {
-            "model_names": [
-                "pd_albert_chinese_tiny_mlm_padlenlp",
-                "pd_bert_chinese_roberta_base_qa_padlenlp",
-                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
-                "pd_roberta_rbt4_ch_clm_padlenlp",
-            ],
+            "model_names": ["pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels"],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
     (
-        Reducesum1,
-        [((1, 12, 9, 9), torch.float32)],
-        {
-            "model_names": [
-                "pd_bert_chinese_roberta_base_mlm_padlenlp",
-                "pd_bert_bert_base_uncased_mlm_padlenlp",
-                "pd_bert_bert_base_uncased_qa_padlenlp",
-                "pd_ernie_1_0_qa_padlenlp",
-                "pd_ernie_1_0_mlm_padlenlp",
-                "pd_ernie_1_0_seq_cls_padlenlp",
-                "pd_roberta_rbt4_ch_seq_cls_padlenlp",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reducesum1,
+        Reducesum0,
         [((1, 12, 10, 10), torch.float32)],
         {
             "model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"],
@@ -165,15 +109,15 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reducesum1,
-        [((1, 12, 15, 15), torch.float32)],
+        [((1, 100, 8, 32, 280), torch.float32)],
         {
-            "model_names": ["pd_bert_bert_base_japanese_seq_cls_padlenlp"],
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
             "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
+            "args": {"dim": "-2", "keep_dim": "True"},
         },
     ),
     (
-        Reducesum1,
+        Reducesum0,
         [((1, 12, 14, 14), torch.float32)],
         {
             "model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"],
@@ -182,7 +126,102 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reducesum1,
+        Reducesum0,
+        [((1, 8, 12, 12), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducesum0,
+        [((1, 12, 6625), torch.float32)],
+        {
+            "model_names": ["pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducesum0,
+        [((64, 3, 64, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducesum0,
+        [((16, 6, 64, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducesum0,
+        [((4, 12, 64, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducesum0,
+        [((1, 24, 64, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducesum0,
+        [((1, 12, 15, 15), torch.float32)],
+        {
+            "model_names": ["pd_bert_bert_base_japanese_seq_cls_padlenlp"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducesum0,
+        [((1, 25, 6625), torch.float32)],
+        {
+            "model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducesum0,
         [((64, 4, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -191,7 +230,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reducesum1,
+        Reducesum0,
         [((16, 8, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -200,7 +239,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reducesum1,
+        Reducesum0,
         [((4, 16, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -209,12 +248,31 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reducesum1,
+        Reducesum0,
         [((1, 32, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducesum0,
+        [((1, 12, 97), torch.float32)],
+        {
+            "model_names": ["pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducesum1,
+        [((1, 100, 8, 32, 850), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2", "keep_dim": "True"},
         },
     ),
 ]
@@ -263,11 +321,10 @@ def test_module(forge_module_and_shapes_dtypes):
 
     record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs)
+    compiler_cfg = forge.config.CompilerConfig()
+    if "default_df_override" in metadata.keys():
+        compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])
 
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-    )
+    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))

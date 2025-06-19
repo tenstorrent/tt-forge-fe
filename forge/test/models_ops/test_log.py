@@ -39,8 +39,96 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Log0,
-        [((1, 6, 4096), torch.float32)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"], "pcc": 0.99},
+        [((1, 6, 3072), torch.float32)],
+        {"model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"], "pcc": 0.99},
+    ),
+    pytest.param(
+        (
+            Log0,
+            [((1, 32, 480, 640), torch.bfloat16)],
+            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Log0,
+            [((1, 64, 240, 320), torch.bfloat16)],
+            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Log0,
+            [((1, 32, 240, 320), torch.bfloat16)],
+            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Log0,
+            [((1, 128, 120, 160), torch.bfloat16)],
+            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Log0,
+            [((1, 64, 120, 160), torch.bfloat16)],
+            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Log0,
+            [((1, 256, 60, 80), torch.bfloat16)],
+            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Log0,
+            [((1, 128, 60, 80), torch.bfloat16)],
+            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Log0,
+            [((1, 512, 30, 40), torch.bfloat16)],
+            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Log0,
+            [((1, 256, 30, 40), torch.bfloat16)],
+            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Log0,
+            [((1, 1024, 15, 20), torch.bfloat16)],
+            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Log0,
+            [((1, 512, 15, 20), torch.bfloat16)],
+            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Log0,
@@ -49,13 +137,13 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Log0,
-        [((1, 6, 5120), torch.float32)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"], "pcc": 0.99},
+        [((1, 6, 4096), torch.float32)],
+        {"model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"], "pcc": 0.99},
     ),
     (
         Log0,
-        [((1, 6, 3072), torch.float32)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"], "pcc": 0.99},
+        [((1, 6, 5120), torch.float32)],
+        {"model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"], "pcc": 0.99},
     ),
 ]
 
@@ -103,11 +191,10 @@ def test_module(forge_module_and_shapes_dtypes):
 
     record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs)
+    compiler_cfg = forge.config.CompilerConfig()
+    if "default_df_override" in metadata.keys():
+        compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])
 
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-    )
+    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
