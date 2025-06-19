@@ -26,6 +26,7 @@ from test.operators.utils import TestPlanScanner
 from test.operators.utils import TestPlanUtils
 from test.operators.utils import FailingReasons
 from test.operators.utils import TestSweepsFeatures
+from test.operators.utils.status_tracker import StatusTracker
 
 
 @dataclass
@@ -143,15 +144,19 @@ class RunQueryParams:
 query_params = RunQueryParams.from_env()
 
 
+StatusTracker.counter = query_params.range[0] if query_params.range else 0
+
+
 class TestVerification:
     """Helper class for performing test verification. It allows running tests in dry-run mode."""
 
     @classmethod
     def verify(cls, test_vector: TestVector, test_device):
-        if TestSweepsFeatures.params.dry_run:
-            # pytest.skip("Dry run")
-            return
-        test_vector.verify(test_device)
+        with StatusTracker(test_vector, TestSweepsFeatures.params.status_tracker):
+            if TestSweepsFeatures.params.dry_run:
+                # pytest.skip("Dry run")
+                return
+            test_vector.verify(test_device)
 
 
 class TestParamsData:
