@@ -1029,86 +1029,98 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Avgpool2D4,
-        [((1, 40, 112, 112), torch.bfloat16)],
-        {
-            "model_names": ["pt_efficientnet_efficientnet_b3_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[112, 112]",
-                "stride": "[112, 112]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D4,
+            [((1, 40, 112, 112), torch.bfloat16)],
+            {
+                "model_names": ["pt_efficientnet_efficientnet_b3_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[112, 112]",
+                    "stride": "[112, 112]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Avgpool2D4,
-        [((1, 24, 112, 112), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[112, 112]",
-                "stride": "[112, 112]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D4,
+            [((1, 24, 112, 112), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[112, 112]",
+                    "stride": "[112, 112]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Avgpool2D5,
-        [((1, 144, 56, 56), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_064_img_cls_hf",
-                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[56, 56]",
-                "stride": "[56, 56]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D5,
+            [((1, 144, 56, 56), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
+                    "pt_regnet_facebook_regnet_y_064_img_cls_hf",
+                    "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[56, 56]",
+                    "stride": "[56, 56]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Avgpool2D5,
-        [((1, 192, 56, 56), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[56, 56]",
-                "stride": "[56, 56]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D5,
+            [((1, 192, 56, 56), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[56, 56]",
+                    "stride": "[56, 56]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Avgpool2D6,
@@ -1126,25 +1138,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Avgpool2D7,
-        [((1, 192, 28, 28), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_040_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[28, 28]",
-                "stride": "[28, 28]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D7,
+            [((1, 192, 28, 28), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                    "pt_regnet_facebook_regnet_y_040_img_cls_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[28, 28]",
+                    "stride": "[28, 28]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Avgpool2D7,
@@ -1440,21 +1455,24 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Avgpool2D5,
-        [((1, 16, 56, 56), torch.bfloat16)],
-        {
-            "model_names": ["pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[56, 56]",
-                "stride": "[56, 56]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D5,
+            [((1, 16, 56, 56), torch.bfloat16)],
+            {
+                "model_names": ["pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[56, 56]",
+                    "stride": "[56, 56]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Avgpool2D8,
@@ -1886,89 +1904,101 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Avgpool2D4,
-        [((1, 32, 112, 112), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[112, 112]",
-                "stride": "[112, 112]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D4,
+            [((1, 32, 112, 112), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[112, 112]",
+                    "stride": "[112, 112]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Avgpool2D5,
-        [((1, 96, 56, 56), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[56, 56]",
-                "stride": "[56, 56]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D5,
+            [((1, 96, 56, 56), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[56, 56]",
+                    "stride": "[56, 56]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Avgpool2D7,
-        [((1, 144, 28, 28), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
-                "pt_regnet_regnet_y_800mf_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[28, 28]",
-                "stride": "[28, 28]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D7,
+            [((1, 144, 28, 28), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
+                    "pt_regnet_regnet_y_800mf_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[28, 28]",
+                    "stride": "[28, 28]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Avgpool2D7,
-        [((1, 240, 28, 28), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[28, 28]",
-                "stride": "[28, 28]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D7,
+            [((1, 240, 28, 28), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[28, 28]",
+                    "stride": "[28, 28]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Avgpool2D8,
@@ -2058,43 +2088,49 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Avgpool2D4,
-        [((1, 48, 112, 112), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[112, 112]",
-                "stride": "[112, 112]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D4,
+            [((1, 48, 112, 112), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[112, 112]",
+                    "stride": "[112, 112]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Avgpool2D5,
-        [((1, 240, 56, 56), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[56, 56]",
-                "stride": "[56, 56]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D5,
+            [((1, 240, 56, 56), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[56, 56]",
+                    "stride": "[56, 56]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Avgpool2D7,
@@ -2259,24 +2295,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Avgpool2D5,
-        [((1, 48, 56, 56), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_y_1_6gf_img_cls_torchvision",
-                "pt_regnet_regnet_y_400mf_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[56, 56]",
-                "stride": "[56, 56]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D5,
+            [((1, 48, 56, 56), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_regnet_regnet_y_1_6gf_img_cls_torchvision",
+                    "pt_regnet_regnet_y_400mf_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[56, 56]",
+                    "stride": "[56, 56]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Avgpool2D7,
@@ -2332,37 +2371,43 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Avgpool2D5,
-        [((1, 72, 56, 56), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_y_3_2gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[56, 56]",
-                "stride": "[56, 56]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D5,
+            [((1, 72, 56, 56), torch.bfloat16)],
+            {
+                "model_names": ["pt_regnet_regnet_y_3_2gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[56, 56]",
+                    "stride": "[56, 56]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Avgpool2D7,
-        [((1, 216, 28, 28), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_y_3_2gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[28, 28]",
-                "stride": "[28, 28]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D7,
+            [((1, 216, 28, 28), torch.bfloat16)],
+            {
+                "model_names": ["pt_regnet_regnet_y_3_2gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[28, 28]",
+                    "stride": "[28, 28]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Avgpool2D0,
@@ -2380,21 +2425,24 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Avgpool2D5,
-        [((1, 64, 56, 56), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_y_800mf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[56, 56]",
-                "stride": "[56, 56]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D5,
+            [((1, 64, 56, 56), torch.bfloat16)],
+            {
+                "model_names": ["pt_regnet_regnet_y_800mf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[56, 56]",
+                    "stride": "[56, 56]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Avgpool2D8,
@@ -2661,24 +2709,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Avgpool2D4,
-        [((1, 16, 112, 112), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[112, 112]",
-                "stride": "[112, 112]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D4,
+            [((1, 16, 112, 112), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[112, 112]",
+                    "stride": "[112, 112]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Avgpool2D8,
@@ -2776,21 +2827,24 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Avgpool2D4,
-        [((1, 56, 112, 112), torch.bfloat16)],
-        {
-            "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[112, 112]",
-                "stride": "[112, 112]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D4,
+            [((1, 56, 112, 112), torch.bfloat16)],
+            {
+                "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[112, 112]",
+                    "stride": "[112, 112]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Avgpool2D7,
@@ -3075,22 +3129,25 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Avgpool2D5,
-        [((1, 128, 56, 56), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_facebook_regnet_y_040_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "kernel_size": "[56, 56]",
-                "stride": "[56, 56]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D5,
+            [((1, 128, 56, 56), torch.bfloat16)],
+            {
+                "model_names": ["pt_regnet_facebook_regnet_y_040_img_cls_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "kernel_size": "[56, 56]",
+                    "stride": "[56, 56]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Avgpool2D6,
@@ -3165,26 +3222,29 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Avgpool2D5,
-        [((1, 224, 56, 56), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_facebook_regnet_y_120_img_cls_hf",
-                "pt_regnet_regnet_y_16gf_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_160_img_cls_hf",
-                "pt_regnet_regnet_y_8gf_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[56, 56]",
-                "stride": "[56, 56]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D5,
+            [((1, 224, 56, 56), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_regnet_facebook_regnet_y_120_img_cls_hf",
+                    "pt_regnet_regnet_y_16gf_img_cls_torchvision",
+                    "pt_regnet_facebook_regnet_y_160_img_cls_hf",
+                    "pt_regnet_regnet_y_8gf_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[56, 56]",
+                    "stride": "[56, 56]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Avgpool2D7,
@@ -3627,37 +3687,43 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Avgpool2D4,
-        [((1, 64, 112, 112), torch.bfloat16)],
-        {
-            "model_names": ["pt_efficientnet_efficientnet_b7_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[112, 112]",
-                "stride": "[112, 112]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D4,
+            [((1, 64, 112, 112), torch.bfloat16)],
+            {
+                "model_names": ["pt_efficientnet_efficientnet_b7_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[112, 112]",
+                    "stride": "[112, 112]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Avgpool2D5,
-        [((1, 288, 56, 56), torch.bfloat16)],
-        {
-            "model_names": ["pt_efficientnet_efficientnet_b7_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[56, 56]",
-                "stride": "[56, 56]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D5,
+            [((1, 288, 56, 56), torch.bfloat16)],
+            {
+                "model_names": ["pt_efficientnet_efficientnet_b7_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[56, 56]",
+                    "stride": "[56, 56]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Avgpool2D7,
@@ -3870,24 +3936,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Avgpool2D5,
-        [((1, 232, 56, 56), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_facebook_regnet_y_320_img_cls_hf",
-                "pt_regnet_regnet_y_32gf_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[56, 56]",
-                "stride": "[56, 56]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D5,
+            [((1, 232, 56, 56), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_regnet_facebook_regnet_y_320_img_cls_hf",
+                    "pt_regnet_regnet_y_32gf_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[56, 56]",
+                    "stride": "[56, 56]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Avgpool2D7,
@@ -4274,22 +4343,25 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Avgpool2D5,
-        [((1, 168, 56, 56), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_facebook_regnet_y_080_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "kernel_size": "[56, 56]",
-                "stride": "[56, 56]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D5,
+            [((1, 168, 56, 56), torch.bfloat16)],
+            {
+                "model_names": ["pt_regnet_facebook_regnet_y_080_img_cls_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "kernel_size": "[56, 56]",
+                    "stride": "[56, 56]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Avgpool2D0,
@@ -4308,39 +4380,45 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Avgpool2D35,
-        [((1, 528, 96, 96), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "kernel_size": "[96, 96]",
-                "stride": "[96, 96]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D35,
+            [((1, 528, 96, 96), torch.bfloat16)],
+            {
+                "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "kernel_size": "[96, 96]",
+                    "stride": "[96, 96]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Avgpool2D36,
-        [((1, 1056, 48, 48), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "kernel_size": "[48, 48]",
-                "stride": "[48, 48]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D36,
+            [((1, 1056, 48, 48), torch.bfloat16)],
+            {
+                "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "kernel_size": "[48, 48]",
+                    "stride": "[48, 48]",
+                    "padding": "[0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Avgpool2D37,

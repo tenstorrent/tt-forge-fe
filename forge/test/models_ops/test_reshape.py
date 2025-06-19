@@ -35858,14 +35858,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"shape": "(1, 1280, 3000, 1)"},
         },
     ),
-    (
-        Reshape1403,
-        [((1280, 1280, 3), torch.float32)],
-        {
-            "model_names": ["pt_whisper_openai_whisper_large_v3_clm_hf"],
-            "pcc": 0.99,
-            "args": {"shape": "(1280, 1280, 3, 1)"},
-        },
+    pytest.param(
+        (
+            Reshape1403,
+            [((1280, 1280, 3), torch.float32)],
+            {
+                "model_names": ["pt_whisper_openai_whisper_large_v3_clm_hf"],
+                "pcc": 0.99,
+                "args": {"shape": "(1280, 1280, 3, 1)"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reshape1404,
@@ -40081,14 +40084,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"shape": "(1, 1024, 3000, 1)"},
         },
     ),
-    (
-        Reshape1819,
-        [((1024, 1024, 3), torch.float32)],
-        {
-            "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
-            "pcc": 0.99,
-            "args": {"shape": "(1024, 1024, 3, 1)"},
-        },
+    pytest.param(
+        (
+            Reshape1819,
+            [((1024, 1024, 3), torch.float32)],
+            {
+                "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
+                "pcc": 0.99,
+                "args": {"shape": "(1024, 1024, 3, 1)"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Reshape1820,

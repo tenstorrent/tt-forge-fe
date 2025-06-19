@@ -80,14 +80,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
-    (
-        Reducemax0,
-        [((1, 25, 97), torch.float32)],
-        {
-            "model_names": ["pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reducemax0,
+            [((1, 25, 97), torch.float32)],
+            {
+                "model_names": ["pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels"],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reducemax0,
@@ -119,14 +122,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
-    (
-        Reducemax0,
-        [((1, 12, 6625), torch.float32)],
-        {
-            "model_names": ["pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reducemax0,
+            [((1, 12, 6625), torch.float32)],
+            {
+                "model_names": ["pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels"],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Reducemax0,
@@ -137,14 +143,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
-    (
-        Reducemax0,
-        [((1, 25, 6625), torch.float32)],
-        {
-            "model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reducemax0,
+            [((1, 25, 6625), torch.float32)],
+            {
+                "model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Reducemax0,

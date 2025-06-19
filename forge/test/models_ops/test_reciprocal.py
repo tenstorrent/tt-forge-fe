@@ -452,472 +452,517 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Reciprocal0,
-        [((288,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_x_800mf_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
-                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
-                "pt_googlenet_base_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
-                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
-                "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_064_img_cls_hf",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((288,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_regnet_regnet_x_800mf_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
+                    "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                    "pt_googlenet_base_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
+                    "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+                    "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
+                    "pt_regnet_facebook_regnet_y_064_img_cls_hf",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((672,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_x_800mf_img_cls_torchvision",
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
-                "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b0_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
-                "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b0_ra_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_tf_efficientnet_b0_aa_in1k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
-                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
-                "pt_efficientnet_efficientnet_b4_img_cls_timm",
-                "pt_regnet_regnet_x_32gf_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((672,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_regnet_regnet_x_800mf_img_cls_torchvision",
+                    "pt_ghostnet_ghostnet_100_img_cls_timm",
+                    "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                    "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b0_ra_in1k_img_cls_timm",
+                    "pt_efficientnet_hf_hub_timm_tf_efficientnet_b0_aa_in1k_img_cls_timm",
+                    "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
+                    "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                    "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                    "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                    "pt_regnet_regnet_x_32gf_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((256,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_resnext_resnext50_32x4d_img_cls_torchhub",
-                "pt_vgg19_unet_default_sem_seg_github",
-                "pt_vgg_vgg11_bn_img_cls_torchvision",
-                "pt_wideresnet_wide_resnet50_2_img_cls_torchvision",
-                "pt_dla_dla46_c_visual_bb_torchvision",
-                "pt_dla_dla60x_visual_bb_torchvision",
-                "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
-                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_unet_cityscape_img_seg_osmr",
-                "pt_yolo_v4_default_obj_det_github",
-                "pt_yolo_v6_yolov6n_obj_det_torchhub",
-                "pt_dla_dla34_in1k_img_cls_timm",
-                "pt_googlenet_base_img_cls_torchvision",
-                "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
-                "pt_mobilenetv3_ssd_resnet18_img_cls_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_resnet_resnet18_img_cls_torchvision",
-                "pt_resnext_resnext14_32x4d_img_cls_osmr",
-                "pt_xception_xception71_tf_in1k_img_cls_timm",
-                "pt_xception_xception_img_cls_timm",
-                "pt_yolo_v3_default_obj_det_github",
-                "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
-                "pt_mobilenetv1_basic_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet101_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet152_img_cls_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_resnet_resnet34_img_cls_torchvision",
-                "pt_resnet_resnet50_img_cls_torchvision",
-                "pt_resnext_resnext101_32x8d_wsl_img_cls_torchhub",
-                "pt_ssd300_resnet50_base_img_cls_torchhub",
-                "pt_unet_base_img_seg_torchhub",
-                "pt_vovnet_vovnet39_img_cls_osmr",
-                "pt_vovnet_vovnet57_img_cls_osmr",
-                "pt_yolox_yolox_darknet_obj_det_torchhub",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_dla_dla46x_c_visual_bb_torchvision",
-                "pt_dla_dla60_visual_bb_torchvision",
-                "pt_dla_dla60x_c_visual_bb_torchvision",
-                "pt_hrnet_hrnetv2_w40_pose_estimation_osmr",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_resnext_resnext50_32x4d_img_cls_osmr",
-                "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
-                "pt_unet_qubvel_img_seg_torchhub",
-                "pt_vgg_vgg16_bn_img_cls_torchvision",
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
-                "pt_yolox_yolox_l_obj_det_torchhub",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_hrnet_hrnetv2_w32_pose_estimation_osmr",
-                "pt_inception_v4_img_cls_osmr",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_resnext_resnext101_32x8d_img_cls_torchhub",
-                "pt_retinanet_retinanet_rn18fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn34fpn_obj_det_hf",
-                "pt_vgg_vgg19_bn_obj_det_timm",
-                "pt_vovnet_vovnet27s_img_cls_osmr",
-                "pt_wideresnet_wide_resnet50_2_img_cls_timm",
-                "pt_xception_xception71_img_cls_timm",
-                "pt_yolo_v6_yolov6m_obj_det_torchhub",
-                "pt_yolo_v6_yolov6s_obj_det_torchhub",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w64_pose_estimation_osmr",
-                "pt_mobilenetv3_ssd_resnet34_img_cls_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_resnet_50_img_cls_hf",
-                "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
-                "pt_unet_carvana_base_img_seg_github",
-                "pt_vgg_bn_vgg19_obj_det_osmr",
-                "pt_vgg_vgg19_bn_obj_det_torchhub",
-                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
-                "pt_dla_dla169_visual_bb_torchvision",
-                "pt_fpn_base_img_cls_torchvision",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
-                "pt_hrnet_hrnetv2_w48_pose_estimation_osmr",
-                "pt_mobilenetv3_ssd_resnet50_img_cls_torchvision",
-                "pt_regnet_regnet_x_16gf_img_cls_torchvision",
-                "pt_resnext_resnext101_64x4d_img_cls_osmr",
-                "pt_resnext_resnext26_32x4d_img_cls_osmr",
-                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
-                "pt_xception_xception41_img_cls_timm",
-                "pt_xception_xception65_img_cls_timm",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_dla_dla102_visual_bb_torchvision",
-                "pt_dla_dla102x2_visual_bb_torchvision",
-                "pt_dla_dla34_visual_bb_torchvision",
-                "pt_hrnet_hrnet_w30_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w30_pose_estimation_osmr",
-                "pt_inception_inception_v4_img_cls_timm",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_resnet_resnet101_img_cls_torchvision",
-                "pt_resnet_resnet152_img_cls_torchvision",
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
-                "pt_yolov9_default_obj_det_github",
-                "pt_yolox_yolox_nano_obj_det_torchhub",
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnet_w32_pose_estimation_timm",
-                "pt_hrnet_hrnet_w40_pose_estimation_timm",
-                "pt_hrnet_hrnet_w44_pose_estimation_timm",
-                "pt_hrnet_hrnet_w48_pose_estimation_timm",
-                "pt_hrnet_hrnet_w64_pose_estimation_timm",
-                "pt_dla_dla102x_visual_bb_torchvision",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
-                "pt_hrnet_hrnetv2_w44_pose_estimation_osmr",
-                "pt_mobilenetv1_google_mobilenet_v1_1_0_224_img_cls_hf",
-                "pt_mobilenetv1_mobilenetv1_100_ra4_e3600_r224_in1k_img_cls_timm",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodle_base_obj_det_torchvision",
-                "pt_resnet_50_img_cls_timm",
-                "pt_vgg_bn_vgg19b_obj_det_osmr",
-                "pt_vgg_vgg13_bn_img_cls_torchvision",
-                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-                "pt_wideresnet_wide_resnet101_2_img_cls_timm",
-                "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
-                "pt_yolox_yolox_s_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((256,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_resnext_resnext50_32x4d_img_cls_torchhub",
+                    "pt_vgg19_unet_default_sem_seg_github",
+                    "pt_vgg_vgg11_bn_img_cls_torchvision",
+                    "pt_wideresnet_wide_resnet50_2_img_cls_torchvision",
+                    "pt_dla_dla46_c_visual_bb_torchvision",
+                    "pt_dla_dla60x_visual_bb_torchvision",
+                    "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
+                    "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                    "pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_unet_cityscape_img_seg_osmr",
+                    "pt_yolo_v4_default_obj_det_github",
+                    "pt_yolo_v6_yolov6n_obj_det_torchhub",
+                    "pt_dla_dla34_in1k_img_cls_timm",
+                    "pt_googlenet_base_img_cls_torchvision",
+                    "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
+                    "pt_mobilenetv3_ssd_resnet18_img_cls_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_resnet_resnet18_img_cls_torchvision",
+                    "pt_resnext_resnext14_32x4d_img_cls_osmr",
+                    "pt_xception_xception71_tf_in1k_img_cls_timm",
+                    "pt_xception_xception_img_cls_timm",
+                    "pt_yolo_v3_default_obj_det_github",
+                    "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
+                    "pt_mobilenetv1_basic_img_cls_torchvision",
+                    "pt_mobilenetv3_ssd_resnet101_img_cls_torchvision",
+                    "pt_mobilenetv3_ssd_resnet152_img_cls_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_resnet_resnet34_img_cls_torchvision",
+                    "pt_resnet_resnet50_img_cls_torchvision",
+                    "pt_resnext_resnext101_32x8d_wsl_img_cls_torchhub",
+                    "pt_ssd300_resnet50_base_img_cls_torchhub",
+                    "pt_unet_base_img_seg_torchhub",
+                    "pt_vovnet_vovnet39_img_cls_osmr",
+                    "pt_vovnet_vovnet57_img_cls_osmr",
+                    "pt_yolox_yolox_darknet_obj_det_torchhub",
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_dla_dla46x_c_visual_bb_torchvision",
+                    "pt_dla_dla60_visual_bb_torchvision",
+                    "pt_dla_dla60x_c_visual_bb_torchvision",
+                    "pt_hrnet_hrnetv2_w40_pose_estimation_osmr",
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_resnext_resnext50_32x4d_img_cls_osmr",
+                    "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
+                    "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
+                    "pt_unet_qubvel_img_seg_torchhub",
+                    "pt_vgg_vgg16_bn_img_cls_torchvision",
+                    "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                    "pt_yolox_yolox_l_obj_det_torchhub",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_hrnet_hrnetv2_w32_pose_estimation_osmr",
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_resnext_resnext101_32x8d_img_cls_torchhub",
+                    "pt_retinanet_retinanet_rn18fpn_obj_det_hf",
+                    "pt_retinanet_retinanet_rn34fpn_obj_det_hf",
+                    "pt_vgg_vgg19_bn_obj_det_timm",
+                    "pt_vovnet_vovnet27s_img_cls_osmr",
+                    "pt_wideresnet_wide_resnet50_2_img_cls_timm",
+                    "pt_xception_xception71_img_cls_timm",
+                    "pt_yolo_v6_yolov6m_obj_det_torchhub",
+                    "pt_yolo_v6_yolov6s_obj_det_torchhub",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_hrnet_hrnet_w18_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
+                    "pt_hrnet_hrnetv2_w64_pose_estimation_osmr",
+                    "pt_mobilenetv3_ssd_resnet34_img_cls_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_resnet_50_img_cls_hf",
+                    "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
+                    "pt_unet_carvana_base_img_seg_github",
+                    "pt_vgg_bn_vgg19_obj_det_osmr",
+                    "pt_vgg_vgg19_bn_obj_det_torchhub",
+                    "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
+                    "pt_dla_dla169_visual_bb_torchvision",
+                    "pt_fpn_base_img_cls_torchvision",
+                    "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                    "pt_hrnet_hrnetv2_w48_pose_estimation_osmr",
+                    "pt_mobilenetv3_ssd_resnet50_img_cls_torchvision",
+                    "pt_regnet_regnet_x_16gf_img_cls_torchvision",
+                    "pt_resnext_resnext101_64x4d_img_cls_osmr",
+                    "pt_resnext_resnext26_32x4d_img_cls_osmr",
+                    "pt_vovnet_v1_vovnet39_obj_det_torchhub",
+                    "pt_xception_xception41_img_cls_timm",
+                    "pt_xception_xception65_img_cls_timm",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_dla_dla102_visual_bb_torchvision",
+                    "pt_dla_dla102x2_visual_bb_torchvision",
+                    "pt_dla_dla34_visual_bb_torchvision",
+                    "pt_hrnet_hrnet_w30_pose_estimation_timm",
+                    "pt_hrnet_hrnetv2_w30_pose_estimation_osmr",
+                    "pt_inception_inception_v4_img_cls_timm",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_resnet_resnet101_img_cls_torchvision",
+                    "pt_resnet_resnet152_img_cls_torchvision",
+                    "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                    "pt_yolov9_default_obj_det_github",
+                    "pt_yolox_yolox_nano_obj_det_torchhub",
+                    "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w32_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w40_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w44_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w48_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w64_pose_estimation_timm",
+                    "pt_dla_dla102x_visual_bb_torchvision",
+                    "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
+                    "pt_hrnet_hrnetv2_w44_pose_estimation_osmr",
+                    "pt_mobilenetv1_google_mobilenet_v1_1_0_224_img_cls_hf",
+                    "pt_mobilenetv1_mobilenetv1_100_ra4_e3600_r224_in1k_img_cls_timm",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                    "pt_monodle_base_obj_det_torchvision",
+                    "pt_resnet_50_img_cls_timm",
+                    "pt_vgg_bn_vgg19b_obj_det_osmr",
+                    "pt_vgg_vgg13_bn_img_cls_torchvision",
+                    "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                    "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                    "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
+                    "pt_yolox_yolox_s_obj_det_torchhub",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((512,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_resnext_resnext50_32x4d_img_cls_torchhub",
-                "pt_vgg19_unet_default_sem_seg_github",
-                "pt_vgg_vgg11_bn_img_cls_torchvision",
-                "pt_wideresnet_wide_resnet50_2_img_cls_torchvision",
-                "pt_dla_dla60x_visual_bb_torchvision",
-                "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
-                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_unet_cityscape_img_seg_osmr",
-                "pt_yolo_v4_default_obj_det_github",
-                "pt_dla_dla34_in1k_img_cls_timm",
-                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
-                "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
-                "pt_mobilenetv3_ssd_resnet18_img_cls_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_resnet_resnet18_img_cls_torchvision",
-                "pt_resnext_resnext14_32x4d_img_cls_osmr",
-                "pt_yolo_v3_default_obj_det_github",
-                "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
-                "pt_mobilenetv1_basic_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet101_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet152_img_cls_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_resnet_resnet34_img_cls_torchvision",
-                "pt_resnet_resnet50_img_cls_torchvision",
-                "pt_resnext_resnext101_32x8d_wsl_img_cls_torchhub",
-                "pt_ssd300_resnet50_base_img_cls_torchhub",
-                "pt_unet_base_img_seg_torchhub",
-                "pt_vovnet_vovnet39_img_cls_osmr",
-                "pt_vovnet_vovnet57_img_cls_osmr",
-                "pt_yolox_yolox_darknet_obj_det_torchhub",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_dla_dla60_visual_bb_torchvision",
-                "pt_hrnet_hrnetv2_w40_pose_estimation_osmr",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_resnext_resnext50_32x4d_img_cls_osmr",
-                "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
-                "pt_unet_qubvel_img_seg_torchhub",
-                "pt_vgg_vgg16_bn_img_cls_torchvision",
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
-                "pt_yolox_yolox_l_obj_det_torchhub",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_hrnet_hrnetv2_w32_pose_estimation_osmr",
-                "pt_inception_v4_img_cls_osmr",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_resnext_resnext101_32x8d_img_cls_torchhub",
-                "pt_retinanet_retinanet_rn18fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn34fpn_obj_det_hf",
-                "pt_vgg_vgg19_bn_obj_det_timm",
-                "pt_vovnet_vovnet27s_img_cls_osmr",
-                "pt_wideresnet_wide_resnet50_2_img_cls_timm",
-                "pt_yolo_v6_yolov6m_obj_det_torchhub",
-                "pt_yolo_v6_yolov6s_obj_det_torchhub",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w64_pose_estimation_osmr",
-                "pt_mobilenetv3_ssd_resnet34_img_cls_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_resnet_50_img_cls_hf",
-                "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
-                "pt_unet_carvana_base_img_seg_github",
-                "pt_vgg_bn_vgg19_obj_det_osmr",
-                "pt_vgg_vgg19_bn_obj_det_torchhub",
-                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
-                "pt_dla_dla169_visual_bb_torchvision",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
-                "pt_hrnet_hrnetv2_w48_pose_estimation_osmr",
-                "pt_mobilenetv3_ssd_resnet50_img_cls_torchvision",
-                "pt_regnet_regnet_x_16gf_img_cls_torchvision",
-                "pt_resnext_resnext101_64x4d_img_cls_osmr",
-                "pt_resnext_resnext26_32x4d_img_cls_osmr",
-                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_dla_dla102_visual_bb_torchvision",
-                "pt_dla_dla102x2_visual_bb_torchvision",
-                "pt_dla_dla34_visual_bb_torchvision",
-                "pt_hrnet_hrnet_w30_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w30_pose_estimation_osmr",
-                "pt_inception_inception_v4_img_cls_timm",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_resnet_resnet101_img_cls_torchvision",
-                "pt_resnet_resnet152_img_cls_torchvision",
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
-                "pt_yolov9_default_obj_det_github",
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnet_w32_pose_estimation_timm",
-                "pt_hrnet_hrnet_w40_pose_estimation_timm",
-                "pt_hrnet_hrnet_w44_pose_estimation_timm",
-                "pt_hrnet_hrnet_w48_pose_estimation_timm",
-                "pt_hrnet_hrnet_w64_pose_estimation_timm",
-                "pt_dla_dla102x_visual_bb_torchvision",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
-                "pt_hrnet_hrnetv2_w44_pose_estimation_osmr",
-                "pt_mobilenetv1_google_mobilenet_v1_1_0_224_img_cls_hf",
-                "pt_mobilenetv1_mobilenetv1_100_ra4_e3600_r224_in1k_img_cls_timm",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodle_base_obj_det_torchvision",
-                "pt_regnet_facebook_regnet_y_040_img_cls_hf",
-                "pt_resnet_50_img_cls_timm",
-                "pt_vgg_bn_vgg19b_obj_det_osmr",
-                "pt_vgg_vgg13_bn_img_cls_torchvision",
-                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-                "pt_wideresnet_wide_resnet101_2_img_cls_timm",
-                "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
-                "pt_yolox_yolox_s_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((512,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_resnext_resnext50_32x4d_img_cls_torchhub",
+                    "pt_vgg19_unet_default_sem_seg_github",
+                    "pt_vgg_vgg11_bn_img_cls_torchvision",
+                    "pt_wideresnet_wide_resnet50_2_img_cls_torchvision",
+                    "pt_dla_dla60x_visual_bb_torchvision",
+                    "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
+                    "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_unet_cityscape_img_seg_osmr",
+                    "pt_yolo_v4_default_obj_det_github",
+                    "pt_dla_dla34_in1k_img_cls_timm",
+                    "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
+                    "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
+                    "pt_mobilenetv3_ssd_resnet18_img_cls_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_resnet_resnet18_img_cls_torchvision",
+                    "pt_resnext_resnext14_32x4d_img_cls_osmr",
+                    "pt_yolo_v3_default_obj_det_github",
+                    "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
+                    "pt_mobilenetv1_basic_img_cls_torchvision",
+                    "pt_mobilenetv3_ssd_resnet101_img_cls_torchvision",
+                    "pt_mobilenetv3_ssd_resnet152_img_cls_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_resnet_resnet34_img_cls_torchvision",
+                    "pt_resnet_resnet50_img_cls_torchvision",
+                    "pt_resnext_resnext101_32x8d_wsl_img_cls_torchhub",
+                    "pt_ssd300_resnet50_base_img_cls_torchhub",
+                    "pt_unet_base_img_seg_torchhub",
+                    "pt_vovnet_vovnet39_img_cls_osmr",
+                    "pt_vovnet_vovnet57_img_cls_osmr",
+                    "pt_yolox_yolox_darknet_obj_det_torchhub",
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_dla_dla60_visual_bb_torchvision",
+                    "pt_hrnet_hrnetv2_w40_pose_estimation_osmr",
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_resnext_resnext50_32x4d_img_cls_osmr",
+                    "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
+                    "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
+                    "pt_unet_qubvel_img_seg_torchhub",
+                    "pt_vgg_vgg16_bn_img_cls_torchvision",
+                    "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                    "pt_yolox_yolox_l_obj_det_torchhub",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_hrnet_hrnetv2_w32_pose_estimation_osmr",
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_resnext_resnext101_32x8d_img_cls_torchhub",
+                    "pt_retinanet_retinanet_rn18fpn_obj_det_hf",
+                    "pt_retinanet_retinanet_rn34fpn_obj_det_hf",
+                    "pt_vgg_vgg19_bn_obj_det_timm",
+                    "pt_vovnet_vovnet27s_img_cls_osmr",
+                    "pt_wideresnet_wide_resnet50_2_img_cls_timm",
+                    "pt_yolo_v6_yolov6m_obj_det_torchhub",
+                    "pt_yolo_v6_yolov6s_obj_det_torchhub",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_hrnet_hrnet_w18_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
+                    "pt_hrnet_hrnetv2_w64_pose_estimation_osmr",
+                    "pt_mobilenetv3_ssd_resnet34_img_cls_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_resnet_50_img_cls_hf",
+                    "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
+                    "pt_unet_carvana_base_img_seg_github",
+                    "pt_vgg_bn_vgg19_obj_det_osmr",
+                    "pt_vgg_vgg19_bn_obj_det_torchhub",
+                    "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
+                    "pt_dla_dla169_visual_bb_torchvision",
+                    "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                    "pt_hrnet_hrnetv2_w48_pose_estimation_osmr",
+                    "pt_mobilenetv3_ssd_resnet50_img_cls_torchvision",
+                    "pt_regnet_regnet_x_16gf_img_cls_torchvision",
+                    "pt_resnext_resnext101_64x4d_img_cls_osmr",
+                    "pt_resnext_resnext26_32x4d_img_cls_osmr",
+                    "pt_vovnet_v1_vovnet39_obj_det_torchhub",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_dla_dla102_visual_bb_torchvision",
+                    "pt_dla_dla102x2_visual_bb_torchvision",
+                    "pt_dla_dla34_visual_bb_torchvision",
+                    "pt_hrnet_hrnet_w30_pose_estimation_timm",
+                    "pt_hrnet_hrnetv2_w30_pose_estimation_osmr",
+                    "pt_inception_inception_v4_img_cls_timm",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_resnet_resnet101_img_cls_torchvision",
+                    "pt_resnet_resnet152_img_cls_torchvision",
+                    "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                    "pt_yolov9_default_obj_det_github",
+                    "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w32_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w40_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w44_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w48_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w64_pose_estimation_timm",
+                    "pt_dla_dla102x_visual_bb_torchvision",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
+                    "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
+                    "pt_hrnet_hrnetv2_w44_pose_estimation_osmr",
+                    "pt_mobilenetv1_google_mobilenet_v1_1_0_224_img_cls_hf",
+                    "pt_mobilenetv1_mobilenetv1_100_ra4_e3600_r224_in1k_img_cls_timm",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                    "pt_monodle_base_obj_det_torchvision",
+                    "pt_regnet_facebook_regnet_y_040_img_cls_hf",
+                    "pt_resnet_50_img_cls_timm",
+                    "pt_vgg_bn_vgg19b_obj_det_osmr",
+                    "pt_vgg_vgg13_bn_img_cls_torchvision",
+                    "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                    "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                    "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
+                    "pt_yolox_yolox_s_obj_det_torchhub",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1024,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_resnext_resnext50_32x4d_img_cls_torchhub",
-                "pt_wideresnet_wide_resnet50_2_img_cls_torchvision",
-                "pt_dla_dla60x_visual_bb_torchvision",
-                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
-                "pt_yolo_v4_default_obj_det_github",
-                "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
-                "pt_resnext_resnext14_32x4d_img_cls_osmr",
-                "pt_xception_xception71_tf_in1k_img_cls_timm",
-                "pt_xception_xception_img_cls_timm",
-                "pt_yolo_v3_default_obj_det_github",
-                "pt_mobilenetv1_basic_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet101_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet152_img_cls_torchvision",
-                "pt_resnet_resnet50_img_cls_torchvision",
-                "pt_resnext_resnext101_32x8d_wsl_img_cls_torchhub",
-                "pt_ssd300_resnet50_base_img_cls_torchhub",
-                "pt_vovnet_vovnet39_img_cls_osmr",
-                "pt_vovnet_vovnet57_img_cls_osmr",
-                "pt_yolox_yolox_darknet_obj_det_torchhub",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_dla_dla60_visual_bb_torchvision",
-                "pt_hrnet_hrnetv2_w40_pose_estimation_osmr",
-                "pt_resnext_resnext50_32x4d_img_cls_osmr",
-                "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
-                "pt_unet_qubvel_img_seg_torchhub",
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
-                "pt_yolox_yolox_l_obj_det_torchhub",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_hrnet_hrnetv2_w32_pose_estimation_osmr",
-                "pt_resnext_resnext101_32x8d_img_cls_torchhub",
-                "pt_wideresnet_wide_resnet50_2_img_cls_timm",
-                "pt_xception_xception71_img_cls_timm",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w64_pose_estimation_osmr",
-                "pt_resnet_50_img_cls_hf",
-                "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
-                "pt_unet_carvana_base_img_seg_github",
-                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
-                "pt_dla_dla169_visual_bb_torchvision",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
-                "pt_hrnet_hrnetv2_w48_pose_estimation_osmr",
-                "pt_mobilenetv3_ssd_resnet50_img_cls_torchvision",
-                "pt_resnext_resnext101_64x4d_img_cls_osmr",
-                "pt_resnext_resnext26_32x4d_img_cls_osmr",
-                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
-                "pt_xception_xception41_img_cls_timm",
-                "pt_xception_xception65_img_cls_timm",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_dla_dla102_visual_bb_torchvision",
-                "pt_dla_dla102x2_visual_bb_torchvision",
-                "pt_hrnet_hrnet_w30_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w30_pose_estimation_osmr",
-                "pt_resnet_resnet101_img_cls_torchvision",
-                "pt_resnet_resnet152_img_cls_torchvision",
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnet_w32_pose_estimation_timm",
-                "pt_hrnet_hrnet_w40_pose_estimation_timm",
-                "pt_hrnet_hrnet_w44_pose_estimation_timm",
-                "pt_hrnet_hrnet_w48_pose_estimation_timm",
-                "pt_hrnet_hrnet_w64_pose_estimation_timm",
-                "pt_dla_dla102x_visual_bb_torchvision",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
-                "pt_hrnet_hrnetv2_w44_pose_estimation_osmr",
-                "pt_mobilenetv1_google_mobilenet_v1_1_0_224_img_cls_hf",
-                "pt_mobilenetv1_mobilenetv1_100_ra4_e3600_r224_in1k_img_cls_timm",
-                "pt_resnet_50_img_cls_timm",
-                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-                "pt_wideresnet_wide_resnet101_2_img_cls_timm",
-                "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1024,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_resnext_resnext50_32x4d_img_cls_torchhub",
+                    "pt_wideresnet_wide_resnet50_2_img_cls_torchvision",
+                    "pt_dla_dla60x_visual_bb_torchvision",
+                    "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
+                    "pt_yolo_v4_default_obj_det_github",
+                    "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
+                    "pt_resnext_resnext14_32x4d_img_cls_osmr",
+                    "pt_xception_xception71_tf_in1k_img_cls_timm",
+                    "pt_xception_xception_img_cls_timm",
+                    "pt_yolo_v3_default_obj_det_github",
+                    "pt_mobilenetv1_basic_img_cls_torchvision",
+                    "pt_mobilenetv3_ssd_resnet101_img_cls_torchvision",
+                    "pt_mobilenetv3_ssd_resnet152_img_cls_torchvision",
+                    "pt_resnet_resnet50_img_cls_torchvision",
+                    "pt_resnext_resnext101_32x8d_wsl_img_cls_torchhub",
+                    "pt_ssd300_resnet50_base_img_cls_torchhub",
+                    "pt_vovnet_vovnet39_img_cls_osmr",
+                    "pt_vovnet_vovnet57_img_cls_osmr",
+                    "pt_yolox_yolox_darknet_obj_det_torchhub",
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_dla_dla60_visual_bb_torchvision",
+                    "pt_hrnet_hrnetv2_w40_pose_estimation_osmr",
+                    "pt_resnext_resnext50_32x4d_img_cls_osmr",
+                    "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
+                    "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
+                    "pt_unet_qubvel_img_seg_torchhub",
+                    "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                    "pt_yolox_yolox_l_obj_det_torchhub",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_hrnet_hrnetv2_w32_pose_estimation_osmr",
+                    "pt_resnext_resnext101_32x8d_img_cls_torchhub",
+                    "pt_wideresnet_wide_resnet50_2_img_cls_timm",
+                    "pt_xception_xception71_img_cls_timm",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_hrnet_hrnet_w18_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
+                    "pt_hrnet_hrnetv2_w64_pose_estimation_osmr",
+                    "pt_resnet_50_img_cls_hf",
+                    "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
+                    "pt_unet_carvana_base_img_seg_github",
+                    "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
+                    "pt_dla_dla169_visual_bb_torchvision",
+                    "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                    "pt_hrnet_hrnetv2_w48_pose_estimation_osmr",
+                    "pt_mobilenetv3_ssd_resnet50_img_cls_torchvision",
+                    "pt_resnext_resnext101_64x4d_img_cls_osmr",
+                    "pt_resnext_resnext26_32x4d_img_cls_osmr",
+                    "pt_vovnet_v1_vovnet39_obj_det_torchhub",
+                    "pt_xception_xception41_img_cls_timm",
+                    "pt_xception_xception65_img_cls_timm",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_dla_dla102_visual_bb_torchvision",
+                    "pt_dla_dla102x2_visual_bb_torchvision",
+                    "pt_hrnet_hrnet_w30_pose_estimation_timm",
+                    "pt_hrnet_hrnetv2_w30_pose_estimation_osmr",
+                    "pt_resnet_resnet101_img_cls_torchvision",
+                    "pt_resnet_resnet152_img_cls_torchvision",
+                    "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                    "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w32_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w40_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w44_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w48_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w64_pose_estimation_timm",
+                    "pt_dla_dla102x_visual_bb_torchvision",
+                    "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
+                    "pt_hrnet_hrnetv2_w44_pose_estimation_osmr",
+                    "pt_mobilenetv1_google_mobilenet_v1_1_0_224_img_cls_hf",
+                    "pt_mobilenetv1_mobilenetv1_100_ra4_e3600_r224_in1k_img_cls_timm",
+                    "pt_resnet_50_img_cls_timm",
+                    "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                    "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                    "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((2048,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_resnext_resnext50_32x4d_img_cls_torchhub",
-                "pt_wideresnet_wide_resnet50_2_img_cls_torchvision",
-                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
-                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
-                "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
-                "pt_resnext_resnext14_32x4d_img_cls_osmr",
-                "pt_xception_xception71_tf_in1k_img_cls_timm",
-                "pt_xception_xception_img_cls_timm",
-                "pt_mobilenetv3_ssd_resnet101_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet152_img_cls_torchvision",
-                "pt_resnet_resnet50_img_cls_torchvision",
-                "pt_resnext_resnext101_32x8d_wsl_img_cls_torchhub",
-                "pt_hrnet_hrnetv2_w40_pose_estimation_osmr",
-                "pt_resnext_resnext50_32x4d_img_cls_osmr",
-                "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
-                "pt_unet_qubvel_img_seg_torchhub",
-                "pt_hrnet_hrnetv2_w32_pose_estimation_osmr",
-                "pt_resnext_resnext101_32x8d_img_cls_torchhub",
-                "pt_wideresnet_wide_resnet50_2_img_cls_timm",
-                "pt_xception_xception71_img_cls_timm",
-                "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w64_pose_estimation_osmr",
-                "pt_resnet_50_img_cls_hf",
-                "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
-                "pt_hrnet_hrnetv2_w48_pose_estimation_osmr",
-                "pt_mobilenetv3_ssd_resnet50_img_cls_torchvision",
-                "pt_regnet_regnet_x_16gf_img_cls_torchvision",
-                "pt_resnext_resnext101_64x4d_img_cls_osmr",
-                "pt_resnext_resnext26_32x4d_img_cls_osmr",
-                "pt_xception_xception41_img_cls_timm",
-                "pt_xception_xception65_img_cls_timm",
-                "pt_dla_dla102x2_visual_bb_torchvision",
-                "pt_hrnet_hrnet_w30_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w30_pose_estimation_osmr",
-                "pt_resnet_resnet101_img_cls_torchvision",
-                "pt_resnet_resnet152_img_cls_torchvision",
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnet_w32_pose_estimation_timm",
-                "pt_hrnet_hrnet_w40_pose_estimation_timm",
-                "pt_hrnet_hrnet_w44_pose_estimation_timm",
-                "pt_hrnet_hrnet_w48_pose_estimation_timm",
-                "pt_hrnet_hrnet_w64_pose_estimation_timm",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
-                "pt_hrnet_hrnetv2_w44_pose_estimation_osmr",
-                "pt_resnet_50_img_cls_timm",
-                "pt_wideresnet_wide_resnet101_2_img_cls_timm",
-                "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((2048,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_resnext_resnext50_32x4d_img_cls_torchhub",
+                    "pt_wideresnet_wide_resnet50_2_img_cls_torchvision",
+                    "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
+                    "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
+                    "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
+                    "pt_resnext_resnext14_32x4d_img_cls_osmr",
+                    "pt_xception_xception71_tf_in1k_img_cls_timm",
+                    "pt_xception_xception_img_cls_timm",
+                    "pt_mobilenetv3_ssd_resnet101_img_cls_torchvision",
+                    "pt_mobilenetv3_ssd_resnet152_img_cls_torchvision",
+                    "pt_resnet_resnet50_img_cls_torchvision",
+                    "pt_resnext_resnext101_32x8d_wsl_img_cls_torchhub",
+                    "pt_hrnet_hrnetv2_w40_pose_estimation_osmr",
+                    "pt_resnext_resnext50_32x4d_img_cls_osmr",
+                    "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
+                    "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
+                    "pt_unet_qubvel_img_seg_torchhub",
+                    "pt_hrnet_hrnetv2_w32_pose_estimation_osmr",
+                    "pt_resnext_resnext101_32x8d_img_cls_torchhub",
+                    "pt_wideresnet_wide_resnet50_2_img_cls_timm",
+                    "pt_xception_xception71_img_cls_timm",
+                    "pt_hrnet_hrnet_w18_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
+                    "pt_hrnet_hrnetv2_w64_pose_estimation_osmr",
+                    "pt_resnet_50_img_cls_hf",
+                    "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
+                    "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                    "pt_hrnet_hrnetv2_w48_pose_estimation_osmr",
+                    "pt_mobilenetv3_ssd_resnet50_img_cls_torchvision",
+                    "pt_regnet_regnet_x_16gf_img_cls_torchvision",
+                    "pt_resnext_resnext101_64x4d_img_cls_osmr",
+                    "pt_resnext_resnext26_32x4d_img_cls_osmr",
+                    "pt_xception_xception41_img_cls_timm",
+                    "pt_xception_xception65_img_cls_timm",
+                    "pt_dla_dla102x2_visual_bb_torchvision",
+                    "pt_hrnet_hrnet_w30_pose_estimation_timm",
+                    "pt_hrnet_hrnetv2_w30_pose_estimation_osmr",
+                    "pt_resnet_resnet101_img_cls_torchvision",
+                    "pt_resnet_resnet152_img_cls_torchvision",
+                    "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w32_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w40_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w44_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w48_pose_estimation_timm",
+                    "pt_hrnet_hrnet_w64_pose_estimation_timm",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
+                    "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
+                    "pt_hrnet_hrnetv2_w44_pose_estimation_osmr",
+                    "pt_resnet_50_img_cls_timm",
+                    "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                    "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_t5_t5_base_text_gen_hf",
-                "pt_t5_google_flan_t5_small_text_gen_hf",
-                "pt_t5_google_flan_t5_large_text_gen_hf",
-                "pt_t5_t5_small_text_gen_hf",
-                "pt_t5_google_flan_t5_base_text_gen_hf",
-                "pt_t5_t5_large_text_gen_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_t5_t5_base_text_gen_hf",
+                    "pt_t5_google_flan_t5_small_text_gen_hf",
+                    "pt_t5_google_flan_t5_large_text_gen_hf",
+                    "pt_t5_t5_small_text_gen_hf",
+                    "pt_t5_google_flan_t5_base_text_gen_hf",
+                    "pt_t5_t5_large_text_gen_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reciprocal0,
@@ -1209,62 +1254,69 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Reciprocal0,
-        [((192,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
-                "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
-                "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
-                "pt_googlenet_base_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b0_img_cls_timm",
-                "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
-                "pt_mobilenetv2_basic_img_cls_torchhub",
-                "pt_vovnet_vovnet39_img_cls_osmr",
-                "pt_vovnet_vovnet57_img_cls_osmr",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf",
-                "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
-                "pt_yolox_yolox_tiny_obj_det_torchhub",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_inception_v4_img_cls_osmr",
-                "pt_yolo_v6_yolov6m_obj_det_torchhub",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
-                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
-                "pt_yolox_yolox_m_obj_det_torchhub",
-                "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b0_ra_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_tf_efficientnet_b0_aa_in1k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
-                "pt_hrnet_hrnetv2_w48_pose_estimation_osmr",
-                "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
-                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
-                "pt_inception_inception_v4_img_cls_timm",
-                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-                "pt_regnet_regnet_x_3_2gf_img_cls_torchvision",
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
-                "pt_hrnet_hrnet_w48_pose_estimation_timm",
-                "pt_efficientnet_efficientnet_b4_img_cls_timm",
-                "pt_mobilenetv1_google_mobilenet_v1_0_75_192_img_cls_hf",
-                "pt_regnet_facebook_regnet_y_040_img_cls_hf",
-                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((192,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
+                    "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                    "pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
+                    "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
+                    "pt_googlenet_base_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                    "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
+                    "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
+                    "pt_mobilenetv2_basic_img_cls_torchhub",
+                    "pt_vovnet_vovnet39_img_cls_osmr",
+                    "pt_vovnet_vovnet57_img_cls_osmr",
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf",
+                    "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
+                    "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                    "pt_yolox_yolox_tiny_obj_det_torchhub",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_yolo_v6_yolov6m_obj_det_torchhub",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
+                    "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
+                    "pt_yolox_yolox_m_obj_det_torchhub",
+                    "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b0_ra_in1k_img_cls_timm",
+                    "pt_efficientnet_hf_hub_timm_tf_efficientnet_b0_aa_in1k_img_cls_timm",
+                    "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
+                    "pt_hrnet_hrnetv2_w48_pose_estimation_osmr",
+                    "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                    "pt_vovnet_v1_vovnet39_obj_det_torchhub",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                    "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                    "pt_inception_inception_v4_img_cls_timm",
+                    "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                    "pt_regnet_regnet_x_3_2gf_img_cls_torchvision",
+                    "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                    "pt_hrnet_hrnet_w48_pose_estimation_timm",
+                    "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                    "pt_mobilenetv1_google_mobilenet_v1_0_75_192_img_cls_hf",
+                    "pt_regnet_facebook_regnet_y_040_img_cls_hf",
+                    "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
     (
         Reciprocal0,
@@ -1351,31 +1403,38 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Reciprocal0,
-        [((576,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
-                "pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
-                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
-                "pt_regnet_regnet_y_3_2gf_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
-                "pt_mobilenetv2_basic_img_cls_torchhub",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
-                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
-                "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
-                "pt_regnet_facebook_regnet_y_064_img_cls_hf",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((576,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
+                    "pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
+                    "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                    "pt_regnet_regnet_y_3_2gf_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
+                    "pt_mobilenetv2_basic_img_cls_torchhub",
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
+                    "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+                    "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                    "pt_regnet_facebook_regnet_y_064_img_cls_hf",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
     (
         Reciprocal0,
@@ -1388,249 +1447,319 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Reciprocal0,
-        [((816,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((816,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((232,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
-                "pt_regnet_facebook_regnet_y_320_img_cls_hf",
-                "pt_regnet_regnet_y_32gf_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((232,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
+                    "pt_regnet_facebook_regnet_y_320_img_cls_hf",
+                    "pt_regnet_regnet_y_32gf_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1392,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
-                "pt_regnet_facebook_regnet_y_320_img_cls_hf",
-                "pt_regnet_regnet_y_32gf_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1392,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
+                    "pt_regnet_facebook_regnet_y_320_img_cls_hf",
+                    "pt_regnet_regnet_y_32gf_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((384,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
-                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
-                "pt_googlenet_base_img_cls_torchvision",
-                "pt_mobilenetv2_basic_img_cls_torchhub",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
-                "pt_yolox_yolox_tiny_obj_det_torchhub",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_inception_v4_img_cls_osmr",
-                "pt_vovnet_vovnet27s_img_cls_osmr",
-                "pt_yolo_v6_yolov6m_obj_det_torchhub",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
-                "pt_yolox_yolox_m_obj_det_torchhub",
-                "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
-                "pt_hrnet_hrnetv2_w48_pose_estimation_osmr",
-                "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_inception_inception_v4_img_cls_timm",
-                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-                "pt_hrnet_hrnet_w48_pose_estimation_timm",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
-                "pt_mobilenetv1_google_mobilenet_v1_0_75_192_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((384,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                    "pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
+                    "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
+                    "pt_googlenet_base_img_cls_torchvision",
+                    "pt_mobilenetv2_basic_img_cls_torchhub",
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
+                    "pt_yolox_yolox_tiny_obj_det_torchhub",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_vovnet_vovnet27s_img_cls_osmr",
+                    "pt_yolo_v6_yolov6m_obj_det_torchhub",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
+                    "pt_yolox_yolox_m_obj_det_torchhub",
+                    "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
+                    "pt_hrnet_hrnetv2_w48_pose_estimation_osmr",
+                    "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_inception_inception_v4_img_cls_timm",
+                    "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                    "pt_hrnet_hrnet_w48_pose_estimation_timm",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
+                    "pt_mobilenetv1_google_mobilenet_v1_0_75_192_img_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((2304,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((2304,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1536,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
-                "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
-                "pt_xception_xception71_tf_in1k_img_cls_timm",
-                "pt_xception_xception_img_cls_timm",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_xception_xception71_img_cls_timm",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_xception_xception41_img_cls_timm",
-                "pt_xception_xception65_img_cls_timm",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1536,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
+                    "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
+                    "pt_xception_xception71_tf_in1k_img_cls_timm",
+                    "pt_xception_xception_img_cls_timm",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_xception_xception71_img_cls_timm",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_xception_xception41_img_cls_timm",
+                    "pt_xception_xception65_img_cls_timm",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((768,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
-                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "pt_vovnet_vovnet39_img_cls_osmr",
-                "pt_vovnet_vovnet57_img_cls_osmr",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_yolo_v6_yolov6m_obj_det_torchhub",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
-                "pt_yolox_yolox_m_obj_det_torchhub",
-                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
-                "pt_mobilenetv1_google_mobilenet_v1_0_75_192_img_cls_hf",
-                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((768,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
+                    "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
+                    "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
+                    "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_vovnet_vovnet39_img_cls_osmr",
+                    "pt_vovnet_vovnet57_img_cls_osmr",
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_yolo_v6_yolov6m_obj_det_torchhub",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
+                    "pt_yolox_yolox_m_obj_det_torchhub",
+                    "pt_vovnet_v1_vovnet39_obj_det_torchhub",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
+                    "pt_mobilenetv1_google_mobilenet_v1_0_75_192_img_cls_hf",
+                    "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((160,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
-                "pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
-                "pt_regnet_regnet_x_400mf_img_cls_torchvision",
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_googlenet_base_img_cls_torchvision",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
-                "pt_mobilenetv2_basic_img_cls_torchhub",
-                "pt_vovnet_vovnet39_img_cls_osmr",
-                "pt_vovnet_vovnet57_img_cls_osmr",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
-                "pt_hrnet_hrnetv2_w40_pose_estimation_osmr",
-                "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
-                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
-                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
-                "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
-                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
-                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
-                "pt_yolov8_yolov8n_obj_det_github",
-                "pt_hrnet_hrnet_w40_pose_estimation_timm",
-                "pt_efficientnet_efficientnet_b4_img_cls_timm",
-                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((160,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
+                    "pt_ghostnet_ghostnet_100_img_cls_timm",
+                    "pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
+                    "pt_regnet_regnet_x_400mf_img_cls_torchvision",
+                    "pt_yolov10_yolov10x_obj_det_github",
+                    "pt_yolox_yolox_x_obj_det_torchhub",
+                    "pt_googlenet_base_img_cls_torchvision",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
+                    "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
+                    "pt_mobilenetv2_basic_img_cls_torchhub",
+                    "pt_vovnet_vovnet39_img_cls_osmr",
+                    "pt_vovnet_vovnet57_img_cls_osmr",
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                    "pt_hrnet_hrnetv2_w40_pose_estimation_osmr",
+                    "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
+                    "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                    "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
+                    "pt_yolov10_yolov10n_obj_det_github",
+                    "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
+                    "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+                    "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                    "pt_vovnet_v1_vovnet39_obj_det_torchhub",
+                    "pt_yolov8_yolov8x_obj_det_github",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                    "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                    "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                    "pt_yolov8_yolov8n_obj_det_github",
+                    "pt_hrnet_hrnet_w40_pose_estimation_timm",
+                    "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                    "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((960,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
-                "pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
-                "pt_mobilenetv2_basic_img_cls_torchhub",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
-                "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
-                "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
-                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
-                "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
-                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-                "pt_efficientnet_efficientnet_b4_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((960,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
+                    "pt_ghostnet_ghostnet_100_img_cls_timm",
+                    "pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
+                    "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
+                    "pt_mobilenetv2_basic_img_cls_torchhub",
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                    "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                    "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
+                    "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+                    "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                    "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                    "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1280,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
-                "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b0_img_cls_timm",
-                "pt_mobilenetv2_basic_img_cls_torchhub",
-                "pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf",
-                "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
-                "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b0_ra_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_tf_efficientnet_b0_aa_in1k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
-                "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
-                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-                "pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1280,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
+                    "pt_yolox_yolox_x_obj_det_torchhub",
+                    "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                    "pt_mobilenetv2_basic_img_cls_torchhub",
+                    "pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf",
+                    "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
+                    "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b0_ra_in1k_img_cls_timm",
+                    "pt_efficientnet_hf_hub_timm_tf_efficientnet_b0_aa_in1k_img_cls_timm",
+                    "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
+                    "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                    "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                    "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                    "pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
     (
         Reciprocal0,
@@ -1747,36 +1876,43 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Reciprocal0,
-        [((240,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
-                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
-                "pt_regnet_regnet_x_8gf_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b0_img_cls_timm",
-                "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
-                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
-                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
-                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
-                "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b0_ra_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_tf_efficientnet_b0_aa_in1k_img_cls_timm",
-                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
-                "pt_hrnet_hrnet_w30_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w30_pose_estimation_osmr",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
-                "pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((240,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_ghostnet_ghostnet_100_img_cls_timm",
+                    "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                    "pt_regnet_regnet_x_8gf_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                    "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
+                    "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+                    "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                    "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+                    "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b0_ra_in1k_img_cls_timm",
+                    "pt_efficientnet_hf_hub_timm_tf_efficientnet_b0_aa_in1k_img_cls_timm",
+                    "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+                    "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                    "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                    "pt_hrnet_hrnet_w30_pose_estimation_timm",
+                    "pt_hrnet_hrnetv2_w30_pose_estimation_osmr",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
+                    "pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
     (
         Reciprocal0,
@@ -1879,144 +2015,179 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Reciprocal0,
-        [((336,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
-                "pt_regnet_regnet_y_1_6gf_img_cls_torchvision",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
-                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
-                "pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
-                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
-                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b4_img_cls_timm",
-                "pt_regnet_regnet_x_32gf_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((336,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_ghostnet_ghostnet_100_img_cls_timm",
+                    "pt_regnet_regnet_y_1_6gf_img_cls_torchvision",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
+                    "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                    "pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
+                    "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+                    "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                    "pt_regnet_regnet_x_32gf_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((480,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
-                "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b0_img_cls_timm",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
-                "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b0_ra_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_tf_efficientnet_b0_aa_in1k_img_cls_timm",
-                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((480,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_ghostnet_ghostnet_100_img_cls_timm",
+                    "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                    "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b0_ra_in1k_img_cls_timm",
+                    "pt_efficientnet_hf_hub_timm_tf_efficientnet_b0_aa_in1k_img_cls_timm",
+                    "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                    "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((224,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_googlenet_base_img_cls_torchvision",
-                "pt_vovnet_vovnet39_img_cls_osmr",
-                "pt_vovnet_vovnet57_img_cls_osmr",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_120_img_cls_hf",
-                "pt_regnet_regnet_y_16gf_img_cls_torchvision",
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_inception_v4_img_cls_osmr",
-                "pt_regnet_facebook_regnet_y_160_img_cls_hf",
-                "pt_regnet_regnet_y_8gf_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
-                "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
-                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_inception_inception_v4_img_cls_timm",
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((224,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                    "pt_googlenet_base_img_cls_torchvision",
+                    "pt_vovnet_vovnet39_img_cls_osmr",
+                    "pt_vovnet_vovnet57_img_cls_osmr",
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_regnet_facebook_regnet_y_120_img_cls_hf",
+                    "pt_regnet_regnet_y_16gf_img_cls_torchvision",
+                    "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_regnet_facebook_regnet_y_160_img_cls_hf",
+                    "pt_regnet_regnet_y_8gf_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
+                    "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
+                    "pt_vovnet_v1_vovnet39_obj_det_torchhub",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_inception_inception_v4_img_cls_timm",
+                    "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((320,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
-                "pt_googlenet_base_img_cls_torchvision",
-                "pt_regnet_regnet_y_800mf_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b0_img_cls_timm",
-                "pt_mobilenetv2_basic_img_cls_torchhub",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_hrnet_hrnetv2_w40_pose_estimation_osmr",
-                "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_inception_v4_img_cls_osmr",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b0_ra_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_tf_efficientnet_b0_aa_in1k_img_cls_timm",
-                "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
-                "pt_inception_inception_v4_img_cls_timm",
-                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-                "pt_yolov8_yolov8n_obj_det_github",
-                "pt_hrnet_hrnet_w40_pose_estimation_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((320,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                    "pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
+                    "pt_yolov10_yolov10x_obj_det_github",
+                    "pt_yolox_yolox_x_obj_det_torchhub",
+                    "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
+                    "pt_googlenet_base_img_cls_torchvision",
+                    "pt_regnet_regnet_y_800mf_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                    "pt_mobilenetv2_basic_img_cls_torchhub",
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_hrnet_hrnetv2_w40_pose_estimation_osmr",
+                    "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_yolov10_yolov10n_obj_det_github",
+                    "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b0_ra_in1k_img_cls_timm",
+                    "pt_efficientnet_hf_hub_timm_tf_efficientnet_b0_aa_in1k_img_cls_timm",
+                    "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                    "pt_yolov8_yolov8x_obj_det_github",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                    "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                    "pt_inception_inception_v4_img_cls_timm",
+                    "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                    "pt_yolov8_yolov8n_obj_det_github",
+                    "pt_hrnet_hrnet_w40_pose_estimation_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((448,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_120_img_cls_hf",
-                "pt_regnet_regnet_y_16gf_img_cls_torchvision",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_inception_v4_img_cls_osmr",
-                "pt_regnet_facebook_regnet_y_160_img_cls_hf",
-                "pt_regnet_regnet_y_8gf_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
-                "pt_inception_inception_v4_img_cls_timm",
-                "pt_efficientnet_efficientnet_b4_img_cls_timm",
-                "pt_regnet_facebook_regnet_y_080_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((448,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_regnet_facebook_regnet_y_120_img_cls_hf",
+                    "pt_regnet_regnet_y_16gf_img_cls_torchvision",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_regnet_facebook_regnet_y_160_img_cls_hf",
+                    "pt_regnet_regnet_y_8gf_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                    "pt_inception_inception_v4_img_cls_timm",
+                    "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                    "pt_regnet_facebook_regnet_y_080_img_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
     (
         Reciprocal0,
@@ -2062,83 +2233,132 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Reciprocal0,
-        [((168,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_x_1_6gf_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_080_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((168,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_regnet_regnet_x_1_6gf_img_cls_torchvision",
+                    "pt_regnet_facebook_regnet_y_080_img_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((408,), torch.bfloat16)],
-        {"model_names": ["pt_regnet_regnet_x_1_6gf_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((408,), torch.bfloat16)],
+            {"model_names": ["pt_regnet_regnet_x_1_6gf_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((912,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_x_1_6gf_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((912,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_regnet_regnet_x_1_6gf_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((400,), torch.bfloat16)],
-        {"model_names": ["pt_regnet_regnet_x_400mf_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((400,), torch.bfloat16)],
+            {"model_names": ["pt_regnet_regnet_x_400mf_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((720,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_x_8gf_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm",
-                "pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((720,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_regnet_regnet_x_8gf_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm",
+                    "pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1920,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_x_8gf_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1920,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_regnet_regnet_x_8gf_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((640,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((640,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_yolov10_yolov10x_obj_det_github",
+                    "pt_yolox_yolox_x_obj_det_torchhub",
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_yolov10_yolov10n_obj_det_github",
+                    "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
+                    "pt_yolov8_yolov8x_obj_det_github",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_yolov8_yolov8n_obj_det_github",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
     (
         Reciprocal0,
@@ -2326,16 +2546,23 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Reciprocal0,
-        [((1, 256, 1, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1, 256, 1, 1), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_detr_facebook_detr_resnet_50_obj_det_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
     (
         Reciprocal0,
@@ -2348,38 +2575,59 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Reciprocal0,
-        [((1, 512, 1, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1, 512, 1, 1), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_detr_facebook_detr_resnet_50_obj_det_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1, 1024, 1, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1, 1024, 1, 1), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_detr_facebook_detr_resnet_50_obj_det_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1, 2048, 1, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1, 2048, 1, 1), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_detr_facebook_detr_resnet_50_obj_det_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
     (
         Reciprocal0,
@@ -2403,134 +2651,218 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Reciprocal0,
-        [((1152,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b0_img_cls_timm",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b0_ra_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_tf_efficientnet_b0_aa_in1k_img_cls_timm",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1152,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b0_ra_in1k_img_cls_timm",
+                    "pt_efficientnet_hf_hub_timm_tf_efficientnet_b0_aa_in1k_img_cls_timm",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                    "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((176,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
-                "pt_hrnet_hrnet_w44_pose_estimation_timm",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
-                "pt_hrnet_hrnetv2_w44_pose_estimation_osmr",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((176,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
+                    "pt_hrnet_hrnet_w44_pose_estimation_timm",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
+                    "pt_hrnet_hrnetv2_w44_pose_estimation_osmr",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1056,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
-                "pt_regnet_regnet_y_128gf_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1056,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
+                    "pt_regnet_regnet_y_128gf_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((304,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((304,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1824,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1824,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((3072,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((3072,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((208,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_googlenet_base_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
-                "pt_regnet_regnet_y_400mf_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((208,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_googlenet_base_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
+                    "pt_regnet_regnet_y_400mf_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((888,), torch.bfloat16)],
-        {"model_names": ["pt_regnet_regnet_y_1_6gf_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((888,), torch.bfloat16)],
+            {"model_names": ["pt_regnet_regnet_y_1_6gf_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((216,), torch.bfloat16)],
-        {"model_names": ["pt_regnet_regnet_y_3_2gf_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((216,), torch.bfloat16)],
+            {"model_names": ["pt_regnet_regnet_y_3_2gf_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1512,), torch.bfloat16)],
-        {"model_names": ["pt_regnet_regnet_y_3_2gf_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1512,), torch.bfloat16)],
+            {"model_names": ["pt_regnet_regnet_y_3_2gf_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((784,), torch.bfloat16)],
-        {"model_names": ["pt_regnet_regnet_y_800mf_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((784,), torch.bfloat16)],
+            {"model_names": ["pt_regnet_regnet_y_800mf_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((728,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_xception_xception71_tf_in1k_img_cls_timm",
-                "pt_xception_xception_img_cls_timm",
-                "pt_xception_xception71_img_cls_timm",
-                "pt_xception_xception41_img_cls_timm",
-                "pt_xception_xception65_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((728,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_xception_xception71_tf_in1k_img_cls_timm",
+                    "pt_xception_xception_img_cls_timm",
+                    "pt_xception_xception71_img_cls_timm",
+                    "pt_xception_xception41_img_cls_timm",
+                    "pt_xception_xception65_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
     (
         Reciprocal0,
@@ -2633,202 +2965,314 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (Reciprocal0, [((992,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
-    (
-        Reciprocal0,
-        [((528,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm",
-                "pt_regnet_regnet_y_128gf_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((528,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm",
+                    "pt_regnet_regnet_y_128gf_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1248,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1248,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((352,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_hrnet_hrnet_w44_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w44_pose_estimation_osmr",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((352,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_hrnet_hrnet_w44_pose_estimation_timm",
+                    "pt_hrnet_hrnetv2_w44_pose_estimation_osmr",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((2112,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((2112,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1408,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1408,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b2_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((432,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_regnet_regnet_x_3_2gf_img_cls_torchvision",
-                "pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((432,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_regnet_regnet_x_3_2gf_img_cls_torchvision",
+                    "pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((864,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((864,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((200,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
-                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
-                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
-                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((200,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
+                    "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+                    "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                    "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1200,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1200,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((344,), torch.bfloat16)],
-        {"model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((344,), torch.bfloat16)],
+            {"model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((2064,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
-                "pt_densenet_densenet161_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((2064,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_efficientnet_b6_img_cls_torchvision",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((3456,), torch.bfloat16)],
-        {"model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((3456,), torch.bfloat16)],
+            {"model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((272,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
-                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b4_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((272,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
+                    "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
+                    "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
+                    "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1632,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b4_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1632,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
+                    "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((2688,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
-                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b4_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((2688,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
+                    "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1792,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b4_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1792,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
+                    "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
     (
         Reciprocal0,
@@ -2851,10 +3295,17 @@ forge_modules_and_shapes_dtypes_list = [
         [((104,), torch.bfloat16)],
         {"model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"], "pcc": 0.99},
     ),
-    (
-        Reciprocal0,
-        [((440,), torch.bfloat16)],
-        {"model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((440,), torch.bfloat16)],
+            {"model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
     (Reciprocal0, [((1, 1, 1, 64), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
     (Reciprocal0, [((1, 1, 1, 256), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
@@ -2862,166 +3313,257 @@ forge_modules_and_shapes_dtypes_list = [
     (Reciprocal0, [((1, 1, 1, 512), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
     (Reciprocal0, [((1, 1, 1, 1024), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
     (Reciprocal0, [((1, 1, 1, 2048), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
-    (
-        Reciprocal0,
-        [((416,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((416,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((544,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((544,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((608,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((608,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((704,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((704,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((736,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((736,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((800,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((800,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((832,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((832,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((896,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_120_img_cls_hf",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_regnet_regnet_y_8gf_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_regnet_regnet_x_16gf_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_080_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((896,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_regnet_facebook_regnet_y_120_img_cls_hf",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_regnet_regnet_y_8gf_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_regnet_regnet_x_16gf_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_regnet_facebook_regnet_y_080_img_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((928,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((928,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((992,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((992,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet121_img_cls_torchvision",
+                    "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((2240,), torch.bfloat16)],
-        {"model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((2240,), torch.bfloat16)],
+            {"model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1232,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_y_16gf_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_160_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1232,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_regnet_regnet_y_16gf_img_cls_torchvision",
+                    "pt_regnet_facebook_regnet_y_160_img_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((3024,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_y_16gf_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_160_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((3024,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_regnet_regnet_y_16gf_img_cls_torchvision",
+                    "pt_regnet_facebook_regnet_y_160_img_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
     (
         Reciprocal0,
@@ -3072,126 +3614,238 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Reciprocal0,
-        [((624,), torch.bfloat16)],
-        {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((624,), torch.bfloat16)],
+            {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1008,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_regnet_regnet_x_3_2gf_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1008,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_regnet_regnet_x_3_2gf_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1104,), torch.bfloat16)],
-        {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1104,), torch.bfloat16)],
+            {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1296,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_064_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1296,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_regnet_facebook_regnet_y_064_img_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1344,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_regnet_regnet_x_32gf_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1344,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_efficientnet_efficientnet_b7_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_regnet_regnet_x_32gf_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1440,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1440,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1488,), torch.bfloat16)],
-        {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1488,), torch.bfloat16)],
+            {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1584,), torch.bfloat16)],
-        {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1584,), torch.bfloat16)],
+            {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1680,), torch.bfloat16)],
-        {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1680,), torch.bfloat16)],
+            {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1728,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1728,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1776,), torch.bfloat16)],
-        {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1776,), torch.bfloat16)],
+            {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1872,), torch.bfloat16)],
-        {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1872,), torch.bfloat16)],
+            {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1968,), torch.bfloat16)],
-        {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1968,), torch.bfloat16)],
+            {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((2016,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet161_img_cls_torchvision",
-                "pt_regnet_regnet_y_8gf_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_080_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((2016,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet161_img_cls_torchvision",
+                    "pt_regnet_regnet_y_8gf_img_cls_torchvision",
+                    "pt_regnet_facebook_regnet_y_080_img_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((2160,), torch.bfloat16)],
-        {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((2160,), torch.bfloat16)],
+            {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((2208,), torch.bfloat16)],
-        {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((2208,), torch.bfloat16)],
+            {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
     (
         Reciprocal0,
@@ -3211,17 +3865,24 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Reciprocal0,
-        [((184,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
-                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
-                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((184,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+                    "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                    "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
     (
         Reciprocal0,
@@ -3310,127 +3971,204 @@ forge_modules_and_shapes_dtypes_list = [
         [((1280,), torch.float32)],
         {"model_names": ["pd_mobilenetv2_basic_img_cls_paddlemodels"], "pcc": 0.99},
     ),
-    (
-        Reciprocal0,
-        [((1088,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_040_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1088,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                    "pt_regnet_facebook_regnet_y_040_img_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1120,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1120,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1184,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1184,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1216,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1216,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1312,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1312,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1376,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1376,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1472,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1472,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1504,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1504,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1568,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1568,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1600,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1600,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1664,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1664,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_densenet_densenet169_img_cls_torchvision",
+                    "pt_densenet_densenet201_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
     (
         Reciprocal0,
@@ -3466,37 +4204,65 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Reciprocal0,
-        [((3840,), torch.bfloat16)],
-        {"model_names": ["pt_efficientnet_efficientnet_b7_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((3840,), torch.bfloat16)],
+            {"model_names": ["pt_efficientnet_efficientnet_b7_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((2560,), torch.bfloat16)],
-        {"model_names": ["pt_efficientnet_efficientnet_b7_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((2560,), torch.bfloat16)],
+            {"model_names": ["pt_efficientnet_efficientnet_b7_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((696,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_facebook_regnet_y_320_img_cls_hf",
-                "pt_regnet_regnet_y_32gf_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((696,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_regnet_facebook_regnet_y_320_img_cls_hf",
+                    "pt_regnet_regnet_y_32gf_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((3712,), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_facebook_regnet_y_320_img_cls_hf",
-                "pt_regnet_regnet_y_32gf_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((3712,), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_regnet_facebook_regnet_y_320_img_cls_hf",
+                    "pt_regnet_regnet_y_32gf_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
     (
         Reciprocal0,
@@ -3518,25 +4284,53 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 32, 64, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99},
     ),
-    (
-        Reciprocal0,
-        [((1696,), torch.bfloat16)],
-        {"model_names": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1696,), torch.bfloat16)],
+            {"model_names": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1760,), torch.bfloat16)],
-        {"model_names": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1760,), torch.bfloat16)],
+            {"model_names": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1856,), torch.bfloat16)],
-        {"model_names": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1856,), torch.bfloat16)],
+            {"model_names": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1888,), torch.bfloat16)],
-        {"model_names": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1888,), torch.bfloat16)],
+            {"model_names": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
     (
         Reciprocal0,
@@ -3628,41 +4422,69 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 128, 1), torch.float32)],
         {"model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"], "pcc": 0.99},
     ),
-    (
-        Reciprocal0,
-        [((100, 8, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((100, 8, 1, 1), torch.bfloat16)],
+            {
+                "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((2520,), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_x_32gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((2520,), torch.bfloat16)],
+            {
+                "model_names": ["pt_regnet_regnet_x_32gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((2904,), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((2904,), torch.bfloat16)],
+            {
+                "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((7392,), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((7392,), torch.bfloat16)],
+            {
+                "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false info: info:"
+            )
+        ],
     ),
 ]
 

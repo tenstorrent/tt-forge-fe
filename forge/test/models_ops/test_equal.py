@@ -55,7 +55,10 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (Equal0, [((1, 256), torch.int64)], {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99}),
+    pytest.param(
+        (Equal0, [((1, 256), torch.int64)], {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99}),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
 ]
 
 

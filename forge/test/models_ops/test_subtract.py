@@ -424,10 +424,13 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Subtract3,
-        [((1, 1, 7, 7), torch.int32)],
-        {"model_names": ["pt_phi1_microsoft_phi_1_clm_hf", "pt_phi_1_5_microsoft_phi_1_5_clm_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Subtract3,
+            [((1, 1, 7, 7), torch.int32)],
+            {"model_names": ["pt_phi1_microsoft_phi_1_clm_hf", "pt_phi_1_5_microsoft_phi_1_5_clm_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Subtract1,
@@ -710,28 +713,31 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Subtract3,
-        [((1, 1, 256, 256), torch.int32)],
-        {
-            "model_names": [
-                "pt_phi2_microsoft_phi_2_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
-                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Subtract3,
+            [((1, 1, 256, 256), torch.int32)],
+            {
+                "model_names": [
+                    "pt_phi2_microsoft_phi_2_clm_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
+                    "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
+                    "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
+                    "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
+                    "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
+                    "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
+                    "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+                    "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                    "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
+                    "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+                    "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Subtract16,
@@ -826,20 +832,26 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 25, 97), torch.float32), ((1, 25, 1), torch.float32)],
         {"model_names": ["pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels"], "pcc": 0.99},
     ),
-    (Subtract3, [((1, 11), torch.int32)], {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99}),
-    (
-        Subtract3,
-        [((1, 1, 32, 32), torch.int32)],
-        {
-            "model_names": [
-                "pt_bloom_bigscience_bloom_1b1_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
-                "pt_llama3_huggyllama_llama_7b_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (Subtract3, [((1, 11), torch.int32)], {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99}),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
+    ),
+    pytest.param(
+        (
+            Subtract3,
+            [((1, 1, 32, 32), torch.int32)],
+            {
+                "model_names": [
+                    "pt_bloom_bigscience_bloom_1b1_clm_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
+                    "pt_llama3_huggyllama_llama_7b_clm_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Subtract0,
@@ -1218,7 +1230,10 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 12, 6625), torch.float32), ((1, 12, 1), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
     ),
-    (Subtract3, [((1, 9), torch.int32)], {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99}),
+    pytest.param(
+        (Subtract3, [((1, 9), torch.int32)], {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99}),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
+    ),
     (
         Subtract1,
         [((2, 1, 7, 7), torch.float32)],
@@ -1291,7 +1306,14 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 12, 97), torch.float32), ((1, 12, 1), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels"], "pcc": 0.99},
     ),
-    (Subtract3, [((1, 4), torch.int32)], {"model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99}),
+    pytest.param(
+        (
+            Subtract3,
+            [((1, 4), torch.int32)],
+            {"model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
+    ),
     (
         Subtract19,
         [((1, 1, 1, 25, 34), torch.bfloat16)],

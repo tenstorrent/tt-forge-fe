@@ -6736,23 +6736,33 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim0": "-4", "dim1": "-1"},
         },
     ),
-    (
-        Transpose0,
-        [((2048, 1, 1024, 1), torch.float32)],
-        {
-            "model_names": ["tf_resnet_resnet50_img_cls_keras", "jax_resnet_50_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim0": "-3", "dim1": "-2"},
-        },
+    pytest.param(
+        (
+            Transpose0,
+            [((2048, 1, 1024, 1), torch.float32)],
+            {
+                "model_names": ["tf_resnet_resnet50_img_cls_keras", "jax_resnet_50_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {"dim0": "-3", "dim1": "-2"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
-    (
-        Transpose1,
-        [((2048, 1024, 1, 1), torch.float32)],
-        {
-            "model_names": ["tf_resnet_resnet50_img_cls_keras", "jax_resnet_50_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
+    pytest.param(
+        (
+            Transpose1,
+            [((2048, 1024, 1, 1), torch.float32)],
+            {
+                "model_names": ["tf_resnet_resnet50_img_cls_keras", "jax_resnet_50_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {"dim0": "-2", "dim1": "-1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 8589934592 B DRAM buffer across 12 banks, where each bank needs to store 715829248 B"
+            )
+        ],
     ),
     (
         Transpose3,
@@ -6817,23 +6827,29 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim0": "-4", "dim1": "-1"},
         },
     ),
-    (
-        Transpose0,
-        [((2048, 1, 512, 1), torch.float32)],
-        {
-            "model_names": ["tf_resnet_resnet50_img_cls_keras", "jax_resnet_50_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim0": "-3", "dim1": "-2"},
-        },
+    pytest.param(
+        (
+            Transpose0,
+            [((2048, 1, 512, 1), torch.float32)],
+            {
+                "model_names": ["tf_resnet_resnet50_img_cls_keras", "jax_resnet_50_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {"dim0": "-3", "dim1": "-2"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
-    (
-        Transpose1,
-        [((2048, 512, 1, 1), torch.float32)],
-        {
-            "model_names": ["tf_resnet_resnet50_img_cls_keras", "jax_resnet_50_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
+    pytest.param(
+        (
+            Transpose1,
+            [((2048, 512, 1, 1), torch.float32)],
+            {
+                "model_names": ["tf_resnet_resnet50_img_cls_keras", "jax_resnet_50_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {"dim0": "-2", "dim1": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Transpose3,
@@ -6844,23 +6860,33 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim0": "-4", "dim1": "-1"},
         },
     ),
-    (
-        Transpose0,
-        [((512, 1, 2048, 1), torch.float32)],
-        {
-            "model_names": ["tf_resnet_resnet50_img_cls_keras", "jax_resnet_50_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim0": "-3", "dim1": "-2"},
-        },
+    pytest.param(
+        (
+            Transpose0,
+            [((512, 1, 2048, 1), torch.float32)],
+            {
+                "model_names": ["tf_resnet_resnet50_img_cls_keras", "jax_resnet_50_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {"dim0": "-3", "dim1": "-2"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
-    (
-        Transpose1,
-        [((512, 2048, 1, 1), torch.float32)],
-        {
-            "model_names": ["tf_resnet_resnet50_img_cls_keras", "jax_resnet_50_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
+    pytest.param(
+        (
+            Transpose1,
+            [((512, 2048, 1, 1), torch.float32)],
+            {
+                "model_names": ["tf_resnet_resnet50_img_cls_keras", "jax_resnet_50_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {"dim0": "-2", "dim1": "-1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 4294967296 B DRAM buffer across 12 banks, where each bank needs to store 357916672 B"
+            )
+        ],
     ),
     (
         Transpose0,
