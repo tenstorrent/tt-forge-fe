@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
+import types
+
 import pytest
 import torch
 from transformers import SpeechT5ForTextToSpeech, SpeechT5Processor
@@ -15,6 +17,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
+from test.models.models_utils import embed_pos
 from test.utils import download_model
 
 
@@ -51,6 +54,9 @@ def test_speecht5_tts(variant):
     # Load model and Processer
     processor = download_model(SpeechT5Processor.from_pretrained, variant)
     model = download_model(SpeechT5ForTextToSpeech.from_pretrained, variant, return_dict=False, use_cache=False)
+    model.speecht5.encoder.wrapped_encoder.embed_positions.forward = types.MethodType(
+        embed_pos, model.speecht5.encoder.wrapped_encoder.embed_positions
+    )
     model.eval()
     framework_model = Wrapper(model)
 
