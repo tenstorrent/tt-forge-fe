@@ -2413,7 +2413,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
                 "pd_mobilenetv2_basic_img_cls_paddlemodels",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
@@ -2440,7 +2439,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "pd_mobilenetv2_basic_img_cls_paddlemodels",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
                 "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels",

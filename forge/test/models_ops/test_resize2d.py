@@ -269,7 +269,7 @@ class Resize2D22(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[120, 120], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[30, 40], method="linear", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -280,7 +280,7 @@ class Resize2D23(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[30, 30], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[60, 80], method="linear", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -291,7 +291,7 @@ class Resize2D24(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[60, 60], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[120, 160], method="linear", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -302,7 +302,7 @@ class Resize2D25(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[30, 40], method="linear", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[240, 320], method="linear", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -313,7 +313,7 @@ class Resize2D26(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[60, 80], method="linear", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[480, 640], method="linear", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -324,7 +324,7 @@ class Resize2D27(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[120, 160], method="linear", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[20, 64], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -335,7 +335,7 @@ class Resize2D28(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[240, 320], method="linear", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[40, 128], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -346,7 +346,7 @@ class Resize2D29(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[480, 640], method="linear", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[80, 256], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -357,7 +357,7 @@ class Resize2D30(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[20, 64], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[160, 512], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -368,7 +368,7 @@ class Resize2D31(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[40, 128], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[320, 1024], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -379,7 +379,7 @@ class Resize2D32(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[80, 256], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[30, 30], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -390,7 +390,7 @@ class Resize2D33(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[160, 512], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[60, 60], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -401,7 +401,7 @@ class Resize2D34(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[320, 1024], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[112, 112], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -412,7 +412,7 @@ class Resize2D35(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[112, 112], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[224, 224], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -423,7 +423,7 @@ class Resize2D36(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[224, 224], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[26, 26], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -434,7 +434,7 @@ class Resize2D37(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[26, 26], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[52, 52], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -445,7 +445,7 @@ class Resize2D38(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[52, 52], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[27, 40], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -456,7 +456,7 @@ class Resize2D39(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[27, 40], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[54, 80], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -467,7 +467,7 @@ class Resize2D40(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[54, 80], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[107, 160], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -478,7 +478,7 @@ class Resize2D41(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[107, 160], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[16, 16], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -489,7 +489,7 @@ class Resize2D42(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[16, 16], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[7, 7], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -500,7 +500,7 @@ class Resize2D43(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[7, 7], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[160, 160], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -511,7 +511,7 @@ class Resize2D44(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[160, 160], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[32, 42], method="cubic", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -522,7 +522,7 @@ class Resize2D45(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[32, 42], method="cubic", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[50, 67], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
@@ -533,23 +533,12 @@ class Resize2D46(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[50, 67], method="nearest_neighbor", align_corners=False, channel_last=0
-        )
-        return resize2d_output_1
-
-
-class Resize2D47(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, resize2d_input_0):
-        resize2d_output_1 = forge.op.Resize2d(
             "", resize2d_input_0, sizes=[100, 134], method="nearest_neighbor", align_corners=False, channel_last=0
         )
         return resize2d_output_1
 
 
-class Resize2D48(ForgeModule):
+class Resize2D47(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1407,90 +1396,6 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Resize2D22,
-        [((1, 24, 15, 15), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[120, 120]",
-                "method": '"nearest_neighbor"',
-                "align_corners": "False",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Resize2D23,
-        [((1, 96, 15, 15), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[30, 30]",
-                "method": '"nearest_neighbor"',
-                "align_corners": "False",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Resize2D22,
-        [((1, 24, 30, 30), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[120, 120]",
-                "method": '"nearest_neighbor"',
-                "align_corners": "False",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Resize2D24,
-        [((1, 96, 30, 30), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[60, 60]",
-                "method": '"nearest_neighbor"',
-                "align_corners": "False",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Resize2D22,
-        [((1, 24, 60, 60), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[120, 120]",
-                "method": '"nearest_neighbor"',
-                "align_corners": "False",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Resize2D22,
-        [((1, 96, 60, 60), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[120, 120]",
-                "method": '"nearest_neighbor"',
-                "align_corners": "False",
-                "channel_last": "0",
-            },
-        },
-    ),
     pytest.param(
         (
             Resize2D0,
@@ -1569,7 +1474,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Resize2D25,
+            Resize2D22,
             [((1, 64, 15, 20), torch.bfloat16)],
             {
                 "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -1585,7 +1490,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Resize2D26,
+            Resize2D23,
             [((1, 64, 30, 40), torch.bfloat16)],
             {
                 "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -1601,7 +1506,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Resize2D27,
+            Resize2D24,
             [((1, 64, 60, 80), torch.bfloat16)],
             {
                 "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -1617,7 +1522,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Resize2D28,
+            Resize2D25,
             [((1, 64, 120, 160), torch.bfloat16)],
             {
                 "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -1633,7 +1538,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Resize2D29,
+            Resize2D26,
             [((1, 64, 240, 320), torch.bfloat16)],
             {
                 "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -1648,7 +1553,7 @@ forge_modules_and_shapes_dtypes_list = [
         ],
     ),
     (
-        Resize2D30,
+        Resize2D27,
         [((1, 256, 10, 32), torch.bfloat16)],
         {
             "model_names": [
@@ -1666,7 +1571,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D31,
+        Resize2D28,
         [((1, 128, 20, 64), torch.bfloat16)],
         {
             "model_names": [
@@ -1684,7 +1589,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D32,
+        Resize2D29,
         [((1, 64, 40, 128), torch.bfloat16)],
         {
             "model_names": [
@@ -1702,7 +1607,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D33,
+        Resize2D30,
         [((1, 32, 80, 256), torch.bfloat16)],
         {
             "model_names": [
@@ -1720,7 +1625,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D34,
+        Resize2D31,
         [((1, 16, 160, 512), torch.bfloat16)],
         {
             "model_names": [
@@ -1783,7 +1688,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D23,
+        Resize2D32,
         [((1, 256, 15, 15), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_480x480"],
@@ -1797,7 +1702,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D24,
+        Resize2D33,
         [((1, 128, 30, 30), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_480x480"],
@@ -2013,7 +1918,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D35,
+        Resize2D34,
         [((1, 64, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
@@ -2027,7 +1932,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D36,
+        Resize2D35,
         [((1, 32, 112, 112), torch.bfloat16)],
         {
             "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
@@ -2041,7 +1946,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D23,
+        Resize2D32,
         [((1, 640, 15, 15), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -2055,7 +1960,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D24,
+        Resize2D33,
         [((1, 320, 30, 30), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -2097,7 +2002,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D37,
+        Resize2D36,
         [((1, 192, 13, 13), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -2111,7 +2016,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D38,
+        Resize2D37,
         [((1, 96, 26, 26), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -2126,7 +2031,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Resize2D39,
+            Resize2D38,
             [((100, 128, 14, 20), torch.float32)],
             {
                 "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -2142,7 +2047,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="AssertionError: Only support upsample with integer scale factor")],
     ),
     (
-        Resize2D40,
+        Resize2D39,
         [((100, 64, 27, 40), torch.float32)],
         {
             "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -2157,7 +2062,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Resize2D41,
+            Resize2D40,
             [((100, 32, 54, 80), torch.float32)],
             {
                 "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -2243,7 +2148,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D23,
+        Resize2D32,
         [((1, 128, 15, 15), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5n_img_cls_torchhub_480x480"],
@@ -2257,7 +2162,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D24,
+        Resize2D33,
         [((1, 64, 30, 30), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5n_img_cls_torchhub_480x480"],
@@ -2461,7 +2366,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D35,
+        Resize2D34,
         [((1, 24, 14, 14), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -2489,7 +2394,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D35,
+        Resize2D34,
         [((1, 24, 28, 28), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -2517,7 +2422,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D35,
+        Resize2D34,
         [((1, 24, 56, 56), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -2531,7 +2436,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D35,
+        Resize2D34,
         [((1, 96, 56, 56), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -2545,7 +2450,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D42,
+        Resize2D41,
         [((1, 256, 8, 8), torch.bfloat16)],
         {
             "model_names": ["pt_fpn_base_img_cls_torchvision"],
@@ -2658,7 +2563,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Resize2D43,
+            Resize2D42,
             [((1, 960, 3, 3), torch.bfloat16)],
             {
                 "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -2775,7 +2680,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D44,
+        Resize2D43,
         [((1, 128, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280"],
@@ -2790,7 +2695,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Resize2D45,
+            Resize2D44,
             [((1, 192, 50, 83), torch.bfloat16)],
             {
                 "model_names": ["pt_yolos_hustvl_yolos_tiny_obj_det_hf"],
@@ -2885,7 +2790,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D23,
+        Resize2D32,
         [((1, 512, 15, 15), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5l_img_cls_torchhub_480x480"],
@@ -2899,7 +2804,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D24,
+        Resize2D33,
         [((1, 256, 30, 30), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5l_img_cls_torchhub_480x480"],
@@ -2955,7 +2860,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D37,
+        Resize2D36,
         [((1, 128, 13, 13), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -2969,7 +2874,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D38,
+        Resize2D37,
         [((1, 64, 26, 26), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -3068,7 +2973,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Resize2D46,
+            Resize2D45,
             [((100, 128, 25, 34), torch.bfloat16)],
             {
                 "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -3085,7 +2990,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="AssertionError: Only support upsample with integer scale factor")],
     ),
     (
-        Resize2D47,
+        Resize2D46,
         [((100, 64, 50, 67), torch.bfloat16)],
         {
             "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -3101,7 +3006,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Resize2D48,
+            Resize2D47,
             [((100, 32, 100, 134), torch.bfloat16)],
             {
                 "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -3160,7 +3065,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D23,
+        Resize2D32,
         [((1, 384, 15, 15), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"],
@@ -3174,7 +3079,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D24,
+        Resize2D33,
         [((1, 192, 30, 30), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"],

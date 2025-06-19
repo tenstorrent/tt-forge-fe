@@ -353,78 +353,6 @@ class Avgpool2D18(ForgeModule):
         avgpool2d_output_1 = forge.op.AvgPool2d(
             "",
             avgpool2d_input_0,
-            kernel_size=[15, 15],
-            stride=[15, 15],
-            padding=[0, 0, 0, 0],
-            ceil_mode=False,
-            count_include_pad=True,
-            channel_last=0,
-        )
-        return avgpool2d_output_1
-
-
-class Avgpool2D19(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, avgpool2d_input_0):
-        avgpool2d_output_1 = forge.op.AvgPool2d(
-            "",
-            avgpool2d_input_0,
-            kernel_size=[30, 30],
-            stride=[30, 30],
-            padding=[0, 0, 0, 0],
-            ceil_mode=False,
-            count_include_pad=True,
-            channel_last=0,
-        )
-        return avgpool2d_output_1
-
-
-class Avgpool2D20(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, avgpool2d_input_0):
-        avgpool2d_output_1 = forge.op.AvgPool2d(
-            "",
-            avgpool2d_input_0,
-            kernel_size=[60, 60],
-            stride=[60, 60],
-            padding=[0, 0, 0, 0],
-            ceil_mode=False,
-            count_include_pad=True,
-            channel_last=0,
-        )
-        return avgpool2d_output_1
-
-
-class Avgpool2D21(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, avgpool2d_input_0):
-        avgpool2d_output_1 = forge.op.AvgPool2d(
-            "",
-            avgpool2d_input_0,
-            kernel_size=[120, 120],
-            stride=[120, 120],
-            padding=[0, 0, 0, 0],
-            ceil_mode=False,
-            count_include_pad=True,
-            channel_last=0,
-        )
-        return avgpool2d_output_1
-
-
-class Avgpool2D22(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, avgpool2d_input_0):
-        avgpool2d_output_1 = forge.op.AvgPool2d(
-            "",
-            avgpool2d_input_0,
             kernel_size=[2, 2],
             stride=[2, 2],
             padding=[0, 0, 0, 0],
@@ -435,7 +363,7 @@ class Avgpool2D22(ForgeModule):
         return avgpool2d_output_1
 
 
-class Avgpool2D23(ForgeModule):
+class Avgpool2D19(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -453,7 +381,7 @@ class Avgpool2D23(ForgeModule):
         return avgpool2d_output_1
 
 
-class Avgpool2D24(ForgeModule):
+class Avgpool2D20(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -471,7 +399,7 @@ class Avgpool2D24(ForgeModule):
         return avgpool2d_output_1
 
 
-class Avgpool2D25(ForgeModule):
+class Avgpool2D21(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -489,7 +417,7 @@ class Avgpool2D25(ForgeModule):
         return avgpool2d_output_1
 
 
-class Avgpool2D26(ForgeModule):
+class Avgpool2D22(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -507,7 +435,7 @@ class Avgpool2D26(ForgeModule):
         return avgpool2d_output_1
 
 
-class Avgpool2D27(ForgeModule):
+class Avgpool2D23(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -525,7 +453,7 @@ class Avgpool2D27(ForgeModule):
         return avgpool2d_output_1
 
 
-class Avgpool2D28(ForgeModule):
+class Avgpool2D24(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -543,7 +471,7 @@ class Avgpool2D28(ForgeModule):
         return avgpool2d_output_1
 
 
-class Avgpool2D29(ForgeModule):
+class Avgpool2D25(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -561,7 +489,7 @@ class Avgpool2D29(ForgeModule):
         return avgpool2d_output_1
 
 
-class Avgpool2D30(ForgeModule):
+class Avgpool2D26(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -579,7 +507,7 @@ class Avgpool2D30(ForgeModule):
         return avgpool2d_output_1
 
 
-class Avgpool2D31(ForgeModule):
+class Avgpool2D27(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -597,7 +525,7 @@ class Avgpool2D31(ForgeModule):
         return avgpool2d_output_1
 
 
-class Avgpool2D32(ForgeModule):
+class Avgpool2D28(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -615,7 +543,7 @@ class Avgpool2D32(ForgeModule):
         return avgpool2d_output_1
 
 
-class Avgpool2D33(ForgeModule):
+class Avgpool2D29(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -633,7 +561,7 @@ class Avgpool2D33(ForgeModule):
         return avgpool2d_output_1
 
 
-class Avgpool2D34(ForgeModule):
+class Avgpool2D30(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -651,7 +579,7 @@ class Avgpool2D34(ForgeModule):
         return avgpool2d_output_1
 
 
-class Avgpool2D35(ForgeModule):
+class Avgpool2D31(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -669,7 +597,7 @@ class Avgpool2D35(ForgeModule):
         return avgpool2d_output_1
 
 
-class Avgpool2D36(ForgeModule):
+class Avgpool2D32(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -687,7 +615,7 @@ class Avgpool2D36(ForgeModule):
         return avgpool2d_output_1
 
 
-class Avgpool2D37(ForgeModule):
+class Avgpool2D33(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2503,166 +2431,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Avgpool2D18,
-        [((1, 192, 15, 15), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[15, 15]",
-                "stride": "[15, 15]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Avgpool2D18,
-        [((1, 384, 15, 15), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[15, 15]",
-                "stride": "[15, 15]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Avgpool2D18,
-        [((1, 96, 15, 15), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[15, 15]",
-                "stride": "[15, 15]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Avgpool2D18,
-        [((1, 24, 15, 15), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[15, 15]",
-                "stride": "[15, 15]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Avgpool2D19,
-        [((1, 96, 30, 30), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[30, 30]",
-                "stride": "[30, 30]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Avgpool2D19,
-        [((1, 24, 30, 30), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[30, 30]",
-                "stride": "[30, 30]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Avgpool2D20,
-        [((1, 96, 60, 60), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[60, 60]",
-                "stride": "[60, 60]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Avgpool2D20,
-        [((1, 24, 60, 60), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[60, 60]",
-                "stride": "[60, 60]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Avgpool2D21,
-        [((1, 96, 120, 120), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[120, 120]",
-                "stride": "[120, 120]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Avgpool2D21,
-        [((1, 24, 120, 120), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[120, 120]",
-                "stride": "[120, 120]",
-                "padding": "[0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Avgpool2D22,
         [((1, 128, 56, 56), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -2678,7 +2446,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D22,
+        Avgpool2D18,
         [((1, 256, 28, 28), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -2694,7 +2462,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D22,
+        Avgpool2D18,
         [((1, 512, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -2978,7 +2746,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D23,
+        Avgpool2D19,
         [((1, 1792, 9, 9), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm"],
@@ -3058,7 +2826,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D24,
+        Avgpool2D20,
         [((1, 7, 7, 2048), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -3074,7 +2842,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D25,
+        Avgpool2D21,
         [((1, 1280, 8, 8), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
@@ -3090,7 +2858,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D26,
+        Avgpool2D22,
         [((1, 1536, 9, 9), torch.float32)],
         {
             "model_names": [
@@ -3207,7 +2975,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D27,
+        Avgpool2D23,
         [((1, 1280, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
@@ -3359,7 +3127,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D28,
+        Avgpool2D24,
         [((1, 240, 4, 25), torch.float32)],
         {
             "model_names": [
@@ -3378,7 +3146,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D28,
+        Avgpool2D24,
         [((1, 480, 4, 25), torch.float32)],
         {
             "model_names": [
@@ -3397,7 +3165,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D29,
+        Avgpool2D25,
         [((1, 480, 2, 25), torch.float32)],
         {
             "model_names": [
@@ -3432,7 +3200,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D23,
+        Avgpool2D19,
         [((1, 1280, 9, 9), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -3825,7 +3593,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D30,
+        Avgpool2D26,
         [((1, 1280, 12, 12), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
@@ -4048,7 +3816,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D25,
+        Avgpool2D21,
         [((1, 1408, 8, 8), torch.float32)],
         {
             "model_names": [
@@ -4067,7 +3835,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D31,
+        Avgpool2D27,
         [((1, 1792, 10, 10), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
@@ -4179,7 +3947,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D32,
+        Avgpool2D28,
         [((1, 256, 160, 160), torch.bfloat16)],
         {
             "model_names": ["pt_yolov9_default_obj_det_github"],
@@ -4195,7 +3963,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D32,
+        Avgpool2D28,
         [((1, 512, 80, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolov9_default_obj_det_github"],
@@ -4211,7 +3979,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D32,
+        Avgpool2D28,
         [((1, 512, 40, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolov9_default_obj_det_github"],
@@ -4227,7 +3995,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D32,
+        Avgpool2D28,
         [((1, 256, 80, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolov9_default_obj_det_github"],
@@ -4243,7 +4011,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D33,
+        Avgpool2D29,
         [((1, 2048, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
@@ -4310,7 +4078,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D34,
+        Avgpool2D30,
         [((1, 1280, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
@@ -4382,7 +4150,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Avgpool2D35,
+            Avgpool2D31,
             [((1, 528, 96, 96), torch.bfloat16)],
             {
                 "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
@@ -4402,7 +4170,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Avgpool2D36,
+            Avgpool2D32,
             [((1, 1056, 48, 48), torch.bfloat16)],
             {
                 "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
@@ -4421,7 +4189,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Avgpool2D37,
+        Avgpool2D33,
         [((1, 2904, 24, 24), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
@@ -4438,7 +4206,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Avgpool2D30,
+        Avgpool2D26,
         [((1, 7392, 12, 12), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],

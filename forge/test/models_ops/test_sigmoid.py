@@ -1751,7 +1751,6 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 128, 10, 10), torch.float32)],
         {"model_names": ["pt_yolo_v5_yolov5n_img_cls_torchhub_320x320"], "pcc": 0.99},
     ),
-    (Sigmoid0, [((1, 1, 480, 480), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
     (
         Sigmoid0,
         [((1, 100, 4), torch.float32)],

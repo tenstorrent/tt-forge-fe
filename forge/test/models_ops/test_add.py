@@ -1890,22 +1890,23 @@ class Add160(ForgeModule):
 class Add161(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "add161.weight_1", forge.Parameter(*(1,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
-        )
+        self.add_constant("add161_const_0", shape=(1, 100, 256), dtype=torch.float32)
 
-    def forward(self, add_input_0):
-        add_output_1 = forge.op.Add("", add_input_0, self.get_parameter("add161.weight_1"))
+    def forward(self, add_input_1):
+        add_output_1 = forge.op.Add("", self.get_constant("add161_const_0"), add_input_1)
         return add_output_1
 
 
 class Add162(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("add162_const_0", shape=(1, 100, 256), dtype=torch.float32)
+        self.add_parameter(
+            "add162.weight_1",
+            forge.Parameter(*(1, 64, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
-    def forward(self, add_input_1):
-        add_output_1 = forge.op.Add("", self.get_constant("add162_const_0"), add_input_1)
+    def forward(self, add_input_0):
+        add_output_1 = forge.op.Add("", add_input_0, self.get_parameter("add162.weight_1"))
         return add_output_1
 
 
@@ -1914,7 +1915,7 @@ class Add163(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "add163.weight_1",
-            forge.Parameter(*(1, 64, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, add_input_0):
@@ -1927,7 +1928,7 @@ class Add164(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "add164.weight_1",
-            forge.Parameter(*(1, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1, 128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, add_input_0):
@@ -1940,7 +1941,7 @@ class Add165(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "add165.weight_1",
-            forge.Parameter(*(1, 128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1, 512, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, add_input_0):
@@ -1953,7 +1954,7 @@ class Add166(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "add166.weight_1",
-            forge.Parameter(*(1, 512, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1, 1024, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, add_input_0):
@@ -1966,7 +1967,7 @@ class Add167(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "add167.weight_1",
-            forge.Parameter(*(1, 1024, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1, 2048, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, add_input_0):
@@ -1977,20 +1978,17 @@ class Add167(ForgeModule):
 class Add168(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "add168.weight_1",
-            forge.Parameter(*(1, 2048, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("add168_const_1", shape=(1, 280, 256), dtype=torch.float32)
 
     def forward(self, add_input_0):
-        add_output_1 = forge.op.Add("", add_input_0, self.get_parameter("add168.weight_1"))
+        add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add168_const_1"))
         return add_output_1
 
 
 class Add169(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("add169_const_1", shape=(1, 280, 256), dtype=torch.float32)
+        self.add_constant("add169_const_1", shape=(1, 1, 280, 280), dtype=torch.float32)
 
     def forward(self, add_input_0):
         add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add169_const_1"))
@@ -2000,7 +1998,7 @@ class Add169(ForgeModule):
 class Add170(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("add170_const_1", shape=(1, 1, 280, 280), dtype=torch.float32)
+        self.add_constant("add170_const_1", shape=(1, 1, 100, 280), dtype=torch.float32)
 
     def forward(self, add_input_0):
         add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add170_const_1"))
@@ -2010,10 +2008,12 @@ class Add170(ForgeModule):
 class Add171(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("add171_const_1", shape=(1, 1, 100, 280), dtype=torch.float32)
+        self.add_parameter(
+            "add171.weight_0", forge.Parameter(*(92,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+        )
 
-    def forward(self, add_input_0):
-        add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add171_const_1"))
+    def forward(self, add_input_1):
+        add_output_1 = forge.op.Add("", self.get_parameter("add171.weight_0"), add_input_1)
         return add_output_1
 
 
@@ -2021,7 +2021,7 @@ class Add172(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add172.weight_0", forge.Parameter(*(92,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add172.weight_0", forge.Parameter(*(4,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_1):
@@ -2033,11 +2033,11 @@ class Add173(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add173.weight_0", forge.Parameter(*(4,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add173.weight_1", forge.Parameter(*(32000,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
-    def forward(self, add_input_1):
-        add_output_1 = forge.op.Add("", self.get_parameter("add173.weight_0"), add_input_1)
+    def forward(self, add_input_0):
+        add_output_1 = forge.op.Add("", add_input_0, self.get_parameter("add173.weight_1"))
         return add_output_1
 
 
@@ -2045,7 +2045,7 @@ class Add174(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add174.weight_1", forge.Parameter(*(32000,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add174.weight_1", forge.Parameter(*(96,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2057,7 +2057,7 @@ class Add175(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add175.weight_1", forge.Parameter(*(96,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add175.weight_1", forge.Parameter(*(160,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2069,7 +2069,7 @@ class Add176(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add176.weight_1", forge.Parameter(*(160,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add176.weight_1", forge.Parameter(*(224,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2081,7 +2081,7 @@ class Add177(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add177.weight_1", forge.Parameter(*(224,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add177.weight_1", forge.Parameter(*(320,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2093,7 +2093,7 @@ class Add178(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add178.weight_1", forge.Parameter(*(320,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add178.weight_1", forge.Parameter(*(352,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2105,7 +2105,7 @@ class Add179(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add179.weight_1", forge.Parameter(*(352,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add179.weight_1", forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2117,7 +2117,7 @@ class Add180(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add180.weight_1", forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add180.weight_1", forge.Parameter(*(416,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2129,7 +2129,7 @@ class Add181(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add181.weight_1", forge.Parameter(*(416,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add181.weight_1", forge.Parameter(*(448,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2141,7 +2141,7 @@ class Add182(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add182.weight_1", forge.Parameter(*(448,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add182.weight_1", forge.Parameter(*(480,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2153,7 +2153,7 @@ class Add183(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add183.weight_1", forge.Parameter(*(480,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add183.weight_1", forge.Parameter(*(544,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2165,7 +2165,7 @@ class Add184(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add184.weight_1", forge.Parameter(*(544,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add184.weight_1", forge.Parameter(*(576,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2177,7 +2177,7 @@ class Add185(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add185.weight_1", forge.Parameter(*(576,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add185.weight_1", forge.Parameter(*(608,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2189,7 +2189,7 @@ class Add186(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add186.weight_1", forge.Parameter(*(608,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add186.weight_1", forge.Parameter(*(640,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2201,7 +2201,7 @@ class Add187(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add187.weight_1", forge.Parameter(*(640,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add187.weight_1", forge.Parameter(*(672,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2213,7 +2213,7 @@ class Add188(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add188.weight_1", forge.Parameter(*(672,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add188.weight_1", forge.Parameter(*(704,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2225,7 +2225,7 @@ class Add189(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add189.weight_1", forge.Parameter(*(704,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add189.weight_1", forge.Parameter(*(736,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2237,7 +2237,7 @@ class Add190(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add190.weight_1", forge.Parameter(*(736,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add190.weight_1", forge.Parameter(*(800,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2249,7 +2249,7 @@ class Add191(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add191.weight_1", forge.Parameter(*(800,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add191.weight_1", forge.Parameter(*(832,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2261,7 +2261,7 @@ class Add192(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add192.weight_1", forge.Parameter(*(832,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add192.weight_1", forge.Parameter(*(864,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2273,7 +2273,7 @@ class Add193(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add193.weight_1", forge.Parameter(*(864,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add193.weight_1", forge.Parameter(*(928,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2285,7 +2285,7 @@ class Add194(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add194.weight_1", forge.Parameter(*(928,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add194.weight_1", forge.Parameter(*(960,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2297,7 +2297,7 @@ class Add195(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add195.weight_1", forge.Parameter(*(960,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add195.weight_1", forge.Parameter(*(992,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -2309,7 +2309,7 @@ class Add196(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add196.weight_1", forge.Parameter(*(992,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add196.weight_1", forge.Parameter(*(528,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2321,7 +2321,7 @@ class Add197(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add197.weight_1", forge.Parameter(*(528,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add197.weight_1", forge.Parameter(*(1248,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2333,7 +2333,7 @@ class Add198(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add198.weight_1", forge.Parameter(*(1248,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add198.weight_1", forge.Parameter(*(352,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2345,7 +2345,7 @@ class Add199(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add199.weight_1", forge.Parameter(*(352,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add199.weight_1", forge.Parameter(*(2112,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2357,7 +2357,7 @@ class Add200(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add200.weight_1", forge.Parameter(*(2112,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add200.weight_1", forge.Parameter(*(1408,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2369,7 +2369,7 @@ class Add201(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add201.weight_1", forge.Parameter(*(1408,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add201.weight_1", forge.Parameter(*(432,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2381,7 +2381,7 @@ class Add202(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add202.weight_1", forge.Parameter(*(432,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add202.weight_1", forge.Parameter(*(864,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2393,7 +2393,7 @@ class Add203(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add203.weight_1", forge.Parameter(*(864,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add203.weight_1", forge.Parameter(*(200,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2405,7 +2405,7 @@ class Add204(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add204.weight_1", forge.Parameter(*(200,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add204.weight_1", forge.Parameter(*(1200,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2417,7 +2417,7 @@ class Add205(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add205.weight_1", forge.Parameter(*(1200,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add205.weight_1", forge.Parameter(*(344,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2429,7 +2429,7 @@ class Add206(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add206.weight_1", forge.Parameter(*(344,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add206.weight_1", forge.Parameter(*(2064,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2441,7 +2441,7 @@ class Add207(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add207.weight_1", forge.Parameter(*(2064,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add207.weight_1", forge.Parameter(*(3456,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2453,7 +2453,7 @@ class Add208(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add208.weight_1", forge.Parameter(*(3456,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add208.weight_1", forge.Parameter(*(272,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2465,7 +2465,7 @@ class Add209(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add209.weight_1", forge.Parameter(*(272,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add209.weight_1", forge.Parameter(*(1632,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2477,7 +2477,7 @@ class Add210(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add210.weight_1", forge.Parameter(*(1632,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add210.weight_1", forge.Parameter(*(2688,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2489,7 +2489,7 @@ class Add211(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add211.weight_1", forge.Parameter(*(2688,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add211.weight_1", forge.Parameter(*(1792,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2501,7 +2501,7 @@ class Add212(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add212.weight_1", forge.Parameter(*(1792,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add212.weight_1", forge.Parameter(*(9,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2512,19 +2512,17 @@ class Add212(ForgeModule):
 class Add213(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "add213.weight_1", forge.Parameter(*(9,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
-        )
+        self.add_constant("add213_const_1", shape=(1, 1, 1, 50176), dtype=torch.bfloat16)
 
     def forward(self, add_input_0):
-        add_output_1 = forge.op.Add("", add_input_0, self.get_parameter("add213.weight_1"))
+        add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add213_const_1"))
         return add_output_1
 
 
 class Add214(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("add214_const_1", shape=(1, 1, 1, 50176), dtype=torch.bfloat16)
+        self.add_constant("add214_const_1", shape=(1, 1, 35, 35), dtype=torch.float32)
 
     def forward(self, add_input_0):
         add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add214_const_1"))
@@ -2534,10 +2532,12 @@ class Add214(ForgeModule):
 class Add215(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("add215_const_1", shape=(1, 1, 35, 35), dtype=torch.float32)
+        self.add_parameter(
+            "add215.weight_1", forge.Parameter(*(104,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+        )
 
     def forward(self, add_input_0):
-        add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add215_const_1"))
+        add_output_1 = forge.op.Add("", add_input_0, self.get_parameter("add215.weight_1"))
         return add_output_1
 
 
@@ -2545,7 +2545,7 @@ class Add216(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add216.weight_1", forge.Parameter(*(104,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add216.weight_1", forge.Parameter(*(440,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2556,19 +2556,17 @@ class Add216(ForgeModule):
 class Add217(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "add217.weight_1", forge.Parameter(*(440,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
-        )
+        self.add_constant("add217_const_1", shape=(64, 1, 49, 49), dtype=torch.bfloat16)
 
     def forward(self, add_input_0):
-        add_output_1 = forge.op.Add("", add_input_0, self.get_parameter("add217.weight_1"))
+        add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add217_const_1"))
         return add_output_1
 
 
 class Add218(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("add218_const_1", shape=(64, 1, 49, 49), dtype=torch.bfloat16)
+        self.add_constant("add218_const_1", shape=(16, 1, 49, 49), dtype=torch.bfloat16)
 
     def forward(self, add_input_0):
         add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add218_const_1"))
@@ -2578,7 +2576,7 @@ class Add218(ForgeModule):
 class Add219(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("add219_const_1", shape=(16, 1, 49, 49), dtype=torch.bfloat16)
+        self.add_constant("add219_const_1", shape=(4, 1, 49, 49), dtype=torch.bfloat16)
 
     def forward(self, add_input_0):
         add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add219_const_1"))
@@ -2588,7 +2586,7 @@ class Add219(ForgeModule):
 class Add220(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("add220_const_1", shape=(4, 1, 49, 49), dtype=torch.bfloat16)
+        self.add_constant("add220_const_1", shape=(1, 6, 1, 61), dtype=torch.float32)
 
     def forward(self, add_input_0):
         add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add220_const_1"))
@@ -2598,32 +2596,34 @@ class Add220(ForgeModule):
 class Add221(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("add221_const_1", shape=(1, 6, 1, 61), dtype=torch.float32)
+        self.add_parameter(
+            "add221.weight_0", forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+        )
 
-    def forward(self, add_input_0):
-        add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add221_const_1"))
+    def forward(self, add_input_1):
+        add_output_1 = forge.op.Add("", self.get_parameter("add221.weight_0"), add_input_1)
         return add_output_1
 
 
 class Add222(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "add222.weight_0", forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
-        )
+        self.add_constant("add222_const_1", shape=(1, 1, 13, 13), dtype=torch.float32)
 
-    def forward(self, add_input_1):
-        add_output_1 = forge.op.Add("", self.get_parameter("add222.weight_0"), add_input_1)
+    def forward(self, add_input_0):
+        add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add222_const_1"))
         return add_output_1
 
 
 class Add223(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("add223_const_1", shape=(1, 1, 13, 13), dtype=torch.float32)
+        self.add_parameter(
+            "add223.weight_0", forge.Parameter(*(1536,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+        )
 
-    def forward(self, add_input_0):
-        add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add223_const_1"))
+    def forward(self, add_input_1):
+        add_output_1 = forge.op.Add("", self.get_parameter("add223.weight_0"), add_input_1)
         return add_output_1
 
 
@@ -2631,43 +2631,43 @@ class Add224(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add224.weight_0", forge.Parameter(*(1536,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add224.weight_1", forge.Parameter(*(30522,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
-    def forward(self, add_input_1):
-        add_output_1 = forge.op.Add("", self.get_parameter("add224.weight_0"), add_input_1)
+    def forward(self, add_input_0):
+        add_output_1 = forge.op.Add("", add_input_0, self.get_parameter("add224.weight_1"))
         return add_output_1
 
 
 class Add225(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "add225.weight_1", forge.Parameter(*(30522,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
-        )
+        self.add_constant("add225_const_0", shape=(14, 14), dtype=torch.float32)
 
-    def forward(self, add_input_0):
-        add_output_1 = forge.op.Add("", add_input_0, self.get_parameter("add225.weight_1"))
+    def forward(self, add_input_1):
+        add_output_1 = forge.op.Add("", self.get_constant("add225_const_0"), add_input_1)
         return add_output_1
 
 
 class Add226(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("add226_const_0", shape=(14, 14), dtype=torch.float32)
+        self.add_constant("add226_const_1", shape=(1, 1, 256, 256), dtype=torch.float32)
 
-    def forward(self, add_input_1):
-        add_output_1 = forge.op.Add("", self.get_constant("add226_const_0"), add_input_1)
+    def forward(self, add_input_0):
+        add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add226_const_1"))
         return add_output_1
 
 
 class Add227(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("add227_const_1", shape=(1, 1, 256, 256), dtype=torch.float32)
+        self.add_parameter(
+            "add227.weight_1", forge.Parameter(*(416,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+        )
 
     def forward(self, add_input_0):
-        add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add227_const_1"))
+        add_output_1 = forge.op.Add("", add_input_0, self.get_parameter("add227.weight_1"))
         return add_output_1
 
 
@@ -2675,7 +2675,7 @@ class Add228(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add228.weight_1", forge.Parameter(*(416,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add228.weight_1", forge.Parameter(*(544,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2687,7 +2687,7 @@ class Add229(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add229.weight_1", forge.Parameter(*(544,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add229.weight_1", forge.Parameter(*(608,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2699,7 +2699,7 @@ class Add230(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add230.weight_1", forge.Parameter(*(608,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add230.weight_1", forge.Parameter(*(704,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2711,7 +2711,7 @@ class Add231(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add231.weight_1", forge.Parameter(*(704,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add231.weight_1", forge.Parameter(*(736,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2723,7 +2723,7 @@ class Add232(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add232.weight_1", forge.Parameter(*(736,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add232.weight_1", forge.Parameter(*(800,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2735,7 +2735,7 @@ class Add233(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add233.weight_1", forge.Parameter(*(800,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add233.weight_1", forge.Parameter(*(832,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2747,7 +2747,7 @@ class Add234(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add234.weight_1", forge.Parameter(*(832,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add234.weight_1", forge.Parameter(*(896,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2759,7 +2759,7 @@ class Add235(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add235.weight_1", forge.Parameter(*(896,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add235.weight_1", forge.Parameter(*(928,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2771,7 +2771,7 @@ class Add236(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add236.weight_1", forge.Parameter(*(928,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add236.weight_1", forge.Parameter(*(992,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2783,7 +2783,8 @@ class Add237(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add237.weight_1", forge.Parameter(*(992,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add237.weight_1",
+            forge.Parameter(*(11221,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, add_input_0):
@@ -2795,8 +2796,7 @@ class Add238(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add238.weight_1",
-            forge.Parameter(*(11221,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            "add238.weight_1", forge.Parameter(*(49,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2808,7 +2808,7 @@ class Add239(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add239.weight_1", forge.Parameter(*(49,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add239.weight_1", forge.Parameter(*(10,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2820,7 +2820,7 @@ class Add240(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add240.weight_1", forge.Parameter(*(10,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add240.weight_1", forge.Parameter(*(1001,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2832,7 +2832,7 @@ class Add241(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add241.weight_1", forge.Parameter(*(1001,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add241.weight_1", forge.Parameter(*(2240,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2844,7 +2844,7 @@ class Add242(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add242.weight_1", forge.Parameter(*(2240,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add242.weight_1", forge.Parameter(*(1232,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2856,7 +2856,7 @@ class Add243(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add243.weight_1", forge.Parameter(*(1232,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
+            "add243.weight_1", forge.Parameter(*(3024,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
         )
 
     def forward(self, add_input_0):
@@ -2867,22 +2867,22 @@ class Add243(ForgeModule):
 class Add244(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "add244.weight_1", forge.Parameter(*(3024,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b)
-        )
+        self.add_constant("add244_const_1", shape=(1500, 384), dtype=torch.float32)
 
     def forward(self, add_input_0):
-        add_output_1 = forge.op.Add("", add_input_0, self.get_parameter("add244.weight_1"))
+        add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add244_const_1"))
         return add_output_1
 
 
 class Add245(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("add245_const_1", shape=(1500, 384), dtype=torch.float32)
+        self.add_parameter(
+            "add245.weight_0", forge.Parameter(*(3072,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+        )
 
-    def forward(self, add_input_0):
-        add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add245_const_1"))
+    def forward(self, add_input_1):
+        add_output_1 = forge.op.Add("", self.get_parameter("add245.weight_0"), add_input_1)
         return add_output_1
 
 
@@ -2890,7 +2890,7 @@ class Add246(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add246.weight_0", forge.Parameter(*(3072,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add246.weight_0", forge.Parameter(*(30522,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_1):
@@ -2902,7 +2902,7 @@ class Add247(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add247.weight_0", forge.Parameter(*(30522,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "add247.weight_0", forge.Parameter(*(251,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_1):
@@ -2913,32 +2913,33 @@ class Add247(ForgeModule):
 class Add248(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "add248.weight_0", forge.Parameter(*(251,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
-        )
+        self.add_constant("add248_const_0", shape=(1,), dtype=torch.float32)
 
     def forward(self, add_input_1):
-        add_output_1 = forge.op.Add("", self.get_parameter("add248.weight_0"), add_input_1)
+        add_output_1 = forge.op.Add("", self.get_constant("add248_const_0"), add_input_1)
         return add_output_1
 
 
 class Add249(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("add249_const_0", shape=(1,), dtype=torch.float32)
+        self.add_constant("add249_const_1", shape=(8, 1), dtype=torch.float32)
 
-    def forward(self, add_input_1):
-        add_output_1 = forge.op.Add("", self.get_constant("add249_const_0"), add_input_1)
+    def forward(self, add_input_0):
+        add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add249_const_1"))
         return add_output_1
 
 
 class Add250(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("add250_const_1", shape=(8, 1), dtype=torch.float32)
+        self.add_parameter(
+            "add250.weight_1",
+            forge.Parameter(*(264, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, add_input_0):
-        add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add250_const_1"))
+        add_output_1 = forge.op.Add("", add_input_0, self.get_parameter("add250.weight_1"))
         return add_output_1
 
 
@@ -2947,7 +2948,7 @@ class Add251(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "add251.weight_1",
-            forge.Parameter(*(264, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, add_input_0):
@@ -2960,7 +2961,7 @@ class Add252(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "add252.weight_1",
-            forge.Parameter(*(128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, add_input_0):
@@ -2973,7 +2974,7 @@ class Add253(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "add253.weight_1",
-            forge.Parameter(*(64, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, add_input_0):
@@ -2986,7 +2987,7 @@ class Add254(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "add254.weight_1",
-            forge.Parameter(*(32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, add_input_0):
@@ -2998,8 +2999,7 @@ class Add255(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "add255.weight_1",
-            forge.Parameter(*(16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            "add255.weight_1", forge.Parameter(*(1,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, add_input_0):
@@ -17855,7 +17855,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
                 "pd_mobilenetv2_basic_img_cls_paddlemodels",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
@@ -17871,7 +17870,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
                 "pd_mobilenetv2_basic_img_cls_paddlemodels",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
@@ -17992,7 +17990,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "onnx_efficientnet_efficientnet_b1_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b0_img_cls_timm",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
@@ -18020,7 +18017,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "pd_mobilenetv2_basic_img_cls_paddlemodels",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
                 "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels",
@@ -18034,7 +18030,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "pd_mobilenetv2_basic_img_cls_paddlemodels",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
                 "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels",
@@ -21450,23 +21445,18 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Add0,
         [((1, 16, 240, 240), torch.float32), ((16, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pt_yolo_v5_yolov5n_img_cls_torchhub_480x480"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v5_yolov5n_img_cls_torchhub_480x480"], "pcc": 0.99},
     ),
-    (Add161, [((1, 16, 240, 240), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (Add1, [((1, 16, 240, 240), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
     (
         Add0,
         [((1, 32, 240, 240), torch.float32), ((32, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pt_yolo_v5_yolov5s_img_cls_torchhub_480x480"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_480x480"], "pcc": 0.99},
     ),
-    (Add161, [((1, 32, 240, 240), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (Add1, [((1, 32, 240, 240), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
     (
         Add0,
         [((1, 32, 120, 120), torch.float32), ((32, 1, 1), torch.float32)],
         {
             "model_names": [
-                "TranslatedLayer",
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_480x480",
                 "onnx_efficientnet_efficientnet_b1_img_cls_timm",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_480x480",
@@ -21474,59 +21464,32 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (Add161, [((1, 32, 120, 120), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
     (
         Add0,
         [((1, 48, 120, 120), torch.float32), ((48, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"], "pcc": 0.99},
     ),
-    (Add161, [((1, 48, 120, 120), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (Add1, [((1, 48, 120, 120), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (
-        Add0,
-        [((1, 48, 60, 60), torch.float32), ((48, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (Add161, [((1, 48, 60, 60), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
     (
         Add0,
         [((1, 96, 60, 60), torch.float32), ((96, 1, 1), torch.float32)],
         {
             "model_names": [
-                "TranslatedLayer",
                 "onnx_efficientnet_efficientnet_b1_img_cls_timm",
                 "pt_yolo_v5_yolov5m_img_cls_torchhub_480x480",
             ],
             "pcc": 0.99,
         },
     ),
-    (Add161, [((1, 96, 60, 60), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (Add1, [((1, 96, 60, 60), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (
-        Add0,
-        [((1, 96, 30, 30), torch.float32), ((96, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (Add161, [((1, 96, 30, 30), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
     (
         Add0,
         [((1, 192, 30, 30), torch.float32), ((192, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"], "pcc": 0.99},
     ),
-    (Add161, [((1, 192, 30, 30), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (Add1, [((1, 192, 30, 30), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (
-        Add0,
-        [((1, 192, 15, 15), torch.float32), ((192, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (Add161, [((1, 192, 15, 15), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
     (
         Add0,
         [((1, 192, 1, 1), torch.float32), ((192, 1, 1), torch.float32)],
         {
             "model_names": [
-                "TranslatedLayer",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
                 "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels",
                 "onnx_efficientnet_efficientnet_b4_img_cls_timm",
@@ -21538,21 +21501,18 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Add1,
         [((1, 192, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
+        {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
         Add0,
         [((1, 384, 15, 15), torch.float32), ((384, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"], "pcc": 0.99},
     ),
-    (Add161, [((1, 384, 15, 15), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (Add1, [((1, 384, 15, 15), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
     (
         Add0,
         [((1, 96, 1, 1), torch.float32), ((96, 1, 1), torch.float32)],
         {
             "model_names": [
-                "TranslatedLayer",
                 "onnx_efficientnet_efficientnet_b1_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b0_img_cls_timm",
@@ -21569,7 +21529,6 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 384, 1, 1), torch.float32), ((384, 1, 1), torch.float32)],
         {
             "model_names": [
-                "TranslatedLayer",
                 "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels",
                 "onnx_efficientnet_efficientnet_b5_img_cls_timm",
             ],
@@ -21579,19 +21538,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Add1,
         [((1, 384, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
-    ),
-    (
-        Add0,
-        [((1, 360, 15, 15), torch.float32), ((360, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
+        {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
         Add0,
         [((1, 24, 1, 1), torch.float32), ((24, 1, 1), torch.float32)],
         {
             "model_names": [
-                "TranslatedLayer",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
                 "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels",
                 "onnx_efficientnet_efficientnet_b4_img_cls_timm",
@@ -21604,19 +21557,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Add1,
         [((1, 96, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
-    ),
-    (
-        Add0,
-        [((1, 96, 15, 15), torch.float32), ((1, 96, 15, 15), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
+        {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
         Add0,
         [((1, 6, 1, 1), torch.float32), ((6, 1, 1), torch.float32)],
         {
             "model_names": [
-                "TranslatedLayer",
                 "onnx_efficientnet_efficientnet_b1_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b0_img_cls_timm",
@@ -21633,75 +21580,20 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Add1,
         [((1, 24, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
-    ),
-    (
-        Add0,
-        [((1, 24, 15, 15), torch.float32), ((1, 24, 15, 15), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (
-        Add0,
-        [((1, 42, 30, 30), torch.float32), ((42, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (
-        Add0,
-        [((1, 96, 30, 30), torch.float32), ((1, 96, 30, 30), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (
-        Add0,
-        [((1, 24, 30, 30), torch.float32), ((1, 24, 30, 30), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (
-        Add0,
-        [((1, 18, 60, 60), torch.float32), ((18, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
+        {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
         Add0,
         [((1, 96, 60, 60), torch.float32), ((1, 96, 60, 60), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"], "pcc": 0.99},
     ),
     (
         Add0,
         [((1, 24, 60, 60), torch.float32), ((1, 24, 60, 60), torch.float32)],
-        {"model_names": ["TranslatedLayer", "onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
     ),
     (
-        Add0,
-        [((1, 12, 120, 120), torch.float32), ((12, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (
-        Add0,
-        [((1, 96, 120, 120), torch.float32), ((1, 96, 120, 120), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (
-        Add0,
-        [((1, 24, 120, 120), torch.float32), ((1, 24, 120, 120), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (
-        Add0,
-        [((1, 24, 120, 120), torch.float32), ((24, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (
-        Add0,
-        [((1, 24, 240, 240), torch.float32), ((24, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (
-        Add0,
-        [((1, 1, 480, 480), torch.float32), ((1, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (
-        Add162,
+        Add161,
         [((1, 100, 256), torch.float32)],
         {
             "model_names": [
@@ -21734,7 +21626,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add163,
+        Add162,
         [((1, 64, 214, 320), torch.float32)],
         {
             "model_names": [
@@ -21745,7 +21637,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add163,
+        Add162,
         [((1, 64, 107, 160), torch.float32)],
         {
             "model_names": [
@@ -21756,7 +21648,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add164,
+        Add163,
         [((1, 256, 107, 160), torch.float32)],
         {
             "model_names": [
@@ -21778,7 +21670,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add165,
+        Add164,
         [((1, 128, 107, 160), torch.float32)],
         {
             "model_names": [
@@ -21789,7 +21681,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add165,
+        Add164,
         [((1, 128, 54, 80), torch.float32)],
         {
             "model_names": [
@@ -21800,7 +21692,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add166,
+        Add165,
         [((1, 512, 54, 80), torch.float32)],
         {
             "model_names": [
@@ -21822,7 +21714,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add164,
+        Add163,
         [((1, 256, 54, 80), torch.float32)],
         {
             "model_names": [
@@ -21833,7 +21725,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add164,
+        Add163,
         [((1, 256, 27, 40), torch.float32)],
         {
             "model_names": [
@@ -21844,7 +21736,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add167,
+        Add166,
         [((1, 1024, 27, 40), torch.float32)],
         {
             "model_names": [
@@ -21866,7 +21758,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add166,
+        Add165,
         [((1, 512, 27, 40), torch.float32)],
         {
             "model_names": [
@@ -21877,7 +21769,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add166,
+        Add165,
         [((1, 512, 14, 20), torch.float32)],
         {
             "model_names": [
@@ -21888,7 +21780,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add168,
+        Add167,
         [((1, 2048, 14, 20), torch.float32)],
         {
             "model_names": [
@@ -21921,7 +21813,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add169,
+        Add168,
         [((1, 280, 256), torch.float32)],
         {
             "model_names": [
@@ -21943,7 +21835,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add170,
+        Add169,
         [((1, 8, 280, 280), torch.float32)],
         {
             "model_names": [
@@ -21976,7 +21868,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add171,
+        Add170,
         [((1, 8, 100, 280), torch.float32)],
         {
             "model_names": [
@@ -21998,12 +21890,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add172,
+        Add171,
         [((1, 100, 92), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_obj_det_hf"], "pcc": 0.99},
     ),
     (
-        Add173,
+        Add172,
         [((1, 100, 4), torch.float32)],
         {
             "model_names": [
@@ -22073,7 +21965,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (Add8, [((1, 10, 3072), torch.float32)], {"model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"], "pcc": 0.99}),
     (
-        Add174,
+        Add173,
         [((1, 10, 32000), torch.float32)],
         {"model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"], "pcc": 0.99},
     ),
@@ -22086,7 +21978,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add175,
+        Add174,
         [((96,), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels", "pd_mobilenetv2_basic_img_cls_paddlemodels"],
@@ -22102,7 +21994,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add176,
+        Add175,
         [((160,), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels", "pd_mobilenetv2_basic_img_cls_paddlemodels"],
@@ -22140,7 +22032,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((224,), torch.float32), ((1,), torch.float32)],
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
-    (Add177, [((224,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Add176, [((224,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Add0,
         [((1, 224, 56, 56), torch.float32), ((224, 1, 1), torch.float32)],
@@ -22192,7 +22084,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add178,
+        Add177,
         [((320,), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels", "pd_mobilenetv2_basic_img_cls_paddlemodels"],
@@ -22209,7 +22101,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((352,), torch.float32), ((1,), torch.float32)],
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
-    (Add179, [((352,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Add178, [((352,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Add0,
         [((1, 352, 28, 28), torch.float32), ((352, 1, 1), torch.float32)],
@@ -22224,7 +22116,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add180,
+        Add179,
         [((384,), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels", "pd_mobilenetv2_basic_img_cls_paddlemodels"],
@@ -22244,7 +22136,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((416,), torch.float32), ((1,), torch.float32)],
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
-    (Add181, [((416,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Add180, [((416,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Add0,
         [((1, 416, 28, 28), torch.float32), ((416, 1, 1), torch.float32)],
@@ -22255,7 +22147,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((448,), torch.float32), ((1,), torch.float32)],
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
-    (Add182, [((448,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Add181, [((448,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Add0,
         [((1, 448, 28, 28), torch.float32), ((448, 1, 1), torch.float32)],
@@ -22274,7 +22166,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add183,
+        Add182,
         [((480,), torch.float32)],
         {
             "model_names": [
@@ -22329,7 +22221,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((544,), torch.float32), ((1,), torch.float32)],
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
-    (Add184, [((544,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Add183, [((544,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Add0,
         [((1, 544, 14, 14), torch.float32), ((544, 1, 1), torch.float32)],
@@ -22344,7 +22236,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add185,
+        Add184,
         [((576,), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels", "pd_mobilenetv2_basic_img_cls_paddlemodels"],
@@ -22368,7 +22260,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((608,), torch.float32), ((1,), torch.float32)],
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
-    (Add186, [((608,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Add185, [((608,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Add0,
         [((1, 608, 14, 14), torch.float32), ((608, 1, 1), torch.float32)],
@@ -22379,7 +22271,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((640,), torch.float32), ((1,), torch.float32)],
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
-    (Add187, [((640,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Add186, [((640,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Add0,
         [((1, 640, 14, 14), torch.float32), ((640, 1, 1), torch.float32)],
@@ -22390,13 +22282,13 @@ forge_modules_and_shapes_dtypes_list = [
         [((672,), torch.float32), ((1,), torch.float32)],
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
-    (Add188, [((672,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Add187, [((672,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Add0,
         [((704,), torch.float32), ((1,), torch.float32)],
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
-    (Add189, [((704,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Add188, [((704,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Add0,
         [((1, 704, 14, 14), torch.float32), ((704, 1, 1), torch.float32)],
@@ -22407,7 +22299,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((736,), torch.float32), ((1,), torch.float32)],
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
-    (Add190, [((736,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Add189, [((736,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Add0,
         [((1, 736, 14, 14), torch.float32), ((736, 1, 1), torch.float32)],
@@ -22438,7 +22330,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((800,), torch.float32), ((1,), torch.float32)],
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
-    (Add191, [((800,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Add190, [((800,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Add0,
         [((1, 800, 14, 14), torch.float32), ((800, 1, 1), torch.float32)],
@@ -22449,7 +22341,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((832,), torch.float32), ((1,), torch.float32)],
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
-    (Add192, [((832,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Add191, [((832,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Add0,
         [((1, 832, 14, 14), torch.float32), ((832, 1, 1), torch.float32)],
@@ -22460,7 +22352,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((864,), torch.float32), ((1,), torch.float32)],
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
-    (Add193, [((864,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Add192, [((864,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Add0,
         [((1, 864, 14, 14), torch.float32), ((864, 1, 1), torch.float32)],
@@ -22482,7 +22374,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((928,), torch.float32), ((1,), torch.float32)],
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
-    (Add194, [((928,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Add193, [((928,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Add0,
         [((1, 928, 14, 14), torch.float32), ((928, 1, 1), torch.float32)],
@@ -22497,7 +22389,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add195,
+        Add194,
         [((960,), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels", "pd_mobilenetv2_basic_img_cls_paddlemodels"],
@@ -22514,7 +22406,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((992,), torch.float32), ((1,), torch.float32)],
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
-    (Add196, [((992,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Add195, [((992,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Add0,
         [((1, 992, 14, 14), torch.float32), ((992, 1, 1), torch.float32)],
@@ -22764,7 +22656,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add197,
+        Add196,
         [((528,), torch.bfloat16)],
         {
             "model_names": [
@@ -22850,7 +22742,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add198,
+        Add197,
         [((1248,), torch.bfloat16)],
         {
             "model_names": [
@@ -22915,7 +22807,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add199,
+        Add198,
         [((352,), torch.bfloat16)],
         {
             "model_names": [
@@ -22955,7 +22847,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add200,
+        Add199,
         [((2112,), torch.bfloat16)],
         {
             "model_names": [
@@ -23011,7 +22903,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add201,
+        Add200,
         [((1408,), torch.bfloat16)],
         {
             "model_names": [
@@ -23103,7 +22995,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add202,
+        Add201,
         [((432,), torch.bfloat16)],
         {
             "model_names": [
@@ -23165,7 +23057,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add203,
+        Add202,
         [((864,), torch.bfloat16)],
         {
             "model_names": [
@@ -23218,7 +23110,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add204,
+        Add203,
         [((200,), torch.bfloat16)],
         {
             "model_names": [
@@ -23254,7 +23146,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add205,
+        Add204,
         [((1200,), torch.bfloat16)],
         {
             "model_names": [
@@ -23307,7 +23199,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Add206,
+        Add205,
         [((344,), torch.bfloat16)],
         {"model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"], "pcc": 0.99},
     ),
@@ -23328,7 +23220,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add207,
+        Add206,
         [((2064,), torch.bfloat16)],
         {
             "model_names": [
@@ -23370,7 +23262,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Add208,
+        Add207,
         [((3456,), torch.bfloat16)],
         {"model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"], "pcc": 0.99},
     ),
@@ -23616,7 +23508,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add209,
+        Add208,
         [((272,), torch.bfloat16)],
         {
             "model_names": [
@@ -23658,7 +23550,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add210,
+        Add209,
         [((1632,), torch.bfloat16)],
         {
             "model_names": [
@@ -23746,7 +23638,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add211,
+        Add210,
         [((2688,), torch.bfloat16)],
         {
             "model_names": [
@@ -23823,7 +23715,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add212,
+        Add211,
         [((1792,), torch.bfloat16)],
         {
             "model_names": [
@@ -24242,7 +24134,7 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (Add213, [((1, 9), torch.bfloat16)], {"model_names": ["pt_mobilenetv1_basic_img_cls_torchvision"], "pcc": 0.99}),
+    (Add212, [((1, 9), torch.bfloat16)], {"model_names": ["pt_mobilenetv1_basic_img_cls_torchvision"], "pcc": 0.99}),
     (
         Add0,
         [((1, 192, 14, 14), torch.bfloat16), ((192, 1, 1), torch.bfloat16)],
@@ -24636,7 +24528,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"], "pcc": 0.99},
     ),
     (
-        Add214,
+        Add213,
         [((1, 1, 512, 50176), torch.bfloat16)],
         {
             "model_names": [
@@ -24711,7 +24603,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add215,
+        Add214,
         [((1, 12, 35, 35), torch.float32)],
         {
             "model_names": [
@@ -24738,7 +24630,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Add216,
+        Add215,
         [((104,), torch.bfloat16)],
         {"model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"], "pcc": 0.99},
     ),
@@ -24788,7 +24680,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Add217,
+        Add216,
         [((440,), torch.bfloat16)],
         {"model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"], "pcc": 0.99},
     ),
@@ -25017,7 +24909,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Add218,
+        Add217,
         [((1, 64, 3, 49, 49), torch.bfloat16)],
         {
             "model_names": [
@@ -25073,7 +24965,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Add219,
+        Add218,
         [((1, 16, 6, 49, 49), torch.bfloat16)],
         {
             "model_names": [
@@ -25129,7 +25021,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Add220,
+        Add219,
         [((1, 4, 12, 49, 49), torch.bfloat16)],
         {
             "model_names": [
@@ -25206,7 +25098,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf", "pt_t5_t5_small_text_gen_hf"], "pcc": 0.99},
     ),
     (
-        Add221,
+        Add220,
         [((1, 6, 1, 61), torch.float32)],
         {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99},
     ),
@@ -26333,22 +26225,22 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"], "pcc": 0.99},
     ),
     (
-        Add222,
+        Add221,
         [((1, 13, 384), torch.float32)],
         {"model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"], "pcc": 0.99},
     ),
     (
-        Add223,
+        Add222,
         [((1, 12, 13, 13), torch.float32)],
         {"model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"], "pcc": 0.99},
     ),
     (
-        Add224,
+        Add223,
         [((1, 13, 1536), torch.float32)],
         {"model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"], "pcc": 0.99},
     ),
     (
-        Add180,
+        Add179,
         [((1, 384), torch.float32)],
         {"model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"], "pcc": 0.99},
     ),
@@ -26424,7 +26316,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add225,
+        Add224,
         [((1, 9, 30522), torch.float32)],
         {"model_names": ["pd_bert_bert_base_uncased_mlm_padlenlp"], "pcc": 0.99},
     ),
@@ -26447,7 +26339,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"], "pcc": 0.99},
     ),
     (
-        Add226,
+        Add225,
         [((1, 1, 14, 14), torch.float32)],
         {"model_names": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"], "pcc": 0.99},
     ),
@@ -26478,12 +26370,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"], "pcc": 0.99},
     ),
     (
-        Add227,
+        Add226,
         [((1, 16, 256, 256), torch.float32)],
         {"model_names": ["pt_bart_facebook_bart_large_mnli_seq_cls_hf"], "pcc": 0.99},
     ),
     (
-        Add225,
+        Add224,
         [((1, 128, 30522), torch.float32)],
         {
             "model_names": ["pt_bert_bert_base_uncased_mlm_hf", "pt_distilbert_distilbert_base_uncased_mlm_hf"],
@@ -26560,7 +26452,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add228,
+        Add227,
         [((416,), torch.bfloat16)],
         {
             "model_names": [
@@ -26658,7 +26550,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add229,
+        Add228,
         [((544,), torch.bfloat16)],
         {
             "model_names": [
@@ -26697,7 +26589,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add230,
+        Add229,
         [((608,), torch.bfloat16)],
         {
             "model_names": [
@@ -26749,7 +26641,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add231,
+        Add230,
         [((704,), torch.bfloat16)],
         {
             "model_names": [
@@ -26788,7 +26680,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add232,
+        Add231,
         [((736,), torch.bfloat16)],
         {
             "model_names": [
@@ -26827,7 +26719,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add233,
+        Add232,
         [((800,), torch.bfloat16)],
         {
             "model_names": [
@@ -26866,7 +26758,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add234,
+        Add233,
         [((832,), torch.bfloat16)],
         {
             "model_names": [
@@ -26909,7 +26801,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add235,
+        Add234,
         [((896,), torch.bfloat16)],
         {
             "model_names": [
@@ -26956,7 +26848,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add236,
+        Add235,
         [((928,), torch.bfloat16)],
         {
             "model_names": [
@@ -27011,7 +26903,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add237,
+        Add236,
         [((992,), torch.bfloat16)],
         {
             "model_names": [
@@ -27230,12 +27122,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add238,
+        Add237,
         [((1, 11221), torch.bfloat16)],
         {"model_names": ["pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm"], "pcc": 0.99},
     ),
     (
-        Add239,
+        Add238,
         [((1, 768, 49), torch.bfloat16)],
         {"model_names": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm"], "pcc": 0.99},
     ),
@@ -27273,7 +27165,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_mnist_base_img_cls_github"], "pcc": 0.99},
     ),
     (Add23, [((1, 128), torch.bfloat16)], {"model_names": ["pt_mnist_base_img_cls_github"], "pcc": 0.99}),
-    (Add240, [((1, 10), torch.bfloat16)], {"model_names": ["pt_mnist_base_img_cls_github"], "pcc": 0.99}),
+    (Add239, [((1, 10), torch.bfloat16)], {"model_names": ["pt_mnist_base_img_cls_github"], "pcc": 0.99}),
     (
         Add0,
         [((1, 16, 48, 48), torch.bfloat16), ((16, 1, 1), torch.bfloat16)],
@@ -27396,7 +27288,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"], "pcc": 0.99},
     ),
     (
-        Add241,
+        Add240,
         [((1, 1001), torch.bfloat16)],
         {
             "model_names": [
@@ -27634,7 +27526,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((2240,), torch.bfloat16), ((1,), torch.bfloat16)],
         {"model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"], "pcc": 0.99},
     ),
-    (Add242, [((2240,), torch.bfloat16)], {"model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"], "pcc": 0.99}),
+    (Add241, [((2240,), torch.bfloat16)], {"model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"], "pcc": 0.99}),
     (
         Add0,
         [((1, 2240, 14, 14), torch.bfloat16), ((2240, 1, 1), torch.bfloat16)],
@@ -27667,7 +27559,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add243,
+        Add242,
         [((1232,), torch.bfloat16)],
         {
             "model_names": [
@@ -27744,7 +27636,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add244,
+        Add243,
         [((3024,), torch.bfloat16)],
         {
             "model_names": [
@@ -28055,7 +27947,7 @@ forge_modules_and_shapes_dtypes_list = [
     (Add28, [((1, 56, 56, 512), torch.bfloat16)], {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99}),
     (Add23, [((1, 56, 56, 128), torch.bfloat16)], {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99}),
     (
-        Add218,
+        Add217,
         [((1, 64, 4, 49, 49), torch.bfloat16)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99},
     ),
@@ -28078,7 +27970,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (Add27, [((1, 28, 28, 256), torch.bfloat16)], {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99}),
     (
-        Add219,
+        Add218,
         [((1, 16, 8, 49, 49), torch.bfloat16)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99},
     ),
@@ -28101,7 +27993,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (Add28, [((1, 14, 14, 512), torch.bfloat16)], {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99}),
     (
-        Add220,
+        Add219,
         [((1, 4, 16, 49, 49), torch.bfloat16)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99},
     ),
@@ -28160,7 +28052,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
     ),
     (
-        Add180,
+        Add179,
         [((1, 1, 384), torch.float32)],
         {"model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
     ),
@@ -28175,12 +28067,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
     ),
     (
-        Add245,
+        Add244,
         [((1, 1500, 384), torch.float32)],
         {"model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
     ),
     (
-        Add180,
+        Add179,
         [((1, 1500, 384), torch.float32)],
         {"model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
     ),
@@ -28432,7 +28324,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add246,
+        Add245,
         [((1, 6, 3072), torch.float32)],
         {
             "model_names": ["onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
@@ -28440,10 +28332,10 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (Add45, [((1, 128, 768), torch.float32)], {"model_names": ["onnx_bert_bert_base_uncased_mlm_hf"], "pcc": 0.99}),
-    (Add246, [((1, 128, 3072), torch.float32)], {"model_names": ["onnx_bert_bert_base_uncased_mlm_hf"], "pcc": 0.99}),
-    (Add247, [((1, 128, 30522), torch.float32)], {"model_names": ["onnx_bert_bert_base_uncased_mlm_hf"], "pcc": 0.99}),
+    (Add245, [((1, 128, 3072), torch.float32)], {"model_names": ["onnx_bert_bert_base_uncased_mlm_hf"], "pcc": 0.99}),
+    (Add246, [((1, 128, 30522), torch.float32)], {"model_names": ["onnx_bert_bert_base_uncased_mlm_hf"], "pcc": 0.99}),
     (
-        Add248,
+        Add247,
         [((1, 100, 251), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
@@ -28463,7 +28355,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Add249,
+        Add248,
         [((1, 100, 8, 14, 20), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
@@ -28478,12 +28370,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Add250,
+        Add249,
         [((100, 8, 9240), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Add251,
+        Add250,
         [((100, 264, 14, 20), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
@@ -28493,12 +28385,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Add250,
+        Add249,
         [((100, 8, 4480), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Add252,
+        Add251,
         [((100, 128, 14, 20), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
@@ -28513,12 +28405,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Add250,
+        Add249,
         [((100, 8, 8640), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Add253,
+        Add252,
         [((100, 64, 27, 40), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
@@ -28533,12 +28425,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Add250,
+        Add249,
         [((100, 8, 17280), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Add254,
+        Add253,
         [((100, 32, 54, 80), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
@@ -28553,12 +28445,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Add250,
+        Add249,
         [((100, 8, 34240), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Add255,
+        Add254,
         [((100, 16, 107, 160), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
@@ -28678,7 +28570,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add161,
+        Add255,
         [((1, 16, 16, 50), torch.float32)],
         {
             "model_names": [
@@ -28711,7 +28603,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add161,
+        Add255,
         [((1, 32, 16, 50), torch.float32)],
         {
             "model_names": [
@@ -28744,7 +28636,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add161,
+        Add255,
         [((1, 64, 16, 50), torch.float32)],
         {
             "model_names": [
@@ -28777,7 +28669,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add161,
+        Add255,
         [((1, 64, 8, 50), torch.float32)],
         {
             "model_names": [
@@ -28810,7 +28702,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add161,
+        Add255,
         [((1, 128, 8, 50), torch.float32)],
         {
             "model_names": [
@@ -28843,7 +28735,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add161,
+        Add255,
         [((1, 128, 8, 25), torch.float32)],
         {
             "model_names": [
@@ -28876,7 +28768,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add161,
+        Add255,
         [((1, 240, 8, 25), torch.float32)],
         {
             "model_names": [
@@ -28909,7 +28801,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add161,
+        Add255,
         [((1, 240, 4, 25), torch.float32)],
         {
             "model_names": [
@@ -28964,7 +28856,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add161,
+        Add255,
         [((1, 480, 4, 25), torch.float32)],
         {
             "model_names": [
@@ -29008,7 +28900,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add161,
+        Add255,
         [((1, 480, 2, 25), torch.float32)],
         {
             "model_names": [
@@ -29885,7 +29777,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add161,
+        Add255,
         [((1, 1), torch.float32)],
         {
             "model_names": [
@@ -30088,7 +29980,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add239,
+        Add238,
         [((1, 1024, 49), torch.bfloat16)],
         {"model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"], "pcc": 0.99},
     ),
@@ -30111,7 +30003,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add239,
+        Add238,
         [((1, 512, 49), torch.bfloat16)],
         {"model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"], "pcc": 0.99},
     ),
@@ -30248,7 +30140,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm"], "pcc": 0.99},
     ),
     (Add34, [((1024, 512), torch.float32)], {"model_names": ["pt_nbeats_generic_basis_clm_hf"], "pcc": 0.99}),
-    (Add175, [((1024, 96), torch.float32)], {"model_names": ["pt_nbeats_generic_basis_clm_hf"], "pcc": 0.99}),
+    (Add174, [((1024, 96), torch.float32)], {"model_names": ["pt_nbeats_generic_basis_clm_hf"], "pcc": 0.99}),
     (
         Add282,
         [((1, 512, 261), torch.bfloat16)],
@@ -31093,7 +30985,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add222,
+        Add221,
         [((1, 4096, 384), torch.float32)],
         {
             "model_names": [
@@ -31187,7 +31079,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add222,
+        Add221,
         [((4, 64, 384), torch.float32)],
         {
             "model_names": [
@@ -31222,7 +31114,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add224,
+        Add223,
         [((1, 256, 1536), torch.float32)],
         {
             "model_names": [
@@ -31233,7 +31125,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add222,
+        Add221,
         [((1, 256, 384), torch.float32)],
         {
             "model_names": [
@@ -31294,7 +31186,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add246,
+        Add245,
         [((1, 64, 3072), torch.float32)],
         {
             "model_names": [
@@ -32254,7 +32146,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99},
     ),
     (
-        Add215,
+        Add214,
         [((1, 14, 35, 35), torch.float32)],
         {"model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99},
     ),
@@ -32420,7 +32312,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_vit_base_google_vit_base_patch16_224_img_cls_hf"], "pcc": 0.99},
     ),
     (
-        Add246,
+        Add245,
         [((1, 197, 3072), torch.float32)],
         {"model_names": ["onnx_vit_base_google_vit_base_patch16_224_img_cls_hf"], "pcc": 0.99},
     ),
@@ -32498,7 +32390,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Add161,
+        Add255,
         [((1, 16, 224, 224), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
@@ -32513,7 +32405,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Add161,
+        Add255,
         [((1, 32, 224, 224), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
@@ -32523,12 +32415,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Add161,
+        Add255,
         [((1, 32, 112, 112), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Add161,
+        Add255,
         [((1, 48, 112, 112), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
@@ -32538,12 +32430,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Add161,
+        Add255,
         [((1, 48, 56, 56), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Add161,
+        Add255,
         [((1, 96, 56, 56), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
@@ -32553,12 +32445,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Add161,
+        Add255,
         [((1, 96, 28, 28), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Add161,
+        Add255,
         [((1, 192, 28, 28), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
@@ -32568,12 +32460,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Add161,
+        Add255,
         [((1, 192, 14, 14), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Add161,
+        Add255,
         [((1, 384, 14, 14), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
@@ -33388,7 +33280,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 3072, 1, 128), torch.float32), ((3072, 1, 1), torch.float32)],
         {"model_names": ["pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf"], "pcc": 0.99},
     ),
-    (Add180, [((64, 64, 384), torch.float32)], {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99}),
+    (Add179, [((64, 64, 384), torch.float32)], {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99}),
     (
         Add34,
         [((1, 15, 15, 512), torch.float32)],
@@ -33512,7 +33404,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add175,
+        Add174,
         [((64, 64, 96), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -33528,7 +33420,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add180,
+        Add179,
         [((1, 64, 64, 384), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -33536,7 +33428,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add175,
+        Add174,
         [((1, 64, 64, 96), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -33544,7 +33436,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add185,
+        Add184,
         [((16, 64, 576), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -33592,7 +33484,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add180,
+        Add179,
         [((4, 64, 384), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -33616,7 +33508,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add180,
+        Add179,
         [((1, 16, 16, 384), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -34917,7 +34809,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"], "pcc": 0.99},
     ),
     (
-        Add227,
+        Add226,
         [((1, 32, 256, 256), torch.float32)],
         {"model_names": ["pt_phi1_microsoft_phi_1_seq_cls_hf", "pt_phi_1_5_microsoft_phi_1_5_seq_cls_hf"], "pcc": 0.99},
     ),
@@ -35587,7 +35479,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add223,
+        Add222,
         [((1, 32, 13, 13), torch.float32)],
         {
             "model_names": [
@@ -35631,7 +35523,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99},
     ),
     (
-        Add227,
+        Add226,
         [((1, 40, 256, 256), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99},
     ),
@@ -35683,7 +35575,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add215,
+        Add214,
         [((1, 16, 35, 35), torch.float32)],
         {
             "model_names": [
@@ -35749,7 +35641,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Add215,
+        Add214,
         [((1, 28, 35, 35), torch.float32)],
         {
             "model_names": [
@@ -35783,7 +35675,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99},
     ),
     (
-        Add223,
+        Add222,
         [((1, 28, 13, 13), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99},
     ),

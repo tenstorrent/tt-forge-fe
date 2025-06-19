@@ -6151,16 +6151,6 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate2,
-        [
-            ((1, 24, 120, 120), torch.float32),
-            ((1, 24, 120, 120), torch.float32),
-            ((1, 24, 120, 120), torch.float32),
-            ((1, 24, 120, 120), torch.float32),
-        ],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99, "args": {"axis": "-3"}},
-    ),
-    (
         Concatenate1,
         [((1, 128, 28, 28), torch.float32), ((1, 128, 28, 28), torch.float32)],
         {"model_names": ["onnx_dla_dla34_visual_bb_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},

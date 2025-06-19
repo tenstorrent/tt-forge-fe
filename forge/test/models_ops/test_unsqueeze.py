@@ -253,7 +253,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "onnx_yolov8_default_obj_det_github",
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_320x320",
-                "TranslatedLayer",
                 "onnx_dla_dla34_visual_bb_torchvision",
                 "onnx_dla_dla46x_c_visual_bb_torchvision",
                 "onnx_dla_dla60x_visual_bb_torchvision",
@@ -388,7 +387,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
                 "onnx_yolov8_default_obj_det_github",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_320x320",
-                "TranslatedLayer",
                 "onnx_dla_dla34_visual_bb_torchvision",
                 "onnx_dla_dla46x_c_visual_bb_torchvision",
                 "onnx_dla_dla60x_visual_bb_torchvision",
@@ -2574,7 +2572,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "onnx_yolov8_default_obj_det_github",
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_320x320",
-                "TranslatedLayer",
                 "onnx_dla_dla34_visual_bb_torchvision",
                 "onnx_dla_dla46x_c_visual_bb_torchvision",
                 "onnx_dla_dla60x_visual_bb_torchvision",
@@ -2615,7 +2612,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
                 "onnx_yolov8_default_obj_det_github",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_320x320",
-                "TranslatedLayer",
                 "onnx_dla_dla34_visual_bb_torchvision",
                 "onnx_dla_dla46x_c_visual_bb_torchvision",
                 "onnx_dla_dla60x_visual_bb_torchvision",
@@ -6644,7 +6640,6 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
                 "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
-                "TranslatedLayer",
                 "pd_densenet_121_img_cls_paddlemodels",
                 "onnx_efficientnet_efficientnet_b1_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
@@ -6676,7 +6671,6 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
                 "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
-                "TranslatedLayer",
                 "pd_densenet_121_img_cls_paddlemodels",
                 "onnx_efficientnet_efficientnet_b1_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
@@ -6708,7 +6702,6 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "onnx_efficientnet_efficientnet_b1_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
                 "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
@@ -6734,7 +6727,6 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "onnx_efficientnet_efficientnet_b1_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
                 "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
@@ -7012,7 +7004,6 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
                 "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
-                "TranslatedLayer",
                 "pd_densenet_121_img_cls_paddlemodels",
                 "onnx_efficientnet_efficientnet_b1_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
@@ -7041,7 +7032,6 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
                 "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
-                "TranslatedLayer",
                 "pd_densenet_121_img_cls_paddlemodels",
                 "onnx_efficientnet_efficientnet_b1_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
@@ -7136,7 +7126,6 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "onnx_efficientnet_efficientnet_b1_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b0_img_cls_timm",
@@ -7175,7 +7164,6 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "onnx_efficientnet_efficientnet_b1_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b0_img_cls_timm",
@@ -7325,7 +7313,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
                 "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels",
@@ -7345,7 +7332,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
                 "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels",
@@ -7451,7 +7437,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
                 "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels",
             ],
@@ -7465,7 +7450,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
                 "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels",
             ],
@@ -8198,7 +8182,6 @@ forge_modules_and_shapes_dtypes_list = [
         [((384,), torch.float32)],
         {
             "model_names": [
-                "TranslatedLayer",
                 "pd_densenet_121_img_cls_paddlemodels",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
                 "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
@@ -8221,7 +8204,6 @@ forge_modules_and_shapes_dtypes_list = [
         [((384, 1), torch.float32)],
         {
             "model_names": [
-                "TranslatedLayer",
                 "pd_densenet_121_img_cls_paddlemodels",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
                 "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
@@ -8242,7 +8224,7 @@ forge_modules_and_shapes_dtypes_list = [
         Unsqueeze0,
         [((360,), torch.float32)],
         {
-            "model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
+            "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
             "args": {"dim": "1"},
         },
@@ -8251,7 +8233,7 @@ forge_modules_and_shapes_dtypes_list = [
         Unsqueeze0,
         [((360, 1), torch.float32)],
         {
-            "model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
+            "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
             "args": {"dim": "1"},
         },
@@ -8261,7 +8243,6 @@ forge_modules_and_shapes_dtypes_list = [
         [((6,), torch.float32)],
         {
             "model_names": [
-                "TranslatedLayer",
                 "onnx_efficientnet_efficientnet_b1_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b0_img_cls_timm",
@@ -8281,7 +8262,6 @@ forge_modules_and_shapes_dtypes_list = [
         [((6, 1), torch.float32)],
         {
             "model_names": [
-                "TranslatedLayer",
                 "onnx_efficientnet_efficientnet_b1_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
                 "onnx_efficientnet_efficientnet_b0_img_cls_timm",
@@ -8300,7 +8280,7 @@ forge_modules_and_shapes_dtypes_list = [
         Unsqueeze0,
         [((42,), torch.float32)],
         {
-            "model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
+            "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
             "args": {"dim": "1"},
         },
@@ -8309,7 +8289,7 @@ forge_modules_and_shapes_dtypes_list = [
         Unsqueeze0,
         [((42, 1), torch.float32)],
         {
-            "model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
+            "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
             "args": {"dim": "1"},
         },
@@ -8319,7 +8299,6 @@ forge_modules_and_shapes_dtypes_list = [
         [((1,), torch.float32)],
         {
             "model_names": [
-                "TranslatedLayer",
                 "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
                 "onnx_unet_base_img_seg_torchhub",
                 "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels",
@@ -8333,7 +8312,6 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 1), torch.float32)],
         {
             "model_names": [
-                "TranslatedLayer",
                 "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
                 "onnx_unet_base_img_seg_torchhub",
                 "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels",

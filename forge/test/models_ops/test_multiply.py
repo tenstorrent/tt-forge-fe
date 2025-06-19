@@ -1435,11 +1435,12 @@ class Multiply115(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "multiply115.weight_0", forge.Parameter(*(1,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "multiply115.weight_1",
+            forge.Parameter(*(1, 64, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
-    def forward(self, multiply_input_1):
-        multiply_output_1 = forge.op.Multiply("", self.get_parameter("multiply115.weight_0"), multiply_input_1)
+    def forward(self, multiply_input_0):
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply115.weight_1"))
         return multiply_output_1
 
 
@@ -1448,7 +1449,7 @@ class Multiply116(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply116.weight_1",
-            forge.Parameter(*(1, 64, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1461,7 +1462,7 @@ class Multiply117(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply117.weight_1",
-            forge.Parameter(*(1, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1, 128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1474,7 +1475,7 @@ class Multiply118(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply118.weight_1",
-            forge.Parameter(*(1, 128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1, 512, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1487,7 +1488,7 @@ class Multiply119(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply119.weight_1",
-            forge.Parameter(*(1, 512, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1, 1024, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1500,7 +1501,7 @@ class Multiply120(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply120.weight_1",
-            forge.Parameter(*(1, 1024, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1, 2048, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1513,7 +1514,7 @@ class Multiply121(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply121.weight_1",
-            forge.Parameter(*(1, 2048, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1526,7 +1527,7 @@ class Multiply122(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply122.weight_1",
-            forge.Parameter(*(96,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(160,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1539,7 +1540,7 @@ class Multiply123(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply123.weight_1",
-            forge.Parameter(*(160,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1552,7 +1553,7 @@ class Multiply124(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply124.weight_1",
-            forge.Parameter(*(192,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(224,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1565,7 +1566,7 @@ class Multiply125(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply125.weight_1",
-            forge.Parameter(*(224,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(320,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1578,7 +1579,7 @@ class Multiply126(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply126.weight_1",
-            forge.Parameter(*(320,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(352,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1591,7 +1592,7 @@ class Multiply127(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply127.weight_1",
-            forge.Parameter(*(352,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1604,7 +1605,7 @@ class Multiply128(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply128.weight_1",
-            forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(416,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1617,7 +1618,7 @@ class Multiply129(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply129.weight_1",
-            forge.Parameter(*(416,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(448,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1630,7 +1631,7 @@ class Multiply130(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply130.weight_1",
-            forge.Parameter(*(448,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(480,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1643,7 +1644,7 @@ class Multiply131(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply131.weight_1",
-            forge.Parameter(*(480,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(544,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1656,7 +1657,7 @@ class Multiply132(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply132.weight_1",
-            forge.Parameter(*(544,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(576,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1669,7 +1670,7 @@ class Multiply133(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply133.weight_1",
-            forge.Parameter(*(576,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(608,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1682,7 +1683,7 @@ class Multiply134(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply134.weight_1",
-            forge.Parameter(*(608,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(640,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1695,7 +1696,7 @@ class Multiply135(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply135.weight_1",
-            forge.Parameter(*(640,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(672,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1708,7 +1709,7 @@ class Multiply136(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply136.weight_1",
-            forge.Parameter(*(672,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(704,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1721,7 +1722,7 @@ class Multiply137(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply137.weight_1",
-            forge.Parameter(*(704,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(736,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1734,7 +1735,7 @@ class Multiply138(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply138.weight_1",
-            forge.Parameter(*(736,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(800,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1747,7 +1748,7 @@ class Multiply139(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply139.weight_1",
-            forge.Parameter(*(800,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(832,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1760,7 +1761,7 @@ class Multiply140(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply140.weight_1",
-            forge.Parameter(*(832,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(864,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1773,7 +1774,7 @@ class Multiply141(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply141.weight_1",
-            forge.Parameter(*(864,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(896,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1786,7 +1787,7 @@ class Multiply142(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply142.weight_1",
-            forge.Parameter(*(896,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(928,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1799,7 +1800,7 @@ class Multiply143(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply143.weight_1",
-            forge.Parameter(*(928,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(960,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1812,7 +1813,7 @@ class Multiply144(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply144.weight_1",
-            forge.Parameter(*(960,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(992,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -1823,23 +1824,23 @@ class Multiply144(ForgeModule):
 class Multiply145(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "multiply145.weight_1",
-            forge.Parameter(*(992,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("multiply145_const_1", shape=(1, 256, 1, 32), dtype=torch.float32)
 
     def forward(self, multiply_input_0):
-        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply145.weight_1"))
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_constant("multiply145_const_1"))
         return multiply_output_1
 
 
 class Multiply146(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("multiply146_const_1", shape=(1, 256, 1, 32), dtype=torch.float32)
+        self.add_parameter(
+            "multiply146.weight_1",
+            forge.Parameter(*(528,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, multiply_input_0):
-        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_constant("multiply146_const_1"))
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply146.weight_1"))
         return multiply_output_1
 
 
@@ -1848,7 +1849,7 @@ class Multiply147(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply147.weight_1",
-            forge.Parameter(*(528,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1248,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -1861,7 +1862,7 @@ class Multiply148(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply148.weight_1",
-            forge.Parameter(*(1248,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(352,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -1874,7 +1875,7 @@ class Multiply149(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply149.weight_1",
-            forge.Parameter(*(352,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2112,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -1887,7 +1888,7 @@ class Multiply150(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply150.weight_1",
-            forge.Parameter(*(2112,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1408,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -1900,7 +1901,7 @@ class Multiply151(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply151.weight_1",
-            forge.Parameter(*(1408,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(432,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -1913,7 +1914,7 @@ class Multiply152(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply152.weight_1",
-            forge.Parameter(*(432,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(864,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -1926,7 +1927,7 @@ class Multiply153(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply153.weight_1",
-            forge.Parameter(*(864,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(200,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -1939,7 +1940,7 @@ class Multiply154(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply154.weight_1",
-            forge.Parameter(*(200,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1200,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -1952,7 +1953,7 @@ class Multiply155(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply155.weight_1",
-            forge.Parameter(*(1200,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(344,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -1965,7 +1966,7 @@ class Multiply156(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply156.weight_1",
-            forge.Parameter(*(344,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2064,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -1978,7 +1979,7 @@ class Multiply157(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply157.weight_1",
-            forge.Parameter(*(2064,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(3456,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -1991,7 +1992,7 @@ class Multiply158(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply158.weight_1",
-            forge.Parameter(*(3456,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(272,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -2004,7 +2005,7 @@ class Multiply159(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply159.weight_1",
-            forge.Parameter(*(272,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1632,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -2017,7 +2018,7 @@ class Multiply160(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply160.weight_1",
-            forge.Parameter(*(1632,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2688,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -2030,7 +2031,7 @@ class Multiply161(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply161.weight_1",
-            forge.Parameter(*(2688,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1792,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -2043,7 +2044,7 @@ class Multiply162(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply162.weight_1",
-            forge.Parameter(*(1792,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(104,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -2056,7 +2057,7 @@ class Multiply163(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply163.weight_1",
-            forge.Parameter(*(104,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(440,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -2068,32 +2069,29 @@ class Multiply164(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "multiply164.weight_1",
-            forge.Parameter(*(440,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            "multiply164.weight_0",
+            forge.Parameter(*(512,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
-    def forward(self, multiply_input_0):
-        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply164.weight_1"))
+    def forward(self, multiply_input_1):
+        multiply_output_1 = forge.op.Multiply("", self.get_parameter("multiply164.weight_0"), multiply_input_1)
         return multiply_output_1
 
 
 class Multiply165(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "multiply165.weight_0",
-            forge.Parameter(*(512,), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("multiply165_const_1", shape=(1, 255, 80, 80), dtype=torch.float32)
 
-    def forward(self, multiply_input_1):
-        multiply_output_1 = forge.op.Multiply("", self.get_parameter("multiply165.weight_0"), multiply_input_1)
+    def forward(self, multiply_input_0):
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_constant("multiply165_const_1"))
         return multiply_output_1
 
 
 class Multiply166(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("multiply166_const_1", shape=(1, 255, 80, 80), dtype=torch.float32)
+        self.add_constant("multiply166_const_1", shape=(1, 255, 60, 60), dtype=torch.float32)
 
     def forward(self, multiply_input_0):
         multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_constant("multiply166_const_1"))
@@ -2103,7 +2101,7 @@ class Multiply166(ForgeModule):
 class Multiply167(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("multiply167_const_1", shape=(1, 255, 60, 60), dtype=torch.float32)
+        self.add_constant("multiply167_const_1", shape=(1, 255, 30, 30), dtype=torch.float32)
 
     def forward(self, multiply_input_0):
         multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_constant("multiply167_const_1"))
@@ -2113,7 +2111,7 @@ class Multiply167(ForgeModule):
 class Multiply168(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("multiply168_const_1", shape=(1, 255, 30, 30), dtype=torch.float32)
+        self.add_constant("multiply168_const_1", shape=(1, 255, 15, 15), dtype=torch.float32)
 
     def forward(self, multiply_input_0):
         multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_constant("multiply168_const_1"))
@@ -2123,20 +2121,23 @@ class Multiply168(ForgeModule):
 class Multiply169(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("multiply169_const_1", shape=(1, 255, 15, 15), dtype=torch.float32)
+        self.add_constant("multiply169_const_0", shape=(1, 1, 14, 14), dtype=torch.float32)
 
-    def forward(self, multiply_input_0):
-        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_constant("multiply169_const_1"))
+    def forward(self, multiply_input_1):
+        multiply_output_1 = forge.op.Multiply("", self.get_constant("multiply169_const_0"), multiply_input_1)
         return multiply_output_1
 
 
 class Multiply170(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("multiply170_const_0", shape=(1, 1, 14, 14), dtype=torch.float32)
+        self.add_parameter(
+            "multiply170.weight_1",
+            forge.Parameter(*(416,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, multiply_input_1):
-        multiply_output_1 = forge.op.Multiply("", self.get_constant("multiply170_const_0"), multiply_input_1)
+    def forward(self, multiply_input_0):
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply170.weight_1"))
         return multiply_output_1
 
 
@@ -2145,7 +2146,7 @@ class Multiply171(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply171.weight_1",
-            forge.Parameter(*(416,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(544,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -2158,7 +2159,7 @@ class Multiply172(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply172.weight_1",
-            forge.Parameter(*(544,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(608,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -2171,7 +2172,7 @@ class Multiply173(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply173.weight_1",
-            forge.Parameter(*(608,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(704,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -2184,7 +2185,7 @@ class Multiply174(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply174.weight_1",
-            forge.Parameter(*(704,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(736,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -2197,7 +2198,7 @@ class Multiply175(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply175.weight_1",
-            forge.Parameter(*(736,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(800,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -2210,7 +2211,7 @@ class Multiply176(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply176.weight_1",
-            forge.Parameter(*(800,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(832,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -2223,7 +2224,7 @@ class Multiply177(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply177.weight_1",
-            forge.Parameter(*(832,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(896,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -2236,7 +2237,7 @@ class Multiply178(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply178.weight_1",
-            forge.Parameter(*(896,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(928,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -2249,7 +2250,7 @@ class Multiply179(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply179.weight_1",
-            forge.Parameter(*(928,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(992,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -2262,7 +2263,7 @@ class Multiply180(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply180.weight_1",
-            forge.Parameter(*(992,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2240,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -2275,7 +2276,7 @@ class Multiply181(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply181.weight_1",
-            forge.Parameter(*(2240,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1232,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -2288,7 +2289,7 @@ class Multiply182(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply182.weight_1",
-            forge.Parameter(*(1232,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(3024,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, multiply_input_0):
@@ -2299,33 +2300,33 @@ class Multiply182(ForgeModule):
 class Multiply183(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "multiply183.weight_1",
-            forge.Parameter(*(3024,), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("multiply183_const_0", shape=(1, 1, 14, 20), dtype=torch.float32)
 
-    def forward(self, multiply_input_0):
-        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply183.weight_1"))
+    def forward(self, multiply_input_1):
+        multiply_output_1 = forge.op.Multiply("", self.get_constant("multiply183_const_0"), multiply_input_1)
         return multiply_output_1
 
 
 class Multiply184(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("multiply184_const_0", shape=(1, 1, 14, 20), dtype=torch.float32)
+        self.add_constant("multiply184_const_1", shape=(8, 1), dtype=torch.float32)
 
-    def forward(self, multiply_input_1):
-        multiply_output_1 = forge.op.Multiply("", self.get_constant("multiply184_const_0"), multiply_input_1)
+    def forward(self, multiply_input_0):
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_constant("multiply184_const_1"))
         return multiply_output_1
 
 
 class Multiply185(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("multiply185_const_1", shape=(8, 1), dtype=torch.float32)
+        self.add_parameter(
+            "multiply185.weight_1",
+            forge.Parameter(*(264, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, multiply_input_0):
-        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_constant("multiply185_const_1"))
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply185.weight_1"))
         return multiply_output_1
 
 
@@ -2334,7 +2335,7 @@ class Multiply186(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply186.weight_1",
-            forge.Parameter(*(264, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -2347,7 +2348,7 @@ class Multiply187(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply187.weight_1",
-            forge.Parameter(*(128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -2360,7 +2361,7 @@ class Multiply188(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply188.weight_1",
-            forge.Parameter(*(64, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -2373,7 +2374,7 @@ class Multiply189(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "multiply189.weight_1",
-            forge.Parameter(*(32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, multiply_input_0):
@@ -2385,12 +2386,11 @@ class Multiply190(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
-            "multiply190.weight_1",
-            forge.Parameter(*(16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            "multiply190.weight_0", forge.Parameter(*(1,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
-    def forward(self, multiply_input_0):
-        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply190.weight_1"))
+    def forward(self, multiply_input_1):
+        multiply_output_1 = forge.op.Multiply("", self.get_parameter("multiply190.weight_0"), multiply_input_1)
         return multiply_output_1
 
 
@@ -17061,7 +17061,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
                 "pd_mobilenetv2_basic_img_cls_paddlemodels",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
@@ -17077,7 +17076,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
                 "pd_mobilenetv2_basic_img_cls_paddlemodels",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
@@ -17104,7 +17102,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
                 "pd_mobilenetv2_basic_img_cls_paddlemodels",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
@@ -17120,7 +17117,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
                 "pd_mobilenetv2_basic_img_cls_paddlemodels",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
@@ -17268,7 +17264,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "pd_mobilenetv2_basic_img_cls_paddlemodels",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
                 "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels",
@@ -17282,7 +17277,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "pd_mobilenetv2_basic_img_cls_paddlemodels",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
                 "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels",
@@ -17307,7 +17301,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "pd_mobilenetv2_basic_img_cls_paddlemodels",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
                 "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels",
@@ -17321,7 +17314,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-                "TranslatedLayer",
                 "pd_mobilenetv2_basic_img_cls_paddlemodels",
                 "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
                 "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels",
@@ -20712,141 +20704,64 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Multiply0,
-        [((1, 16, 240, 240), torch.float32), ((16, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (Multiply115, [((1, 16, 240, 240), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (Multiply2, [((1, 16, 240, 240), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (
-        Multiply0,
         [((1, 16, 240, 240), torch.float32), ((1, 16, 240, 240), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pt_yolo_v5_yolov5n_img_cls_torchhub_480x480"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v5_yolov5n_img_cls_torchhub_480x480"], "pcc": 0.99},
     ),
-    (Multiply115, [((1, 32, 240, 240), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (Multiply2, [((1, 32, 240, 240), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 32, 240, 240), torch.float32), ((1, 32, 240, 240), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pt_yolo_v5_yolov5s_img_cls_torchhub_480x480"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_480x480"], "pcc": 0.99},
     ),
-    (Multiply115, [((1, 32, 120, 120), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (Multiply115, [((1, 48, 120, 120), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (Multiply2, [((1, 48, 120, 120), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 48, 120, 120), torch.float32), ((1, 48, 120, 120), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"], "pcc": 0.99},
     ),
-    (Multiply115, [((1, 48, 60, 60), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (Multiply115, [((1, 96, 60, 60), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (Multiply2, [((1, 96, 60, 60), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 96, 60, 60), torch.float32), ((1, 96, 60, 60), torch.float32)],
         {
             "model_names": [
-                "TranslatedLayer",
                 "onnx_efficientnet_efficientnet_b1_img_cls_timm",
                 "pt_yolo_v5_yolov5m_img_cls_torchhub_480x480",
             ],
             "pcc": 0.99,
         },
     ),
-    (Multiply115, [((1, 96, 30, 30), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (Multiply115, [((1, 192, 30, 30), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (Multiply2, [((1, 192, 30, 30), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 192, 30, 30), torch.float32), ((1, 192, 30, 30), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"], "pcc": 0.99},
     ),
-    (Multiply115, [((1, 192, 15, 15), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
     (
         Multiply2,
         [((1, 192, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
+        {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
-    (
-        Multiply0,
-        [((1, 192, 15, 15), torch.float32), ((1, 192, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (Multiply115, [((1, 384, 15, 15), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (Multiply2, [((1, 384, 15, 15), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 384, 15, 15), torch.float32), ((1, 384, 15, 15), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"], "pcc": 0.99},
     ),
     (
         Multiply2,
         [((1, 384, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
-    ),
-    (
-        Multiply0,
-        [((1, 384, 15, 15), torch.float32), ((1, 384, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
+        {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
         Multiply2,
         [((1, 96, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
-    ),
-    (
-        Multiply0,
-        [((1, 96, 15, 15), torch.float32), ((1, 96, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
+        {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
         Multiply2,
         [((1, 24, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
-    ),
-    (
-        Multiply0,
-        [((1, 24, 15, 15), torch.float32), ((1, 24, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (
-        Multiply0,
-        [((1, 96, 30, 30), torch.float32), ((1, 96, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (
-        Multiply0,
-        [((1, 24, 30, 30), torch.float32), ((1, 24, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
+        {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
         Multiply0,
         [((1, 96, 60, 60), torch.float32), ((1, 96, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer", "onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
-    ),
-    (
-        Multiply0,
-        [((1, 24, 60, 60), torch.float32), ((1, 24, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (
-        Multiply0,
-        [((1, 96, 120, 120), torch.float32), ((1, 96, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (
-        Multiply0,
-        [((1, 24, 120, 120), torch.float32), ((1, 24, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (
-        Multiply0,
-        [((1, 24, 120, 120), torch.float32), ((24, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
-    ),
-    (
-        Multiply0,
-        [((1, 24, 240, 240), torch.float32), ((24, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99},
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
     ),
     (
         Multiply2,
@@ -20860,7 +20775,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply116,
+        Multiply115,
         [((1, 64, 214, 320), torch.float32)],
         {
             "model_names": [
@@ -20871,7 +20786,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply116,
+        Multiply115,
         [((1, 64, 107, 160), torch.float32)],
         {
             "model_names": [
@@ -20882,7 +20797,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply117,
+        Multiply116,
         [((1, 256, 107, 160), torch.float32)],
         {
             "model_names": [
@@ -20893,7 +20808,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply118,
+        Multiply117,
         [((1, 128, 107, 160), torch.float32)],
         {
             "model_names": [
@@ -20904,7 +20819,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply118,
+        Multiply117,
         [((1, 128, 54, 80), torch.float32)],
         {
             "model_names": [
@@ -20915,7 +20830,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply119,
+        Multiply118,
         [((1, 512, 54, 80), torch.float32)],
         {
             "model_names": [
@@ -20926,7 +20841,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply117,
+        Multiply116,
         [((1, 256, 54, 80), torch.float32)],
         {
             "model_names": [
@@ -20937,7 +20852,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply117,
+        Multiply116,
         [((1, 256, 27, 40), torch.float32)],
         {
             "model_names": [
@@ -20948,7 +20863,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply120,
+        Multiply119,
         [((1, 1024, 27, 40), torch.float32)],
         {
             "model_names": [
@@ -20959,7 +20874,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply119,
+        Multiply118,
         [((1, 512, 27, 40), torch.float32)],
         {
             "model_names": [
@@ -20970,7 +20885,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply119,
+        Multiply118,
         [((1, 512, 14, 20), torch.float32)],
         {
             "model_names": [
@@ -20981,7 +20896,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply121,
+        Multiply120,
         [((1, 2048, 14, 20), torch.float32)],
         {
             "model_names": [
@@ -21052,7 +20967,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply122,
+        Multiply121,
         [((96,), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels", "pd_mobilenetv2_basic_img_cls_paddlemodels"],
@@ -21092,7 +21007,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply123,
+        Multiply122,
         [((160,), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels", "pd_mobilenetv2_basic_img_cls_paddlemodels"],
@@ -21129,7 +21044,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply124,
+        Multiply123,
         [((192,), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels", "pd_mobilenetv2_basic_img_cls_paddlemodels"],
@@ -21158,7 +21073,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (Multiply20, [((224,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Multiply125, [((224,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Multiply124, [((224,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 224, 56, 56), torch.float32), ((224, 1, 1), torch.float32)],
@@ -21206,7 +21121,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply126,
+        Multiply125,
         [((320,), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels", "pd_mobilenetv2_basic_img_cls_paddlemodels"],
@@ -21235,7 +21150,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (Multiply20, [((352,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Multiply127, [((352,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Multiply126, [((352,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 352, 28, 28), torch.float32), ((352, 1, 1), torch.float32)],
@@ -21260,7 +21175,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply128,
+        Multiply127,
         [((384,), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels", "pd_mobilenetv2_basic_img_cls_paddlemodels"],
@@ -21289,7 +21204,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (Multiply20, [((416,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Multiply129, [((416,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Multiply128, [((416,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 416, 28, 28), torch.float32), ((416, 1, 1), torch.float32)],
@@ -21306,7 +21221,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
     (Multiply20, [((448,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Multiply130, [((448,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Multiply129, [((448,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 448, 28, 28), torch.float32), ((448, 1, 1), torch.float32)],
@@ -21335,7 +21250,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply131,
+        Multiply130,
         [((480,), torch.float32)],
         {
             "model_names": [
@@ -21419,7 +21334,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
     (Multiply20, [((544,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Multiply132, [((544,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Multiply131, [((544,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 544, 14, 14), torch.float32), ((544, 1, 1), torch.float32)],
@@ -21444,7 +21359,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply133,
+        Multiply132,
         [((576,), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels", "pd_mobilenetv2_basic_img_cls_paddlemodels"],
@@ -21476,7 +21391,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (Multiply20, [((608,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Multiply134, [((608,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Multiply133, [((608,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 608, 14, 14), torch.float32), ((608, 1, 1), torch.float32)],
@@ -21493,7 +21408,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
     (Multiply20, [((640,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Multiply135, [((640,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Multiply134, [((640,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 640, 14, 14), torch.float32), ((640, 1, 1), torch.float32)],
@@ -21510,7 +21425,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
     (Multiply20, [((672,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Multiply136, [((672,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Multiply135, [((672,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 672, 14, 14), torch.float32), ((672, 1, 1), torch.float32)],
@@ -21527,7 +21442,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
     (Multiply20, [((704,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Multiply137, [((704,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Multiply136, [((704,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 704, 14, 14), torch.float32), ((704, 1, 1), torch.float32)],
@@ -21544,7 +21459,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
     (Multiply20, [((736,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Multiply138, [((736,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Multiply137, [((736,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 736, 14, 14), torch.float32), ((736, 1, 1), torch.float32)],
@@ -21578,7 +21493,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
     (Multiply20, [((800,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Multiply139, [((800,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Multiply138, [((800,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 800, 14, 14), torch.float32), ((800, 1, 1), torch.float32)],
@@ -21595,7 +21510,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
     (Multiply20, [((832,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Multiply140, [((832,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Multiply139, [((832,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 832, 14, 14), torch.float32), ((832, 1, 1), torch.float32)],
@@ -21612,7 +21527,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
     (Multiply20, [((864,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Multiply141, [((864,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Multiply140, [((864,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 864, 14, 14), torch.float32), ((864, 1, 1), torch.float32)],
@@ -21629,7 +21544,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
     (Multiply20, [((896,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Multiply142, [((896,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Multiply141, [((896,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 896, 14, 14), torch.float32), ((896, 1, 1), torch.float32)],
@@ -21646,7 +21561,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99},
     ),
     (Multiply20, [((928,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Multiply143, [((928,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Multiply142, [((928,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 928, 14, 14), torch.float32), ((928, 1, 1), torch.float32)],
@@ -21671,7 +21586,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply144,
+        Multiply143,
         [((960,), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels", "pd_mobilenetv2_basic_img_cls_paddlemodels"],
@@ -21700,7 +21615,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (Multiply20, [((992,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Multiply145, [((992,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Multiply144, [((992,), torch.float32)], {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99}),
     (
         Multiply0,
         [((1, 992, 14, 14), torch.float32), ((992, 1, 1), torch.float32)],
@@ -21811,7 +21726,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply146,
+        Multiply145,
         [((1, 256, 16, 32), torch.float32)],
         {
             "model_names": [
@@ -21971,7 +21886,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply147,
+        Multiply146,
         [((528,), torch.bfloat16)],
         {
             "model_names": [
@@ -22085,7 +22000,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply148,
+        Multiply147,
         [((1248,), torch.bfloat16)],
         {
             "model_names": [
@@ -22172,7 +22087,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply149,
+        Multiply148,
         [((352,), torch.bfloat16)],
         {
             "model_names": [
@@ -22246,7 +22161,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply150,
+        Multiply149,
         [((2112,), torch.bfloat16)],
         {
             "model_names": [
@@ -22317,7 +22232,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply151,
+        Multiply150,
         [((1408,), torch.bfloat16)],
         {
             "model_names": [
@@ -22433,7 +22348,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply152,
+        Multiply151,
         [((432,), torch.bfloat16)],
         {
             "model_names": [
@@ -22536,7 +22451,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply153,
+        Multiply152,
         [((864,), torch.bfloat16)],
         {
             "model_names": [
@@ -22624,7 +22539,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply154,
+        Multiply153,
         [((200,), torch.bfloat16)],
         {
             "model_names": [
@@ -22686,7 +22601,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply155,
+        Multiply154,
         [((1200,), torch.bfloat16)],
         {
             "model_names": [
@@ -22771,7 +22686,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Multiply156,
+        Multiply155,
         [((344,), torch.bfloat16)],
         {"model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"], "pcc": 0.99},
     ),
@@ -22802,7 +22717,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply157,
+        Multiply156,
         [((2064,), torch.bfloat16)],
         {
             "model_names": [
@@ -22866,7 +22781,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Multiply158,
+        Multiply157,
         [((3456,), torch.bfloat16)],
         {"model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"], "pcc": 0.99},
     ),
@@ -23284,7 +23199,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply159,
+        Multiply158,
         [((272,), torch.bfloat16)],
         {
             "model_names": [
@@ -23354,7 +23269,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply160,
+        Multiply159,
         [((1632,), torch.bfloat16)],
         {
             "model_names": [
@@ -23474,7 +23389,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply161,
+        Multiply160,
         [((2688,), torch.bfloat16)],
         {
             "model_names": [
@@ -23569,7 +23484,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply162,
+        Multiply161,
         [((1792,), torch.bfloat16)],
         {
             "model_names": [
@@ -24180,7 +24095,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Multiply163,
+        Multiply162,
         [((104,), torch.bfloat16)],
         {"model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"], "pcc": 0.99},
     ),
@@ -24225,7 +24140,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Multiply164,
+        Multiply163,
         [((440,), torch.bfloat16)],
         {"model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"], "pcc": 0.99},
     ),
@@ -24372,7 +24287,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf", "pt_t5_t5_small_text_gen_hf"], "pcc": 0.99},
     ),
     (
-        Multiply165,
+        Multiply164,
         [((1, 1, 512), torch.float32)],
         {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf", "pt_t5_t5_small_text_gen_hf"], "pcc": 0.99},
     ),
@@ -24387,7 +24302,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf", "pt_t5_t5_small_text_gen_hf"], "pcc": 0.99},
     ),
     (
-        Multiply165,
+        Multiply164,
         [((1, 61, 512), torch.float32)],
         {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf", "pt_t5_t5_small_text_gen_hf"], "pcc": 0.99},
     ),
@@ -24470,7 +24385,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply166,
+        Multiply165,
         [((1, 255, 80, 80), torch.float32)],
         {
             "model_names": [
@@ -24602,7 +24517,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply167,
+        Multiply166,
         [((1, 255, 60, 60), torch.float32)],
         {
             "model_names": [
@@ -24644,7 +24559,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply168,
+        Multiply167,
         [((1, 255, 30, 30), torch.float32)],
         {
             "model_names": [
@@ -24686,7 +24601,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply169,
+        Multiply168,
         [((1, 255, 15, 15), torch.float32)],
         {
             "model_names": [
@@ -25495,7 +25410,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"], "pcc": 0.99},
     ),
     (
-        Multiply170,
+        Multiply169,
         [((1, 1, 14, 14), torch.float32)],
         {"model_names": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"], "pcc": 0.99},
     ),
@@ -25569,7 +25484,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply171,
+        Multiply170,
         [((416,), torch.bfloat16)],
         {
             "model_names": [
@@ -25693,7 +25608,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply172,
+        Multiply171,
         [((544,), torch.bfloat16)],
         {
             "model_names": [
@@ -25758,7 +25673,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply173,
+        Multiply172,
         [((608,), torch.bfloat16)],
         {
             "model_names": [
@@ -25836,7 +25751,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply174,
+        Multiply173,
         [((704,), torch.bfloat16)],
         {
             "model_names": [
@@ -25901,7 +25816,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply175,
+        Multiply174,
         [((736,), torch.bfloat16)],
         {
             "model_names": [
@@ -25966,7 +25881,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply176,
+        Multiply175,
         [((800,), torch.bfloat16)],
         {
             "model_names": [
@@ -26031,7 +25946,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply177,
+        Multiply176,
         [((832,), torch.bfloat16)],
         {
             "model_names": [
@@ -26100,7 +26015,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply178,
+        Multiply177,
         [((896,), torch.bfloat16)],
         {
             "model_names": [
@@ -26181,7 +26096,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply179,
+        Multiply178,
         [((928,), torch.bfloat16)],
         {
             "model_names": [
@@ -26262,7 +26177,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply180,
+        Multiply179,
         [((992,), torch.bfloat16)],
         {
             "model_names": [
@@ -26684,7 +26599,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"], "pcc": 0.99},
     ),
     (
-        Multiply181,
+        Multiply180,
         [((2240,), torch.bfloat16)],
         {"model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"], "pcc": 0.99},
     ),
@@ -26747,7 +26662,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply182,
+        Multiply181,
         [((1232,), torch.bfloat16)],
         {
             "model_names": [
@@ -26818,7 +26733,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply183,
+        Multiply182,
         [((3024,), torch.bfloat16)],
         {
             "model_names": [
@@ -27344,7 +27259,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply184,
+        Multiply183,
         [((1, 100, 8, 14, 20), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
@@ -27359,12 +27274,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Multiply185,
+        Multiply184,
         [((100, 8, 9240), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Multiply186,
+        Multiply185,
         [((100, 264, 14, 20), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
@@ -27379,12 +27294,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Multiply185,
+        Multiply184,
         [((100, 8, 4480), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Multiply187,
+        Multiply186,
         [((100, 128, 14, 20), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
@@ -27399,12 +27314,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Multiply185,
+        Multiply184,
         [((100, 8, 8640), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Multiply188,
+        Multiply187,
         [((100, 64, 27, 40), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
@@ -27419,12 +27334,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Multiply185,
+        Multiply184,
         [((100, 8, 17280), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Multiply189,
+        Multiply188,
         [((100, 32, 54, 80), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
@@ -27439,12 +27354,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Multiply185,
+        Multiply184,
         [((100, 8, 34240), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
     (
-        Multiply190,
+        Multiply189,
         [((100, 16, 107, 160), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
@@ -27490,7 +27405,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 16, 16, 50), torch.float32)],
         {
             "model_names": [
@@ -27523,7 +27438,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 32, 16, 50), torch.float32)],
         {
             "model_names": [
@@ -27556,7 +27471,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 64, 16, 50), torch.float32)],
         {
             "model_names": [
@@ -27589,7 +27504,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 64, 8, 50), torch.float32)],
         {
             "model_names": [
@@ -27622,7 +27537,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 128, 8, 50), torch.float32)],
         {
             "model_names": [
@@ -27655,7 +27570,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 128, 8, 25), torch.float32)],
         {
             "model_names": [
@@ -27688,7 +27603,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 240, 8, 25), torch.float32)],
         {
             "model_names": [
@@ -27721,7 +27636,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 240, 4, 25), torch.float32)],
         {
             "model_names": [
@@ -27776,7 +27691,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 480, 4, 25), torch.float32)],
         {
             "model_names": [
@@ -27831,7 +27746,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 480, 2, 25), torch.float32)],
         {
             "model_names": [
@@ -31509,7 +31424,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 16, 224, 224), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
@@ -31524,7 +31439,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 32, 224, 224), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
@@ -31539,12 +31454,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 32, 112, 112), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 48, 112, 112), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
@@ -31559,12 +31474,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 48, 56, 56), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 96, 56, 56), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
@@ -31574,12 +31489,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 96, 28, 28), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 192, 28, 28), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
@@ -31594,7 +31509,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 192, 14, 14), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
@@ -31604,7 +31519,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Multiply115,
+        Multiply190,
         [((1, 384, 14, 14), torch.float32)],
         {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),

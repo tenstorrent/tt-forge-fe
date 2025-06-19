@@ -3501,25 +3501,23 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Relu0,
         [((1, 48, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
+        {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
         Relu0,
         [((1, 96, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
+        {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
         Relu0,
         [((1, 24, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
+        {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
     (
         Relu0,
         [((1, 6, 1, 1), torch.float32)],
-        {"model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
+        {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
     ),
-    (Relu0, [((1, 24, 120, 120), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
-    (Relu0, [((1, 24, 240, 240), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
     (
         Relu0,
         [((1, 64, 214, 320), torch.float32)],

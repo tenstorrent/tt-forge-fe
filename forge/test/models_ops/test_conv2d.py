@@ -20137,7 +20137,7 @@ class Conv2D944(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d944.weight_1",
-            forge.Parameter(*(32, 16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 48, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20159,7 +20159,7 @@ class Conv2D945(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d945.weight_1",
-            forge.Parameter(*(32, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20167,10 +20167,10 @@ class Conv2D945(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d945.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=32,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -20181,7 +20181,7 @@ class Conv2D946(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d946.weight_1",
-            forge.Parameter(*(48, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(384, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20203,7 +20203,7 @@ class Conv2D947(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d947.weight_1",
-            forge.Parameter(*(48, 48, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 24, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20225,7 +20225,7 @@ class Conv2D948(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d948.weight_1",
-            forge.Parameter(*(96, 48, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(6, 24, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20247,7 +20247,7 @@ class Conv2D949(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d949.weight_1",
-            forge.Parameter(*(96, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(24, 6, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20269,7 +20269,7 @@ class Conv2D950(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d950.weight_1",
-            forge.Parameter(*(192, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 2048, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20291,7 +20291,7 @@ class Conv2D951(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d951.weight_1",
-            forge.Parameter(*(192, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20300,9 +20300,9 @@ class Conv2D951(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d951.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=192,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -20313,7 +20313,7 @@ class Conv2D952(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d952.weight_1",
-            forge.Parameter(*(192, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512, 1280, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20321,10 +20321,10 @@ class Conv2D952(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d952.weight_1"),
-            stride=[2, 2],
-            padding=[2, 2, 2, 2],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=192,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -20335,7 +20335,7 @@ class Conv2D953(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d953.weight_1",
-            forge.Parameter(*(192, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1000, 512, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20357,7 +20357,7 @@ class Conv2D954(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d954.weight_1",
-            forge.Parameter(*(192, 48, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(150, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20379,7 +20379,7 @@ class Conv2D955(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d955.weight_1",
-            forge.Parameter(*(384, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20388,7 +20388,7 @@ class Conv2D955(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d955.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -20401,7 +20401,7 @@ class Conv2D956(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d956.weight_1",
-            forge.Parameter(*(384, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20410,9 +20410,9 @@ class Conv2D956(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d956.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=384,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -20423,7 +20423,7 @@ class Conv2D957(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d957.weight_1",
-            forge.Parameter(*(96, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 160, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20445,7 +20445,7 @@ class Conv2D958(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d958.weight_1",
-            forge.Parameter(*(384, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20467,7 +20467,7 @@ class Conv2D959(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d959.weight_1",
-            forge.Parameter(*(384, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 288, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20489,7 +20489,7 @@ class Conv2D960(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d960.weight_1",
-            forge.Parameter(*(360, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 320, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20511,7 +20511,7 @@ class Conv2D961(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d961.weight_1",
-            forge.Parameter(*(96, 360, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 352, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20533,7 +20533,7 @@ class Conv2D962(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d962.weight_1",
-            forge.Parameter(*(96, 24, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 416, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20555,7 +20555,7 @@ class Conv2D963(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d963.weight_1",
-            forge.Parameter(*(24, 96, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 480, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20564,7 +20564,7 @@ class Conv2D963(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d963.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -20577,7 +20577,7 @@ class Conv2D964(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d964.weight_1",
-            forge.Parameter(*(6, 24, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 544, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20599,7 +20599,7 @@ class Conv2D965(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d965.weight_1",
-            forge.Parameter(*(24, 6, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 608, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20621,7 +20621,7 @@ class Conv2D966(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d966.weight_1",
-            forge.Parameter(*(42, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 640, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20643,7 +20643,7 @@ class Conv2D967(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d967.weight_1",
-            forge.Parameter(*(96, 42, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 672, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20665,7 +20665,7 @@ class Conv2D968(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d968.weight_1",
-            forge.Parameter(*(18, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 704, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20687,7 +20687,7 @@ class Conv2D969(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d969.weight_1",
-            forge.Parameter(*(96, 18, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 736, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20709,7 +20709,7 @@ class Conv2D970(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d970.weight_1",
-            forge.Parameter(*(96, 12, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20731,7 +20731,7 @@ class Conv2D971(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d971.weight_1",
-            forge.Parameter(*(256, 2048, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 800, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20753,7 +20753,7 @@ class Conv2D972(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d972.weight_1",
-            forge.Parameter(*(128, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 864, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20775,7 +20775,7 @@ class Conv2D973(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d973.weight_1",
-            forge.Parameter(*(512, 1280, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20797,7 +20797,7 @@ class Conv2D974(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d974.weight_1",
-            forge.Parameter(*(1000, 512, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 928, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20819,7 +20819,7 @@ class Conv2D975(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d975.weight_1",
-            forge.Parameter(*(150, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 960, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20841,7 +20841,7 @@ class Conv2D976(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d976.weight_1",
-            forge.Parameter(*(32, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 992, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -20850,7 +20850,7 @@ class Conv2D976(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d976.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -20863,7 +20863,7 @@ class Conv2D977(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d977.weight_1",
-            forge.Parameter(*(128, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 3, 11, 11), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -20871,8 +20871,8 @@ class Conv2D977(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d977.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[4, 4],
+            padding=[2, 2, 2, 2],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -20885,7 +20885,7 @@ class Conv2D978(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d978.weight_1",
-            forge.Parameter(*(128, 160, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 64, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -20894,7 +20894,7 @@ class Conv2D978(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d978.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[2, 2, 2, 2],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -20907,7 +20907,7 @@ class Conv2D979(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d979.weight_1",
-            forge.Parameter(*(128, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 384, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -20916,7 +20916,7 @@ class Conv2D979(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d979.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -20929,7 +20929,7 @@ class Conv2D980(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d980.weight_1",
-            forge.Parameter(*(128, 288, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(16, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -20938,7 +20938,7 @@ class Conv2D980(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d980.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -20951,7 +20951,7 @@ class Conv2D981(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d981.weight_1",
-            forge.Parameter(*(128, 320, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(4, 16, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -20960,7 +20960,7 @@ class Conv2D981(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d981.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -20973,7 +20973,7 @@ class Conv2D982(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d982.weight_1",
-            forge.Parameter(*(128, 352, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(4, 16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -20995,7 +20995,7 @@ class Conv2D983(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d983.weight_1",
-            forge.Parameter(*(128, 416, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(16, 4, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21017,7 +21017,7 @@ class Conv2D984(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d984.weight_1",
-            forge.Parameter(*(128, 480, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(88, 288, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21039,7 +21039,7 @@ class Conv2D985(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d985.weight_1",
-            forge.Parameter(*(128, 544, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(528, 88, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21059,20 +21059,16 @@ class Conv2D985(ForgeModule):
 class Conv2D986(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d986.weight_1",
-            forge.Parameter(*(128, 608, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d986.weight_1"),
+            conv2d_input_1,
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=528,
             channel_last=0,
         )
         return conv2d_output_1
@@ -21083,7 +21079,7 @@ class Conv2D987(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d987.weight_1",
-            forge.Parameter(*(128, 640, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(22, 528, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21105,7 +21101,7 @@ class Conv2D988(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d988.weight_1",
-            forge.Parameter(*(128, 672, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(528, 22, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21127,7 +21123,7 @@ class Conv2D989(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d989.weight_1",
-            forge.Parameter(*(128, 704, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(88, 528, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21147,20 +21143,16 @@ class Conv2D989(ForgeModule):
 class Conv2D990(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d990.weight_1",
-            forge.Parameter(*(128, 736, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d990.weight_1"),
+            conv2d_input_1,
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=1,
+            groups=528,
             channel_last=0,
         )
         return conv2d_output_1
@@ -21171,7 +21163,7 @@ class Conv2D991(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d991.weight_1",
-            forge.Parameter(*(128, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(120, 528, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21193,7 +21185,7 @@ class Conv2D992(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d992.weight_1",
-            forge.Parameter(*(128, 800, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(720, 120, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21213,20 +21205,16 @@ class Conv2D992(ForgeModule):
 class Conv2D993(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d993.weight_1",
-            forge.Parameter(*(128, 864, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d993.weight_1"),
+            conv2d_input_1,
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=1,
+            groups=720,
             channel_last=0,
         )
         return conv2d_output_1
@@ -21235,20 +21223,16 @@ class Conv2D993(ForgeModule):
 class Conv2D994(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d994.weight_1",
-            forge.Parameter(*(128, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d994.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            conv2d_input_1,
+            stride=[2, 2],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=1,
+            groups=720,
             channel_last=0,
         )
         return conv2d_output_1
@@ -21259,7 +21243,7 @@ class Conv2D995(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d995.weight_1",
-            forge.Parameter(*(128, 928, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(30, 720, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21281,7 +21265,7 @@ class Conv2D996(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d996.weight_1",
-            forge.Parameter(*(128, 960, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(720, 30, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21303,7 +21287,7 @@ class Conv2D997(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d997.weight_1",
-            forge.Parameter(*(128, 992, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(120, 720, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21325,7 +21309,7 @@ class Conv2D998(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d998.weight_1",
-            forge.Parameter(*(64, 3, 11, 11), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(208, 720, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21333,8 +21317,8 @@ class Conv2D998(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d998.weight_1"),
-            stride=[4, 4],
-            padding=[2, 2, 2, 2],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -21347,7 +21331,7 @@ class Conv2D999(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d999.weight_1",
-            forge.Parameter(*(192, 64, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1248, 208, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21356,7 +21340,7 @@ class Conv2D999(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d999.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -21367,20 +21351,16 @@ class Conv2D999(ForgeModule):
 class Conv2D1000(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1000.weight_1",
-            forge.Parameter(*(256, 384, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1000.weight_1"),
+            conv2d_input_1,
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=1,
+            groups=1248,
             channel_last=0,
         )
         return conv2d_output_1
@@ -21391,7 +21371,7 @@ class Conv2D1001(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1001.weight_1",
-            forge.Parameter(*(16, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(52, 1248, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21400,7 +21380,7 @@ class Conv2D1001(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1001.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -21413,7 +21393,7 @@ class Conv2D1002(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1002.weight_1",
-            forge.Parameter(*(4, 16, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1248, 52, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21422,7 +21402,7 @@ class Conv2D1002(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1002.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -21435,7 +21415,7 @@ class Conv2D1003(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1003.weight_1",
-            forge.Parameter(*(4, 16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(208, 1248, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21455,20 +21435,16 @@ class Conv2D1003(ForgeModule):
 class Conv2D1004(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1004.weight_1",
-            forge.Parameter(*(16, 4, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1004.weight_1"),
+            conv2d_input_1,
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=1248,
             channel_last=0,
         )
         return conv2d_output_1
@@ -21479,7 +21455,7 @@ class Conv2D1005(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1005.weight_1",
-            forge.Parameter(*(88, 288, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(352, 1248, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21501,7 +21477,7 @@ class Conv2D1006(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1006.weight_1",
-            forge.Parameter(*(528, 88, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2112, 352, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21530,7 +21506,7 @@ class Conv2D1007(ForgeModule):
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=528,
+            groups=2112,
             channel_last=0,
         )
         return conv2d_output_1
@@ -21541,7 +21517,7 @@ class Conv2D1008(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1008.weight_1",
-            forge.Parameter(*(22, 528, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(88, 2112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21563,7 +21539,7 @@ class Conv2D1009(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1009.weight_1",
-            forge.Parameter(*(528, 22, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2112, 88, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21585,7 +21561,7 @@ class Conv2D1010(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1010.weight_1",
-            forge.Parameter(*(88, 528, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(352, 2112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21605,16 +21581,20 @@ class Conv2D1010(ForgeModule):
 class Conv2D1011(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1011.weight_1",
+            forge.Parameter(*(1408, 352, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1011.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=528,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -21625,7 +21605,7 @@ class Conv2D1012(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1012.weight_1",
-            forge.Parameter(*(120, 528, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(56, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21633,8 +21613,8 @@ class Conv2D1012(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1012.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -21647,7 +21627,7 @@ class Conv2D1013(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1013.weight_1",
-            forge.Parameter(*(720, 120, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(14, 56, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21667,16 +21647,20 @@ class Conv2D1013(ForgeModule):
 class Conv2D1014(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1014.weight_1",
+            forge.Parameter(*(56, 14, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1014.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=720,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -21685,16 +21669,20 @@ class Conv2D1014(ForgeModule):
 class Conv2D1015(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1015.weight_1",
+            forge.Parameter(*(32, 56, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
-            stride=[2, 2],
-            padding=[2, 2, 2, 2],
+            self.get_parameter("conv2d1015.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=720,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -21705,7 +21693,7 @@ class Conv2D1016(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1016.weight_1",
-            forge.Parameter(*(30, 720, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(40, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21727,7 +21715,7 @@ class Conv2D1017(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1017.weight_1",
-            forge.Parameter(*(720, 30, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(72, 240, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21749,7 +21737,7 @@ class Conv2D1018(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1018.weight_1",
-            forge.Parameter(*(120, 720, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(432, 72, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21769,20 +21757,16 @@ class Conv2D1018(ForgeModule):
 class Conv2D1019(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1019.weight_1",
-            forge.Parameter(*(208, 720, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1019.weight_1"),
+            conv2d_input_1,
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=1,
+            groups=432,
             channel_last=0,
         )
         return conv2d_output_1
@@ -21793,7 +21777,7 @@ class Conv2D1020(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1020.weight_1",
-            forge.Parameter(*(1248, 208, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(18, 432, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21813,16 +21797,20 @@ class Conv2D1020(ForgeModule):
 class Conv2D1021(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1021.weight_1",
+            forge.Parameter(*(432, 18, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1021.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=1248,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -21833,7 +21821,7 @@ class Conv2D1022(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1022.weight_1",
-            forge.Parameter(*(52, 1248, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(72, 432, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21853,20 +21841,16 @@ class Conv2D1022(ForgeModule):
 class Conv2D1023(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1023.weight_1",
-            forge.Parameter(*(1248, 52, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1023.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            conv2d_input_1,
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=432,
             channel_last=0,
         )
         return conv2d_output_1
@@ -21877,7 +21861,7 @@ class Conv2D1024(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1024.weight_1",
-            forge.Parameter(*(208, 1248, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(144, 432, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21897,6 +21881,28 @@ class Conv2D1024(ForgeModule):
 class Conv2D1025(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1025.weight_1",
+            forge.Parameter(*(864, 144, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1025.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1026(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
 
     def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
@@ -21906,29 +21912,7 @@ class Conv2D1025(ForgeModule):
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1248,
-            channel_last=0,
-        )
-        return conv2d_output_1
-
-
-class Conv2D1026(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_parameter(
-            "conv2d1026.weight_1",
-            forge.Parameter(*(352, 1248, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
-
-    def forward(self, conv2d_input_0):
-        conv2d_output_1 = forge.op.Conv2d(
-            "",
-            conv2d_input_0,
-            self.get_parameter("conv2d1026.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
-            dilation=1,
-            groups=1,
+            groups=864,
             channel_last=0,
         )
         return conv2d_output_1
@@ -21939,7 +21923,7 @@ class Conv2D1027(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1027.weight_1",
-            forge.Parameter(*(2112, 352, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(36, 864, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21959,16 +21943,20 @@ class Conv2D1027(ForgeModule):
 class Conv2D1028(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1028.weight_1",
+            forge.Parameter(*(864, 36, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1028.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=2112,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -21979,7 +21967,7 @@ class Conv2D1029(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1029.weight_1",
-            forge.Parameter(*(88, 2112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(144, 864, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -21999,20 +21987,16 @@ class Conv2D1029(ForgeModule):
 class Conv2D1030(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1030.weight_1",
-            forge.Parameter(*(2112, 88, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1030.weight_1"),
+            conv2d_input_1,
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=1,
+            groups=864,
             channel_last=0,
         )
         return conv2d_output_1
@@ -22023,7 +22007,7 @@ class Conv2D1031(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1031.weight_1",
-            forge.Parameter(*(352, 2112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(200, 864, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22045,7 +22029,7 @@ class Conv2D1032(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1032.weight_1",
-            forge.Parameter(*(1408, 352, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1200, 200, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22065,20 +22049,16 @@ class Conv2D1032(ForgeModule):
 class Conv2D1033(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1033.weight_1",
-            forge.Parameter(*(56, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1033.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            conv2d_input_1,
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=1,
+            groups=1200,
             channel_last=0,
         )
         return conv2d_output_1
@@ -22087,20 +22067,16 @@ class Conv2D1033(ForgeModule):
 class Conv2D1034(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1034.weight_1",
-            forge.Parameter(*(14, 56, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1034.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            conv2d_input_1,
+            stride=[2, 2],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=1,
+            groups=1200,
             channel_last=0,
         )
         return conv2d_output_1
@@ -22111,7 +22087,7 @@ class Conv2D1035(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1035.weight_1",
-            forge.Parameter(*(56, 14, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(50, 1200, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22133,7 +22109,7 @@ class Conv2D1036(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1036.weight_1",
-            forge.Parameter(*(32, 56, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1200, 50, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22155,7 +22131,7 @@ class Conv2D1037(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1037.weight_1",
-            forge.Parameter(*(40, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(200, 1200, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22177,7 +22153,7 @@ class Conv2D1038(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1038.weight_1",
-            forge.Parameter(*(72, 240, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(344, 1200, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22199,7 +22175,7 @@ class Conv2D1039(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1039.weight_1",
-            forge.Parameter(*(432, 72, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2064, 344, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22228,7 +22204,7 @@ class Conv2D1040(ForgeModule):
             stride=[1, 1],
             padding=[2, 2, 2, 2],
             dilation=1,
-            groups=432,
+            groups=2064,
             channel_last=0,
         )
         return conv2d_output_1
@@ -22239,7 +22215,7 @@ class Conv2D1041(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1041.weight_1",
-            forge.Parameter(*(18, 432, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(86, 2064, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22261,7 +22237,7 @@ class Conv2D1042(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1042.weight_1",
-            forge.Parameter(*(432, 18, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2064, 86, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22283,7 +22259,7 @@ class Conv2D1043(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1043.weight_1",
-            forge.Parameter(*(72, 432, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(344, 2064, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22309,10 +22285,10 @@ class Conv2D1044(ForgeModule):
             "",
             conv2d_input_0,
             conv2d_input_1,
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=432,
+            groups=2064,
             channel_last=0,
         )
         return conv2d_output_1
@@ -22323,7 +22299,7 @@ class Conv2D1045(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1045.weight_1",
-            forge.Parameter(*(144, 432, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(576, 2064, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22345,7 +22321,7 @@ class Conv2D1046(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1046.weight_1",
-            forge.Parameter(*(864, 144, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(3456, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22374,7 +22350,7 @@ class Conv2D1047(ForgeModule):
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=864,
+            groups=3456,
             channel_last=0,
         )
         return conv2d_output_1
@@ -22385,7 +22361,7 @@ class Conv2D1048(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1048.weight_1",
-            forge.Parameter(*(36, 864, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(144, 3456, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22407,7 +22383,7 @@ class Conv2D1049(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1049.weight_1",
-            forge.Parameter(*(864, 36, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(3456, 144, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22429,7 +22405,7 @@ class Conv2D1050(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1050.weight_1",
-            forge.Parameter(*(144, 864, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(576, 3456, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22449,16 +22425,20 @@ class Conv2D1050(ForgeModule):
 class Conv2D1051(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1051.weight_1",
+            forge.Parameter(*(2304, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1051.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=864,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -22469,7 +22449,7 @@ class Conv2D1052(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1052.weight_1",
-            forge.Parameter(*(200, 864, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(56, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22491,7 +22471,7 @@ class Conv2D1053(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1053.weight_1",
-            forge.Parameter(*(1200, 200, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(336, 56, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22520,7 +22500,7 @@ class Conv2D1054(ForgeModule):
             stride=[1, 1],
             padding=[2, 2, 2, 2],
             dilation=1,
-            groups=1200,
+            groups=336,
             channel_last=0,
         )
         return conv2d_output_1
@@ -22529,16 +22509,20 @@ class Conv2D1054(ForgeModule):
 class Conv2D1055(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1055.weight_1",
+            forge.Parameter(*(14, 336, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
-            stride=[2, 2],
-            padding=[2, 2, 2, 2],
+            self.get_parameter("conv2d1055.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=1200,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -22549,7 +22533,7 @@ class Conv2D1056(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1056.weight_1",
-            forge.Parameter(*(50, 1200, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(336, 14, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22571,7 +22555,7 @@ class Conv2D1057(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1057.weight_1",
-            forge.Parameter(*(1200, 50, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(56, 336, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22591,20 +22575,16 @@ class Conv2D1057(ForgeModule):
 class Conv2D1058(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1058.weight_1",
-            forge.Parameter(*(200, 1200, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1058.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            conv2d_input_1,
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=336,
             channel_last=0,
         )
         return conv2d_output_1
@@ -22615,7 +22595,7 @@ class Conv2D1059(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1059.weight_1",
-            forge.Parameter(*(344, 1200, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(112, 336, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22635,16 +22615,34 @@ class Conv2D1059(ForgeModule):
 class Conv2D1060(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+
+    def forward(self, conv2d_input_0, conv2d_input_1):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            conv2d_input_1,
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=672,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1061(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
         self.add_parameter(
-            "conv2d1060.weight_1",
-            forge.Parameter(*(2064, 344, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            "conv2d1061.weight_1",
+            forge.Parameter(*(160, 672, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1060.weight_1"),
+            self.get_parameter("conv2d1061.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -22654,7 +22652,7 @@ class Conv2D1060(ForgeModule):
         return conv2d_output_1
 
 
-class Conv2D1061(ForgeModule):
+class Conv2D1062(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -22666,29 +22664,7 @@ class Conv2D1061(ForgeModule):
             stride=[1, 1],
             padding=[2, 2, 2, 2],
             dilation=1,
-            groups=2064,
-            channel_last=0,
-        )
-        return conv2d_output_1
-
-
-class Conv2D1062(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_parameter(
-            "conv2d1062.weight_1",
-            forge.Parameter(*(86, 2064, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
-
-    def forward(self, conv2d_input_0):
-        conv2d_output_1 = forge.op.Conv2d(
-            "",
-            conv2d_input_0,
-            self.get_parameter("conv2d1062.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
-            dilation=1,
-            groups=1,
+            groups=960,
             channel_last=0,
         )
         return conv2d_output_1
@@ -22697,20 +22673,16 @@ class Conv2D1062(ForgeModule):
 class Conv2D1063(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1063.weight_1",
-            forge.Parameter(*(2064, 86, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1063.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            conv2d_input_1,
+            stride=[2, 2],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=1,
+            groups=960,
             channel_last=0,
         )
         return conv2d_output_1
@@ -22721,7 +22693,7 @@ class Conv2D1064(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1064.weight_1",
-            forge.Parameter(*(344, 2064, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(272, 960, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22741,16 +22713,20 @@ class Conv2D1064(ForgeModule):
 class Conv2D1065(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1065.weight_1",
+            forge.Parameter(*(1632, 272, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1065.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=2064,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -22759,20 +22735,16 @@ class Conv2D1065(ForgeModule):
 class Conv2D1066(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1066.weight_1",
-            forge.Parameter(*(576, 2064, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1066.weight_1"),
+            conv2d_input_1,
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=1,
+            groups=1632,
             channel_last=0,
         )
         return conv2d_output_1
@@ -22783,7 +22755,7 @@ class Conv2D1067(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1067.weight_1",
-            forge.Parameter(*(3456, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(68, 1632, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22803,16 +22775,20 @@ class Conv2D1067(ForgeModule):
 class Conv2D1068(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1068.weight_1",
+            forge.Parameter(*(1632, 68, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1068.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=3456,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -22823,7 +22799,7 @@ class Conv2D1069(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1069.weight_1",
-            forge.Parameter(*(144, 3456, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(272, 1632, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22843,20 +22819,16 @@ class Conv2D1069(ForgeModule):
 class Conv2D1070(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1070.weight_1",
-            forge.Parameter(*(3456, 144, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1070.weight_1"),
+            conv2d_input_1,
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=1632,
             channel_last=0,
         )
         return conv2d_output_1
@@ -22867,7 +22839,7 @@ class Conv2D1071(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1071.weight_1",
-            forge.Parameter(*(576, 3456, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(448, 1632, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22889,7 +22861,7 @@ class Conv2D1072(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1072.weight_1",
-            forge.Parameter(*(2304, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2688, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22909,20 +22881,16 @@ class Conv2D1072(ForgeModule):
 class Conv2D1073(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1073.weight_1",
-            forge.Parameter(*(56, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1073.weight_1"),
+            conv2d_input_1,
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=2688,
             channel_last=0,
         )
         return conv2d_output_1
@@ -22933,7 +22901,7 @@ class Conv2D1074(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1074.weight_1",
-            forge.Parameter(*(336, 56, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(112, 2688, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22953,16 +22921,20 @@ class Conv2D1074(ForgeModule):
 class Conv2D1075(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1075.weight_1",
+            forge.Parameter(*(2688, 112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1075.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=336,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -22973,7 +22945,7 @@ class Conv2D1076(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1076.weight_1",
-            forge.Parameter(*(14, 336, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(448, 2688, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -22995,7 +22967,7 @@ class Conv2D1077(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1077.weight_1",
-            forge.Parameter(*(336, 14, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1792, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23017,7 +22989,7 @@ class Conv2D1078(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1078.weight_1",
-            forge.Parameter(*(56, 336, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(24, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23025,8 +22997,8 @@ class Conv2D1078(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1078.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -23037,16 +23009,20 @@ class Conv2D1078(ForgeModule):
 class Conv2D1079(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1079.weight_1",
+            forge.Parameter(*(96, 24, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1079.weight_1"),
             stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=336,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23057,7 +23033,7 @@ class Conv2D1080(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1080.weight_1",
-            forge.Parameter(*(112, 336, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1792, 272, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23077,16 +23053,20 @@ class Conv2D1080(ForgeModule):
 class Conv2D1081(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1081.weight_1",
+            forge.Parameter(*(64, 320, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1081.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=672,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23097,7 +23077,7 @@ class Conv2D1082(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1082.weight_1",
-            forge.Parameter(*(160, 672, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(32, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23106,7 +23086,7 @@ class Conv2D1082(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1082.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -23117,22 +23097,48 @@ class Conv2D1082(ForgeModule):
 class Conv2D1083(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1083.weight_1",
+            forge.Parameter(*(2, 32, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1083.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=960,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
 
 
 class Conv2D1084(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1084.weight_1",
+            forge.Parameter(*(1, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1084.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1085(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -23142,31 +23148,9 @@ class Conv2D1084(ForgeModule):
             conv2d_input_0,
             conv2d_input_1,
             stride=[2, 2],
-            padding=[2, 2, 2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=960,
-            channel_last=0,
-        )
-        return conv2d_output_1
-
-
-class Conv2D1085(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_parameter(
-            "conv2d1085.weight_1",
-            forge.Parameter(*(272, 960, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
-
-    def forward(self, conv2d_input_0):
-        conv2d_output_1 = forge.op.Conv2d(
-            "",
-            conv2d_input_0,
-            self.get_parameter("conv2d1085.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
-            dilation=1,
-            groups=1,
+            groups=64,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23175,20 +23159,16 @@ class Conv2D1085(ForgeModule):
 class Conv2D1086(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1086.weight_1",
-            forge.Parameter(*(1632, 272, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1086.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            conv2d_input_1,
+            stride=[2, 2],
+            padding=[0, 0, 1, 1],
             dilation=1,
-            groups=1,
+            groups=64,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23203,10 +23183,10 @@ class Conv2D1087(ForgeModule):
             "",
             conv2d_input_0,
             conv2d_input_1,
-            stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            stride=[2, 2],
+            padding=[0, 0, 1, 1],
             dilation=1,
-            groups=1632,
+            groups=128,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23215,20 +23195,16 @@ class Conv2D1087(ForgeModule):
 class Conv2D1088(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1088.weight_1",
-            forge.Parameter(*(68, 1632, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1088.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            conv2d_input_1,
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=512,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23237,48 +23213,22 @@ class Conv2D1088(ForgeModule):
 class Conv2D1089(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1089.weight_1",
-            forge.Parameter(*(1632, 68, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1089.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            conv2d_input_1,
+            stride=[2, 2],
+            padding=[0, 0, 1, 1],
             dilation=1,
-            groups=1,
+            groups=512,
             channel_last=0,
         )
         return conv2d_output_1
 
 
 class Conv2D1090(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_parameter(
-            "conv2d1090.weight_1",
-            forge.Parameter(*(272, 1632, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
-
-    def forward(self, conv2d_input_0):
-        conv2d_output_1 = forge.op.Conv2d(
-            "",
-            conv2d_input_0,
-            self.get_parameter("conv2d1090.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
-            dilation=1,
-            groups=1,
-            channel_last=0,
-        )
-        return conv2d_output_1
-
-
-class Conv2D1091(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -23290,7 +23240,29 @@ class Conv2D1091(ForgeModule):
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1632,
+            groups=384,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1091(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1091.weight_1",
+            forge.Parameter(*(256, 3, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1091.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23301,7 +23273,7 @@ class Conv2D1092(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1092.weight_1",
-            forge.Parameter(*(448, 1632, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(48, 8, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23309,10 +23281,10 @@ class Conv2D1092(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1092.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=6,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23323,7 +23295,7 @@ class Conv2D1093(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1093.weight_1",
-            forge.Parameter(*(2688, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(104, 48, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23331,7 +23303,7 @@ class Conv2D1093(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1093.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -23343,16 +23315,20 @@ class Conv2D1093(ForgeModule):
 class Conv2D1094(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1094.weight_1",
+            forge.Parameter(*(104, 48, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1094.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=2688,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23363,7 +23339,7 @@ class Conv2D1095(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1095.weight_1",
-            forge.Parameter(*(112, 2688, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(104, 8, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23371,10 +23347,10 @@ class Conv2D1095(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1095.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=13,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23385,7 +23361,7 @@ class Conv2D1096(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1096.weight_1",
-            forge.Parameter(*(2688, 112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(12, 104, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23407,7 +23383,7 @@ class Conv2D1097(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1097.weight_1",
-            forge.Parameter(*(448, 2688, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(104, 12, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23429,7 +23405,7 @@ class Conv2D1098(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1098.weight_1",
-            forge.Parameter(*(1792, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(104, 104, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23451,7 +23427,7 @@ class Conv2D1099(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1099.weight_1",
-            forge.Parameter(*(24, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(104, 8, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23459,10 +23435,10 @@ class Conv2D1099(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1099.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=13,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23473,7 +23449,7 @@ class Conv2D1100(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1100.weight_1",
-            forge.Parameter(*(96, 24, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(26, 104, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23481,8 +23457,8 @@ class Conv2D1100(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1100.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -23495,7 +23471,7 @@ class Conv2D1101(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1101.weight_1",
-            forge.Parameter(*(1792, 272, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(104, 26, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23517,7 +23493,7 @@ class Conv2D1102(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1102.weight_1",
-            forge.Parameter(*(64, 320, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(208, 104, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23525,7 +23501,7 @@ class Conv2D1102(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1102.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -23539,7 +23515,7 @@ class Conv2D1103(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1103.weight_1",
-            forge.Parameter(*(32, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(208, 104, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23548,7 +23524,7 @@ class Conv2D1103(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1103.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -23561,7 +23537,7 @@ class Conv2D1104(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1104.weight_1",
-            forge.Parameter(*(2, 32, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(208, 8, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23569,10 +23545,10 @@ class Conv2D1104(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1104.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=26,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23583,7 +23559,7 @@ class Conv2D1105(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1105.weight_1",
-            forge.Parameter(*(1, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(26, 208, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23592,7 +23568,7 @@ class Conv2D1105(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1105.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -23603,16 +23579,20 @@ class Conv2D1105(ForgeModule):
 class Conv2D1106(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1106.weight_1",
+            forge.Parameter(*(208, 26, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            self.get_parameter("conv2d1106.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=64,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23621,16 +23601,20 @@ class Conv2D1106(ForgeModule):
 class Conv2D1107(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1107.weight_1",
+            forge.Parameter(*(208, 208, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
-            stride=[2, 2],
-            padding=[0, 0, 1, 1],
+            self.get_parameter("conv2d1107.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=64,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23639,16 +23623,20 @@ class Conv2D1107(ForgeModule):
 class Conv2D1108(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1108.weight_1",
+            forge.Parameter(*(208, 8, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
-            stride=[2, 2],
-            padding=[0, 0, 1, 1],
+            self.get_parameter("conv2d1108.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=128,
+            groups=26,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23657,16 +23645,20 @@ class Conv2D1108(ForgeModule):
 class Conv2D1109(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1109.weight_1",
+            forge.Parameter(*(52, 208, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            self.get_parameter("conv2d1109.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=512,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23675,16 +23667,20 @@ class Conv2D1109(ForgeModule):
 class Conv2D1110(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1110.weight_1",
+            forge.Parameter(*(208, 52, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
-            stride=[2, 2],
-            padding=[0, 0, 1, 1],
+            self.get_parameter("conv2d1110.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=512,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23693,16 +23689,20 @@ class Conv2D1110(ForgeModule):
 class Conv2D1111(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1111.weight_1",
+            forge.Parameter(*(440, 208, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
-            stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            self.get_parameter("conv2d1111.weight_1"),
+            stride=[2, 2],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=384,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23713,7 +23713,7 @@ class Conv2D1112(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1112.weight_1",
-            forge.Parameter(*(256, 3, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(440, 208, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23735,7 +23735,7 @@ class Conv2D1113(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1113.weight_1",
-            forge.Parameter(*(48, 8, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(440, 8, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23746,7 +23746,7 @@ class Conv2D1113(ForgeModule):
             stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=6,
+            groups=55,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23757,7 +23757,7 @@ class Conv2D1114(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1114.weight_1",
-            forge.Parameter(*(104, 48, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(52, 440, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23765,7 +23765,7 @@ class Conv2D1114(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1114.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -23779,7 +23779,7 @@ class Conv2D1115(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1115.weight_1",
-            forge.Parameter(*(104, 48, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(440, 52, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23801,7 +23801,7 @@ class Conv2D1116(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1116.weight_1",
-            forge.Parameter(*(104, 8, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(440, 440, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23809,10 +23809,10 @@ class Conv2D1116(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1116.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=13,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23823,7 +23823,7 @@ class Conv2D1117(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1117.weight_1",
-            forge.Parameter(*(12, 104, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(440, 8, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23832,9 +23832,9 @@ class Conv2D1117(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1117.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=55,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23845,7 +23845,7 @@ class Conv2D1118(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1118.weight_1",
-            forge.Parameter(*(104, 12, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(110, 440, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23867,7 +23867,7 @@ class Conv2D1119(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1119.weight_1",
-            forge.Parameter(*(104, 104, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(440, 110, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23889,7 +23889,7 @@ class Conv2D1120(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1120.weight_1",
-            forge.Parameter(*(104, 8, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2048, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23897,10 +23897,10 @@ class Conv2D1120(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1120.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=13,
+            groups=32,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23911,7 +23911,7 @@ class Conv2D1121(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1121.weight_1",
-            forge.Parameter(*(26, 104, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2048, 2048, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23933,7 +23933,7 @@ class Conv2D1122(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1122.weight_1",
-            forge.Parameter(*(104, 26, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2048, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23942,9 +23942,9 @@ class Conv2D1122(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1122.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=32,
             channel_last=0,
         )
         return conv2d_output_1
@@ -23955,7 +23955,7 @@ class Conv2D1123(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1123.weight_1",
-            forge.Parameter(*(208, 104, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(16, 1024, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23963,8 +23963,8 @@ class Conv2D1123(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1123.weight_1"),
-            stride=[2, 2],
-            padding=[0, 0, 0, 0],
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -23977,7 +23977,7 @@ class Conv2D1124(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1124.weight_1",
-            forge.Parameter(*(208, 104, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(24, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -23986,7 +23986,7 @@ class Conv2D1124(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1124.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -23999,7 +23999,7 @@ class Conv2D1125(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1125.weight_1",
-            forge.Parameter(*(208, 8, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(24, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24007,10 +24007,10 @@ class Conv2D1125(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1125.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=26,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -24021,7 +24021,7 @@ class Conv2D1126(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1126.weight_1",
-            forge.Parameter(*(26, 208, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24043,7 +24043,7 @@ class Conv2D1127(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1127.weight_1",
-            forge.Parameter(*(208, 26, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(16, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24052,7 +24052,7 @@ class Conv2D1127(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1127.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24065,7 +24065,7 @@ class Conv2D1128(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1128.weight_1",
-            forge.Parameter(*(208, 208, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(324, 1024, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24074,7 +24074,7 @@ class Conv2D1128(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1128.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24087,7 +24087,7 @@ class Conv2D1129(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1129.weight_1",
-            forge.Parameter(*(208, 8, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(486, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24098,7 +24098,7 @@ class Conv2D1129(ForgeModule):
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=26,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -24109,7 +24109,7 @@ class Conv2D1130(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1130.weight_1",
-            forge.Parameter(*(52, 208, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(486, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24118,7 +24118,7 @@ class Conv2D1130(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1130.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24131,7 +24131,7 @@ class Conv2D1131(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1131.weight_1",
-            forge.Parameter(*(208, 52, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(324, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24140,7 +24140,7 @@ class Conv2D1131(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1131.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24153,7 +24153,7 @@ class Conv2D1132(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1132.weight_1",
-            forge.Parameter(*(440, 208, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(96, 3, 4, 4), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24161,7 +24161,7 @@ class Conv2D1132(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1132.weight_1"),
-            stride=[2, 2],
+            stride=[4, 4],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -24175,7 +24175,7 @@ class Conv2D1133(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1133.weight_1",
-            forge.Parameter(*(440, 208, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24197,7 +24197,7 @@ class Conv2D1134(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1134.weight_1",
-            forge.Parameter(*(440, 8, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(160, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24205,10 +24205,10 @@ class Conv2D1134(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1134.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=55,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -24219,7 +24219,7 @@ class Conv2D1135(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1135.weight_1",
-            forge.Parameter(*(52, 440, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(512, 1056, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24241,7 +24241,7 @@ class Conv2D1136(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1136.weight_1",
-            forge.Parameter(*(440, 52, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24250,7 +24250,7 @@ class Conv2D1136(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1136.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24263,7 +24263,7 @@ class Conv2D1137(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1137.weight_1",
-            forge.Parameter(*(440, 440, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 192, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24272,7 +24272,7 @@ class Conv2D1137(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1137.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24285,7 +24285,7 @@ class Conv2D1138(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1138.weight_1",
-            forge.Parameter(*(440, 8, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(768, 1472, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24294,9 +24294,9 @@ class Conv2D1138(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1138.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=55,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -24307,7 +24307,7 @@ class Conv2D1139(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1139.weight_1",
-            forge.Parameter(*(110, 440, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 768, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24316,7 +24316,7 @@ class Conv2D1139(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1139.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24329,7 +24329,7 @@ class Conv2D1140(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1140.weight_1",
-            forge.Parameter(*(440, 110, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(768, 1728, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24351,7 +24351,7 @@ class Conv2D1141(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1141.weight_1",
-            forge.Parameter(*(2048, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 768, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24359,10 +24359,10 @@ class Conv2D1141(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1141.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=32,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -24373,7 +24373,7 @@ class Conv2D1142(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1142.weight_1",
-            forge.Parameter(*(2048, 2048, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 224, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24382,7 +24382,7 @@ class Conv2D1142(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1142.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24395,7 +24395,7 @@ class Conv2D1143(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1143.weight_1",
-            forge.Parameter(*(2048, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1024, 1888, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24404,9 +24404,9 @@ class Conv2D1143(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1143.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=32,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -24417,7 +24417,7 @@ class Conv2D1144(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1144.weight_1",
-            forge.Parameter(*(16, 1024, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 1024, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24439,7 +24439,7 @@ class Conv2D1145(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1145.weight_1",
-            forge.Parameter(*(24, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1024, 2144, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -24448,7 +24448,7 @@ class Conv2D1145(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1145.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24459,18 +24459,15 @@ class Conv2D1145(ForgeModule):
 class Conv2D1146(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1146.weight_1",
-            forge.Parameter(*(24, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1146_const_1", shape=(32, 3, 6, 6), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1146.weight_1"),
-            stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            self.get_constant("conv2d1146_const_1"),
+            stride=[2, 2],
+            padding=[2, 2, 2, 2],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24481,18 +24478,15 @@ class Conv2D1146(ForgeModule):
 class Conv2D1147(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1147.weight_1",
-            forge.Parameter(*(256, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1147_const_1", shape=(80, 3, 6, 6), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1147.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            self.get_constant("conv2d1147_const_1"),
+            stride=[2, 2],
+            padding=[2, 2, 2, 2],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24503,17 +24497,14 @@ class Conv2D1147(ForgeModule):
 class Conv2D1148(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1148.weight_1",
-            forge.Parameter(*(16, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1148_const_1", shape=(160, 80, 3, 3), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1148.weight_1"),
-            stride=[1, 1],
+            self.get_constant("conv2d1148_const_1"),
+            stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
@@ -24525,18 +24516,15 @@ class Conv2D1148(ForgeModule):
 class Conv2D1149(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1149.weight_1",
-            forge.Parameter(*(324, 1024, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1149_const_1", shape=(80, 160, 1, 1), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1149.weight_1"),
+            self.get_constant("conv2d1149_const_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24547,18 +24535,15 @@ class Conv2D1149(ForgeModule):
 class Conv2D1150(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1150.weight_1",
-            forge.Parameter(*(486, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1150_const_1", shape=(80, 80, 1, 1), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1150.weight_1"),
+            self.get_constant("conv2d1150_const_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24569,16 +24554,13 @@ class Conv2D1150(ForgeModule):
 class Conv2D1151(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1151.weight_1",
-            forge.Parameter(*(486, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1151_const_1", shape=(80, 80, 3, 3), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1151.weight_1"),
+            self.get_constant("conv2d1151_const_1"),
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
@@ -24591,18 +24573,15 @@ class Conv2D1151(ForgeModule):
 class Conv2D1152(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1152.weight_1",
-            forge.Parameter(*(324, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1152_const_1", shape=(160, 160, 1, 1), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1152.weight_1"),
+            self.get_constant("conv2d1152_const_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24613,18 +24592,15 @@ class Conv2D1152(ForgeModule):
 class Conv2D1153(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1153.weight_1",
-            forge.Parameter(*(96, 3, 4, 4), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1153_const_1", shape=(320, 160, 3, 3), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1153.weight_1"),
-            stride=[4, 4],
-            padding=[0, 0, 0, 0],
+            self.get_constant("conv2d1153_const_1"),
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24635,16 +24611,13 @@ class Conv2D1153(ForgeModule):
 class Conv2D1154(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1154.weight_1",
-            forge.Parameter(*(1, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1154_const_1", shape=(160, 320, 1, 1), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1154.weight_1"),
+            self.get_constant("conv2d1154_const_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -24657,16 +24630,13 @@ class Conv2D1154(ForgeModule):
 class Conv2D1155(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1155.weight_1",
-            forge.Parameter(*(160, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1155_const_1", shape=(160, 160, 3, 3), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1155.weight_1"),
+            self.get_constant("conv2d1155_const_1"),
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
@@ -24679,16 +24649,13 @@ class Conv2D1155(ForgeModule):
 class Conv2D1156(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1156.weight_1",
-            forge.Parameter(*(512, 1056, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1156_const_1", shape=(320, 320, 1, 1), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1156.weight_1"),
+            self.get_constant("conv2d1156_const_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -24701,17 +24668,14 @@ class Conv2D1156(ForgeModule):
 class Conv2D1157(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1157.weight_1",
-            forge.Parameter(*(192, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1157_const_1", shape=(640, 320, 3, 3), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1157.weight_1"),
-            stride=[1, 1],
+            self.get_constant("conv2d1157_const_1"),
+            stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
@@ -24723,18 +24687,15 @@ class Conv2D1157(ForgeModule):
 class Conv2D1158(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1158.weight_1",
-            forge.Parameter(*(192, 192, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1158_const_1", shape=(320, 640, 1, 1), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1158.weight_1"),
+            self.get_constant("conv2d1158_const_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24745,18 +24706,15 @@ class Conv2D1158(ForgeModule):
 class Conv2D1159(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1159.weight_1",
-            forge.Parameter(*(768, 1472, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1159_const_1", shape=(320, 320, 3, 3), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1159.weight_1"),
+            self.get_constant("conv2d1159_const_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24767,18 +24725,15 @@ class Conv2D1159(ForgeModule):
 class Conv2D1160(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1160.weight_1",
-            forge.Parameter(*(192, 768, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1160_const_1", shape=(640, 640, 1, 1), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1160.weight_1"),
+            self.get_constant("conv2d1160_const_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24789,18 +24744,15 @@ class Conv2D1160(ForgeModule):
 class Conv2D1161(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1161.weight_1",
-            forge.Parameter(*(768, 1728, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1161_const_1", shape=(1280, 640, 3, 3), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1161.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            self.get_constant("conv2d1161_const_1"),
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24811,18 +24763,15 @@ class Conv2D1161(ForgeModule):
 class Conv2D1162(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1162.weight_1",
-            forge.Parameter(*(224, 768, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1162_const_1", shape=(640, 1280, 1, 1), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1162.weight_1"),
+            self.get_constant("conv2d1162_const_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24833,16 +24782,13 @@ class Conv2D1162(ForgeModule):
 class Conv2D1163(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1163.weight_1",
-            forge.Parameter(*(224, 224, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1163_const_1", shape=(640, 640, 3, 3), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1163.weight_1"),
+            self.get_constant("conv2d1163_const_1"),
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
@@ -24855,16 +24801,13 @@ class Conv2D1163(ForgeModule):
 class Conv2D1164(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1164.weight_1",
-            forge.Parameter(*(1024, 1888, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1164_const_1", shape=(1280, 1280, 1, 1), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1164.weight_1"),
+            self.get_constant("conv2d1164_const_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -24877,18 +24820,15 @@ class Conv2D1164(ForgeModule):
 class Conv2D1165(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1165.weight_1",
-            forge.Parameter(*(224, 1024, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1165_const_1", shape=(1280, 2560, 1, 1), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1165.weight_1"),
+            self.get_constant("conv2d1165_const_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24899,16 +24839,13 @@ class Conv2D1165(ForgeModule):
 class Conv2D1166(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1166.weight_1",
-            forge.Parameter(*(1024, 2144, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1166_const_1", shape=(320, 1280, 1, 1), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1166.weight_1"),
+            self.get_constant("conv2d1166_const_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -24921,15 +24858,15 @@ class Conv2D1166(ForgeModule):
 class Conv2D1167(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1167_const_1", shape=(32, 3, 6, 6), dtype=torch.float32)
+        self.add_constant("conv2d1167_const_1", shape=(160, 640, 1, 1), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
             self.get_constant("conv2d1167_const_1"),
-            stride=[2, 2],
-            padding=[2, 2, 2, 2],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24940,15 +24877,15 @@ class Conv2D1167(ForgeModule):
 class Conv2D1168(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1168_const_1", shape=(80, 3, 6, 6), dtype=torch.float32)
+        self.add_constant("conv2d1168_const_1", shape=(255, 320, 1, 1), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
             self.get_constant("conv2d1168_const_1"),
-            stride=[2, 2],
-            padding=[2, 2, 2, 2],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -24959,7 +24896,7 @@ class Conv2D1168(ForgeModule):
 class Conv2D1169(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1169_const_1", shape=(160, 80, 3, 3), dtype=torch.float32)
+        self.add_constant("conv2d1169_const_1", shape=(320, 320, 3, 3), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -24978,7 +24915,7 @@ class Conv2D1169(ForgeModule):
 class Conv2D1170(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1170_const_1", shape=(80, 160, 1, 1), dtype=torch.float32)
+        self.add_constant("conv2d1170_const_1", shape=(255, 640, 1, 1), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -24997,15 +24934,15 @@ class Conv2D1170(ForgeModule):
 class Conv2D1171(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1171_const_1", shape=(80, 80, 1, 1), dtype=torch.float32)
+        self.add_constant("conv2d1171_const_1", shape=(640, 640, 3, 3), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
             self.get_constant("conv2d1171_const_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -25016,7 +24953,7 @@ class Conv2D1171(ForgeModule):
 class Conv2D1172(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1172_const_1", shape=(80, 80, 3, 3), dtype=torch.float32)
+        self.add_constant("conv2d1172_const_1", shape=(255, 1280, 1, 1), dtype=torch.float32)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -25024,7 +24961,7 @@ class Conv2D1172(ForgeModule):
             conv2d_input_0,
             self.get_constant("conv2d1172_const_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -25035,13 +24972,16 @@ class Conv2D1172(ForgeModule):
 class Conv2D1173(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1173_const_1", shape=(160, 160, 1, 1), dtype=torch.float32)
+        self.add_parameter(
+            "conv2d1173.weight_1",
+            forge.Parameter(*(4, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1173_const_1"),
+            self.get_parameter("conv2d1173.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -25054,15 +24994,18 @@ class Conv2D1173(ForgeModule):
 class Conv2D1174(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1174_const_1", shape=(320, 160, 3, 3), dtype=torch.float32)
+        self.add_parameter(
+            "conv2d1174.weight_1",
+            forge.Parameter(*(1, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1174_const_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            self.get_parameter("conv2d1174.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -25073,13 +25016,16 @@ class Conv2D1174(ForgeModule):
 class Conv2D1175(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1175_const_1", shape=(160, 320, 1, 1), dtype=torch.float32)
+        self.add_parameter(
+            "conv2d1175.weight_1",
+            forge.Parameter(*(80, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1175_const_1"),
+            self.get_parameter("conv2d1175.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -25092,18 +25038,17 @@ class Conv2D1175(ForgeModule):
 class Conv2D1176(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1176_const_1", shape=(160, 160, 3, 3), dtype=torch.float32)
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1176_const_1"),
-            stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            conv2d_input_1,
+            stride=[2, 2],
+            padding=[3, 3, 3, 3],
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=1,
         )
         return conv2d_output_1
 
@@ -25111,18 +25056,17 @@ class Conv2D1176(ForgeModule):
 class Conv2D1177(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1177_const_1", shape=(320, 320, 1, 1), dtype=torch.float32)
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1177_const_1"),
+            conv2d_input_1,
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=1,
         )
         return conv2d_output_1
 
@@ -25130,18 +25074,17 @@ class Conv2D1177(ForgeModule):
 class Conv2D1178(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1178_const_1", shape=(640, 320, 3, 3), dtype=torch.float32)
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1178_const_1"),
-            stride=[2, 2],
+            conv2d_input_1,
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=1,
         )
         return conv2d_output_1
 
@@ -25149,18 +25092,17 @@ class Conv2D1178(ForgeModule):
 class Conv2D1179(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1179_const_1", shape=(320, 640, 1, 1), dtype=torch.float32)
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1179_const_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            conv2d_input_1,
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=1,
         )
         return conv2d_output_1
 
@@ -25168,18 +25110,17 @@ class Conv2D1179(ForgeModule):
 class Conv2D1180(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1180_const_1", shape=(320, 320, 3, 3), dtype=torch.float32)
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1180_const_1"),
-            stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            conv2d_input_1,
+            stride=[2, 2],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=1,
         )
         return conv2d_output_1
 
@@ -25187,13 +25128,16 @@ class Conv2D1180(ForgeModule):
 class Conv2D1181(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1181_const_1", shape=(640, 640, 1, 1), dtype=torch.float32)
+        self.add_parameter(
+            "conv2d1181.weight_1",
+            forge.Parameter(*(8, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1181_const_1"),
+            self.get_parameter("conv2d1181.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -25206,15 +25150,18 @@ class Conv2D1181(ForgeModule):
 class Conv2D1182(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1182_const_1", shape=(1280, 640, 3, 3), dtype=torch.float32)
+        self.add_parameter(
+            "conv2d1182.weight_1",
+            forge.Parameter(*(32, 8, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1182_const_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            self.get_parameter("conv2d1182.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -25225,13 +25172,16 @@ class Conv2D1182(ForgeModule):
 class Conv2D1183(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1183_const_1", shape=(640, 1280, 1, 1), dtype=torch.float32)
+        self.add_parameter(
+            "conv2d1183.weight_1",
+            forge.Parameter(*(4, 16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1183_const_1"),
+            self.get_parameter("conv2d1183.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -25244,15 +25194,18 @@ class Conv2D1183(ForgeModule):
 class Conv2D1184(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1184_const_1", shape=(640, 640, 3, 3), dtype=torch.float32)
+        self.add_parameter(
+            "conv2d1184.weight_1",
+            forge.Parameter(*(16, 4, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1184_const_1"),
+            self.get_parameter("conv2d1184.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -25263,13 +25216,16 @@ class Conv2D1184(ForgeModule):
 class Conv2D1185(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1185_const_1", shape=(1280, 1280, 1, 1), dtype=torch.float32)
+        self.add_parameter(
+            "conv2d1185.weight_1",
+            forge.Parameter(*(16, 16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1185_const_1"),
+            self.get_parameter("conv2d1185.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -25282,13 +25238,16 @@ class Conv2D1185(ForgeModule):
 class Conv2D1186(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1186_const_1", shape=(1280, 2560, 1, 1), dtype=torch.float32)
+        self.add_parameter(
+            "conv2d1186.weight_1",
+            forge.Parameter(*(4, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1186_const_1"),
+            self.get_parameter("conv2d1186.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -25301,13 +25260,16 @@ class Conv2D1186(ForgeModule):
 class Conv2D1187(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1187_const_1", shape=(320, 1280, 1, 1), dtype=torch.float32)
+        self.add_parameter(
+            "conv2d1187.weight_1",
+            forge.Parameter(*(96, 4, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1187_const_1"),
+            self.get_parameter("conv2d1187.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -25320,13 +25282,16 @@ class Conv2D1187(ForgeModule):
 class Conv2D1188(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1188_const_1", shape=(160, 640, 1, 1), dtype=torch.float32)
+        self.add_parameter(
+            "conv2d1188.weight_1",
+            forge.Parameter(*(6, 144, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1188_const_1"),
+            self.get_parameter("conv2d1188.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -25339,13 +25304,16 @@ class Conv2D1188(ForgeModule):
 class Conv2D1189(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1189_const_1", shape=(255, 320, 1, 1), dtype=torch.float32)
+        self.add_parameter(
+            "conv2d1189.weight_1",
+            forge.Parameter(*(144, 6, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1189_const_1"),
+            self.get_parameter("conv2d1189.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -25358,15 +25326,18 @@ class Conv2D1189(ForgeModule):
 class Conv2D1190(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1190_const_1", shape=(320, 320, 3, 3), dtype=torch.float32)
+        self.add_parameter(
+            "conv2d1190.weight_1",
+            forge.Parameter(*(10, 240, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1190_const_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            self.get_parameter("conv2d1190.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -25377,13 +25348,16 @@ class Conv2D1190(ForgeModule):
 class Conv2D1191(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1191_const_1", shape=(255, 640, 1, 1), dtype=torch.float32)
+        self.add_parameter(
+            "conv2d1191.weight_1",
+            forge.Parameter(*(240, 10, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1191_const_1"),
+            self.get_parameter("conv2d1191.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -25396,15 +25370,18 @@ class Conv2D1191(ForgeModule):
 class Conv2D1192(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1192_const_1", shape=(640, 640, 3, 3), dtype=torch.float32)
+        self.add_parameter(
+            "conv2d1192.weight_1",
+            forge.Parameter(*(20, 480, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1192_const_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            self.get_parameter("conv2d1192.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -25415,13 +25392,16 @@ class Conv2D1192(ForgeModule):
 class Conv2D1193(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1193_const_1", shape=(255, 1280, 1, 1), dtype=torch.float32)
+        self.add_parameter(
+            "conv2d1193.weight_1",
+            forge.Parameter(*(480, 20, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1193_const_1"),
+            self.get_parameter("conv2d1193.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -25436,7 +25416,7 @@ class Conv2D1194(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1194.weight_1",
-            forge.Parameter(*(4, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(28, 672, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25458,7 +25438,7 @@ class Conv2D1195(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1195.weight_1",
-            forge.Parameter(*(1, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(672, 28, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25480,7 +25460,7 @@ class Conv2D1196(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1196.weight_1",
-            forge.Parameter(*(80, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(48, 1152, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25500,17 +25480,21 @@ class Conv2D1196(ForgeModule):
 class Conv2D1197(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1197.weight_1",
+            forge.Parameter(*(1152, 48, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
-            stride=[2, 2],
-            padding=[3, 3, 3, 3],
+            self.get_parameter("conv2d1197.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
-            channel_last=1,
+            channel_last=0,
         )
         return conv2d_output_1
 
@@ -25518,17 +25502,21 @@ class Conv2D1197(ForgeModule):
 class Conv2D1198(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1198.weight_1",
+            forge.Parameter(*(1920, 320, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1198.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
-            channel_last=1,
+            channel_last=0,
         )
         return conv2d_output_1
 
@@ -25536,17 +25524,21 @@ class Conv2D1198(ForgeModule):
 class Conv2D1199(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1199.weight_1",
+            forge.Parameter(*(1920, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1199.weight_1"),
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
-            channel_last=1,
+            groups=1920,
+            channel_last=0,
         )
         return conv2d_output_1
 
@@ -25554,17 +25546,21 @@ class Conv2D1199(ForgeModule):
 class Conv2D1200(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1200.weight_1",
+            forge.Parameter(*(80, 1920, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            self.get_parameter("conv2d1200.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
-            channel_last=1,
+            channel_last=0,
         )
         return conv2d_output_1
 
@@ -25572,17 +25568,21 @@ class Conv2D1200(ForgeModule):
 class Conv2D1201(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1201.weight_1",
+            forge.Parameter(*(1920, 80, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
-            stride=[2, 2],
+            self.get_parameter("conv2d1201.weight_1"),
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
-            channel_last=1,
+            channel_last=0,
         )
         return conv2d_output_1
 
@@ -25592,7 +25592,7 @@ class Conv2D1202(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1202.weight_1",
-            forge.Parameter(*(8, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(320, 1920, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25614,7 +25614,7 @@ class Conv2D1203(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1203.weight_1",
-            forge.Parameter(*(32, 8, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(40, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25622,8 +25622,8 @@ class Conv2D1203(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1203.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -25636,7 +25636,7 @@ class Conv2D1204(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1204.weight_1",
-            forge.Parameter(*(4, 16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(40, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25645,9 +25645,9 @@ class Conv2D1204(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1204.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=40,
             channel_last=0,
         )
         return conv2d_output_1
@@ -25658,7 +25658,7 @@ class Conv2D1205(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1205.weight_1",
-            forge.Parameter(*(16, 4, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(10, 40, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25680,7 +25680,7 @@ class Conv2D1206(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1206.weight_1",
-            forge.Parameter(*(16, 16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(40, 10, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25702,7 +25702,7 @@ class Conv2D1207(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1207.weight_1",
-            forge.Parameter(*(4, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(24, 40, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25724,7 +25724,7 @@ class Conv2D1208(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1208.weight_1",
-            forge.Parameter(*(96, 4, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(24, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25733,9 +25733,9 @@ class Conv2D1208(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1208.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=24,
             channel_last=0,
         )
         return conv2d_output_1
@@ -25746,7 +25746,7 @@ class Conv2D1209(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1209.weight_1",
-            forge.Parameter(*(6, 144, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(24, 24, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25768,7 +25768,7 @@ class Conv2D1210(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1210.weight_1",
-            forge.Parameter(*(144, 6, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32, 144, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25790,7 +25790,7 @@ class Conv2D1211(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1211.weight_1",
-            forge.Parameter(*(10, 240, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(8, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25812,7 +25812,7 @@ class Conv2D1212(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1212.weight_1",
-            forge.Parameter(*(240, 10, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 8, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25834,7 +25834,7 @@ class Conv2D1213(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1213.weight_1",
-            forge.Parameter(*(20, 480, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25842,10 +25842,10 @@ class Conv2D1213(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1213.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=1,
+            groups=192,
             channel_last=0,
         )
         return conv2d_output_1
@@ -25856,7 +25856,7 @@ class Conv2D1214(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1214.weight_1",
-            forge.Parameter(*(480, 20, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(12, 288, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25878,7 +25878,7 @@ class Conv2D1215(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1215.weight_1",
-            forge.Parameter(*(28, 672, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(288, 12, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25900,7 +25900,7 @@ class Conv2D1216(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1216.weight_1",
-            forge.Parameter(*(672, 28, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 288, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25922,7 +25922,7 @@ class Conv2D1217(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1217.weight_1",
-            forge.Parameter(*(48, 1152, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(576, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25944,7 +25944,7 @@ class Conv2D1218(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1218.weight_1",
-            forge.Parameter(*(1152, 48, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(576, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25953,9 +25953,9 @@ class Conv2D1218(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1218.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=576,
             channel_last=0,
         )
         return conv2d_output_1
@@ -25966,7 +25966,7 @@ class Conv2D1219(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1219.weight_1",
-            forge.Parameter(*(1920, 320, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(24, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25988,7 +25988,7 @@ class Conv2D1220(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1220.weight_1",
-            forge.Parameter(*(1920, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(576, 24, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -25997,9 +25997,9 @@ class Conv2D1220(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1220.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=1920,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26010,7 +26010,7 @@ class Conv2D1221(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1221.weight_1",
-            forge.Parameter(*(80, 1920, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26032,7 +26032,7 @@ class Conv2D1222(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1222.weight_1",
-            forge.Parameter(*(1920, 80, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(576, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26041,9 +26041,9 @@ class Conv2D1222(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1222.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=1,
+            groups=576,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26054,7 +26054,7 @@ class Conv2D1223(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1223.weight_1",
-            forge.Parameter(*(320, 1920, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(136, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26076,7 +26076,7 @@ class Conv2D1224(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1224.weight_1",
-            forge.Parameter(*(40, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(816, 136, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26084,8 +26084,8 @@ class Conv2D1224(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1224.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -26098,7 +26098,7 @@ class Conv2D1225(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1225.weight_1",
-            forge.Parameter(*(40, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(816, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26107,9 +26107,9 @@ class Conv2D1225(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1225.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=40,
+            groups=816,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26120,7 +26120,7 @@ class Conv2D1226(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1226.weight_1",
-            forge.Parameter(*(10, 40, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(816, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26128,10 +26128,10 @@ class Conv2D1226(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1226.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=1,
+            groups=816,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26142,7 +26142,7 @@ class Conv2D1227(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1227.weight_1",
-            forge.Parameter(*(40, 10, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(34, 816, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26164,7 +26164,7 @@ class Conv2D1228(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1228.weight_1",
-            forge.Parameter(*(24, 40, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(816, 34, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26186,7 +26186,7 @@ class Conv2D1229(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1229.weight_1",
-            forge.Parameter(*(24, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(136, 816, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26195,9 +26195,9 @@ class Conv2D1229(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1229.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=24,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26208,7 +26208,7 @@ class Conv2D1230(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1230.weight_1",
-            forge.Parameter(*(24, 24, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(232, 816, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26230,7 +26230,7 @@ class Conv2D1231(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1231.weight_1",
-            forge.Parameter(*(32, 144, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1392, 232, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26252,7 +26252,7 @@ class Conv2D1232(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1232.weight_1",
-            forge.Parameter(*(8, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1392, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26261,9 +26261,9 @@ class Conv2D1232(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1232.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=1,
+            groups=1392,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26274,7 +26274,7 @@ class Conv2D1233(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1233.weight_1",
-            forge.Parameter(*(192, 8, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(58, 1392, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26296,7 +26296,7 @@ class Conv2D1234(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1234.weight_1",
-            forge.Parameter(*(12, 288, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1392, 58, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26318,7 +26318,7 @@ class Conv2D1235(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1235.weight_1",
-            forge.Parameter(*(288, 12, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(232, 1392, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26340,7 +26340,7 @@ class Conv2D1236(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1236.weight_1",
-            forge.Parameter(*(96, 288, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1392, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26349,9 +26349,9 @@ class Conv2D1236(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1236.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=1392,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26362,7 +26362,7 @@ class Conv2D1237(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1237.weight_1",
-            forge.Parameter(*(576, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(384, 1392, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26384,7 +26384,7 @@ class Conv2D1238(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1238.weight_1",
-            forge.Parameter(*(576, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(2304, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26393,9 +26393,9 @@ class Conv2D1238(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1238.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=576,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26406,7 +26406,7 @@ class Conv2D1239(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1239.weight_1",
-            forge.Parameter(*(24, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(2304, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26415,9 +26415,9 @@ class Conv2D1239(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1239.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=2304,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26428,7 +26428,7 @@ class Conv2D1240(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1240.weight_1",
-            forge.Parameter(*(576, 24, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 2304, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26450,7 +26450,7 @@ class Conv2D1241(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1241.weight_1",
-            forge.Parameter(*(96, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(2304, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26472,7 +26472,7 @@ class Conv2D1242(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1242.weight_1",
-            forge.Parameter(*(576, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(384, 2304, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26481,9 +26481,9 @@ class Conv2D1242(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1242.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=576,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26494,7 +26494,7 @@ class Conv2D1243(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1243.weight_1",
-            forge.Parameter(*(136, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1536, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26516,7 +26516,7 @@ class Conv2D1244(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1244.weight_1",
-            forge.Parameter(*(816, 136, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26524,10 +26524,10 @@ class Conv2D1244(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1244.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=192,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26538,7 +26538,7 @@ class Conv2D1245(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1245.weight_1",
-            forge.Parameter(*(816, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(384, 64, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26547,9 +26547,9 @@ class Conv2D1245(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1245.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=816,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26560,7 +26560,7 @@ class Conv2D1246(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1246.weight_1",
-            forge.Parameter(*(816, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(384, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26568,10 +26568,10 @@ class Conv2D1246(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1246.weight_1"),
-            stride=[2, 2],
-            padding=[2, 2, 2, 2],
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=816,
+            groups=384,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26582,7 +26582,7 @@ class Conv2D1247(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1247.weight_1",
-            forge.Parameter(*(34, 816, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26604,7 +26604,7 @@ class Conv2D1248(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1248.weight_1",
-            forge.Parameter(*(816, 34, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(576, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26612,10 +26612,10 @@ class Conv2D1248(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1248.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=576,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26626,7 +26626,7 @@ class Conv2D1249(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1249.weight_1",
-            forge.Parameter(*(136, 816, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(160, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26648,7 +26648,7 @@ class Conv2D1250(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1250.weight_1",
-            forge.Parameter(*(232, 816, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(960, 160, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26670,7 +26670,7 @@ class Conv2D1251(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1251.weight_1",
-            forge.Parameter(*(1392, 232, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(960, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26679,9 +26679,9 @@ class Conv2D1251(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1251.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=960,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26692,7 +26692,7 @@ class Conv2D1252(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1252.weight_1",
-            forge.Parameter(*(1392, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(160, 960, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26701,9 +26701,9 @@ class Conv2D1252(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1252.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=1392,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26714,7 +26714,7 @@ class Conv2D1253(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1253.weight_1",
-            forge.Parameter(*(58, 1392, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(320, 960, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -26736,7 +26736,7 @@ class Conv2D1254(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1254.weight_1",
-            forge.Parameter(*(1392, 58, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -26758,7 +26758,7 @@ class Conv2D1255(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1255.weight_1",
-            forge.Parameter(*(232, 1392, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 160, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -26780,7 +26780,7 @@ class Conv2D1256(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1256.weight_1",
-            forge.Parameter(*(1392, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -26789,9 +26789,9 @@ class Conv2D1256(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1256.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=1392,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26802,7 +26802,7 @@ class Conv2D1257(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1257.weight_1",
-            forge.Parameter(*(384, 1392, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -26824,7 +26824,7 @@ class Conv2D1258(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1258.weight_1",
-            forge.Parameter(*(2304, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 288, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -26846,7 +26846,7 @@ class Conv2D1259(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1259.weight_1",
-            forge.Parameter(*(2304, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 320, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -26855,9 +26855,9 @@ class Conv2D1259(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1259.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=2304,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26868,7 +26868,7 @@ class Conv2D1260(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1260.weight_1",
-            forge.Parameter(*(96, 2304, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 352, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -26890,7 +26890,7 @@ class Conv2D1261(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1261.weight_1",
-            forge.Parameter(*(2304, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 416, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -26912,7 +26912,7 @@ class Conv2D1262(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1262.weight_1",
-            forge.Parameter(*(384, 2304, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 480, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -26934,7 +26934,7 @@ class Conv2D1263(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1263.weight_1",
-            forge.Parameter(*(1536, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 544, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -26956,7 +26956,7 @@ class Conv2D1264(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1264.weight_1",
-            forge.Parameter(*(192, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -26964,10 +26964,10 @@ class Conv2D1264(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1264.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=192,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -26978,7 +26978,7 @@ class Conv2D1265(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1265.weight_1",
-            forge.Parameter(*(384, 64, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 608, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27000,7 +27000,7 @@ class Conv2D1266(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1266.weight_1",
-            forge.Parameter(*(384, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 640, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27009,9 +27009,9 @@ class Conv2D1266(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1266.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=384,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -27022,7 +27022,7 @@ class Conv2D1267(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1267.weight_1",
-            forge.Parameter(*(64, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 672, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27044,7 +27044,7 @@ class Conv2D1268(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1268.weight_1",
-            forge.Parameter(*(576, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 704, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27052,10 +27052,10 @@ class Conv2D1268(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1268.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=576,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -27066,7 +27066,7 @@ class Conv2D1269(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1269.weight_1",
-            forge.Parameter(*(160, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 736, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27088,7 +27088,7 @@ class Conv2D1270(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1270.weight_1",
-            forge.Parameter(*(960, 160, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 800, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27110,7 +27110,7 @@ class Conv2D1271(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1271.weight_1",
-            forge.Parameter(*(960, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 864, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27119,9 +27119,9 @@ class Conv2D1271(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1271.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=960,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -27132,7 +27132,7 @@ class Conv2D1272(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1272.weight_1",
-            forge.Parameter(*(160, 960, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27154,7 +27154,7 @@ class Conv2D1273(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1273.weight_1",
-            forge.Parameter(*(320, 960, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 928, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27176,7 +27176,7 @@ class Conv2D1274(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1274.weight_1",
-            forge.Parameter(*(128, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(128, 960, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27198,7 +27198,7 @@ class Conv2D1275(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1275.weight_1",
-            forge.Parameter(*(128, 160, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(128, 992, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27220,7 +27220,7 @@ class Conv2D1276(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1276.weight_1",
-            forge.Parameter(*(128, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(64, 2, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27228,10 +27228,10 @@ class Conv2D1276(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1276.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=32,
             channel_last=0,
         )
         return conv2d_output_1
@@ -27242,7 +27242,7 @@ class Conv2D1277(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1277.weight_1",
-            forge.Parameter(*(128, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(64, 2, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27251,9 +27251,9 @@ class Conv2D1277(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1277.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=32,
             channel_last=0,
         )
         return conv2d_output_1
@@ -27264,7 +27264,7 @@ class Conv2D1278(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1278.weight_1",
-            forge.Parameter(*(128, 288, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(40, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27273,7 +27273,7 @@ class Conv2D1278(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1278.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -27286,7 +27286,7 @@ class Conv2D1279(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1279.weight_1",
-            forge.Parameter(*(128, 320, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(40, 40, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27295,7 +27295,7 @@ class Conv2D1279(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1279.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -27308,7 +27308,7 @@ class Conv2D1280(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1280.weight_1",
-            forge.Parameter(*(128, 352, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(40, 40, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27316,8 +27316,8 @@ class Conv2D1280(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1280.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -27330,7 +27330,7 @@ class Conv2D1281(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1281.weight_1",
-            forge.Parameter(*(128, 416, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(80, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27338,8 +27338,8 @@ class Conv2D1281(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1281.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -27352,7 +27352,7 @@ class Conv2D1282(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1282.weight_1",
-            forge.Parameter(*(128, 480, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(40, 80, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27374,7 +27374,7 @@ class Conv2D1283(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1283.weight_1",
-            forge.Parameter(*(128, 544, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(80, 40, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27382,8 +27382,8 @@ class Conv2D1283(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1283.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -27396,7 +27396,7 @@ class Conv2D1284(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1284.weight_1",
-            forge.Parameter(*(128, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(40, 160, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27418,7 +27418,7 @@ class Conv2D1285(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1285.weight_1",
-            forge.Parameter(*(128, 608, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(160, 40, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27426,8 +27426,8 @@ class Conv2D1285(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1285.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -27440,7 +27440,7 @@ class Conv2D1286(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1286.weight_1",
-            forge.Parameter(*(128, 640, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(320, 40, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27448,8 +27448,8 @@ class Conv2D1286(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1286.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -27462,7 +27462,7 @@ class Conv2D1287(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1287.weight_1",
-            forge.Parameter(*(128, 672, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(320, 80, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27470,8 +27470,8 @@ class Conv2D1287(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1287.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -27484,7 +27484,7 @@ class Conv2D1288(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1288.weight_1",
-            forge.Parameter(*(128, 704, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1024, 320, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27506,7 +27506,7 @@ class Conv2D1289(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1289.weight_1",
-            forge.Parameter(*(128, 736, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(512, 160, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27528,7 +27528,7 @@ class Conv2D1290(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1290.weight_1",
-            forge.Parameter(*(128, 800, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256, 80, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27550,7 +27550,7 @@ class Conv2D1291(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1291.weight_1",
-            forge.Parameter(*(128, 864, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(32, 40, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27572,7 +27572,7 @@ class Conv2D1292(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1292.weight_1",
-            forge.Parameter(*(128, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(128, 40, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27594,7 +27594,7 @@ class Conv2D1293(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1293.weight_1",
-            forge.Parameter(*(128, 928, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(768, 3, 32, 32), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27602,7 +27602,7 @@ class Conv2D1293(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1293.weight_1"),
-            stride=[1, 1],
+            stride=[32, 32],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -27616,7 +27616,7 @@ class Conv2D1294(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1294.weight_1",
-            forge.Parameter(*(128, 960, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(32, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27638,7 +27638,7 @@ class Conv2D1295(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1295.weight_1",
-            forge.Parameter(*(128, 992, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(16, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27646,8 +27646,8 @@ class Conv2D1295(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1295.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[0, 0, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -27658,20 +27658,16 @@ class Conv2D1295(ForgeModule):
 class Conv2D1296(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1296.weight_1",
-            forge.Parameter(*(64, 2, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1296.weight_1"),
+            conv2d_input_1,
             stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 1, 1],
             dilation=1,
-            groups=32,
+            groups=48,
             channel_last=0,
         )
         return conv2d_output_1
@@ -27682,7 +27678,7 @@ class Conv2D1297(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1297.weight_1",
-            forge.Parameter(*(64, 2, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(16, 48, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27691,9 +27687,9 @@ class Conv2D1297(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1297.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=32,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -27702,20 +27698,16 @@ class Conv2D1297(ForgeModule):
 class Conv2D1298(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1298.weight_1",
-            forge.Parameter(*(40, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1298.weight_1"),
+            conv2d_input_1,
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=96,
             channel_last=0,
         )
         return conv2d_output_1
@@ -27726,7 +27718,7 @@ class Conv2D1299(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1299.weight_1",
-            forge.Parameter(*(40, 40, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(16, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27735,7 +27727,7 @@ class Conv2D1299(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1299.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -27748,7 +27740,7 @@ class Conv2D1300(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1300.weight_1",
-            forge.Parameter(*(40, 40, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1280, 112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27756,8 +27748,8 @@ class Conv2D1300(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1300.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -27770,7 +27762,7 @@ class Conv2D1301(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1301.weight_1",
-            forge.Parameter(*(80, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27778,8 +27770,8 @@ class Conv2D1301(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1301.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -27792,7 +27784,7 @@ class Conv2D1302(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1302.weight_1",
-            forge.Parameter(*(40, 80, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27800,7 +27792,7 @@ class Conv2D1302(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1302.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -27814,7 +27806,7 @@ class Conv2D1303(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1303.weight_1",
-            forge.Parameter(*(80, 40, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27825,7 +27817,7 @@ class Conv2D1303(ForgeModule):
             stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=2,
             channel_last=0,
         )
         return conv2d_output_1
@@ -27836,7 +27828,7 @@ class Conv2D1304(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1304.weight_1",
-            forge.Parameter(*(40, 160, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(8, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27858,7 +27850,7 @@ class Conv2D1305(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1305.weight_1",
-            forge.Parameter(*(160, 40, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 8, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27866,8 +27858,8 @@ class Conv2D1305(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1305.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -27880,7 +27872,7 @@ class Conv2D1306(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1306.weight_1",
-            forge.Parameter(*(320, 40, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27888,8 +27880,8 @@ class Conv2D1306(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1306.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -27902,7 +27894,7 @@ class Conv2D1307(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1307.weight_1",
-            forge.Parameter(*(320, 80, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27910,10 +27902,10 @@ class Conv2D1307(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1307.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=2,
             channel_last=0,
         )
         return conv2d_output_1
@@ -27924,7 +27916,7 @@ class Conv2D1308(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1308.weight_1",
-            forge.Parameter(*(1024, 320, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(56, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27946,7 +27938,7 @@ class Conv2D1309(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1309.weight_1",
-            forge.Parameter(*(512, 160, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 56, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27968,7 +27960,7 @@ class Conv2D1310(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1310.weight_1",
-            forge.Parameter(*(256, 80, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(448, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27990,7 +27982,7 @@ class Conv2D1311(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1311.weight_1",
-            forge.Parameter(*(32, 40, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(448, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -27998,7 +27990,7 @@ class Conv2D1311(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1311.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -28012,7 +28004,7 @@ class Conv2D1312(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1312.weight_1",
-            forge.Parameter(*(128, 40, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(448, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28020,10 +28012,10 @@ class Conv2D1312(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1312.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=4,
             channel_last=0,
         )
         return conv2d_output_1
@@ -28034,7 +28026,7 @@ class Conv2D1313(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1313.weight_1",
-            forge.Parameter(*(768, 3, 32, 32), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(56, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28042,7 +28034,7 @@ class Conv2D1313(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1313.weight_1"),
-            stride=[32, 32],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -28056,7 +28048,7 @@ class Conv2D1314(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1314.weight_1",
-            forge.Parameter(*(32, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(448, 56, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28078,7 +28070,7 @@ class Conv2D1315(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1315.weight_1",
-            forge.Parameter(*(16, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(448, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28086,8 +28078,8 @@ class Conv2D1315(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1315.weight_1"),
-            stride=[2, 2],
-            padding=[0, 0, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -28098,16 +28090,20 @@ class Conv2D1315(ForgeModule):
 class Conv2D1316(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1316.weight_1",
+            forge.Parameter(*(448, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
-            stride=[2, 2],
-            padding=[0, 0, 1, 1],
+            self.get_parameter("conv2d1316.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=48,
+            groups=4,
             channel_last=0,
         )
         return conv2d_output_1
@@ -28118,7 +28114,7 @@ class Conv2D1317(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1317.weight_1",
-            forge.Parameter(*(16, 48, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(112, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28138,16 +28134,20 @@ class Conv2D1317(ForgeModule):
 class Conv2D1318(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1318.weight_1",
+            forge.Parameter(*(448, 112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1318.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=96,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -28158,7 +28158,7 @@ class Conv2D1319(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1319.weight_1",
-            forge.Parameter(*(16, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(896, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28180,7 +28180,7 @@ class Conv2D1320(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1320.weight_1",
-            forge.Parameter(*(1280, 112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(896, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28188,7 +28188,7 @@ class Conv2D1320(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1320.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -28202,7 +28202,7 @@ class Conv2D1321(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1321.weight_1",
-            forge.Parameter(*(224, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(896, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28210,10 +28210,10 @@ class Conv2D1321(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1321.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=8,
             channel_last=0,
         )
         return conv2d_output_1
@@ -28224,7 +28224,7 @@ class Conv2D1322(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1322.weight_1",
-            forge.Parameter(*(224, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(112, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28232,7 +28232,7 @@ class Conv2D1322(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1322.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -28246,7 +28246,7 @@ class Conv2D1323(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1323.weight_1",
-            forge.Parameter(*(224, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(896, 112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28254,10 +28254,10 @@ class Conv2D1323(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1323.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=2,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -28268,7 +28268,7 @@ class Conv2D1324(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1324.weight_1",
-            forge.Parameter(*(8, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(896, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28290,7 +28290,7 @@ class Conv2D1325(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1325.weight_1",
-            forge.Parameter(*(224, 8, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(896, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28299,9 +28299,9 @@ class Conv2D1325(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1325.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=8,
             channel_last=0,
         )
         return conv2d_output_1
@@ -28312,7 +28312,7 @@ class Conv2D1326(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1326.weight_1",
-            forge.Parameter(*(224, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28334,7 +28334,7 @@ class Conv2D1327(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1327.weight_1",
-            forge.Parameter(*(224, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(896, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28343,9 +28343,9 @@ class Conv2D1327(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1327.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=2,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -28356,7 +28356,7 @@ class Conv2D1328(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1328.weight_1",
-            forge.Parameter(*(56, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2240, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28378,7 +28378,7 @@ class Conv2D1329(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1329.weight_1",
-            forge.Parameter(*(224, 56, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2240, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28386,7 +28386,7 @@ class Conv2D1329(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1329.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -28400,7 +28400,7 @@ class Conv2D1330(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1330.weight_1",
-            forge.Parameter(*(448, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2240, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28408,10 +28408,10 @@ class Conv2D1330(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1330.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=20,
             channel_last=0,
         )
         return conv2d_output_1
@@ -28422,7 +28422,7 @@ class Conv2D1331(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1331.weight_1",
-            forge.Parameter(*(448, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 2240, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28430,7 +28430,7 @@ class Conv2D1331(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1331.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -28444,7 +28444,7 @@ class Conv2D1332(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1332.weight_1",
-            forge.Parameter(*(448, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2240, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28452,10 +28452,10 @@ class Conv2D1332(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1332.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=4,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -28466,7 +28466,7 @@ class Conv2D1333(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1333.weight_1",
-            forge.Parameter(*(56, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2240, 2240, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28488,7 +28488,7 @@ class Conv2D1334(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1334.weight_1",
-            forge.Parameter(*(448, 56, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1232, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28496,7 +28496,7 @@ class Conv2D1334(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1334.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -28510,7 +28510,7 @@ class Conv2D1335(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1335.weight_1",
-            forge.Parameter(*(448, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1232, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28532,7 +28532,7 @@ class Conv2D1336(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1336.weight_1",
-            forge.Parameter(*(448, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1232, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28540,10 +28540,10 @@ class Conv2D1336(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1336.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=4,
+            groups=11,
             channel_last=0,
         )
         return conv2d_output_1
@@ -28554,7 +28554,7 @@ class Conv2D1337(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1337.weight_1",
-            forge.Parameter(*(112, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(112, 1232, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28576,7 +28576,7 @@ class Conv2D1338(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1338.weight_1",
-            forge.Parameter(*(448, 112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1232, 112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28598,7 +28598,7 @@ class Conv2D1339(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1339.weight_1",
-            forge.Parameter(*(896, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1232, 1232, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28620,7 +28620,7 @@ class Conv2D1340(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1340.weight_1",
-            forge.Parameter(*(896, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1232, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28628,10 +28628,10 @@ class Conv2D1340(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1340.weight_1"),
-            stride=[2, 2],
-            padding=[0, 0, 0, 0],
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=11,
             channel_last=0,
         )
         return conv2d_output_1
@@ -28642,7 +28642,7 @@ class Conv2D1341(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1341.weight_1",
-            forge.Parameter(*(896, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(308, 1232, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28650,10 +28650,10 @@ class Conv2D1341(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1341.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=8,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -28664,7 +28664,7 @@ class Conv2D1342(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1342.weight_1",
-            forge.Parameter(*(112, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1232, 308, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28686,7 +28686,7 @@ class Conv2D1343(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1343.weight_1",
-            forge.Parameter(*(896, 112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(3024, 1232, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28694,7 +28694,7 @@ class Conv2D1343(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1343.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -28708,7 +28708,7 @@ class Conv2D1344(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1344.weight_1",
-            forge.Parameter(*(896, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(3024, 1232, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28730,7 +28730,7 @@ class Conv2D1345(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1345.weight_1",
-            forge.Parameter(*(896, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(3024, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28738,10 +28738,10 @@ class Conv2D1345(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1345.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=8,
+            groups=27,
             channel_last=0,
         )
         return conv2d_output_1
@@ -28752,7 +28752,7 @@ class Conv2D1346(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1346.weight_1",
-            forge.Parameter(*(224, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(308, 3024, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28774,7 +28774,7 @@ class Conv2D1347(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1347.weight_1",
-            forge.Parameter(*(896, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(3024, 308, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28796,7 +28796,7 @@ class Conv2D1348(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1348.weight_1",
-            forge.Parameter(*(2240, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(3024, 3024, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28818,7 +28818,7 @@ class Conv2D1349(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1349.weight_1",
-            forge.Parameter(*(2240, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(720, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28826,8 +28826,8 @@ class Conv2D1349(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1349.weight_1"),
-            stride=[2, 2],
-            padding=[0, 0, 0, 0],
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -28840,7 +28840,7 @@ class Conv2D1350(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1350.weight_1",
-            forge.Parameter(*(2240, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256, 2048, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28851,7 +28851,7 @@ class Conv2D1350(ForgeModule):
             stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=20,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -28862,7 +28862,7 @@ class Conv2D1351(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1351.weight_1",
-            forge.Parameter(*(224, 2240, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(36, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28871,7 +28871,7 @@ class Conv2D1351(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1351.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -28884,7 +28884,7 @@ class Conv2D1352(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1352.weight_1",
-            forge.Parameter(*(2240, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(128, 3, 4, 4), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28892,7 +28892,7 @@ class Conv2D1352(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1352.weight_1"),
-            stride=[1, 1],
+            stride=[4, 4],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -28906,7 +28906,7 @@ class Conv2D1353(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1353.weight_1",
-            forge.Parameter(*(2240, 2240, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256, 3072, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28915,7 +28915,7 @@ class Conv2D1353(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1353.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -28928,7 +28928,7 @@ class Conv2D1354(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1354.weight_1",
-            forge.Parameter(*(1232, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(128, 768, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28936,8 +28936,8 @@ class Conv2D1354(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1354.weight_1"),
-            stride=[2, 2],
-            padding=[0, 0, 0, 0],
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -28950,7 +28950,7 @@ class Conv2D1355(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1355.weight_1",
-            forge.Parameter(*(1232, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(64, 384, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28959,7 +28959,7 @@ class Conv2D1355(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1355.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -28972,7 +28972,7 @@ class Conv2D1356(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1356.weight_1",
-            forge.Parameter(*(1232, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(16, 32, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -28980,10 +28980,10 @@ class Conv2D1356(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1356.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=11,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -28994,7 +28994,7 @@ class Conv2D1357(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1357.weight_1",
-            forge.Parameter(*(112, 1232, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1, 16, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29003,7 +29003,7 @@ class Conv2D1357(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1357.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -29016,7 +29016,7 @@ class Conv2D1358(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1358.weight_1",
-            forge.Parameter(*(1232, 112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29038,7 +29038,7 @@ class Conv2D1359(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1359.weight_1",
-            forge.Parameter(*(1232, 1232, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(160, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29058,20 +29058,16 @@ class Conv2D1359(ForgeModule):
 class Conv2D1360(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1360.weight_1",
-            forge.Parameter(*(1232, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1360.weight_1"),
+            conv2d_input_1,
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=11,
+            groups=160,
             channel_last=0,
         )
         return conv2d_output_1
@@ -29082,7 +29078,7 @@ class Conv2D1361(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1361.weight_1",
-            forge.Parameter(*(308, 1232, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(512, 736, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29104,7 +29100,7 @@ class Conv2D1362(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1362.weight_1",
-            forge.Parameter(*(1232, 308, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 512, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29126,7 +29122,7 @@ class Conv2D1363(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1363.weight_1",
-            forge.Parameter(*(3024, 1232, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29134,7 +29130,7 @@ class Conv2D1363(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1363.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -29148,7 +29144,7 @@ class Conv2D1364(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1364.weight_1",
-            forge.Parameter(*(3024, 1232, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(768, 1088, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29170,7 +29166,7 @@ class Conv2D1365(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1365.weight_1",
-            forge.Parameter(*(3024, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(768, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29178,10 +29174,10 @@ class Conv2D1365(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1365.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=27,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -29192,7 +29188,7 @@ class Conv2D1366(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1366.weight_1",
-            forge.Parameter(*(308, 3024, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29212,20 +29208,16 @@ class Conv2D1366(ForgeModule):
 class Conv2D1367(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1367.weight_1",
-            forge.Parameter(*(3024, 308, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1367.weight_1"),
+            conv2d_input_1,
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=224,
             channel_last=0,
         )
         return conv2d_output_1
@@ -29236,7 +29228,7 @@ class Conv2D1368(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1368.weight_1",
-            forge.Parameter(*(3024, 3024, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1024, 1440, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29258,7 +29250,7 @@ class Conv2D1369(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1369.weight_1",
-            forge.Parameter(*(720, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(64, 12, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29280,7 +29272,7 @@ class Conv2D1370(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1370.weight_1",
-            forge.Parameter(*(256, 2048, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(24, 12, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29288,7 +29280,7 @@ class Conv2D1370(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1370.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
@@ -29302,7 +29294,7 @@ class Conv2D1371(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1371.weight_1",
-            forge.Parameter(*(36, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(48, 24, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29310,7 +29302,7 @@ class Conv2D1371(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1371.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
@@ -29324,7 +29316,7 @@ class Conv2D1372(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1372.weight_1",
-            forge.Parameter(*(128, 3, 4, 4), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(96, 48, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29332,8 +29324,8 @@ class Conv2D1372(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1372.weight_1"),
-            stride=[4, 4],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -29346,7 +29338,7 @@ class Conv2D1373(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1373.weight_1",
-            forge.Parameter(*(256, 3072, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(48, 48, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29368,7 +29360,7 @@ class Conv2D1374(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1374.weight_1",
-            forge.Parameter(*(128, 768, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(96, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29377,7 +29369,7 @@ class Conv2D1374(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1374.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -29390,7 +29382,7 @@ class Conv2D1375(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1375.weight_1",
-            forge.Parameter(*(64, 384, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 96, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29398,7 +29390,7 @@ class Conv2D1375(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1375.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
@@ -29412,7 +29404,7 @@ class Conv2D1376(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1376.weight_1",
-            forge.Parameter(*(16, 32, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(96, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29421,7 +29413,7 @@ class Conv2D1376(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1376.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -29434,7 +29426,7 @@ class Conv2D1377(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1377.weight_1",
-            forge.Parameter(*(1, 16, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(384, 192, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29442,7 +29434,7 @@ class Conv2D1377(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1377.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
@@ -29456,7 +29448,7 @@ class Conv2D1378(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1378.weight_1",
-            forge.Parameter(*(256, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(384, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29478,7 +29470,7 @@ class Conv2D1379(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1379.weight_1",
-            forge.Parameter(*(160, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(384, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29498,16 +29490,20 @@ class Conv2D1379(ForgeModule):
 class Conv2D1380(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1380.weight_1",
+            forge.Parameter(*(96, 96, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
-            stride=[1, 1],
+            self.get_parameter("conv2d1380.weight_1"),
+            stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=160,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -29518,7 +29514,7 @@ class Conv2D1381(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1381.weight_1",
-            forge.Parameter(*(512, 736, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29540,7 +29536,7 @@ class Conv2D1382(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1382.weight_1",
-            forge.Parameter(*(192, 512, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(80, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29562,7 +29558,7 @@ class Conv2D1383(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1383.weight_1",
-            forge.Parameter(*(192, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 192, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -29570,8 +29566,8 @@ class Conv2D1383(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1383.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -29584,7 +29580,7 @@ class Conv2D1384(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1384.weight_1",
-            forge.Parameter(*(768, 1088, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(32, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -29606,7 +29602,7 @@ class Conv2D1385(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1385.weight_1",
-            forge.Parameter(*(768, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(128, 1024, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -29628,7 +29624,7 @@ class Conv2D1386(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1386.weight_1",
-            forge.Parameter(*(224, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(264, 264, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -29637,7 +29633,7 @@ class Conv2D1386(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1386.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -29648,16 +29644,20 @@ class Conv2D1386(ForgeModule):
 class Conv2D1387(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1387.weight_1",
+            forge.Parameter(*(128, 264, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1387.weight_1"),
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=224,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -29668,7 +29668,7 @@ class Conv2D1388(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1388.weight_1",
-            forge.Parameter(*(1024, 1440, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(32, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -29677,7 +29677,7 @@ class Conv2D1388(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1388.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -29690,7 +29690,7 @@ class Conv2D1389(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1389.weight_1",
-            forge.Parameter(*(64, 12, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(16, 32, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -29712,7 +29712,7 @@ class Conv2D1390(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1390.weight_1",
-            forge.Parameter(*(24, 12, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1, 16, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -29734,7 +29734,7 @@ class Conv2D1391(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1391.weight_1",
-            forge.Parameter(*(48, 24, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -29742,8 +29742,8 @@ class Conv2D1391(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1391.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -29756,7 +29756,7 @@ class Conv2D1392(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1392.weight_1",
-            forge.Parameter(*(96, 48, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256, 4, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -29767,7 +29767,7 @@ class Conv2D1392(ForgeModule):
             stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=64,
             channel_last=0,
         )
         return conv2d_output_1
@@ -29778,7 +29778,7 @@ class Conv2D1393(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1393.weight_1",
-            forge.Parameter(*(48, 48, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256, 4, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -29789,7 +29789,7 @@ class Conv2D1393(ForgeModule):
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=64,
             channel_last=0,
         )
         return conv2d_output_1
@@ -29800,7 +29800,7 @@ class Conv2D1394(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1394.weight_1",
-            forge.Parameter(*(96, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(512, 8, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -29808,10 +29808,10 @@ class Conv2D1394(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1394.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=64,
             channel_last=0,
         )
         return conv2d_output_1
@@ -29822,7 +29822,7 @@ class Conv2D1395(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1395.weight_1",
-            forge.Parameter(*(192, 96, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(512, 8, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -29830,10 +29830,10 @@ class Conv2D1395(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1395.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=64,
             channel_last=0,
         )
         return conv2d_output_1
@@ -29844,7 +29844,7 @@ class Conv2D1396(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1396.weight_1",
-            forge.Parameter(*(96, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1024, 16, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -29852,10 +29852,10 @@ class Conv2D1396(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1396.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=64,
             channel_last=0,
         )
         return conv2d_output_1
@@ -29866,7 +29866,7 @@ class Conv2D1397(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1397.weight_1",
-            forge.Parameter(*(384, 192, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1024, 16, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -29874,10 +29874,10 @@ class Conv2D1397(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1397.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=64,
             channel_last=0,
         )
         return conv2d_output_1
@@ -29888,7 +29888,7 @@ class Conv2D1398(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1398.weight_1",
-            forge.Parameter(*(384, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2048, 32, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -29896,10 +29896,10 @@ class Conv2D1398(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1398.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=64,
             channel_last=0,
         )
         return conv2d_output_1
@@ -29910,7 +29910,7 @@ class Conv2D1399(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1399.weight_1",
-            forge.Parameter(*(384, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1024, 2048, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -29932,7 +29932,7 @@ class Conv2D1400(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1400.weight_1",
-            forge.Parameter(*(96, 96, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2048, 1024, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -29940,8 +29940,8 @@ class Conv2D1400(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1400.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -29954,7 +29954,7 @@ class Conv2D1401(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1401.weight_1",
-            forge.Parameter(*(1, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2048, 32, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -29963,9 +29963,9 @@ class Conv2D1401(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1401.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=64,
             channel_last=0,
         )
         return conv2d_output_1
@@ -29976,7 +29976,7 @@ class Conv2D1402(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1402.weight_1",
-            forge.Parameter(*(80, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(72, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -29998,7 +29998,7 @@ class Conv2D1403(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1403.weight_1",
-            forge.Parameter(*(192, 192, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(432, 72, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30006,8 +30006,8 @@ class Conv2D1403(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1403.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -30020,7 +30020,7 @@ class Conv2D1404(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1404.weight_1",
-            forge.Parameter(*(32, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(432, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30029,9 +30029,9 @@ class Conv2D1404(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1404.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=432,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30042,7 +30042,7 @@ class Conv2D1405(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1405.weight_1",
-            forge.Parameter(*(128, 1024, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(72, 432, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30064,7 +30064,7 @@ class Conv2D1406(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1406.weight_1",
-            forge.Parameter(*(264, 264, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(104, 432, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30073,7 +30073,7 @@ class Conv2D1406(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1406.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -30086,7 +30086,7 @@ class Conv2D1407(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1407.weight_1",
-            forge.Parameter(*(128, 264, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(624, 104, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30095,7 +30095,7 @@ class Conv2D1407(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1407.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -30108,7 +30108,7 @@ class Conv2D1408(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1408.weight_1",
-            forge.Parameter(*(32, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(624, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30119,7 +30119,7 @@ class Conv2D1408(ForgeModule):
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=624,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30130,7 +30130,7 @@ class Conv2D1409(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1409.weight_1",
-            forge.Parameter(*(16, 32, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(624, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30138,10 +30138,10 @@ class Conv2D1409(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1409.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=624,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30152,7 +30152,7 @@ class Conv2D1410(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1410.weight_1",
-            forge.Parameter(*(1, 16, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(104, 624, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30161,7 +30161,7 @@ class Conv2D1410(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1410.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -30174,7 +30174,7 @@ class Conv2D1411(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1411.weight_1",
-            forge.Parameter(*(256, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(176, 624, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30196,7 +30196,7 @@ class Conv2D1412(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1412.weight_1",
-            forge.Parameter(*(256, 4, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1056, 176, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30204,10 +30204,10 @@ class Conv2D1412(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1412.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=64,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30218,7 +30218,7 @@ class Conv2D1413(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1413.weight_1",
-            forge.Parameter(*(256, 4, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1056, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30229,7 +30229,7 @@ class Conv2D1413(ForgeModule):
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=64,
+            groups=1056,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30240,7 +30240,7 @@ class Conv2D1414(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1414.weight_1",
-            forge.Parameter(*(512, 8, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(176, 1056, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30248,10 +30248,10 @@ class Conv2D1414(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1414.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=64,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30262,7 +30262,7 @@ class Conv2D1415(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1415.weight_1",
-            forge.Parameter(*(512, 8, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(352, 1056, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30271,9 +30271,9 @@ class Conv2D1415(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1415.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=64,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30284,7 +30284,7 @@ class Conv2D1416(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1416.weight_1",
-            forge.Parameter(*(1024, 16, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1280, 352, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30292,10 +30292,10 @@ class Conv2D1416(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1416.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=64,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30306,7 +30306,7 @@ class Conv2D1417(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1417.weight_1",
-            forge.Parameter(*(1024, 16, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30317,7 +30317,7 @@ class Conv2D1417(ForgeModule):
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=64,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30328,7 +30328,7 @@ class Conv2D1418(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1418.weight_1",
-            forge.Parameter(*(2048, 32, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 32, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30336,10 +30336,10 @@ class Conv2D1418(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1418.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=64,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30350,7 +30350,7 @@ class Conv2D1419(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1419.weight_1",
-            forge.Parameter(*(1024, 2048, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30359,7 +30359,7 @@ class Conv2D1419(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1419.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -30372,7 +30372,7 @@ class Conv2D1420(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1420.weight_1",
-            forge.Parameter(*(2048, 1024, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30381,7 +30381,7 @@ class Conv2D1420(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1420.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -30394,7 +30394,7 @@ class Conv2D1421(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1421.weight_1",
-            forge.Parameter(*(2048, 32, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30405,7 +30405,7 @@ class Conv2D1421(ForgeModule):
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=64,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30416,7 +30416,7 @@ class Conv2D1422(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1422.weight_1",
-            forge.Parameter(*(72, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30425,7 +30425,7 @@ class Conv2D1422(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1422.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -30438,7 +30438,7 @@ class Conv2D1423(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1423.weight_1",
-            forge.Parameter(*(432, 72, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30460,7 +30460,7 @@ class Conv2D1424(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1424.weight_1",
-            forge.Parameter(*(432, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32, 16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30469,9 +30469,9 @@ class Conv2D1424(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1424.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=432,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30482,7 +30482,7 @@ class Conv2D1425(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1425.weight_1",
-            forge.Parameter(*(72, 432, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30491,9 +30491,9 @@ class Conv2D1425(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1425.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=64,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30504,7 +30504,7 @@ class Conv2D1426(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1426.weight_1",
-            forge.Parameter(*(104, 432, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30512,10 +30512,10 @@ class Conv2D1426(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1426.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 1],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=64,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30526,7 +30526,7 @@ class Conv2D1427(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1427.weight_1",
-            forge.Parameter(*(624, 104, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30535,9 +30535,9 @@ class Conv2D1427(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1427.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=128,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30548,7 +30548,7 @@ class Conv2D1428(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1428.weight_1",
-            forge.Parameter(*(624, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30556,10 +30556,10 @@ class Conv2D1428(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1428.weight_1"),
-            stride=[1, 1],
+            stride=[1, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=624,
+            groups=128,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30570,7 +30570,7 @@ class Conv2D1429(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1429.weight_1",
-            forge.Parameter(*(624, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(240, 128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30578,10 +30578,10 @@ class Conv2D1429(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1429.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=624,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30592,7 +30592,7 @@ class Conv2D1430(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1430.weight_1",
-            forge.Parameter(*(104, 624, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(240, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30600,10 +30600,10 @@ class Conv2D1430(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1430.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 1],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=1,
+            groups=240,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30614,7 +30614,7 @@ class Conv2D1431(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1431.weight_1",
-            forge.Parameter(*(176, 624, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(240, 240, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30636,7 +30636,7 @@ class Conv2D1432(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1432.weight_1",
-            forge.Parameter(*(1056, 176, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(60, 240, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30658,7 +30658,7 @@ class Conv2D1433(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1433.weight_1",
-            forge.Parameter(*(1056, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(240, 60, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30667,9 +30667,9 @@ class Conv2D1433(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1433.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=1056,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30680,7 +30680,7 @@ class Conv2D1434(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1434.weight_1",
-            forge.Parameter(*(176, 1056, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(480, 240, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30702,7 +30702,7 @@ class Conv2D1435(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1435.weight_1",
-            forge.Parameter(*(352, 1056, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(480, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30710,10 +30710,10 @@ class Conv2D1435(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1435.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 1],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=1,
+            groups=480,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30724,7 +30724,7 @@ class Conv2D1436(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1436.weight_1",
-            forge.Parameter(*(1280, 352, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(120, 480, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30746,7 +30746,7 @@ class Conv2D1437(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1437.weight_1",
-            forge.Parameter(*(32, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(480, 120, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30755,7 +30755,7 @@ class Conv2D1437(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1437.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -30768,7 +30768,7 @@ class Conv2D1438(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1438.weight_1",
-            forge.Parameter(*(64, 32, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(480, 480, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30777,7 +30777,7 @@ class Conv2D1438(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1438.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -30790,7 +30790,7 @@ class Conv2D1439(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1439.weight_1",
-            forge.Parameter(*(128, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(60, 480, 1, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30799,7 +30799,7 @@ class Conv2D1439(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1439.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 1, 0, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -30812,7 +30812,7 @@ class Conv2D1440(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1440.weight_1",
-            forge.Parameter(*(512, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(120, 60, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30821,7 +30821,7 @@ class Conv2D1440(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1440.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -30834,7 +30834,7 @@ class Conv2D1441(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1441.weight_1",
-            forge.Parameter(*(256, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(60, 960, 1, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -30843,7 +30843,7 @@ class Conv2D1441(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1441.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 1, 0, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -30856,7 +30856,7 @@ class Conv2D1442(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1442.weight_1",
-            forge.Parameter(*(128, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 3, 16, 16), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -30864,8 +30864,8 @@ class Conv2D1442(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1442.weight_1"),
-            stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            stride=[16, 16],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -30878,7 +30878,7 @@ class Conv2D1443(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1443.weight_1",
-            forge.Parameter(*(1, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 1, 7, 7), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -30886,8 +30886,8 @@ class Conv2D1443(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1443.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[3, 3, 3, 3],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -30900,7 +30900,7 @@ class Conv2D1444(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1444.weight_1",
-            forge.Parameter(*(64, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 3, 7, 7), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -30908,10 +30908,10 @@ class Conv2D1444(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1444.weight_1"),
-            stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            stride=[2, 2],
+            padding=[3, 3, 3, 3],
             dilation=1,
-            groups=64,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30922,7 +30922,7 @@ class Conv2D1445(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1445.weight_1",
-            forge.Parameter(*(64, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -30930,10 +30930,10 @@ class Conv2D1445(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1445.weight_1"),
-            stride=[2, 1],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=64,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30944,7 +30944,7 @@ class Conv2D1446(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1446.weight_1",
-            forge.Parameter(*(128, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -30952,10 +30952,10 @@ class Conv2D1446(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1446.weight_1"),
-            stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            stride=[2, 2],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=128,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30966,7 +30966,7 @@ class Conv2D1447(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1447.weight_1",
-            forge.Parameter(*(128, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(48, 192, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -30974,10 +30974,10 @@ class Conv2D1447(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1447.weight_1"),
-            stride=[1, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=128,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -30988,7 +30988,7 @@ class Conv2D1448(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1448.weight_1",
-            forge.Parameter(*(240, 128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 144, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31010,7 +31010,7 @@ class Conv2D1449(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1449.weight_1",
-            forge.Parameter(*(240, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 240, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31018,10 +31018,10 @@ class Conv2D1449(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1449.weight_1"),
-            stride=[2, 1],
-            padding=[2, 2, 2, 2],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=240,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -31032,7 +31032,7 @@ class Conv2D1450(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1450.weight_1",
-            forge.Parameter(*(240, 240, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 288, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31054,7 +31054,7 @@ class Conv2D1451(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1451.weight_1",
-            forge.Parameter(*(60, 240, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 336, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31076,7 +31076,7 @@ class Conv2D1452(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1452.weight_1",
-            forge.Parameter(*(240, 60, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 432, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31098,7 +31098,7 @@ class Conv2D1453(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1453.weight_1",
-            forge.Parameter(*(480, 240, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 480, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31120,7 +31120,7 @@ class Conv2D1454(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1454.weight_1",
-            forge.Parameter(*(480, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 528, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31128,10 +31128,10 @@ class Conv2D1454(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1454.weight_1"),
-            stride=[2, 1],
-            padding=[2, 2, 2, 2],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=480,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -31142,7 +31142,7 @@ class Conv2D1455(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1455.weight_1",
-            forge.Parameter(*(120, 480, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31164,7 +31164,7 @@ class Conv2D1456(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1456.weight_1",
-            forge.Parameter(*(480, 120, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 624, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31186,7 +31186,7 @@ class Conv2D1457(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1457.weight_1",
-            forge.Parameter(*(480, 480, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 720, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31208,7 +31208,7 @@ class Conv2D1458(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1458.weight_1",
-            forge.Parameter(*(60, 480, 1, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31217,7 +31217,7 @@ class Conv2D1458(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1458.weight_1"),
             stride=[1, 1],
-            padding=[0, 1, 0, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -31230,7 +31230,7 @@ class Conv2D1459(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1459.weight_1",
-            forge.Parameter(*(120, 60, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 816, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31252,7 +31252,7 @@ class Conv2D1460(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1460.weight_1",
-            forge.Parameter(*(60, 960, 1, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 864, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31261,7 +31261,7 @@ class Conv2D1460(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1460.weight_1"),
             stride=[1, 1],
-            padding=[0, 1, 0, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -31274,7 +31274,7 @@ class Conv2D1461(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1461.weight_1",
-            forge.Parameter(*(192, 3, 16, 16), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 912, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31282,7 +31282,7 @@ class Conv2D1461(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1461.weight_1"),
-            stride=[16, 16],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -31296,7 +31296,7 @@ class Conv2D1462(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1462.weight_1",
-            forge.Parameter(*(64, 1, 7, 7), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 960, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31304,8 +31304,8 @@ class Conv2D1462(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1462.weight_1"),
-            stride=[2, 2],
-            padding=[3, 3, 3, 3],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -31318,7 +31318,7 @@ class Conv2D1463(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1463.weight_1",
-            forge.Parameter(*(96, 3, 7, 7), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1008, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31326,8 +31326,8 @@ class Conv2D1463(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1463.weight_1"),
-            stride=[2, 2],
-            padding=[3, 3, 3, 3],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -31340,7 +31340,7 @@ class Conv2D1464(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1464.weight_1",
-            forge.Parameter(*(192, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1056, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31362,7 +31362,7 @@ class Conv2D1465(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1465.weight_1",
-            forge.Parameter(*(192, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1104, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31370,7 +31370,7 @@ class Conv2D1465(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1465.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -31384,7 +31384,7 @@ class Conv2D1466(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1466.weight_1",
-            forge.Parameter(*(48, 192, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1200, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31393,7 +31393,7 @@ class Conv2D1466(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1466.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -31406,7 +31406,7 @@ class Conv2D1467(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1467.weight_1",
-            forge.Parameter(*(192, 144, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1248, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31428,7 +31428,7 @@ class Conv2D1468(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1468.weight_1",
-            forge.Parameter(*(192, 240, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1296, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31450,7 +31450,7 @@ class Conv2D1469(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1469.weight_1",
-            forge.Parameter(*(192, 288, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1344, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31472,7 +31472,7 @@ class Conv2D1470(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1470.weight_1",
-            forge.Parameter(*(192, 336, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1392, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31494,7 +31494,7 @@ class Conv2D1471(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1471.weight_1",
-            forge.Parameter(*(192, 432, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1440, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31516,7 +31516,7 @@ class Conv2D1472(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1472.weight_1",
-            forge.Parameter(*(192, 480, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1488, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31538,7 +31538,7 @@ class Conv2D1473(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1473.weight_1",
-            forge.Parameter(*(192, 528, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1536, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31560,7 +31560,7 @@ class Conv2D1474(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1474.weight_1",
-            forge.Parameter(*(192, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1584, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31582,7 +31582,7 @@ class Conv2D1475(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1475.weight_1",
-            forge.Parameter(*(192, 624, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1632, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31604,7 +31604,7 @@ class Conv2D1476(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1476.weight_1",
-            forge.Parameter(*(192, 720, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1680, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31626,7 +31626,7 @@ class Conv2D1477(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1477.weight_1",
-            forge.Parameter(*(192, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1728, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31648,7 +31648,7 @@ class Conv2D1478(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1478.weight_1",
-            forge.Parameter(*(192, 816, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1776, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31670,7 +31670,7 @@ class Conv2D1479(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1479.weight_1",
-            forge.Parameter(*(192, 864, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1824, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31692,7 +31692,7 @@ class Conv2D1480(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1480.weight_1",
-            forge.Parameter(*(192, 912, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1872, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31714,7 +31714,7 @@ class Conv2D1481(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1481.weight_1",
-            forge.Parameter(*(192, 960, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1920, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31736,7 +31736,7 @@ class Conv2D1482(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1482.weight_1",
-            forge.Parameter(*(192, 1008, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 1968, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31758,7 +31758,7 @@ class Conv2D1483(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1483.weight_1",
-            forge.Parameter(*(192, 1056, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 2016, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31780,7 +31780,7 @@ class Conv2D1484(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1484.weight_1",
-            forge.Parameter(*(192, 1104, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 2064, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31802,7 +31802,7 @@ class Conv2D1485(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1485.weight_1",
-            forge.Parameter(*(192, 1200, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1056, 2112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31824,7 +31824,7 @@ class Conv2D1486(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1486.weight_1",
-            forge.Parameter(*(192, 1248, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 2112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31846,7 +31846,7 @@ class Conv2D1487(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1487.weight_1",
-            forge.Parameter(*(192, 1296, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 2160, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31868,7 +31868,7 @@ class Conv2D1488(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1488.weight_1",
-            forge.Parameter(*(192, 1344, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1280, 352, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31890,7 +31890,7 @@ class Conv2D1489(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1489.weight_1",
-            forge.Parameter(*(192, 1392, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(32, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31899,7 +31899,7 @@ class Conv2D1489(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1489.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -31912,7 +31912,7 @@ class Conv2D1490(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1490.weight_1",
-            forge.Parameter(*(192, 1440, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(64, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31920,8 +31920,8 @@ class Conv2D1490(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1490.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -31934,7 +31934,7 @@ class Conv2D1491(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1491.weight_1",
-            forge.Parameter(*(192, 1488, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(32, 128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31956,7 +31956,7 @@ class Conv2D1492(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1492.weight_1",
-            forge.Parameter(*(192, 1536, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256, 32, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31964,8 +31964,8 @@ class Conv2D1492(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1492.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -31978,7 +31978,7 @@ class Conv2D1493(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1493.weight_1",
-            forge.Parameter(*(192, 1584, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -31986,8 +31986,8 @@ class Conv2D1493(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1493.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -32000,7 +32000,7 @@ class Conv2D1494(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1494.weight_1",
-            forge.Parameter(*(192, 1632, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(512, 3, 32, 32), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32008,7 +32008,7 @@ class Conv2D1494(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1494.weight_1"),
-            stride=[1, 1],
+            stride=[32, 32],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -32022,7 +32022,7 @@ class Conv2D1495(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1495.weight_1",
-            forge.Parameter(*(192, 1680, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(64, 16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32044,7 +32044,7 @@ class Conv2D1496(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1496.weight_1",
-            forge.Parameter(*(192, 1728, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(24, 64, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32066,7 +32066,7 @@ class Conv2D1497(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1497.weight_1",
-            forge.Parameter(*(192, 1776, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(72, 24, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32088,7 +32088,7 @@ class Conv2D1498(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1498.weight_1",
-            forge.Parameter(*(192, 1824, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(40, 72, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32110,7 +32110,7 @@ class Conv2D1499(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1499.weight_1",
-            forge.Parameter(*(192, 1872, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(40, 120, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32132,7 +32132,7 @@ class Conv2D1500(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1500.weight_1",
-            forge.Parameter(*(192, 1920, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(200, 80, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32152,20 +32152,16 @@ class Conv2D1500(ForgeModule):
 class Conv2D1501(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1501.weight_1",
-            forge.Parameter(*(192, 1968, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1501.weight_1"),
+            conv2d_input_1,
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=200,
             channel_last=0,
         )
         return conv2d_output_1
@@ -32176,7 +32172,7 @@ class Conv2D1502(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1502.weight_1",
-            forge.Parameter(*(192, 2016, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(80, 200, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32198,7 +32194,7 @@ class Conv2D1503(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1503.weight_1",
-            forge.Parameter(*(192, 2064, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(184, 80, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32218,20 +32214,16 @@ class Conv2D1503(ForgeModule):
 class Conv2D1504(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1504.weight_1",
-            forge.Parameter(*(1056, 2112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1504.weight_1"),
+            conv2d_input_1,
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=184,
             channel_last=0,
         )
         return conv2d_output_1
@@ -32242,7 +32234,7 @@ class Conv2D1505(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1505.weight_1",
-            forge.Parameter(*(192, 2112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(80, 184, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32264,7 +32256,7 @@ class Conv2D1506(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1506.weight_1",
-            forge.Parameter(*(192, 2160, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 56, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32272,10 +32264,10 @@ class Conv2D1506(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1506.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=4,
             channel_last=0,
         )
         return conv2d_output_1
@@ -32286,7 +32278,7 @@ class Conv2D1507(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1507.weight_1",
-            forge.Parameter(*(1280, 352, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 56, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32295,9 +32287,9 @@ class Conv2D1507(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1507.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=4,
             channel_last=0,
         )
         return conv2d_output_1
@@ -32308,7 +32300,7 @@ class Conv2D1508(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1508.weight_1",
-            forge.Parameter(*(32, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(448, 56, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32316,10 +32308,10 @@ class Conv2D1508(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1508.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=8,
             channel_last=0,
         )
         return conv2d_output_1
@@ -32330,7 +32322,7 @@ class Conv2D1509(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1509.weight_1",
-            forge.Parameter(*(64, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(448, 56, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32338,10 +32330,10 @@ class Conv2D1509(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1509.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=8,
             channel_last=0,
         )
         return conv2d_output_1
@@ -32352,7 +32344,7 @@ class Conv2D1510(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1510.weight_1",
-            forge.Parameter(*(32, 128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(896, 56, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32360,10 +32352,10 @@ class Conv2D1510(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1510.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=16,
             channel_last=0,
         )
         return conv2d_output_1
@@ -32374,7 +32366,7 @@ class Conv2D1511(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1511.weight_1",
-            forge.Parameter(*(256, 32, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(896, 56, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32382,10 +32374,10 @@ class Conv2D1511(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1511.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=16,
             channel_last=0,
         )
         return conv2d_output_1
@@ -32396,7 +32388,7 @@ class Conv2D1512(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1512.weight_1",
-            forge.Parameter(*(256, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2016, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32405,7 +32397,7 @@ class Conv2D1512(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1512.weight_1"),
             stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -32418,7 +32410,7 @@ class Conv2D1513(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1513.weight_1",
-            forge.Parameter(*(512, 3, 32, 32), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2016, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32426,7 +32418,7 @@ class Conv2D1513(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1513.weight_1"),
-            stride=[32, 32],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -32440,7 +32432,7 @@ class Conv2D1514(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1514.weight_1",
-            forge.Parameter(*(64, 16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2016, 56, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32448,10 +32440,10 @@ class Conv2D1514(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1514.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=36,
             channel_last=0,
         )
         return conv2d_output_1
@@ -32462,7 +32454,7 @@ class Conv2D1515(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1515.weight_1",
-            forge.Parameter(*(24, 64, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 2016, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32484,7 +32476,7 @@ class Conv2D1516(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1516.weight_1",
-            forge.Parameter(*(72, 24, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2016, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32506,7 +32498,7 @@ class Conv2D1517(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1517.weight_1",
-            forge.Parameter(*(40, 72, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(2016, 2016, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32528,7 +32520,7 @@ class Conv2D1518(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1518.weight_1",
-            forge.Parameter(*(40, 120, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32536,8 +32528,8 @@ class Conv2D1518(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1518.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -32550,7 +32542,7 @@ class Conv2D1519(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1519.weight_1",
-            forge.Parameter(*(200, 80, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(4096, 512, 7, 7), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32570,16 +32562,20 @@ class Conv2D1519(ForgeModule):
 class Conv2D1520(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1520.weight_1",
+            forge.Parameter(*(4096, 4096, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1520.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=200,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -32590,7 +32586,7 @@ class Conv2D1521(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1521.weight_1",
-            forge.Parameter(*(80, 200, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(80, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32599,7 +32595,7 @@ class Conv2D1521(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1521.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -32612,7 +32608,7 @@ class Conv2D1522(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1522.weight_1",
-            forge.Parameter(*(184, 80, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256, 528, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32632,16 +32628,20 @@ class Conv2D1522(ForgeModule):
 class Conv2D1523(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1523.weight_1",
+            forge.Parameter(*(96, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1523.weight_1"),
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=184,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -32652,7 +32652,7 @@ class Conv2D1524(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1524.weight_1",
-            forge.Parameter(*(80, 184, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(384, 736, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32674,7 +32674,7 @@ class Conv2D1525(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1525.weight_1",
-            forge.Parameter(*(224, 56, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(112, 384, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32682,10 +32682,10 @@ class Conv2D1525(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1525.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=4,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -32696,7 +32696,7 @@ class Conv2D1526(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1526.weight_1",
-            forge.Parameter(*(224, 56, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(112, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32707,7 +32707,7 @@ class Conv2D1526(ForgeModule):
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=4,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -32718,7 +32718,7 @@ class Conv2D1527(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1527.weight_1",
-            forge.Parameter(*(448, 56, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(512, 944, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -32726,10 +32726,10 @@ class Conv2D1527(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1527.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=8,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -32738,20 +32738,17 @@ class Conv2D1527(ForgeModule):
 class Conv2D1528(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1528.weight_1",
-            forge.Parameter(*(448, 56, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1528_const_1", shape=(48, 3, 3, 3), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1528.weight_1"),
-            stride=[1, 1],
+            self.get_constant("conv2d1528_const_1"),
+            stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=8,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -32760,20 +32757,17 @@ class Conv2D1528(ForgeModule):
 class Conv2D1529(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1529.weight_1",
-            forge.Parameter(*(896, 56, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1529_const_1", shape=(48, 3, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1529.weight_1"),
+            self.get_constant("conv2d1529_const_1"),
             stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=16,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -32782,20 +32776,17 @@ class Conv2D1529(ForgeModule):
 class Conv2D1530(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1530.weight_1",
-            forge.Parameter(*(896, 56, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1530_const_1", shape=(96, 48, 3, 3), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1530.weight_1"),
-            stride=[1, 1],
+            self.get_constant("conv2d1530_const_1"),
+            stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=16,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -32804,16 +32795,13 @@ class Conv2D1530(ForgeModule):
 class Conv2D1531(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1531.weight_1",
-            forge.Parameter(*(2016, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1531_const_1", shape=(96, 48, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1531.weight_1"),
+            self.get_constant("conv2d1531_const_1"),
             stride=[2, 2],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -32826,16 +32814,13 @@ class Conv2D1531(ForgeModule):
 class Conv2D1532(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1532.weight_1",
-            forge.Parameter(*(2016, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1532_const_1", shape=(64, 96, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1532.weight_1"),
+            self.get_constant("conv2d1532_const_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -32848,20 +32833,17 @@ class Conv2D1532(ForgeModule):
 class Conv2D1533(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1533.weight_1",
-            forge.Parameter(*(2016, 56, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1533_const_1", shape=(96, 128, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1533.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            self.get_constant("conv2d1533_const_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=36,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -32870,18 +32852,15 @@ class Conv2D1533(ForgeModule):
 class Conv2D1534(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1534.weight_1",
-            forge.Parameter(*(224, 2016, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1534_const_1", shape=(192, 96, 3, 3), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1534.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            self.get_constant("conv2d1534_const_1"),
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -32892,17 +32871,14 @@ class Conv2D1534(ForgeModule):
 class Conv2D1535(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1535.weight_1",
-            forge.Parameter(*(2016, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1535_const_1", shape=(192, 96, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1535.weight_1"),
-            stride=[1, 1],
+            self.get_constant("conv2d1535_const_1"),
+            stride=[2, 2],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -32914,16 +32890,13 @@ class Conv2D1535(ForgeModule):
 class Conv2D1536(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1536.weight_1",
-            forge.Parameter(*(2016, 2016, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1536_const_1", shape=(128, 192, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1536.weight_1"),
+            self.get_constant("conv2d1536_const_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -32936,18 +32909,15 @@ class Conv2D1536(ForgeModule):
 class Conv2D1537(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1537.weight_1",
-            forge.Parameter(*(256, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1537_const_1", shape=(192, 256, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1537.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            self.get_constant("conv2d1537_const_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -32958,18 +32928,15 @@ class Conv2D1537(ForgeModule):
 class Conv2D1538(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1538.weight_1",
-            forge.Parameter(*(4096, 512, 7, 7), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1538_const_1", shape=(384, 192, 3, 3), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1538.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            self.get_constant("conv2d1538_const_1"),
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -32980,17 +32947,14 @@ class Conv2D1538(ForgeModule):
 class Conv2D1539(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1539.weight_1",
-            forge.Parameter(*(4096, 4096, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1539_const_1", shape=(384, 192, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1539.weight_1"),
-            stride=[1, 1],
+            self.get_constant("conv2d1539_const_1"),
+            stride=[2, 2],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -33002,18 +32966,15 @@ class Conv2D1539(ForgeModule):
 class Conv2D1540(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1540.weight_1",
-            forge.Parameter(*(80, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1540_const_1", shape=(256, 384, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1540.weight_1"),
+            self.get_constant("conv2d1540_const_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -33024,18 +32985,15 @@ class Conv2D1540(ForgeModule):
 class Conv2D1541(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1541.weight_1",
-            forge.Parameter(*(256, 528, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1541_const_1", shape=(256, 256, 3, 3), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1541.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            self.get_constant("conv2d1541_const_1"),
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -33046,18 +33004,15 @@ class Conv2D1541(ForgeModule):
 class Conv2D1542(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1542.weight_1",
-            forge.Parameter(*(96, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1542_const_1", shape=(384, 512, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1542.weight_1"),
+            self.get_constant("conv2d1542_const_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -33068,18 +33023,15 @@ class Conv2D1542(ForgeModule):
 class Conv2D1543(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1543.weight_1",
-            forge.Parameter(*(384, 736, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1543_const_1", shape=(768, 384, 3, 3), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1543.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            self.get_constant("conv2d1543_const_1"),
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -33090,18 +33042,15 @@ class Conv2D1543(ForgeModule):
 class Conv2D1544(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1544.weight_1",
-            forge.Parameter(*(112, 384, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1544_const_1", shape=(768, 384, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1544.weight_1"),
-            stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            self.get_constant("conv2d1544_const_1"),
+            stride=[2, 2],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -33112,18 +33061,15 @@ class Conv2D1544(ForgeModule):
 class Conv2D1545(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1545.weight_1",
-            forge.Parameter(*(112, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1545_const_1", shape=(512, 768, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1545.weight_1"),
+            self.get_constant("conv2d1545_const_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -33134,16 +33080,13 @@ class Conv2D1545(ForgeModule):
 class Conv2D1546(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1546.weight_1",
-            forge.Parameter(*(512, 944, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
+        self.add_constant("conv2d1546_const_1", shape=(512, 512, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1546.weight_1"),
+            self.get_constant("conv2d1546_const_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -33156,15 +33099,15 @@ class Conv2D1546(ForgeModule):
 class Conv2D1547(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1547_const_1", shape=(48, 3, 3, 3), dtype=torch.bfloat16)
+        self.add_constant("conv2d1547_const_1", shape=(768, 1024, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
             self.get_constant("conv2d1547_const_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -33175,14 +33118,14 @@ class Conv2D1547(ForgeModule):
 class Conv2D1548(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1548_const_1", shape=(48, 3, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1548_const_1", shape=(384, 768, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
             self.get_constant("conv2d1548_const_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -33194,15 +33137,15 @@ class Conv2D1548(ForgeModule):
 class Conv2D1549(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1549_const_1", shape=(96, 48, 3, 3), dtype=torch.bfloat16)
+        self.add_constant("conv2d1549_const_1", shape=(768, 1536, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
             self.get_constant("conv2d1549_const_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -33213,14 +33156,14 @@ class Conv2D1549(ForgeModule):
 class Conv2D1550(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1550_const_1", shape=(96, 48, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1550_const_1", shape=(192, 768, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
             self.get_constant("conv2d1550_const_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -33232,7 +33175,7 @@ class Conv2D1550(ForgeModule):
 class Conv2D1551(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1551_const_1", shape=(64, 96, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1551_const_1", shape=(192, 384, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33251,7 +33194,7 @@ class Conv2D1551(ForgeModule):
 class Conv2D1552(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1552_const_1", shape=(96, 128, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1552_const_1", shape=(192, 192, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33270,7 +33213,7 @@ class Conv2D1552(ForgeModule):
 class Conv2D1553(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1553_const_1", shape=(192, 96, 3, 3), dtype=torch.bfloat16)
+        self.add_constant("conv2d1553_const_1", shape=(192, 192, 3, 3), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33289,14 +33232,14 @@ class Conv2D1553(ForgeModule):
 class Conv2D1554(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1554_const_1", shape=(192, 96, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1554_const_1", shape=(192, 576, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
             self.get_constant("conv2d1554_const_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -33308,7 +33251,7 @@ class Conv2D1554(ForgeModule):
 class Conv2D1555(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1555_const_1", shape=(128, 192, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1555_const_1", shape=(96, 192, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33327,7 +33270,7 @@ class Conv2D1555(ForgeModule):
 class Conv2D1556(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1556_const_1", shape=(192, 256, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1556_const_1", shape=(96, 96, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33346,7 +33289,7 @@ class Conv2D1556(ForgeModule):
 class Conv2D1557(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1557_const_1", shape=(384, 192, 3, 3), dtype=torch.bfloat16)
+        self.add_constant("conv2d1557_const_1", shape=(96, 96, 3, 3), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33365,14 +33308,14 @@ class Conv2D1557(ForgeModule):
 class Conv2D1558(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1558_const_1", shape=(384, 192, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1558_const_1", shape=(96, 288, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
             self.get_constant("conv2d1558_const_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -33384,7 +33327,7 @@ class Conv2D1558(ForgeModule):
 class Conv2D1559(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1559_const_1", shape=(256, 384, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1559_const_1", shape=(96, 96, 3, 3), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33392,7 +33335,7 @@ class Conv2D1559(ForgeModule):
             conv2d_input_0,
             self.get_constant("conv2d1559_const_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -33403,15 +33346,15 @@ class Conv2D1559(ForgeModule):
 class Conv2D1560(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1560_const_1", shape=(256, 256, 3, 3), dtype=torch.bfloat16)
+        self.add_constant("conv2d1560_const_1", shape=(68, 96, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
             self.get_constant("conv2d1560_const_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -33422,7 +33365,7 @@ class Conv2D1560(ForgeModule):
 class Conv2D1561(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1561_const_1", shape=(384, 512, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1561_const_1", shape=(1, 17, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33441,14 +33384,14 @@ class Conv2D1561(ForgeModule):
 class Conv2D1562(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1562_const_1", shape=(768, 384, 3, 3), dtype=torch.bfloat16)
+        self.add_constant("conv2d1562_const_1", shape=(192, 192, 3, 3), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
             self.get_constant("conv2d1562_const_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
@@ -33460,14 +33403,14 @@ class Conv2D1562(ForgeModule):
 class Conv2D1563(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1563_const_1", shape=(768, 384, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1563_const_1", shape=(68, 192, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
             self.get_constant("conv2d1563_const_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -33479,7 +33422,7 @@ class Conv2D1563(ForgeModule):
 class Conv2D1564(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1564_const_1", shape=(512, 768, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1564_const_1", shape=(384, 384, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33498,7 +33441,7 @@ class Conv2D1564(ForgeModule):
 class Conv2D1565(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1565_const_1", shape=(512, 512, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1565_const_1", shape=(384, 384, 3, 3), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33506,7 +33449,7 @@ class Conv2D1565(ForgeModule):
             conv2d_input_0,
             self.get_constant("conv2d1565_const_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -33517,7 +33460,7 @@ class Conv2D1565(ForgeModule):
 class Conv2D1566(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1566_const_1", shape=(768, 1024, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1566_const_1", shape=(68, 384, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33536,7 +33479,7 @@ class Conv2D1566(ForgeModule):
 class Conv2D1567(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1567_const_1", shape=(384, 768, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1567_const_1", shape=(80, 96, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33555,7 +33498,7 @@ class Conv2D1567(ForgeModule):
 class Conv2D1568(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1568_const_1", shape=(768, 1536, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1568_const_1", shape=(80, 192, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33574,7 +33517,7 @@ class Conv2D1568(ForgeModule):
 class Conv2D1569(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1569_const_1", shape=(192, 768, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1569_const_1", shape=(80, 384, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33593,15 +33536,15 @@ class Conv2D1569(ForgeModule):
 class Conv2D1570(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1570_const_1", shape=(192, 384, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1570_const_1", shape=(32, 3, 3, 3), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
             self.get_constant("conv2d1570_const_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -33612,14 +33555,14 @@ class Conv2D1570(ForgeModule):
 class Conv2D1571(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1571_const_1", shape=(192, 192, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1571_const_1", shape=(32, 3, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
             self.get_constant("conv2d1571_const_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -33631,7 +33574,7 @@ class Conv2D1571(ForgeModule):
 class Conv2D1572(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1572_const_1", shape=(192, 192, 3, 3), dtype=torch.bfloat16)
+        self.add_constant("conv2d1572_const_1", shape=(512, 256, 3, 3), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33650,14 +33593,14 @@ class Conv2D1572(ForgeModule):
 class Conv2D1573(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1573_const_1", shape=(192, 576, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1573_const_1", shape=(512, 256, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
             self.get_constant("conv2d1573_const_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -33669,7 +33612,7 @@ class Conv2D1573(ForgeModule):
 class Conv2D1574(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1574_const_1", shape=(96, 192, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1574_const_1", shape=(256, 512, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33688,7 +33631,7 @@ class Conv2D1574(ForgeModule):
 class Conv2D1575(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1575_const_1", shape=(96, 96, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1575_const_1", shape=(256, 1024, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33707,15 +33650,15 @@ class Conv2D1575(ForgeModule):
 class Conv2D1576(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1576_const_1", shape=(96, 96, 3, 3), dtype=torch.bfloat16)
+        self.add_constant("conv2d1576_const_1", shape=(128, 384, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
             self.get_constant("conv2d1576_const_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -33726,7 +33669,7 @@ class Conv2D1576(ForgeModule):
 class Conv2D1577(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1577_const_1", shape=(96, 288, 1, 1), dtype=torch.bfloat16)
+        self.add_constant("conv2d1577_const_1", shape=(4, 256, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33745,7 +33688,7 @@ class Conv2D1577(ForgeModule):
 class Conv2D1578(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1578_const_1", shape=(96, 96, 3, 3), dtype=torch.bfloat16)
+        self.add_constant("conv2d1578_const_1", shape=(80, 256, 1, 1), dtype=torch.bfloat16)
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
@@ -33753,7 +33696,7 @@ class Conv2D1578(ForgeModule):
             conv2d_input_0,
             self.get_constant("conv2d1578_const_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -33764,13 +33707,16 @@ class Conv2D1578(ForgeModule):
 class Conv2D1579(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1579_const_1", shape=(68, 96, 1, 1), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1579.weight_1",
+            forge.Parameter(*(512, 2560, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1579_const_1"),
+            self.get_parameter("conv2d1579.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -33783,13 +33729,16 @@ class Conv2D1579(ForgeModule):
 class Conv2D1580(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1580_const_1", shape=(1, 17, 1, 1), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1580.weight_1",
+            forge.Parameter(*(512, 3328, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1580_const_1"),
+            self.get_parameter("conv2d1580.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -33802,15 +33751,18 @@ class Conv2D1580(ForgeModule):
 class Conv2D1581(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1581_const_1", shape=(192, 192, 3, 3), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1581.weight_1",
+            forge.Parameter(*(32, 3, 7, 7), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1581_const_1"),
-            stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            self.get_parameter("conv2d1581.weight_1"),
+            stride=[4, 4],
+            padding=[3, 3, 3, 3],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -33821,14 +33773,17 @@ class Conv2D1581(ForgeModule):
 class Conv2D1582(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1582_const_1", shape=(68, 192, 1, 1), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1582.weight_1",
+            forge.Parameter(*(32, 32, 8, 8), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1582_const_1"),
-            stride=[1, 1],
+            self.get_parameter("conv2d1582.weight_1"),
+            stride=[8, 8],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -33840,14 +33795,17 @@ class Conv2D1582(ForgeModule):
 class Conv2D1583(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1583_const_1", shape=(384, 384, 1, 1), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1583.weight_1",
+            forge.Parameter(*(64, 64, 4, 4), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1583_const_1"),
-            stride=[1, 1],
+            self.get_parameter("conv2d1583.weight_1"),
+            stride=[4, 4],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -33859,14 +33817,17 @@ class Conv2D1583(ForgeModule):
 class Conv2D1584(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1584_const_1", shape=(384, 384, 3, 3), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1584.weight_1",
+            forge.Parameter(*(160, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1584_const_1"),
-            stride=[1, 1],
+            self.get_parameter("conv2d1584.weight_1"),
+            stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
@@ -33878,14 +33839,17 @@ class Conv2D1584(ForgeModule):
 class Conv2D1585(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1585_const_1", shape=(68, 384, 1, 1), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1585.weight_1",
+            forge.Parameter(*(160, 160, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1585_const_1"),
-            stride=[1, 1],
+            self.get_parameter("conv2d1585.weight_1"),
+            stride=[2, 2],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -33897,17 +33861,20 @@ class Conv2D1585(ForgeModule):
 class Conv2D1586(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1586_const_1", shape=(80, 96, 1, 1), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1586.weight_1",
+            forge.Parameter(*(640, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1586_const_1"),
+            self.get_parameter("conv2d1586.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=640,
             channel_last=0,
         )
         return conv2d_output_1
@@ -33916,15 +33883,18 @@ class Conv2D1586(ForgeModule):
 class Conv2D1587(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1587_const_1", shape=(80, 192, 1, 1), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1587.weight_1",
+            forge.Parameter(*(256, 160, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1587_const_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            self.get_parameter("conv2d1587.weight_1"),
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -33935,17 +33905,20 @@ class Conv2D1587(ForgeModule):
 class Conv2D1588(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1588_const_1", shape=(80, 384, 1, 1), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1588.weight_1",
+            forge.Parameter(*(1024, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1588_const_1"),
+            self.get_parameter("conv2d1588.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=1024,
             channel_last=0,
         )
         return conv2d_output_1
@@ -33954,15 +33927,18 @@ class Conv2D1588(ForgeModule):
 class Conv2D1589(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1589_const_1", shape=(32, 3, 3, 3), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1589.weight_1",
+            forge.Parameter(*(96, 3, 4, 4), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1589_const_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            self.get_parameter("conv2d1589.weight_1"),
+            stride=[4, 4],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -33973,14 +33949,17 @@ class Conv2D1589(ForgeModule):
 class Conv2D1590(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1590_const_1", shape=(32, 3, 1, 1), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1590.weight_1",
+            forge.Parameter(*(3072, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1590_const_1"),
-            stride=[2, 2],
+            self.get_parameter("conv2d1590.weight_1"),
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -33992,15 +33971,18 @@ class Conv2D1590(ForgeModule):
 class Conv2D1591(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1591_const_1", shape=(512, 256, 3, 3), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1591.weight_1",
+            forge.Parameter(*(128, 1056, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1591_const_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            self.get_parameter("conv2d1591.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34011,14 +33993,17 @@ class Conv2D1591(ForgeModule):
 class Conv2D1592(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1592_const_1", shape=(512, 256, 1, 1), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1592.weight_1",
+            forge.Parameter(*(128, 1088, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1592_const_1"),
-            stride=[2, 2],
+            self.get_parameter("conv2d1592.weight_1"),
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -34030,13 +34015,16 @@ class Conv2D1592(ForgeModule):
 class Conv2D1593(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1593_const_1", shape=(256, 512, 1, 1), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1593.weight_1",
+            forge.Parameter(*(128, 1120, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1593_const_1"),
+            self.get_parameter("conv2d1593.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -34049,13 +34037,16 @@ class Conv2D1593(ForgeModule):
 class Conv2D1594(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1594_const_1", shape=(256, 1024, 1, 1), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1594.weight_1",
+            forge.Parameter(*(128, 1152, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1594_const_1"),
+            self.get_parameter("conv2d1594.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -34068,13 +34059,16 @@ class Conv2D1594(ForgeModule):
 class Conv2D1595(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1595_const_1", shape=(128, 384, 1, 1), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1595.weight_1",
+            forge.Parameter(*(128, 1184, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1595_const_1"),
+            self.get_parameter("conv2d1595.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -34087,13 +34081,16 @@ class Conv2D1595(ForgeModule):
 class Conv2D1596(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1596_const_1", shape=(4, 256, 1, 1), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1596.weight_1",
+            forge.Parameter(*(128, 1216, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1596_const_1"),
+            self.get_parameter("conv2d1596.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -34106,13 +34103,16 @@ class Conv2D1596(ForgeModule):
 class Conv2D1597(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("conv2d1597_const_1", shape=(80, 256, 1, 1), dtype=torch.bfloat16)
+        self.add_parameter(
+            "conv2d1597.weight_1",
+            forge.Parameter(*(128, 1248, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
     def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_constant("conv2d1597_const_1"),
+            self.get_parameter("conv2d1597.weight_1"),
             stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
@@ -34127,7 +34127,7 @@ class Conv2D1598(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1598.weight_1",
-            forge.Parameter(*(512, 2560, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 1280, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34149,7 +34149,7 @@ class Conv2D1599(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1599.weight_1",
-            forge.Parameter(*(512, 3328, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 1312, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34171,7 +34171,7 @@ class Conv2D1600(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1600.weight_1",
-            forge.Parameter(*(32, 3, 7, 7), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 1344, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34179,8 +34179,8 @@ class Conv2D1600(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1600.weight_1"),
-            stride=[4, 4],
-            padding=[3, 3, 3, 3],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34193,7 +34193,7 @@ class Conv2D1601(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1601.weight_1",
-            forge.Parameter(*(32, 32, 8, 8), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 1376, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34201,7 +34201,7 @@ class Conv2D1601(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1601.weight_1"),
-            stride=[8, 8],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -34215,7 +34215,7 @@ class Conv2D1602(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1602.weight_1",
-            forge.Parameter(*(64, 64, 4, 4), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 1408, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34223,7 +34223,7 @@ class Conv2D1602(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1602.weight_1"),
-            stride=[4, 4],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -34237,7 +34237,7 @@ class Conv2D1603(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1603.weight_1",
-            forge.Parameter(*(160, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 1440, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34245,8 +34245,8 @@ class Conv2D1603(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1603.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34259,7 +34259,7 @@ class Conv2D1604(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1604.weight_1",
-            forge.Parameter(*(160, 160, 2, 2), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 1472, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34267,7 +34267,7 @@ class Conv2D1604(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1604.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -34281,7 +34281,7 @@ class Conv2D1605(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1605.weight_1",
-            forge.Parameter(*(640, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 1504, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34290,9 +34290,9 @@ class Conv2D1605(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1605.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=640,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -34303,7 +34303,7 @@ class Conv2D1606(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1606.weight_1",
-            forge.Parameter(*(256, 160, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 1536, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34311,8 +34311,8 @@ class Conv2D1606(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1606.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34325,7 +34325,7 @@ class Conv2D1607(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1607.weight_1",
-            forge.Parameter(*(1024, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 1568, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34334,9 +34334,9 @@ class Conv2D1607(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1607.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=1024,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -34347,7 +34347,7 @@ class Conv2D1608(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1608.weight_1",
-            forge.Parameter(*(96, 3, 4, 4), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 1600, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34355,7 +34355,7 @@ class Conv2D1608(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1608.weight_1"),
-            stride=[4, 4],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -34369,7 +34369,7 @@ class Conv2D1609(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1609.weight_1",
-            forge.Parameter(*(3072, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 1632, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34391,7 +34391,7 @@ class Conv2D1610(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1610.weight_1",
-            forge.Parameter(*(128, 1056, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(24, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34411,20 +34411,16 @@ class Conv2D1610(ForgeModule):
 class Conv2D1611(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1611.weight_1",
-            forge.Parameter(*(128, 1088, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1611.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            conv2d_input_1,
+            stride=[2, 2],
+            padding=[0, 0, 1, 1],
             dilation=1,
-            groups=1,
+            groups=288,
             channel_last=0,
         )
         return conv2d_output_1
@@ -34435,7 +34431,7 @@ class Conv2D1612(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1612.weight_1",
-            forge.Parameter(*(128, 1120, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1280, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34457,7 +34453,7 @@ class Conv2D1613(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1613.weight_1",
-            forge.Parameter(*(128, 1152, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(18, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34466,7 +34462,7 @@ class Conv2D1613(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1613.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34479,7 +34475,7 @@ class Conv2D1614(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1614.weight_1",
-            forge.Parameter(*(128, 1184, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(18, 18, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34488,7 +34484,7 @@ class Conv2D1614(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1614.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34501,7 +34497,7 @@ class Conv2D1615(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1615.weight_1",
-            forge.Parameter(*(128, 1216, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(18, 18, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34509,8 +34505,8 @@ class Conv2D1615(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1615.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34523,7 +34519,7 @@ class Conv2D1616(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1616.weight_1",
-            forge.Parameter(*(128, 1248, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(36, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34531,8 +34527,8 @@ class Conv2D1616(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1616.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34545,7 +34541,7 @@ class Conv2D1617(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1617.weight_1",
-            forge.Parameter(*(128, 1280, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(36, 36, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34554,7 +34550,7 @@ class Conv2D1617(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1617.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34567,7 +34563,7 @@ class Conv2D1618(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1618.weight_1",
-            forge.Parameter(*(128, 1312, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(36, 36, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34575,8 +34571,8 @@ class Conv2D1618(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1618.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34589,7 +34585,7 @@ class Conv2D1619(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1619.weight_1",
-            forge.Parameter(*(128, 1344, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(18, 36, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34611,7 +34607,7 @@ class Conv2D1620(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1620.weight_1",
-            forge.Parameter(*(128, 1376, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(36, 18, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34619,8 +34615,8 @@ class Conv2D1620(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1620.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34633,7 +34629,7 @@ class Conv2D1621(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1621.weight_1",
-            forge.Parameter(*(128, 1408, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(72, 36, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34641,8 +34637,8 @@ class Conv2D1621(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1621.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34655,7 +34651,7 @@ class Conv2D1622(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1622.weight_1",
-            forge.Parameter(*(128, 1440, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(72, 72, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34664,7 +34660,7 @@ class Conv2D1622(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1622.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34677,7 +34673,7 @@ class Conv2D1623(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1623.weight_1",
-            forge.Parameter(*(128, 1472, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(36, 72, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34699,7 +34695,7 @@ class Conv2D1624(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1624.weight_1",
-            forge.Parameter(*(128, 1504, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(72, 18, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34707,8 +34703,8 @@ class Conv2D1624(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1624.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34721,7 +34717,7 @@ class Conv2D1625(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1625.weight_1",
-            forge.Parameter(*(128, 1536, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(144, 72, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34729,8 +34725,8 @@ class Conv2D1625(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1625.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34743,7 +34739,7 @@ class Conv2D1626(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1626.weight_1",
-            forge.Parameter(*(128, 1568, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(144, 144, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34752,7 +34748,7 @@ class Conv2D1626(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1626.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34765,7 +34761,7 @@ class Conv2D1627(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1627.weight_1",
-            forge.Parameter(*(128, 1600, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(144, 18, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34773,8 +34769,8 @@ class Conv2D1627(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1627.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34787,7 +34783,7 @@ class Conv2D1628(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1628.weight_1",
-            forge.Parameter(*(128, 1632, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(144, 36, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34795,8 +34791,8 @@ class Conv2D1628(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1628.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34809,7 +34805,7 @@ class Conv2D1629(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1629.weight_1",
-            forge.Parameter(*(24, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256, 144, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34829,16 +34825,20 @@ class Conv2D1629(ForgeModule):
 class Conv2D1630(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1630.weight_1",
+            forge.Parameter(*(1024, 144, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
-            stride=[2, 2],
-            padding=[0, 0, 1, 1],
+            self.get_parameter("conv2d1630.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=288,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -34849,7 +34849,7 @@ class Conv2D1631(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1631.weight_1",
-            forge.Parameter(*(1280, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(128, 72, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34871,7 +34871,7 @@ class Conv2D1632(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1632.weight_1",
-            forge.Parameter(*(18, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(512, 72, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34880,7 +34880,7 @@ class Conv2D1632(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1632.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34893,7 +34893,7 @@ class Conv2D1633(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1633.weight_1",
-            forge.Parameter(*(18, 18, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(64, 36, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34902,7 +34902,7 @@ class Conv2D1633(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1633.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34915,7 +34915,7 @@ class Conv2D1634(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1634.weight_1",
-            forge.Parameter(*(18, 18, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256, 36, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34923,8 +34923,8 @@ class Conv2D1634(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1634.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34937,7 +34937,7 @@ class Conv2D1635(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1635.weight_1",
-            forge.Parameter(*(36, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(32, 18, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34945,8 +34945,8 @@ class Conv2D1635(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1635.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34959,7 +34959,7 @@ class Conv2D1636(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1636.weight_1",
-            forge.Parameter(*(36, 36, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(128, 18, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -34968,7 +34968,7 @@ class Conv2D1636(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1636.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -34981,7 +34981,7 @@ class Conv2D1637(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1637.weight_1",
-            forge.Parameter(*(36, 36, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(128, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -35003,7 +35003,7 @@ class Conv2D1638(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1638.weight_1",
-            forge.Parameter(*(18, 36, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(512, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -35011,8 +35011,8 @@ class Conv2D1638(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1638.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -35025,7 +35025,7 @@ class Conv2D1639(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1639.weight_1",
-            forge.Parameter(*(36, 18, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(512, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -35045,20 +35045,16 @@ class Conv2D1639(ForgeModule):
 class Conv2D1640(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "conv2d1640.weight_1",
-            forge.Parameter(*(72, 36, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
-        )
 
-    def forward(self, conv2d_input_0):
+    def forward(self, conv2d_input_0, conv2d_input_1):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            self.get_parameter("conv2d1640.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            conv2d_input_1,
+            stride=[1, 1],
+            padding=[0, 3, 0, 3],
             dilation=1,
-            groups=1,
+            groups=2048,
             channel_last=0,
         )
         return conv2d_output_1
@@ -35069,7 +35065,7 @@ class Conv2D1641(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1641.weight_1",
-            forge.Parameter(*(72, 72, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1024, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -35078,7 +35074,7 @@ class Conv2D1641(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1641.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -35091,7 +35087,7 @@ class Conv2D1642(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1642.weight_1",
-            forge.Parameter(*(36, 72, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(64, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -35100,7 +35096,7 @@ class Conv2D1642(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1642.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -35113,7 +35109,7 @@ class Conv2D1643(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1643.weight_1",
-            forge.Parameter(*(72, 18, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(48, 12, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -35121,7 +35117,7 @@ class Conv2D1643(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1643.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
@@ -35135,7 +35131,7 @@ class Conv2D1644(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1644.weight_1",
-            forge.Parameter(*(144, 72, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(768, 384, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -35157,7 +35153,7 @@ class Conv2D1645(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1645.weight_1",
-            forge.Parameter(*(144, 144, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(768, 1536, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -35166,7 +35162,7 @@ class Conv2D1645(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1645.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -35179,7 +35175,7 @@ class Conv2D1646(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1646.weight_1",
-            forge.Parameter(*(144, 18, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(384, 384, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -35187,7 +35183,7 @@ class Conv2D1646(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1646.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
@@ -35201,7 +35197,7 @@ class Conv2D1647(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1647.weight_1",
-            forge.Parameter(*(144, 36, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(4, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -35209,8 +35205,8 @@ class Conv2D1647(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1647.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -35223,7 +35219,7 @@ class Conv2D1648(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1648.weight_1",
-            forge.Parameter(*(256, 144, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -35245,7 +35241,7 @@ class Conv2D1649(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1649.weight_1",
-            forge.Parameter(*(1024, 144, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(80, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -35267,7 +35263,7 @@ class Conv2D1650(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1650.weight_1",
-            forge.Parameter(*(128, 72, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(384, 384, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, conv2d_input_0):
@@ -35275,8 +35271,8 @@ class Conv2D1650(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1650.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -35289,7 +35285,7 @@ class Conv2D1651(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1651.weight_1",
-            forge.Parameter(*(512, 72, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(768, 3, 16, 16), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35297,7 +35293,7 @@ class Conv2D1651(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1651.weight_1"),
-            stride=[1, 1],
+            stride=[16, 16],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -35311,7 +35307,7 @@ class Conv2D1652(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1652.weight_1",
-            forge.Parameter(*(64, 36, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(64, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35319,8 +35315,8 @@ class Conv2D1652(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1652.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -35333,7 +35329,7 @@ class Conv2D1653(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1653.weight_1",
-            forge.Parameter(*(256, 36, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(64, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35341,10 +35337,10 @@ class Conv2D1653(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1653.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=64,
             channel_last=0,
         )
         return conv2d_output_1
@@ -35355,7 +35351,7 @@ class Conv2D1654(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1654.weight_1",
-            forge.Parameter(*(32, 18, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(128, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35363,10 +35359,10 @@ class Conv2D1654(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1654.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=128,
             channel_last=0,
         )
         return conv2d_output_1
@@ -35377,7 +35373,7 @@ class Conv2D1655(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1655.weight_1",
-            forge.Parameter(*(128, 18, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(256, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35399,7 +35395,7 @@ class Conv2D1656(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1656.weight_1",
-            forge.Parameter(*(128, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(160, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35407,8 +35403,8 @@ class Conv2D1656(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1656.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -35421,7 +35417,7 @@ class Conv2D1657(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1657.weight_1",
-            forge.Parameter(*(512, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(160, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35429,10 +35425,10 @@ class Conv2D1657(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1657.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=160,
             channel_last=0,
         )
         return conv2d_output_1
@@ -35443,7 +35439,7 @@ class Conv2D1658(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1658.weight_1",
-            forge.Parameter(*(512, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(160, 160, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35451,8 +35447,8 @@ class Conv2D1658(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1658.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -35463,16 +35459,20 @@ class Conv2D1658(ForgeModule):
 class Conv2D1659(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "conv2d1659.weight_1",
+            forge.Parameter(*(512, 736, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
-    def forward(self, conv2d_input_0, conv2d_input_1):
+    def forward(self, conv2d_input_0):
         conv2d_output_1 = forge.op.Conv2d(
             "",
             conv2d_input_0,
-            conv2d_input_1,
+            self.get_parameter("conv2d1659.weight_1"),
             stride=[1, 1],
-            padding=[0, 3, 0, 3],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=2048,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -35483,7 +35483,7 @@ class Conv2D1660(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1660.weight_1",
-            forge.Parameter(*(1024, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 512, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35505,7 +35505,7 @@ class Conv2D1661(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1661.weight_1",
-            forge.Parameter(*(64, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(192, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35514,7 +35514,7 @@ class Conv2D1661(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1661.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -35527,7 +35527,7 @@ class Conv2D1662(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1662.weight_1",
-            forge.Parameter(*(48, 12, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(768, 1088, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35536,7 +35536,7 @@ class Conv2D1662(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1662.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -35549,7 +35549,7 @@ class Conv2D1663(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1663.weight_1",
-            forge.Parameter(*(768, 384, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(768, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35557,8 +35557,8 @@ class Conv2D1663(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1663.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -35571,7 +35571,7 @@ class Conv2D1664(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1664.weight_1",
-            forge.Parameter(*(768, 1536, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35593,7 +35593,7 @@ class Conv2D1665(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1665.weight_1",
-            forge.Parameter(*(384, 384, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35604,7 +35604,7 @@ class Conv2D1665(ForgeModule):
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=224,
             channel_last=0,
         )
         return conv2d_output_1
@@ -35615,7 +35615,7 @@ class Conv2D1666(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1666.weight_1",
-            forge.Parameter(*(4, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(224, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35637,7 +35637,7 @@ class Conv2D1667(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1667.weight_1",
-            forge.Parameter(*(1, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(1024, 1440, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35659,7 +35659,7 @@ class Conv2D1668(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1668.weight_1",
-            forge.Parameter(*(80, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(32, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35667,10 +35667,10 @@ class Conv2D1668(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1668.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
-            groups=1,
+            groups=32,
             channel_last=0,
         )
         return conv2d_output_1
@@ -35681,7 +35681,7 @@ class Conv2D1669(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1669.weight_1",
-            forge.Parameter(*(384, 384, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(48, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35689,8 +35689,8 @@ class Conv2D1669(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1669.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -35703,7 +35703,7 @@ class Conv2D1670(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1670.weight_1",
-            forge.Parameter(*(768, 3, 16, 16), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(48, 48, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35711,7 +35711,7 @@ class Conv2D1670(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1670.weight_1"),
-            stride=[16, 16],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -35725,7 +35725,7 @@ class Conv2D1671(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1671.weight_1",
-            forge.Parameter(*(64, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 48, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35733,8 +35733,8 @@ class Conv2D1671(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1671.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -35747,7 +35747,7 @@ class Conv2D1672(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1672.weight_1",
-            forge.Parameter(*(64, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35755,10 +35755,10 @@ class Conv2D1672(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1672.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=64,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -35769,7 +35769,7 @@ class Conv2D1673(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1673.weight_1",
-            forge.Parameter(*(128, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35777,10 +35777,10 @@ class Conv2D1673(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d1673.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=128,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -35791,7 +35791,7 @@ class Conv2D1674(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1674.weight_1",
-            forge.Parameter(*(256, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35800,9 +35800,9 @@ class Conv2D1674(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1674.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=1,
+            groups=192,
             channel_last=0,
         )
         return conv2d_output_1
@@ -35813,7 +35813,7 @@ class Conv2D1675(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1675.weight_1",
-            forge.Parameter(*(160, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(384, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35835,7 +35835,7 @@ class Conv2D1676(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1676.weight_1",
-            forge.Parameter(*(160, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(384, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35844,9 +35844,9 @@ class Conv2D1676(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1676.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[2, 2, 2, 2],
             dilation=1,
-            groups=160,
+            groups=384,
             channel_last=0,
         )
         return conv2d_output_1
@@ -35857,7 +35857,7 @@ class Conv2D1677(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1677.weight_1",
-            forge.Parameter(*(160, 160, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(384, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35879,7 +35879,7 @@ class Conv2D1678(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1678.weight_1",
-            forge.Parameter(*(512, 736, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(360, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35901,7 +35901,7 @@ class Conv2D1679(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1679.weight_1",
-            forge.Parameter(*(192, 512, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 360, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35923,7 +35923,7 @@ class Conv2D1680(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1680.weight_1",
-            forge.Parameter(*(768, 1088, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(24, 96, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35932,7 +35932,7 @@ class Conv2D1680(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1680.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -35945,7 +35945,7 @@ class Conv2D1681(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1681.weight_1",
-            forge.Parameter(*(768, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(42, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35967,7 +35967,7 @@ class Conv2D1682(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1682.weight_1",
-            forge.Parameter(*(224, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 42, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35989,7 +35989,7 @@ class Conv2D1683(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1683.weight_1",
-            forge.Parameter(*(224, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(18, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -35998,9 +35998,9 @@ class Conv2D1683(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d1683.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
-            groups=224,
+            groups=1,
             channel_last=0,
         )
         return conv2d_output_1
@@ -36011,7 +36011,7 @@ class Conv2D1684(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1684.weight_1",
-            forge.Parameter(*(224, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 18, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -36033,7 +36033,7 @@ class Conv2D1685(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d1685.weight_1",
-            forge.Parameter(*(1024, 1440, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 12, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -73052,14 +73052,14 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D603,
-        [((1, 3, 480, 480), torch.float32)],
+        Conv2D616,
+        [((1, 192, 1, 1), torch.float32)],
         {
-            "model_names": ["TranslatedLayer"],
+            "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
             "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
                 "dilation": "1",
                 "groups": "1",
                 "channel_last": "0",
@@ -73067,25 +73067,10 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D604,
-        [((1, 16, 240, 240), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "16",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
         Conv2D944,
-        [((1, 16, 240, 240), torch.float32)],
+        [((1, 48, 1, 1), torch.float32)],
         {
-            "model_names": ["TranslatedLayer"],
+            "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -73098,324 +73083,24 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2D945,
-        [((1, 32, 240, 240), torch.float32)],
+        [((1, 384, 1, 1), torch.float32)],
         {
-            "model_names": ["TranslatedLayer"],
+            "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
             "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
                 "dilation": "1",
-                "groups": "32",
+                "groups": "1",
                 "channel_last": "0",
             },
         },
     ),
     (
         Conv2D946,
-        [((1, 32, 120, 120), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D608,
-        [((1, 48, 120, 120), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "48",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D607,
-        [((1, 48, 120, 120), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "48",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D947,
-        [((1, 48, 120, 120), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D948,
-        [((1, 48, 60, 60), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D610,
-        [((1, 96, 60, 60), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "96",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D574,
-        [((1, 96, 60, 60), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "96",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D949,
-        [((1, 96, 60, 60), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D950,
-        [((1, 96, 30, 30), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D951,
-        [((1, 192, 30, 30), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[2, 2, 2, 2]",
-                "dilation": "1",
-                "groups": "192",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D952,
-        [((1, 192, 30, 30), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[2, 2, 2, 2]",
-                "dilation": "1",
-                "groups": "192",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D953,
-        [((1, 192, 30, 30), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D616,
-        [((1, 192, 1, 1), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D954,
-        [((1, 48, 1, 1), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D955,
-        [((1, 192, 15, 15), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D956,
-        [((1, 384, 15, 15), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[2, 2, 2, 2]",
-                "dilation": "1",
-                "groups": "384",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D957,
-        [((1, 384, 1, 1), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D958,
         [((1, 96, 1, 1), torch.float32)],
         {
-            "model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D959,
-        [((1, 384, 15, 15), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D960,
-        [((1, 384, 15, 15), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D961,
-        [((1, 360, 15, 15), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
+            "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -73430,7 +73115,7 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D575,
         [((1, 96, 1, 1), torch.float32)],
         {
-            "model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
+            "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -73442,10 +73127,10 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D962,
+        Conv2D947,
         [((1, 24, 1, 1), torch.float32)],
         {
-            "model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
+            "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -73457,26 +73142,10 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D963,
-        [((1, 96, 15, 15), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D964,
+        Conv2D948,
         [((1, 24, 1, 1), torch.float32)],
         {
             "model_names": [
-                "TranslatedLayer",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
                 "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels",
                 "onnx_efficientnet_efficientnet_b4_img_cls_timm",
@@ -73494,11 +73163,10 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D965,
+        Conv2D949,
         [((1, 6, 1, 1), torch.float32)],
         {
             "model_names": [
-                "TranslatedLayer",
                 "onnx_efficientnet_efficientnet_b3_img_cls_timm",
                 "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels",
                 "onnx_efficientnet_efficientnet_b4_img_cls_timm",
@@ -73509,141 +73177,6 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {
                 "stride": "[1, 1]",
                 "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D966,
-        [((1, 192, 30, 30), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D967,
-        [((1, 42, 30, 30), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D963,
-        [((1, 96, 30, 30), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D968,
-        [((1, 96, 60, 60), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D969,
-        [((1, 18, 60, 60), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D963,
-        [((1, 96, 60, 60), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D678,
-        [((1, 48, 120, 120), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D970,
-        [((1, 12, 120, 120), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D963,
-        [((1, 96, 120, 120), torch.float32)],
-        {
-            "model_names": ["TranslatedLayer"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
                 "dilation": "1",
                 "groups": "1",
                 "channel_last": "0",
@@ -74071,7 +73604,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D971,
+        Conv2D950,
         [((1, 2048, 14, 20), torch.float32)],
         {
             "model_names": [
@@ -74104,7 +73637,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D972,
+        Conv2D951,
         [((1, 448, 28, 28), torch.float32)],
         {
             "model_names": ["onnx_dla_dla34_visual_bb_torchvision", "pd_densenet_121_img_cls_paddlemodels"],
@@ -74149,7 +73682,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D973,
+        Conv2D952,
         [((1, 1280, 7, 7), torch.float32)],
         {
             "model_names": ["onnx_dla_dla34_visual_bb_torchvision"],
@@ -74164,7 +73697,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D974,
+        Conv2D953,
         [((1, 512, 1, 1), torch.float32)],
         {
             "model_names": ["onnx_dla_dla34_visual_bb_torchvision"],
@@ -74179,7 +73712,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D972,
+        Conv2D951,
         [((1, 448, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -74216,7 +73749,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D975,
+        Conv2D954,
         [((1, 256, 128, 128), torch.float32)],
         {
             "model_names": [
@@ -74234,7 +73767,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D976,
+        Conv2D955,
         [((1, 128, 56, 56), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74249,7 +73782,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D977,
+        Conv2D956,
         [((1, 96, 56, 56), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74264,7 +73797,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D978,
+        Conv2D957,
         [((1, 160, 56, 56), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74294,7 +73827,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D979,
+        Conv2D958,
         [((1, 224, 56, 56), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74324,7 +73857,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D976,
+        Conv2D955,
         [((1, 128, 28, 28), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74339,7 +73872,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D978,
+        Conv2D957,
         [((1, 160, 28, 28), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74369,7 +73902,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D979,
+        Conv2D958,
         [((1, 224, 28, 28), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74384,7 +73917,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D980,
+        Conv2D959,
         [((1, 288, 28, 28), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74399,7 +73932,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D981,
+        Conv2D960,
         [((1, 320, 28, 28), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74414,7 +73947,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D982,
+        Conv2D961,
         [((1, 352, 28, 28), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74444,7 +73977,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D983,
+        Conv2D962,
         [((1, 416, 28, 28), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74459,7 +73992,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D984,
+        Conv2D963,
         [((1, 480, 28, 28), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74474,7 +74007,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D976,
+        Conv2D955,
         [((1, 128, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74489,7 +74022,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D980,
+        Conv2D959,
         [((1, 288, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74504,7 +74037,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D981,
+        Conv2D960,
         [((1, 320, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74519,7 +74052,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D982,
+        Conv2D961,
         [((1, 352, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74534,7 +74067,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D983,
+        Conv2D962,
         [((1, 416, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74549,7 +74082,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D984,
+        Conv2D963,
         [((1, 480, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74579,7 +74112,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D985,
+        Conv2D964,
         [((1, 544, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74594,7 +74127,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D986,
+        Conv2D965,
         [((1, 608, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74609,7 +74142,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D987,
+        Conv2D966,
         [((1, 640, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74624,7 +74157,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D988,
+        Conv2D967,
         [((1, 672, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74639,7 +74172,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D989,
+        Conv2D968,
         [((1, 704, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74654,7 +74187,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D990,
+        Conv2D969,
         [((1, 736, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74669,7 +74202,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D991,
+        Conv2D970,
         [((1, 768, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74684,7 +74217,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D992,
+        Conv2D971,
         [((1, 800, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74714,7 +74247,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D993,
+        Conv2D972,
         [((1, 864, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74729,7 +74262,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D994,
+        Conv2D973,
         [((1, 896, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74744,7 +74277,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D995,
+        Conv2D974,
         [((1, 928, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74759,7 +74292,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D996,
+        Conv2D975,
         [((1, 960, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74774,7 +74307,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D997,
+        Conv2D976,
         [((1, 992, 14, 14), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74804,7 +74337,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D976,
+        Conv2D955,
         [((1, 128, 7, 7), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74819,7 +74352,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D985,
+        Conv2D964,
         [((1, 544, 7, 7), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74849,7 +74382,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D986,
+        Conv2D965,
         [((1, 608, 7, 7), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74864,7 +74397,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D987,
+        Conv2D966,
         [((1, 640, 7, 7), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74879,7 +74412,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D988,
+        Conv2D967,
         [((1, 672, 7, 7), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74894,7 +74427,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D989,
+        Conv2D968,
         [((1, 704, 7, 7), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74909,7 +74442,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D990,
+        Conv2D969,
         [((1, 736, 7, 7), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74924,7 +74457,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D991,
+        Conv2D970,
         [((1, 768, 7, 7), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74939,7 +74472,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D992,
+        Conv2D971,
         [((1, 800, 7, 7), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74969,7 +74502,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D993,
+        Conv2D972,
         [((1, 864, 7, 7), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74984,7 +74517,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D994,
+        Conv2D973,
         [((1, 896, 7, 7), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -74999,7 +74532,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D995,
+        Conv2D974,
         [((1, 928, 7, 7), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -75014,7 +74547,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D996,
+        Conv2D975,
         [((1, 960, 7, 7), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -75029,7 +74562,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D997,
+        Conv2D976,
         [((1, 992, 7, 7), torch.float32)],
         {
             "model_names": ["pd_densenet_121_img_cls_paddlemodels"],
@@ -75045,7 +74578,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D998,
+            Conv2D977,
             [((1, 3, 224, 224), torch.bfloat16)],
             {
                 "model_names": ["pt_alexnet_base_img_cls_osmr", "pt_alexnet_base_img_cls_torchhub"],
@@ -75062,7 +74595,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D999,
+        Conv2D978,
         [((1, 64, 27, 27), torch.bfloat16)],
         {
             "model_names": [
@@ -75100,7 +74633,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1000,
+        Conv2D979,
         [((1, 384, 13, 13), torch.bfloat16)],
         {
             "model_names": [
@@ -75138,7 +74671,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1001,
+        Conv2D980,
         [((1, 1, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_autoencoder_conv_img_enc_github"],
@@ -75153,7 +74686,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1002,
+        Conv2D981,
         [((1, 16, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_autoencoder_conv_img_enc_github"],
@@ -75168,7 +74701,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1003,
+        Conv2D982,
         [((1, 16, 1, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -75186,7 +74719,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1004,
+        Conv2D983,
         [((1, 4, 1, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -75239,7 +74772,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1005,
+        Conv2D984,
         [((1, 288, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75254,7 +74787,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1006,
+        Conv2D985,
         [((1, 88, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75269,7 +74802,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1007,
+        Conv2D986,
         [((1, 528, 14, 14), torch.bfloat16), ((528, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75285,7 +74818,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1008,
+            Conv2D987,
             [((1, 528, 1, 1), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75302,7 +74835,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1009,
+        Conv2D988,
         [((1, 22, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75318,7 +74851,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1010,
+            Conv2D989,
             [((1, 528, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75335,7 +74868,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1011,
+        Conv2D990,
         [((1, 528, 14, 14), torch.bfloat16), ((528, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75351,7 +74884,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1012,
+            Conv2D991,
             [((1, 528, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75368,7 +74901,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1013,
+        Conv2D992,
         [((1, 120, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75383,7 +74916,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1014,
+        Conv2D993,
         [((1, 720, 14, 14), torch.bfloat16), ((720, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75398,7 +74931,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1015,
+        Conv2D994,
         [((1, 720, 14, 14), torch.bfloat16), ((720, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75414,7 +74947,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1016,
+            Conv2D995,
             [((1, 720, 1, 1), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75431,7 +74964,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1017,
+        Conv2D996,
         [((1, 30, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75447,7 +74980,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1018,
+            Conv2D997,
             [((1, 720, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75465,7 +74998,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1019,
+            Conv2D998,
             [((1, 720, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75482,7 +75015,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1020,
+        Conv2D999,
         [((1, 208, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75497,7 +75030,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1021,
+        Conv2D1000,
         [((1, 1248, 7, 7), torch.bfloat16), ((1248, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75513,7 +75046,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1022,
+            Conv2D1001,
             [((1, 1248, 1, 1), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75530,7 +75063,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1023,
+        Conv2D1002,
         [((1, 52, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75546,7 +75079,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1024,
+            Conv2D1003,
             [((1, 1248, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75563,7 +75096,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1025,
+        Conv2D1004,
         [((1, 1248, 7, 7), torch.bfloat16), ((1248, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75579,7 +75112,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1026,
+            Conv2D1005,
             [((1, 1248, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75596,7 +75129,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1027,
+        Conv2D1006,
         [((1, 352, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75611,7 +75144,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1028,
+        Conv2D1007,
         [((1, 2112, 7, 7), torch.bfloat16), ((2112, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75627,7 +75160,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1029,
+            Conv2D1008,
             [((1, 2112, 1, 1), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75644,7 +75177,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1030,
+        Conv2D1009,
         [((1, 88, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75660,7 +75193,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1031,
+            Conv2D1010,
             [((1, 2112, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75677,7 +75210,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1032,
+        Conv2D1011,
         [((1, 352, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -75692,7 +75225,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1033,
+        Conv2D1012,
         [((1, 3, 224, 224), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -75722,7 +75255,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1034,
+        Conv2D1013,
         [((1, 56, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -75737,7 +75270,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1035,
+        Conv2D1014,
         [((1, 14, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -75752,7 +75285,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1036,
+        Conv2D1015,
         [((1, 56, 112, 112), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -75803,7 +75336,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1037,
+        Conv2D1016,
         [((1, 192, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -75818,7 +75351,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1038,
+        Conv2D1017,
         [((1, 240, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -75833,7 +75366,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1039,
+        Conv2D1018,
         [((1, 72, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -75848,7 +75381,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1040,
+        Conv2D1019,
         [((1, 432, 28, 28), torch.bfloat16), ((432, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -75864,7 +75397,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1041,
+            Conv2D1020,
             [((1, 432, 1, 1), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -75881,7 +75414,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1042,
+        Conv2D1021,
         [((1, 18, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -75896,7 +75429,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1043,
+        Conv2D1022,
         [((1, 432, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -75911,7 +75444,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1044,
+        Conv2D1023,
         [((1, 432, 28, 28), torch.bfloat16), ((432, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -75927,7 +75460,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1045,
+            Conv2D1024,
             [((1, 432, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -75944,7 +75477,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1046,
+        Conv2D1025,
         [((1, 144, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -75959,7 +75492,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1047,
+        Conv2D1026,
         [((1, 864, 14, 14), torch.bfloat16), ((864, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -75975,7 +75508,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1048,
+            Conv2D1027,
             [((1, 864, 1, 1), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -75992,7 +75525,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1049,
+        Conv2D1028,
         [((1, 36, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76008,7 +75541,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1050,
+            Conv2D1029,
             [((1, 864, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76025,7 +75558,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1051,
+        Conv2D1030,
         [((1, 864, 14, 14), torch.bfloat16), ((864, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76041,7 +75574,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1052,
+            Conv2D1031,
             [((1, 864, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76058,7 +75591,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1053,
+        Conv2D1032,
         [((1, 200, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76073,7 +75606,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1054,
+        Conv2D1033,
         [((1, 1200, 14, 14), torch.bfloat16), ((1200, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76088,7 +75621,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1055,
+        Conv2D1034,
         [((1, 1200, 14, 14), torch.bfloat16), ((1200, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76104,7 +75637,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1056,
+            Conv2D1035,
             [((1, 1200, 1, 1), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76121,7 +75654,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1057,
+        Conv2D1036,
         [((1, 50, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76137,7 +75670,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1058,
+            Conv2D1037,
             [((1, 1200, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76155,7 +75688,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1059,
+            Conv2D1038,
             [((1, 1200, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76173,7 +75706,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1060,
+            Conv2D1039,
             [((1, 344, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76190,7 +75723,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1061,
+        Conv2D1040,
         [((1, 2064, 7, 7), torch.bfloat16), ((2064, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76206,7 +75739,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1062,
+            Conv2D1041,
             [((1, 2064, 1, 1), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76223,7 +75756,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1063,
+        Conv2D1042,
         [((1, 86, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76239,7 +75772,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1064,
+            Conv2D1043,
             [((1, 2064, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76256,7 +75789,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1065,
+        Conv2D1044,
         [((1, 2064, 7, 7), torch.bfloat16), ((2064, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76272,7 +75805,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1066,
+            Conv2D1045,
             [((1, 2064, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76290,7 +75823,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1067,
+            Conv2D1046,
             [((1, 576, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76307,7 +75840,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1068,
+        Conv2D1047,
         [((1, 3456, 7, 7), torch.bfloat16), ((3456, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76323,7 +75856,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1069,
+            Conv2D1048,
             [((1, 3456, 1, 1), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76341,7 +75874,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1070,
+            Conv2D1049,
             [((1, 144, 1, 1), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76359,7 +75892,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1071,
+            Conv2D1050,
             [((1, 3456, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76377,7 +75910,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1072,
+            Conv2D1051,
             [((1, 576, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -76610,7 +76143,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1073,
+        Conv2D1052,
         [((1, 192, 40, 40), torch.bfloat16)],
         {
             "model_names": [
@@ -76628,7 +76161,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1074,
+        Conv2D1053,
         [((1, 56, 40, 40), torch.bfloat16)],
         {
             "model_names": [
@@ -76646,7 +76179,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1075,
+        Conv2D1054,
         [((1, 336, 40, 40), torch.bfloat16), ((336, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": [
@@ -76665,7 +76198,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1076,
+            Conv2D1055,
             [((1, 336, 1, 1), torch.bfloat16)],
             {
                 "model_names": [
@@ -76686,7 +76219,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1077,
+        Conv2D1056,
         [((1, 14, 1, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -76705,7 +76238,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1078,
+        Conv2D1057,
         [((1, 336, 40, 40), torch.bfloat16)],
         {
             "model_names": [
@@ -76723,7 +76256,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1079,
+        Conv2D1058,
         [((1, 336, 40, 40), torch.bfloat16), ((336, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": [
@@ -76741,7 +76274,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1080,
+        Conv2D1059,
         [((1, 336, 20, 20), torch.bfloat16)],
         {
             "model_names": [
@@ -76777,7 +76310,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1081,
+        Conv2D1060,
         [((1, 672, 20, 20), torch.bfloat16), ((672, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": [
@@ -76835,7 +76368,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1082,
+            Conv2D1061,
             [((1, 672, 20, 20), torch.bfloat16)],
             {
                 "model_names": [
@@ -76873,7 +76406,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1083,
+        Conv2D1062,
         [((1, 960, 20, 20), torch.bfloat16), ((960, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": [
@@ -76891,7 +76424,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1084,
+        Conv2D1063,
         [((1, 960, 20, 20), torch.bfloat16), ((960, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": [
@@ -76931,7 +76464,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1085,
+            Conv2D1064,
             [((1, 960, 10, 10), torch.bfloat16)],
             {
                 "model_names": [
@@ -76951,7 +76484,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1086,
+        Conv2D1065,
         [((1, 272, 10, 10), torch.bfloat16)],
         {
             "model_names": [
@@ -76969,7 +76502,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1087,
+        Conv2D1066,
         [((1, 1632, 10, 10), torch.bfloat16), ((1632, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": [
@@ -76988,7 +76521,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1088,
+            Conv2D1067,
             [((1, 1632, 1, 1), torch.bfloat16)],
             {
                 "model_names": [
@@ -77010,7 +76543,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1089,
+        Conv2D1068,
         [((1, 68, 1, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -77031,7 +76564,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1090,
+            Conv2D1069,
             [((1, 1632, 10, 10), torch.bfloat16)],
             {
                 "model_names": [
@@ -77051,7 +76584,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1091,
+        Conv2D1070,
         [((1, 1632, 10, 10), torch.bfloat16), ((1632, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": [
@@ -77070,7 +76603,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1092,
+            Conv2D1071,
             [((1, 1632, 10, 10), torch.bfloat16)],
             {
                 "model_names": [
@@ -77090,7 +76623,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1093,
+        Conv2D1072,
         [((1, 448, 10, 10), torch.bfloat16)],
         {
             "model_names": [
@@ -77108,7 +76641,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1094,
+        Conv2D1073,
         [((1, 2688, 10, 10), torch.bfloat16), ((2688, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": [
@@ -77127,7 +76660,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1095,
+            Conv2D1074,
             [((1, 2688, 1, 1), torch.bfloat16)],
             {
                 "model_names": [
@@ -77148,7 +76681,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1096,
+        Conv2D1075,
         [((1, 112, 1, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -77168,7 +76701,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1097,
+            Conv2D1076,
             [((1, 2688, 10, 10), torch.bfloat16)],
             {
                 "model_names": [
@@ -77188,7 +76721,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1098,
+        Conv2D1077,
         [((1, 448, 10, 10), torch.bfloat16)],
         {
             "model_names": [
@@ -77206,7 +76739,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1099,
+        Conv2D1078,
         [((1, 3, 288, 288), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm"],
@@ -77251,7 +76784,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1100,
+        Conv2D1079,
         [((1, 24, 144, 144), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm"],
@@ -77576,7 +77109,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1085,
+            Conv2D1064,
             [((1, 960, 9, 9), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm"],
@@ -77593,7 +77126,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1086,
+        Conv2D1065,
         [((1, 272, 9, 9), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm"],
@@ -77608,7 +77141,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1091,
+        Conv2D1070,
         [((1, 1632, 9, 9), torch.bfloat16), ((1632, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm"],
@@ -77624,7 +77157,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1090,
+            Conv2D1069,
             [((1, 1632, 9, 9), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm"],
@@ -77641,7 +77174,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1101,
+        Conv2D1080,
         [((1, 272, 9, 9), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm"],
@@ -77841,7 +77374,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1102,
+            Conv2D1081,
             [((1, 320, 30, 40), torch.bfloat16)],
             {
                 "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -77921,7 +77454,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1103,
+        Conv2D1082,
         [((1, 64, 30, 40), torch.bfloat16)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -77936,7 +77469,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1104,
+        Conv2D1083,
         [((1, 32, 30, 40), torch.bfloat16)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -77966,7 +77499,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1103,
+        Conv2D1082,
         [((1, 64, 60, 80), torch.bfloat16)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -77981,7 +77514,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1104,
+        Conv2D1083,
         [((1, 32, 60, 80), torch.bfloat16)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -78014,7 +77547,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1103,
+        Conv2D1082,
         [((1, 64, 120, 160), torch.bfloat16)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -78029,7 +77562,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1104,
+        Conv2D1083,
         [((1, 32, 120, 160), torch.bfloat16)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -78067,7 +77600,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1105,
+            Conv2D1084,
             [((1, 64, 480, 640), torch.bfloat16)],
             {
                 "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -78121,7 +77654,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1106,
+        Conv2D1085,
         [((1, 64, 112, 112), torch.bfloat16), ((64, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": [
@@ -78162,7 +77695,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1107,
+        Conv2D1086,
         [((1, 64, 112, 112), torch.bfloat16), ((64, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv1_google_mobilenet_v1_1_0_224_img_cls_hf"],
@@ -78217,7 +77750,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1108,
+        Conv2D1087,
         [((1, 128, 56, 56), torch.bfloat16), ((128, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv1_google_mobilenet_v1_1_0_224_img_cls_hf"],
@@ -78305,7 +77838,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1109,
+        Conv2D1088,
         [((1, 512, 14, 14), torch.bfloat16), ((512, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": [
@@ -78323,7 +77856,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1110,
+        Conv2D1089,
         [((1, 512, 14, 14), torch.bfloat16), ((512, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv1_google_mobilenet_v1_1_0_224_img_cls_hf"],
@@ -78398,7 +77931,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1111,
+        Conv2D1090,
         [((1, 384, 14, 14), torch.bfloat16), ((384, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": [
@@ -79425,7 +78958,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1112,
+        Conv2D1091,
         [((1, 3, 224, 224), torch.bfloat16)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
@@ -79440,7 +78973,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1113,
+        Conv2D1092,
         [((1, 48, 112, 112), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79455,7 +78988,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1114,
+        Conv2D1093,
         [((1, 48, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79470,7 +79003,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1115,
+        Conv2D1094,
         [((1, 48, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79485,7 +79018,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1116,
+        Conv2D1095,
         [((1, 104, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79500,7 +79033,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1117,
+        Conv2D1096,
         [((1, 104, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79515,7 +79048,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1118,
+        Conv2D1097,
         [((1, 12, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79530,7 +79063,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1119,
+        Conv2D1098,
         [((1, 104, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79545,7 +79078,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1120,
+        Conv2D1099,
         [((1, 104, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79560,7 +79093,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1121,
+        Conv2D1100,
         [((1, 104, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79575,7 +79108,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1122,
+        Conv2D1101,
         [((1, 26, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79590,7 +79123,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1123,
+        Conv2D1102,
         [((1, 104, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79605,7 +79138,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1124,
+        Conv2D1103,
         [((1, 104, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79620,7 +79153,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1125,
+        Conv2D1104,
         [((1, 208, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79635,7 +79168,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1126,
+        Conv2D1105,
         [((1, 208, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79650,7 +79183,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1127,
+        Conv2D1106,
         [((1, 26, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79665,7 +79198,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1128,
+        Conv2D1107,
         [((1, 208, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79680,7 +79213,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1129,
+        Conv2D1108,
         [((1, 208, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79695,7 +79228,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1130,
+        Conv2D1109,
         [((1, 208, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79710,7 +79243,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1131,
+        Conv2D1110,
         [((1, 52, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79725,7 +79258,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1132,
+        Conv2D1111,
         [((1, 208, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79740,7 +79273,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1133,
+        Conv2D1112,
         [((1, 208, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79755,7 +79288,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1134,
+        Conv2D1113,
         [((1, 440, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79770,7 +79303,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1135,
+        Conv2D1114,
         [((1, 440, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79785,7 +79318,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1136,
+        Conv2D1115,
         [((1, 52, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79800,7 +79333,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1137,
+        Conv2D1116,
         [((1, 440, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79815,7 +79348,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1138,
+        Conv2D1117,
         [((1, 440, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79831,7 +79364,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1139,
+            Conv2D1118,
             [((1, 440, 1, 1), torch.bfloat16)],
             {
                 "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -79848,7 +79381,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1140,
+        Conv2D1119,
         [((1, 110, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -80057,7 +79590,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1141,
+        Conv2D1120,
         [((1, 2048, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -80076,7 +79609,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1142,
+            Conv2D1121,
             [((1, 2048, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -80098,7 +79631,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1143,
+        Conv2D1122,
         [((1, 2048, 7, 7), torch.bfloat16)],
         {
             "model_names": [
@@ -80363,7 +79896,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1144,
+            Conv2D1123,
             [((1, 1024, 38, 38), torch.bfloat16)],
             {
                 "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -80395,7 +79928,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1145,
+        Conv2D1124,
         [((1, 512, 19, 19), torch.bfloat16)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -80443,7 +79976,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1145,
+        Conv2D1124,
         [((1, 512, 10, 10), torch.bfloat16)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -80488,7 +80021,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1146,
+        Conv2D1125,
         [((1, 256, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -80519,7 +80052,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1147,
+            Conv2D1126,
             [((1, 128, 5, 5), torch.bfloat16)],
             {
                 "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -80536,7 +80069,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1148,
+        Conv2D1127,
         [((1, 256, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -80567,7 +80100,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1147,
+            Conv2D1126,
             [((1, 128, 3, 3), torch.bfloat16)],
             {
                 "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -80584,7 +80117,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1148,
+        Conv2D1127,
         [((1, 256, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -80600,7 +80133,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1149,
+            Conv2D1128,
             [((1, 1024, 38, 38), torch.bfloat16)],
             {
                 "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -80617,7 +80150,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1150,
+        Conv2D1129,
         [((1, 512, 19, 19), torch.bfloat16)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -80632,7 +80165,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1150,
+        Conv2D1129,
         [((1, 512, 10, 10), torch.bfloat16)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -80647,7 +80180,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1151,
+        Conv2D1130,
         [((1, 256, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -80662,7 +80195,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1152,
+        Conv2D1131,
         [((1, 256, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -80677,7 +80210,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1152,
+        Conv2D1131,
         [((1, 256, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -80692,7 +80225,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1153,
+        Conv2D1132,
         [((1, 3, 224, 224), torch.bfloat16)],
         {
             "model_names": [
@@ -80930,7 +80463,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1103,
+        Conv2D1082,
         [((1, 64, 256, 256), torch.bfloat16)],
         {
             "model_names": ["pt_unet_base_img_seg_torchhub"],
@@ -80945,7 +80478,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1154,
+        Conv2D1133,
         [((1, 32, 256, 256), torch.bfloat16)],
         {
             "model_names": ["pt_unet_base_img_seg_torchhub"],
@@ -80985,7 +80518,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1155,
+        Conv2D1134,
         [((1, 256, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -81030,7 +80563,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1156,
+            Conv2D1135,
             [((1, 1056, 28, 28), torch.bfloat16)],
             {
                 "model_names": [
@@ -81054,7 +80587,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1157,
+        Conv2D1136,
         [((1, 512, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -81076,7 +80609,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1158,
+        Conv2D1137,
         [((1, 192, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -81101,7 +80634,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1159,
+            Conv2D1138,
             [((1, 1472, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -81125,7 +80658,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1160,
+        Conv2D1139,
         [((1, 768, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -81148,7 +80681,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1161,
+            Conv2D1140,
             [((1, 1728, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -81172,7 +80705,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1162,
+        Conv2D1141,
         [((1, 768, 7, 7), torch.bfloat16)],
         {
             "model_names": [
@@ -81194,7 +80727,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1163,
+        Conv2D1142,
         [((1, 224, 7, 7), torch.bfloat16)],
         {
             "model_names": [
@@ -81217,7 +80750,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1164,
+            Conv2D1143,
             [((1, 1888, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -81242,7 +80775,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1165,
+            Conv2D1144,
             [((1, 1024, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -81267,7 +80800,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1166,
+            Conv2D1145,
             [((1, 2144, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -81594,7 +81127,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1167,
+        Conv2D1146,
         [((1, 3, 320, 320), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_320x320"],
@@ -81669,7 +81202,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1167,
+        Conv2D1146,
         [((1, 3, 480, 480), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_480x480"],
@@ -82194,7 +81727,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1167,
+        Conv2D1146,
         [((1, 3, 640, 640), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_640x640"],
@@ -82354,7 +81887,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1168,
+        Conv2D1147,
         [((1, 3, 320, 320), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82369,7 +81902,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1169,
+        Conv2D1148,
         [((1, 80, 160, 160), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82384,7 +81917,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1170,
+        Conv2D1149,
         [((1, 160, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82399,7 +81932,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1171,
+        Conv2D1150,
         [((1, 80, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82414,7 +81947,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1172,
+        Conv2D1151,
         [((1, 80, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82429,7 +81962,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1173,
+        Conv2D1152,
         [((1, 160, 80, 80), torch.float32)],
         {
             "model_names": [
@@ -82447,7 +81980,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1174,
+        Conv2D1153,
         [((1, 160, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82462,7 +81995,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1175,
+        Conv2D1154,
         [((1, 320, 40, 40), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82477,7 +82010,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1173,
+        Conv2D1152,
         [((1, 160, 40, 40), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82492,7 +82025,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1176,
+        Conv2D1155,
         [((1, 160, 40, 40), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82507,7 +82040,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1177,
+        Conv2D1156,
         [((1, 320, 40, 40), torch.float32)],
         {
             "model_names": [
@@ -82525,7 +82058,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1178,
+        Conv2D1157,
         [((1, 320, 40, 40), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82540,7 +82073,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1179,
+        Conv2D1158,
         [((1, 640, 20, 20), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82555,7 +82088,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1177,
+        Conv2D1156,
         [((1, 320, 20, 20), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82570,7 +82103,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1180,
+        Conv2D1159,
         [((1, 320, 20, 20), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82585,7 +82118,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1181,
+        Conv2D1160,
         [((1, 640, 20, 20), torch.float32)],
         {
             "model_names": [
@@ -82603,7 +82136,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1182,
+        Conv2D1161,
         [((1, 640, 20, 20), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82618,7 +82151,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1183,
+        Conv2D1162,
         [((1, 1280, 10, 10), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82633,7 +82166,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1181,
+        Conv2D1160,
         [((1, 640, 10, 10), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82648,7 +82181,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1184,
+        Conv2D1163,
         [((1, 640, 10, 10), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82663,7 +82196,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1185,
+        Conv2D1164,
         [((1, 1280, 10, 10), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82678,7 +82211,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1186,
+        Conv2D1165,
         [((1, 2560, 10, 10), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82693,7 +82226,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1187,
+        Conv2D1166,
         [((1, 1280, 20, 20), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82708,7 +82241,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1188,
+        Conv2D1167,
         [((1, 640, 40, 40), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82723,7 +82256,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1189,
+        Conv2D1168,
         [((1, 320, 40, 40), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82738,7 +82271,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1190,
+        Conv2D1169,
         [((1, 320, 40, 40), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82753,7 +82286,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1180,
+        Conv2D1159,
         [((1, 320, 40, 40), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -82768,7 +82301,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1191,
+        Conv2D1170,
         [((1, 640, 20, 20), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82783,7 +82316,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1192,
+        Conv2D1171,
         [((1, 640, 20, 20), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -82798,7 +82331,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1184,
+        Conv2D1163,
         [((1, 640, 20, 20), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -82813,7 +82346,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1193,
+        Conv2D1172,
         [((1, 1280, 10, 10), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
@@ -83234,7 +82767,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1194,
+        Conv2D1173,
         [((1, 256, 80, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub", "pt_yolox_yolox_l_obj_det_torchhub"],
@@ -83249,7 +82782,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1195,
+        Conv2D1174,
         [((1, 256, 80, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub", "pt_yolox_yolox_l_obj_det_torchhub"],
@@ -83264,7 +82797,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1196,
+        Conv2D1175,
         [((1, 256, 80, 80), torch.bfloat16)],
         {
             "model_names": [
@@ -83303,7 +82836,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1194,
+        Conv2D1173,
         [((1, 256, 40, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub", "pt_yolox_yolox_l_obj_det_torchhub"],
@@ -83318,7 +82851,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1195,
+        Conv2D1174,
         [((1, 256, 40, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub", "pt_yolox_yolox_l_obj_det_torchhub"],
@@ -83333,7 +82866,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1196,
+        Conv2D1175,
         [((1, 256, 40, 40), torch.bfloat16)],
         {
             "model_names": [
@@ -83353,7 +82886,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1194,
+            Conv2D1173,
             [((1, 256, 20, 20), torch.bfloat16)],
             {
                 "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub", "pt_yolox_yolox_l_obj_det_torchhub"],
@@ -83370,7 +82903,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1195,
+        Conv2D1174,
         [((1, 256, 20, 20), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub", "pt_yolox_yolox_l_obj_det_torchhub"],
@@ -83385,7 +82918,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1196,
+        Conv2D1175,
         [((1, 256, 20, 20), torch.bfloat16)],
         {
             "model_names": [
@@ -83404,7 +82937,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1197,
+        Conv2D1176,
         [((1, 224, 224, 3), torch.float32), ((64, 3, 7, 7), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83419,7 +82952,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1198,
+        Conv2D1177,
         [((1, 56, 55, 64), torch.float32), ((64, 64, 1, 1), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83434,7 +82967,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1199,
+        Conv2D1178,
         [((1, 56, 55, 64), torch.float32), ((64, 64, 3, 3), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83449,7 +82982,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1198,
+        Conv2D1177,
         [((1, 56, 55, 64), torch.float32), ((256, 64, 1, 1), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83464,7 +82997,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1198,
+        Conv2D1177,
         [((1, 56, 55, 256), torch.float32), ((64, 256, 1, 1), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83479,7 +83012,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1198,
+        Conv2D1177,
         [((1, 56, 55, 256), torch.float32), ((128, 256, 1, 1), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83494,7 +83027,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1200,
+        Conv2D1179,
         [((1, 56, 55, 128), torch.float32), ((128, 128, 3, 3), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83509,7 +83042,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1198,
+        Conv2D1177,
         [((1, 28, 28, 128), torch.float32), ((512, 128, 1, 1), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83524,7 +83057,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1201,
+        Conv2D1180,
         [((1, 56, 55, 256), torch.float32), ((512, 256, 1, 1), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83539,7 +83072,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1198,
+        Conv2D1177,
         [((1, 28, 28, 512), torch.float32), ((128, 512, 1, 1), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83554,7 +83087,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1199,
+        Conv2D1178,
         [((1, 28, 28, 128), torch.float32), ((128, 128, 3, 3), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83569,7 +83102,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1198,
+        Conv2D1177,
         [((1, 28, 28, 512), torch.float32), ((256, 512, 1, 1), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83584,7 +83117,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1200,
+        Conv2D1179,
         [((1, 28, 28, 256), torch.float32), ((256, 256, 3, 3), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83599,7 +83132,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1198,
+        Conv2D1177,
         [((1, 14, 14, 256), torch.float32), ((1024, 256, 1, 1), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83614,7 +83147,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1201,
+        Conv2D1180,
         [((1, 28, 28, 512), torch.float32), ((1024, 512, 1, 1), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83629,7 +83162,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1198,
+        Conv2D1177,
         [((1, 14, 14, 1024), torch.float32), ((256, 1024, 1, 1), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83644,7 +83177,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1199,
+        Conv2D1178,
         [((1, 14, 14, 256), torch.float32), ((256, 256, 3, 3), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83659,7 +83192,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1198,
+        Conv2D1177,
         [((1, 14, 14, 1024), torch.float32), ((512, 1024, 1, 1), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83674,7 +83207,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1200,
+        Conv2D1179,
         [((1, 14, 14, 512), torch.float32), ((512, 512, 3, 3), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83689,7 +83222,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1198,
+        Conv2D1177,
         [((1, 7, 7, 512), torch.float32), ((2048, 512, 1, 1), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83705,7 +83238,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1201,
+            Conv2D1180,
             [((1, 14, 14, 1024), torch.float32), ((2048, 1024, 1, 1), torch.float32)],
             {
                 "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83722,7 +83255,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1198,
+        Conv2D1177,
         [((1, 7, 7, 2048), torch.float32), ((512, 2048, 1, 1), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83737,7 +83270,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1199,
+        Conv2D1178,
         [((1, 7, 7, 512), torch.float32), ((512, 512, 3, 3), torch.float32)],
         {
             "model_names": ["jax_resnet_50_img_cls_hf"],
@@ -83782,7 +83315,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1202,
+        Conv2D1181,
         [((1, 32, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -83802,7 +83335,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1203,
+        Conv2D1182,
         [((1, 8, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -83852,7 +83385,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1204,
+        Conv2D1183,
         [((1, 16, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -83871,7 +83404,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1205,
+        Conv2D1184,
         [((1, 4, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -83890,7 +83423,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1206,
+        Conv2D1185,
         [((1, 16, 120, 120), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
@@ -83935,7 +83468,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1207,
+        Conv2D1186,
         [((1, 96, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -83955,7 +83488,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1208,
+        Conv2D1187,
         [((1, 4, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -84020,7 +83553,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1209,
+        Conv2D1188,
         [((1, 144, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -84044,7 +83577,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1210,
+        Conv2D1189,
         [((1, 6, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -84143,7 +83676,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1211,
+        Conv2D1190,
         [((1, 240, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -84162,7 +83695,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1212,
+        Conv2D1191,
         [((1, 10, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -84256,7 +83789,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1213,
+        Conv2D1192,
         [((1, 480, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -84274,7 +83807,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1214,
+        Conv2D1193,
         [((1, 20, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -84382,7 +83915,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1215,
+        Conv2D1194,
         [((1, 672, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -84401,7 +83934,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1216,
+        Conv2D1195,
         [((1, 28, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -84480,7 +84013,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1217,
+        Conv2D1196,
         [((1, 1152, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -84498,7 +84031,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1218,
+        Conv2D1197,
         [((1, 48, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -84561,7 +84094,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1219,
+        Conv2D1198,
         [((1, 320, 8, 8), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
@@ -84576,7 +84109,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1220,
+        Conv2D1199,
         [((1, 1920, 8, 8), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
@@ -84592,7 +84125,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1221,
+            Conv2D1200,
             [((1, 1920, 1, 1), torch.float32)],
             {
                 "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
@@ -84609,7 +84142,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1222,
+        Conv2D1201,
         [((1, 80, 1, 1), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
@@ -84624,7 +84157,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1223,
+        Conv2D1202,
         [((1, 1920, 8, 8), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
@@ -84654,7 +84187,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1224,
+        Conv2D1203,
         [((1, 3, 288, 288), torch.float32)],
         {
             "model_names": [
@@ -84672,7 +84205,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1225,
+        Conv2D1204,
         [((1, 40, 144, 144), torch.float32)],
         {
             "model_names": [
@@ -84690,7 +84223,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1226,
+        Conv2D1205,
         [((1, 40, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -84708,7 +84241,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1227,
+        Conv2D1206,
         [((1, 10, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -84726,7 +84259,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1228,
+        Conv2D1207,
         [((1, 40, 144, 144), torch.float32)],
         {
             "model_names": [
@@ -84744,7 +84277,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1229,
+        Conv2D1208,
         [((1, 24, 144, 144), torch.float32)],
         {
             "model_names": [
@@ -84762,7 +84295,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1230,
+        Conv2D1209,
         [((1, 24, 144, 144), torch.float32)],
         {
             "model_names": [
@@ -84816,7 +84349,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1231,
+        Conv2D1210,
         [((1, 144, 72, 72), torch.float32)],
         {
             "model_names": [
@@ -84870,7 +84403,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1232,
+        Conv2D1211,
         [((1, 192, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -84889,7 +84422,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1233,
+        Conv2D1212,
         [((1, 8, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -84926,7 +84459,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D952,
+        Conv2D1213,
         [((1, 192, 72, 72), torch.float32)],
         {
             "model_names": [
@@ -84998,7 +84531,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1234,
+        Conv2D1214,
         [((1, 288, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -85018,7 +84551,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1235,
+        Conv2D1215,
         [((1, 12, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -85074,7 +84607,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1236,
+        Conv2D1216,
         [((1, 288, 18, 18), torch.float32)],
         {
             "model_names": [
@@ -85092,7 +84625,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1237,
+        Conv2D1217,
         [((1, 96, 18, 18), torch.float32)],
         {
             "model_names": [
@@ -85110,7 +84643,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1238,
+        Conv2D1218,
         [((1, 576, 18, 18), torch.float32)],
         {
             "model_names": [
@@ -85128,7 +84661,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1239,
+        Conv2D1219,
         [((1, 576, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -85146,7 +84679,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1240,
+        Conv2D1220,
         [((1, 24, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -85164,7 +84697,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1241,
+        Conv2D1221,
         [((1, 576, 18, 18), torch.float32)],
         {
             "model_names": [
@@ -85182,7 +84715,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1242,
+        Conv2D1222,
         [((1, 576, 18, 18), torch.float32)],
         {
             "model_names": [
@@ -85200,7 +84733,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1243,
+        Conv2D1223,
         [((1, 576, 18, 18), torch.float32)],
         {
             "model_names": [
@@ -85218,7 +84751,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1244,
+        Conv2D1224,
         [((1, 136, 18, 18), torch.float32)],
         {
             "model_names": [
@@ -85236,7 +84769,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1245,
+        Conv2D1225,
         [((1, 816, 18, 18), torch.float32)],
         {
             "model_names": [
@@ -85254,7 +84787,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1246,
+        Conv2D1226,
         [((1, 816, 18, 18), torch.float32)],
         {
             "model_names": [
@@ -85272,7 +84805,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1247,
+        Conv2D1227,
         [((1, 816, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -85290,7 +84823,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1248,
+        Conv2D1228,
         [((1, 34, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -85308,7 +84841,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1249,
+        Conv2D1229,
         [((1, 816, 18, 18), torch.float32)],
         {
             "model_names": [
@@ -85326,7 +84859,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1250,
+        Conv2D1230,
         [((1, 816, 9, 9), torch.float32)],
         {
             "model_names": [
@@ -85344,7 +84877,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1251,
+        Conv2D1231,
         [((1, 232, 9, 9), torch.float32)],
         {
             "model_names": [
@@ -85362,7 +84895,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1252,
+        Conv2D1232,
         [((1, 1392, 9, 9), torch.float32)],
         {
             "model_names": [
@@ -85380,7 +84913,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1253,
+        Conv2D1233,
         [((1, 1392, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -85398,7 +84931,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1254,
+        Conv2D1234,
         [((1, 58, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -85416,7 +84949,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1255,
+        Conv2D1235,
         [((1, 1392, 9, 9), torch.float32)],
         {
             "model_names": [
@@ -85434,7 +84967,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1256,
+        Conv2D1236,
         [((1, 1392, 9, 9), torch.float32)],
         {
             "model_names": [
@@ -85452,7 +84985,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1257,
+        Conv2D1237,
         [((1, 1392, 9, 9), torch.float32)],
         {
             "model_names": [
@@ -85470,7 +85003,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1258,
+        Conv2D1238,
         [((1, 384, 9, 9), torch.float32)],
         {
             "model_names": [
@@ -85488,7 +85021,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1259,
+        Conv2D1239,
         [((1, 2304, 9, 9), torch.float32)],
         {
             "model_names": [
@@ -85507,7 +85040,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1260,
+            Conv2D1240,
             [((1, 2304, 1, 1), torch.float32)],
             {
                 "model_names": [
@@ -85527,7 +85060,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1261,
+        Conv2D1241,
         [((1, 96, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -85545,7 +85078,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1262,
+        Conv2D1242,
         [((1, 2304, 9, 9), torch.float32)],
         {
             "model_names": [
@@ -85563,7 +85096,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1263,
+        Conv2D1243,
         [((1, 384, 9, 9), torch.float32)],
         {
             "model_names": [
@@ -85581,7 +85114,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1231,
+        Conv2D1210,
         [((1, 144, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -85638,7 +85171,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1264,
+        Conv2D1244,
         [((1, 192, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -85694,7 +85227,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1265,
+        Conv2D1245,
         [((1, 64, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -85712,7 +85245,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1266,
+        Conv2D1246,
         [((1, 384, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -85730,7 +85263,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1267,
+        Conv2D1247,
         [((1, 384, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -85748,7 +85281,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D957,
+        Conv2D945,
         [((1, 384, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -85766,7 +85299,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1237,
+        Conv2D1217,
         [((1, 96, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -85784,7 +85317,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1238,
+        Conv2D1218,
         [((1, 576, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -85802,7 +85335,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1268,
+        Conv2D1248,
         [((1, 576, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -85820,7 +85353,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1241,
+        Conv2D1221,
         [((1, 576, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -85838,7 +85371,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1269,
+        Conv2D1249,
         [((1, 576, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -85856,7 +85389,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1270,
+        Conv2D1250,
         [((1, 160, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -85874,7 +85407,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1271,
+        Conv2D1251,
         [((1, 960, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -85892,7 +85425,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1272,
+        Conv2D1252,
         [((1, 960, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -85910,7 +85443,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1273,
+        Conv2D1253,
         [((1, 960, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -85928,7 +85461,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1274,
+        Conv2D1254,
         [((1, 96, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -85948,7 +85481,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1275,
+        Conv2D1255,
         [((1, 160, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -85968,7 +85501,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1276,
+        Conv2D1256,
         [((1, 192, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -85988,7 +85521,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1277,
+        Conv2D1257,
         [((1, 224, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -86028,7 +85561,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1275,
+        Conv2D1255,
         [((1, 160, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -86048,7 +85581,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1276,
+        Conv2D1256,
         [((1, 192, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -86068,7 +85601,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1277,
+        Conv2D1257,
         [((1, 224, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -86088,7 +85621,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1278,
+        Conv2D1258,
         [((1, 288, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -86108,7 +85641,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1279,
+        Conv2D1259,
         [((1, 320, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -86128,7 +85661,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1280,
+        Conv2D1260,
         [((1, 352, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -86169,7 +85702,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1281,
+        Conv2D1261,
         [((1, 416, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -86189,7 +85722,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1282,
+        Conv2D1262,
         [((1, 480, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -86229,7 +85762,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1278,
+        Conv2D1258,
         [((1, 288, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -86249,7 +85782,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1279,
+        Conv2D1259,
         [((1, 320, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -86269,7 +85802,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1280,
+        Conv2D1260,
         [((1, 352, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -86290,7 +85823,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1281,
+            Conv2D1261,
             [((1, 416, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -86312,7 +85845,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1282,
+        Conv2D1262,
         [((1, 480, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -86356,7 +85889,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1283,
+            Conv2D1263,
             [((1, 544, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -86379,7 +85912,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1284,
+            Conv2D1264,
             [((1, 576, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -86403,7 +85936,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1285,
+            Conv2D1265,
             [((1, 608, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -86426,7 +85959,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1286,
+            Conv2D1266,
             [((1, 640, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -86449,7 +85982,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1287,
+            Conv2D1267,
             [((1, 672, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -86472,7 +86005,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1288,
+            Conv2D1268,
             [((1, 704, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -86495,7 +86028,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1289,
+            Conv2D1269,
             [((1, 736, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -86518,7 +86051,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1290,
+            Conv2D1270,
             [((1, 800, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -86564,7 +86097,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1291,
+            Conv2D1271,
             [((1, 864, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -86587,7 +86120,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1292,
+            Conv2D1272,
             [((1, 896, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -86610,7 +86143,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1293,
+            Conv2D1273,
             [((1, 928, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -86633,7 +86166,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1294,
+            Conv2D1274,
             [((1, 960, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -86656,7 +86189,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1295,
+            Conv2D1275,
             [((1, 992, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -86717,7 +86250,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1283,
+            Conv2D1263,
             [((1, 544, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -86738,7 +86271,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1284,
+            Conv2D1264,
             [((1, 576, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -86759,7 +86292,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1285,
+            Conv2D1265,
             [((1, 608, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -86780,7 +86313,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1286,
+            Conv2D1266,
             [((1, 640, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -86802,7 +86335,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1287,
+            Conv2D1267,
             [((1, 672, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -86824,7 +86357,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1288,
+            Conv2D1268,
             [((1, 704, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -86846,7 +86379,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1289,
+            Conv2D1269,
             [((1, 736, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -86890,7 +86423,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1290,
+            Conv2D1270,
             [((1, 800, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -86912,7 +86445,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1291,
+            Conv2D1271,
             [((1, 864, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -86934,7 +86467,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1292,
+            Conv2D1272,
             [((1, 896, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -86957,7 +86490,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1293,
+            Conv2D1273,
             [((1, 928, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -86980,7 +86513,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1294,
+            Conv2D1274,
             [((1, 960, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -87003,7 +86536,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1295,
+            Conv2D1275,
             [((1, 992, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -87025,7 +86558,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1296,
+        Conv2D1276,
         [((1, 64, 112, 112), torch.bfloat16)],
         {
             "model_names": ["pt_dla_dla46x_c_visual_bb_torchvision", "pt_dla_dla60x_c_visual_bb_torchvision"],
@@ -87040,7 +86573,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1297,
+        Conv2D1277,
         [((1, 64, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_dla_dla46x_c_visual_bb_torchvision", "pt_dla_dla60x_c_visual_bb_torchvision"],
@@ -87055,7 +86588,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1296,
+        Conv2D1276,
         [((1, 64, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_dla_dla46x_c_visual_bb_torchvision", "pt_dla_dla60x_c_visual_bb_torchvision"],
@@ -87070,7 +86603,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1297,
+        Conv2D1277,
         [((1, 64, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_dla_dla46x_c_visual_bb_torchvision", "pt_dla_dla60x_c_visual_bb_torchvision"],
@@ -87187,7 +86720,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1298,
+        Conv2D1278,
         [((1, 256, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -87202,7 +86735,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1299,
+        Conv2D1279,
         [((1, 40, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -87217,7 +86750,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1300,
+        Conv2D1280,
         [((1, 40, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -87232,7 +86765,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1301,
+        Conv2D1281,
         [((1, 256, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -87281,7 +86814,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1302,
+        Conv2D1282,
         [((1, 80, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -87296,7 +86829,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1303,
+        Conv2D1283,
         [((1, 40, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -87341,7 +86874,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1304,
+        Conv2D1284,
         [((1, 160, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -87371,7 +86904,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1305,
+        Conv2D1285,
         [((1, 40, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -87431,7 +86964,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1300,
+        Conv2D1280,
         [((1, 40, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -87446,7 +86979,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1306,
+        Conv2D1286,
         [((1, 40, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -87461,7 +86994,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1307,
+        Conv2D1287,
         [((1, 80, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -87491,7 +87024,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1308,
+        Conv2D1288,
         [((1, 320, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -87506,7 +87039,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1275,
+        Conv2D1255,
         [((1, 160, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -87521,7 +87054,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1309,
+        Conv2D1289,
         [((1, 160, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -87551,7 +87084,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1310,
+        Conv2D1290,
         [((1, 80, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -87566,7 +87099,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1311,
+        Conv2D1291,
         [((1, 40, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -87581,7 +87114,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1312,
+        Conv2D1292,
         [((1, 40, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -87597,7 +87130,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1313,
+            Conv2D1293,
             [((1, 3, 224, 224), torch.bfloat16)],
             {
                 "model_names": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm", "pt_vit_vit_b_32_img_cls_torchvision"],
@@ -87614,7 +87147,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1314,
+        Conv2D1294,
         [((1, 1, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_mnist_base_img_cls_github"],
@@ -87644,7 +87177,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1315,
+        Conv2D1295,
         [((1, 3, 96, 96), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
@@ -87704,7 +87237,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1316,
+        Conv2D1296,
         [((1, 48, 48, 48), torch.bfloat16), ((48, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
@@ -87764,7 +87297,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1316,
+        Conv2D1296,
         [((1, 48, 24, 24), torch.bfloat16), ((48, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
@@ -87779,7 +87312,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1317,
+        Conv2D1297,
         [((1, 48, 12, 12), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
@@ -87809,7 +87342,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1318,
+        Conv2D1298,
         [((1, 96, 12, 12), torch.bfloat16), ((96, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
@@ -87839,7 +87372,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1319,
+        Conv2D1299,
         [((1, 96, 12, 12), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
@@ -87989,7 +87522,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1073,
+        Conv2D1052,
         [((1, 192, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
@@ -88004,7 +87537,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1074,
+        Conv2D1053,
         [((1, 56, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
@@ -88034,7 +87567,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1078,
+        Conv2D1057,
         [((1, 336, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
@@ -88049,7 +87582,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1080,
+        Conv2D1059,
         [((1, 336, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
@@ -88064,7 +87597,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1320,
+        Conv2D1300,
         [((1, 112, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
@@ -88079,7 +87612,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1321,
+        Conv2D1301,
         [((1, 32, 112, 112), torch.bfloat16)],
         {
             "model_names": [
@@ -88099,7 +87632,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1322,
+        Conv2D1302,
         [((1, 32, 112, 112), torch.bfloat16)],
         {
             "model_names": [
@@ -88119,7 +87652,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1323,
+        Conv2D1303,
         [((1, 224, 112, 112), torch.bfloat16)],
         {
             "model_names": [
@@ -88138,7 +87671,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1324,
+        Conv2D1304,
         [((1, 224, 1, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -88158,7 +87691,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1325,
+        Conv2D1305,
         [((1, 8, 1, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -88178,7 +87711,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1326,
+        Conv2D1306,
         [((1, 224, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -88198,7 +87731,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1327,
+        Conv2D1307,
         [((1, 224, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -88217,7 +87750,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1328,
+        Conv2D1308,
         [((1, 224, 1, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -88237,7 +87770,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1329,
+        Conv2D1309,
         [((1, 56, 1, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -88257,7 +87790,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1330,
+        Conv2D1310,
         [((1, 224, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -88277,7 +87810,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1331,
+        Conv2D1311,
         [((1, 224, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -88297,7 +87830,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1332,
+        Conv2D1312,
         [((1, 448, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -88317,7 +87850,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1333,
+            Conv2D1313,
             [((1, 448, 1, 1), torch.bfloat16)],
             {
                 "model_names": [
@@ -88339,7 +87872,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1334,
+        Conv2D1314,
         [((1, 56, 1, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -88359,7 +87892,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1335,
+        Conv2D1315,
         [((1, 448, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -88380,7 +87913,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1336,
+        Conv2D1316,
         [((1, 448, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -88400,7 +87933,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1337,
+            Conv2D1317,
             [((1, 448, 1, 1), torch.bfloat16)],
             {
                 "model_names": [
@@ -88423,7 +87956,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1338,
+        Conv2D1318,
         [((1, 112, 1, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -88445,7 +87978,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1339,
+            Conv2D1319,
             [((1, 448, 28, 28), torch.bfloat16)],
             {
                 "model_names": [
@@ -88467,7 +88000,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1340,
+            Conv2D1320,
             [((1, 448, 28, 28), torch.bfloat16)],
             {
                 "model_names": [
@@ -88488,7 +88021,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1341,
+        Conv2D1321,
         [((1, 896, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"],
@@ -88504,7 +88037,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1342,
+            Conv2D1322,
             [((1, 896, 1, 1), torch.bfloat16)],
             {
                 "model_names": [
@@ -88525,7 +88058,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1343,
+        Conv2D1323,
         [((1, 112, 1, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -88545,7 +88078,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1344,
+            Conv2D1324,
             [((1, 896, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -88567,7 +88100,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1345,
+        Conv2D1325,
         [((1, 896, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"],
@@ -88583,7 +88116,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1346,
+            Conv2D1326,
             [((1, 896, 1, 1), torch.bfloat16)],
             {
                 "model_names": [
@@ -88604,7 +88137,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1347,
+        Conv2D1327,
         [((1, 224, 1, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -88624,7 +88157,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1348,
+            Conv2D1328,
             [((1, 896, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"],
@@ -88642,7 +88175,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1349,
+            Conv2D1329,
             [((1, 896, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"],
@@ -88659,7 +88192,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1350,
+        Conv2D1330,
         [((1, 2240, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"],
@@ -88675,7 +88208,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1351,
+            Conv2D1331,
             [((1, 2240, 1, 1), torch.bfloat16)],
             {
                 "model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"],
@@ -88692,7 +88225,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1352,
+        Conv2D1332,
         [((1, 224, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"],
@@ -88708,7 +88241,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1353,
+            Conv2D1333,
             [((1, 2240, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"],
@@ -88726,7 +88259,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1354,
+            Conv2D1334,
             [((1, 448, 28, 28), torch.bfloat16)],
             {
                 "model_names": [
@@ -88747,7 +88280,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1355,
+            Conv2D1335,
             [((1, 448, 28, 28), torch.bfloat16)],
             {
                 "model_names": [
@@ -88767,7 +88300,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1356,
+        Conv2D1336,
         [((1, 1232, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -88786,7 +88319,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1357,
+            Conv2D1337,
             [((1, 1232, 1, 1), torch.bfloat16)],
             {
                 "model_names": [
@@ -88806,7 +88339,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1358,
+        Conv2D1338,
         [((1, 112, 1, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -88825,7 +88358,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1359,
+            Conv2D1339,
             [((1, 1232, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -88845,7 +88378,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1360,
+        Conv2D1340,
         [((1, 1232, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -88864,7 +88397,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1361,
+            Conv2D1341,
             [((1, 1232, 1, 1), torch.bfloat16)],
             {
                 "model_names": [
@@ -88884,7 +88417,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1362,
+        Conv2D1342,
         [((1, 308, 1, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -88903,7 +88436,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1363,
+            Conv2D1343,
             [((1, 1232, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -88924,7 +88457,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1364,
+            Conv2D1344,
             [((1, 1232, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -88944,7 +88477,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1365,
+        Conv2D1345,
         [((1, 3024, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -88963,7 +88496,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1366,
+            Conv2D1346,
             [((1, 3024, 1, 1), torch.bfloat16)],
             {
                 "model_names": [
@@ -88983,7 +88516,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1367,
+        Conv2D1347,
         [((1, 308, 1, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -89002,7 +88535,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1368,
+            Conv2D1348,
             [((1, 3024, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -89396,7 +88929,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1369,
+        Conv2D1349,
         [((1, 256, 60, 80), torch.bfloat16)],
         {
             "model_names": [
@@ -89417,7 +88950,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1369,
+        Conv2D1349,
         [((1, 256, 30, 40), torch.bfloat16)],
         {
             "model_names": [
@@ -89459,7 +88992,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1369,
+        Conv2D1349,
         [((1, 256, 15, 20), torch.bfloat16)],
         {
             "model_names": [
@@ -89481,7 +89014,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1370,
+            Conv2D1350,
             [((1, 2048, 15, 20), torch.bfloat16)],
             {
                 "model_names": [
@@ -89544,7 +89077,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1369,
+        Conv2D1349,
         [((1, 256, 8, 10), torch.bfloat16)],
         {
             "model_names": [
@@ -89586,7 +89119,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1369,
+        Conv2D1349,
         [((1, 256, 4, 5), torch.bfloat16)],
         {
             "model_names": [
@@ -89607,7 +89140,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1371,
+        Conv2D1351,
         [((1, 256, 60, 80), torch.bfloat16)],
         {
             "model_names": [
@@ -89628,7 +89161,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1371,
+        Conv2D1351,
         [((1, 256, 30, 40), torch.bfloat16)],
         {
             "model_names": [
@@ -89649,7 +89182,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1371,
+        Conv2D1351,
         [((1, 256, 15, 20), torch.bfloat16)],
         {
             "model_names": [
@@ -89670,7 +89203,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1371,
+        Conv2D1351,
         [((1, 256, 8, 10), torch.bfloat16)],
         {
             "model_names": [
@@ -89691,7 +89224,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1371,
+        Conv2D1351,
         [((1, 256, 4, 5), torch.bfloat16)],
         {
             "model_names": [
@@ -89712,7 +89245,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1372,
+        Conv2D1352,
         [((1, 3, 224, 224), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -89728,7 +89261,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1373,
+            Conv2D1353,
             [((1, 3072, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
@@ -89746,7 +89279,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1374,
+            Conv2D1354,
             [((1, 768, 28, 28), torch.bfloat16)],
             {
                 "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
@@ -89763,7 +89296,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1375,
+        Conv2D1355,
         [((1, 384, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
@@ -89793,7 +89326,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1376,
+        Conv2D1356,
         [((1, 32, 224, 224), torch.bfloat16)],
         {
             "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
@@ -89808,7 +89341,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1377,
+        Conv2D1357,
         [((1, 16, 224, 224), torch.bfloat16)],
         {
             "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
@@ -89841,7 +89374,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1378,
+        Conv2D1358,
         [((1, 448, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -89879,7 +89412,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1379,
+        Conv2D1359,
         [((1, 256, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -89897,7 +89430,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1380,
+        Conv2D1360,
         [((1, 160, 28, 28), torch.bfloat16), ((160, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": [
@@ -89934,7 +89467,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1381,
+            Conv2D1361,
             [((1, 736, 28, 28), torch.bfloat16)],
             {
                 "model_names": [
@@ -89978,7 +89511,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1382,
+            Conv2D1362,
             [((1, 512, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -90016,7 +89549,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1383,
+        Conv2D1363,
         [((1, 192, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -90035,7 +89568,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1384,
+            Conv2D1364,
             [((1, 1088, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -90056,7 +89589,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1385,
+            Conv2D1365,
             [((1, 768, 1, 1), torch.bfloat16)],
             {
                 "model_names": [
@@ -90079,7 +89612,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1386,
+            Conv2D1366,
             [((1, 768, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -90099,7 +89632,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1387,
+        Conv2D1367,
         [((1, 224, 7, 7), torch.bfloat16), ((224, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": [
@@ -90117,7 +89650,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1326,
+        Conv2D1306,
         [((1, 224, 7, 7), torch.bfloat16)],
         {
             "model_names": [
@@ -90136,7 +89669,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1388,
+            Conv2D1368,
             [((1, 1440, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -90212,7 +89745,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1168,
+        Conv2D1147,
         [((1, 3, 480, 480), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90227,7 +89760,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1169,
+        Conv2D1148,
         [((1, 80, 240, 240), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90242,7 +89775,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1170,
+        Conv2D1149,
         [((1, 160, 120, 120), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90257,7 +89790,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1171,
+        Conv2D1150,
         [((1, 80, 120, 120), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90272,7 +89805,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1172,
+        Conv2D1151,
         [((1, 80, 120, 120), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90287,7 +89820,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1173,
+        Conv2D1152,
         [((1, 160, 120, 120), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90303,7 +89836,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1174,
+            Conv2D1153,
             [((1, 160, 120, 120), torch.float32)],
             {
                 "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90320,7 +89853,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1175,
+        Conv2D1154,
         [((1, 320, 60, 60), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90335,7 +89868,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1173,
+        Conv2D1152,
         [((1, 160, 60, 60), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90350,7 +89883,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1176,
+        Conv2D1155,
         [((1, 160, 60, 60), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90365,7 +89898,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1177,
+        Conv2D1156,
         [((1, 320, 60, 60), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90380,7 +89913,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1178,
+        Conv2D1157,
         [((1, 320, 60, 60), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90395,7 +89928,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1179,
+        Conv2D1158,
         [((1, 640, 30, 30), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90410,7 +89943,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1177,
+        Conv2D1156,
         [((1, 320, 30, 30), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90425,7 +89958,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1180,
+        Conv2D1159,
         [((1, 320, 30, 30), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90440,7 +89973,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1181,
+        Conv2D1160,
         [((1, 640, 30, 30), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90456,7 +89989,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1182,
+            Conv2D1161,
             [((1, 640, 30, 30), torch.float32)],
             {
                 "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90473,7 +90006,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1183,
+        Conv2D1162,
         [((1, 1280, 15, 15), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90488,7 +90021,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1181,
+        Conv2D1160,
         [((1, 640, 15, 15), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90503,7 +90036,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1184,
+        Conv2D1163,
         [((1, 640, 15, 15), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90518,7 +90051,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1185,
+        Conv2D1164,
         [((1, 1280, 15, 15), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90533,7 +90066,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1186,
+        Conv2D1165,
         [((1, 2560, 15, 15), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90548,7 +90081,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1187,
+        Conv2D1166,
         [((1, 1280, 30, 30), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90563,7 +90096,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1188,
+        Conv2D1167,
         [((1, 640, 60, 60), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90578,7 +90111,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1189,
+        Conv2D1168,
         [((1, 320, 60, 60), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90593,7 +90126,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1190,
+        Conv2D1169,
         [((1, 320, 60, 60), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90608,7 +90141,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1191,
+        Conv2D1170,
         [((1, 640, 30, 30), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90624,7 +90157,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1192,
+            Conv2D1171,
             [((1, 640, 30, 30), torch.float32)],
             {
                 "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90641,7 +90174,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1193,
+        Conv2D1172,
         [((1, 1280, 15, 15), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
@@ -90656,7 +90189,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1389,
+        Conv2D1369,
         [((1, 12, 320, 320), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_l_obj_det_torchhub"],
@@ -90884,7 +90417,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1390,
+        Conv2D1370,
         [((1, 12, 208, 208), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -90899,7 +90432,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1391,
+        Conv2D1371,
         [((1, 24, 208, 208), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -90974,7 +90507,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1392,
+        Conv2D1372,
         [((1, 48, 104, 104), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91019,7 +90552,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1393,
+        Conv2D1373,
         [((1, 48, 52, 52), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91034,7 +90567,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1394,
+        Conv2D1374,
         [((1, 96, 52, 52), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91049,7 +90582,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1395,
+        Conv2D1375,
         [((1, 96, 52, 52), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91064,7 +90597,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1396,
+        Conv2D1376,
         [((1, 192, 26, 26), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91079,7 +90612,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1394,
+        Conv2D1374,
         [((1, 96, 26, 26), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91109,7 +90642,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1383,
+        Conv2D1363,
         [((1, 192, 26, 26), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91124,7 +90657,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1397,
+        Conv2D1377,
         [((1, 192, 26, 26), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91155,7 +90688,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1398,
+            Conv2D1378,
             [((1, 768, 13, 13), torch.bfloat16)],
             {
                 "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91172,7 +90705,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1383,
+        Conv2D1363,
         [((1, 192, 13, 13), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91187,7 +90720,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1158,
+        Conv2D1137,
         [((1, 192, 13, 13), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91202,7 +90735,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1399,
+        Conv2D1379,
         [((1, 384, 13, 13), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91265,7 +90798,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1400,
+        Conv2D1380,
         [((1, 96, 52, 52), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91295,7 +90828,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1401,
+        Conv2D1381,
         [((1, 96, 52, 52), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91310,7 +90843,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1402,
+        Conv2D1382,
         [((1, 96, 52, 52), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91340,7 +90873,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1401,
+        Conv2D1381,
         [((1, 96, 26, 26), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91355,7 +90888,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1402,
+        Conv2D1382,
         [((1, 96, 26, 26), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91370,7 +90903,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1403,
+        Conv2D1383,
         [((1, 192, 26, 26), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91430,7 +90963,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1401,
+        Conv2D1381,
         [((1, 96, 13, 13), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91445,7 +90978,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1402,
+        Conv2D1382,
         [((1, 96, 13, 13), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -91460,7 +90993,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1404,
+        Conv2D1384,
         [((1, 256, 107, 160), torch.float32)],
         {
             "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -91490,7 +91023,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1405,
+        Conv2D1385,
         [((1, 1024, 27, 40), torch.float32)],
         {
             "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -91521,7 +91054,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1406,
+            Conv2D1386,
             [((100, 264, 14, 20), torch.float32)],
             {
                 "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -91543,7 +91076,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1407,
+            Conv2D1387,
             [((100, 264, 14, 20), torch.float32)],
             {
                 "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -91587,7 +91120,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1408,
+            Conv2D1388,
             [((100, 64, 54, 80), torch.float32)],
             {
                 "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -91609,7 +91142,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1409,
+            Conv2D1389,
             [((100, 32, 107, 160), torch.float32)],
             {
                 "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -91631,7 +91164,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1410,
+            Conv2D1390,
             [((100, 16, 107, 160), torch.float32)],
             {
                 "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -91652,7 +91185,7 @@ forge_modules_and_shapes_dtypes_list = [
         ],
     ),
     (
-        Conv2D1411,
+        Conv2D1391,
         [((1, 32, 112, 112), torch.float32)],
         {
             "model_names": ["onnx_dla_dla102x2_visual_bb_torchvision"],
@@ -91667,7 +91200,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1412,
+        Conv2D1392,
         [((1, 256, 112, 112), torch.float32)],
         {
             "model_names": ["onnx_dla_dla102x2_visual_bb_torchvision"],
@@ -91682,7 +91215,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1413,
+        Conv2D1393,
         [((1, 256, 56, 56), torch.float32)],
         {
             "model_names": ["onnx_dla_dla102x2_visual_bb_torchvision"],
@@ -91712,7 +91245,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1414,
+        Conv2D1394,
         [((1, 512, 56, 56), torch.float32)],
         {
             "model_names": ["onnx_dla_dla102x2_visual_bb_torchvision"],
@@ -91727,7 +91260,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1415,
+        Conv2D1395,
         [((1, 512, 28, 28), torch.float32)],
         {
             "model_names": ["onnx_dla_dla102x2_visual_bb_torchvision"],
@@ -91757,7 +91290,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1416,
+        Conv2D1396,
         [((1, 1024, 28, 28), torch.float32)],
         {
             "model_names": ["onnx_dla_dla102x2_visual_bb_torchvision"],
@@ -91772,7 +91305,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1417,
+        Conv2D1397,
         [((1, 1024, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_dla_dla102x2_visual_bb_torchvision"],
@@ -91805,7 +91338,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1418,
+        Conv2D1398,
         [((1, 2048, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_dla_dla102x2_visual_bb_torchvision"],
@@ -91820,7 +91353,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1419,
+        Conv2D1399,
         [((1, 2048, 7, 7), torch.float32)],
         {
             "model_names": ["onnx_dla_dla102x2_visual_bb_torchvision"],
@@ -91835,7 +91368,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1420,
+        Conv2D1400,
         [((1, 1024, 7, 7), torch.float32)],
         {
             "model_names": ["onnx_dla_dla102x2_visual_bb_torchvision"],
@@ -91850,7 +91383,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1421,
+        Conv2D1401,
         [((1, 2048, 7, 7), torch.float32)],
         {
             "model_names": ["onnx_dla_dla102x2_visual_bb_torchvision"],
@@ -91865,7 +91398,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1422,
+        Conv2D1402,
         [((1, 192, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
@@ -91880,7 +91413,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1423,
+        Conv2D1403,
         [((1, 72, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
@@ -91895,7 +91428,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1424,
+        Conv2D1404,
         [((1, 432, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
@@ -91910,7 +91443,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1425,
+        Conv2D1405,
         [((1, 432, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
@@ -91925,7 +91458,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1426,
+        Conv2D1406,
         [((1, 432, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
@@ -91940,7 +91473,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1427,
+        Conv2D1407,
         [((1, 104, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
@@ -91955,7 +91488,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1428,
+        Conv2D1408,
         [((1, 624, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
@@ -91970,7 +91503,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1429,
+        Conv2D1409,
         [((1, 624, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
@@ -91985,7 +91518,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1430,
+        Conv2D1410,
         [((1, 624, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
@@ -92000,7 +91533,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1431,
+        Conv2D1411,
         [((1, 624, 7, 7), torch.float32)],
         {
             "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
@@ -92015,7 +91548,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1432,
+        Conv2D1412,
         [((1, 176, 7, 7), torch.float32)],
         {
             "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
@@ -92030,7 +91563,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1433,
+        Conv2D1413,
         [((1, 1056, 7, 7), torch.float32)],
         {
             "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
@@ -92045,7 +91578,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1434,
+        Conv2D1414,
         [((1, 1056, 7, 7), torch.float32)],
         {
             "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
@@ -92060,7 +91593,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1435,
+        Conv2D1415,
         [((1, 1056, 7, 7), torch.float32)],
         {
             "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
@@ -92075,7 +91608,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1436,
+        Conv2D1416,
         [((1, 352, 7, 7), torch.float32)],
         {
             "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
@@ -92090,7 +91623,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1437,
+        Conv2D1417,
         [((1, 3, 256, 256), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub"],
@@ -92138,7 +91671,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1438,
+        Conv2D1418,
         [((1, 32, 128, 128), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub"],
@@ -92186,7 +91719,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1439,
+        Conv2D1419,
         [((1, 64, 64, 64), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub"],
@@ -92246,7 +91779,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1440,
+        Conv2D1420,
         [((1, 256, 16, 16), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub"],
@@ -92277,7 +91810,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1441,
+            Conv2D1421,
             [((1, 512, 32, 32), torch.float32)],
             {
                 "model_names": ["onnx_unet_base_img_seg_torchhub"],
@@ -92294,7 +91827,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1442,
+        Conv2D1422,
         [((1, 256, 64, 64), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub"],
@@ -92324,7 +91857,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1408,
+        Conv2D1388,
         [((1, 64, 256, 256), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub"],
@@ -92339,7 +91872,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1443,
+        Conv2D1423,
         [((1, 32, 256, 256), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub"],
@@ -92390,7 +91923,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D944,
+        Conv2D1424,
         [((1, 16, 16, 50), torch.float32)],
         {
             "model_names": [
@@ -92444,7 +91977,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1444,
+        Conv2D1425,
         [((1, 64, 16, 50), torch.float32)],
         {
             "model_names": [
@@ -92462,7 +91995,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1445,
+        Conv2D1426,
         [((1, 64, 16, 50), torch.float32)],
         {
             "model_names": [
@@ -92516,7 +92049,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1446,
+        Conv2D1427,
         [((1, 128, 8, 50), torch.float32)],
         {
             "model_names": [
@@ -92534,7 +92067,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1447,
+        Conv2D1428,
         [((1, 128, 8, 50), torch.float32)],
         {
             "model_names": [
@@ -92570,7 +92103,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1448,
+        Conv2D1429,
         [((1, 128, 8, 25), torch.float32)],
         {
             "model_names": [
@@ -92606,7 +92139,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1449,
+        Conv2D1430,
         [((1, 240, 8, 25), torch.float32)],
         {
             "model_names": [
@@ -92624,7 +92157,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1450,
+        Conv2D1431,
         [((1, 240, 8, 25), torch.float32)],
         {
             "model_names": [
@@ -92642,7 +92175,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1451,
+        Conv2D1432,
         [((1, 240, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -92660,7 +92193,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1452,
+        Conv2D1433,
         [((1, 60, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -92678,7 +92211,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1453,
+        Conv2D1434,
         [((1, 240, 4, 25), torch.float32)],
         {
             "model_names": [
@@ -92714,7 +92247,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1454,
+        Conv2D1435,
         [((1, 480, 4, 25), torch.float32)],
         {
             "model_names": [
@@ -92732,7 +92265,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1455,
+        Conv2D1436,
         [((1, 480, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -92750,7 +92283,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1456,
+        Conv2D1437,
         [((1, 120, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -92768,7 +92301,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1457,
+        Conv2D1438,
         [((1, 480, 4, 25), torch.float32)],
         {
             "model_names": [
@@ -92786,7 +92319,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1457,
+        Conv2D1438,
         [((1, 480, 2, 25), torch.float32)],
         {
             "model_names": [
@@ -92822,7 +92355,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1458,
+        Conv2D1439,
         [((1, 480, 1, 12), torch.float32)],
         {
             "model_names": [
@@ -92840,7 +92373,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1459,
+        Conv2D1440,
         [((1, 60, 1, 12), torch.float32)],
         {
             "model_names": [
@@ -92858,7 +92391,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1456,
+        Conv2D1437,
         [((1, 120, 1, 12), torch.float32)],
         {
             "model_names": [
@@ -92876,7 +92409,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1460,
+        Conv2D1441,
         [((1, 960, 1, 12), torch.float32)],
         {
             "model_names": [
@@ -92895,7 +92428,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1461,
+            Conv2D1442,
             [((1, 3, 224, 224), torch.bfloat16)],
             {
                 "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
@@ -92912,7 +92445,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1462,
+        Conv2D1443,
         [((1, 1, 224, 224), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet121_hf_xray_img_cls_torchvision"],
@@ -92927,7 +92460,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1463,
+        Conv2D1444,
         [((1, 3, 224, 224), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -92942,7 +92475,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1464,
+        Conv2D1445,
         [((1, 96, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -92960,7 +92493,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1465,
+        Conv2D1446,
         [((1, 96, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_x_3_2gf_img_cls_torchvision"],
@@ -92975,7 +92508,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1466,
+        Conv2D1447,
         [((1, 192, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -92990,7 +92523,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1467,
+        Conv2D1448,
         [((1, 144, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93005,7 +92538,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1383,
+        Conv2D1363,
         [((1, 192, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93020,7 +92553,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1468,
+        Conv2D1449,
         [((1, 240, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93035,7 +92568,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1469,
+        Conv2D1450,
         [((1, 288, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93051,7 +92584,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1470,
+            Conv2D1451,
             [((1, 336, 56, 56), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93083,7 +92616,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1383,
+        Conv2D1363,
         [((1, 192, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -93102,7 +92635,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1466,
+        Conv2D1447,
         [((1, 192, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93117,7 +92650,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1468,
+        Conv2D1449,
         [((1, 240, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93132,7 +92665,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1469,
+        Conv2D1450,
         [((1, 288, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93148,7 +92681,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1470,
+            Conv2D1451,
             [((1, 336, 28, 28), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93181,7 +92714,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1471,
+            Conv2D1452,
             [((1, 432, 28, 28), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93198,7 +92731,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1472,
+        Conv2D1453,
         [((1, 480, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93214,7 +92747,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1473,
+            Conv2D1454,
             [((1, 528, 28, 28), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93232,7 +92765,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1474,
+            Conv2D1455,
             [((1, 576, 28, 28), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93250,7 +92783,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1475,
+            Conv2D1456,
             [((1, 624, 28, 28), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93286,7 +92819,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1476,
+            Conv2D1457,
             [((1, 720, 28, 28), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93304,7 +92837,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1398,
+            Conv2D1378,
             [((1, 768, 28, 28), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93336,7 +92869,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1466,
+        Conv2D1447,
         [((1, 192, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93352,7 +92885,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1471,
+            Conv2D1452,
             [((1, 432, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93369,7 +92902,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1472,
+        Conv2D1453,
         [((1, 480, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93385,7 +92918,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1473,
+            Conv2D1454,
             [((1, 528, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93403,7 +92936,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1474,
+            Conv2D1455,
             [((1, 576, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93421,7 +92954,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1475,
+            Conv2D1456,
             [((1, 624, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93457,7 +92990,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1476,
+            Conv2D1457,
             [((1, 720, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93475,7 +93008,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1477,
+            Conv2D1458,
             [((1, 768, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93493,7 +93026,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1478,
+            Conv2D1459,
             [((1, 816, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93511,7 +93044,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1479,
+            Conv2D1460,
             [((1, 864, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93529,7 +93062,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1480,
+            Conv2D1461,
             [((1, 912, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93547,7 +93080,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1481,
+            Conv2D1462,
             [((1, 960, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93565,7 +93098,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1482,
+            Conv2D1463,
             [((1, 1008, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93583,7 +93116,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1483,
+            Conv2D1464,
             [((1, 1056, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93601,7 +93134,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1484,
+            Conv2D1465,
             [((1, 1104, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93637,7 +93170,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1485,
+            Conv2D1466,
             [((1, 1200, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93655,7 +93188,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1486,
+            Conv2D1467,
             [((1, 1248, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93673,7 +93206,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1487,
+            Conv2D1468,
             [((1, 1296, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93691,7 +93224,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1488,
+            Conv2D1469,
             [((1, 1344, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93709,7 +93242,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1489,
+            Conv2D1470,
             [((1, 1392, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93727,7 +93260,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1490,
+            Conv2D1471,
             [((1, 1440, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93745,7 +93278,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1491,
+            Conv2D1472,
             [((1, 1488, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93763,7 +93296,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1492,
+            Conv2D1473,
             [((1, 1536, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93781,7 +93314,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1493,
+            Conv2D1474,
             [((1, 1584, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93799,7 +93332,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1494,
+            Conv2D1475,
             [((1, 1632, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93817,7 +93350,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1495,
+            Conv2D1476,
             [((1, 1680, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93835,7 +93368,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1496,
+            Conv2D1477,
             [((1, 1728, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93853,7 +93386,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1497,
+            Conv2D1478,
             [((1, 1776, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93871,7 +93404,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1498,
+            Conv2D1479,
             [((1, 1824, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93889,7 +93422,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1499,
+            Conv2D1480,
             [((1, 1872, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93907,7 +93440,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1500,
+            Conv2D1481,
             [((1, 1920, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93925,7 +93458,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1501,
+            Conv2D1482,
             [((1, 1968, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93943,7 +93476,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1502,
+            Conv2D1483,
             [((1, 2016, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93961,7 +93494,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1503,
+            Conv2D1484,
             [((1, 2064, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93979,7 +93512,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1504,
+            Conv2D1485,
             [((1, 2112, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -93997,7 +93530,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1483,
+            Conv2D1464,
             [((1, 1056, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94014,7 +93547,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1466,
+        Conv2D1447,
         [((1, 192, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94030,7 +93563,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1484,
+            Conv2D1465,
             [((1, 1104, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94048,7 +93581,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1485,
+            Conv2D1466,
             [((1, 1200, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94066,7 +93599,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1486,
+            Conv2D1467,
             [((1, 1248, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94084,7 +93617,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1487,
+            Conv2D1468,
             [((1, 1296, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94102,7 +93635,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1488,
+            Conv2D1469,
             [((1, 1344, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94120,7 +93653,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1489,
+            Conv2D1470,
             [((1, 1392, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94138,7 +93671,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1490,
+            Conv2D1471,
             [((1, 1440, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94156,7 +93689,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1491,
+            Conv2D1472,
             [((1, 1488, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94174,7 +93707,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1492,
+            Conv2D1473,
             [((1, 1536, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94192,7 +93725,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1493,
+            Conv2D1474,
             [((1, 1584, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94210,7 +93743,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1494,
+            Conv2D1475,
             [((1, 1632, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94228,7 +93761,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1495,
+            Conv2D1476,
             [((1, 1680, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94246,7 +93779,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1496,
+            Conv2D1477,
             [((1, 1728, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94264,7 +93797,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1497,
+            Conv2D1478,
             [((1, 1776, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94282,7 +93815,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1498,
+            Conv2D1479,
             [((1, 1824, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94300,7 +93833,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1499,
+            Conv2D1480,
             [((1, 1872, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94318,7 +93851,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1500,
+            Conv2D1481,
             [((1, 1920, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94336,7 +93869,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1501,
+            Conv2D1482,
             [((1, 1968, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94354,7 +93887,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1502,
+            Conv2D1483,
             [((1, 2016, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94372,7 +93905,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1503,
+            Conv2D1484,
             [((1, 2064, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94390,7 +93923,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1505,
+            Conv2D1486,
             [((1, 2112, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94408,7 +93941,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1506,
+            Conv2D1487,
             [((1, 2160, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -94650,7 +94183,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1005,
+        Conv2D984,
         [((1, 288, 17, 17), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -94665,7 +94198,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1006,
+        Conv2D985,
         [((1, 88, 17, 17), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -94680,7 +94213,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1007,
+        Conv2D986,
         [((1, 528, 17, 17), torch.bfloat16), ((528, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -94696,7 +94229,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1010,
+            Conv2D989,
             [((1, 528, 17, 17), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -94713,7 +94246,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1011,
+        Conv2D990,
         [((1, 528, 17, 17), torch.bfloat16), ((528, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -94729,7 +94262,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1012,
+            Conv2D991,
             [((1, 528, 17, 17), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -94746,7 +94279,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1013,
+        Conv2D992,
         [((1, 120, 17, 17), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -94761,7 +94294,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1014,
+        Conv2D993,
         [((1, 720, 17, 17), torch.bfloat16), ((720, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -94776,7 +94309,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1015,
+        Conv2D994,
         [((1, 720, 17, 17), torch.bfloat16), ((720, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -94792,7 +94325,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1018,
+            Conv2D997,
             [((1, 720, 17, 17), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -94810,7 +94343,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1019,
+            Conv2D998,
             [((1, 720, 9, 9), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -94827,7 +94360,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1020,
+        Conv2D999,
         [((1, 208, 9, 9), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -94842,7 +94375,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1021,
+        Conv2D1000,
         [((1, 1248, 9, 9), torch.bfloat16), ((1248, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -94858,7 +94391,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1024,
+            Conv2D1003,
             [((1, 1248, 9, 9), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -94875,7 +94408,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1025,
+        Conv2D1004,
         [((1, 1248, 9, 9), torch.bfloat16), ((1248, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -94891,7 +94424,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1026,
+            Conv2D1005,
             [((1, 1248, 9, 9), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -94908,7 +94441,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1507,
+        Conv2D1488,
         [((1, 352, 9, 9), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -94923,7 +94456,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1508,
+        Conv2D1489,
         [((1, 256, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
@@ -94938,7 +94471,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1509,
+        Conv2D1490,
         [((1, 256, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
@@ -94998,7 +94531,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1510,
+        Conv2D1491,
         [((1, 128, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
@@ -95058,7 +94591,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1511,
+        Conv2D1492,
         [((1, 32, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
@@ -95073,7 +94606,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1512,
+        Conv2D1493,
         [((1, 64, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
@@ -95089,7 +94622,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1513,
+            Conv2D1494,
             [((1, 3, 224, 224), torch.bfloat16)],
             {
                 "model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"],
@@ -95106,7 +94639,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1514,
+        Conv2D1495,
         [((1, 16, 112, 112), torch.bfloat16)],
         {
             "model_names": [
@@ -95124,7 +94657,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1515,
+        Conv2D1496,
         [((1, 64, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -95142,7 +94675,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1516,
+        Conv2D1497,
         [((1, 24, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -95196,7 +94729,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1516,
+        Conv2D1497,
         [((1, 24, 1, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -95214,7 +94747,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1517,
+        Conv2D1498,
         [((1, 72, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -95250,7 +94783,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1518,
+        Conv2D1499,
         [((1, 120, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -95268,7 +94801,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1519,
+        Conv2D1500,
         [((1, 80, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -95286,7 +94819,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1520,
+        Conv2D1501,
         [((1, 200, 14, 14), torch.bfloat16), ((200, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": [
@@ -95304,7 +94837,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1521,
+        Conv2D1502,
         [((1, 200, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -95322,7 +94855,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1522,
+        Conv2D1503,
         [((1, 80, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -95340,7 +94873,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1523,
+        Conv2D1504,
         [((1, 184, 14, 14), torch.bfloat16), ((184, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": [
@@ -95358,7 +94891,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1524,
+        Conv2D1505,
         [((1, 184, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -95376,7 +94909,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1081,
+        Conv2D1060,
         [((1, 672, 14, 14), torch.bfloat16), ((672, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": [
@@ -95396,7 +94929,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1082,
+            Conv2D1061,
             [((1, 672, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -95416,7 +94949,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1083,
+        Conv2D1062,
         [((1, 960, 7, 7), torch.bfloat16), ((960, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": [
@@ -95434,7 +94967,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1525,
+        Conv2D1506,
         [((1, 224, 112, 112), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_8gf_img_cls_torchvision"],
@@ -95449,7 +94982,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1526,
+        Conv2D1507,
         [((1, 224, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_8gf_img_cls_torchvision"],
@@ -95464,7 +94997,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1527,
+        Conv2D1508,
         [((1, 448, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_8gf_img_cls_torchvision", "pt_regnet_facebook_regnet_y_080_img_cls_hf"],
@@ -95479,7 +95012,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1528,
+        Conv2D1509,
         [((1, 448, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_8gf_img_cls_torchvision", "pt_regnet_facebook_regnet_y_080_img_cls_hf"],
@@ -95494,7 +95027,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1529,
+        Conv2D1510,
         [((1, 896, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_8gf_img_cls_torchvision", "pt_regnet_facebook_regnet_y_080_img_cls_hf"],
@@ -95509,7 +95042,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1530,
+        Conv2D1511,
         [((1, 896, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_8gf_img_cls_torchvision", "pt_regnet_facebook_regnet_y_080_img_cls_hf"],
@@ -95525,7 +95058,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1531,
+            Conv2D1512,
             [((1, 896, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -95546,7 +95079,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1532,
+            Conv2D1513,
             [((1, 896, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -95566,7 +95099,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1533,
+        Conv2D1514,
         [((1, 2016, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_8gf_img_cls_torchvision", "pt_regnet_facebook_regnet_y_080_img_cls_hf"],
@@ -95582,7 +95115,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1534,
+            Conv2D1515,
             [((1, 2016, 1, 1), torch.bfloat16)],
             {
                 "model_names": [
@@ -95602,7 +95135,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1535,
+        Conv2D1516,
         [((1, 224, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_8gf_img_cls_torchvision", "pt_regnet_facebook_regnet_y_080_img_cls_hf"],
@@ -95618,7 +95151,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1536,
+            Conv2D1517,
             [((1, 2016, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -95698,7 +95231,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1537,
+        Conv2D1518,
         [((1, 512, 15, 20), torch.bfloat16)],
         {
             "model_names": ["pt_retinanet_retinanet_rn18fpn_obj_det_hf", "pt_retinanet_retinanet_rn34fpn_obj_det_hf"],
@@ -95714,7 +95247,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1538,
+            Conv2D1519,
             [((1, 512, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_vgg_vgg19_bn_obj_det_timm"],
@@ -95732,7 +95265,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1539,
+            Conv2D1520,
             [((1, 4096, 1, 1), torch.bfloat16)],
             {
                 "model_names": ["pt_vgg_vgg19_bn_obj_det_timm"],
@@ -95779,7 +95312,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1540,
+        Conv2D1521,
         [((1, 128, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_vovnet_vovnet27s_img_cls_osmr"],
@@ -95795,7 +95328,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1541,
+            Conv2D1522,
             [((1, 528, 28, 28), torch.bfloat16)],
             {
                 "model_names": ["pt_vovnet_vovnet27s_img_cls_osmr"],
@@ -95812,7 +95345,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1542,
+        Conv2D1523,
         [((1, 256, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_vovnet_vovnet27s_img_cls_osmr"],
@@ -95843,7 +95376,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1543,
+            Conv2D1524,
             [((1, 736, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_vovnet_vovnet27s_img_cls_osmr"],
@@ -95860,7 +95393,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1544,
+        Conv2D1525,
         [((1, 384, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_vovnet_vovnet27s_img_cls_osmr"],
@@ -95875,7 +95408,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1545,
+        Conv2D1526,
         [((1, 112, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_vovnet_vovnet27s_img_cls_osmr"],
@@ -95891,7 +95424,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1546,
+            Conv2D1527,
             [((1, 944, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_vovnet_vovnet27s_img_cls_osmr"],
@@ -96238,7 +95771,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1547,
+        Conv2D1528,
         [((1, 3, 448, 640), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96253,7 +95786,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1548,
+        Conv2D1529,
         [((1, 3, 448, 640), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96268,7 +95801,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1549,
+        Conv2D1530,
         [((1, 48, 224, 320), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96283,7 +95816,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1550,
+        Conv2D1531,
         [((1, 48, 224, 320), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96298,7 +95831,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1551,
+        Conv2D1532,
         [((1, 96, 112, 160), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96362,7 +95895,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1552,
+        Conv2D1533,
         [((1, 128, 112, 160), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96377,7 +95910,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1553,
+        Conv2D1534,
         [((1, 96, 112, 160), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96392,7 +95925,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1554,
+        Conv2D1535,
         [((1, 96, 112, 160), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96407,7 +95940,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1555,
+        Conv2D1536,
         [((1, 192, 56, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96475,7 +96008,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1556,
+        Conv2D1537,
         [((1, 256, 56, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96490,7 +96023,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1557,
+        Conv2D1538,
         [((1, 192, 56, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96505,7 +96038,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1558,
+        Conv2D1539,
         [((1, 192, 56, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96520,7 +96053,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1559,
+        Conv2D1540,
         [((1, 384, 28, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96554,7 +96087,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1560,
+        Conv2D1541,
         [((1, 256, 28, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
@@ -96589,7 +96122,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1561,
+            Conv2D1542,
             [((1, 512, 28, 40), torch.bfloat16)],
             {
                 "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96606,7 +96139,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1562,
+        Conv2D1543,
         [((1, 384, 28, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96621,7 +96154,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1563,
+        Conv2D1544,
         [((1, 384, 28, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96637,7 +96170,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1564,
+            Conv2D1545,
             [((1, 768, 14, 20), torch.bfloat16)],
             {
                 "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96674,7 +96207,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1565,
+            Conv2D1546,
             [((1, 512, 14, 20), torch.bfloat16)],
             {
                 "model_names": [
@@ -96696,7 +96229,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1566,
+            Conv2D1547,
             [((1, 1024, 14, 20), torch.bfloat16)],
             {
                 "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96714,7 +96247,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1567,
+            Conv2D1548,
             [((1, 768, 14, 20), torch.bfloat16)],
             {
                 "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96732,7 +96265,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1568,
+            Conv2D1549,
             [((1, 1536, 14, 20), torch.bfloat16)],
             {
                 "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96750,7 +96283,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1569,
+            Conv2D1550,
             [((1, 768, 14, 20), torch.bfloat16)],
             {
                 "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96767,7 +96300,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1570,
+        Conv2D1551,
         [((1, 384, 28, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96782,7 +96315,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1571,
+        Conv2D1552,
         [((1, 192, 56, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96797,7 +96330,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1572,
+        Conv2D1553,
         [((1, 192, 56, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96813,7 +96346,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1573,
+            Conv2D1554,
             [((1, 576, 28, 40), torch.bfloat16)],
             {
                 "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96828,6 +96361,36 @@ forge_modules_and_shapes_dtypes_list = [
             },
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    (
+        Conv2D1536,
+        [((1, 192, 28, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1537,
+        [((1, 256, 28, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
     ),
     (
         Conv2D1555,
@@ -96845,37 +96408,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1556,
-        [((1, 256, 28, 40), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D1574,
-        [((1, 192, 28, 40), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D1574,
+        Conv2D1555,
         [((1, 192, 56, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96890,7 +96423,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1575,
+        Conv2D1556,
         [((1, 96, 112, 160), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96905,7 +96438,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1576,
+        Conv2D1557,
         [((1, 96, 112, 160), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96920,7 +96453,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1577,
+        Conv2D1558,
         [((1, 288, 56, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96935,7 +96468,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1551,
+        Conv2D1532,
         [((1, 96, 56, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96950,7 +96483,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1552,
+        Conv2D1533,
         [((1, 128, 56, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96965,7 +96498,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1575,
+        Conv2D1556,
         [((1, 96, 56, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96980,7 +96513,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1578,
+        Conv2D1559,
         [((1, 96, 56, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -96995,7 +96528,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1576,
+        Conv2D1557,
         [((1, 96, 56, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -97010,7 +96543,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1579,
+        Conv2D1560,
         [((1, 96, 56, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -97025,7 +96558,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1580,
+        Conv2D1561,
         [((1, 17, 4, 4480), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
@@ -97040,7 +96573,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1571,
+        Conv2D1552,
         [((1, 192, 28, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -97055,7 +96588,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1581,
+        Conv2D1562,
         [((1, 192, 28, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -97070,7 +96603,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1572,
+        Conv2D1553,
         [((1, 192, 28, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -97085,7 +96618,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1582,
+        Conv2D1563,
         [((1, 192, 28, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -97100,7 +96633,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1580,
+        Conv2D1561,
         [((1, 17, 4, 1120), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
@@ -97115,7 +96648,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1559,
+        Conv2D1540,
         [((1, 384, 14, 20), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -97131,7 +96664,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1561,
+            Conv2D1542,
             [((1, 512, 14, 20), torch.bfloat16)],
             {
                 "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -97148,7 +96681,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1583,
+        Conv2D1564,
         [((1, 384, 14, 20), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -97163,7 +96696,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1584,
+        Conv2D1565,
         [((1, 384, 14, 20), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -97178,7 +96711,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1585,
+        Conv2D1566,
         [((1, 384, 14, 20), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -97193,7 +96726,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1580,
+        Conv2D1561,
         [((1, 17, 4, 280), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
@@ -97208,7 +96741,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1586,
+        Conv2D1567,
         [((1, 96, 56, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -97223,7 +96756,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1587,
+        Conv2D1568,
         [((1, 192, 28, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -97238,7 +96771,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1588,
+        Conv2D1569,
         [((1, 384, 14, 20), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
@@ -97253,7 +96786,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1589,
+        Conv2D1570,
         [((1, 3, 448, 640), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
@@ -97268,7 +96801,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1590,
+        Conv2D1571,
         [((1, 3, 448, 640), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
@@ -97373,7 +96906,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1591,
+        Conv2D1572,
         [((1, 256, 28, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
@@ -97388,7 +96921,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1592,
+        Conv2D1573,
         [((1, 256, 28, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
@@ -97404,7 +96937,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1593,
+            Conv2D1574,
             [((1, 512, 14, 20), torch.bfloat16)],
             {
                 "model_names": ["pt_yolo_v6_yolov6s_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
@@ -97422,7 +96955,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1594,
+            Conv2D1575,
             [((1, 1024, 14, 20), torch.bfloat16)],
             {
                 "model_names": ["pt_yolo_v6_yolov6s_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
@@ -97454,7 +96987,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1595,
+        Conv2D1576,
         [((1, 384, 28, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
@@ -97529,7 +97062,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1596,
+        Conv2D1577,
         [((1, 256, 14, 20), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
@@ -97574,7 +97107,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1597,
+        Conv2D1578,
         [((1, 256, 14, 20), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
@@ -97604,7 +97137,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1598,
+        Conv2D1579,
         [((1, 2560, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_dla_dla169_visual_bb_torchvision"],
@@ -97620,7 +97153,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1599,
+            Conv2D1580,
             [((1, 3328, 14, 14), torch.float32)],
             {
                 "model_names": ["onnx_dla_dla169_visual_bb_torchvision"],
@@ -97637,7 +97170,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1600,
+        Conv2D1581,
         [((1, 3, 512, 512), torch.float32)],
         {
             "model_names": [
@@ -97656,7 +97189,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1601,
+            Conv2D1582,
             [((1, 32, 128, 128), torch.float32)],
             {
                 "model_names": [
@@ -97676,7 +97209,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1446,
+        Conv2D1427,
         [((1, 128, 128, 128), torch.float32)],
         {
             "model_names": [
@@ -97695,7 +97228,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1602,
+            Conv2D1583,
             [((1, 64, 64, 64), torch.float32)],
             {
                 "model_names": [
@@ -97733,7 +97266,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1603,
+        Conv2D1584,
         [((1, 64, 64, 64), torch.float32)],
         {
             "model_names": [
@@ -97752,7 +97285,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1604,
+            Conv2D1585,
             [((1, 160, 32, 32), torch.float32)],
             {
                 "model_names": [
@@ -97772,7 +97305,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1605,
+        Conv2D1586,
         [((1, 640, 32, 32), torch.float32)],
         {
             "model_names": [
@@ -97790,7 +97323,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1606,
+        Conv2D1587,
         [((1, 160, 32, 32), torch.float32)],
         {
             "model_names": [
@@ -97808,7 +97341,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1607,
+        Conv2D1588,
         [((1, 1024, 16, 16), torch.float32)],
         {
             "model_names": [
@@ -97826,7 +97359,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1608,
+        Conv2D1589,
         [((1, 3, 256, 256), torch.float32)],
         {
             "model_names": [
@@ -97846,7 +97379,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1609,
+        Conv2D1590,
         [((1, 768, 8, 8), torch.float32)],
         {
             "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"],
@@ -97883,7 +97416,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1610,
+            Conv2D1591,
             [((1, 1056, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -97904,7 +97437,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1611,
+            Conv2D1592,
             [((1, 1088, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -97925,7 +97458,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1612,
+            Conv2D1593,
             [((1, 1120, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -97946,7 +97479,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1613,
+            Conv2D1594,
             [((1, 1152, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -97967,7 +97500,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1614,
+            Conv2D1595,
             [((1, 1184, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -97988,7 +97521,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1615,
+            Conv2D1596,
             [((1, 1216, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -98009,7 +97542,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1616,
+            Conv2D1597,
             [((1, 1248, 14, 14), torch.bfloat16)],
             {
                 "model_names": [
@@ -98069,7 +97602,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1610,
+            Conv2D1591,
             [((1, 1056, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98090,7 +97623,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1611,
+            Conv2D1592,
             [((1, 1088, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98111,7 +97644,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1612,
+            Conv2D1593,
             [((1, 1120, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98132,7 +97665,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1613,
+            Conv2D1594,
             [((1, 1152, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98153,7 +97686,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1614,
+            Conv2D1595,
             [((1, 1184, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98174,7 +97707,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1615,
+            Conv2D1596,
             [((1, 1216, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98195,7 +97728,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1616,
+            Conv2D1597,
             [((1, 1248, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98216,7 +97749,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1617,
+            Conv2D1598,
             [((1, 1280, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98237,7 +97770,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1618,
+            Conv2D1599,
             [((1, 1312, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98258,7 +97791,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1619,
+            Conv2D1600,
             [((1, 1344, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98279,7 +97812,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1620,
+            Conv2D1601,
             [((1, 1376, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98300,7 +97833,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1621,
+            Conv2D1602,
             [((1, 1408, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98321,7 +97854,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1622,
+            Conv2D1603,
             [((1, 1440, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98342,7 +97875,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1623,
+            Conv2D1604,
             [((1, 1472, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98363,7 +97896,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1624,
+            Conv2D1605,
             [((1, 1504, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98384,7 +97917,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1625,
+            Conv2D1606,
             [((1, 1536, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98405,7 +97938,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1626,
+            Conv2D1607,
             [((1, 1568, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98426,7 +97959,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1627,
+            Conv2D1608,
             [((1, 1600, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98447,7 +97980,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1628,
+            Conv2D1609,
             [((1, 1632, 7, 7), torch.bfloat16)],
             {
                 "model_names": [
@@ -98497,7 +98030,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1629,
+        Conv2D1610,
         [((1, 32, 150, 150), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
@@ -98680,7 +98213,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1630,
+        Conv2D1611,
         [((1, 288, 38, 38), torch.bfloat16), ((288, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
@@ -98953,7 +98486,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1631,
+        Conv2D1612,
         [((1, 384, 10, 10), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
@@ -98968,7 +98501,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1632,
+        Conv2D1613,
         [((1, 256, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -98989,7 +98522,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1633,
+        Conv2D1614,
         [((1, 18, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -99010,7 +98543,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1634,
+        Conv2D1615,
         [((1, 18, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -99031,7 +98564,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1635,
+        Conv2D1616,
         [((1, 256, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -99052,7 +98585,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1636,
+        Conv2D1617,
         [((1, 36, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -99073,7 +98606,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1637,
+        Conv2D1618,
         [((1, 36, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -99094,7 +98627,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1638,
+        Conv2D1619,
         [((1, 36, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -99115,7 +98648,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1639,
+        Conv2D1620,
         [((1, 18, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -99136,7 +98669,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1640,
+        Conv2D1621,
         [((1, 36, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -99157,7 +98690,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1641,
+        Conv2D1622,
         [((1, 72, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -99199,7 +98732,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1642,
+        Conv2D1623,
         [((1, 72, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -99220,7 +98753,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1643,
+        Conv2D1624,
         [((1, 18, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -99241,7 +98774,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1644,
+        Conv2D1625,
         [((1, 72, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -99262,7 +98795,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1645,
+        Conv2D1626,
         [((1, 144, 7, 7), torch.bfloat16)],
         {
             "model_names": [
@@ -99325,7 +98858,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1634,
+        Conv2D1615,
         [((1, 18, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -99346,7 +98879,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1646,
+        Conv2D1627,
         [((1, 18, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -99367,7 +98900,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1647,
+        Conv2D1628,
         [((1, 36, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -99388,7 +98921,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1648,
+        Conv2D1629,
         [((1, 144, 7, 7), torch.bfloat16)],
         {
             "model_names": [
@@ -99409,7 +98942,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1649,
+        Conv2D1630,
         [((1, 144, 7, 7), torch.bfloat16)],
         {
             "model_names": [
@@ -99430,7 +98963,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1650,
+        Conv2D1631,
         [((1, 72, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -99451,7 +98984,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1651,
+        Conv2D1632,
         [((1, 72, 14, 14), torch.bfloat16)],
         {
             "model_names": [
@@ -99472,7 +99005,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1652,
+        Conv2D1633,
         [((1, 36, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -99493,7 +99026,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1653,
+        Conv2D1634,
         [((1, 36, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -99514,7 +99047,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1654,
+        Conv2D1635,
         [((1, 18, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -99535,7 +99068,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1655,
+        Conv2D1636,
         [((1, 18, 56, 56), torch.bfloat16)],
         {
             "model_names": [
@@ -99556,7 +99089,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1656,
+        Conv2D1637,
         [((1, 256, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
@@ -99586,7 +99119,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1512,
+        Conv2D1493,
         [((1, 64, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
@@ -99631,7 +99164,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1657,
+        Conv2D1638,
         [((1, 64, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
@@ -99646,7 +99179,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1658,
+        Conv2D1639,
         [((1, 128, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
@@ -99676,7 +99209,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1659,
+        Conv2D1640,
         [((1, 2048, 1, 6), torch.float32), ((2048, 1, 1, 4), torch.float32)],
         {
             "model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"],
@@ -99692,7 +99225,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1660,
+            Conv2D1641,
             [((1, 576, 1, 1), torch.bfloat16)],
             {
                 "model_names": ["pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm"],
@@ -99823,7 +99356,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1661,
+        Conv2D1642,
         [((1, 512, 20, 20), torch.bfloat16)],
         {
             "model_names": ["pt_yolov9_default_obj_det_github"],
@@ -99883,7 +99416,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1662,
+        Conv2D1643,
         [((1, 12, 320, 320), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -99898,7 +99431,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1392,
+        Conv2D1372,
         [((1, 48, 320, 320), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -99943,7 +99476,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1393,
+        Conv2D1373,
         [((1, 48, 160, 160), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -99958,7 +99491,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1394,
+        Conv2D1374,
         [((1, 96, 160, 160), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -99973,7 +99506,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1395,
+        Conv2D1375,
         [((1, 96, 160, 160), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -99988,7 +99521,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1396,
+        Conv2D1376,
         [((1, 192, 80, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100003,7 +99536,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1394,
+        Conv2D1374,
         [((1, 96, 80, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100033,7 +99566,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1383,
+        Conv2D1363,
         [((1, 192, 80, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100048,7 +99581,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1397,
+        Conv2D1377,
         [((1, 192, 80, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100078,7 +99611,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1383,
+        Conv2D1363,
         [((1, 192, 40, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100093,7 +99626,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1158,
+        Conv2D1137,
         [((1, 192, 40, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100108,7 +99641,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1399,
+        Conv2D1379,
         [((1, 384, 40, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100123,7 +99656,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1663,
+        Conv2D1644,
         [((1, 384, 40, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100139,7 +99672,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1398,
+            Conv2D1378,
             [((1, 768, 20, 20), torch.bfloat16)],
             {
                 "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100157,7 +99690,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1664,
+            Conv2D1645,
             [((1, 1536, 20, 20), torch.bfloat16)],
             {
                 "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100174,7 +99707,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1399,
+        Conv2D1379,
         [((1, 384, 20, 20), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100189,7 +99722,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1665,
+        Conv2D1646,
         [((1, 384, 20, 20), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100205,7 +99738,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1385,
+            Conv2D1365,
             [((1, 768, 20, 20), torch.bfloat16)],
             {
                 "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100223,7 +99756,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1477,
+            Conv2D1458,
             [((1, 768, 40, 40), torch.bfloat16)],
             {
                 "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100255,7 +99788,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1158,
+        Conv2D1137,
         [((1, 192, 80, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100270,7 +99803,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1403,
+        Conv2D1383,
         [((1, 192, 80, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100285,7 +99818,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1666,
+        Conv2D1647,
         [((1, 192, 80, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100300,7 +99833,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1667,
+        Conv2D1648,
         [((1, 192, 80, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100315,7 +99848,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1668,
+        Conv2D1649,
         [((1, 192, 80, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100330,7 +99863,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1666,
+        Conv2D1647,
         [((1, 192, 40, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100345,7 +99878,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1667,
+        Conv2D1648,
         [((1, 192, 40, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100360,7 +99893,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1668,
+        Conv2D1649,
         [((1, 192, 40, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100375,7 +99908,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1669,
+        Conv2D1650,
         [((1, 384, 40, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100391,7 +99924,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1477,
+            Conv2D1458,
             [((1, 768, 20, 20), torch.bfloat16)],
             {
                 "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100408,7 +99941,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1158,
+        Conv2D1137,
         [((1, 192, 20, 20), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100423,7 +99956,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1666,
+        Conv2D1647,
         [((1, 192, 20, 20), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100438,7 +99971,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1667,
+        Conv2D1648,
         [((1, 192, 20, 20), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100453,7 +99986,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1668,
+        Conv2D1649,
         [((1, 192, 20, 20), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -100469,7 +100002,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1670,
+            Conv2D1651,
             [((1, 3, 224, 224), torch.float32)],
             {
                 "model_names": ["onnx_vit_base_google_vit_base_patch16_224_img_cls_hf"],
@@ -100486,7 +100019,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1671,
+        Conv2D1652,
         [((1, 3, 224, 224), torch.float32)],
         {
             "model_names": [
@@ -100506,7 +100039,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1444,
+        Conv2D1425,
         [((1, 64, 112, 112), torch.float32)],
         {
             "model_names": ["onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub"],
@@ -100521,7 +100054,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1672,
+        Conv2D1653,
         [((1, 64, 112, 112), torch.float32)],
         {
             "model_names": [
@@ -100554,7 +100087,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1446,
+        Conv2D1427,
         [((1, 128, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -100572,7 +100105,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1673,
+        Conv2D1654,
         [((1, 128, 56, 56), torch.float32)],
         {
             "model_names": ["pd_mobilenetv1_basic_img_cls_paddlemodels"],
@@ -100587,7 +100120,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1674,
+        Conv2D1655,
         [((1, 448, 56, 56), torch.float32)],
         {
             "model_names": ["onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub"],
@@ -100617,7 +100150,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1675,
+        Conv2D1656,
         [((1, 256, 28, 28), torch.float32)],
         {
             "model_names": ["onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub"],
@@ -100632,7 +100165,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1676,
+        Conv2D1657,
         [((1, 160, 28, 28), torch.float32)],
         {
             "model_names": ["onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub"],
@@ -100647,7 +100180,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1677,
+        Conv2D1658,
         [((1, 160, 28, 28), torch.float32)],
         {
             "model_names": ["onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub"],
@@ -100662,7 +100195,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1678,
+        Conv2D1659,
         [((1, 736, 28, 28), torch.float32)],
         {
             "model_names": ["onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub"],
@@ -100692,7 +100225,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1679,
+        Conv2D1660,
         [((1, 512, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub"],
@@ -100707,7 +100240,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D953,
+        Conv2D1661,
         [((1, 192, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub"],
@@ -100722,7 +100255,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1680,
+        Conv2D1662,
         [((1, 1088, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub"],
@@ -100737,7 +100270,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1681,
+        Conv2D1663,
         [((1, 768, 1, 1), torch.float32)],
         {
             "model_names": ["onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub"],
@@ -100752,7 +100285,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1682,
+        Conv2D1664,
         [((1, 768, 7, 7), torch.float32)],
         {
             "model_names": ["onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub"],
@@ -100767,7 +100300,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1683,
+        Conv2D1665,
         [((1, 224, 7, 7), torch.float32)],
         {
             "model_names": ["onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub"],
@@ -100782,7 +100315,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1684,
+        Conv2D1666,
         [((1, 224, 7, 7), torch.float32)],
         {
             "model_names": ["onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub"],
@@ -100797,7 +100330,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1685,
+        Conv2D1667,
         [((1, 1440, 7, 7), torch.float32)],
         {
             "model_names": ["onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub"],
@@ -100857,7 +100390,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D944,
+        Conv2D1424,
         [((1, 16, 224, 224), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -100872,7 +100405,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D945,
+        Conv2D1668,
         [((1, 32, 224, 224), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -100887,7 +100420,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D946,
+        Conv2D1669,
         [((1, 32, 112, 112), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -100902,7 +100435,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D947,
+        Conv2D1670,
         [((1, 48, 112, 112), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -100917,7 +100450,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D948,
+        Conv2D1671,
         [((1, 48, 56, 56), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -100932,7 +100465,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D949,
+        Conv2D1672,
         [((1, 96, 56, 56), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -100947,7 +100480,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D950,
+        Conv2D1673,
         [((1, 96, 28, 28), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -100962,7 +100495,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D951,
+        Conv2D1674,
         [((1, 192, 28, 28), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -100977,7 +100510,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D952,
+        Conv2D1213,
         [((1, 192, 28, 28), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -100992,7 +100525,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D953,
+        Conv2D1661,
         [((1, 192, 28, 28), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -101007,7 +100540,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D955,
+        Conv2D1675,
         [((1, 192, 14, 14), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -101022,7 +100555,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D956,
+        Conv2D1676,
         [((1, 384, 14, 14), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -101037,7 +100570,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D959,
+        Conv2D1677,
         [((1, 384, 14, 14), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -101052,7 +100585,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D960,
+        Conv2D1678,
         [((1, 384, 14, 14), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -101067,7 +100600,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D961,
+        Conv2D1679,
         [((1, 360, 14, 14), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -101082,7 +100615,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D963,
+        Conv2D1680,
         [((1, 96, 14, 14), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -101097,7 +100630,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D966,
+        Conv2D1681,
         [((1, 192, 28, 28), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -101112,7 +100645,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D967,
+        Conv2D1682,
         [((1, 42, 28, 28), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -101127,7 +100660,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D963,
+        Conv2D1680,
         [((1, 96, 28, 28), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -101142,7 +100675,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D968,
+        Conv2D1683,
         [((1, 96, 56, 56), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -101157,7 +100690,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D969,
+        Conv2D1684,
         [((1, 18, 56, 56), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -101172,7 +100705,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D963,
+        Conv2D1680,
         [((1, 96, 56, 56), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -101202,7 +100735,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D970,
+        Conv2D1685,
         [((1, 12, 112, 112), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -101217,7 +100750,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D963,
+        Conv2D1680,
         [((1, 96, 112, 112), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
@@ -101448,7 +100981,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1514,
+        Conv2D1495,
         [((1, 16, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b7_img_cls_torchvision"],
@@ -101697,7 +101230,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1083,
+        Conv2D1062,
         [((1, 960, 14, 14), torch.bfloat16), ((960, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": [
@@ -101715,7 +101248,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1084,
+        Conv2D1063,
         [((1, 960, 14, 14), torch.bfloat16), ((960, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
@@ -102027,7 +101560,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1629,
+        Conv2D1610,
         [((1, 32, 190, 190), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
@@ -102147,7 +101680,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1073,
+        Conv2D1052,
         [((1, 192, 48, 48), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
@@ -102162,7 +101695,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1074,
+        Conv2D1053,
         [((1, 56, 48, 48), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
@@ -102177,7 +101710,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1075,
+        Conv2D1054,
         [((1, 336, 48, 48), torch.bfloat16), ((336, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
@@ -102193,7 +101726,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1078,
+            Conv2D1057,
             [((1, 336, 48, 48), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
@@ -102225,7 +101758,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1080,
+        Conv2D1059,
         [((1, 336, 24, 24), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
@@ -102255,7 +101788,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1081,
+        Conv2D1060,
         [((1, 672, 24, 24), torch.bfloat16), ((672, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
@@ -102304,7 +101837,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1082,
+            Conv2D1061,
             [((1, 672, 24, 24), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
@@ -102336,7 +101869,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1083,
+        Conv2D1062,
         [((1, 960, 24, 24), torch.bfloat16), ((960, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
@@ -102385,7 +101918,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1085,
+            Conv2D1064,
             [((1, 960, 12, 12), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
@@ -102402,7 +101935,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1086,
+        Conv2D1065,
         [((1, 272, 12, 12), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
@@ -102417,7 +101950,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1087,
+        Conv2D1066,
         [((1, 1632, 12, 12), torch.bfloat16), ((1632, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
@@ -102433,7 +101966,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1090,
+            Conv2D1069,
             [((1, 1632, 12, 12), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
@@ -102450,7 +101983,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1091,
+        Conv2D1070,
         [((1, 1632, 12, 12), torch.bfloat16), ((1632, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
@@ -102466,7 +101999,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1092,
+            Conv2D1071,
             [((1, 1632, 12, 12), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
@@ -102576,7 +102109,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1516,
+        Conv2D1497,
         [((1, 24, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -102681,7 +102214,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1519,
+        Conv2D1500,
         [((1, 80, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -102726,7 +102259,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1522,
+        Conv2D1503,
         [((1, 80, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -102921,7 +102454,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1393,
+        Conv2D1373,
         [((1, 48, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -102981,7 +102514,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1400,
+        Conv2D1380,
         [((1, 96, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -103011,7 +102544,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1392,
+        Conv2D1372,
         [((1, 48, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -103026,7 +102559,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1395,
+        Conv2D1375,
         [((1, 96, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -103056,7 +102589,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1396,
+        Conv2D1376,
         [((1, 192, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -103086,7 +102619,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1397,
+        Conv2D1377,
         [((1, 192, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -103101,7 +102634,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1665,
+        Conv2D1646,
         [((1, 384, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -103221,7 +102754,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1276,
+        Conv2D1256,
         [((1, 192, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -105070,7 +104603,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1167,
+            Conv2D1146,
             [((1, 3, 1280, 1280), torch.float32)],
             {
                 "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280"],
@@ -105599,7 +105132,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1591,
+        Conv2D1572,
         [((1, 256, 56, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
@@ -105614,7 +105147,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1593,
+        Conv2D1574,
         [((1, 512, 28, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
@@ -105630,7 +105163,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1565,
+            Conv2D1546,
             [((1, 512, 28, 40), torch.bfloat16)],
             {
                 "model_names": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
@@ -105719,7 +105252,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1560,
+        Conv2D1541,
         [((1, 256, 56, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
@@ -105770,7 +105303,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1595,
+        Conv2D1576,
         [((1, 384, 56, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
@@ -105845,7 +105378,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1597,
+        Conv2D1578,
         [((1, 256, 28, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
@@ -105879,7 +105412,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1461,
+            Conv2D1442,
             [((1, 3, 512, 672), torch.bfloat16)],
             {
                 "model_names": ["pt_yolos_hustvl_yolos_tiny_obj_det_hf"],
@@ -105983,7 +105516,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1206,
+        Conv2D1185,
         [((1, 16, 128, 128), torch.float32)],
         {
             "model_names": [
@@ -106766,7 +106299,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1229,
+        Conv2D1208,
         [((1, 24, 160, 160), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
@@ -106781,7 +106314,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1230,
+        Conv2D1209,
         [((1, 24, 160, 160), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
@@ -106826,7 +106359,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1231,
+        Conv2D1210,
         [((1, 144, 80, 80), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
@@ -106886,7 +106419,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D952,
+        Conv2D1213,
         [((1, 192, 80, 80), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
@@ -107096,7 +106629,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1270,
+        Conv2D1250,
         [((1, 160, 20, 20), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
@@ -107171,7 +106704,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1272,
+        Conv2D1252,
         [((1, 960, 20, 20), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
@@ -107478,7 +107011,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1617,
+            Conv2D1598,
             [((1, 1280, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -107496,7 +107029,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1618,
+            Conv2D1599,
             [((1, 1312, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -107514,7 +107047,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1619,
+            Conv2D1600,
             [((1, 1344, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -107532,7 +107065,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1620,
+            Conv2D1601,
             [((1, 1376, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -107550,7 +107083,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1621,
+            Conv2D1602,
             [((1, 1408, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -107568,7 +107101,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1622,
+            Conv2D1603,
             [((1, 1440, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -107586,7 +107119,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1623,
+            Conv2D1604,
             [((1, 1472, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -107604,7 +107137,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1624,
+            Conv2D1605,
             [((1, 1504, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -107622,7 +107155,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1625,
+            Conv2D1606,
             [((1, 1536, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -107640,7 +107173,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1626,
+            Conv2D1607,
             [((1, 1568, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -107658,7 +107191,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1627,
+            Conv2D1608,
             [((1, 1600, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -107676,7 +107209,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1628,
+            Conv2D1609,
             [((1, 1632, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -108015,7 +107548,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1073,
+        Conv2D1052,
         [((1, 192, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
@@ -108030,7 +107563,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1074,
+        Conv2D1053,
         [((1, 56, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
@@ -108045,7 +107578,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1075,
+        Conv2D1054,
         [((1, 336, 28, 28), torch.bfloat16), ((336, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
@@ -108060,7 +107593,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1078,
+        Conv2D1057,
         [((1, 336, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
@@ -108075,7 +107608,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1079,
+        Conv2D1058,
         [((1, 336, 28, 28), torch.bfloat16), ((336, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
@@ -108090,7 +107623,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1080,
+        Conv2D1059,
         [((1, 336, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
@@ -108106,7 +107639,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1082,
+            Conv2D1061,
             [((1, 672, 14, 14), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
@@ -108124,7 +107657,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1085,
+            Conv2D1064,
             [((1, 960, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
@@ -108141,7 +107674,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1086,
+        Conv2D1065,
         [((1, 272, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
@@ -108156,7 +107689,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1087,
+        Conv2D1066,
         [((1, 1632, 7, 7), torch.bfloat16), ((1632, 1, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
@@ -108172,7 +107705,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1090,
+            Conv2D1069,
             [((1, 1632, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
@@ -108189,7 +107722,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1091,
+        Conv2D1070,
         [((1, 1632, 7, 7), torch.bfloat16), ((1632, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
@@ -108205,7 +107738,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1092,
+            Conv2D1071,
             [((1, 1632, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
@@ -108223,7 +107756,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1093,
+            Conv2D1072,
             [((1, 448, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
@@ -108240,7 +107773,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1094,
+        Conv2D1073,
         [((1, 2688, 7, 7), torch.bfloat16), ((2688, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
@@ -108256,7 +107789,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1097,
+            Conv2D1076,
             [((1, 2688, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
@@ -108274,7 +107807,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1098,
+            Conv2D1077,
             [((1, 448, 7, 7), torch.bfloat16)],
             {
                 "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
@@ -109266,7 +108799,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1394,
+        Conv2D1374,
         [((1, 96, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_x_3_2gf_img_cls_torchvision"],
@@ -110623,7 +110156,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1661,
+            Conv2D1642,
             [((1, 512, 40, 40), torch.bfloat16)],
             {
                 "model_names": ["pt_yolov9_default_obj_det_github"],
@@ -110868,7 +110401,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1106,
+        Conv2D1085,
         [((1, 64, 52, 52), torch.bfloat16), ((64, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -111096,7 +110629,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1510,
+        Conv2D1491,
         [((1, 128, 52, 52), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -112014,7 +111547,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1229,
+        Conv2D1208,
         [((1, 24, 224, 224), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
@@ -112029,7 +111562,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1230,
+        Conv2D1209,
         [((1, 24, 224, 224), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
@@ -112171,7 +111704,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1265,
+        Conv2D1245,
         [((1, 64, 56, 56), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
@@ -112186,7 +111719,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D956,
+        Conv2D1676,
         [((1, 384, 56, 56), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
@@ -112231,7 +111764,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1267,
+        Conv2D1247,
         [((1, 384, 56, 56), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
@@ -112321,7 +111854,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D991,
+        Conv2D970,
         [((1, 768, 28, 28), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
@@ -112366,7 +111899,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1432,
+        Conv2D1412,
         [((1, 176, 28, 28), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
@@ -112441,7 +111974,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1434,
+        Conv2D1414,
         [((1, 1056, 28, 28), torch.float32)],
         {
             "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
@@ -112907,7 +112440,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D972,
+        Conv2D951,
         [((1, 448, 56, 56), torch.float32)],
         {
             "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr"],
@@ -113072,7 +112605,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1673,
+        Conv2D1654,
         [((1, 128, 80, 80), torch.float32)],
         {
             "model_names": ["onnx_yolov10_default_obj_det_github"],
@@ -113132,7 +112665,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1446,
+        Conv2D1427,
         [((1, 128, 20, 20), torch.float32)],
         {
             "model_names": ["onnx_yolov10_default_obj_det_github"],
@@ -113162,7 +112695,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1444,
+        Conv2D1425,
         [((1, 64, 80, 80), torch.float32)],
         {
             "model_names": ["onnx_yolov10_default_obj_det_github"],
@@ -113207,7 +112740,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1446,
+        Conv2D1427,
         [((1, 128, 40, 40), torch.float32)],
         {
             "model_names": ["onnx_yolov10_default_obj_det_github"],
@@ -113222,7 +112755,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1673,
+        Conv2D1654,
         [((1, 128, 40, 40), torch.float32)],
         {
             "model_names": ["onnx_yolov10_default_obj_det_github"],
@@ -113387,7 +112920,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1607,
+        Conv2D1588,
         [((1, 1024, 7, 7), torch.float32)],
         {
             "model_names": ["pd_mobilenetv1_basic_img_cls_paddlemodels"],
@@ -113539,7 +113072,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1103,
+            Conv2D1082,
             [((100, 64, 100, 134), torch.bfloat16)],
             {
                 "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -113562,7 +113095,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1376,
+            Conv2D1356,
             [((100, 32, 200, 267), torch.bfloat16)],
             {
                 "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -113585,7 +113118,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1377,
+            Conv2D1357,
             [((100, 16, 200, 267), torch.bfloat16)],
             {
                 "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -114239,7 +113772,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1316,
+        Conv2D1296,
         [((1, 48, 96, 96), torch.bfloat16), ((48, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv1_google_mobilenet_v1_0_75_192_img_cls_hf"],
@@ -114271,7 +113804,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1318,
+        Conv2D1298,
         [((1, 96, 48, 48), torch.bfloat16), ((96, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv1_google_mobilenet_v1_0_75_192_img_cls_hf"],
@@ -114303,7 +113836,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1394,
+        Conv2D1374,
         [((1, 96, 48, 48), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv1_google_mobilenet_v1_0_75_192_img_cls_hf"],
@@ -114319,7 +113852,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1464,
+        Conv2D1445,
         [((1, 96, 24, 24), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv1_google_mobilenet_v1_0_75_192_img_cls_hf"],
@@ -114367,7 +113900,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1383,
+        Conv2D1363,
         [((1, 192, 24, 24), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv1_google_mobilenet_v1_0_75_192_img_cls_hf"],
@@ -114399,7 +113932,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1111,
+        Conv2D1090,
         [((1, 384, 12, 12), torch.bfloat16), ((384, 1, 3, 3), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv1_google_mobilenet_v1_0_75_192_img_cls_hf"],
@@ -114431,7 +113964,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1399,
+        Conv2D1379,
         [((1, 384, 12, 12), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv1_google_mobilenet_v1_0_75_192_img_cls_hf"],
@@ -114480,7 +114013,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1385,
+            Conv2D1365,
             [((1, 768, 6, 6), torch.bfloat16)],
             {
                 "model_names": ["pt_mobilenetv1_google_mobilenet_v1_0_75_192_img_cls_hf"],
@@ -114802,7 +114335,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1039,
+        Conv2D1018,
         [((1, 72, 10, 10), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
@@ -114850,7 +114383,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1043,
+        Conv2D1022,
         [((1, 432, 10, 10), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
@@ -114882,7 +114415,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1013,
+        Conv2D992,
         [((1, 120, 5, 5), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
@@ -114915,7 +114448,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1018,
+            Conv2D997,
             [((1, 720, 5, 5), torch.bfloat16)],
             {
                 "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
@@ -115112,7 +114645,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D998,
+        Conv2D977,
         [((1, 3, 227, 227), torch.bfloat16)],
         {
             "model_names": ["pt_rcnn_base_obj_det_torchvision_rect_0"],
@@ -115192,7 +114725,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1510,
+        Conv2D1491,
         [((1, 128, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_facebook_regnet_y_040_img_cls_hf"],
@@ -115538,7 +115071,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1611,
+            Conv2D1592,
             [((1, 1088, 1, 1), torch.bfloat16)],
             {
                 "model_names": ["pt_regnet_facebook_regnet_y_040_img_cls_hf"],
@@ -117743,7 +117276,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1168,
+        Conv2D1147,
         [((1, 3, 640, 640), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -117759,7 +117292,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1169,
+            Conv2D1148,
             [((1, 80, 320, 320), torch.float32)],
             {
                 "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -117780,7 +117313,7 @@ forge_modules_and_shapes_dtypes_list = [
         ],
     ),
     (
-        Conv2D1170,
+        Conv2D1149,
         [((1, 160, 160, 160), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -117795,7 +117328,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1171,
+        Conv2D1150,
         [((1, 80, 160, 160), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -117810,7 +117343,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1172,
+        Conv2D1151,
         [((1, 80, 160, 160), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -117825,7 +117358,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1173,
+        Conv2D1152,
         [((1, 160, 160, 160), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -117841,7 +117374,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1174,
+            Conv2D1153,
             [((1, 160, 160, 160), torch.float32)],
             {
                 "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -117858,7 +117391,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1175,
+        Conv2D1154,
         [((1, 320, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -117873,7 +117406,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1176,
+        Conv2D1155,
         [((1, 160, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -117888,7 +117421,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1177,
+        Conv2D1156,
         [((1, 320, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -117904,7 +117437,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1178,
+            Conv2D1157,
             [((1, 320, 80, 80), torch.float32)],
             {
                 "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -117921,7 +117454,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1179,
+        Conv2D1158,
         [((1, 640, 40, 40), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -117936,7 +117469,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1181,
+        Conv2D1160,
         [((1, 640, 40, 40), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -117952,7 +117485,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1182,
+            Conv2D1161,
             [((1, 640, 40, 40), torch.float32)],
             {
                 "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -117969,7 +117502,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1183,
+        Conv2D1162,
         [((1, 1280, 20, 20), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -117984,7 +117517,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1185,
+        Conv2D1164,
         [((1, 1280, 20, 20), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -117999,7 +117532,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1186,
+        Conv2D1165,
         [((1, 2560, 20, 20), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -118014,7 +117547,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1187,
+        Conv2D1166,
         [((1, 1280, 40, 40), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -118029,7 +117562,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1188,
+        Conv2D1167,
         [((1, 640, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -118044,7 +117577,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D1189,
+        Conv2D1168,
         [((1, 320, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -118060,7 +117593,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1190,
+            Conv2D1169,
             [((1, 320, 80, 80), torch.float32)],
             {
                 "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -118077,7 +117610,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1191,
+        Conv2D1170,
         [((1, 640, 40, 40), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -118093,7 +117626,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D1192,
+            Conv2D1171,
             [((1, 640, 40, 40), torch.float32)],
             {
                 "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
@@ -118110,7 +117643,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D1193,
+        Conv2D1172,
         [((1, 1280, 20, 20), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],

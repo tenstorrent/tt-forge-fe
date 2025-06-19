@@ -1060,49 +1060,19 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Clip2,
-        [((1, 16, 240, 240), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99, "args": {"min": "-3.0", "max": "3.0"}},
-    ),
-    (
-        Clip2,
-        [((1, 32, 240, 240), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99, "args": {"min": "-3.0", "max": "3.0"}},
-    ),
-    (
-        Clip2,
-        [((1, 48, 120, 120), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99, "args": {"min": "-3.0", "max": "3.0"}},
-    ),
-    (
-        Clip2,
-        [((1, 96, 60, 60), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99, "args": {"min": "-3.0", "max": "3.0"}},
-    ),
-    (
-        Clip2,
-        [((1, 192, 30, 30), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99, "args": {"min": "-3.0", "max": "3.0"}},
-    ),
-    (
         Clip0,
         [((1, 192, 1, 1), torch.float32)],
         {
-            "model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
+            "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
             "args": {"min": "0.0", "max": "1.0"},
         },
     ),
     (
-        Clip2,
-        [((1, 384, 15, 15), torch.float32)],
-        {"model_names": ["TranslatedLayer"], "pcc": 0.99, "args": {"min": "-3.0", "max": "3.0"}},
-    ),
-    (
         Clip0,
         [((1, 384, 1, 1), torch.float32)],
         {
-            "model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
+            "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
             "args": {"min": "0.0", "max": "1.0"},
         },
@@ -1111,7 +1081,7 @@ forge_modules_and_shapes_dtypes_list = [
         Clip0,
         [((1, 96, 1, 1), torch.float32)],
         {
-            "model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
+            "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
             "args": {"min": "0.0", "max": "1.0"},
         },
@@ -1120,7 +1090,7 @@ forge_modules_and_shapes_dtypes_list = [
         Clip0,
         [((1, 24, 1, 1), torch.float32)],
         {
-            "model_names": ["TranslatedLayer", "pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
+            "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
             "args": {"min": "0.0", "max": "1.0"},
         },
