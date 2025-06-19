@@ -1,0 +1,6 @@
+# xfail_layer_norm_DTYPE_MISMATCH ids
+
+layer_norm-FROM_HOST-{'normalized_shape': (4,), 'dtype': torch.bfloat16}-(1, 2, 3, 4)-torch.bfloat16-LoFi
+layer_norm-FROM_HOST-{'normalized_shape': (4,), 'dtype': torch.bfloat16}-(1, 2, 3, 4)-torch.bfloat16-HiFi2
+layer_norm-FROM_HOST-{'normalized_shape': (4,), 'dtype': torch.bfloat16}-(1, 2, 3, 4)-torch.bfloat16-HiFi3
+layer_norm-FROM_HOST-{'normalized_shape': (4,), 'dtype': torch.bfloat16}-(1, 2, 3, 4)-torch.bfloat16-HiFi4
