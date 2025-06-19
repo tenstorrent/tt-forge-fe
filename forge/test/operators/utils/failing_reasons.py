@@ -778,6 +778,35 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
+            # E       tvm._ffi.base.TVMError: Traceback (most recent call last):
+            # E         12: _ZN3tvm7runtime13PackedFuncObj
+            # E         11: tvm::runtime::TypedPackedFunc<tvm::RelayExpr (tvm::runtime::Array<tvm::relay::DFPatternCallback, void>, tvm::RelayExpr, tvm::IRModule)>::AssignTypedLambda<tvm::RelayExpr (*)(tvm::runtime::Array<tvm::relay::DFPatternCallback, void>, tvm::RelayExpr, tvm::IRModule)>(tvm::RelayExpr (*)(tvm::runtime::Array<tvm::relay::DFPatternCallback, void>, tvm::RelayExpr, tvm::IRModule), std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}::operator()(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*) const
+            # E         10: tvm::relay::RewritePatterns(tvm::runtime::Array<tvm::relay::DFPatternCallback, void>, tvm::RelayExpr, tvm::IRModule)
+            # E         9: tvm::relay::PatternRewriter::Rewrite(tvm::runtime::Array<tvm::relay::DFPatternCallback, void> const&, tvm::RelayExpr const&)
+            # E         8: tvm::relay::InferTypeWithModule(tvm::RelayExpr const&, tvm::IRModule const&)
+            # E         7: tvm::transform::Pass::operator()(tvm::IRModule) const
+            # E         6: tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+            # E         5: tvm::transform::ModulePassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+            # E         4: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<tvm::IRModule (tvm::IRModule, tvm::transform::PassContext)>::AssignTypedLambda<tvm::relay::transform::InferType()::{lambda(tvm::IRModule, tvm::transform::PassContext const&)#1}>(tvm::relay::transform::InferType()::{lambda(tvm::IRModule, tvm::transform::PassContext const&)#1})::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+            # E         3: tvm::DiagnosticContext::Render()
+            # E         2: tvm::DiagnosticRenderer::Render(tvm::DiagnosticContext const&)
+            # E         1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::TerminalRenderer(std::ostream&)::{lambda(tvm::DiagnosticContext const&)#1}>(tvm::TerminalRenderer(std::ostream&)::{lambda(tvm::DiagnosticContext const&)#1})::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+            # E         0: tvm::ReportAt(tvm::DiagnosticContext const&, std::ostream&, tvm::Span const&, tvm::Diagnostic const&)
+            # E         File "/__w/tt-forge-fe/tt-forge-fe/third_party/tvm/src/ir/diagnostic.cc", line 267
+            # E       TVMError: The source maps are not populated for this module. Please use `tvm.relay.transform.AnnotateSpans` to attach source maps for error reporting.
+            # E       Error: tensor type `Tensor[(1, 1, 1), float32]` has 3 dimensions, while `float32` has 0 dimensions
+            # /localdev/kmilanovic/src/forge/forge_wheels/venv/lib/python3.10/site-packages/tvm/_ffi/base.py:479: TVMError
+            ExceptionCheck(
+                class_name="tvm._ffi.base.TVMError",
+                component=ComponentChecker.TVM.value,
+                message=[
+                    M.contains("Traceback (most recent call last)"),
+                ],
+                error_log=[
+                    M.regex("tensor type .* has .* dimensions, while .* has .* dimensions"),
+                    M.last_line(M.contains("tvm/_ffi/base.py:")),
+                ],
+            ),
         ],
     )
 
@@ -972,6 +1001,20 @@ class FailingReasons(Enum):
                 error_log=[
                     M.contains(">       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)"),
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
+                ],
+            ),
+            # E       RuntimeError: Unable to cast Python instance to C++ type (#define PYBIND11_DETAILED_ERROR_MESSAGES or compile in debug mode for details)
+            # forge/compile.py:745: RuntimeError
+            ExceptionCheck(
+                class_name="RuntimeError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    M.contains(
+                        "Unable to cast Python instance to C++ type (#define PYBIND11_DETAILED_ERROR_MESSAGES or compile in debug mode for details)"
+                    ),
+                ],
+                error_log=[
+                    M.last_line(M.contains("forge/compile.py:")),
                 ],
             ),
         ],
