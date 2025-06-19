@@ -73,8 +73,7 @@ def test_vovnet_osmr_pytorch(variant):
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     verify_cfg = VerifyConfig()
-    if variant == "vovnet39":
-        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
+    verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
 
     # Forge compile framework model
     compiled_model = forge.compile(

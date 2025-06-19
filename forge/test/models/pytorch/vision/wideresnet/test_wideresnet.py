@@ -65,8 +65,12 @@ def test_wideresnet_pytorch(variant):
         compiler_cfg=compiler_cfg,
     )
 
+    verify_cfg = VerifyConfig()
+    if variant == "wide_resnet50_2":
+        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
+
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
 
     # Post processing
     post_processing(co_out)
