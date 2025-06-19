@@ -156,13 +156,20 @@ jobs:
         shell: bash
         run: |
           source env/activate
+          source forge/test/operators/pytorch/test_crash.sh
+
+          crash_dir="ids/crash/crash_scan"
+
+          mkdir -p "${CRASH_SCRIPT_DIR}/${crash_dir}"
+
           pytest --splits ${{ inputs.test_group_cnt }} \
                  --group ${{ matrix.test_group_id }} \
                  --splitting-algorithm least_duration \
                  -m "${{ inputs.test_mark }}" \
-                 --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-                 --log-memory-usage \
-                 2>&1 | tee pytest.log
+                 --collect-only | extract_test_id_from_pytest_collect_function > "${CRASH_SCRIPT_DIR}/${crash_dir}/test_ids_crash_scan.txt"
+
+          CRASH_DIR="${crash_dir}" PYTEST_ADDOPTS="${CRASH_SCRIPT_DIR}/test_query.py::test_query" detect_crashes_scan \
+                2>&1 | tee pytest.log
 
       - name: Upload Test Log
         uses: actions/upload-artifact@v4
