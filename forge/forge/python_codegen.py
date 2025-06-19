@@ -128,7 +128,8 @@ class ForgeWriter(PythonWriter):
         module_directory="generated_modules",
         contains_incompatible_np_floats=False,
         delete_inputs=True,
-    ):
+        training=False,
+    ) -> None:
         super().__init__(module_name, module_directory)
 
         self.framework = framework
@@ -138,7 +139,7 @@ class ForgeWriter(PythonWriter):
         self.contains_incompatible_np_floats = contains_incompatible_np_floats
         self.delete_inputs = delete_inputs
         self.dev = "TTDevice"
-        self.training = False
+        self.training = training
 
     def write_header(self, include_pytest_imports=False):
         self.wl("import forge")
@@ -1082,7 +1083,7 @@ class ForgeWriter(PythonWriter):
         self.indent -= 1
         self.wl("")
         self.wl(
-            "compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, training=True)"
+            f"compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg{', training=True' if self.training else ''})"
         )
         self.wl("")
         self.wl(
