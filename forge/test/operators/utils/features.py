@@ -16,6 +16,7 @@ class TestSweepsFeaturesParams:
 
     skip_forge_verification: bool
     dry_run: bool
+    status_tracker: bool
     ignore_xfail_files: bool
     ignore_skip_files: bool
 
@@ -33,6 +34,7 @@ class TestSweepsFeaturesParams:
 
         skip_forge_verification = cls.get_env_property_bool("SKIP_FORGE_VERIFICATION", False)
         dry_run = cls.get_env_property_bool("DRY_RUN", False)
+        status_tracker = cls.get_env_property_bool("STATUS_TRACKER", False)
         ignore_xfail_files = cls.get_env_property_bool("IGNORE_XFAIL_FILES", False)
         ignore_skip_files = cls.get_env_property_bool("IGNORE_SKIP_FILES", False)
 
@@ -40,6 +42,7 @@ class TestSweepsFeaturesParams:
         feature_params = cls(
             skip_forge_verification=skip_forge_verification,
             dry_run=dry_run,
+            status_tracker=status_tracker,
             ignore_xfail_files=ignore_xfail_files,
             ignore_skip_files=ignore_skip_files,
         )
