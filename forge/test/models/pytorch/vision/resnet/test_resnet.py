@@ -154,7 +154,7 @@ def test_resnet_timm():
         input_sample,
         framework_model,
         compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95, verify_emitc_correctness=True)),
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95), verify_emitc_correctness=True),
     )
 
     # Run model on sample data and print results
@@ -211,7 +211,7 @@ def test_resnet_torchvision(variant):
         inputs,
         framework_model,
         compiled_model,
-        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc, verify_emitc_correctness=True)),
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc), verify_emitc_correctness=True),
     )
 
     # Run model on sample data and print results

@@ -92,7 +92,7 @@ def test_detr_detection(variant):
         inputs,
         framework_model,
         compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97, verify_emitc_correctness=True)),
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97), verify_emitc_correctness=True),
     )
 
 

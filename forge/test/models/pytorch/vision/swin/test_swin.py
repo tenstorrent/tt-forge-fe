@@ -247,5 +247,5 @@ def test_swin_torchvision(variant):
         inputs,
         framework_model,
         compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc, verify_emitc_correctness=True)),
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc), verify_emitc_correctness=True),
     )
