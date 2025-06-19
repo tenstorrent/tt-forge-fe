@@ -40,6 +40,14 @@ from test.exception_utils import extract_refined_error_message, extract_failure_
 collect_ignore = ["legacy_tests"]
 
 
+@pytest.hookimpl(tryfirst=True)
+def pytest_runtest_setup(item):
+    if item.config.getoption("--track-files", default=False):
+        with open(".pytest_current_test_executing", "w") as f:
+            f.write(item.nodeid)
+            f.flush()
+
+
 def pytest_sessionstart(session):
     # See: https://github.com/pytorch/pytorch/wiki/Autograd-and-Fork
     mp.set_start_method("spawn")
@@ -222,6 +230,7 @@ def pytest_runtest_makereport(item, call):
 
 
 def pytest_addoption(parser):
+    parser.addoption("--track-files", action="store_true", default=False, help="track files for test execution")
     parser.addoption(
         "--silicon-only", action="store_true", default=False, help="run silicon tests only, skip golden/model"
     )
