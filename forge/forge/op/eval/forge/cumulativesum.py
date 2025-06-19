@@ -46,10 +46,6 @@ class CumulativeSum(PyEltwiseUnaryOp):
         if dim == 0:
             return ac.op(Nop.create(), (grad,))
 
-    def lower(self, lc, tensors, outputs):
-        # TODO: Implement mlir lowering here.
-        assert False
-
     def initial_flops_estimate(self, tensor_shapes):
         flops = 0
         output_shape = self.shape(tensor_shapes)[0]

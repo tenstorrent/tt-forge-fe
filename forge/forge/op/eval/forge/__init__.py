@@ -232,16 +232,6 @@ def get_f_forge_eval(op_type):
         return module_or_class(op_type).eval
 
 
-def get_f_forge_lower(op_type):
-    module_or_class = _get_module_or_class(op_type.op)
-    if isinstance(module_or_class, ModuleType):
-        if op_type.op == "matmul" or op_type.op == "sparse_matmul":
-            return lambda *inputs: module_or_class.lower(op_type.op, op_type.attr, op_type.forge_attrs, *inputs)
-        return lambda *inputs: module_or_class.lower(op_type.op, op_type.attr, *inputs)
-    else:
-        return module_or_class(op_type).lower
-
-
 def get_f_forge_decompose(op_type):
     module_or_class = _get_module_or_class(op_type.op)
     if isinstance(module_or_class, ModuleType):

@@ -8,17 +8,6 @@
 namespace tt
 {
 
-static bool contains(std::string const &str, std::string const &substr)
-{
-    return str.find(substr) != std::string::npos;
-}
-
-std::ostream &operator<<(std::ostream &os, DramLoc const &dram_loc)
-{
-    os << "[" << dram_loc.channel << ", 0x" << std::hex << dram_loc.address << std::dec << "]";
-    return os;
-}
-
 inline void to_netlist(std::ostream &os, int i) { os << i; }
 
 inline void to_netlist(std::ostream &os, bool b) { os << (b ? "true" : "false"); }
@@ -26,8 +15,6 @@ inline void to_netlist(std::ostream &os, bool b) { os << (b ? "true" : "false");
 inline void to_netlist(std::ostream &os, std::string const &s) { os << s; }
 
 inline void to_netlist(std::ostream &os, float f) { os << std::scientific << f << std::defaultfloat; }
-
-void to_netlist(std::ostream &os, DramLoc const &dram_loc) { os << dram_loc; }
 
 template <typename K, typename V>
 inline void to_netlist(std::ostream &os, std::unordered_map<K, V> const &map);
@@ -86,30 +73,6 @@ template <typename... Ts>
 inline void to_netlist(std::ostream &os, std::variant<Ts...> const &variant)
 {
     std::visit([&os](auto &&value) { to_netlist(os, value); }, variant);
-}
-
-std::ostream &operator<<(std::ostream &os, const ForgeName &name)
-{
-    bool needs_quotes = contains(name.name, " ") or contains(name.name, "/");
-    if (needs_quotes)
-        os << "\"";
-    os << name.name;
-    if (needs_quotes)
-        os << "\"";
-    return os;
-}
-
-std::ostream &operator<<(std::ostream &os, const ForgeBlocks &bb)
-{
-    TT_ASSERT(bb.z > 0);
-    TT_ASSERT(bb.mblock_m > 0);
-    TT_ASSERT(bb.mblock_n > 0);
-    TT_ASSERT(bb.ublock_rt > 0);
-    TT_ASSERT(bb.ublock_ct > 0);
-    os << "t: " << bb.z << ", ";
-    os << "mblock: [" << bb.mblock_m << ", " << bb.mblock_n << "], ";
-    os << "ublock: [" << bb.ublock_rt << ", " << bb.ublock_ct << "]";
-    return os;
 }
 
 std::ostream &operator<<(std::ostream &os, const ForgeOpAttr &attr)

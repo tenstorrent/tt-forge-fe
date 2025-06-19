@@ -175,7 +175,6 @@ class InputNode : public QueueNode
     bool prologue_ = false;
     std::string fractured_parameter_mapping_;
     RuntimeTensorTransform runtime_tensor_transform;
-    ForgeQueueLayout layout = ForgeQueueLayout::Tilized;
 
    protected:
     std::unique_ptr<ConstEvalGraph> consteval_graph_;
@@ -192,9 +191,6 @@ class InputNode : public QueueNode
     ConstEvalGraph *get_consteval_graph(Graph *graph = nullptr, bool create = false, bool promote_input = false);
     void clear_consteval_graph();
     virtual std::unique_ptr<Node> clone(std::string const &name = "") const override;
-
-    void set_layout(ForgeQueueLayout new_layout) { layout = new_layout; }
-    ForgeQueueLayout get_layout() const { return layout; }
 
     void set_tile_broadcast_dim(int dim) { tile_broadcast_dims_.push_back(dim); }
     std::vector<int> get_tile_broadcast_dims() const { return tile_broadcast_dims_; }
