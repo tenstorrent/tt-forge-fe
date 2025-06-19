@@ -14,6 +14,7 @@ from ..utils.dual_output import global_string_buffer
 
 from .failing_reasons import ExceptionData
 from .failing_reasons import FailingReasons
+from .report import EmulatorError
 from .pytest import PyTestUtils
 
 
@@ -57,6 +58,14 @@ class FailingReasonsValidation:
             ex_class_name = f"{type(exception_value).__module__}.{type(exception_value).__name__}"
             ex_class_name = ex_class_name.replace("builtins.", "")
             ex_message = f"{exception_value}"
+
+            if isinstance(exception_value, EmulatorError):
+                ex_message = exception_value.error_message
+                exception_traceback = exception_value.error_log
+                error_message_line = ex_message.split("\n")[0]
+                ex_class_name = error_message_line[:50].split(":")[0]
+                ex_message = ex_message[len(ex_class_name) + 2 :]
+
             exception_traceback = PyTestUtils.remove_colors(exception_traceback)
             ex_data = ExceptionData(
                 class_name=ex_class_name,

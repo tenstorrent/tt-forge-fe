@@ -29,6 +29,10 @@ from test.operators.utils import FailingReasons
 from test.operators.utils import TestSweepsFeatures
 from test.operators.utils import global_string_buffer
 from test.operators.utils.status_tracker import StatusTracker
+from test.operators.utils.report import ReportCache
+
+from test.random.rgg.utils import timeout
+from test.random.rgg.utils import TimeoutException
 
 
 # @pytest.fixture(autouse=True)
@@ -163,13 +167,38 @@ StatusTracker.counter = query_params.range[0] if query_params.range else 0
 class TestVerification:
     """Helper class for performing test verification. It allows running tests in dry-run mode."""
 
+    @staticmethod
+    def get_report_cache_files():
+        if not TestSweepsFeatures.params.emulate_run:
+            return []
+        else:
+            return [
+                # "pytorch_test_query_test_query__OPERATORS_Conv2d_2025-04-09_15-29-12_format.xml",
+            ]
+
+    report_cache = ReportCache(get_report_cache_files())
+
     @classmethod
     def verify(cls, test_vector: TestVector, test_device):
         with StatusTracker(test_vector, TestSweepsFeatures.params.status_tracker):
             if TestSweepsFeatures.params.dry_run:
                 # pytest.skip("Dry run")
                 return
-            test_vector.verify(test_device)
+            elif TestSweepsFeatures.params.emulate_run:
+                cls.report_cache.emulate_run(test_vector.get_id())
+            else:
+                try:
+                    cls.verify_with_timeout(test_vector, test_device)
+                except TimeoutException as e:
+                    logger.error(f"Module verification takes too long {e}.")
+                    raise e
+
+    logger.info(f"Verification timeout: {TestSweepsFeatures.params.verification_timeout}")
+
+    @timeout(TestSweepsFeatures.params.verification_timeout)
+    @staticmethod
+    def verify_with_timeout(test_vector: TestVector, test_device):
+        test_vector.verify(test_device)
 
 
 class TestParamsData:
