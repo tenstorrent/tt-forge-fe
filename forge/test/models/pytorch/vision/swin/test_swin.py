@@ -74,7 +74,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 @pytest.mark.nightly
@@ -112,7 +112,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 @pytest.mark.nightly
@@ -147,7 +147,7 @@ def test_swin_v2_tiny_image_classification(variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 @pytest.mark.nightly
@@ -175,7 +175,7 @@ def test_swin_v2_tiny_masked(variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 variants_with_weights = {
@@ -247,5 +247,5 @@ def test_swin_torchvision(variant):
         inputs,
         framework_model,
         compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc, verify_emitc_correctness=True)),
     )

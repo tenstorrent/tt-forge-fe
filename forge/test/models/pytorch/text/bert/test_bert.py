@@ -195,7 +195,7 @@ def test_bert_sequence_classification_pytorch(variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
     # post processing
     predicted_value = co_out[0].argmax(-1).item()
@@ -293,7 +293,7 @@ def test_bert_sentence_embedding_generation_pytorch(variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
     # Post processing
     sentence_embeddings = mean_pooling(co_out, encoding["attention_mask"])

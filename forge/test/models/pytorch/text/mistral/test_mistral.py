@@ -15,6 +15,7 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.mistral.model_utils.utils import get_current_weather
@@ -62,7 +63,7 @@ def test_mistral(variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
@@ -107,7 +108,7 @@ def test_mistral_v0_3(variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 variants = ["mistralai/Mistral-Nemo-Instruct-2407"]

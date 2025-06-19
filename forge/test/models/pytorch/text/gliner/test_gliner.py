@@ -15,6 +15,7 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.gliner.model_utils.model_utils import (
@@ -58,7 +59,7 @@ def test_gliner(variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
     # Post processing
     entities = post_processing(model, co_out, [text], raw_batch)

@@ -16,6 +16,7 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.phi3.model_utils.utils import load_input
@@ -73,4 +74,4 @@ def test_phi3_5_vision(variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))

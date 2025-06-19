@@ -19,6 +19,7 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -59,7 +60,7 @@ def test_phi_4_causal_lm_pytorch(variant):
     compiled_model = forge.compile(framework_model, sample_inputs, module_name)
 
     # Model Verification
-    verify(sample_inputs, framework_model, compiled_model)
+    verify(sample_inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 @pytest.mark.out_of_memory
@@ -93,7 +94,7 @@ def test_phi_4_token_classification_pytorch(variant):
     compiled_model = forge.compile(framework_model, inputs, module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 @pytest.mark.out_of_memory
@@ -134,4 +135,4 @@ def test_phi_4_sequence_classification_pytorch(variant):
     compiled_model = forge.compile(framework_model, inputs, module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))

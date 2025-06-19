@@ -32,6 +32,7 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.unet.model_utils.model import UNET
@@ -76,7 +77,7 @@ def test_unet_osmr_cityscape_pytorch():
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 def get_imagenet_sample():
@@ -160,7 +161,7 @@ def test_unet_qubvel_pytorch():
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 def generate_model_unet_imgseg_torchhub_pytorch(variant):
@@ -223,7 +224,7 @@ def test_unet_torchhub_pytorch():
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 # Reference: https://github.com/arief25ramadhan/carvana-unet-segmentation
@@ -255,4 +256,4 @@ def test_unet_carvana():
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))

@@ -92,7 +92,7 @@ def test_detr_detection(variant):
         inputs,
         framework_model,
         compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97)),
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97, verify_emitc_correctness=True)),
     )
 
 
@@ -140,4 +140,4 @@ def test_detr_segmentation(variant):
     )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))

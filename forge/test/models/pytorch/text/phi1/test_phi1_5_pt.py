@@ -19,6 +19,7 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -57,7 +58,7 @@ def test_phi_1_5_causal_lm_pytorch(variant):
     compiled_model = forge.compile(framework_model, sample_inputs, module_name)
 
     # Model Verification
-    verify(sample_inputs, framework_model, compiled_model)
+    verify(sample_inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 @pytest.mark.nightly
@@ -89,7 +90,7 @@ def test_phi_1_5_token_classification_pytorch(variant):
     compiled_model = forge.compile(framework_model, inputs, module_name)
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
     # post processing
     predicted_token_class_ids = co_out[0].argmax(-1)[0]
@@ -136,7 +137,7 @@ def test_phi_1_5_sequence_classification_pytorch(variant):
     compiled_model = forge.compile(framework_model, inputs, module_name)
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
     # post processing
     predicted_value = co_out[0].argmax(-1).item()

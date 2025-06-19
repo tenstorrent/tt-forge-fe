@@ -17,6 +17,7 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from third_party.tt_forge_models.vgg19_unet import ModelLoader  # isort:skip
@@ -51,7 +52,7 @@ def test_vgg19_unet():
     )
 
     # Model Verification
-    verify([input_sample], framework_model, compiled_model)
+    verify([input_sample], framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 @pytest.mark.nightly

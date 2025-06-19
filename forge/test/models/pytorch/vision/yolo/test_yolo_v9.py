@@ -18,6 +18,7 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.yolo.model_utils.yolo_utils import (
@@ -58,4 +59,4 @@ def test_yolov9():
     )
 
     # Model Verification
-    verify(input, framework_model, compiled_model)
+    verify(input, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))

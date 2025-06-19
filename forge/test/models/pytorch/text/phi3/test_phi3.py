@@ -24,6 +24,7 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 
@@ -139,7 +140,7 @@ def test_phi3_causal_lm(variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 @pytest.mark.out_of_memory
@@ -185,7 +186,7 @@ def test_phi3_token_classification(variant):
     compiled_model = forge.compile(framework_model, inputs, module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 @pytest.mark.out_of_memory
@@ -227,4 +228,4 @@ def test_phi3_sequence_classification(variant):
     compiled_model = forge.compile(framework_model, inputs, module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))

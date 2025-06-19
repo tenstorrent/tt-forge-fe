@@ -71,7 +71,7 @@ def test_mobilenetv2_basic():
     )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
     # Post processing
     post_processing(co_out)
@@ -118,7 +118,7 @@ def test_mobilenetv2_96(variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 def generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant):
@@ -162,7 +162,7 @@ def test_mobilenetv2_160(variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 def generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant):
@@ -208,7 +208,7 @@ def test_mobilenetv2_224(variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 def generate_model_mobilenetV2_imgcls_timm_pytorch(variant):
@@ -262,7 +262,7 @@ def test_mobilenetv2_timm(variant):
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -327,7 +327,7 @@ def test_mobilenetv2_deeplabv3(variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 variants_with_weights = {

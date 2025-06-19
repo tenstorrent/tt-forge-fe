@@ -14,6 +14,7 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.gemma.model_utils.model_utils import (
@@ -69,7 +70,7 @@ def test_gemma_pytorch_v1(variant):
     )
 
     # Model Verification
-    verify([padded_inputs], framework_model, compiled_model)
+    verify([padded_inputs], framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
     # Runtime and Post-Processing
     generated_text = generate_no_cache(
