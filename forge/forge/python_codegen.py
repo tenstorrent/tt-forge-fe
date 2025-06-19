@@ -1092,7 +1092,7 @@ class ForgeWriter(PythonWriter):
         if self.training:
             self.wl("co_out = co_out[0] if len(co_out) == 1 else co_out")
             self.wl("fw_out = fw_out[0] if len(fw_out) == 1 else fw_out")
-            self.wl("grad = torch.rand_like(co_out)")
+            self.wl("grad = torch.randn_like(co_out)")
             self.wl(
                 "verify_backward(inputs, grad, fw_out, co_out, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
             )
