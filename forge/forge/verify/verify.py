@@ -318,7 +318,7 @@ def verify_backward(
         co_gradients[name] = grad.to_torch().clone() if name.startswith("grad_acc_") else grad.to_torch()
 
     # Run backward on framework model
-    framework_model.zero_grad()
+    # framework_model.zero_grad()
     framework_output.backward(gradient=output_grad)
 
     # 2nd step: verify gradients

@@ -706,6 +706,7 @@ def extract_and_generate_unique_ops_tests(
                 module_directory=f"generated_modules/unique_ops/{current_module_name}",
                 contains_incompatible_np_floats=contains_incompatible_np_floats,
                 delete_inputs=False,
+                training=False,
             )
             writer.write_header(include_pytest_imports=True)
 
@@ -1004,6 +1005,7 @@ def generate_models_ops_test(
             module_name,
             framework="pytorch",  # Currently unique operation extraction is supported for pytorch framework so explicitly specifying the framework as pytorch
             module_directory=models_ops_test_output_directory_path,
+            training=training,
         )
         writer.write_header(include_pytest_imports=True)
 
