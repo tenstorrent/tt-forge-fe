@@ -38,7 +38,3 @@ class EthernetDatacopy(PyEltwiseUnaryOp):
 
     def backward(self, ac, operand, inputs, output, grad):
         assert False, f"ethernet_datacopy not defined in eltwise unary backward."
-
-    def lower(self, tensors, outputs):
-        # TODO: Implement mlir lowering here.
-        assert False

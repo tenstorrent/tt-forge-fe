@@ -266,11 +266,6 @@ def shape(op_type, attr, ops):
     assert False, f"{op_type} is not defined in nn shape."
 
 
-def lower(op_type, attr, ops, outputs):
-    # TODO: Implement mlir lowering here.
-    assert False
-
-
 def backward(op_type, attr, ac, operand, inputs, output, grad):
     """
     Computes backward value for particular operation using derivative

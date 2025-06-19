@@ -80,11 +80,6 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
     return tuple(output_shape), broadcast
 
 
-def lower(type, attr, ops, outputs):
-    # TODO: Implement mlir lowering here.
-    assert False
-
-
 def backward(op_type, attr, ac, operand, inputs, output, grad):
 
     assert len(inputs) == 2, "Eltwise binary should have two inputs"

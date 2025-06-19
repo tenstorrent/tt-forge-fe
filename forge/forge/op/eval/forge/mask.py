@@ -28,10 +28,5 @@ def shape(type, attr, ops):
         return ops[0], []
 
 
-def lower(type, attr, ops, outputs):
-    # TODO: Implement mlir lowering here.
-    assert False
-
-
 def backward(type, attr, ac, operand, inputs, output, grad):
     raise RuntimeError("This should never be called.")

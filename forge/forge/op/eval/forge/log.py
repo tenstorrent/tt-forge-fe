@@ -43,10 +43,6 @@ class Log(PyEltwiseUnaryOp):
         recip = ac.op(Reciprocal.create(), (inputs[0],))
         return ac.op("multiply", (recip, grad))
 
-    def lower(self, tensors, outputs):
-        # TODO: Implement mlir lowering here.
-        assert False
-
     def initial_flops_estimate(self, tensor_shapes):
         flops = 0
         output_shape = self.shape(tensor_shapes)[0]

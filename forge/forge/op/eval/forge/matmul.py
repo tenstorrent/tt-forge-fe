@@ -155,11 +155,6 @@ def shape(type, attr, ops):
     return output_dim, broadcast
 
 
-def lower(type, attr, forge_attr, ops, outputs):
-    # TODO: Implement mlir lowering here.
-    assert False
-
-
 def decompose(type, attr, dc, inputs):
     if type == "sparse_matmul":
         # Special case decomp where RHS bcast over LHS Z dim i.e. in0.z > 1 and in1.z == 1

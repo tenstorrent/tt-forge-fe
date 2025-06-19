@@ -39,7 +39,3 @@ class Nop(PyEltwiseUnaryOp):
         assert len(inputs) == 1, "Nop should have one input"
         assert operand == 0, "Invalid operand index"
         return ac.op(Nop.create(), [grad])
-
-    def lower(self, tensors, outputs):
-        # TODO: Implement mlir lowering here.
-        assert False

@@ -154,10 +154,6 @@ class MaxPool2d(PyOp):
     def backward(self, ac, operand, inputs, output, grad):
         pass
 
-    def lower(self, tensors, outputs):
-        # TODO: Implement mlir lowering here.
-        assert False
-
     def is_tm(self) -> bool:
         return False
 
@@ -524,10 +520,6 @@ def shape(type, attr, ops):
             result = (activations[0], activations[1], z, y, x)
 
         return result, []
-
-
-def lower(type, attr, lc, ops, outputs):
-    assert False, "Pooling lowering is intentionally unimplemented"
 
 
 def backward(type, attr, ac, operand, inputs, output, grad):

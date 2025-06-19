@@ -156,11 +156,6 @@ def shape(type, attr, ops):
     return ops[0], broadcast
 
 
-def lower(type, attr, ops, outputs):
-    # TODO: Implement mlir lowering here.
-    assert False
-
-
 def backward(type, attr, ac, operand, inputs, output, grad):
     assert False, "Quantize does not support backward"
 

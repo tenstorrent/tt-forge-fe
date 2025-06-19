@@ -47,10 +47,6 @@ class Clip(PyEltwiseUnaryOp):
         stretched = ac.op("multiply", (subtract, ac.constant(2.0)))
         return ac.op("multiply", (stretched, grad))
 
-    def lower(self, tensors, outputs):
-        # TODO: Implement mlir lowering here.
-        assert False
-
     def backward(self, ac, operand, inputs, output, grad):
         x = inputs[0]
         shape = x.shape.as_list()

@@ -41,10 +41,6 @@ class Exp(PyEltwiseUnaryOp):
         assert operand == 0, "Invalid operand index"
         return ac.op("multiply", (output, grad))
 
-    def lower(self, tensors, outputs):
-        # TODO: Implement mlir lowering here.
-        assert False
-
     def initial_flops_estimate(self, tensor_shapes):
         flops = 0
         output_shape = self.shape(tensor_shapes)[0]

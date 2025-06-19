@@ -37,10 +37,6 @@ class Reciprocal(PyEltwiseUnaryOp):
         shape = tensor_shapes[0]
         return shape, []
 
-    def lower(self, tensors, outputs):
-        # TODO: Implement mlir lowering here.
-        assert False
-
     def backward(self, ac, operand, inputs, output, grad):
         assert len(inputs) == 1, "Reciprocal should have one input"
         assert operand == 0, "Invalid operand index"

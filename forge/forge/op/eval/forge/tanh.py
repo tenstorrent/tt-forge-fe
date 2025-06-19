@@ -42,10 +42,6 @@ class Tanh(PyEltwiseUnaryOp):
         res = ac.op("multiply", (subtract, grad))
         return res
 
-    def lower(self, tensors, outputs):
-        # TODO: Implement mlir lowering here.
-        assert False
-
     def initial_flops_estimate(self, tensor_shapes):
         flops = 0
         output_shape = self.shape(tensor_shapes)[0]

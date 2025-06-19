@@ -78,13 +78,6 @@ class PyOp(OpTypeWrapper):
     ):
         raise NotImplemented()
 
-    def lower(
-        self,
-        tensors: List[NodeContext],
-        outputs: List[NodeContext],
-    ):
-        raise NotImplemented()
-
     def decompose(self, decomposing_context: DecomposingContext, tensors: List[NodeContext]):
         # Optional implementation
         pass

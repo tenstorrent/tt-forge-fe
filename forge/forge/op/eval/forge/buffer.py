@@ -41,7 +41,3 @@ class Buffer(PyEltwiseUnaryOp):
             Buffer.create(),
             [grad],
         )
-
-    def lower(self, tensors, outputs):
-        # TODO: Implement mlir lowering here.
-        assert False

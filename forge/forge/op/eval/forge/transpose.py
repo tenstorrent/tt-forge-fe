@@ -31,10 +31,6 @@ class TransposeTM(PyTM):
             [grad],
         )
 
-    def lower(self, tensors, outputs):
-        # TODO: Implement mlir lowering here.
-        assert False
-
     def decompose(self, dc, inputs):
         act = inputs[0]
         # canonicalize dims to use negative indexing

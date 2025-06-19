@@ -638,11 +638,6 @@ def shape(type, attr, ops):
     assert False, f"{type} not defined in tensor manipulations"
 
 
-def lower(type, attr, ops, outputs):
-    # TODO: Implement mlir lowering here.
-    assert False
-
-
 def backward(type, attr, ac, operand, inputs, output, grad):
 
     assert operand == 0, "Invalid operand index"
