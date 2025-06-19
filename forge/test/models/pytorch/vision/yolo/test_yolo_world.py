@@ -13,6 +13,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -40,6 +41,7 @@ def test_yolo_world_inference():
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
         group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
 
     # Load framework_model and input

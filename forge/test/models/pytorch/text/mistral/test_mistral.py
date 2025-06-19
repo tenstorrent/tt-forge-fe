@@ -75,16 +75,17 @@ variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
 def test_mistral_v0_3(variant):
 
     # Record Forge Property
-    record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.MISTRAL,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Requires multi-chip support")
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -125,27 +126,7 @@ def test_mistral_Nemo(variant):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
-    )
-
-    raise RuntimeError("Requires multi-chip support")
-
-
-variants = ["mistralai/Mixtral-8x7B-Instruct-v0.1"]
-
-
-@pytest.mark.nightly
-@pytest.mark.xfail
-@pytest.mark.parametrize("variant", variants)
-def test_mistral_8x7b(variant):
-
-    # Record Forge Property
-    record_model_properties(
-        framework=Framework.PYTORCH,
-        model=ModelArch.MISTRAL,
-        variant=variant,
-        task=Task.CAUSAL_LM,
-        source=Source.HUGGINGFACE,
-        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
 
     raise RuntimeError("Requires multi-chip support")

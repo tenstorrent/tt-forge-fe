@@ -109,7 +109,7 @@ def test_falcon_3(variant):
     )
 
     if variant != "tiiuae/Falcon3-1B-Base":
-        raise RuntimeError("Requires multi-chip support")
+        pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

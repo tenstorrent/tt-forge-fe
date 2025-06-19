@@ -202,6 +202,7 @@ class ComponentChecker(Enum):
                         M.last_line(M.contains("forge/op/eval/forge/clip.py:")),
                         M.last_line(M.contains("forge/op/eval/forge/convolution.py:")),
                         M.last_line(M.contains("forge/op/eval/forge/tm.py:")),
+                        M.last_line(M.contains("forge/op/eval/forge/embedding.py:")),
                         M.last_line(M.contains("test/operators/utils/compat.py:")),  # Deprecated verification
                         M.last_line(M.contains("test/operators/pytorch/")),
                         # Fail with pytorch also. TODO: check if tests are correct
@@ -1685,6 +1686,26 @@ class FailingReasons(Enum):
                     M.contains("def populate_conv2d_transpose_args("),
                     M.contains(">       assert all([dim == dilation[0] for dim in dilation])"),
                     M.last_line(M.contains("forge/tvm_to_python.py:")),
+                ],
+            ),
+        ],
+    )
+
+    INDEX_ERROR = FailingReason(
+        description="Index error",
+        checks=[
+            # >       return torch.embedding(t_ops[1], t_ops[0].to(torch.int32))
+            # E       IndexError: index out of range in self
+            # forge/op/eval/forge/embedding.py:15: IndexError
+            ExceptionCheck(
+                class_name="IndexError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    M.equals("index out of range in self"),
+                ],
+                error_log=[
+                    M.contains(">       return torch.embedding(t_ops[1], t_ops[0].to(torch.int32))"),
+                    M.last_line(M.contains("forge/op/eval/forge/embedding.py:")),
                 ],
             ),
         ],

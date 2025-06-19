@@ -2,12 +2,15 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+from torch import nn
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import forge
 from forge.forge_property_utils import (
     Framework,
     ModelArch,
+    ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -80,6 +83,13 @@ variants = [
 @pytest.mark.nightly
 def test_qwen_clm(variant):
 
+    if variant == "Qwen/Qwen2.5-Coder-32B-Instruct":
+        group = ModelGroup.RED
+        priority = ModelPriority.P1
+    else:
+        group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
+
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
@@ -87,14 +97,15 @@ def test_qwen_clm(variant):
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
+        group=group,
+        priority=priority,
     )
 
     if variant == "Qwen/Qwen2.5-Coder-32B-Instruct":
-        raise RuntimeError("Requires multi-chip support")
+        pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and tokenizer
     framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")
-    framework_model.config.return_dict = False
     tokenizer = AutoTokenizer.from_pretrained(variant)
 
     # Prepare input
@@ -107,9 +118,17 @@ def test_qwen_clm(variant):
 
     # Tokenize and prepare inputs
     model_inputs = tokenizer([text], return_tensors="pt")
-    input_ids = model_inputs["input_ids"]
-    attention_mask = model_inputs["attention_mask"]
-    inputs = [input_ids, attention_mask]
+    inputs = [model_inputs["input_ids"]]
+
+    class Wrapper(nn.Module):
+        def __init__(self, model):
+            super().__init__()
+            self.model = model
+
+        def forward(self, input_ids):
+            return self.model(input_ids).logits
+
+    framework_model = Wrapper(framework_model)
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)

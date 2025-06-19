@@ -56,12 +56,12 @@ def test_sam_onnx(variant, forge_tmp_path):
 
     # Load framework model
     onnx_model = onnx.load(onnx_path)
-    onnx.checker.check_model(onnx_model)
-    framework_model = forge.OnnxModule(module_name, onnx_model)
+    onnx.checker.check_model(onnx_path)
+    framework_model = forge.OnnxModule(module_name, onnx_model, onnx_path)
 
     # Compile model
     compiled_model = forge.compile(
-        onnx_model,
+        framework_model,
         sample_inputs=sample_inputs,
         module_name=module_name,
     )

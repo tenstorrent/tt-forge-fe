@@ -151,7 +151,6 @@ log-FROM_HOST-None-(14, 13, 89, 3)-None-None
 log-CONST_EVAL_PASS-None-(1, 4)-None-None
 log-CONST_EVAL_PASS-None-(1, 17)-None-None
 log-CONST_EVAL_PASS-None-(1, 23)-None-None
-log-CONST_EVAL_PASS-None-(1, 1)-None-None
 log-CONST_EVAL_PASS-None-(1, 100)-None-None
 log-CONST_EVAL_PASS-None-(1, 500)-None-None
 log-CONST_EVAL_PASS-None-(1, 1000)-None-None

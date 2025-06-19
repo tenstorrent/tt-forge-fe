@@ -86,7 +86,7 @@ def test_mobilenetv1_192(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model=ModelArch.MOBILENET_V1,
+        model=ModelArch.MOBILENETV1,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
@@ -132,7 +132,7 @@ def test_mobilenetv1_224(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model=ModelArch.MOBILENET_V1,
+        model=ModelArch.MOBILENETV1,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,

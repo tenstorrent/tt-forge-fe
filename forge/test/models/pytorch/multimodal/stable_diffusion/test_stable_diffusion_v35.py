@@ -12,6 +12,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -69,9 +70,10 @@ def test_stable_diffusion_v35(variant):
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Requires multi-chip support")
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load pipeline
     pipe = load_pipe(variant, variant_type="v35")

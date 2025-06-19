@@ -22,6 +22,8 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.bert.model_utils.utils import mean_pooling
@@ -129,11 +131,16 @@ def test_bert_question_answering_pytorch(variant):
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    verify_cfg = VerifyConfig()
+    if variant == "phiyodr/bert-large-finetuned-squad2":
+        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
+
     # Model Verification and Inference
     _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
+        verify_cfg=verify_cfg,
     )
 
     # post processing

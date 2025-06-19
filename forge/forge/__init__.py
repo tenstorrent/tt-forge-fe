@@ -41,6 +41,14 @@ def set_home_paths():
             )
             exit(1)
 
+    # Check whether we're running from a wheel or from source
+    if in_wheel_path.exists():
+        os.environ["FORGE_IN_WHEEL"] = "1"
+    elif in_source_path.exists():
+        os.environ["FORGE_IN_SOURCE"] = "1"
+    else:
+        logger.error("Neither wheel nor source path exist for tt-metal. Please check your installation.")
+
     if pathlib.Path(os.environ["TT_METAL_HOME"]) not in [in_wheel_path, in_source_path]:
         if pathlib.Path(os.environ["TT_METAL_HOME"]).exists():
             logger.warning(

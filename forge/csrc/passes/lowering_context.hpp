@@ -53,7 +53,6 @@ class LoweringContext
         int tile_height = graphlib::Shape::FORGE_TILE_DIM,
         int tile_width = graphlib::Shape::FORGE_TILE_DIM);
     NodeContext tm(graphlib::OpType const &op_type, NodeContext const &operand);
-    NodeContext nary_tm(graphlib::OpType const &op_type, std::vector<NodeContext> const &operands);
     NodeContext constant(float value, std::pair<int, int> rc_dims);
     NodeContext tensor(std::shared_ptr<void> value, graphlib::Shape shape, DataFormat df = DataFormat::Invalid);
     NodeContext tensor_with_blob(

@@ -26,9 +26,13 @@ on:
         description: 'Runs on'
         required: false
         type: string
-        default: '[{"runs-on": "n150"}]'
+        default: '[{"runs-on": "runner"}]'
       run_id:
         description: 'Run id the workflow where to find installation (or else it will search)'
+        required: false
+        type: string
+      tests_to_filter:
+        description: 'Filter specific tests'
         required: false
         type: string
       allow-fail:
@@ -144,15 +148,27 @@ jobs:
         shell: bash
         run: |
           source env/activate
-          pytest forge/test/models/ --splits ${{ inputs.test_group_cnt }} \
-                 --group ${{ matrix.test_group_id }} \
-                 --splitting-algorithm least_duration \
-                 -m "${{ inputs.test_mark }}" \
-                 --log-memory-usage \
-                 --runxfail \
-                 --no-skips \
-                 -vss \
-                 2>&1 | tee pytest.log
+
+          pytest_args=(
+            "--splits" "${{ inputs.test_group_cnt }}"
+            "--group" "${{ matrix.test_group_id }}"
+            "--splitting-algorithm" "least_duration"
+            "-m" "${{ inputs.test_mark }}"
+            "--log-memory-usage"
+            "--runxfail"
+            "--no-skips"
+            "-vss"
+          )
+          if [ -n "${{ inputs.tests_to_filter }}" ]; then
+            # Split on commas and trim whitespace
+            IFS=',' read -r -a test_filters <<< "${{ inputs.tests_to_filter }}"
+            pytest_args+=("--tests_to_filter")
+            for tf in "${test_filters[@]}"; do
+              pytest_args+=("$(echo "$tf" | xargs)")
+            done
+          fi
+
+          pytest forge/test/models/ "${pytest_args[@]}" 2>&1 | tee pytest.log
 
       - name: Upload Test Log
         uses: actions/upload-artifact@v4

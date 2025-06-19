@@ -12,6 +12,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -40,7 +41,13 @@ from test.models.pytorch.vision.sam.model_utils.model import (
 )
 @pytest.mark.nightly
 def test_sam(variant):
-    group = ModelGroup.RED if variant == "facebook/sam-vit-base" else ModelGroup.GENERALITY
+
+    if variant == "facebook/sam-vit-base":
+        group = ModelGroup.RED
+        priority = ModelPriority.P1
+    else:
+        group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -50,6 +57,7 @@ def test_sam(variant):
         task=Task.IMAGE_SEGMENTATION,
         source=Source.GITHUB,
         group=group,
+        priority=priority,
     )
 
     # Load  model and input

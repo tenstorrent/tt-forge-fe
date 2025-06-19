@@ -237,6 +237,7 @@ class ModelArch(BaseEnum):
     TRANKIT = ("trankit", "Trankit")
     MPLUGOWL2 = ("mplug_owl2", "mPLUG-Owl2")
     LLAMA4 = ("llama4", "Llama-4")
+    MIXTRAL = ("mixtral", "Mixtral")
 
 
 def build_module_name(
@@ -472,6 +473,12 @@ class ModelPriority(StrEnum):
     P2 = "P2"
 
 
+class Parallelism(StrEnum):
+    SINGLE_DEVICE = "single_device"
+    DATA_PARALLEL = "data_parallel"
+    PIPELINE_PARALLEL = "pipeline_parallel"
+
+
 @dataclass_json
 @dataclass
 class ModelInfo:
@@ -497,6 +504,8 @@ class Tags:
     failure_category: str = ""
     refined_error_message: str = ""
     group: Optional[str] = None
+    parallelism: Optional[Parallelism] = Parallelism.SINGLE_DEVICE.value
+    emitc_status: Optional[bool] = None
 
 
 @dataclass_json
@@ -657,6 +666,9 @@ class ForgePropertyHandler:
         self.record_execution_stage(execution_stage)
         self.record_execution_depth(ExecutionDepth.from_exec_stage(execution_stage))
 
+    def record_emitc_status(self, is_success: bool):
+        self.add("tags.emitc_status", is_success)
+
     def extract_node_type(self, operand):
         if isinstance(operand, forge.Parameter):
             return "Parameter"
@@ -780,6 +792,14 @@ def record_execution(execution_stage: ExecutionStage):
         return
 
     fph.record_execution(execution_stage)
+
+
+def record_emitc_status(is_success: bool):
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    fph.record_emitc_status(is_success)
 
 
 def record_compiler_config(compiler_config: CompilerConfig):
@@ -1018,3 +1038,14 @@ def record_op_model_names(model_names: List[str]):
         return
 
     fph.add("tags.op_info.model_names", model_names)
+
+
+def record_parallelism(parallelism: Parallelism):
+    """
+    Records the paralleism property inside the tags.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    fph.add("tags.parallelism", parallelism.value)

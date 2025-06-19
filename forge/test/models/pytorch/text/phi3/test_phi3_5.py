@@ -38,7 +38,7 @@ def test_phi3_5_causal_lm(variant):
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Segmentation Fault")
+    pytest.xfail(reason="Segmentation Fault")
 
     # Load model and tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

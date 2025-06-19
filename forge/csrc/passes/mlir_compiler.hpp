@@ -75,8 +75,12 @@ void from_json(const nlohmann::json& j, MLIRConfig& p);
 runtime::Binary run_mlir_compiler(
     tt::ForgeGraphModule& module, const std::optional<MLIRConfig>& mlir_config = std::nullopt);
 
-/// Public API for lowering to MLIR, running MLIR passes and generate C++ code.
+/// Public API for lowering to MLIR, running MLIR passes and generating C++ code.
 std::string run_mlir_compiler_to_cpp(
+    tt::ForgeGraphModule& module, const std::optional<MLIRConfig>& mlir_config = std::nullopt);
+
+// Public API for lowering to MLIR, running MLIR passes and generating a shared object.
+std::string run_mlir_compiler_to_shared_object(
     tt::ForgeGraphModule& module, const std::optional<MLIRConfig>& mlir_config = std::nullopt);
 
 }  // namespace tt::passes

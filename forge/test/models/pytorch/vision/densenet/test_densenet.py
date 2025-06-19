@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+import os
+
 import pytest
 import torch
 import torch.nn as nn
@@ -70,6 +72,7 @@ def test_densenet_121_pytorch(variant):
         framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet121", pretrained=True)
         img_tensor = get_input_img()
     else:
+        os.environ["TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD"] = "1"
         model_name = "densenet121-res224-all"
         model = download_model(xrv.models.get_model, model_name)
         framework_model = densenet_xray_wrapper(model)

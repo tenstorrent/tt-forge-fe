@@ -26,8 +26,6 @@ enum NodeType
     kInput,
     kOutput,
     kPyOp,
-    kForgeOp,
-    kForgeNaryTM,
     kQueue,
 };
 

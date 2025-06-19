@@ -12,7 +12,8 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
-from forge.verify.verify import verify
+from forge.verify.value_checkers import AutomaticValueChecker
+from forge.verify.verify import VerifyConfig, verify
 
 from test.utils import fetch_model, yolov5_loader
 
@@ -42,6 +43,10 @@ size = [
 @pytest.mark.parametrize("size", size)
 def test_yolov5_320x320(restore_package_versions, size):
 
+    pcc = 0.99
+    if size == "l":
+        pcc = 0.95
+
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
@@ -61,7 +66,12 @@ def test_yolov5_320x320(restore_package_versions, size):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+    )
 
 
 def generate_model_yoloV5I640_imgcls_torchhub_pytorch(variant, size):

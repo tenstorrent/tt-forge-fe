@@ -182,38 +182,6 @@ json node_to_json(const graphlib::Node* node, const graphlib::Graph* graph)
         to_json(ret_json, opnode->op_type());
         ret_json["gradient_op"] = opnode->is_gradient_op();
     }
-    else if (node->node_type() == graphlib::NodeType::kForgeOp)
-    {
-        const graphlib::ForgeOpNode* opnode = node->as<graphlib::ForgeOpNode>();
-        ret_json["ir"] = "forge";
-        ret_json["class"] = opnode->op_type().as_string();
-        ret_json["type"] = opnode->op_type().op;
-        to_json(ret_json, opnode->op_type());
-        ret_json["gradient_op"] = opnode->is_gradient_op();
-        {
-            std::stringstream ss;
-            ss << opnode->intermediate_df();
-            ret_json["intermediate_df"] = ss.str();
-        }
-        {
-            std::stringstream ss;
-            ss << opnode->accumulate_df();
-            ret_json["accumulate_df"] = ss.str();
-        }
-        {
-            std::stringstream ss;
-            ss << opnode->math_fidelity();
-            ret_json["fidelity"] = ss.str();
-        }
-    }
-    else if (node->node_type() == graphlib::NodeType::kForgeNaryTM)
-    {
-        const graphlib::ForgeNaryTMNode* tmnode = node->as<graphlib::ForgeNaryTMNode>();
-        ret_json["ir"] = "forge";
-        ret_json["class"] = tmnode->op_type().as_string();
-        ret_json["type"] = tmnode->op_type().op;
-        to_json(ret_json, tmnode->op_type());
-    }
     else if (node->node_type() == graphlib::NodeType::kQueue)
     {
         ret_json["class"] = "ForgeDramQueue::";
