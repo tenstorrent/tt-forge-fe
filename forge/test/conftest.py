@@ -229,6 +229,7 @@ def pytest_runtest_makereport(item, call):
 
 
 def pytest_addoption(parser):
+    parser.addoption("--track-files", action="store_true", default=False, help="track files for test execution")
     parser.addoption(
         "--silicon-only", action="store_true", default=False, help="run silicon tests only, skip golden/model"
     )
