@@ -11,6 +11,7 @@ from tabulate import tabulate
 import json
 from typing import Optional, Tuple
 from transformers import Cache
+from third_party.tt_forge_models.tools.utils import get_file
 
 # Mean Pooling - Take attention mask into account for correct averaging
 def mean_pooling(model_output, attention_mask):
@@ -68,17 +69,27 @@ def get_sample_data(model_name):
     return [pixel_values]
 
 
-imagenet_class_index_path = "forge/test/models/files/labels/imagenet_class_index.json"
-
-
 def load_class_labels(file_path):
-    """Load class labels from the local JSON file."""
-    with open(file_path, "r") as f:
-        class_idx = json.load(f)
-    return [class_idx[str(i)][1] for i in range(len(class_idx))]
+    """Load class labels from a JSON or TXT file."""
+    if file_path.endswith(".json"):
+        with open(file_path, "r") as f:
+            class_idx = json.load(f)
+        return [class_idx[str(i)][1] for i in range(len(class_idx))]
+    elif file_path.endswith(".txt"):
+        with open(file_path, "r") as f:
+            return [line.strip() for line in f if line.strip()]
 
 
-def print_cls_results(fw_out, compiled_model_out):
+def print_cls_results(fw_out, compiled_model_out, use_1k_labels: bool = True):
+
+    if use_1k_labels:
+        imagenet_class_index_path = "forge/test/models/files/labels/imagenet_class_index.json"
+    else:
+        imagenet_class_index_path = str(
+            get_file(
+                "https://raw.githubusercontent.com/mosjel/ImageNet_21k_Original_OK/main/imagenet_21k_original_OK.txt"
+            )
+        )
 
     class_labels = load_class_labels(imagenet_class_index_path)
     fw_top1_probabilities, fw_top1_class_indices = torch.topk(fw_out.softmax(dim=1) * 100, k=1)

@@ -65,9 +65,7 @@ variants = [
     pytest.param("hf_hub:timm/efficientnet_b5.in12k_ft_in1k", id="hf_hub_timm_efficientnet_b5_in12k_ft_in1k"),
     pytest.param("hf_hub:timm/tf_efficientnet_b0.aa_in1k", id="hf_hub_timm_tf_efficientnet_b0_aa_in1k"),
     pytest.param("hf_hub:timm/efficientnetv2_rw_s.ra2_in1k", id="hf_hub_timm_efficientnetv2_rw_s_ra2_in1k"),
-    pytest.param(
-        "hf_hub:timm/tf_efficientnetv2_s.in21k", id="hf_hub_timm_tf_efficientnetv2_s_in21k", marks=[pytest.mark.xfail]
-    ),
+    pytest.param("hf_hub:timm/tf_efficientnetv2_s.in21k", id="hf_hub_timm_tf_efficientnetv2_s_in21k"),
 ]
 
 
@@ -98,10 +96,17 @@ def test_efficientnet_timm(variant):
 
     # Load and pre-process image
     try:
-        url, filename = (
-            "https://github.com/pytorch/hub/raw/master/images/dog.jpg",
-            "dog.jpg",
-        )
+        if variant == "hf_hub:timm/tf_efficientnetv2_s.in21k":
+            url = (
+                "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/beignets-task-guide.png"
+            )
+            filename = "beignets_with_coffee.png"
+            use_1k_labels = False
+        else:
+            url = "https://github.com/pytorch/hub/raw/master/images/dog.jpg"
+            filename = "dog.jpg"
+            use_1k_labels = True
+
         urllib.request.urlretrieve(url, filename)
         img = Image.open(filename).convert("RGB")
         config = resolve_data_config({}, model=framework_model)
@@ -130,7 +135,7 @@ def test_efficientnet_timm(variant):
     fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
-    print_cls_results(fw_out[0], co_out[0])
+    print_cls_results(fw_out[0], co_out[0], use_1k_labels=use_1k_labels)
 
 
 def get_state_dict(self, *args, **kwargs):
