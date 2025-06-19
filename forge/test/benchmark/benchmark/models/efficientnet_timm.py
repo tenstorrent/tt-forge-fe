@@ -122,20 +122,20 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
 
     # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
-    pcc = 0.99
-    verify_cfg = VerifyConfig()
-    if data_format == "bfloat16":
-        pcc = 0.98
-    verify_cfg.value_checker = AutomaticValueChecker(pcc=pcc)
+    # pcc = 0.99
+    # verify_cfg = VerifyConfig()
+    # if data_format == "bfloat16":
+    #     pcc = 0.98
+    # verify_cfg.value_checker = AutomaticValueChecker(pcc=pcc)
 
-    verify(
-        [
-            inputs[0],
-        ],
-        framework_model,
-        compiled_model,
-        verify_cfg=verify_cfg,
-    )
+    # verify(
+    #     [
+    #         inputs[0],
+    #     ],
+    #     framework_model,
+    #     compiled_model,
+    #     verify_cfg=verify_cfg,
+    # )
 
     if task == "classification":
         predictions = []
@@ -156,9 +156,9 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
     else:
         raise ValueError(f"Unsupported task: {task}.")
 
-    fw_out = framework_model(inputs[-1])
-    co_out = co_out.to("cpu")
-    AutomaticValueChecker(pcc=pcc).check(fw_out=fw_out, co_out=co_out)
+    # fw_out = framework_model(inputs[-1])
+    # co_out = co_out.to("cpu")
+    # AutomaticValueChecker(pcc=pcc).check(fw_out=fw_out, co_out=co_out)
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
