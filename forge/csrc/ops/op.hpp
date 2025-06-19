@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <memory>
 #include <string>
 #include <tuple>
 #include <unordered_map>
@@ -259,6 +258,10 @@ class OpEltwiseNary : public OpEltwise
     using OpEltwise::OpEltwise;
     bool is_eltwise_nary() const override { return true; };
 };
+
+///////////////////////////////////////////////////
+// Next section contains ops implemented in cpp. //
+///////////////////////////////////////////////////
 
 class OpAbs : public OpEltwiseUnary
 {
