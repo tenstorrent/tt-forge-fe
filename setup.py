@@ -62,8 +62,8 @@ with open("README.md", "r") as f:
 with open("env/core_requirements.txt", "r") as f:
     core_requirements = f.read().splitlines()
 
-with open("env/linux_requirements.txt", "r") as f:
-    linux_requirements = [r for r in f.read().splitlines() if not r.startswith("-r")]
+with open("env/dev-requirements.txt", "r") as f:
+    dev_requirements = [r for r in f.read().splitlines() if not r.startswith("-r")]
 
 
 def collect_model_requirements(requirements_root: str) -> list[str]:
@@ -152,10 +152,9 @@ def collect_model_requirements(requirements_root: str) -> list[str]:
     return [pkg + ver if ver else pkg for pkg, ver in sorted(final_requirements.items())]
 
 
-model_requirements_root = "forge/test/models"
-model_requirements = collect_model_requirements(model_requirements_root)
+model_requirements = collect_model_requirements("forge/test/models")
 
-requirements = core_requirements + linux_requirements + model_requirements
+requirements = core_requirements + dev_requirements + model_requirements
 
 # Compute a dynamic version from git
 short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
@@ -171,14 +170,17 @@ forge_c = TTExtension("forge")
 # Find packages as before
 packages = [p for p in find_packages("forge") if not p.startswith("test")]
 
-
 setup(
     name="tt_forge_fe",
     version=version,
-    install_requires=requirements,
+    install_requires=core_requirements,
+    extras_require={
+        "dev": dev_requirements,
+        "model": dev_requirements + model_requirements,
+    },
     packages=packages,
     package_dir={"forge": "forge/forge"},
-    ext_modules=[forge_c],
+    ext_modules=[TTExtension("forge")],
     cmdclass={"build_ext": CMakeBuild},
     long_description=long_description,
     long_description_content_type="text/markdown",
