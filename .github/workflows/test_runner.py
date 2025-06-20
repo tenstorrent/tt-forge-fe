@@ -6,13 +6,10 @@ import sys
 from pathlib import Path
 
 
-def run_pytest(args=None, crashed_tests=None):
+def run_pytest(args=None):
     """Run pytest and return the output and exit code"""
-    cmd = ["pytest"] + (args or [])
-
-    # Add deselects from crashed tests file if it exists
-    cmd.extend(f"--deselect={test}" for test in crashed_tests)
-    print(f"Running command: {' '.join(cmd)}")
+    script_dir = Path(__file__).parent
+    cmd = [sys.executable, script_dir / "run_tests.py"] + (args or [])
 
     # Delete .pytest_current_test_executing file if it exists
     Path(".pytest_current_test_executing").unlink(missing_ok=True)
@@ -35,6 +32,32 @@ def run_pytest(args=None, crashed_tests=None):
         return err, 7
 
 
+def remove_test(test_path, restart=False):
+    """Remove the test from the crashed tests list"""
+    file_path = Path(".pytest_tests_to_run")
+    if not file_path.exists():
+        return
+
+    # Read all lines from file
+    with open(file_path, "r") as f:
+        lines = [line.strip() for line in f.readlines()]
+
+    # Filter lines based on restart flag
+    if restart:
+        filtered_lines = [line for line in lines if test_path not in line]
+    else:
+        # Find index of test_path line
+        try:
+            idx = next(i for i, line in enumerate(lines) if test_path in line)
+            filtered_lines = lines[:idx]
+        except StopIteration:
+            filtered_lines = lines
+
+    # Write filtered lines back to file
+    with open(file_path, "w") as f:
+        f.writelines(filtered_lines)
+
+
 def main():
     # Get command line arguments
     args = sys.argv[1:]
@@ -47,10 +70,17 @@ def main():
         run_crashed_tests = True
     else:
         run_crashed_tests = False
+    # Check for --continue-after-crash option
+    if "--continue-after-crash" in args:
+        args.remove("--continue-after-crash")
+        print("Running with --continue-after-crash option")
+        restart_afer_crash = False
+    else:
+        restart_afer_crash = True
 
     while True:
         print("======================== Running pytest...")
-        output, exit_code = run_pytest(args, crashed_tests)
+        output, exit_code = run_pytest(args)
 
         if exit_code < 128 and exit_code >= 0:
             print(f"======================== No crashes detected (exit code {exit_code}).")
@@ -68,6 +98,7 @@ def main():
                 if test_path not in crashed_tests:
                     crashed_tests.append(test_path)
                     print(f"    Crashed test: {test_path}")
+                    remove_test(test_path, restart_afer_crash)
                 else:
                     # If the test is already in the crashed tests list, print a message and exit
                     print(f"    Test {test_path} already in crashed tests list\nInternal error, exiting.")

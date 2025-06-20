@@ -157,12 +157,14 @@ jobs:
         shell: bash
         run: |
           source env/activate
-          python .github/workflows/test_runner.py --splits ${{ inputs.test_group_cnt }} \
+          pytest --splits ${{ inputs.test_group_cnt }} \
                  --group ${{ matrix.test_group_id }} \
                  --splitting-algorithm least_duration \
                  -m "${{ inputs.test_mark }}" \
+                 --collect-only >.pytest_tests_to_run
+          python .github/workflows/test_runner.py  \
                  --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-                 --log-memory-usage
+                 --log-memory-usage --continue-after-crash
 
             if [ -f crashed_pytest.log ]; then
               echo "### Crashed tests: (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})" >>$GITHUB_STEP_SUMMARY
