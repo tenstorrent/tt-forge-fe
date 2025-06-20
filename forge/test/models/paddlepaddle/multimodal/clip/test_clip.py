@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-import requests
-from PIL import Image
 
 import pytest
 
@@ -11,7 +9,9 @@ from paddlenlp.transformers import CLIPProcessor, CLIPModel, CLIPVisionModel, CL
 
 from forge.tvm_calls.forge_utils import paddle_trace
 import forge
+from PIL import Image
 from forge.verify.verify import verify
+from third_party.tt_forge_models.tools.utils import get_file
 
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
@@ -66,7 +66,8 @@ def test_clip_vision(variant):
     processor = CLIPProcessor.from_pretrained(variant)
 
     # Prepare inputs
-    image = Image.open(requests.get("http://images.cocodataset.org/val2017/000000039769.jpg", stream=True).raw)
+    input_image = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
+    image = Image.open(str(input_image))
     inputs = processor(images=image, return_tensors="pd")
     inputs = [inputs["pixel_values"]]
 
@@ -100,7 +101,8 @@ def test_clip(variant):
         "a photo of cats in bed",
         "a photo of dog in snow",
     ]
-    image = Image.open(requests.get("http://images.cocodataset.org/val2017/000000039769.jpg", stream=True).raw)
+    input_image = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
+    image = Image.open(str(input_image))
     inputs = processor(images=image, text=text, return_tensors="pd")
     inputs = [inputs["input_ids"], inputs["pixel_values"]]
 

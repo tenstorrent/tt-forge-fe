@@ -1,13 +1,13 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import urllib
 
 import pytest
 import timm
 import torch
 from loguru import logger
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from torch.hub import load_state_dict_from_url
@@ -97,18 +97,15 @@ def test_efficientnet_timm(variant):
     # Load and pre-process image
     try:
         if variant == "hf_hub:timm/tf_efficientnetv2_s.in21k":
-            url = (
+            file_path = get_file(
                 "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/beignets-task-guide.png"
             )
-            filename = "beignets_with_coffee.png"
+            img = Image.open(file_path).convert("RGB")
             use_1k_labels = False
         else:
-            url = "https://github.com/pytorch/hub/raw/master/images/dog.jpg"
-            filename = "dog.jpg"
+            file_path = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
+            img = Image.open(file_path).convert("RGB")
             use_1k_labels = True
-
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
         config = resolve_data_config({}, model=framework_model)
         transform = create_transform(**config)
         img_tensor = transform(img).unsqueeze(0)
@@ -189,12 +186,8 @@ def test_efficientnet_torchvision(variant):
 
     # Load and pre-process image
     try:
-        url, filename = (
-            "https://github.com/pytorch/hub/raw/master/images/dog.jpg",
-            "dog.jpg",
-        )
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        file_path = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
+        img = Image.open(file_path).convert("RGB")
         config = resolve_data_config({}, model=framework_model)
         transform = create_transform(**config)
         img_tensor = transform(img).unsqueeze(0)

@@ -2,11 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 from urllib.request import urlopen
 
-import requests
 import timm
 import torch
-import torchvision.transforms as transforms
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from torchvision import models
 
 
@@ -34,8 +33,8 @@ def load_vision_model_and_input(variant, task, weight_name):
 
     # Preprocess image
     preprocess = weights.transforms()
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw).convert("RGB")
+    input_image = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
+    image = Image.open(str(input_image)).convert("RGB")
     img_t = preprocess(image)
     batch_t = torch.unsqueeze(img_t, 0)
 

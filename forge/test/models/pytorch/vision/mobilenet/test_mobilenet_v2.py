@@ -1,14 +1,13 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import urllib
 
 import pytest
-import requests
 import timm
 import torch
 from loguru import logger
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from transformers import (
@@ -82,8 +81,8 @@ def generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant):
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
 
     # Image load and pre-processing into pixel_values
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    input_image = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
+    image = Image.open(str(input_image))
     inputs = preprocessor(images=image, return_tensors="pt")
     image_tensor = inputs.pixel_values
 
@@ -126,8 +125,8 @@ def generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant):
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
 
     # Image load and pre-processing into pixel_values
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    input_image = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
+    image = Image.open(str(input_image))
     inputs = preprocessor(images=image, return_tensors="pt")
     image_tensor = inputs.pixel_values
 
@@ -171,8 +170,8 @@ def generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant):
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
 
     # Image load and pre-processing into pixel_values
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    input_image = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
+    image = Image.open(str(input_image))
     inputs = preprocessor(images=image, return_tensors="pt")
 
     image_tensor = inputs.pixel_values
@@ -219,12 +218,8 @@ def generate_model_mobilenetV2_imgcls_timm_pytorch(variant):
     try:
         config = resolve_data_config({}, model=model)
         transform = create_transform(**config)
-        url, filename = (
-            "https://github.com/pytorch/hub/raw/master/images/dog.jpg",
-            "dog.jpg",
-        )
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        input_image = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
+        img = Image.open(input_image).convert("RGB")
         image_tensor = transform(img).unsqueeze(0)  # transform and add batch dimension
     except:
         logger.warning(
@@ -280,12 +275,8 @@ def generate_model_mobilenetV2_semseg_hf_pytorch(variant):
     try:
         config = resolve_data_config({}, model=framework_model)
         transform = create_transform(**config)
-        url, filename = (
-            "https://github.com/pytorch/hub/raw/master/images/dog.jpg",
-            "dog.jpg",
-        )
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        input_image = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
+        img = Image.open(input_image).convert("RGB")
         img_tensor = transform(img).unsqueeze(0)
     except:
         logger.warning(

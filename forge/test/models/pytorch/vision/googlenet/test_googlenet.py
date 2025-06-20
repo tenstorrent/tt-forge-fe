@@ -5,6 +5,7 @@ import pytest
 import torch
 from loguru import logger
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from torchvision import models, transforms
 
 import forge
@@ -43,8 +44,8 @@ def test_googlenet_pytorch():
 
     # Image preprocessing
     try:
-        torch.hub.download_url_to_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-        input_image = Image.open("dog.jpg")
+        file_path = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
+        input_image = Image.open(file_path).convert("RGB")
         preprocess = transforms.Compose(
             [
                 transforms.Resize(256),

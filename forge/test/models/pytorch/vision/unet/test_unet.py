@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import urllib
 
 import numpy as np
 import pytest
@@ -10,6 +9,7 @@ import torch
 from loguru import logger
 from PIL import Image
 from pytorchcv.model_provider import get_model as ptcv_get_model
+from third_party.tt_forge_models.tools.utils import get_file
 from torchvision import transforms
 from torchvision.transforms import (
     CenterCrop,
@@ -81,9 +81,8 @@ def test_unet_osmr_cityscape_pytorch():
 
 def get_imagenet_sample():
     try:
-        url, filename = ("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        file_path = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
+        img = Image.open(file_path).convert("RGB")
 
         # Preprocessing
         transform = Compose(
@@ -176,15 +175,10 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
     model.eval()
 
     # Download an example input image
-    url, filename = (
+    file_path = get_file(
         "https://github.com/mateuszbuda/brain-segmentation-pytorch/raw/master/assets/TCGA_CS_4944.png",
-        "TCGA_CS_4944.png",
     )
-    try:
-        urllib.URLopener().retrieve(url, filename)
-    except:
-        urllib.request.urlretrieve(url, filename)
-    input_image = Image.open(filename)
+    input_image = Image.open(file_path)
     m, s = np.mean(input_image, axis=(0, 1)), np.std(input_image, axis=(0, 1))
     preprocess = transforms.Compose(
         [

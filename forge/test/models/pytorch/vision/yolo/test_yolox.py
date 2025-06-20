@@ -25,6 +25,7 @@ import cv2
 import pytest
 import requests
 import torch
+from third_party.tt_forge_models.tools.utils import get_file
 from yolox.data.data_augment import preproc as preprocess
 from yolox.exp import get_exp
 
@@ -104,11 +105,8 @@ def test_yolox_pytorch(variant):
     else:
         input_shape = (640, 640)
 
-    url = "http://images.cocodataset.org/val2017/000000397133.jpg"
-    response = requests.get(url)
-    with open("input.jpg", "wb") as f:
-        f.write(response.content)
-    img = cv2.imread("input.jpg")
+    image_path = get_file("http://images.cocodataset.org/val2017/000000397133.jpg")
+    img = cv2.imread(str(image_path))
     img_tensor, ratio = preprocess(img, input_shape)
     img_tensor = torch.from_numpy(img_tensor)
     img_tensor = img_tensor.unsqueeze(0)
@@ -139,4 +137,3 @@ def test_yolox_pytorch(variant):
 
     # remove downloaded weights,image
     os.remove(weight_name)
-    os.remove("input.jpg")

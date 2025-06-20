@@ -5,9 +5,9 @@ import math
 
 import cv2
 import numpy as np
-import requests
 import torch
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 
 
 # preprocessing steps referred form https://github.com/meituan/YOLOv6/blob/main/inference.ipynb
@@ -61,10 +61,11 @@ def check_img_size(img_size, s=32, floor=0):
     return new_size if isinstance(img_size, list) else [new_size] * 2
 
 
-def process_image(path, img_size, stride, half):
+def process_image(img_size, stride, half):
     """Process image before image inference."""
 
-    img_src = np.asarray(Image.open(requests.get(path, stream=True).raw))
+    cached_path = get_file("http://images.cocodataset.org/val2017/000000397133.jpg")
+    img_src = np.asarray(Image.open(cached_path).convert("RGB"))
     image = letterbox(img_src, img_size, stride=stride)[0]
     # Convert
     image = image.transpose((2, 0, 1))  # HWC to CHW

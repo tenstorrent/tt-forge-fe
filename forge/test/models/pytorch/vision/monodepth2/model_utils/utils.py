@@ -12,16 +12,15 @@
 import hashlib
 import os
 import zipfile
-from io import BytesIO
 
 import matplotlib as mpl
 import matplotlib.cm as cm
 import numpy as np
 import PIL.Image as pil
-import requests
 import torch
 from PIL import Image
 from six.moves import urllib
+from third_party.tt_forge_models.tools.utils import get_file
 from torchvision import transforms
 
 from test.models.pytorch.vision.monodepth2.model_utils.depth_decoder import DepthDecoder
@@ -141,13 +140,11 @@ def load_model(variant):
 
 def load_input(feed_height, feed_width):
 
-    image_url = "https://raw.githubusercontent.com/nianticlabs/monodepth2/master/assets/test_image.jpg"
-    response = requests.get(image_url)
-    input_image = Image.open(BytesIO(response.content)).convert("RGB")
+    input_image = get_file("https://raw.githubusercontent.com/nianticlabs/monodepth2/master/assets/test_image.jpg")
+    input_image = Image.open(input_image).convert("RGB")
     original_width, original_height = input_image.size
     input_image_resized = input_image.resize((feed_width, feed_height), pil.LANCZOS)
     input_tensor = transforms.ToTensor()(input_image_resized).unsqueeze(0)
-
     return input_tensor, original_width, original_height
 
 

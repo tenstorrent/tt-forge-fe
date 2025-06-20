@@ -1,11 +1,10 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
-import urllib
 
 import torch
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from torchvision import transforms
 
 from test.utils import download_model
@@ -13,11 +12,8 @@ from test.utils import download_model
 
 def get_image_tensor():
     # Load data sample
-    url, filename = ("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-    urllib.request.urlretrieve(url, filename)
-
-    # Preprocessing
-    input_image = Image.open(filename)
+    input_image = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
+    input_image = Image.open(str(input_image))
     preprocess = transforms.Compose(
         [
             transforms.Resize(256),
@@ -42,20 +38,13 @@ def get_resnext_model_and_input(repo_or_dir, model_name):
     return model, [input_batch]
 
 
-url = "https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt"
-
-
 def post_processing(output, top_k=5):
 
     probabilities = torch.nn.functional.softmax(output[0][0], dim=0)
-    urllib.request.urlretrieve(url, "imagenet_classes.txt")
+    class_file_path = get_file("https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt")
 
-    with open("imagenet_classes.txt", "r") as f:
+    with open(class_file_path, "r") as f:
         categories = [s.strip() for s in f.readlines()]
     topk_prob, topk_catid = torch.topk(probabilities, top_k)
     for i in range(topk_prob.size(0)):
         print(categories[topk_catid[i]], topk_prob[i].item())
-
-    # Cleanup
-    os.remove("imagenet_classes.txt")
-    os.remove("dog.jpg")

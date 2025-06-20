@@ -2,10 +2,8 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import requests
-
-# From: https://huggingface.co/alibaba-damo/mgp-str-base
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from transformers import MgpstrForSceneTextRecognition, MgpstrProcessor
 
 
@@ -16,8 +14,8 @@ def load_model(variant):
 
 
 def load_input(variant):
-    url = "https://i.postimg.cc/ZKwLg2Gw/367-14.png"
-    image = Image.open(requests.get(url, stream=True).raw).convert("RGB")
+    input_image = get_file("https://i.postimg.cc/ZKwLg2Gw/367-14.png")
+    image = Image.open(str(input_image)).convert("RGB")
     processor = MgpstrProcessor.from_pretrained(variant)
     inputs = processor(
         images=image,

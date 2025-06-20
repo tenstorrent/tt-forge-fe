@@ -6,10 +6,10 @@ import timm
 import forge
 import onnx
 import torch
+from datasets import load_dataset
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig, AutomaticValueChecker
 from test.models.onnx.vision.vision_utils import load_inputs
-from urllib.request import urlopen
 from PIL import Image
 from test.models.models_utils import print_cls_results
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
@@ -49,10 +49,8 @@ def test_efficientnet_onnx(variant, forge_tmp_path):
     model = timm.create_model(variant, pretrained=True)
 
     # Load the inputs
-    img = Image.open(
-        urlopen("https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/beignets-task-guide.png")
-    )
-
+    dataset = load_dataset("cifar10", split="test[:1]")
+    img = dataset[0]["img"]
     inputs = load_inputs(img, model)
     onnx_path = f"{forge_tmp_path}/efficientnet.onnx"
     torch.onnx.export(model, inputs[0], onnx_path)

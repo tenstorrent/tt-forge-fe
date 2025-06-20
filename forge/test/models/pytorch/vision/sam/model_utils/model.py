@@ -2,23 +2,20 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import io
-
-import requests
 import torch
 from loguru import logger
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from transformers import SamModel, SamProcessor
 
 
-def get_model_inputs(variant, input_url="https://huggingface.co/ybelkada/segment-anything/resolve/main/assets/car.png"):
+def get_model_inputs(variant):
     framework_model = SamModel.from_pretrained(variant).to("cpu")
     processor = SamProcessor.from_pretrained(variant)
 
     try:
-        response = requests.get(input_url, stream=True, timeout=5)
-        response.raise_for_status()
-        raw_image = Image.open(io.BytesIO(response.content)).convert("RGB")
+        image_path = get_file("https://huggingface.co/ybelkada/segment-anything/resolve/main/assets/car.png")
+        raw_image = Image.open(str(image_path)).convert("RGB")
     except Exception as e:
         logger.warning(f"Failed to fetch image from URL. Using random fallback tensor. Reason: {e}")
         raw_image = Image.fromarray((torch.rand(3, 1024, 1024) * 255).byte().permute(1, 2, 0).numpy())

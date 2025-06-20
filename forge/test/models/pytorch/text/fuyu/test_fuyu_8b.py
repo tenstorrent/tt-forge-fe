@@ -4,8 +4,8 @@
 import os
 
 import pytest
-import requests
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from transformers import (
     AutoTokenizer,
     FuyuConfig,
@@ -68,14 +68,9 @@ def test_fuyu8b(variant):
     # Prepare inputs
     text_prompt = "Generate a coco-style caption.\n"
 
-    url = "https://huggingface.co/adept-hf-collab/fuyu-8b/resolve/main/bus.png"
-    response = requests.get(url)
-    with open("bus.png", "wb") as file:
-        file.write(response.content)
+    input_image = get_file("https://huggingface.co/adept-hf-collab/fuyu-8b/resolve/main/bus.png")
+    image_pil = Image.open(str(input_image))
 
-    image_path = "bus.png"  # https://huggingface.co/adept-hf-collab/fuyu-8b/blob/main/bus.png
-
-    image_pil = Image.open(image_path)
     model_inputs = processor(text=text_prompt, images=[image_pil], device="cpu", return_tensor="pt")
     inputs_embeds = generate_fuyu_embedding(
         fuyu_model, model_inputs["input_ids"], model_inputs["image_patches"][0], model_inputs["image_patches_indices"]

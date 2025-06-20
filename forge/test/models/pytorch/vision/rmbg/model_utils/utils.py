@@ -1,8 +1,8 @@
 # SPDX-FileCopyrightText: (c) 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import requests
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from torchvision import transforms
 from transformers import AutoModelForImageSegmentation
 
@@ -14,8 +14,8 @@ def load_model(variant):
 
 
 def load_input():
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    input_image = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
+    image = Image.open(str(input_image))
     image_size = (1024, 1024)
     transform_image = transforms.Compose(
         [
