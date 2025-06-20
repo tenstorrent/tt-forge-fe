@@ -92,4 +92,6 @@ class FailingReasonsRegister:
         ("conv_transpose_2d", FailingReasons.FATAL_ERROR, FailingReasons.UNSUPPORTED_DATA_FORMAT),
         ("embedding", FailingReasons.FATAL_ERROR, None),
         ("layer_norm", FailingReasons.FATAL_ERROR, None),
+        ("pow", FailingReasons.FATAL_ERROR, None),
+        ("square", FailingReasons.FATAL_ERROR, None),
     ]
