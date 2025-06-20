@@ -162,8 +162,12 @@ jobs:
                  --splitting-algorithm least_duration \
                  -m "${{ inputs.test_mark }}" \
                  --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-                 --log-memory-usage \
-                 2>&1 | tee pytest.log
+                 --log-memory-usage
+
+            if [ -f crashed_pytest.log ]; then
+              echo "### Crashed tests: (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})" >>$GITHUB_STEP_SUMMARY
+              cat crashed_pytest.log >>$GITHUB_STEP_SUMMARY
+            fi
 
       - name: Upload Test Log
         uses: actions/upload-artifact@v4
