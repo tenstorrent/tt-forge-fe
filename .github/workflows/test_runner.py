@@ -53,7 +53,7 @@ def main():
         output, exit_code = run_pytest(args, crashed_tests)
 
         if exit_code <= 130:
-            print("======================== No crashes detected (exit code {exit_code}).")
+            print(f"======================== No crashes detected (exit code {exit_code}).")
             with open("pytest.log", "w") as f:
                 for line in output:
                     f.write(line)
