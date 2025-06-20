@@ -161,7 +161,10 @@ jobs:
                --group ${{ matrix.test_group_id }} \
                --splitting-algorithm least_duration \
                -m "${{ inputs.test_mark }}" --collect-only -q \
-              | sed -n '/^Collected tests /,/^collected /p' | sed '/^collected /d' >.pytest_tests_to_run
+                | sed -n '/^Collected tests /,/^collected /p' | sed '/^[Cc]ollected /d' >.pytest_tests_to_run
+
+          echo "Collected tests:"
+          cat .pytest_tests_to_run
 
           python .github/workflows/test_runner.py  \
                  --junit-xml=${{ steps.strings.outputs.test_report_path }} \
