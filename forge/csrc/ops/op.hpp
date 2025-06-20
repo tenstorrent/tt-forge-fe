@@ -195,6 +195,7 @@ class Op
     void set_attr(std::string const &name, Attr attr) { attrs_[name] = attr; }
 
     graphlib::OpType as_old_op_type() const;
+    const std::string &as_string() const;
 
     // ========================================
     // Calculations. Derived classes must implement these.

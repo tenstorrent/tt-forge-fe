@@ -102,7 +102,7 @@ std::string Node::get_type() const
     if (node_type_ == NodeType::kPyOp)
     {
         OpNode const* op = this->as<OpNode>();
-        return node_type_to_string(node_type_) + "::" + op->op_name();
+        return node_type_to_string(node_type_) + "::" + op->op().as_string();
     }
     else
     {

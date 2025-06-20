@@ -283,6 +283,8 @@ std::unique_ptr<Op> create_op(OpType op_type)
     }
 }
 
+const std::string &Op::as_string() const { return mapper[type_]; }
+
 }  // namespace ops
 
 }  // namespace tt
