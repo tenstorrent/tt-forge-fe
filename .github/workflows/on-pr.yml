@@ -63,7 +63,7 @@ jobs:
       test_group_ids: '[1,2]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ github.run_id }}
-      runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
+      runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}, {"runs-on": "p150"}]'
 
   perf-benchmark:
     if: inputs.run_perf_benchmark
