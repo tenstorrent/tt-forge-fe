@@ -27,8 +27,8 @@ def run_pytest(args=None, crashed_tests=None):
             print(line, end="")  # Print to stdout
             output.append(line)  # Capture the output
 
-        process.wait()  # Wait for the process to complete
-        return output, process.returncode
+        exit_code = process.wait()  # Wait for the process to complete
+        return output, exit_code
     except Exception as e:
         err = f"Error running pytest: {e}"
         print(err)
