@@ -13,10 +13,6 @@ namespace tt
 namespace graphlib
 {
 
-int Shape::get_tile_height() const { return tt::graphlib::get_row_size_from_tile_size(tile_dim_); }
-
-int Shape::get_tile_width() const { return tt::graphlib::get_col_size_from_tile_size(tile_dim_); }
-
 Shape::Shape(bool valid, Shape::Type type, std::vector<std::uint32_t> dims)
 {
     valid_ = valid;
@@ -46,7 +42,6 @@ Shape Shape::create_forge(std::vector<std::uint32_t> values, int tile_height, in
         "Row dimension must be divisible by tile size",
         Shape::create(values));
 
-    TileDim tile_dim = tt::graphlib::get_tile_dim_from_height_width(tile_height, tile_width);
     Shape s;
     s.dims_ = values;
     s.valid_ = true;
@@ -105,25 +100,10 @@ Shape Shape::to_forge(const Shape &other)
         dims.insert(dims.begin(), 1);
     }
 
-    int forge_tile_r = tt::graphlib::get_row_size_from_tile_size(other.tile_dim_);
-    int forge_tile_c = tt::graphlib::get_col_size_from_tile_size(other.tile_dim_);
-
-    // Snap to tile sizes
-    size_t dim_r = dims.size() - 2;
-    for (std::size_t dim = dim_r; dim <= (dim_r + 1); dim++)
-    {
-        int current_forge_dim = dim == dim_r ? forge_tile_r : forge_tile_c;
-        if (dims[dim] % current_forge_dim != 0)
-        {
-            dims[dim] += current_forge_dim - (dims[dim] % current_forge_dim);
-        }
-    }
-
     Shape s;
     s.dims_ = dims;
     s.valid_ = true;
     s.type_ = FORGE;
-    s.tile_dim_ = other.tile_dim_;
     return s;
 }
 

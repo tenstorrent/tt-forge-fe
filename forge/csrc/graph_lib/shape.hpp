@@ -55,12 +55,6 @@ class Shape
     std::uint32_t &operator[](int i);
     std::uint32_t const &operator[](int i) const;
 
-    TileDim get_tile_dim() const { return tile_dim_; }
-    void set_tile_dim(TileDim tile_dim) { this->tile_dim_ = tile_dim; }
-    int get_tile_height() const;
-    int get_tile_width() const;
-    int get_tile_volume() const { return get_tile_height() * get_tile_width(); }
-
     bool operator==(const Shape &other) const;
     bool operator!=(const Shape &other) const;
 

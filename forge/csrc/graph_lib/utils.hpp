@@ -54,11 +54,6 @@ bool is_eltwise_unary(const OpNode *op);
 bool is_eltwise_binary(const OpNode *op);
 bool is_reduce_z(OpNode const *op);
 
-// Find Row/Col size of TileDim
-int get_row_size_from_tile_size(TileDim tile_dim);
-int get_col_size_from_tile_size(TileDim tile_dim);
-TileDim get_tile_dim_from_height_width(int tile_height, int tile_width);
-
 // Returns a topological sort of all nodes in the graph
 std::vector<Node *> topological_sort(
     Graph const &graph, std::function<bool(Node *)> node_filter = default_node_filter, bool unroll_loops = false);

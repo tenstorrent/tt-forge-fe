@@ -972,51 +972,6 @@ std::vector<std::string> Graph::get_ordered_output_gradient_names() const
     return ordered_inputs;
 }
 
-std::vector<std::vector<int>> Graph::get_ordered_input_tile_dims() const
-{
-    std::vector<std::vector<int>> ordered_input_tile_dims;
-    for (auto input_node_id : this->ordered_module_input_node_ids_)
-    {
-        auto tile_dim = this->node_by_id(input_node_id)->shape().get_tile_dim();
-        std::vector<int> tile_dims{
-            get_row_size_from_tile_size(tile_dim),
-            get_col_size_from_tile_size(tile_dim),
-        };
-        ordered_input_tile_dims.push_back(tile_dims);
-    }
-    return ordered_input_tile_dims;
-}
-
-std::vector<std::vector<int>> Graph::get_ordered_parameter_tile_dims() const
-{
-    std::vector<std::vector<int>> ordered_param_tile_dims;
-    for (auto param_node : this->get_parameter_nodes())
-    {
-        auto tile_dim = param_node->shape().get_tile_dim();
-        std::vector<int> tile_dims{
-            get_row_size_from_tile_size(tile_dim),
-            get_col_size_from_tile_size(tile_dim),
-        };
-        ordered_param_tile_dims.push_back(tile_dims);
-    }
-    return ordered_param_tile_dims;
-}
-
-std::vector<std::vector<int>> Graph::get_ordered_constant_tile_dims() const
-{
-    std::vector<std::vector<int>> ordered_const_tile_dims;
-    for (auto const_node : this->get_constant_nodes())
-    {
-        auto tile_dim = const_node->shape().get_tile_dim();
-        std::vector<int> tile_dims{
-            get_row_size_from_tile_size(tile_dim),
-            get_col_size_from_tile_size(tile_dim),
-        };
-        ordered_const_tile_dims.push_back(tile_dims);
-    }
-    return ordered_const_tile_dims;
-}
-
 // Return outputs to the graph in way module/user expects
 std::vector<Node *> Graph::ordered_module_outputs() const
 {

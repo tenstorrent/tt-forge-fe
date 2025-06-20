@@ -157,11 +157,7 @@ void GraphModule(py::module &m_graph)
         .def("get_ordered_target_shapes", &Graph::get_ordered_target_shapes)
         .def("get_ordered_intermediate_shapes", &Graph::get_ordered_intermediate_shapes)
         .def("get_tile_broadcast_dims_for_input", &Graph::get_tile_broadcast_dims_for_input)
-        .def("get_tile_broadcast_dims_for_bw_input", &Graph::get_tile_broadcast_dims_for_bw_input)
         .def("get_tile_broadcast_dims_for_target", &Graph::get_tile_broadcast_dims_for_target)
-        .def("get_ordered_input_tile_dims", &Graph::get_ordered_input_tile_dims)
-        .def("get_ordered_parameter_tile_dims", &Graph::get_ordered_parameter_tile_dims)
-        .def("get_ordered_constant_tile_dims", &Graph::get_ordered_constant_tile_dims)
         .def("contains_bwd_nodes", &Graph::contains_bwd_nodes)
         .def(
             "get_input_runtime_tensor_transforms",

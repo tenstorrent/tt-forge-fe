@@ -271,10 +271,6 @@ class Graph
     std::vector<std::vector<std::uint32_t>> get_ordered_output_shapes() const;
     std::vector<std::vector<std::uint32_t>> get_ordered_intermediate_shapes() const;
 
-    std::vector<std::vector<int>> get_ordered_input_tile_dims() const;
-    std::vector<std::vector<int>> get_ordered_parameter_tile_dims() const;
-    std::vector<std::vector<int>> get_ordered_constant_tile_dims() const;
-
     bool contains_nodes_of_epoch_type(NodeEpochType node_epoch_type) const;
 
     // Autograd mapping retrieval
