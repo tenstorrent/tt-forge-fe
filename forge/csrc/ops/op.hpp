@@ -22,7 +22,7 @@ namespace graphlib
 struct OpType;
 class Shape;
 struct NodeContext;
-class DimBroadcast;
+using DimBroadcastTrampoline = std::tuple<int, int, int>;
 }  // namespace graphlib
 
 namespace autograd
@@ -201,7 +201,7 @@ class Op
     // ========================================
 
     virtual at::Tensor eval(const std::vector<at::Tensor> &tensors) const;
-    virtual std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
+    virtual std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(
         const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
     virtual tt::graphlib::NodeContext backward(
@@ -280,7 +280,7 @@ class OpAbs : public OpEltwiseUnary
     explicit OpAbs(Attrs attrs) : OpEltwiseUnary(OpType::Abs, std::move(attrs)) {}
 
     at::Tensor eval(const std::vector<at::Tensor> &tensors) const override;
-    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
+    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(
         const std::vector<std::vector<std::uint32_t>> &in_shapes) const override;
     long initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const override;
 };
@@ -292,7 +292,7 @@ class OpAdd : public OpEltwiseBinary
     explicit OpAdd(Attrs attrs) : OpEltwiseBinary(OpType::Add, std::move(attrs)) {}
 
     at::Tensor eval(const std::vector<at::Tensor> &tensors) const override;
-    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
+    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(
         const std::vector<std::vector<std::uint32_t>> &in_shapes) const override;
     long initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const override;
 };
