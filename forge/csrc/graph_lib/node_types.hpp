@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -15,6 +16,7 @@
 #include "graph_lib/shape.hpp"
 #include "graph_lib/utils.hpp"
 #include "lower_to_forge/common.hpp"
+#include "ops/op.hpp"
 #include "shared_utils/sparse_matmul_utils.hpp"
 
 namespace tt
@@ -480,7 +482,8 @@ struct OpType
 class OpNode : public TaggedNode
 {
    private:
-    OpType op_type_;
+    std::unique_ptr<ops::Op> op_;
+    // OpType op_type_;
     bool gradient_op_;  // accumulator op
     std::vector<OpType> golden_transforms;
 
@@ -489,43 +492,57 @@ class OpNode : public TaggedNode
     std::uint32_t golden_id_;
 
    public:
-    OpNode(const std::string &name, const std::string &op_type, NodeType node_type) :
-        TaggedNode(name, node_type), op_type_(op_type), gradient_op_(false)
+    OpNode(const std::string &name, ops::OpType op_type, NodeType node_type) :
+        TaggedNode(name, node_type), op_(ops::create_op(op_type)), gradient_op_(false)
     {
     }
-    OpNode(const std::string &name, OpType op_type, NodeType node_type) :
-        TaggedNode(name, node_type), op_type_(op_type), gradient_op_(false)
+    OpNode(const std::string &name, std::unique_ptr<ops::Op> op, NodeType node_type) :
+        TaggedNode(name, node_type), op_(std::move(op)), gradient_op_(false)
     {
     }
-    void change_op_type(OpType const &new_op_type) { op_type_ = new_op_type; }
-    void change_op_type(const std::string &new_op_type, std::vector<OpType::Attr> attrs = {})
-    {
-        op_type_ = OpType(new_op_type, attrs);
-    }
-    void change_op_type(const std::string &new_op_type, std::vector<OpType::Attr> attrs, OpType::Attrs named_attrs)
-    {
-        op_type_ = OpType(new_op_type, attrs, {}, named_attrs);
-    }
-    OpType const &op_type() const { return op_type_; }
-    OpType &op_type() { return op_type_; }
-    OpType const *op_type_ptr() const { return &op_type_; }
-    OpType *op_type_ptr() { return &op_type_; }
-    py::function py_attr(char const *attr_name) const;
-    py::function py_attr(char const *attr_name);
-    template <typename T, typename... Args>
-    T py_attr(char const *attr_name, Args... args) const
-    {
-        return py_attr(attr_name)(args...).template cast<T>();
-    }
-    template <typename T, typename... Args>
-    T py_attr(char const *attr_name, Args... args)
-    {
-        return py_attr(attr_name)(args...).template cast<T>();
-    }
+    ops::Op &op() { return *op_; }
+    const ops::Op &op() const { return *op_; }
+    ops::OpType op_type() const { return op_->type(); }
+    const ops::Attrs &op_attrs() { return op_->attrs(); }
+
+    // OpNode(const std::string &name, const std::string &op_type, NodeType node_type) :
+    // TaggedNode(name, node_type), op_type_(op_type), gradient_op_(false)
+    // {
+    // }
+    // OpNode(const std::string &name, OpType op_type, NodeType node_type) :
+    // TaggedNode(name, node_type), op_type_(op_type), gradient_op_(false)
+    // {
+    // }
+    // void change_op_type(OpType const &new_op_type) { op_type_ = new_op_type; }
+    // void change_op_type(const std::string &new_op_type, std::vector<OpType::Attr> attrs = {})
+    // {
+    // op_type_ = OpType(new_op_type, attrs);
+    // }
+    // void change_op_type(const std::string &new_op_type, std::vector<OpType::Attr> attrs, OpType::Attrs named_attrs)
+    // {
+    // op_type_ = OpType(new_op_type, attrs, {}, named_attrs);
+    // }
+    // OpType const &op_type() const { return op_type_; }
+    // OpType &op_type() { return op_type_; }
+    // OpType const *op_type_ptr() const { return &op_type_; }
+    // OpType *op_type_ptr() { return &op_type_; }
+    // py::function py_attr(char const *attr_name) const;
+    // py::function py_attr(char const *attr_name);
+    // template <typename T, typename... Args>
+    // T py_attr(char const *attr_name, Args... args) const
+    // {
+    // return py_attr(attr_name)(args...).template cast<T>();
+    // }
+    // template <typename T, typename... Args>
+    // T py_attr(char const *attr_name, Args... args)
+    // {
+    // return py_attr(attr_name)(args...).template cast<T>();
+    // }
     IRLevel get_ir_level() const { return IRLevel::IR_TT_FORGE; }
-    const std::string &op_name() const { return op_type_.op; }
-    const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attr; }
-    OpType::Attrs &named_attrs() { return op_type_.named_attrs; }
+
+    // const std::string &op_name() const { return op_type_.op; }
+    // const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attr; }
+    // OpType::Attrs &named_attrs() { return op_type_.named_attrs; }
     /**
      * @brief Updates the attributes and named attributes of the operation.
      *
@@ -533,44 +550,100 @@ class OpNode : public TaggedNode
      * with the provided ones. It constructs a new `OpType` object with the updated
      * attributes while retaining the existing operation name.
      */
-    void overwrite_op_named_attrs(
-        const std::vector<graphlib::OpType::Attr> &op_attrs, const graphlib::OpType::Attrs &named_attrs)
+    void overwrite_op_named_attrs(ops::Attrs attrs)
     {
-        const std::string &name = op_name();
-        log_trace(LogGraphCompiler, "op name = {}", name);
-        op_type_ = graphlib::OpType(name, op_attrs, {}, named_attrs);
+        // const std::string &name = op_name();
+        // log_trace(LogGraphCompiler, "op name = {}", name);
+        // op_type_ = graphlib::OpType(name, op_attrs, {}, named_attrs);
+
+        op_->set_attrs(std::move(attrs));
     }
+    // void overwrite_op_named_attrs(
+    // const std::vector<graphlib::OpType::Attr> &op_attrs, const graphlib::OpType::Attrs &named_attrs)
+    // {
+    // const std::string &name = op_name();
+    // log_trace(LogGraphCompiler, "op name = {}", name);
+    // op_type_ = graphlib::OpType(name, op_attrs, {}, named_attrs);
+    // }
     /**
      * @brief Overwrites the named attributes of the operation.
      *
      * Updates the current operation's named attributes with the
      * provided `named_attrs` without altering the operation's other properties.
      */
-    void overwrite_named_attrs(graphlib::OpType::Attrs &named_attrs) { op_type_.named_attrs = named_attrs; }
 
-    const ForgeOpAttrs &forge_attrs() const { return op_type_.forge_attrs; }
-    void overwrite_forge_attrs(ForgeOpAttrs forge_attrs) { op_type_.forge_attrs = forge_attrs; }
+    /////////////////////////////////////////
+    // Note: Same as overwrite_op_named_attrs.
+    // void overwrite_named_attrs(graphlib::OpType::Attrs &named_attrs) { op_type_.named_attrs = named_attrs; }
+    /////////////////////////////////////////
+
+    // const ForgeOpAttrs &forge_attrs() const { return op_type_.forge_attrs; }
+    // void overwrite_forge_attrs(ForgeOpAttrs forge_attrs) { op_type_.forge_attrs = forge_attrs; }
     void set_gradient_op(bool value = true) { gradient_op_ = value; }
-    bool is_op_type(std::string const &type) const { return type == op_name(); }
+    // bool is_op_type(std::string const &type) const { return type == op_name(); }
+    bool is_op(ops::OpType other_op_type) const { return other_op_type == op_type(); }
     bool is_gradient_op() const { return gradient_op_; }
-    bool is_embedding() const { return op_name().find("embedding") != std::string::npos; }
-    bool is_matmul() const { return op_name().compare("matmul") == 0 or is_depthwise_matmul(); }
-    bool is_splice() const { return op_name() == "splice"; }
-    bool is_tilize() const { return op_name().find("tilizer") != std::string::npos; }
-    bool is_reduce() const { return op_name() == "reduce"; }
-    bool is_add() const { return op_name() == "add"; }
-    bool is_maximum() const { return op_name() == "maximum"; }
-    bool is_quantization() const { return op_name() == "quantization"; }
-    bool is_dequantization() const { return op_name() == "dequantization"; }
-    bool is_requantization() const { return op_name() == "requantization"; }
+
+    /////////////////////////////////
+    /////////////////////////////////
+    // This needs whole refactoring.
+    // bool is_embedding() const { return op_name().find("embedding") != std::string::npos; }
+    bool is_embedding() const { return op_type() == ops::OpType::Embedding || op_type() == ops::OpType::EmbeddingBw; }
+
+    // bool is_matmul() const { return op_name().compare("matmul") == 0 or is_depthwise_matmul(); }
+    bool is_matmul() const { return op_type() == ops::OpType::Matmul || is_depthwise_matmul(); }
+
+    // This does not exist.
+    // bool is_splice() const { return op_name() == "splice"; }
+
+    // bool is_tilize() const { return op_name().find("tilizer") != std::string::npos; }
+    bool is_tilize() const { return op_type() == ops::OpType::Tilizer; }
+
+    // bool is_reduce() const { return op_name() == "reduce"; }
+    // Check whether this is needed, because there is no reduce.
+    bool is_reduce() const
+    {
+        return op_type() == ops::OpType::ReduceAvg or op_type() == ops::OpType::ReduceMax or
+               op_type() == ops::OpType::ReduceSum;
+    }
+
+    // bool is_add() const { return op_name() == "add"; }
+    bool is_add() const { return op_type() == ops::OpType::Add; }
+
+    // bool is_maximum() const { return op_name() == "maximum"; }
+    bool is_maximum() const { return op_type() == ops::OpType::Maximum; }
+
+    // bool is_quantization() const { return op_name() == "quantization"; }
+    // Check whether this is needed, because there is no quantization.
+    bool is_quantization() const { return op_type() == ops::OpType::Quantize; }
+
+    // bool is_dequantization() const { return op_name() == "dequantization"; }
+    // Check whether this is needed, because there is no quantization.
+    bool is_dequantization() const { return op_type() == ops::OpType::Dequantize; }
+
+    // bool is_requantization() const { return op_name() == "requantization"; }
+    bool is_requantization() const { return op_type() == ops::OpType::Requantize; }
+
     bool is_quantization_related_op() const { return is_quantization() or is_dequantization() or is_requantization(); }
     bool is_dense_matmul() const { return is_matmul() and not is_sparse_matmul() and not is_depthwise_matmul(); }
-    bool is_sparse_matmul() const { return is_matmul() and (forge_attrs().find("identity") != forge_attrs().end()); }
-    bool is_depthwise_matmul() const { return op_name().compare("depthwise") == 0; }
-    bool is_matmul_not_sparse() const
-    {
-        return is_matmul() and (forge_attrs().find("identity") == forge_attrs().end());
-    }
+
+    // bool is_sparse_matmul() const { return is_matmul() and (forge_attrs().find("identity") != forge_attrs().end()); }
+    bool is_sparse_matmul() const { return is_matmul() and op_->has_attr("identity"); }
+
+    // bool is_depthwise_matmul() const { return op_name().compare("depthwise") == 0; }
+    // Check whether this is needed, because it makes no sence.
+    bool is_depthwise_matmul() const { return op_type() == ops::OpType::Depthwise; }
+
+    // bool is_matmul_not_sparse() const
+    // {
+    // return is_matmul() and (forge_attrs().find("identity") == forge_attrs().end());
+    // }
+    bool is_matmul_not_sparse() const { return is_matmul() and op_->has_attr("identity"); }
+
+    /////////////////////////////////
+    // ENd of refactoring.
+    /////////////////////////////////
+
     bool should_pair_with_sparse(const OpNode *sparse_op_node, const Graph *graph) const;
     bool is_tm() const;
     void set_output_df_from_operands(const Graph *graph);
@@ -598,8 +671,8 @@ class OpNode : public TaggedNode
 class PyOpNode : public OpNode
 {
    public:
-    PyOpNode(const std::string &name, const std::string &op_type) : OpNode(name, op_type, NodeType::kPyOp) {}
-    PyOpNode(const std::string &name, OpType op_type) : OpNode(name, op_type, NodeType::kPyOp) {}
+    PyOpNode(const std::string &name, std::unique_ptr<ops::Op> op) : OpNode(name, std::move(op), NodeType::kPyOp) {}
+    PyOpNode(const std::string &name, ops::OpType op_type) : OpNode(name, op_type, NodeType::kPyOp) {}
     virtual std::unique_ptr<Node> clone(std::string const &name = "") const override;
 
     void copy_parent_op_attributes(PyOpNode *node);

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
+#include <memory>
 #include <string>
 #include <tuple>
 #include <unordered_map>
@@ -173,6 +174,7 @@ class Op
     bool operator!=(const Op &other) const { return !(*this == other); }
 
     OpType type() const { return type_; }
+    const Attrs &attrs() const { return attrs_; }
 
     Attr const &attr(std::string const &name) const { return attrs_.at(name); }
     Attr &attr(std::string const &name) { return attrs_.at(name); }
@@ -187,6 +189,8 @@ class Op
         return std::get<T>(attr(name));
     }
 
+    bool has_attr(const std::string &attr_name) const { return attrs_.find(attr_name) != attrs_.end(); }
+    void set_attrs(Attrs attrs) { attrs_ = std::move(attrs); }
     void set_attr(std::string const &name, Attr attr) { attrs_[name] = attr; }
 
     graphlib::OpType as_old_op_type() const;
@@ -259,6 +263,10 @@ class OpEltwiseNary : public OpEltwise
     bool is_eltwise_nary() const override { return true; };
 };
 
+// Check whether this is needed once refactoring is done.
+// It seems that user can always create wanted op where it is needed.
+std::unique_ptr<Op> create_op(OpType op_type);
+
 ///////////////////////////////////////////////////
 // Next section contains ops implemented in cpp. //
 ///////////////////////////////////////////////////
@@ -266,7 +274,8 @@ class OpEltwiseNary : public OpEltwise
 class OpAbs : public OpEltwiseUnary
 {
    public:
-    OpAbs(Attrs attrs) : OpEltwiseUnary(OpType::Abs, std::move(attrs)) {}
+    OpAbs() : OpEltwiseUnary(OpType::Abs) {}
+    explicit OpAbs(Attrs attrs) : OpEltwiseUnary(OpType::Abs, std::move(attrs)) {}
 
     at::Tensor eval(const std::vector<at::Tensor> &tensors) const override;
     graphlib::Shape shape(const std::vector<std::vector<std::uint32_t>> &in_shapes) const override;
@@ -276,7 +285,8 @@ class OpAbs : public OpEltwiseUnary
 class OpAdd : public OpEltwiseBinary
 {
    public:
-    OpAdd(Attrs attrs) : OpEltwiseBinary(OpType::Add, std::move(attrs)) {}
+    OpAdd() : OpEltwiseBinary(OpType::Add) {}
+    explicit OpAdd(Attrs attrs) : OpEltwiseBinary(OpType::Add, std::move(attrs)) {}
 
     at::Tensor eval(const std::vector<at::Tensor> &tensors) const override;
     graphlib::Shape shape(const std::vector<std::vector<std::uint32_t>> &in_shapes) const override;

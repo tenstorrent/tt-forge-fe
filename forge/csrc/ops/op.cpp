@@ -270,6 +270,18 @@ bool Op::is_eltwise_nary() const
     return fn_is_eltwise_nary(std::ref(old_op_type)).cast<bool>();
 }
 
+// Check whether this is needed once refactoring is done.
+// It seems that user can always create wanted op where it is needed.
+std::unique_ptr<Op> create_op(OpType op_type)
+{
+    switch (op_type)
+    {
+        case OpType::Abs: return std::make_unique<OpAbs>();
+        case OpType::Add: return std::make_unique<OpAdd>();
+        default: return std::make_unique<Op>(op_type);
+    }
+}
+
 }  // namespace ops
 
 }  // namespace tt
