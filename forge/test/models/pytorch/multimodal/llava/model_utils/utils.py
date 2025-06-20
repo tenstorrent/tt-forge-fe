@@ -1,10 +1,11 @@
 # SPDX-FileCopyrightText: (c) 2024 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
+import os
 import re
 
-import requests
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 
 
 def is_url(url):
@@ -22,9 +23,13 @@ def load_inputs(inp_image, text, processor):
             ],
         }
     ]
+
     text_prompt = processor.apply_chat_template(conversation, padding=True, add_generation_prompt=True)
+
+    # Handle image loading with get_file
     if is_url(inp_image):
-        image = Image.open(requests.get(inp_image, stream=True).raw)
+        local_path = get_file("https://www.ilankelman.org/stopsigns/australia.jpg")
+        image = Image.open(local_path)
     else:
         if os.path.isfile(inp_image):
             image = Image.open(inp_image)

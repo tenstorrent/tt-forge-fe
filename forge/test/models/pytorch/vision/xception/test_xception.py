@@ -1,12 +1,12 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import urllib
 
 import pytest
 import timm
 import torch
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
@@ -34,12 +34,8 @@ def generate_model_xception_imgcls_timm(variant):
     # STEP 3: Prepare input
     config = resolve_data_config({}, model=framework_model)
     transform = create_transform(**config)
-    url, filename = (
-        "https://github.com/pytorch/hub/raw/master/images/dog.jpg",
-        "dog.jpg",
-    )
-    urllib.request.urlretrieve(url, filename)
-    img = Image.open(filename).convert("RGB")
+    file_path = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
+    img = Image.open(file_path).convert("RGB")
     img_tensor = transform(img).unsqueeze(0)
 
     return framework_model.to(torch.bfloat16), [img_tensor.to(torch.bfloat16)]
