@@ -4012,16 +4012,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Matmul2,
-        [((5, 400, 32), torch.bfloat16), ((5, 32, 400), torch.bfloat16)],
-        {"model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov10_yolov10n_obj_det_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
-        [((5, 64, 400), torch.bfloat16), ((5, 400, 400), torch.bfloat16)],
-        {"model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov10_yolov10n_obj_det_github"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
         [((1, 1280), torch.float32), ((1280, 1000), torch.float32)],
         {
             "model_names": [
@@ -12222,6 +12212,26 @@ forge_modules_and_shapes_dtypes_list = [
         Matmul2,
         [((1, 1, 1024), torch.float32), ((1024, 51865), torch.float32)],
         {"model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((2, 400, 32), torch.bfloat16), ((2, 32, 400), torch.bfloat16)],
+        {"model_names": ["pt_yolov10_yolov10n_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Matmul2,
+        [((2, 64, 400), torch.bfloat16), ((2, 400, 400), torch.bfloat16)],
+        {"model_names": ["pt_yolov10_yolov10n_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Matmul2,
+        [((5, 400, 32), torch.bfloat16), ((5, 32, 400), torch.bfloat16)],
+        {"model_names": ["pt_yolov10_yolov10x_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Matmul2,
+        [((5, 64, 400), torch.bfloat16), ((5, 400, 400), torch.bfloat16)],
+        {"model_names": ["pt_yolov10_yolov10x_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
 ]
 

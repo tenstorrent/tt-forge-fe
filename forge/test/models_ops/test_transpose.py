@@ -4714,42 +4714,15 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Transpose1,
-        [((1, 5, 32, 400), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov10_yolov10n_obj_det_github"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
-    ),
-    (
-        Transpose1,
-        [((5, 400, 32), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov10_yolov10n_obj_det_github"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
-    ),
-    (
-        Transpose1,
-        [((5, 400, 400), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov10_yolov10n_obj_det_github"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
-    ),
-    (
         Transpose0,
         [((1, 4, 16, 8400), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
                 "pt_yolov9_default_obj_det_github",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolov8_yolov8x_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -16387,6 +16360,66 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
             "pcc": 0.99,
+            "args": {"dim0": "-2", "dim1": "-1"},
+        },
+    ),
+    (
+        Transpose1,
+        [((1, 2, 32, 400), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim0": "-2", "dim1": "-1"},
+        },
+    ),
+    (
+        Transpose1,
+        [((2, 400, 32), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim0": "-2", "dim1": "-1"},
+        },
+    ),
+    (
+        Transpose1,
+        [((2, 400, 400), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim0": "-2", "dim1": "-1"},
+        },
+    ),
+    (
+        Transpose1,
+        [((1, 5, 32, 400), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim0": "-2", "dim1": "-1"},
+        },
+    ),
+    (
+        Transpose1,
+        [((5, 400, 32), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim0": "-2", "dim1": "-1"},
+        },
+    ),
+    (
+        Transpose1,
+        [((5, 400, 400), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {"dim0": "-2", "dim1": "-1"},
         },
     ),
