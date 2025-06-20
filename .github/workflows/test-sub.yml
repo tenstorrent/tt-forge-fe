@@ -161,7 +161,7 @@ jobs:
                --group ${{ matrix.test_group_id }} \
                --splitting-algorithm least_duration \
                -m "${{ inputs.test_mark }}" \
-               --collect-only -qq >.pytest_tests_to_run
+               --collect-only -q | awk 'NF{p=1;print}/^$/{if(p)exit}' > .pytest_tests_to_run
 
           python .github/workflows/test_runner.py  \
                  --junit-xml=${{ steps.strings.outputs.test_report_path }} \
