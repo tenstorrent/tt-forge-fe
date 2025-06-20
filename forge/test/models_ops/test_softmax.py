@@ -483,24 +483,15 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
     (
-        Softmax0,
-        [((1, 5, 400, 400), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov10_yolov10n_obj_det_github"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
         Softmax2,
         [((1, 16, 4, 8400), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
                 "pt_yolov9_default_obj_det_github",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolov8_yolov8x_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "1"},
@@ -1561,6 +1552,26 @@ forge_modules_and_shapes_dtypes_list = [
         Softmax0,
         [((1, 16, 1, 1500), torch.float32)],
         {"model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax0,
+        [((1, 2, 400, 400), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 5, 400, 400), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
     ),
 ]
 

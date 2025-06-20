@@ -144,8 +144,6 @@ class Concatenate10(ForgeModule):
         concatenate_input_3,
         concatenate_input_4,
         concatenate_input_5,
-        concatenate_input_6,
-        concatenate_input_7,
     ):
         concatenate_output_1 = forge.op.Concatenate(
             "",
@@ -155,40 +153,12 @@ class Concatenate10(ForgeModule):
             concatenate_input_3,
             concatenate_input_4,
             concatenate_input_5,
-            concatenate_input_6,
-            concatenate_input_7,
             axis=-3,
         )
         return concatenate_output_1
 
 
 class Concatenate11(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(
-        self,
-        concatenate_input_0,
-        concatenate_input_1,
-        concatenate_input_2,
-        concatenate_input_3,
-        concatenate_input_4,
-        concatenate_input_5,
-    ):
-        concatenate_output_1 = forge.op.Concatenate(
-            "",
-            concatenate_input_0,
-            concatenate_input_1,
-            concatenate_input_2,
-            concatenate_input_3,
-            concatenate_input_4,
-            concatenate_input_5,
-            axis=-3,
-        )
-        return concatenate_output_1
-
-
-class Concatenate12(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -252,19 +222,19 @@ class Concatenate12(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate13(ForgeModule):
+class Concatenate12(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("concatenate13_const_1", shape=(1, 3025, 258), dtype=torch.bfloat16)
+        self.add_constant("concatenate12_const_1", shape=(1, 3025, 258), dtype=torch.bfloat16)
 
     def forward(self, concatenate_input_0):
         concatenate_output_1 = forge.op.Concatenate(
-            "", concatenate_input_0, self.get_constant("concatenate13_const_1"), axis=-1
+            "", concatenate_input_0, self.get_constant("concatenate12_const_1"), axis=-1
         )
         return concatenate_output_1
 
 
-class Concatenate14(ForgeModule):
+class Concatenate13(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -275,7 +245,7 @@ class Concatenate14(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate15(ForgeModule):
+class Concatenate14(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -286,7 +256,7 @@ class Concatenate15(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate16(ForgeModule):
+class Concatenate15(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -312,7 +282,7 @@ class Concatenate16(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate17(ForgeModule):
+class Concatenate16(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -323,7 +293,7 @@ class Concatenate17(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate18(ForgeModule):
+class Concatenate17(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -346,6 +316,36 @@ class Concatenate18(ForgeModule):
             concatenate_input_4,
             concatenate_input_5,
             concatenate_input_6,
+            axis=-3,
+        )
+        return concatenate_output_1
+
+
+class Concatenate18(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(
+        self,
+        concatenate_input_0,
+        concatenate_input_1,
+        concatenate_input_2,
+        concatenate_input_3,
+        concatenate_input_4,
+        concatenate_input_5,
+        concatenate_input_6,
+        concatenate_input_7,
+    ):
+        concatenate_output_1 = forge.op.Concatenate(
+            "",
+            concatenate_input_0,
+            concatenate_input_1,
+            concatenate_input_2,
+            concatenate_input_3,
+            concatenate_input_4,
+            concatenate_input_5,
+            concatenate_input_6,
+            concatenate_input_7,
             axis=-3,
         )
         return concatenate_output_1
@@ -4551,183 +4551,13 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate4,
-        [
-            ((1, 80, 160, 160), torch.bfloat16),
-            ((1, 80, 160, 160), torch.bfloat16),
-            ((1, 80, 160, 160), torch.bfloat16),
-            ((1, 80, 160, 160), torch.bfloat16),
-            ((1, 80, 160, 160), torch.bfloat16),
-        ],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate10,
-        [
-            ((1, 160, 80, 80), torch.bfloat16),
-            ((1, 160, 80, 80), torch.bfloat16),
-            ((1, 160, 80, 80), torch.bfloat16),
-            ((1, 160, 80, 80), torch.bfloat16),
-            ((1, 160, 80, 80), torch.bfloat16),
-            ((1, 160, 80, 80), torch.bfloat16),
-            ((1, 160, 80, 80), torch.bfloat16),
-            ((1, 160, 80, 80), torch.bfloat16),
-        ],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate10,
-        [
-            ((1, 320, 40, 40), torch.bfloat16),
-            ((1, 320, 40, 40), torch.bfloat16),
-            ((1, 320, 40, 40), torch.bfloat16),
-            ((1, 320, 40, 40), torch.bfloat16),
-            ((1, 320, 40, 40), torch.bfloat16),
-            ((1, 320, 40, 40), torch.bfloat16),
-            ((1, 320, 40, 40), torch.bfloat16),
-            ((1, 320, 40, 40), torch.bfloat16),
-        ],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [
-            ((1, 320, 20, 20), torch.bfloat16),
-            ((1, 320, 20, 20), torch.bfloat16),
-            ((1, 320, 20, 20), torch.bfloat16),
-            ((1, 320, 20, 20), torch.bfloat16),
-            ((1, 320, 20, 20), torch.bfloat16),
-        ],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate2,
-        [
-            ((1, 320, 20, 20), torch.bfloat16),
-            ((1, 320, 20, 20), torch.bfloat16),
-            ((1, 320, 20, 20), torch.bfloat16),
-            ((1, 320, 20, 20), torch.bfloat16),
-        ],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate1,
-        [((1, 320, 20, 20), torch.bfloat16), ((1, 320, 20, 20), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov10_yolov10n_obj_det_github"],
-            "pcc": 0.99,
-            "args": {"axis": "-3"},
-        },
-    ),
-    (
         Concatenate1,
         [((1, 640, 40, 40), torch.bfloat16), ((1, 640, 40, 40), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [
-            ((1, 320, 40, 40), torch.bfloat16),
-            ((1, 320, 40, 40), torch.bfloat16),
-            ((1, 320, 40, 40), torch.bfloat16),
-            ((1, 320, 40, 40), torch.bfloat16),
-            ((1, 320, 40, 40), torch.bfloat16),
-        ],
-        {
-            "model_names": [
                 "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
                 "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate1,
-        [((1, 640, 80, 80), torch.bfloat16), ((1, 320, 80, 80), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [
-            ((1, 160, 80, 80), torch.bfloat16),
-            ((1, 160, 80, 80), torch.bfloat16),
-            ((1, 160, 80, 80), torch.bfloat16),
-            ((1, 160, 80, 80), torch.bfloat16),
-            ((1, 160, 80, 80), torch.bfloat16),
-        ],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"axis": "-3"},
@@ -4738,25 +4568,11 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 64, 80, 80), torch.bfloat16), ((1, 80, 80, 80), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
                 "pt_yolov9_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate1,
-        [((1, 320, 40, 40), torch.bfloat16), ((1, 640, 40, 40), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolov8_yolov8x_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"axis": "-3"},
@@ -4767,11 +4583,11 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 64, 40, 40), torch.bfloat16), ((1, 80, 40, 40), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
                 "pt_yolov9_default_obj_det_github",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolov8_yolov8x_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"axis": "-3"},
@@ -4782,11 +4598,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 640, 20, 20), torch.bfloat16), ((1, 640, 20, 20), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"axis": "-3"},
@@ -4797,11 +4611,11 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 64, 20, 20), torch.bfloat16), ((1, 80, 20, 20), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
                 "pt_yolov9_default_obj_det_github",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolov8_yolov8x_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"axis": "-3"},
@@ -4812,11 +4626,11 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 144, 6400), torch.bfloat16), ((1, 144, 1600), torch.bfloat16), ((1, 144, 400), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
                 "pt_yolov9_default_obj_det_github",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolov8_yolov8x_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"axis": "-1"},
@@ -4827,11 +4641,11 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 2, 8400), torch.bfloat16), ((1, 2, 8400), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
                 "pt_yolov9_default_obj_det_github",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolov8_yolov8x_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"axis": "-2"},
@@ -4842,11 +4656,11 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 4, 8400), torch.bfloat16), ((1, 80, 8400), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
                 "pt_yolov9_default_obj_det_github",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolov8_yolov8x_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"axis": "-2"},
@@ -5015,7 +4829,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 512, 14, 14), torch.float32),
             ((1, 512, 14, 14), torch.float32),
@@ -5429,7 +5243,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate12,
+        Concatenate11,
         [
             ((1, 1, 48), torch.float32),
             ((1, 1, 48), torch.float32),
@@ -5798,7 +5612,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate13,
+        Concatenate12,
         [((1, 3025, 64), torch.bfloat16)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
@@ -6079,7 +5893,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate14,
+        Concatenate13,
         [((1, 4800, 85), torch.float32), ((1, 1200, 85), torch.float32), ((1, 300, 85), torch.float32)],
         {
             "model_names": [
@@ -6507,7 +6321,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_densenet_121_img_cls_paddlemodels"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate15,
+        Concatenate14,
         [
             ((256, 1024), torch.float32),
             ((256, 1024), torch.float32),
@@ -6672,7 +6486,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate16,
+        Concatenate15,
         [
             ((1, 4, 5776), torch.bfloat16),
             ((1, 4, 2166), torch.bfloat16),
@@ -6684,7 +6498,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"], "pcc": 0.99, "args": {"axis": "-1"}},
     ),
     (
-        Concatenate16,
+        Concatenate15,
         [
             ((1, 81, 5776), torch.bfloat16),
             ((1, 81, 2166), torch.bfloat16),
@@ -6748,7 +6562,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate17,
+        Concatenate16,
         [
             ((1, 28, 28, 96), torch.bfloat16),
             ((1, 28, 28, 96), torch.bfloat16),
@@ -6818,7 +6632,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate17,
+        Concatenate16,
         [
             ((1, 14, 14, 192), torch.bfloat16),
             ((1, 14, 14, 192), torch.bfloat16),
@@ -6888,7 +6702,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate17,
+        Concatenate16,
         [
             ((1, 7, 7, 384), torch.bfloat16),
             ((1, 7, 7, 384), torch.bfloat16),
@@ -6926,7 +6740,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_unet_base_img_seg_torchhub"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 128, 56, 56), torch.bfloat16),
             ((1, 128, 56, 56), torch.bfloat16),
@@ -6949,7 +6763,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 256, 28, 28), torch.bfloat16),
             ((1, 160, 28, 28), torch.bfloat16),
@@ -6972,7 +6786,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 512, 14, 14), torch.bfloat16),
             ((1, 192, 14, 14), torch.bfloat16),
@@ -6995,7 +6809,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 768, 14, 14), torch.bfloat16),
             ((1, 192, 14, 14), torch.bfloat16),
@@ -7018,7 +6832,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 768, 7, 7), torch.bfloat16),
             ((1, 224, 7, 7), torch.bfloat16),
@@ -7041,7 +6855,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 1024, 7, 7), torch.bfloat16),
             ((1, 224, 7, 7), torch.bfloat16),
@@ -7113,7 +6927,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate14,
+        Concatenate13,
         [((1, 19200, 85), torch.float32), ((1, 4800, 85), torch.float32), ((1, 1200, 85), torch.float32)],
         {
             "model_names": [
@@ -7301,7 +7115,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate14,
+        Concatenate13,
         [((1, 10800, 85), torch.float32), ((1, 2700, 85), torch.float32), ((1, 675, 85), torch.float32)],
         {
             "model_names": [
@@ -7503,7 +7317,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 64, 56, 56), torch.bfloat16),
             ((1, 32, 56, 56), torch.bfloat16),
@@ -7523,7 +7337,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate18,
+        Concatenate17,
         [
             ((1, 64, 56, 56), torch.bfloat16),
             ((1, 32, 56, 56), torch.bfloat16),
@@ -7621,9 +7435,30 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 128, 28, 28), torch.bfloat16),
+            ((1, 32, 28, 28), torch.bfloat16),
+            ((1, 32, 28, 28), torch.bfloat16),
+            ((1, 32, 28, 28), torch.bfloat16),
+            ((1, 32, 28, 28), torch.bfloat16),
+            ((1, 32, 28, 28), torch.bfloat16),
+        ],
+        {
+            "model_names": [
+                "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
+                "pt_densenet_densenet201_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate17,
+        [
+            ((1, 128, 28, 28), torch.bfloat16),
+            ((1, 32, 28, 28), torch.bfloat16),
             ((1, 32, 28, 28), torch.bfloat16),
             ((1, 32, 28, 28), torch.bfloat16),
             ((1, 32, 28, 28), torch.bfloat16),
@@ -7642,27 +7477,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Concatenate18,
-        [
-            ((1, 128, 28, 28), torch.bfloat16),
-            ((1, 32, 28, 28), torch.bfloat16),
-            ((1, 32, 28, 28), torch.bfloat16),
-            ((1, 32, 28, 28), torch.bfloat16),
-            ((1, 32, 28, 28), torch.bfloat16),
-            ((1, 32, 28, 28), torch.bfloat16),
-            ((1, 32, 28, 28), torch.bfloat16),
-        ],
-        {
-            "model_names": [
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate10,
         [
             ((1, 128, 28, 28), torch.bfloat16),
             ((1, 32, 28, 28), torch.bfloat16),
@@ -7886,9 +7700,30 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 256, 14, 14), torch.bfloat16),
+            ((1, 32, 14, 14), torch.bfloat16),
+            ((1, 32, 14, 14), torch.bfloat16),
+            ((1, 32, 14, 14), torch.bfloat16),
+            ((1, 32, 14, 14), torch.bfloat16),
+            ((1, 32, 14, 14), torch.bfloat16),
+        ],
+        {
+            "model_names": [
+                "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
+                "pt_densenet_densenet201_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate17,
+        [
+            ((1, 256, 14, 14), torch.bfloat16),
+            ((1, 32, 14, 14), torch.bfloat16),
             ((1, 32, 14, 14), torch.bfloat16),
             ((1, 32, 14, 14), torch.bfloat16),
             ((1, 32, 14, 14), torch.bfloat16),
@@ -7907,27 +7742,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Concatenate18,
-        [
-            ((1, 256, 14, 14), torch.bfloat16),
-            ((1, 32, 14, 14), torch.bfloat16),
-            ((1, 32, 14, 14), torch.bfloat16),
-            ((1, 32, 14, 14), torch.bfloat16),
-            ((1, 32, 14, 14), torch.bfloat16),
-            ((1, 32, 14, 14), torch.bfloat16),
-            ((1, 32, 14, 14), torch.bfloat16),
-        ],
-        {
-            "model_names": [
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate10,
         [
             ((1, 256, 14, 14), torch.bfloat16),
             ((1, 32, 14, 14), torch.bfloat16),
@@ -8437,7 +8251,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate12,
+        Concatenate11,
         [
             ((1, 256, 14, 14), torch.bfloat16),
             ((1, 32, 14, 14), torch.bfloat16),
@@ -8519,9 +8333,22 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 512, 7, 7), torch.bfloat16),
+            ((1, 32, 7, 7), torch.bfloat16),
+            ((1, 32, 7, 7), torch.bfloat16),
+            ((1, 32, 7, 7), torch.bfloat16),
+            ((1, 32, 7, 7), torch.bfloat16),
+            ((1, 32, 7, 7), torch.bfloat16),
+        ],
+        {"model_names": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
+    ),
+    (
+        Concatenate17,
+        [
+            ((1, 512, 7, 7), torch.bfloat16),
+            ((1, 32, 7, 7), torch.bfloat16),
             ((1, 32, 7, 7), torch.bfloat16),
             ((1, 32, 7, 7), torch.bfloat16),
             ((1, 32, 7, 7), torch.bfloat16),
@@ -8532,19 +8359,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Concatenate18,
-        [
-            ((1, 512, 7, 7), torch.bfloat16),
-            ((1, 32, 7, 7), torch.bfloat16),
-            ((1, 32, 7, 7), torch.bfloat16),
-            ((1, 32, 7, 7), torch.bfloat16),
-            ((1, 32, 7, 7), torch.bfloat16),
-            ((1, 32, 7, 7), torch.bfloat16),
-            ((1, 32, 7, 7), torch.bfloat16),
-        ],
-        {"model_names": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
-    ),
-    (
-        Concatenate10,
         [
             ((1, 512, 7, 7), torch.bfloat16),
             ((1, 32, 7, 7), torch.bfloat16),
@@ -8837,7 +8651,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-2"}},
     ),
     (
-        Concatenate17,
+        Concatenate16,
         [
             ((1, 28, 28, 128), torch.bfloat16),
             ((1, 28, 28, 128), torch.bfloat16),
@@ -8867,7 +8681,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-2"}},
     ),
     (
-        Concatenate17,
+        Concatenate16,
         [
             ((1, 14, 14, 256), torch.bfloat16),
             ((1, 14, 14, 256), torch.bfloat16),
@@ -8897,7 +8711,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-2"}},
     ),
     (
-        Concatenate17,
+        Concatenate16,
         [
             ((1, 7, 7, 512), torch.bfloat16),
             ((1, 7, 7, 512), torch.bfloat16),
@@ -9541,7 +9355,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 96, 56, 56), torch.bfloat16),
             ((1, 48, 56, 56), torch.bfloat16),
@@ -9553,7 +9367,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate18,
+        Concatenate17,
         [
             ((1, 96, 56, 56), torch.bfloat16),
             ((1, 48, 56, 56), torch.bfloat16),
@@ -9602,9 +9416,22 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 192, 28, 28), torch.bfloat16),
+            ((1, 48, 28, 28), torch.bfloat16),
+            ((1, 48, 28, 28), torch.bfloat16),
+            ((1, 48, 28, 28), torch.bfloat16),
+            ((1, 48, 28, 28), torch.bfloat16),
+            ((1, 48, 28, 28), torch.bfloat16),
+        ],
+        {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
+    ),
+    (
+        Concatenate17,
+        [
+            ((1, 192, 28, 28), torch.bfloat16),
+            ((1, 48, 28, 28), torch.bfloat16),
             ((1, 48, 28, 28), torch.bfloat16),
             ((1, 48, 28, 28), torch.bfloat16),
             ((1, 48, 28, 28), torch.bfloat16),
@@ -9615,19 +9442,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Concatenate18,
-        [
-            ((1, 192, 28, 28), torch.bfloat16),
-            ((1, 48, 28, 28), torch.bfloat16),
-            ((1, 48, 28, 28), torch.bfloat16),
-            ((1, 48, 28, 28), torch.bfloat16),
-            ((1, 48, 28, 28), torch.bfloat16),
-            ((1, 48, 28, 28), torch.bfloat16),
-            ((1, 48, 28, 28), torch.bfloat16),
-        ],
-        {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
-    ),
-    (
-        Concatenate10,
         [
             ((1, 192, 28, 28), torch.bfloat16),
             ((1, 48, 28, 28), torch.bfloat16),
@@ -9762,9 +9576,22 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 384, 14, 14), torch.bfloat16),
+            ((1, 48, 14, 14), torch.bfloat16),
+            ((1, 48, 14, 14), torch.bfloat16),
+            ((1, 48, 14, 14), torch.bfloat16),
+            ((1, 48, 14, 14), torch.bfloat16),
+            ((1, 48, 14, 14), torch.bfloat16),
+        ],
+        {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
+    ),
+    (
+        Concatenate17,
+        [
+            ((1, 384, 14, 14), torch.bfloat16),
+            ((1, 48, 14, 14), torch.bfloat16),
             ((1, 48, 14, 14), torch.bfloat16),
             ((1, 48, 14, 14), torch.bfloat16),
             ((1, 48, 14, 14), torch.bfloat16),
@@ -9775,19 +9602,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Concatenate18,
-        [
-            ((1, 384, 14, 14), torch.bfloat16),
-            ((1, 48, 14, 14), torch.bfloat16),
-            ((1, 48, 14, 14), torch.bfloat16),
-            ((1, 48, 14, 14), torch.bfloat16),
-            ((1, 48, 14, 14), torch.bfloat16),
-            ((1, 48, 14, 14), torch.bfloat16),
-            ((1, 48, 14, 14), torch.bfloat16),
-        ],
-        {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
-    ),
-    (
-        Concatenate10,
         [
             ((1, 384, 14, 14), torch.bfloat16),
             ((1, 48, 14, 14), torch.bfloat16),
@@ -10161,7 +9975,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate12,
+        Concatenate11,
         [
             ((1, 384, 14, 14), torch.bfloat16),
             ((1, 48, 14, 14), torch.bfloat16),
@@ -10678,9 +10492,22 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 1056, 7, 7), torch.bfloat16),
+            ((1, 48, 7, 7), torch.bfloat16),
+            ((1, 48, 7, 7), torch.bfloat16),
+            ((1, 48, 7, 7), torch.bfloat16),
+            ((1, 48, 7, 7), torch.bfloat16),
+            ((1, 48, 7, 7), torch.bfloat16),
+        ],
+        {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
+    ),
+    (
+        Concatenate17,
+        [
+            ((1, 1056, 7, 7), torch.bfloat16),
+            ((1, 48, 7, 7), torch.bfloat16),
             ((1, 48, 7, 7), torch.bfloat16),
             ((1, 48, 7, 7), torch.bfloat16),
             ((1, 48, 7, 7), torch.bfloat16),
@@ -10691,19 +10518,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Concatenate18,
-        [
-            ((1, 1056, 7, 7), torch.bfloat16),
-            ((1, 48, 7, 7), torch.bfloat16),
-            ((1, 48, 7, 7), torch.bfloat16),
-            ((1, 48, 7, 7), torch.bfloat16),
-            ((1, 48, 7, 7), torch.bfloat16),
-            ((1, 48, 7, 7), torch.bfloat16),
-            ((1, 48, 7, 7), torch.bfloat16),
-        ],
-        {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
-    ),
-    (
-        Concatenate10,
         [
             ((1, 1056, 7, 7), torch.bfloat16),
             ((1, 48, 7, 7), torch.bfloat16),
@@ -11077,7 +10891,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate12,
+        Concatenate11,
         [
             ((1, 1056, 7, 7), torch.bfloat16),
             ((1, 48, 7, 7), torch.bfloat16),
@@ -11235,7 +11049,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"axis": "-1"}},
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 128, 56, 56), torch.bfloat16),
             ((1, 64, 56, 56), torch.bfloat16),
@@ -11247,7 +11061,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_vovnet_vovnet27s_img_cls_osmr"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 128, 28, 28), torch.bfloat16),
             ((1, 80, 28, 28), torch.bfloat16),
@@ -11259,7 +11073,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_vovnet_vovnet27s_img_cls_osmr"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 256, 14, 14), torch.bfloat16),
             ((1, 96, 14, 14), torch.bfloat16),
@@ -11271,7 +11085,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_vovnet_vovnet27s_img_cls_osmr"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 384, 7, 7), torch.bfloat16),
             ((1, 112, 7, 7), torch.bfloat16),
@@ -11451,7 +11265,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_dla_dla169_visual_bb_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate18,
+        Concatenate17,
         [
             ((1, 512, 14, 14), torch.float32),
             ((1, 512, 14, 14), torch.float32),
@@ -11520,7 +11334,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate17,
+        Concatenate16,
         [
             ((1, 32, 32, 96), torch.float32),
             ((1, 32, 32, 96), torch.float32),
@@ -11595,7 +11409,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate17,
+        Concatenate16,
         [
             ((1, 16, 16, 192), torch.float32),
             ((1, 16, 16, 192), torch.float32),
@@ -11670,7 +11484,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate17,
+        Concatenate16,
         [
             ((1, 8, 8, 384), torch.float32),
             ((1, 8, 8, 384), torch.float32),
@@ -12060,9 +11874,22 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 640, 7, 7), torch.bfloat16),
+            ((1, 32, 7, 7), torch.bfloat16),
+            ((1, 32, 7, 7), torch.bfloat16),
+            ((1, 32, 7, 7), torch.bfloat16),
+            ((1, 32, 7, 7), torch.bfloat16),
+            ((1, 32, 7, 7), torch.bfloat16),
+        ],
+        {"model_names": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
+    ),
+    (
+        Concatenate17,
+        [
+            ((1, 640, 7, 7), torch.bfloat16),
+            ((1, 32, 7, 7), torch.bfloat16),
             ((1, 32, 7, 7), torch.bfloat16),
             ((1, 32, 7, 7), torch.bfloat16),
             ((1, 32, 7, 7), torch.bfloat16),
@@ -12073,19 +11900,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Concatenate18,
-        [
-            ((1, 640, 7, 7), torch.bfloat16),
-            ((1, 32, 7, 7), torch.bfloat16),
-            ((1, 32, 7, 7), torch.bfloat16),
-            ((1, 32, 7, 7), torch.bfloat16),
-            ((1, 32, 7, 7), torch.bfloat16),
-            ((1, 32, 7, 7), torch.bfloat16),
-            ((1, 32, 7, 7), torch.bfloat16),
-        ],
-        {"model_names": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
-    ),
-    (
-        Concatenate10,
         [
             ((1, 640, 7, 7), torch.bfloat16),
             ((1, 32, 7, 7), torch.bfloat16),
@@ -12459,7 +12273,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate12,
+        Concatenate11,
         [
             ((1, 640, 7, 7), torch.bfloat16),
             ((1, 32, 7, 7), torch.bfloat16),
@@ -13206,7 +13020,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_dla_dla169_visual_bb_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate18,
+        Concatenate17,
         [
             ((1, 512, 14, 14), torch.bfloat16),
             ((1, 512, 14, 14), torch.bfloat16),
@@ -13311,7 +13125,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-2"}},
     ),
     (
-        Concatenate17,
+        Concatenate16,
         [
             ((1, 32, 32, 128), torch.float32),
             ((1, 32, 32, 128), torch.float32),
@@ -13341,7 +13155,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-2"}},
     ),
     (
-        Concatenate17,
+        Concatenate16,
         [
             ((1, 16, 16, 256), torch.float32),
             ((1, 16, 16, 256), torch.float32),
@@ -13371,7 +13185,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-2"}},
     ),
     (
-        Concatenate17,
+        Concatenate16,
         [
             ((1, 8, 8, 512), torch.float32),
             ((1, 8, 8, 512), torch.float32),
@@ -13440,7 +13254,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate14,
+        Concatenate13,
         [((1, 76800, 85), torch.float32), ((1, 19200, 85), torch.float32), ((1, 4800, 85), torch.float32)],
         {"model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280"], "pcc": 0.99, "args": {"axis": "-2"}},
     ),
@@ -13465,7 +13279,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_yolo_v6_yolov6l_obj_det_torchhub"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate14,
+        Concatenate13,
         [((1, 1, 192), torch.bfloat16), ((1, 1344, 192), torch.bfloat16), ((1, 100, 192), torch.bfloat16)],
         {"model_names": ["pt_yolos_hustvl_yolos_tiny_obj_det_hf"], "pcc": 0.99, "args": {"axis": "-2"}},
     ),
@@ -14261,9 +14075,22 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 896, 7, 7), torch.bfloat16),
+            ((1, 32, 7, 7), torch.bfloat16),
+            ((1, 32, 7, 7), torch.bfloat16),
+            ((1, 32, 7, 7), torch.bfloat16),
+            ((1, 32, 7, 7), torch.bfloat16),
+            ((1, 32, 7, 7), torch.bfloat16),
+        ],
+        {"model_names": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
+    ),
+    (
+        Concatenate17,
+        [
+            ((1, 896, 7, 7), torch.bfloat16),
+            ((1, 32, 7, 7), torch.bfloat16),
             ((1, 32, 7, 7), torch.bfloat16),
             ((1, 32, 7, 7), torch.bfloat16),
             ((1, 32, 7, 7), torch.bfloat16),
@@ -14274,19 +14101,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Concatenate18,
-        [
-            ((1, 896, 7, 7), torch.bfloat16),
-            ((1, 32, 7, 7), torch.bfloat16),
-            ((1, 32, 7, 7), torch.bfloat16),
-            ((1, 32, 7, 7), torch.bfloat16),
-            ((1, 32, 7, 7), torch.bfloat16),
-            ((1, 32, 7, 7), torch.bfloat16),
-            ((1, 32, 7, 7), torch.bfloat16),
-        ],
-        {"model_names": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
-    ),
-    (
-        Concatenate10,
         [
             ((1, 896, 7, 7), torch.bfloat16),
             ((1, 32, 7, 7), torch.bfloat16),
@@ -14660,7 +14474,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate12,
+        Concatenate11,
         [
             ((1, 896, 7, 7), torch.bfloat16),
             ((1, 32, 7, 7), torch.bfloat16),
@@ -14975,7 +14789,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 512, 14, 14), torch.bfloat16),
             ((1, 512, 14, 14), torch.bfloat16),
@@ -15113,7 +14927,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 512, 28, 28), torch.bfloat16),
             ((1, 160, 28, 28), torch.bfloat16),
@@ -15277,7 +15091,11 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Concatenate1,
         [((1, 128, 20, 20), torch.bfloat16), ((1, 128, 20, 20), torch.bfloat16)],
-        {"model_names": ["pt_yolov9_default_obj_det_github"], "pcc": 0.99, "args": {"axis": "-3"}},
+        {
+            "model_names": ["pt_yolov9_default_obj_det_github", "pt_yolov10_yolov10n_obj_det_github"],
+            "pcc": 0.99,
+            "args": {"axis": "-3"},
+        },
     ),
     (
         Concatenate1,
@@ -15843,7 +15661,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"axis": "-1"}},
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 128, 56, 56), torch.float32),
             ((1, 128, 56, 56), torch.float32),
@@ -15859,7 +15677,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 256, 28, 28), torch.float32),
             ((1, 160, 28, 28), torch.float32),
@@ -15875,7 +15693,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 512, 14, 14), torch.float32),
             ((1, 192, 14, 14), torch.float32),
@@ -15891,7 +15709,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 768, 14, 14), torch.float32),
             ((1, 192, 14, 14), torch.float32),
@@ -15907,7 +15725,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 768, 7, 7), torch.float32),
             ((1, 224, 7, 7), torch.float32),
@@ -15923,7 +15741,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 1024, 7, 7), torch.float32),
             ((1, 224, 7, 7), torch.float32),
@@ -15939,7 +15757,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 128, 56, 56), torch.float32),
             ((1, 64, 56, 56), torch.float32),
@@ -15951,7 +15769,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 128, 28, 28), torch.float32),
             ((1, 80, 28, 28), torch.float32),
@@ -15963,7 +15781,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 256, 14, 14), torch.float32),
             ((1, 96, 14, 14), torch.float32),
@@ -15975,7 +15793,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr"], "pcc": 0.99, "args": {"axis": "-3"}},
     ),
     (
-        Concatenate11,
+        Concatenate10,
         [
             ((1, 384, 7, 7), torch.float32),
             ((1, 112, 7, 7), torch.float32),
@@ -16180,6 +15998,278 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate1,
         [((1, 320, 80, 80), torch.float32), ((1, 320, 80, 80), torch.float32)],
         {"model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"], "pcc": 0.99, "args": {"axis": "-3"}},
+    ),
+    (
+        Concatenate3,
+        [((1, 16, 160, 160), torch.bfloat16), ((1, 16, 160, 160), torch.bfloat16), ((1, 16, 160, 160), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate2,
+        [
+            ((1, 32, 80, 80), torch.bfloat16),
+            ((1, 32, 80, 80), torch.bfloat16),
+            ((1, 32, 80, 80), torch.bfloat16),
+            ((1, 32, 80, 80), torch.bfloat16),
+        ],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate2,
+        [
+            ((1, 64, 40, 40), torch.bfloat16),
+            ((1, 64, 40, 40), torch.bfloat16),
+            ((1, 64, 40, 40), torch.bfloat16),
+            ((1, 64, 40, 40), torch.bfloat16),
+        ],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((1, 128, 20, 20), torch.bfloat16), ((1, 128, 20, 20), torch.bfloat16), ((1, 128, 20, 20), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate2,
+        [
+            ((1, 128, 20, 20), torch.bfloat16),
+            ((1, 128, 20, 20), torch.bfloat16),
+            ((1, 128, 20, 20), torch.bfloat16),
+            ((1, 128, 20, 20), torch.bfloat16),
+        ],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate1,
+        [((1, 256, 40, 40), torch.bfloat16), ((1, 128, 40, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((1, 64, 40, 40), torch.bfloat16), ((1, 64, 40, 40), torch.bfloat16), ((1, 64, 40, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate1,
+        [((1, 128, 80, 80), torch.bfloat16), ((1, 64, 80, 80), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((1, 32, 80, 80), torch.bfloat16), ((1, 32, 80, 80), torch.bfloat16), ((1, 32, 80, 80), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate1,
+        [((1, 64, 40, 40), torch.bfloat16), ((1, 128, 40, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate1,
+        [((1, 128, 20, 20), torch.bfloat16), ((1, 256, 20, 20), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 80, 160, 160), torch.bfloat16),
+            ((1, 80, 160, 160), torch.bfloat16),
+            ((1, 80, 160, 160), torch.bfloat16),
+            ((1, 80, 160, 160), torch.bfloat16),
+            ((1, 80, 160, 160), torch.bfloat16),
+        ],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate18,
+        [
+            ((1, 160, 80, 80), torch.bfloat16),
+            ((1, 160, 80, 80), torch.bfloat16),
+            ((1, 160, 80, 80), torch.bfloat16),
+            ((1, 160, 80, 80), torch.bfloat16),
+            ((1, 160, 80, 80), torch.bfloat16),
+            ((1, 160, 80, 80), torch.bfloat16),
+            ((1, 160, 80, 80), torch.bfloat16),
+            ((1, 160, 80, 80), torch.bfloat16),
+        ],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate18,
+        [
+            ((1, 320, 40, 40), torch.bfloat16),
+            ((1, 320, 40, 40), torch.bfloat16),
+            ((1, 320, 40, 40), torch.bfloat16),
+            ((1, 320, 40, 40), torch.bfloat16),
+            ((1, 320, 40, 40), torch.bfloat16),
+            ((1, 320, 40, 40), torch.bfloat16),
+            ((1, 320, 40, 40), torch.bfloat16),
+            ((1, 320, 40, 40), torch.bfloat16),
+        ],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 320, 20, 20), torch.bfloat16),
+            ((1, 320, 20, 20), torch.bfloat16),
+            ((1, 320, 20, 20), torch.bfloat16),
+            ((1, 320, 20, 20), torch.bfloat16),
+            ((1, 320, 20, 20), torch.bfloat16),
+        ],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate2,
+        [
+            ((1, 320, 20, 20), torch.bfloat16),
+            ((1, 320, 20, 20), torch.bfloat16),
+            ((1, 320, 20, 20), torch.bfloat16),
+            ((1, 320, 20, 20), torch.bfloat16),
+        ],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate1,
+        [((1, 320, 20, 20), torch.bfloat16), ((1, 320, 20, 20), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 320, 40, 40), torch.bfloat16),
+            ((1, 320, 40, 40), torch.bfloat16),
+            ((1, 320, 40, 40), torch.bfloat16),
+            ((1, 320, 40, 40), torch.bfloat16),
+            ((1, 320, 40, 40), torch.bfloat16),
+        ],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate1,
+        [((1, 640, 80, 80), torch.bfloat16), ((1, 320, 80, 80), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 160, 80, 80), torch.bfloat16),
+            ((1, 160, 80, 80), torch.bfloat16),
+            ((1, 160, 80, 80), torch.bfloat16),
+            ((1, 160, 80, 80), torch.bfloat16),
+            ((1, 160, 80, 80), torch.bfloat16),
+        ],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate1,
+        [((1, 320, 40, 40), torch.bfloat16), ((1, 640, 40, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
     ),
 ]
 
