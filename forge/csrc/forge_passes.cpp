@@ -52,19 +52,6 @@ using EdgeType = graphlib::EdgeType;
 using NodeId = graphlib::NodeId;
 using PortId = graphlib::PortId;
 
-void lower_reshape(Graph *, graphlib::OpNode *node)
-{
-    graphlib::OpType op_type = node->op_type();
-    TT_ASSERT(op_type.attr.size() == 4);
-    op_type.forge_attrs = {
-        {"w", std::get<int>(op_type.attr[0])},
-        {"z", std::get<int>(op_type.attr[1])},
-        {"r", std::get<int>(op_type.attr[2])},
-        {"c", std::get<int>(op_type.attr[3])},
-    };
-    node->change_op_type(op_type);
-}
-
 // *****************************************************************
 //  ************************** Main APIs **************************
 // *****************************************************************
