@@ -2,10 +2,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-#include <memory>
+#include <tuple>
 
-#include "autograd/autograd.hpp"
-#include "graph_lib/node.hpp"
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
 #include "torch/extension.h"
@@ -33,15 +31,18 @@ at::Tensor OpAdd::eval(const std::vector<at::Tensor> &tensors) const
     return torch::abs(tensors[0]);
 }
 
-graphlib::Shape OpAdd::shape(const std::vector<std::vector<std::uint32_t>> &in_shapes) const
+std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> OpAdd::shape(
+    const std::vector<std::vector<std::uint32_t>> &in_shapes) const
 {
     TT_ASSERT(in_shapes.size() == 1, "OpAbs::shape should have single input shape.");
-    return graphlib::Shape::create(in_shapes[0]);
+    return std::make_tuple(graphlib::Shape::create(in_shapes[0]), std::vector<graphlib::DimBroadcast>{});
 }
 
 long OpAdd::initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
-    graphlib::Shape out_shape = shape(inputs);
+    auto shape_tuple = shape(inputs);
+    graphlib::Shape out_shape = std::get<0>(shape_tuple);
+
     return std::accumulate(out_shape.begin(), out_shape.end(), 1u, std::multiplies<uint32_t>());
 }
 

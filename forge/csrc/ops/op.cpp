@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <stdexcept>
+#include <tuple>
 #include <unordered_map>
 #include <utils/logger.hpp>
 
@@ -177,22 +178,22 @@ at::Tensor Op::eval(const std::vector<at::Tensor> &tensors) const
     return result.cast<at::Tensor>();
 }
 
-graphlib::Shape Op::shape(const std::vector<std::vector<std::uint32_t>> &inputs) const
+std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
+    const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
     graphlib::OpType old_op_type = as_old_op_type();
 
     py::object eval_module = py::module_::import("forge.op.eval.forge");
     py::function forge_shape = eval_module.attr("get_f_forge_shape")(std::ref(old_op_type));
 
-    py::object result = forge_shape(inputs);
-
     // Old code returns tuple of (shape, [])
-    auto tuple_result = result.cast<py::tuple>();
-    if (tuple_result.size() != 2)
+    py::tuple result = forge_shape(inputs);
+    if (result.size() != 2)
         throw std::runtime_error("Expected a tuple of shape and broadcast.");
 
-    graphlib::Shape shape = graphlib::Shape::create(tuple_result[0].cast<std::vector<std::uint32_t>>());
-    return shape;
+    return std::make_tuple(
+        graphlib::Shape::create(result[0].cast<std::vector<std::uint32_t>>()),
+        result[1].cast<std::vector<graphlib::DimBroadcast>>());
 }
 
 tt::graphlib::NodeContext Op::backward(
