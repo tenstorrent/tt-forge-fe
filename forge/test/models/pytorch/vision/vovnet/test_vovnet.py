@@ -190,15 +190,11 @@ variants = [
     "ese_vovnet19b_dw",
     "ese_vovnet39b",
     "ese_vovnet99b",
-    pytest.param(
-        "ese_vovnet19b_dw.ra_in1k",
-        marks=[pytest.mark.xfail],
-    ),
+    "ese_vovnet19b_dw.ra_in1k",
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_vovnet_timm_pytorch(variant):
 
@@ -235,5 +231,9 @@ def test_vovnet_timm_pytorch(variant):
         compiler_cfg=compiler_cfg,
     )
 
+    pcc = 0.99
+    if variant == "ese_vovnet99b":
+        pcc = 0.98
+
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))

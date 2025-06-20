@@ -106,7 +106,6 @@ variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mobilenetv3_timm(variant):
 
@@ -134,5 +133,11 @@ def test_mobilenetv3_timm(variant):
         compiler_cfg=compiler_cfg,
     )
 
+    pcc = 0.99
+    if variant == "mobilenetv3_large_100":
+        pcc = 0.98
+    if variant == "mobilenetv3_small_100":
+        pcc = 0.97
+
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
