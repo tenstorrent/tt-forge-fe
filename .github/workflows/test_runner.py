@@ -48,10 +48,11 @@ def remove_test(test_path, restart=False):
     else:
         # Find index of test_path line
         try:
-            idx = next(i for i, line in enumerate(lines) if test_path in line)
-            filtered_lines = lines[:idx]
+            idx = next(i for i, line in enumerate(lines) if test_path in line) + 1
+            filtered_lines = lines[idx:]
         except StopIteration:
-            filtered_lines = lines
+            print("error: test_path not found in .pytest_tests_to_run")
+            exit(8)
 
     # Write filtered lines back to file
     with open(file_path, "w") as f:
