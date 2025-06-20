@@ -15,32 +15,6 @@ using NodeType = graphlib::NodeType;
 using Edge = graphlib::Edge;
 using EdgeType = graphlib::EdgeType;
 
-void convert_broadcast_ops_to_tms(Graph *graph)
-{
-    std::vector<Node *> broadcast_ops = graph->nodes(
-        [](Node *node) -> bool
-        {
-            graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(node);
-            return op and op->op_name() == "broadcast";
-        });
-
-    for (Node *node : broadcast_ops)
-    {
-        graphlib::OpNode *op = node->as<graphlib::OpNode>();
-        graphlib::OpType op_type = op->op_type();
-        constexpr bool remove_node = true;
-        graphlib::bypass_node(
-            graph,
-            node,
-            remove_node,
-            [graph, op_type](Edge new_edge, Edge)
-            {
-                auto attr = graph->get_edge_attributes(new_edge);
-                attr->prepend_tm(op_type);
-            });
-    }
-}
-
 void place_inter_subgraph_queues(graphlib::Graph *graph)
 {
     for (Node *n : graph->nodes_by_type(NodeType::kOutput))

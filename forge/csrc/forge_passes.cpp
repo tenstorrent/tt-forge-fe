@@ -206,10 +206,6 @@ graphlib::Graph *run_pre_lowering_passes(graphlib::Graph *graph, const std::opti
         fuse_gelu(graph);
     }
 
-    // Manually convert broadcast ops to tms, so insert tile broadcast ops can work generically
-    // Note this is not lowering, these are still forge tms
-    convert_broadcast_ops_to_tms(graph);
-
     passes::remove_nops(graph);
 
     // Recalculate shapes before lowering to MLIR

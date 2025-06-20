@@ -15,8 +15,6 @@ namespace tt
 using Graph = graphlib::Graph;
 using Node = graphlib::Node;
 
-void convert_broadcast_ops_to_tms(Graph *graph);
-
 bool safe_to_hoist_past(const Graph *graph, const Node *operand);
 
 void fuse_bias(Graph *graph);
