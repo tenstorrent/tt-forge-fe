@@ -157,11 +157,12 @@ jobs:
         shell: bash
         run: |
           source env/activate
-          pytest --splits ${{ inputs.test_group_cnt }} \
-                 --group ${{ matrix.test_group_id }} \
-                 --splitting-algorithm least_duration \
-                 -m "${{ inputs.test_mark }}" \
-                 --collect-only >.pytest_tests_to_run
+            pytest --splits ${{ inputs.test_group_cnt }} \
+               --group ${{ matrix.test_group_id }} \
+               --splitting-algorithm least_duration \
+               -m "${{ inputs.test_mark }}" \
+               --collect-only -qq >.pytest_tests_to_run
+
           python .github/workflows/test_runner.py  \
                  --junit-xml=${{ steps.strings.outputs.test_report_path }} \
                  --log-memory-usage --continue-after-crash
