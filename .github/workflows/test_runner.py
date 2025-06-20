@@ -113,6 +113,8 @@ def main():
             for line in crashed_tests:
                 f.write(line)
 
+    exit(exit_code)
+
 
 if __name__ == "__main__":
     main()
