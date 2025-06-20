@@ -540,6 +540,15 @@ class OpNode : public TaggedNode
     IRLevel get_ir_level() const { return IRLevel::IR_TT_FORGE; }
 
     // const std::string &op_name() const { return op_type_.op; }
+
+    ///////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////
+    // Important: This is left to avoid to refactor all old code base at once (code that uses op names for various
+    // things). It should be deleted in future and OpType should be used instead.
+    const std::string &op_name() const { return op_->as_string(); }
+    ///////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////
+
     // const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attr; }
     // OpType::Attrs &named_attrs() { return op_type_.named_attrs; }
     /**
