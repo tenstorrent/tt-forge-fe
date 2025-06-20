@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "autograd/autograd.hpp"
 
+#include <memory>
+
 #include "autograd/binding.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
@@ -123,7 +125,7 @@ Node *autograd_engine::combine_incoming_gradients(Node *node)
     for (int i = 1; i < (int)out_grads.size(); i++)
     {
         NodeContext out_grad(out_grads[i]);
-        sum = create_op(graphlib::OpType("add"), {sum, out_grad}, node, 0, i - 1, "combine");
+        sum = create_backward_op(ops::create_op<ops::OpType::Add>(), {sum, out_grad}, node, 0, i - 1, "combine");
     }
 
     Node *final_out = graph->node_by_id(sum.id);
@@ -371,9 +373,9 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
                     int dim = std::get<int>(tm.attr[0]);
 
                     NodeContext src = last_out;
-                    last_out = create_op(
-                        OpType(
-                            "reduce_sum", {dim, true}, {}, {{"keep_dim", true}, {"dim_arg", std::vector<int>({dim})}}),
+                    last_out = create_backward_op(
+                        ops::create_op<ops::OpType::ReduceSum>(
+                            ops::Attrs{{"keep_dim", true}, {"dim_arg", std::vector<int>({dim})}}),
                         {src},
                         node,
                         edge.consumer_input_port_id,
@@ -495,8 +497,8 @@ Graph *autograd_engine::run()
 }
 
 // Create a backward op for the given fwd op's operand
-NodeContext autograd_engine::create_op(
-    graphlib::OpType type,
+NodeContext autograd_engine::create_backward_op(
+    std::unique_ptr<ops::Op> op,
     std::vector<NodeContext> operands,
     Node *current_fwd_op,
     int operand_index,
@@ -508,10 +510,10 @@ NodeContext autograd_engine::create_op(
     std::string op_name = "bw_in" + std::to_string(operand_index) + "_" + current_fwd_op->name() + "_";
     if (name_prefix.length() > 0)
         op_name += name_prefix + "_";
-    op_name += type.op + "_" + std::to_string(created_op_index);
+    op_name += op->as_string() + "_" + std::to_string(created_op_index);
 
     auto node = graph->add_node(
-        graphlib::create_node<graphlib::PyOpNode>(op_name, type),
+        graphlib::create_node<graphlib::PyOpNode>(op_name, std::move(op)),
         graph->get_subgraph_id_for_node(current_fwd_op->id()));
 
     int i = 0;

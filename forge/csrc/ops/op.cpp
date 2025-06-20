@@ -271,19 +271,31 @@ bool Op::is_eltwise_nary() const
     return fn_is_eltwise_nary(std::ref(old_op_type)).cast<bool>();
 }
 
+const std::string &Op::as_string() const { return mapper[type_]; }
+
 // Check whether this is needed once refactoring is done.
 // It seems that user can always create wanted op where it is needed.
 std::unique_ptr<Op> create_op(OpType op_type)
 {
     switch (op_type)
     {
-        case OpType::Abs: return std::make_unique<OpAbs>();
-        case OpType::Add: return std::make_unique<OpAdd>();
+        case OpType::Abs: return create_op<OpType::Abs>();
+        case OpType::Add: return create_op<OpType::Add>();
         default: return std::make_unique<Op>(op_type);
     }
 }
 
-const std::string &Op::as_string() const { return mapper[type_]; }
+std::unique_ptr<Op> create_op(OpType op_type, Attrs attrs)
+{
+    switch (op_type)
+    {
+        case OpType::Abs: return create_op<OpType::Abs>(std::move(attrs));
+        case OpType::Add: return create_op<OpType::Add>(std::move(attrs));
+        default: return std::make_unique<Op>(op_type);
+    }
+}
+
+const std::string &op_type_as_string(OpType op_type) { return mapper[op_type]; };
 
 }  // namespace ops
 

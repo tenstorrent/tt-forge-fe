@@ -10,6 +10,7 @@
 #include "graph_lib/graph.hpp"
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
+#include "ops/op.hpp"
 
 namespace py = pybind11;
 
@@ -49,8 +50,8 @@ class autograd_engine
     Graph *run();
 
     // Create a backward op for the given fwd op's operand
-    NodeContext create_op(
-        graphlib::OpType type,
+    NodeContext create_backward_op(
+        std::unique_ptr<ops::Op> op,
         std::vector<NodeContext> operands,
         Node *current_fwd_op,
         int operand_index,

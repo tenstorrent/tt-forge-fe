@@ -269,6 +269,8 @@ class OpEltwiseNary : public OpEltwise
 // Check whether this is needed once refactoring is done.
 // It seems that user can always create wanted op where it is needed.
 std::unique_ptr<Op> create_op(OpType op_type);
+std::unique_ptr<Op> create_op(OpType op_type, Attrs attrs);
+const std::string &op_type_as_string(OpType op_type);
 
 ///////////////////////////////////////////////////
 // Next section contains ops implemented in cpp. //
@@ -297,6 +299,27 @@ class OpAdd : public OpEltwiseBinary
         const std::vector<std::vector<std::uint32_t>> &in_shapes) const override;
     long initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const override;
 };
+
+// Create op based on provided type and attributes.
+// Ops should be created using this. For example:
+//
+// Direct attribute initialization:
+// create_op<OpType::Abs>(Attrs{{"attr_0", true}});
+//
+// Or with separate attributes creation:
+// Attrs at;
+// create_op<OpType::Abs>(at);
+//
+// Or you can move attributes if they are not used after op creation:
+// create_op<OpType::Abs>(std::move(at));
+//
+template <OpType op_type, typename... AttrsArgs>
+std::unique_ptr<Op> create_op(AttrsArgs &&...attrs_args)
+{  // clang-format off
+    if      constexpr (op_type == OpType::Abs) return std::make_unique<OpAbs>(std::forward(attrs_args)...);
+    else if constexpr (op_type == OpType::Add) return std::make_unique<OpAdd>(std::forward(attrs_args)...);
+    else                                       return std::make_unique<Op>   (std::forward(attrs_args)...);
+}  // clang-format on
 
 }  // namespace ops
 }  // namespace tt
