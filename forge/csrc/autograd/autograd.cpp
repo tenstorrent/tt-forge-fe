@@ -6,6 +6,7 @@
 #include "autograd/binding.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "utils/logger.hpp"
 
 using NodeType = tt::graphlib::NodeType;
@@ -347,9 +348,8 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
             }
             NodeContext gradient(out_grad);
 
-            NodeContext ret_gradient = insert_backward(
+            NodeContext ret_gradient = op_node->op().backward(
                 {this, node, (int)edge.consumer_input_port_id},
-                op_node->op_type(),
                 edge.consumer_input_port_id,
                 operands,
                 NodeContext(node),

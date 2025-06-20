@@ -500,7 +500,6 @@ class OpNode : public TaggedNode
         TaggedNode(name, node_type), op_(std::move(op)), gradient_op_(false)
     {
     }
-    ops::Op &op() { return *op_; }
     const ops::Op &op() const { return *op_; }
     ops::OpType op_type() const { return op_->type(); }
     const ops::Attrs &op_attrs() { return op_->attrs(); }
