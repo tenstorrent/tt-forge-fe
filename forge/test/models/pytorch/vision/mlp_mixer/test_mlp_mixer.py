@@ -7,7 +7,6 @@ import torch
 from loguru import logger
 from mlp_mixer_pytorch import MLPMixer
 from PIL import Image
-from third_party.tt_forge_models.tools.utils import get_file
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
@@ -22,6 +21,7 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
+from third_party.tt_forge_models.tools.utils import get_file
 
 from test.models.models_utils import print_cls_results
 from test.utils import download_model
@@ -160,4 +160,7 @@ def test_mlp_mixer_pytorch():
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post processing
+    print_cls_results(fw_out[0], co_out[0])
