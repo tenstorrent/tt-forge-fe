@@ -344,6 +344,7 @@ def verify_backward(
             raise TypeError(f"Shape mismatch: framework_model.shape={fw.shape}, compiled_model.shape={co.shape}")
 
         if verify_cfg.verify_values:
+            print(f"Verifying {name}")
             verify_cfg.value_checker.check(fw, co)
 
 

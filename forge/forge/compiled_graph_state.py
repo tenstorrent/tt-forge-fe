@@ -366,6 +366,18 @@ class CompiledModel:
         bwd_inputs = [*self.gradient_inputs, *self.intermediates, *inputs]
         assert all([isinstance(t, CTensor) for t in bwd_inputs]), "All inputs should be CTensors by now."
 
+        for ind, bwd_input in enumerate(bwd_inputs):
+            torch_tensor = bwd_input.to_torch()
+            print("Saving input tensor", ind, "with shape", torch_tensor.shape)
+            torch.save(torch_tensor, f"bwd/tensor_{ind}.pt")
+        persisten_inptus = self.runtime_model_state.get_program_state(ProgramType.Backward).get_inputs()
+        # import pdb; pdb.set_trace()
+        for id in range(len(persisten_inptus)):
+            input_tensor = persisten_inptus[id]
+            torch_tensor = input_tensor.to_torch()
+            print("Saving persistent input tensor", ind + len(bwd_inputs), "with shape", torch_tensor.shape)
+            torch.save(torch_tensor, f"bwd/tensor_{ind + len(bwd_inputs)}.pt")
+
         self.runtime_model_state.run_program(ProgramType.Backward, bwd_inputs)
         grads = self.runtime_model_state.get_outputs(ProgramType.Backward)
 
@@ -559,10 +571,6 @@ class CompiledModel:
         input_names += self.fwd_compiled_graph_state.ordered_parameter_node_names
 
         persisten_inptus = self.runtime_model_state.get_program_state(ProgramType.Forward).get_inputs()
-
-        import pdb
-
-        pdb.set_trace()
 
         for id in range(len(input_names)):
             if id >= len(self.fwd_compiled_graph_state.ordered_input_names):
