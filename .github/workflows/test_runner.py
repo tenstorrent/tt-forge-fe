@@ -12,6 +12,7 @@ def run_pytest(args=None, crashed_tests=None):
 
     # Add deselects from crashed tests file if it exists
     cmd.extend(f"--deselect={test}" for test in crashed_tests)
+    print(f"Running command: {' '.join(cmd)}")
 
     # Delete .pytest_current_test_executing file if it exists
     Path(".pytest_current_test_executing").unlink(missing_ok=True)
@@ -31,7 +32,7 @@ def run_pytest(args=None, crashed_tests=None):
     except Exception as e:
         err = f"Error running pytest: {e}"
         print(err)
-        return err, 1
+        return err, 7
 
 
 def main():
@@ -52,7 +53,7 @@ def main():
         output, exit_code = run_pytest(args, crashed_tests)
 
         if exit_code <= 130:
-            print("======================== No crashes detected.")
+            print("======================== No crashes detected (exit code {exit_code}).")
             with open("pytest.log", "w") as f:
                 for line in output:
                     f.write(line)
