@@ -56,7 +56,8 @@ def remove_test(test_path, restart=False):
 
     # Write filtered lines back to file
     with open(file_path, "w") as f:
-        f.writelines(filtered_lines)
+        for line in filtered_lines:
+            f.write(line + "\n")
 
 
 def main():
@@ -87,7 +88,7 @@ def main():
             print(f"======================== No crashes detected (exit code {exit_code}).")
             with open("pytest.log", "w") as f:
                 for line in output:
-                    f.write(line)
+                    f.write(line + "\n")
             break
 
         print(f"======================== Crash detected with exit code {exit_code}")
