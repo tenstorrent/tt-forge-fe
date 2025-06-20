@@ -674,11 +674,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 80, 320, 320), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -688,11 +686,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 160, 160, 160), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -702,11 +698,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 80, 160, 160), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -716,11 +710,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 320, 80, 80), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -730,30 +722,21 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 160, 80, 80), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
             ],
             "pcc": 0.99,
         },
     ),
     (
         Sigmoid0,
-        [((1, 640, 80, 80), torch.bfloat16)],
-        {"model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov10_yolov10n_obj_det_github"], "pcc": 0.99},
-    ),
-    (
-        Sigmoid0,
         [((1, 640, 40, 40), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -763,11 +746,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 320, 40, 40), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -777,11 +758,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 640, 20, 20), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -791,11 +770,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 320, 20, 20), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -805,15 +782,15 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 80, 80, 80), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolox_yolox_x_obj_det_torchhub",
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "pt_yolox_yolox_l_obj_det_torchhub",
-                "pt_yolov10_yolov10n_obj_det_github",
                 "pt_yolox_yolox_m_obj_det_torchhub",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolov8_yolov8x_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -823,15 +800,15 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 80, 40, 40), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolox_yolox_x_obj_det_torchhub",
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "pt_yolox_yolox_l_obj_det_torchhub",
-                "pt_yolov10_yolov10n_obj_det_github",
                 "pt_yolox_yolox_m_obj_det_torchhub",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolov8_yolov8x_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -841,15 +818,15 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 80, 20, 20), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolox_yolox_x_obj_det_torchhub",
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "pt_yolox_yolox_l_obj_det_torchhub",
-                "pt_yolov10_yolov10n_obj_det_github",
                 "pt_yolox_yolox_m_obj_det_torchhub",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolov8_yolov8x_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -859,11 +836,11 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 80, 8400), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
                 "pt_yolov9_default_obj_det_github",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolov8_yolov8x_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -3305,6 +3282,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_l_obj_det_torchhub",
                 "pt_yolov9_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolov10_yolov10n_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -3322,6 +3300,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_l_obj_det_torchhub",
                 "pt_yolov9_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolov10_yolov10n_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -3351,6 +3330,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_l_obj_det_torchhub",
                 "pt_yolov9_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -3702,24 +3683,78 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Sigmoid0,
         [((1, 32, 160, 160), torch.bfloat16)],
-        {"model_names": ["pt_yolov9_default_obj_det_github", "pt_yolox_yolox_s_obj_det_torchhub"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_yolov9_default_obj_det_github",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
         [((1, 64, 80, 80), torch.bfloat16)],
-        {"model_names": ["pt_yolov9_default_obj_det_github", "pt_yolox_yolox_s_obj_det_torchhub"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_yolov9_default_obj_det_github",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
         [((1, 128, 40, 40), torch.bfloat16)],
-        {"model_names": ["pt_yolov9_default_obj_det_github", "pt_yolox_yolox_s_obj_det_torchhub"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_yolov9_default_obj_det_github",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+            ],
+            "pcc": 0.99,
+        },
     ),
-    (Sigmoid0, [((1, 64, 40, 40), torch.bfloat16)], {"model_names": ["pt_yolov9_default_obj_det_github"], "pcc": 0.99}),
-    (Sigmoid0, [((1, 64, 20, 20), torch.bfloat16)], {"model_names": ["pt_yolov9_default_obj_det_github"], "pcc": 0.99}),
+    (
+        Sigmoid0,
+        [((1, 64, 40, 40), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_yolov9_default_obj_det_github",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 64, 20, 20), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_yolov9_default_obj_det_github",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+            ],
+            "pcc": 0.99,
+        },
+    ),
     (
         Sigmoid0,
         [((1, 128, 20, 20), torch.bfloat16)],
-        {"model_names": ["pt_yolov9_default_obj_det_github", "pt_yolox_yolox_s_obj_det_torchhub"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_yolov9_default_obj_det_github",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
@@ -5074,6 +5109,38 @@ forge_modules_and_shapes_dtypes_list = [
         Sigmoid0,
         [((1, 1280, 20, 20), torch.float32)],
         {"model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 16, 320, 320), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 16, 160, 160), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 32, 80, 80), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 640, 80, 80), torch.bfloat16)],
+        {"model_names": ["pt_yolov10_yolov10x_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
 ]
 
