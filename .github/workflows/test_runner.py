@@ -52,7 +52,7 @@ def main():
         print("======================== Running pytest...")
         output, exit_code = run_pytest(args, crashed_tests)
 
-        if exit_code <= 130:
+        if exit_code < 128 and exit_code >= 0:
             print(f"======================== No crashes detected (exit code {exit_code}).")
             with open("pytest.log", "w") as f:
                 for line in output:
