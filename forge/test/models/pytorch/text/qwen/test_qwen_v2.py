@@ -36,6 +36,8 @@ variants = [
     "Qwen/Qwen2.5-14B-Instruct-1M",
     "Qwen/Qwen2.5-32B-Instruct",
     "Qwen/Qwen2.5-72B-Instruct",
+    "Qwen/Qwen2.5-Math-7B",
+    "Qwen/Qwen2.5-14B",
 ]
 
 
@@ -53,6 +55,8 @@ def test_qwen_clm(variant):
         "Qwen/Qwen2.5-14B-Instruct-1M",
         "Qwen/Qwen2.5-32B-Instruct",
         "Qwen/Qwen2.5-72B-Instruct",
+        "Qwen/Qwen2.5-Math-7B",
+        "Qwen/Qwen2.5-14B",
     ]:
         group = ModelGroup.RED
         priority = ModelPriority.P1
@@ -81,6 +85,8 @@ def test_qwen_clm(variant):
         "Qwen/Qwen2.5-72B-Instruct",
         "Qwen/Qwen2.5-7B-Instruct-1M",
         "Qwen/Qwen2.5-14B-Instruct-1M",
+        "Qwen/Qwen2.5-Math-7B",
+        "Qwen/Qwen2.5-14B",
     ]:
         pytest.xfail(reason="Requires multi-chip support")
 

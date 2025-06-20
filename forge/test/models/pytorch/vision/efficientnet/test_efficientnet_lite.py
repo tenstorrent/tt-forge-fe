@@ -30,7 +30,6 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.xfail
 def test_efficientnet_lite_timm(variant):
 
     # Record Forge Property
@@ -45,7 +44,7 @@ def test_efficientnet_lite_timm(variant):
     # Load the model and inputs
     framework_model, inputs = load_timm_model_and_input(variant)
     framework_model = framework_model.to(torch.bfloat16)
-    inputs = inputs.to(torch.bfloat16)
+    inputs = [input.to(torch.bfloat16) for input in inputs]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)

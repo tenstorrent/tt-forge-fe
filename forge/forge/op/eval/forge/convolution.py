@@ -162,10 +162,6 @@ class Conv2d(PyOp):
     def backward(self, ac, operand, inputs, output, grad):
         pass
 
-    def lower(self, lc, tensors, outputs):
-        # TODO: Implement mlir lowering here.
-        assert False
-
     def is_tm(self) -> bool:
         return False
 
@@ -342,9 +338,6 @@ class Conv2dTranspose(PyOp):
             dc.fuse(result)
 
     def backward(self, ac, operand, inputs, output, grad):
-        pass
-
-    def lower(self, lc, tensors, outputs):
         pass
 
     def is_tm(self) -> bool:

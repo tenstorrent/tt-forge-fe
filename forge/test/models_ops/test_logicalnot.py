@@ -21,22 +21,13 @@ from forge.forge_property_utils import (
 import pytest
 
 
-class Avgpool3D0(ForgeModule):
+class Logicalnot0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
-    def forward(self, avgpool3d_input_0):
-        avgpool3d_output_1 = forge.op.AvgPool3d(
-            "",
-            avgpool3d_input_0,
-            kernel_size=[5, 1, 1],
-            stride=[1, 1, 1],
-            padding=[0, 0, 0, 0, 0, 0],
-            ceil_mode=False,
-            count_include_pad=True,
-            channel_last=0,
-        )
-        return avgpool3d_output_1
+    def forward(self, logicalnot_input_0):
+        logicalnot_output_1 = forge.op.LogicalNot("", logicalnot_input_0)
+        return logicalnot_output_1
 
 
 def ids_func(param):
@@ -48,41 +39,15 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     pytest.param(
         (
-            Avgpool3D0,
-            [((1, 1, 100, 54, 54), torch.float32)],
-            {
-                "model_names": ["pt_alexnet_base_img_cls_osmr"],
-                "pcc": 0.99,
-                "args": {
-                    "kernel_size": "[5, 1, 1]",
-                    "stride": "[1, 1, 1]",
-                    "padding": "[0, 0, 0, 0, 0, 0]",
-                    "ceil_mode": "False",
-                    "count_include_pad": "True",
-                    "channel_last": "0",
-                },
-            },
+            Logicalnot0,
+            [((1, 25, 34), torch.bool)],
+            {"model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
-    ),
-    pytest.param(
-        (
-            Avgpool3D0,
-            [((1, 1, 260, 27, 27), torch.float32)],
-            {
-                "model_names": ["pt_alexnet_base_img_cls_osmr"],
-                "pcc": 0.99,
-                "args": {
-                    "kernel_size": "[5, 1, 1]",
-                    "stride": "[1, 1, 1]",
-                    "padding": "[0, 0, 0, 0, 0, 0]",
-                    "ceil_mode": "False",
-                    "count_include_pad": "True",
-                    "channel_last": "0",
-                },
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
+            )
+        ],
     ),
 ]
 
@@ -91,7 +56,7 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes):
 
-    record_forge_op_name("AvgPool3d")
+    record_forge_op_name("LogicalNot")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
@@ -130,11 +95,10 @@ def test_module(forge_module_and_shapes_dtypes):
 
     record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs)
+    compiler_cfg = forge.config.CompilerConfig()
+    if "default_df_override" in metadata.keys():
+        compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])
 
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-    )
+    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))

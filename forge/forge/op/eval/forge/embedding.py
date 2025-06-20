@@ -23,11 +23,6 @@ def shape(type, attr, ops):
     return shape, []
 
 
-def lower(type, attr, lc, ops, outputs):
-    # TODO: Implement mlir lowering here.
-    assert False
-
-
 def decompose(type, attr, dc, inputs):
     pass
 

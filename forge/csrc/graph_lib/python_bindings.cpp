@@ -274,7 +274,6 @@ void GraphModule(py::module &m_graph)
         .def_readonly("name", &graphlib::NodeContext::name)
         .def_readonly("node_type", &graphlib::NodeContext::type)
         .def_readonly("shape", &graphlib::NodeContext::shape)
-        .def_readonly("unbroadcast_shape", &graphlib::NodeContext::unbroadcast_shape)
         .def_readonly("output_df", &graphlib::NodeContext::output_df);
 
     py::class_<tt::graphlib::OpType, tt::raw_ptr<tt::graphlib::OpType>>(m_graph, "OpType")

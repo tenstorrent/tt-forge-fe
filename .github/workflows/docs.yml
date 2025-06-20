@@ -13,6 +13,8 @@ permissions:
   pages: write
   id-token: write
   packages: write
+  checks: write
+  deployments: write
 
 jobs:
 

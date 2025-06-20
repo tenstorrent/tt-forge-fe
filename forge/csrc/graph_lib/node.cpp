@@ -30,10 +30,8 @@ NodeId Node::id() const
     TT_ASSERT(unique_id_ >= 0);
     return unique_id_;
 }
-NodeId Node::tt_forge_id() const { return tt_forge_id_; }
 
 void Node::set_id(NodeId node_id) { unique_id_ = node_id; }
-void Node::set_tt_forge_id(NodeId node_id) { tt_forge_id_ = node_id; }
 const std::string& Node::name() const { return name_; }
 void Node::set_name(const std::string& name) { name_ = name; }
 

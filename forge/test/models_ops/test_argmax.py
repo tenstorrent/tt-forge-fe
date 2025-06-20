@@ -41,16 +41,7 @@ forge_modules_and_shapes_dtypes_list = [
         Argmax0,
         [((1, 7), torch.int32)],
         {
-            "model_names": ["pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "False"},
-        },
-    ),
-    (
-        Argmax0,
-        [((1, 4), torch.int32)],
-        {
-            "model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"],
+            "model_names": ["pt_gpt_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "False"},
         },
@@ -64,6 +55,15 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_opt_facebook_opt_350m_seq_cls_hf",
                 "pt_opt_facebook_opt_1_3b_seq_cls_hf",
             ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "False"},
+        },
+    ),
+    (
+        Argmax0,
+        [((1, 4), torch.int32)],
+        {
+            "model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "False"},
         },
@@ -123,11 +123,10 @@ def test_module(forge_module_and_shapes_dtypes):
 
     record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs)
+    compiler_cfg = forge.config.CompilerConfig()
+    if "default_df_override" in metadata.keys():
+        compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])
 
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-    )
+    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))

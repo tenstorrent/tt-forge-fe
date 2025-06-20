@@ -15,7 +15,7 @@ def load_model(model_path="openlm-research/open_llama_3b", **kwargs):
     config.use_cache = kwargs.get("use_cache", False)
     config.output_attentions = kwargs.get("output_attentions", False)
     config.output_hidden_states = kwargs.get("output_hidden_states", False)
-    if "num_hidden_layers" in kwargs:
+    if "num_hidden_layers" in kwargs and kwargs["num_hidden_layers"] is not None:
         config.num_hidden_layers = kwargs["num_hidden_layers"]
 
     # Load the model

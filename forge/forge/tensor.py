@@ -944,7 +944,7 @@ def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]
         if node["opcode"] == "Input":
             input_value = inputs[node_name]
             node_to_tensor[node_name] = input_value
-        elif node["opcode"] in {"ForgeOp", "ForgeOp"}:
+        elif node["opcode"] in {"ForgeOp"}:
             inputs_after_tms: List[torch.Tensor] = []
             for input_index, operand in enumerate(node["input_nodes"]):
                 operand_tensor = node_to_tensor[operand]

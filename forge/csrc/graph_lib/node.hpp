@@ -34,7 +34,6 @@ struct NodeContext
     std::uint32_t output_index;  // output index of the op, if it produces multiple outputs (rare)
     NodeType type;
     Shape shape;
-    Shape unbroadcast_shape;
     tt::DataFormat output_df;
 
     NodeContext(tt::graphlib::Node* node, int output_index = 0);
@@ -47,7 +46,6 @@ class Node
    private:
     std::string name_;
     NodeId unique_id_ = -1;
-    NodeId tt_forge_id_ = -1;
 
     int padding_id = 0;
 
@@ -62,9 +60,7 @@ class Node
     virtual ~Node() = default;
 
     NodeId id() const;
-    NodeId tt_forge_id() const;
     void set_id(NodeId node_id);
-    void set_tt_forge_id(NodeId node_id);
     const std::string& name() const;
     void set_name(const std::string& name);
 

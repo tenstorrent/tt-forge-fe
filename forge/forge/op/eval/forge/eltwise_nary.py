@@ -170,11 +170,6 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
     assert False, f"{type} not defined in eltwise_nary"
 
 
-def lower(type, attr, lc, ops, outputs):
-    # TODO: Implement mlir lowering here.
-    assert False
-
-
 def backward(op_type, attr, ac, operand, inputs, output, grad):
     if op_type == "conv_sum":
         y = attr[0]

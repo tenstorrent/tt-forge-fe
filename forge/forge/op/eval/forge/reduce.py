@@ -71,11 +71,6 @@ def shape(type, attr, ops):
     return tuple(ret), []
 
 
-def lower(type, attr, lc, ops, outputs):
-    # TODO: Implement mlir lowering here.
-    assert False
-
-
 def backward(type, attr, ac, operand, inputs, output, grad):
 
     assert len(inputs) == 1, "Reduce should have one input"

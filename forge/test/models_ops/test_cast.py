@@ -35,7 +35,7 @@ class Cast1(ForgeModule):
         super().__init__(name)
 
     def forward(self, cast_input_0):
-        cast_output_1 = forge.op.Cast("", cast_input_0, dtype=torch.bool)
+        cast_output_1 = forge.op.Cast("", cast_input_0, dtype=torch.int32)
         return cast_output_1
 
 
@@ -44,7 +44,7 @@ class Cast2(ForgeModule):
         super().__init__(name)
 
     def forward(self, cast_input_0):
-        cast_output_1 = forge.op.Cast("", cast_input_0, dtype=torch.int32)
+        cast_output_1 = forge.op.Cast("", cast_input_0, dtype=torch.bool)
         return cast_output_1
 
 
@@ -66,11 +66,12 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Cast0,
-        [((1, 1, 1, 6), torch.int64)],
+        [((1, 1, 1, 11), torch.int64)],
         {
             "model_names": [
-                "onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf",
-                "pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf",
+                "pd_albert_chinese_tiny_mlm_padlenlp",
+                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
+                "pd_bert_chinese_roberta_base_qa_padlenlp",
             ],
             "pcc": 0.99,
             "args": {"dtype": "torch.float32"},
@@ -78,18 +79,114 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Cast0,
-        [((1, 1, 256, 256), torch.int64)],
+        [((1, 1, 128, 128), torch.int64)],
         {
             "model_names": [
-                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
-                "pt_bart_facebook_bart_large_mnli_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_clm_hf",
-                "pt_opt_facebook_opt_350m_clm_hf",
-                "pt_opt_facebook_opt_125m_clm_hf",
-                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
-                "pt_xglm_facebook_xglm_564m_clm_hf",
-                "pt_xglm_facebook_xglm_1_7b_clm_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
+                "pt_albert_xlarge_v2_token_cls_hf",
+                "pt_albert_xxlarge_v2_token_cls_hf",
+                "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
+                "pt_albert_base_v2_mlm_hf",
+                "pt_albert_xxlarge_v1_token_cls_hf",
+                "pt_albert_xxlarge_v2_mlm_hf",
+                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                "pt_albert_xlarge_v1_mlm_hf",
+                "pt_albert_xlarge_v2_mlm_hf",
+                "pt_albert_xxlarge_v1_mlm_hf",
+                "pt_bert_bert_base_uncased_mlm_hf",
+                "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
+                "pt_albert_large_v1_mlm_hf",
+                "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
+                "pt_albert_base_v1_token_cls_hf",
+                "pt_albert_base_v2_token_cls_hf",
+                "pt_albert_large_v1_token_cls_hf",
+                "pt_albert_large_v2_mlm_hf",
+                "pt_albert_large_v2_token_cls_hf",
+                "pt_albert_xlarge_v1_token_cls_hf",
+                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
+                "pt_albert_base_v1_mlm_hf",
+                "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
+                "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
+                "pt_roberta_xlm_roberta_base_mlm_hf",
+                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
+        },
+    ),
+    (
+        Cast0,
+        [((1, 1, 128, 128), torch.bool)],
+        {
+            "model_names": [
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
+                "pt_albert_xlarge_v2_token_cls_hf",
+                "pt_albert_xxlarge_v2_token_cls_hf",
+                "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
+                "pt_albert_base_v2_mlm_hf",
+                "pt_albert_xxlarge_v1_token_cls_hf",
+                "pt_albert_xxlarge_v2_mlm_hf",
+                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                "pt_albert_xlarge_v1_mlm_hf",
+                "pt_albert_xlarge_v2_mlm_hf",
+                "pt_albert_xxlarge_v1_mlm_hf",
+                "pt_bert_bert_base_uncased_mlm_hf",
+                "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
+                "pt_albert_large_v1_mlm_hf",
+                "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
+                "pt_albert_base_v1_token_cls_hf",
+                "pt_albert_base_v2_token_cls_hf",
+                "pt_albert_large_v1_token_cls_hf",
+                "pt_albert_large_v2_mlm_hf",
+                "pt_albert_large_v2_token_cls_hf",
+                "pt_albert_xlarge_v1_token_cls_hf",
+                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
+                "pt_albert_base_v1_mlm_hf",
+                "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
+                "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
+                "pt_roberta_xlm_roberta_base_mlm_hf",
+                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
+        },
+    ),
+    (
+        Cast0,
+        [((1, 1, 32, 32), torch.int64)],
+        {
+            "model_names": [
+                "pt_opt_facebook_opt_125m_qa_hf",
+                "pt_opt_facebook_opt_350m_qa_hf",
+                "pt_opt_facebook_opt_125m_seq_cls_hf",
+                "pt_opt_facebook_opt_350m_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_qa_hf",
+                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
+        },
+    ),
+    (
+        Cast0,
+        [((1, 1, 32, 32), torch.bool)],
+        {
+            "model_names": [
+                "pt_opt_facebook_opt_125m_qa_hf",
+                "pt_opt_facebook_opt_350m_qa_hf",
+                "pt_bloom_bigscience_bloom_1b1_clm_hf",
+                "pt_opt_facebook_opt_125m_seq_cls_hf",
+                "pt_opt_facebook_opt_350m_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_qa_hf",
+                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
+                "pt_llama3_huggyllama_llama_7b_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dtype": "torch.float32"},
@@ -97,28 +194,27 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Cast1,
-        [((1, 1, 256, 256), torch.float32)],
+        [((1, 1, 32, 32), torch.bool)],
         {
             "model_names": [
-                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
-                "pt_phi2_microsoft_phi_2_clm_hf",
-                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "pt_bloom_bigscience_bloom_1b1_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
+                "pt_llama3_huggyllama_llama_7b_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.int32"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 1, 32, 32), torch.bool)],
+        {
+            "model_names": [
+                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dtype": "torch.bool"},
@@ -126,35 +222,40 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Cast0,
-        [((1, 1, 256, 256), torch.bool)],
+        [((1, 1, 1, 7), torch.int64)],
+        {
+            "model_names": ["pt_phi1_microsoft_phi_1_clm_hf", "pt_phi_1_5_microsoft_phi_1_5_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 1, 7, 7), torch.float32)],
+        {
+            "model_names": ["pt_phi1_microsoft_phi_1_clm_hf", "pt_phi_1_5_microsoft_phi_1_5_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast1,
+        [((1, 1, 7, 7), torch.bool)],
+        {
+            "model_names": ["pt_phi1_microsoft_phi_1_clm_hf", "pt_phi_1_5_microsoft_phi_1_5_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.int32"},
+        },
+    ),
+    (
+        Cast0,
+        [((1, 1, 7, 7), torch.bool)],
         {
             "model_names": [
-                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
-                "pt_bart_facebook_bart_large_mnli_seq_cls_hf",
-                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
-                "pt_opt_facebook_opt_1_3b_clm_hf",
-                "pt_opt_facebook_opt_350m_clm_hf",
-                "pt_opt_facebook_opt_125m_clm_hf",
-                "pt_phi2_microsoft_phi_2_clm_hf",
-                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
-                "pt_xglm_facebook_xglm_564m_clm_hf",
-                "pt_xglm_facebook_xglm_1_7b_clm_hf",
+                "pt_phi1_microsoft_phi_1_clm_hf",
+                "pt_gpt_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
+                "pt_phi_1_5_microsoft_phi_1_5_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dtype": "torch.float32"},
@@ -162,56 +263,11 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Cast2,
-        [((1, 1, 256, 256), torch.bool)],
+        [((1, 1, 7, 7), torch.int32)],
         {
-            "model_names": [
-                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
-                "pt_phi2_microsoft_phi_2_clm_hf",
-                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.int32"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 1, 256, 256), torch.bool)],
-        {
-            "model_names": [
-                "pt_gpt2_gpt2_text_gen_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
-            ],
+            "model_names": ["pt_phi1_microsoft_phi_1_clm_hf", "pt_phi_1_5_microsoft_phi_1_5_clm_hf"],
             "pcc": 0.99,
             "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast0,
-        [((1, 1, 1, 11), torch.int64)],
-        {
-            "model_names": [
-                "pd_albert_chinese_tiny_mlm_padlenlp",
-                "pd_bert_chinese_roberta_base_qa_padlenlp",
-                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.float32"},
         },
     ),
     (
@@ -219,13 +275,11 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 1, 1, 9), torch.int64)],
         {
             "model_names": [
-                "pd_bert_chinese_roberta_base_mlm_padlenlp",
+                "pd_ernie_1_0_qa_padlenlp",
+                "pd_ernie_1_0_seq_cls_padlenlp",
                 "pd_bert_bert_base_uncased_mlm_padlenlp",
                 "pd_bert_bert_base_uncased_qa_padlenlp",
-                "pd_ernie_1_0_qa_padlenlp",
-                "pd_ernie_1_0_mlm_padlenlp",
-                "pd_ernie_1_0_seq_cls_padlenlp",
-                "pt_albert_textattack_albert_base_v2_imdb_seq_cls_hf",
+                "pd_bert_chinese_roberta_base_mlm_padlenlp",
             ],
             "pcc": 0.99,
             "args": {"dtype": "torch.float32"},
@@ -233,60 +287,400 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Cast0,
-        [((1, 1, 1, 10), torch.int64)],
-        {"model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"], "pcc": 0.99, "args": {"dtype": "torch.float32"}},
-    ),
-    (
-        Cast0,
-        [((1, 1, 1, 8), torch.int64)],
+        [((1, 1, 256, 256), torch.bool)],
         {
-            "model_names": ["pd_bert_bert_base_uncased_seq_cls_padlenlp"],
+            "model_names": [
+                "pt_gpt_gpt2_text_gen_hf",
+                "pt_phi2_microsoft_phi_2_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
+                "pt_xglm_facebook_xglm_564m_clm_hf",
+                "pt_bart_facebook_bart_large_mnli_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_clm_hf",
+                "pt_xglm_facebook_xglm_1_7b_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
+                "pt_opt_facebook_opt_125m_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
+                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
+                "pt_opt_facebook_opt_350m_clm_hf",
+            ],
             "pcc": 0.99,
             "args": {"dtype": "torch.float32"},
         },
     ),
     (
-        Cast0,
-        [((1, 1, 1, 15), torch.int64)],
+        Cast1,
+        [((1, 1, 256, 256), torch.bool)],
         {
-            "model_names": ["pd_bert_bert_base_japanese_seq_cls_padlenlp"],
+            "model_names": [
+                "pt_phi2_microsoft_phi_2_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
+                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.int32"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 1, 256, 256), torch.bool)],
+        {
+            "model_names": [
+                "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast0,
+        [((1, 1, 7, 7), torch.int64)],
+        {
+            "model_names": [
+                "pt_gpt_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
+            ],
             "pcc": 0.99,
             "args": {"dtype": "torch.float32"},
         },
     ),
     (
-        Cast0,
-        [((1, 1, 1, 14), torch.int64)],
+        Cast1,
+        [((1, 7), torch.bool)],
         {
-            "model_names": ["pd_bert_bert_base_japanese_qa_padlenlp", "pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"],
+            "model_names": ["pt_gpt_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"],
             "pcc": 0.99,
-            "args": {"dtype": "torch.float32"},
+            "args": {"dtype": "torch.int32"},
         },
     ),
     (
         Cast3,
-        [((1, 9), torch.bool)],
-        {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "args": {"dtype": "torch.int64"}},
+        [((1,), torch.int32)],
+        {
+            "model_names": [
+                "pt_gpt_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                "pt_opt_facebook_opt_125m_seq_cls_hf",
+                "pt_opt_facebook_opt_350m_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                "pt_llama3_huggyllama_llama_7b_seq_cls_hf",
+                "pt_phi4_microsoft_phi_4_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.int64"},
+        },
     ),
     (
         Cast2,
-        [((1, 9), torch.bool)],
-        {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "args": {"dtype": "torch.int32"}},
+        [((1, 6, 3072), torch.bool)],
+        {"model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+    ),
+    (
+        Cast2,
+        [((1, 256, 6, 20), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 256, 12, 40), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 128, 12, 40), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 128, 24, 80), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 64, 24, 80), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 64, 48, 160), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 32, 48, 160), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 32, 96, 320), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 16, 96, 320), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 16, 192, 640), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
     ),
     (
         Cast0,
-        [((1, 9), torch.bool)],
-        {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "args": {"dtype": "torch.float32"}},
+        [((1, 1, 1, 256), torch.int64)],
+        {
+            "model_names": [
+                "pt_phi2_microsoft_phi_2_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
+                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
+        },
     ),
     (
-        Cast1,
-        [((1, 9), torch.int64)],
-        {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+        Cast2,
+        [((1, 1, 256, 256), torch.float32)],
+        {
+            "model_names": [
+                "pt_phi2_microsoft_phi_2_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
+                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
     ),
     (
-        Cast1,
-        [((1, 9), torch.int32)],
-        {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+        Cast2,
+        [((1, 1, 256, 256), torch.int32)],
+        {
+            "model_names": [
+                "pt_phi2_microsoft_phi_2_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
+                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 32, 480, 640), torch.bool)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+    ),
+    (
+        Cast2,
+        [((1, 64, 240, 320), torch.bool)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+    ),
+    (
+        Cast2,
+        [((1, 32, 240, 320), torch.bool)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+    ),
+    (
+        Cast2,
+        [((1, 128, 120, 160), torch.bool)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+    ),
+    (
+        Cast2,
+        [((1, 64, 120, 160), torch.bool)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+    ),
+    (
+        Cast2,
+        [((1, 256, 60, 80), torch.bool)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+    ),
+    (
+        Cast2,
+        [((1, 128, 60, 80), torch.bool)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+    ),
+    (
+        Cast2,
+        [((1, 512, 30, 40), torch.bool)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+    ),
+    (
+        Cast2,
+        [((1, 256, 30, 40), torch.bool)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+    ),
+    (
+        Cast2,
+        [((1, 1024, 15, 20), torch.bool)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+    ),
+    (
+        Cast2,
+        [((1, 512, 15, 20), torch.bool)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
     ),
     (
         Cast3,
@@ -294,7 +688,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99, "args": {"dtype": "torch.int64"}},
     ),
     (
-        Cast2,
+        Cast1,
         [((1, 11), torch.bool)],
         {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99, "args": {"dtype": "torch.int32"}},
     ),
@@ -304,14 +698,348 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99, "args": {"dtype": "torch.float32"}},
     ),
     (
-        Cast1,
+        Cast2,
         [((1, 11), torch.int64)],
         {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
     ),
     (
-        Cast1,
+        Cast2,
         [((1, 11), torch.int32)],
         {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+    ),
+    (
+        Cast0,
+        [((1, 1, 32), torch.int64)],
+        {"model_names": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "args": {"dtype": "torch.float32"}},
+    ),
+    (
+        Cast0,
+        [((1, 1, 1, 32), torch.int64)],
+        {
+            "model_names": [
+                "pt_bloom_bigscience_bloom_1b1_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 1, 32, 32), torch.float32)],
+        {
+            "model_names": [
+                "pt_bloom_bigscience_bloom_1b1_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
+                "pt_llama3_huggyllama_llama_7b_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 1, 32, 32), torch.int32)],
+        {
+            "model_names": [
+                "pt_bloom_bigscience_bloom_1b1_clm_hf",
+                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
+                "pt_llama3_huggyllama_llama_7b_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast0,
+        [((1, 1, 850, 850), torch.bool)],
+        {
+            "model_names": [
+                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
+                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
+        },
+    ),
+    (
+        Cast0,
+        [((1, 1, 100, 850), torch.bool)],
+        {
+            "model_names": [
+                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
+                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
+        },
+    ),
+    (
+        Cast1,
+        [((1, 32), torch.bool)],
+        {
+            "model_names": [
+                "pt_opt_facebook_opt_125m_seq_cls_hf",
+                "pt_opt_facebook_opt_350m_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.int32"},
+        },
+    ),
+    (
+        Cast0,
+        [((1, 1, 1, 10), torch.int64)],
+        {"model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"], "pcc": 0.99, "args": {"dtype": "torch.float32"}},
+    ),
+    (
+        Cast2,
+        [((1, 256, 10, 32), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 256, 20, 64), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 128, 20, 64), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 128, 40, 128), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 64, 40, 128), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 64, 80, 256), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 32, 80, 256), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 32, 160, 512), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 16, 160, 512), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 16, 320, 1024), torch.bool)],
+        {
+            "model_names": [
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast0,
+        [((1, 1, 256, 256), torch.int64)],
+        {
+            "model_names": [
+                "pt_xglm_facebook_xglm_564m_clm_hf",
+                "pt_bart_facebook_bart_large_mnli_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_clm_hf",
+                "pt_xglm_facebook_xglm_1_7b_clm_hf",
+                "pt_opt_facebook_opt_125m_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "pt_opt_facebook_opt_350m_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
+        },
+    ),
+    (
+        Cast0,
+        [((1, 1, 14, 14), torch.int64)],
+        {
+            "model_names": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
+        },
+    ),
+    (
+        Cast0,
+        [((1, 1, 14, 14), torch.bool)],
+        {
+            "model_names": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
+        },
+    ),
+    (
+        Cast0,
+        [((1, 1, 6, 6), torch.int64)],
+        {
+            "model_names": ["onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 1, 6, 6), torch.float32)],
+        {
+            "model_names": ["onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast0,
+        [((1, 1, 6, 6), torch.bool)],
+        {
+            "model_names": ["onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
+        },
+    ),
+    (
+        Cast0,
+        [((1, 1, 1, 14), torch.int64)],
+        {"model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"], "pcc": 0.99, "args": {"dtype": "torch.float32"}},
+    ),
+    (
+        Cast3,
+        [((1, 9), torch.bool)],
+        {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "args": {"dtype": "torch.int64"}},
+    ),
+    (
+        Cast1,
+        [((1, 9), torch.bool)],
+        {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "args": {"dtype": "torch.int32"}},
+    ),
+    (
+        Cast0,
+        [((1, 9), torch.bool)],
+        {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "args": {"dtype": "torch.float32"}},
+    ),
+    (
+        Cast2,
+        [((1, 9), torch.int64)],
+        {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+    ),
+    (
+        Cast2,
+        [((1, 9), torch.int32)],
+        {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+    ),
+    (
+        Cast0,
+        [((2, 1, 7, 7), torch.int64)],
+        {
+            "model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
+        },
+    ),
+    (
+        Cast0,
+        [((2, 1, 7, 7), torch.bool)],
+        {
+            "model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
+        },
     ),
     (
         Cast0,
@@ -354,77 +1082,39 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Cast0,
-        [((2, 1, 7, 7), torch.int64)],
+        [((1, 1, 1, 15), torch.int64)],
         {
-            "model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
+            "model_names": ["pd_bert_bert_base_japanese_seq_cls_padlenlp"],
             "pcc": 0.99,
             "args": {"dtype": "torch.float32"},
         },
     ),
     (
         Cast0,
-        [((2, 1, 7, 7), torch.bool)],
+        [((1, 1, 9, 9), torch.int64)],
         {
-            "model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
+            "model_names": ["pt_albert_textattack_albert_base_v2_imdb_seq_cls_hf"],
             "pcc": 0.99,
             "args": {"dtype": "torch.float32"},
         },
     ),
     (
         Cast0,
-        [((1, 596, 4096), torch.bool)],
+        [((1, 1, 9, 9), torch.bool)],
         {
-            "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
+            "model_names": ["pt_albert_textattack_albert_base_v2_imdb_seq_cls_hf"],
             "pcc": 0.99,
             "args": {"dtype": "torch.float32"},
         },
     ),
     (
-        Cast1,
-        [((2441216,), torch.float32)],
-        {
-            "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast2,
-        [((2441216,), torch.float32)],
-        {
-            "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.int32"},
-        },
-    ),
-    (
         Cast0,
-        [((1, 1, 1, 128), torch.int64)],
+        [((1, 1, 384, 384), torch.int64)],
         {
             "model_names": [
-                "pt_albert_xxlarge_v1_token_cls_hf",
-                "pt_albert_base_v1_token_cls_hf",
-                "pt_albert_xxlarge_v2_token_cls_hf",
-                "pt_albert_base_v2_token_cls_hf",
-                "pt_albert_xxlarge_v2_mlm_hf",
-                "pt_albert_xlarge_v2_token_cls_hf",
-                "pt_albert_xxlarge_v1_mlm_hf",
-                "pt_albert_large_v2_mlm_hf",
-                "pt_albert_xlarge_v1_mlm_hf",
-                "pt_albert_base_v2_mlm_hf",
-                "pt_albert_large_v2_token_cls_hf",
-                "pt_albert_large_v1_token_cls_hf",
-                "pt_albert_large_v1_mlm_hf",
-                "pt_albert_base_v1_mlm_hf",
-                "pt_albert_xlarge_v1_token_cls_hf",
-                "pt_albert_xlarge_v2_mlm_hf",
-                "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
-                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
-                "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
-                "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
-                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
-                "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
-                "pt_roberta_xlm_roberta_base_mlm_hf",
+                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
+                "pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf",
             ],
             "pcc": 0.99,
             "args": {"dtype": "torch.float32"},
@@ -432,262 +1122,12 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Cast0,
-        [((1, 1, 32), torch.int64)],
-        {"model_names": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "args": {"dtype": "torch.float32"}},
-    ),
-    (
-        Cast0,
-        [((1, 1, 1, 32), torch.int64)],
+        [((1, 1, 384, 384), torch.bool)],
         {
             "model_names": [
-                "pt_bloom_bigscience_bloom_1b1_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.float32"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 1, 32, 32), torch.float32)],
-        {
-            "model_names": [
-                "pt_bloom_bigscience_bloom_1b1_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
-                "pt_llama3_huggyllama_llama_7b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast2,
-        [((1, 1, 32, 32), torch.bool)],
-        {
-            "model_names": [
-                "pt_bloom_bigscience_bloom_1b1_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
-                "pt_llama3_huggyllama_llama_7b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.int32"},
-        },
-    ),
-    (
-        Cast0,
-        [((1, 1, 32, 32), torch.bool)],
-        {
-            "model_names": [
-                "pt_bloom_bigscience_bloom_1b1_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
-                "pt_llama3_huggyllama_llama_7b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_clm_hf",
-                "pt_opt_facebook_opt_125m_qa_hf",
-                "pt_opt_facebook_opt_125m_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_qa_hf",
-                "pt_opt_facebook_opt_1_3b_qa_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.float32"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 1, 32, 32), torch.bool)],
-        {
-            "model_names": [
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 1, 32, 32), torch.int32)],
-        {
-            "model_names": [
-                "pt_bloom_bigscience_bloom_1b1_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
-                "pt_llama3_huggyllama_llama_7b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 1, 256, 256), torch.int32)],
-        {
-            "model_names": [
-                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
-                "pt_phi2_microsoft_phi_2_clm_hf",
-                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 128), torch.int64)],
-        {
-            "model_names": [
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                "pt_distilbert_distilbert_base_cased_mlm_hf",
-                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast2,
-        [((1, 128), torch.bool)],
-        {
-            "model_names": [
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                "pt_distilbert_distilbert_base_cased_mlm_hf",
-                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                "pt_roberta_xlm_roberta_base_mlm_hf",
-                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.int32"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 128), torch.int32)],
-        {
-            "model_names": [
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                "pt_distilbert_distilbert_base_cased_mlm_hf",
-                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast3,
-        [((1, 128), torch.int32)],
-        {
-            "model_names": [
-                "pt_roberta_xlm_roberta_base_mlm_hf",
-                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.int64"},
-        },
-    ),
-    (
-        Cast0,
-        [((1, 12, 128, 128), torch.bool)],
-        {
-            "model_names": [
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                "pt_distilbert_distilbert_base_cased_mlm_hf",
-                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.float32"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 384), torch.int64)],
-        {
-            "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast2,
-        [((1, 384), torch.bool)],
-        {
-            "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.int32"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 384), torch.int32)],
-        {
-            "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast0,
-        [((1, 12, 384, 384), torch.bool)],
-        {
-            "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.float32"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 1, 7, 7), torch.bool)],
-        {
-            "model_names": [
-                "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
-                "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast0,
-        [((1, 1, 1, 7), torch.int64)],
-        {
-            "model_names": [
-                "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
-                "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
+                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
+                "pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf",
             ],
             "pcc": 0.99,
             "args": {"dtype": "torch.float32"},
@@ -695,108 +1135,107 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Cast2,
-        [((1, 7), torch.bool)],
-        {
-            "model_names": ["pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.int32"},
-        },
-    ),
-    (
-        Cast3,
-        [((1,), torch.int32)],
-        {
-            "model_names": [
-                "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
-                "pt_llama3_huggyllama_llama_7b_seq_cls_hf",
-                "pt_opt_facebook_opt_125m_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                "pt_phi4_microsoft_phi_4_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.int64"},
-        },
-    ),
-    (
-        Cast0,
-        [((1, 1, 1, 256), torch.int64)],
-        {
-            "model_names": [
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
-                "pt_phi2_microsoft_phi_2_clm_hf",
-                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.float32"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 4), torch.int64)],
-        {"model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
-    ),
-    (
-        Cast2,
-        [((1, 4), torch.bool)],
-        {"model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "args": {"dtype": "torch.int32"}},
-    ),
-    (
-        Cast1,
-        [((1, 4), torch.int32)],
-        {"model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
-    ),
-    (
-        Cast1,
-        [((1, 6, 4096), torch.bool)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
-    ),
-    (
-        Cast1,
         [((1, 6, 2048), torch.bool)],
         {"model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
     ),
     (
+        Cast0,
+        [((1, 1, 1, 8), torch.int64)],
+        {
+            "model_names": ["pd_bert_bert_base_uncased_seq_cls_padlenlp"],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
+        },
+    ),
+    (
+        Cast0,
+        [((1, 1, 16, 16), torch.int64)],
+        {
+            "model_names": ["pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
+        },
+    ),
+    (
+        Cast0,
+        [((1, 1, 16, 16), torch.bool)],
+        {
+            "model_names": ["pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
+        },
+    ),
+    (
         Cast1,
+        [((1, 128), torch.bool)],
+        {
+            "model_names": [
+                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_roberta_xlm_roberta_base_mlm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.int32"},
+        },
+    ),
+    (
+        Cast3,
+        [((1, 128), torch.int32)],
+        {
+            "model_names": [
+                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_roberta_xlm_roberta_base_mlm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.int64"},
+        },
+    ),
+    (
+        Cast2,
+        [((1, 4), torch.int64)],
+        {"model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+    ),
+    (
+        Cast1,
+        [((1, 4), torch.bool)],
+        {"model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "args": {"dtype": "torch.int32"}},
+    ),
+    (
+        Cast2,
+        [((1, 4), torch.int32)],
+        {"model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+    ),
+    (
+        Cast2,
+        [((1, 6, 4096), torch.bool)],
+        {"model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+    ),
+    (
+        Cast2,
         [((1, 6, 5120), torch.bool)],
         {"model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
     ),
     (
         Cast1,
-        [((1, 6, 3072), torch.bool)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
-    ),
-    (
-        Cast0,
-        [((1, 1, 32, 32), torch.int64)],
-        {
-            "model_names": [
-                "pt_opt_facebook_opt_125m_qa_hf",
-                "pt_opt_facebook_opt_125m_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_qa_hf",
-                "pt_opt_facebook_opt_1_3b_qa_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.float32"},
-        },
+        [((1, 256), torch.bool)],
+        {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "args": {"dtype": "torch.int32"}},
     ),
     (
         Cast2,
-        [((1, 32), torch.bool)],
+        [((1, 25, 34), torch.bfloat16)],
         {
-            "model_names": [
-                "pt_opt_facebook_opt_125m_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-            ],
+            "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
             "pcc": 0.99,
-            "args": {"dtype": "torch.int32"},
+            "default_df_override": "Float16_b",
+            "args": {"dtype": "torch.bool"},
+        },
+    ),
+    (
+        Cast0,
+        [((1, 1, 1, 25, 34), torch.bool)],
+        {
+            "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"dtype": "torch.float32"},
         },
     ),
     (
@@ -806,301 +1245,6 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
             "pcc": 0.99,
             "args": {"dtype": "torch.float32"},
-        },
-    ),
-    (
-        Cast2,
-        [((1, 256), torch.bool)],
-        {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "args": {"dtype": "torch.int32"}},
-    ),
-    (
-        Cast1,
-        [((1, 256, 6, 20), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 256, 12, 40), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 128, 12, 40), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 128, 24, 80), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 64, 24, 80), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 64, 48, 160), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 32, 48, 160), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 32, 96, 320), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 16, 96, 320), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 16, 192, 640), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 256, 10, 32), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 256, 20, 64), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 128, 20, 64), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 128, 40, 128), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 64, 40, 128), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 64, 80, 256), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 32, 80, 256), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 32, 160, 512), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 16, 160, 512), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
-        },
-    ),
-    (
-        Cast1,
-        [((1, 16, 320, 1024), torch.bool)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dtype": "torch.bool"},
         },
     ),
 ]
@@ -1149,11 +1293,10 @@ def test_module(forge_module_and_shapes_dtypes):
 
     record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs)
+    compiler_cfg = forge.config.CompilerConfig()
+    if "default_df_override" in metadata.keys():
+        compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])
 
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-    )
+    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
