@@ -198,22 +198,6 @@ void PyOpNode::copy_parent_op_attributes(PyOpNode *node)
     set_output_df(node->output_df());
 }
 
-bool OpNode::is_tm() const
-{
-    static py::function fn_is_tm = py::module_::import("forge.op.eval.forge").attr("is_tm");
-
-    // Wrap op_type in std::ref to enable pybind to avoid copying the object.
-    return fn_is_tm(std::ref(op_type())).cast<bool>();
-}
-
-bool OpNode::is_eltwise() const
-{
-    static py::function fn_is_eltwise = py::module_::import("forge.op.eval.forge").attr("is_eltwise");
-
-    // Wrap op_type in std::ref to enable pybind to avoid copying the object.
-    return fn_is_eltwise(std::ref(op_type())).cast<bool>();
-}
-
 // Figure out output dafa format based on the input formats.
 // TODO: add control on how to choose.
 void OpNode::set_output_df_from_operands(const Graph *graph)
@@ -232,7 +216,7 @@ void OpNode::set_output_df_from_operands(const Graph *graph)
 bool OpNode::should_pair_with_sparse(const OpNode *sparse_op_node, const Graph *graph) const
 {
     TT_ASSERT(sparse_op_node->is_sparse_matmul());
-    if (is_matmul_not_sparse() or op_name().compare("reduce") == 0)
+    if (is_matmul_not_sparse() or is_reduce())
     {
         if (this->has_tag("original_op_name") and sparse_op_node->has_tag("original_op_name"))
         {
@@ -266,9 +250,6 @@ bool OpNode::should_pair_with_sparse(const OpNode *sparse_op_node, const Graph *
 
     return false;
 }
-
-py::function OpNode::py_attr(char const *attr_name) const { return op_type().py_attr(attr_name); }
-py::function OpNode::py_attr(char const *attr_name) { return op_type().py_attr(attr_name); }
 
 InputNode::InputNode(const std::string &name, InputNodeType input_type, bool requires_grad) :
     QueueNode(name, QueueNodeType::Input, NodeType::kInput), input_type_(input_type), requires_grad_(requires_grad)

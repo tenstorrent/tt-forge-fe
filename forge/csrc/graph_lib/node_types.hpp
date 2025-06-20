@@ -640,19 +640,20 @@ class OpNode : public TaggedNode
     // }
     bool is_matmul_not_sparse() const { return is_matmul() and op_->has_attr("identity"); }
 
+    bool is_tm() const { return op_->is_tm(); };
+
+    bool is_eltwise() const { return op_->is_eltwise(); };
+
     /////////////////////////////////
     // ENd of refactoring.
     /////////////////////////////////
 
     bool should_pair_with_sparse(const OpNode *sparse_op_node, const Graph *graph) const;
-    bool is_tm() const;
     void set_output_df_from_operands(const Graph *graph);
     void add_golden_transform(OpType const &op_type) { golden_transforms.insert(golden_transforms.begin(), op_type); }
     void set_golden_transforms(std::vector<OpType> const &other) { golden_transforms = other; }
     std::vector<OpType> const &get_golden_transforms() const { return golden_transforms; }
     std::vector<OpType> &get_golden_transforms() { return golden_transforms; }
-
-    bool is_eltwise() const;
 
     void set_golden_id(std::uint32_t golden_id)
     {
