@@ -16,33 +16,18 @@ import os
 @pytest.mark.parametrize(
     "input_shape, scale_factor",
     [
-        pytest.param(
-            (1, 256, 4, 128),
-            2,
-            marks=pytest.mark.xfail(
-                reason="Unsupported operations while lowering from TTForge to TTIR in forward graph - narrow, pad_tile, sparse_matmul, vstack"
-            ),
-        ),
-        pytest.param(
+        ((1, 256, 4, 128), 2),
+        (
             (3, 32, 10, 10),
             4,
-            marks=pytest.mark.xfail(reason="NotImplementedError: Pixel shuffle decomposition only supports r=2"),
         ),
-        pytest.param(
-            (2, 98, 6, 6),
-            7,
-            marks=pytest.mark.xfail(reason="NotImplementedError: Pixel shuffle decomposition only supports r=2"),
-        ),
-        pytest.param(
-            (4, 18, 8, 8),
-            3,
-            marks=pytest.mark.xfail(reason="NotImplementedError: Pixel shuffle decomposition only supports r=2"),
-        ),
-        pytest.param(
-            (2, 50, 12, 12),
-            5,
-            marks=pytest.mark.xfail(reason="NotImplementedError: Pixel shuffle decomposition only supports r=2"),
-        ),
+        ((2, 98, 6, 6), 7),
+        ((4, 18, 8, 8), 3),
+        ((2, 50, 12, 12), 5),
+        ((2, 64, 7, 7), 8),
+        ((5, 100, 2, 4), 10),
+        ((1, 49, 4, 4), 7),
+        ((4, 36, 5, 5), 6),
     ],
 )
 @pytest.mark.push
