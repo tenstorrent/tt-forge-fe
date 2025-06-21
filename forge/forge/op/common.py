@@ -8,7 +8,7 @@ from ..tensor import Tensor
 from ..parameter import Parameter
 from forge.op.eval.forge import get_f_forge_eval, get_f_forge_shape
 from forge._C import DataFormat
-from forge._C.graph import OpType
+from forge._C.graph import OpType as OldOpType
 from forge._C.ops import Op as CppOp, OpAbs, OpType
 import forge
 from forge.forgeglobal import get_unique_node_id, tracing
@@ -181,7 +181,7 @@ class ForgeOp:
         self.operands = operands
         self.attrs = attrs
         self.named_attrs = named_attrs
-        self.cpp_op_type = OpType(self.op_type, self.attrs, self.named_attrs)
+        self.cpp_op_type = OldOpType(self.op_type, self.attrs, self.named_attrs)
         self.cpp_op = create_cpp_op(op_type=op_type, attrs=named_attrs)
 
     def get_tensor(self, out_df=None) -> Tensor:
