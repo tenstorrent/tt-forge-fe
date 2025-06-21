@@ -27,10 +27,10 @@ namespace ops
 namespace py = pybind11;
 
 // In transition period we need mapping from new to the old node type, in order to preserve old functionalities.
-class OldOpMapper
+class NewToOldOpType
 {
    public:
-    OldOpMapper()
+    NewToOldOpType()
     {
         mapping_[OpType::Abs] = "abs";
         mapping_[OpType::AdaptiveMaxPool2d] = "adaptive_max_pool2d";
@@ -151,7 +151,133 @@ class OldOpMapper
     std::unordered_map<OpType, std::string> mapping_;
 };
 
-static OldOpMapper mapper;
+// In transition period we need mapping from new to the old node type, in order to preserve old functionalities.
+class OldToNewOpType
+{
+   public:
+    OldToNewOpType()
+    {
+        mapping_["abs"] = OpType::Abs;
+        mapping_["adaptive_max_pool2d"] = OpType::AdaptiveMaxPool2d;
+        mapping_["add"] = OpType::Add;
+        mapping_["adv_index"] = OpType::AdvIndex;
+        mapping_["argmax"] = OpType::Argmax;
+        mapping_["atan"] = OpType::Atan;
+        mapping_["avg_pool1d"] = OpType::AvgPool1d;
+        mapping_["avg_pool2d"] = OpType::AvgPool2d;
+        mapping_["avg_pool3d"] = OpType::AvgPool3d;
+        mapping_["batchnorm"] = OpType::Batchnorm;
+        mapping_["broadcast"] = OpType::Broadcast;
+        mapping_["buffer"] = OpType::Buffer;
+        mapping_["cast"] = OpType::Cast;
+        mapping_["clip"] = OpType::Clip;
+        mapping_["concatenate"] = OpType::Concatenate;
+        mapping_["constant"] = OpType::Constant;
+        mapping_["conv2d"] = OpType::Conv2d;
+        mapping_["conv2d_depthwise_weights"] = OpType::Conv2dDepthwiseWeights;
+        mapping_["conv2d_depthwise_weights_bw"] = OpType::Conv2dDepthwiseWeightsBw;
+        mapping_["conv2d_grouped_weights"] = OpType::Conv2dGroupedWeights;
+        mapping_["conv2d_grouped_weights_bw"] = OpType::Conv2dGroupedWeightsBw;
+        mapping_["conv2d_prestride_act"] = OpType::Conv2dPrestrideAct;
+        mapping_["conv2d_prestride_weights"] = OpType::Conv2dPrestrideWeights;
+        mapping_["conv2d_transpose"] = OpType::Conv2dTranspose;
+        mapping_["conv3d"] = OpType::Conv3d;
+        mapping_["conv_sum"] = OpType::ConvSum;
+        mapping_["cosine"] = OpType::Cosine;
+        mapping_["cumsum"] = OpType::CumulativeSum;
+        mapping_["dequantize"] = OpType::Dequantize;
+        mapping_["depthwise"] = OpType::Depthwise;
+        mapping_["divide"] = OpType::Divide;
+        mapping_["dram_queue"] = OpType::DramQueue;
+        mapping_["dropout"] = OpType::Dropout;
+        mapping_["embedding"] = OpType::Embedding;
+        mapping_["embedding_bw"] = OpType::EmbeddingBw;
+        mapping_["equal"] = OpType::Equal;
+        mapping_["erf"] = OpType::Erf;
+        mapping_["ethernet_datacopy"] = OpType::EthernetDatacopy;
+        mapping_["exp"] = OpType::Exp;
+        mapping_["forge_dequantize"] = OpType::ForgeDequantize;
+        mapping_["forge_pad"] = OpType::ForgePad;
+        mapping_["forge_quantize"] = OpType::ForgeQuantize;
+        mapping_["forge_requantize"] = OpType::ForgeRequantize;
+        mapping_["forge_unpad"] = OpType::ForgeUnpad;
+        mapping_["gather"] = OpType::Gather;
+        mapping_["gelu"] = OpType::Gelu;
+        mapping_["gelu_derivative"] = OpType::GeluDerivative;
+        mapping_["greater"] = OpType::Greater;
+        mapping_["greater_equal"] = OpType::GreaterEqual;
+        mapping_["grouped_reduce_avg"] = OpType::GroupedReduceAvg;
+        mapping_["heaviside"] = OpType::Heaviside;
+        mapping_["hslice"] = OpType::Hslice;
+        mapping_["hstack"] = OpType::Hstack;
+        mapping_["index"] = OpType::Index;
+        mapping_["index_copy"] = OpType::IndexCopy;
+        mapping_["interleave"] = OpType::Interleave;
+        mapping_["layernorm"] = OpType::Layernorm;
+        mapping_["layernorm_bw"] = OpType::LayernormBw;
+        mapping_["leaky_relu"] = OpType::LeakyRelu;
+        mapping_["less"] = OpType::Less;
+        mapping_["less_equal"] = OpType::LessEqual;
+        mapping_["log"] = OpType::Log;
+        mapping_["log_softmax"] = OpType::LogSoftmax;
+        mapping_["logical_and"] = OpType::LogicalAnd;
+        mapping_["logical_not"] = OpType::LogicalNot;
+        mapping_["mask"] = OpType::Mask;
+        mapping_["matmul"] = OpType::Matmul;
+        mapping_["maximum"] = OpType::Maximum;
+        mapping_["minimum"] = OpType::Minimum;
+        mapping_["multiply"] = OpType::Multiply;
+        mapping_["nop"] = OpType::Nop;
+        mapping_["not_equal"] = OpType::NotEqual;
+        mapping_["narrow"] = OpType::Narrow;
+        mapping_["pad"] = OpType::Pad;
+        mapping_["pad_tile"] = OpType::PadTile;
+        mapping_["pixel_shuffle"] = OpType::PixelShuffle;
+        mapping_["pow"] = OpType::Pow;
+        mapping_["power"] = OpType::Power;
+        mapping_["quantize"] = OpType::Quantize;
+        mapping_["reciprocal"] = OpType::Reciprocal;
+        mapping_["reduce_avg"] = OpType::ReduceAvg;
+        mapping_["reduce_max"] = OpType::ReduceMax;
+        mapping_["reduce_sum"] = OpType::ReduceSum;
+        mapping_["relu"] = OpType::Relu;
+        mapping_["remainder"] = OpType::Remainder;
+        mapping_["repeat"] = OpType::Repeat;
+        mapping_["repeat_interleave"] = OpType::RepeatInterleave;
+        mapping_["requantize"] = OpType::Requantize;
+        mapping_["reshape"] = OpType::Reshape;
+        mapping_["resize1d"] = OpType::Resize1d;
+        mapping_["resize2d"] = OpType::Resize2d;
+        mapping_["resize3d"] = OpType::Resize3d;
+        mapping_["select"] = OpType::Select;
+        mapping_["sigmoid"] = OpType::Sigmoid;
+        mapping_["sine"] = OpType::Sine;
+        mapping_["softmax"] = OpType::Softmax;
+        mapping_["softmax_bw"] = OpType::SoftmaxBw;
+        mapping_["sparse_matmul"] = OpType::SparseMatmul;
+        mapping_["sqrt"] = OpType::Sqrt;
+        mapping_["stack"] = OpType::Stack;
+        mapping_["subtract"] = OpType::Subtract;
+        mapping_["squeeze"] = OpType::Squeeze;
+        mapping_["tanh"] = OpType::Tanh;
+        mapping_["tile_broadcast"] = OpType::TileBroadcast;
+        mapping_["tilizer"] = OpType::Tilizer;
+        mapping_["transpose"] = OpType::Transpose;
+        mapping_["unsqueeze"] = OpType::Unsqueeze;
+        mapping_["upsample2d"] = OpType::Upsample2d;
+        mapping_["vslice"] = OpType::Vslice;
+        mapping_["vstack"] = OpType::Vstack;
+        mapping_["where"] = OpType::Where;
+    }
+
+    OpType operator[](const std::string &old_op_type) const { return mapping_.at(old_op_type); }
+
+   private:
+    std::unordered_map<std::string, OpType> mapping_;
+};
+
+static NewToOldOpType new_to_old_op_type_mapper;
+static OldToNewOpType old_to_new_op_type_mapper;
 
 // Constructs old attributes from provided new attributes. Since new Attr is superset of the old ForgeOpAttrs,
 // we can just visit new attribute.
@@ -164,7 +290,26 @@ ForgeOpAttrs as_old_attrs(const Attrs &attrs)
     return ret_attrs;
 }
 
-graphlib::OpType Op::as_old_op_type() const { return graphlib::OpType(mapper[type_], {}, {}, as_old_attrs(attrs_)); }
+// Constructs old attributes from provided new attributes. Since new Attr is superset of the old ForgeOpAttrs,
+// we can just visit new attribute.
+Attrs as_new_attrs(const ForgeOpAttrs &attrs)
+{
+    Attrs ret_attrs;
+    for (const auto &attr : attrs)
+        ret_attrs[attr.first] = std::visit([](const auto &value) -> Attr { return value; }, attr.second);
+
+    return ret_attrs;
+}
+
+Op::Op(const graphlib::OpType &old_op_type) :
+    type_(old_to_new_op_type_mapper[old_op_type.op]), attrs_(as_new_attrs(old_op_type.named_attrs))
+{
+}
+
+graphlib::OpType Op::as_old_op_type() const
+{
+    return graphlib::OpType(new_to_old_op_type_mapper[type_], {}, {}, as_old_attrs(attrs_));
+}
 
 // Default implementation for ops that are not cpp implemented yet. We will invoke old python code to evaluate them.
 at::Tensor Op::eval(const std::vector<at::Tensor> &tensors) const
@@ -271,7 +416,7 @@ bool Op::is_eltwise_nary() const
     return fn_is_eltwise_nary(std::ref(old_op_type)).cast<bool>();
 }
 
-const std::string &Op::as_string() const { return mapper[type_]; }
+const std::string &Op::as_string() const { return new_to_old_op_type_mapper[type_]; }
 
 // Check whether this is needed once refactoring is done.
 // It seems that user can always create wanted op where it is needed.
@@ -295,7 +440,7 @@ std::unique_ptr<Op> create_op(OpType op_type, Attrs attrs)
     }
 }
 
-const std::string &op_type_as_string(OpType op_type) { return mapper[op_type]; };
+const std::string &op_type_as_string(OpType op_type) { return new_to_old_op_type_mapper[op_type]; };
 
 }  // namespace ops
 

@@ -50,7 +50,7 @@ void AutogradModule(py::module &m_autograd)
                         std::get<std::string>(type));
                 if (self.epoch_type == graphlib::NodeEpochType::Backward)
                 {
-                    return self.autograd->create_op(
+                    return self.autograd->create_backward_op(
                         op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
                 }
                 else if (self.epoch_type == graphlib::NodeEpochType::Optimizer)
@@ -85,7 +85,7 @@ void AutogradModule(py::module &m_autograd)
                         std::get<std::string>(type));
                 if (self.epoch_type == graphlib::NodeEpochType::Backward)
                 {
-                    return self.autograd->create_op(
+                    return self.autograd->create_backward_op(
                         op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
                 }
                 else if (self.epoch_type == graphlib::NodeEpochType::Optimizer)
