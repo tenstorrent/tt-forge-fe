@@ -189,7 +189,6 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_tt_forge_gr
     Graph *graph, const char *dispatcher_name, std::shared_ptr<void> compiler_cfg)
 {
     std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> inserted_node_id_mapping;
-    py::module_ eval_module = py::module_::import("forge.op.eval.forge");
     uint32_t nodes_removed = 1;
     while (nodes_removed)
     {
@@ -208,8 +207,6 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_tt_forge_gr
                 continue;
             }
 
-            py::function forge_decompose = eval_module.attr(dispatcher_name)(type);
-
             std::vector<NodeContext> inputs;
             for (graphlib::Edge op_edge : graph->operand_data_edges(node))
             {
@@ -221,7 +218,7 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_tt_forge_gr
             DecomposingContext dc(graph, py_node, compiler_cfg);
 
             log_trace(LogGraphCompiler, "Decomposing {}", node->name());
-            forge_decompose(&dc, inputs);
+            type.new_op().decompose(dispatcher_name, dc, inputs);
 
             if (dc.get_op_index() == 0)
             {

@@ -501,13 +501,12 @@ struct UpdateConvAttrsTest : testing::Test
 
         conv_node = add_node<graphlib::PyOpNode>(
             *graph, "conv2d", "conv2d", {3, 3, 1, 1, 0, 0, 1, 1, 1}, {input_node_0, weight_node});
-        auto named_attrs = conv_node->named_attrs();
-        named_attrs["channel_last"] = false;
-        named_attrs["padding"] = std::vector<int>{1, 1, 1, 1};
-        named_attrs["stride"] = std::vector<int>{1, 1};
-        named_attrs["dilation"] = std::vector<int>{1, 1};
 
-        conv_node->overwrite_named_attrs(named_attrs);
+        conv_node->set_op_attr("channel_last", false);
+        conv_node->set_op_attr("padding", std::vector<int>{1, 1, 1, 1});
+        conv_node->set_op_attr("stride", std::vector<int>{1, 1});
+        conv_node->set_op_attr("dilation", std::vector<int>{1, 1});
+
         create_output(*graph, "out", conv_node);
     }
 };
@@ -565,10 +564,8 @@ struct UpdateReduceSumAttrsTest : testing::Test
                 keep_dim,
             },
             {input_node});
-        auto &named_attrs = reduce_node->named_attrs();
-        named_attrs["dim"] = reduce_dim;
-        named_attrs["keep_dim"] = keep_dim;
-        reduce_node->overwrite_named_attrs(named_attrs);
+        reduce_node->set_op_attr("dim", reduce_dim);
+        reduce_node->set_op_attr("keep_dim", keep_dim);
         create_output(*graph, "out", reduce_node);
 
         return reduce_node;
@@ -622,13 +619,11 @@ struct UpdateReduceMaxAttrsTest : testing::Test
                 keep_dim,
             },
             {input_node});
-        auto &named_attrs = reduce_node->named_attrs();
-        named_attrs["dim"] = reduce_dim;
-        named_attrs["stride"] = stride;
-        named_attrs["keep_dim"] = keep_dim;
-        reduce_node->overwrite_named_attrs(named_attrs);
-        create_output(*graph, "out", reduce_node);
+        reduce_node->set_op_attr("dim", reduce_dim);
+        reduce_node->set_op_attr("stride", stride);
+        reduce_node->set_op_attr("keep_dim", keep_dim);
 
+        create_output(*graph, "out", reduce_node);
         return reduce_node;
     }
 };
@@ -675,11 +670,9 @@ struct UpdateGroupedReduceAvgTest : testing::Test
         auto input_node = create_input(*graph, "input", input_shape);
         reduce_node =
             add_node<graphlib::PyOpNode>(*graph, reduce_op, reduce_op, {attr[0], attr[1], attr[2]}, {input_node});
-        auto &named_attrs = reduce_node->named_attrs();
-        named_attrs["reduce_dim"] = attr[0];
-        named_attrs["groups"] = attr[1];
-        named_attrs["keep_dims"] = attr[2];
-        reduce_node->overwrite_named_attrs(named_attrs);
+        reduce_node->set_op_attr("reduce_dim", attr[0]);
+        reduce_node->set_op_attr("groups", attr[1]);
+        reduce_node->set_op_attr("keep_dims", attr[2]);
 
         create_output(*graph, "out", reduce_node);
 

@@ -49,7 +49,10 @@ class autograd_engine
     Graph *run();
 
     // Create a backward op for the given fwd op's operand
-    NodeContext create_op(
+    NodeContext create_op(struct autograd_context &self, graphlib::OpType type, std::vector<NodeContext> operands);
+
+    // Create a backward op for the given fwd op's operand
+    NodeContext create_backward_op(
         graphlib::OpType type,
         std::vector<NodeContext> operands,
         Node *current_fwd_op,
@@ -66,10 +69,35 @@ class autograd_engine
         int created_op_index,
         std::string name_prefix = "");
 
+    template <typename T>
+    NodeContext create_constant(struct tt::autograd::autograd_context &self, T value);
+
     // Create an integer constant used in backward calculations (typically a negative one)
     template <typename T>
     NodeContext create_constant(
-        Node *current_fwd_op, int operand_index, T value, int created_op_index, graphlib::NodeEpochType epoch_type);
+        Node *current_fwd_op, int operand_index, T value, int created_op_index, graphlib::NodeEpochType epoch_type)
+    {
+        auto node = graph->add_node(
+            graphlib::create_node<graphlib::ConstantInputNode>(
+                "input_constant_" + current_fwd_op->name() + "_" + std::to_string(created_op_index), value),
+            graph->get_subgraph_id_for_node(current_fwd_op->id()));
+
+        node->set_shape(graphlib::Shape::create({1}));
+        node->set_output_df(current_fwd_op->output_df());
+
+        if (epoch_type == graphlib::NodeEpochType::Backward)
+        {
+            node->set_backward();
+            add_fwd_to_bwd_map(current_fwd_op, node, operand_index);
+        }
+        else if (epoch_type == graphlib::NodeEpochType::Optimizer)
+        {
+            node->set_optimizer();
+            add_fwd_to_optimizer_edge(current_fwd_op, node, operand_index);
+        }
+
+        return NodeContext(node);
+    }
 
     NodeContext create_constant(
         Node *current_fwd_op,
@@ -131,6 +159,13 @@ struct __attribute__((visibility("hidden"))) autograd_context
     graphlib::NodeEpochType epoch_type = graphlib::NodeEpochType::Backward;
     int created_op_index = 0;  // Incremented to ensure unique names when multiple ops are created
 };
+
+template <typename T>
+NodeContext autograd_engine::create_constant(struct tt::autograd::autograd_context &self, T value)
+{
+    return self.autograd->create_constant<T>(
+        self.current_fwd_op, self.operand, value, self.created_op_index++, self.epoch_type);
+}
 
 }  // namespace autograd
 }  // namespace tt

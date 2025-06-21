@@ -48,18 +48,8 @@ void AutogradModule(py::module &m_autograd)
                         not has_newstyle_interface(std::get<std::string>(type)),
                         "Error autograd a type with old OpType interface, expects new OpType interface {}",
                         std::get<std::string>(type));
-                if (self.epoch_type == graphlib::NodeEpochType::Backward)
-                {
-                    return self.autograd->create_op(
-                        op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
-                }
-                else if (self.epoch_type == graphlib::NodeEpochType::Optimizer)
-                {
-                    return self.autograd->create_optimizer_op(
-                        op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
-                }
 
-                throw std::runtime_error("Expected autograd_context.epoch_type to be Backward or Optimizer");
+                return self.autograd->create_op(self, op_type, operands);
             },
             py::arg("type"),
             py::arg("operands"),
@@ -83,18 +73,8 @@ void AutogradModule(py::module &m_autograd)
                         not has_newstyle_interface(std::get<std::string>(type)),
                         "Error autograd a type with old OpType interface, expects new OpType interface {}",
                         std::get<std::string>(type));
-                if (self.epoch_type == graphlib::NodeEpochType::Backward)
-                {
-                    return self.autograd->create_op(
-                        op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
-                }
-                else if (self.epoch_type == graphlib::NodeEpochType::Optimizer)
-                {
-                    return self.autograd->create_optimizer_op(
-                        op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
-                }
 
-                throw std::runtime_error("Expected autograd_context.epoch_type to be Backward or Optimizer");
+                return self.autograd->create_op(self, op_type, operands);
             },
             py::arg("type"),
             py::arg("operands"),

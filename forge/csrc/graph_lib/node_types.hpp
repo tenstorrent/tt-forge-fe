@@ -15,6 +15,7 @@
 #include "graph_lib/shape.hpp"
 #include "graph_lib/utils.hpp"
 #include "lower_to_forge/common.hpp"
+#include "ops/op.hpp"
 #include "shared_utils/sparse_matmul_utils.hpp"
 
 namespace tt
@@ -373,12 +374,14 @@ struct OpType
     Attrs named_attrs;         // new path
     ForgeOpAttrs forge_attrs;  // attrs that will lower directly into the netlist
 
+    ops::Op new_op_;
+
     OpType(
         std::string const &op,
         std::vector<Attr> const &attr = {},
         ForgeOpAttrs const &forge_attrs = {},
         Attrs named_attrs = {}) :
-        op(op), attr(attr), named_attrs(named_attrs), forge_attrs(forge_attrs)
+        op(op), attr(attr), named_attrs(named_attrs), forge_attrs(forge_attrs), new_op_(*this)
     {
     }
 
@@ -391,6 +394,7 @@ struct OpType
     }
     bool operator!=(const OpType &other) const { return not(*this == other); }
 
+    ops::Op const &new_op() const { return new_op_; }
     Attr const &get_attr(std::string const &name) const { return named_attrs.at(name); }
     Attr &get_attr(std::string const &name) { return named_attrs.at(name); }
     template <typename T>
@@ -404,10 +408,11 @@ struct OpType
         return std::get<T>(get_attr(name));
     }
 
-    py::function py_attr(char const *name) const;
-    py::function py_attr(char const *name);
-
-    void set_attr(std::string const &name, Attr attr) { named_attrs[name] = attr; }
+    void set_attr(std::string const &name, Attr attr)
+    {
+        named_attrs[name] = attr;
+        new_op_.set_attr(name, std::move(attr));
+    }
 
     std::string as_string() const
     {
@@ -497,6 +502,8 @@ class OpNode : public TaggedNode
         TaggedNode(name, node_type), op_type_(op_type), gradient_op_(false)
     {
     }
+
+    ops::Op const &new_op() const { return op_type_.new_op(); }
     void change_op_type(OpType const &new_op_type) { op_type_ = new_op_type; }
     void change_op_type(const std::string &new_op_type, std::vector<OpType::Attr> attrs = {})
     {
@@ -506,80 +513,58 @@ class OpNode : public TaggedNode
     {
         op_type_ = OpType(new_op_type, attrs, {}, named_attrs);
     }
+    ops::OpType new_op_type() const { return new_op().type(); }
     OpType const &op_type() const { return op_type_; }
-    OpType &op_type() { return op_type_; }
     OpType const *op_type_ptr() const { return &op_type_; }
-    OpType *op_type_ptr() { return &op_type_; }
-    py::function py_attr(char const *attr_name) const;
-    py::function py_attr(char const *attr_name);
-    template <typename T, typename... Args>
-    T py_attr(char const *attr_name, Args... args) const
-    {
-        return py_attr(attr_name)(args...).template cast<T>();
-    }
-    template <typename T, typename... Args>
-    T py_attr(char const *attr_name, Args... args)
-    {
-        return py_attr(attr_name)(args...).template cast<T>();
-    }
     IRLevel get_ir_level() const { return IRLevel::IR_TT_FORGE; }
     const std::string &op_name() const { return op_type_.op; }
     const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attr; }
-    OpType::Attrs &named_attrs() { return op_type_.named_attrs; }
-    /**
-     * @brief Updates the attributes and named attributes of the operation.
-     *
-     * Overwrites the current operation's attributes and named attributes
-     * with the provided ones. It constructs a new `OpType` object with the updated
-     * attributes while retaining the existing operation name.
-     */
-    void overwrite_op_named_attrs(
-        const std::vector<graphlib::OpType::Attr> &op_attrs, const graphlib::OpType::Attrs &named_attrs)
+    const OpType::Attrs &named_attrs() { return op_type_.named_attrs; }
+    const OpType::Attr &op_attr(std::string const &name) const { return op_type_.get_attr(name); }
+    template <typename T>
+    const T &op_attr_as(std::string const &name) const
     {
-        const std::string &name = op_name();
-        log_trace(LogGraphCompiler, "op name = {}", name);
-        op_type_ = graphlib::OpType(name, op_attrs, {}, named_attrs);
+        return std::get<T>(op_attr(name));
     }
-    /**
-     * @brief Overwrites the named attributes of the operation.
-     *
-     * Updates the current operation's named attributes with the
-     * provided `named_attrs` without altering the operation's other properties.
-     */
-    void overwrite_named_attrs(graphlib::OpType::Attrs &named_attrs) { op_type_.named_attrs = named_attrs; }
+    void set_op_attr(const std::string &name, OpType::Attr value) { op_type_.set_attr(name, std::move(value)); }
 
     const ForgeOpAttrs &forge_attrs() const { return op_type_.forge_attrs; }
     void overwrite_forge_attrs(ForgeOpAttrs forge_attrs) { op_type_.forge_attrs = forge_attrs; }
     void set_gradient_op(bool value = true) { gradient_op_ = value; }
     bool is_op_type(std::string const &type) const { return type == op_name(); }
     bool is_gradient_op() const { return gradient_op_; }
-    bool is_embedding() const { return op_name().find("embedding") != std::string::npos; }
-    bool is_matmul() const { return op_name().compare("matmul") == 0 or is_depthwise_matmul(); }
-    bool is_splice() const { return op_name() == "splice"; }
-    bool is_tilize() const { return op_name().find("tilizer") != std::string::npos; }
-    bool is_reduce() const { return op_name() == "reduce"; }
-    bool is_add() const { return op_name() == "add"; }
-    bool is_maximum() const { return op_name() == "maximum"; }
-    bool is_quantization() const { return op_name() == "quantization"; }
-    bool is_dequantization() const { return op_name() == "dequantization"; }
-    bool is_requantization() const { return op_name() == "requantization"; }
+    bool is_embedding() const
+    {
+        return new_op_type() == ops::OpType::Embedding || new_op_type() == ops::OpType::EmbeddingBw;
+    }
+    bool is_matmul() const { return new_op_type() == ops::OpType::Matmul || is_depthwise_matmul(); }
+    bool is_tilize() const { return new_op_type() == ops::OpType::Tilizer; }
+    bool is_reduce() const
+    {
+        return new_op_type() == ops::OpType::ReduceAvg or new_op_type() == ops::OpType::ReduceMax or
+               new_op_type() == ops::OpType::ReduceSum;
+    }
+    bool is_add() const { return new_op_type() == ops::OpType::Add; }
+    bool is_maximum() const { return new_op_type() == ops::OpType::Maximum; }
+    bool is_quantization() const { return new_op_type() == ops::OpType::Quantize; }
+    bool is_dequantization() const { return new_op_type() == ops::OpType::Dequantize; }
+    bool is_requantization() const { return new_op_type() == ops::OpType::Requantize; }
     bool is_quantization_related_op() const { return is_quantization() or is_dequantization() or is_requantization(); }
     bool is_dense_matmul() const { return is_matmul() and not is_sparse_matmul() and not is_depthwise_matmul(); }
-    bool is_sparse_matmul() const { return is_matmul() and (forge_attrs().find("identity") != forge_attrs().end()); }
-    bool is_depthwise_matmul() const { return op_name().compare("depthwise") == 0; }
-    bool is_matmul_not_sparse() const
-    {
-        return is_matmul() and (forge_attrs().find("identity") == forge_attrs().end());
-    }
+    bool is_sparse_matmul() const { return is_matmul() and new_op().has_attr("identity"); }
+    // Check whether this is needed, because it makes no sence.
+    bool is_depthwise_matmul() const { return new_op_type() == ops::OpType::Depthwise; }
+    bool is_matmul_not_sparse() const { return is_matmul() and new_op().has_attr("identity"); }
+
+    bool is_tm() const { return new_op().is_tm(); };
+    bool is_eltwise() const { return new_op().is_eltwise(); };
+
     bool should_pair_with_sparse(const OpNode *sparse_op_node, const Graph *graph) const;
-    bool is_tm() const;
     void set_output_df_from_operands(const Graph *graph);
     void add_golden_transform(OpType const &op_type) { golden_transforms.insert(golden_transforms.begin(), op_type); }
     void set_golden_transforms(std::vector<OpType> const &other) { golden_transforms = other; }
     std::vector<OpType> const &get_golden_transforms() const { return golden_transforms; }
     std::vector<OpType> &get_golden_transforms() { return golden_transforms; }
-
-    bool is_eltwise() const;
 
     void set_golden_id(std::uint32_t golden_id)
     {

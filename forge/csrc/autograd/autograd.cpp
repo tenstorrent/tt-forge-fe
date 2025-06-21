@@ -122,7 +122,7 @@ Node *autograd_engine::combine_incoming_gradients(Node *node)
     for (int i = 1; i < (int)out_grads.size(); i++)
     {
         NodeContext out_grad(out_grads[i]);
-        sum = create_op(graphlib::OpType("add"), {sum, out_grad}, node, 0, i - 1, "combine");
+        sum = create_backward_op(graphlib::OpType("add"), {sum, out_grad}, node, 0, i - 1, "combine");
     }
 
     Node *final_out = graph->node_by_id(sum.id);
@@ -347,9 +347,8 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
             }
             NodeContext gradient(out_grad);
 
-            NodeContext ret_gradient = insert_backward(
+            NodeContext ret_gradient = op_node->op_type().new_op().backward(
                 {this, node, (int)edge.consumer_input_port_id},
-                op_node->op_type(),
                 edge.consumer_input_port_id,
                 operands,
                 NodeContext(node),
@@ -371,7 +370,7 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
                     int dim = std::get<int>(tm.attr[0]);
 
                     NodeContext src = last_out;
-                    last_out = create_op(
+                    last_out = create_backward_op(
                         OpType(
                             "reduce_sum", {dim, true}, {}, {{"keep_dim", true}, {"dim_arg", std::vector<int>({dim})}}),
                         {src},
@@ -494,8 +493,25 @@ Graph *autograd_engine::run()
     return graph;
 }
 
-// Create a backward op for the given fwd op's operand
 NodeContext autograd_engine::create_op(
+    autograd_context &self, graphlib::OpType op_type, std::vector<NodeContext> operands)
+{
+    if (self.epoch_type == graphlib::NodeEpochType::Backward)
+    {
+        return self.autograd->create_backward_op(
+            op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
+    }
+    else if (self.epoch_type == graphlib::NodeEpochType::Optimizer)
+    {
+        return self.autograd->create_optimizer_op(
+            op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
+    }
+
+    throw std::runtime_error("Expected autograd_context.epoch_type to be Backward or Optimizer");
+}
+
+// Create a backward op for the given fwd op's operand
+NodeContext autograd_engine::create_backward_op(
     graphlib::OpType type,
     std::vector<NodeContext> operands,
     Node *current_fwd_op,
@@ -600,58 +616,6 @@ static void tag_disable_consteval(bool disable_consteval, Node *node)
     {
         node->as<graphlib::TaggedNode>()->tag("dont_consteval", "true");
     }
-}
-
-// Create an integer constant used in backward calculations (typically a negative one)
-template <>
-NodeContext autograd_engine::create_constant(
-    Node *current_fwd_op, int operand_index, int value, int created_op_index, graphlib::NodeEpochType epoch_type)
-{
-    auto node = graph->add_node(
-        graphlib::create_node<graphlib::ConstantInputNode>(
-            "input_constant_" + current_fwd_op->name() + "_" + std::to_string(created_op_index), value),
-        graph->get_subgraph_id_for_node(current_fwd_op->id()));
-
-    node->set_shape(Shape::create({1}));
-    node->set_output_df(current_fwd_op->output_df());
-
-    if (epoch_type == graphlib::NodeEpochType::Backward)
-    {
-        node->set_backward();
-        add_fwd_to_bwd_map(current_fwd_op, node, operand_index);
-    }
-    else if (epoch_type == graphlib::NodeEpochType::Optimizer)
-    {
-        node->set_optimizer();
-        add_fwd_to_optimizer_edge(current_fwd_op, node, operand_index);
-    }
-
-    return NodeContext(node);
-}
-template <>
-NodeContext autograd_engine::create_constant(
-    Node *current_fwd_op, int operand_index, float value, int created_op_index, graphlib::NodeEpochType epoch_type)
-{
-    auto node = graph->add_node(
-        graphlib::create_node<graphlib::ConstantInputNode>(
-            "input_constant_" + current_fwd_op->name() + "_" + std::to_string(created_op_index), value),
-        graph->get_subgraph_id_for_node(current_fwd_op->id()));
-
-    node->set_shape(Shape::create({1}));
-    node->set_output_df(current_fwd_op->output_df());
-
-    if (epoch_type == graphlib::NodeEpochType::Backward)
-    {
-        node->set_backward();
-        add_fwd_to_bwd_map(current_fwd_op, node, operand_index);
-    }
-    else if (epoch_type == graphlib::NodeEpochType::Optimizer)
-    {
-        node->set_optimizer();
-        add_fwd_to_optimizer_edge(current_fwd_op, node, operand_index);
-    }
-
-    return NodeContext(node);
 }
 
 NodeContext autograd_engine::create_constant(
