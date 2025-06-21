@@ -25,6 +25,7 @@ from forge._C import (
     dump_graph,
     extract_unique_op_configuration,
 )
+from forge._C.ops import Op as CppOp, CppOpType
 from forge._C import ForgeGraphModule, GraphType
 import forge._C.autograd as pyautograd
 import forge._C.graph as pygraph
@@ -1280,7 +1281,7 @@ def generate_graph(
                 nop = create_op_node(
                     graph,
                     f"_passthrough_nop_{output}",
-                    OpType("nop"),
+                    CppOp(CppOpType.Nop),
                     tensor.shape.get_pytorch_shape(),
                     tensor.data_format,
                     subgraph_idx,
@@ -1381,7 +1382,7 @@ def generate_graph(
         op = create_op_node(
             graph,
             tensor.src_op.name,
-            tensor.src_op.cpp_op_type,
+            tensor.src_op.cpp_op,
             tensor.shape.get_pytorch_shape(),
             tensor.data_format,
             subgraph_idx,

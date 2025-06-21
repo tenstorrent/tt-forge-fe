@@ -6,6 +6,7 @@
 #include <pybind11/operators.h>
 #include <pybind11/stl.h>
 
+#include <memory>
 #include <optional>
 
 #include "autograd/autograd.hpp"
@@ -375,17 +376,21 @@ void GraphModule(py::module &m_graph)
         "create_op_node",
         [](Graph *graph,
            const std::string &name,
-           const graphlib::OpType &op_type,
+           std::unique_ptr<ops::Op> op,
            const std::vector<std::uint32_t> &shape,
            tt::DataFormat data_format,
            const int subgraph_index,
            graphlib::TagHints tags)
         {
-            auto node = graph->add_node(graphlib::create_node<graphlib::PyOpNode>(name, op_type), subgraph_index);
+            std::string op_name = op->as_string();
+
+            auto node = graph->add_node(graphlib::create_node<graphlib::PyOpNode>(name, std::move(op)), subgraph_index);
             node->set_shape(Shape::create(shape));
             node->set_output_df(data_format);
             node->as<graphlib::TaggedNode>()->tag("original_op_name", name);
-            node->as<graphlib::TaggedNode>()->tag("original_op_type", op_type.op);
+
+            // TODO: Check whether this op name can be moved to variant.
+            node->as<graphlib::TaggedNode>()->tag("original_op_type", std::move(op_name));
             node->as<graphlib::TaggedNode>()->add_tags(tags);
             return node->id();
         });

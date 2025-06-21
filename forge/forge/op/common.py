@@ -188,12 +188,11 @@ class ForgeOp:
 
         # get reference output shape
         shapes = [o.shape.get_pytorch_shape() for o in self.operands]
+        shape, self.operand_broadcast = self.cpp_op.shape(shapes)
 
-        # Check whether this can be ignored.
-        # shape, self.operand_broadcast = get_f_forge_shape(self.cpp_op_type)(shapes)
-
-        shape = self.cpp_op.shape(shapes)
-        self.operand_broadcast = []
+        # This is new, but delete code once shape is refactored to return tuples.
+        # shape = self.cpp_op.shape(shapes)
+        # self.operand_broadcast = []
 
         # get reference output value
         values = [o.value() if isinstance(o, (Tensor, Parameter)) else o for o in self.operands]

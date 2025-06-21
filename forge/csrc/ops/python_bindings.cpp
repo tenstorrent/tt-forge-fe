@@ -141,6 +141,7 @@ void OpsModule(py::module &m_ops)
         .value("Where", ops::OpType::Where)
         .export_values();
 
+    // Check whether this needs to change to py::class_<Op, std::unique_ptr<Op>>(m_ops, "Op").
     py::class_<ops::Op>(m_ops, "Op")
         .def(
             py::init([](ops::OpType type, ops::Attrs attrs)
