@@ -14,6 +14,7 @@ from forge.forgeglobal import get_unique_node_id, tracing
 from forge.tensor import pytorch_dtype_to_forge_dataformat
 from loguru import logger
 
+
 deprecated_name_dict = {}
 deprecated_op_id = 0
 
@@ -54,11 +55,11 @@ class ForgeOp:
 
         # get reference output shape
         shapes = [o.shape.get_pytorch_shape() for o in self.operands]
-        shape, self.operand_broadcast = get_f_forge_shape(self.cpp_op_type)(shapes)
+        shape, self.operand_broadcast = self.cpp_op_type.new_op().shape(shapes)
 
         # get reference output value
         values = [o.value() if isinstance(o, (Tensor, Parameter)) else o for o in self.operands]
-        ref_output = get_f_forge_eval(self.cpp_op_type)(values)
+        ref_output = self.cpp_op_type.new_op().eval(values)
 
         if out_df is not None:  # User provided output dataformat
             data_format = out_df
