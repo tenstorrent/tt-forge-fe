@@ -542,7 +542,7 @@ NodeContext autograd_engine::create_backward_op(
 
 // Create a backward op for the given fwd op's operand
 NodeContext autograd_engine::create_optimizer_op(
-    graphlib::OpType type,
+    std::unique_ptr<ops::Op> op,
     std::vector<NodeContext> operands,
     Node *current_fwd_op,
     int operand_index,
@@ -555,10 +555,10 @@ NodeContext autograd_engine::create_optimizer_op(
         op_name += name_prefix + "_";
     }
 
-    op_name += type.op + "_" + std::to_string(created_op_index);
+    op_name += op->as_string() + "_" + std::to_string(created_op_index);
 
     auto node = graph->add_node(
-        graphlib::create_node<graphlib::PyOpNode>(op_name, type),
+        graphlib::create_node<graphlib::PyOpNode>(op_name, std::move(op)),
         graph->get_subgraph_id_for_node(current_fwd_op->id()));
     for (size_t i = 0; i < operands.size(); ++i)
     {
@@ -571,7 +571,7 @@ NodeContext autograd_engine::create_optimizer_op(
     {
         operand_shapes.push_back(graph->node_by_id(n.id)->shape());
     }
-    std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(type, operand_shapes);
+    std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(node->op().as_string(), operand_shapes);
 
     node->set_shape(Shape(std::get<0>(shape_data)));
     node->set_optimizer();

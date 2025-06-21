@@ -8,6 +8,7 @@
 #include "graph_lib/graph.hpp"
 #include "graph_lib/node_types.hpp"
 #include "lower_to_forge/common.hpp"
+#include "ops/op.hpp"
 #include "python_bindings_common.hpp"
 
 namespace tt
@@ -51,12 +52,12 @@ void AutogradModule(py::module &m_autograd)
                 if (self.epoch_type == graphlib::NodeEpochType::Backward)
                 {
                     return self.autograd->create_backward_op(
-                        op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
+                        ops::create_op(op_type), operands, self.current_fwd_op, self.operand, self.created_op_index++);
                 }
                 else if (self.epoch_type == graphlib::NodeEpochType::Optimizer)
                 {
                     return self.autograd->create_optimizer_op(
-                        op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
+                        ops::create_op(op_type), operands, self.current_fwd_op, self.operand, self.created_op_index++);
                 }
 
                 throw std::runtime_error("Expected autograd_context.epoch_type to be Backward or Optimizer");
@@ -86,12 +87,12 @@ void AutogradModule(py::module &m_autograd)
                 if (self.epoch_type == graphlib::NodeEpochType::Backward)
                 {
                     return self.autograd->create_backward_op(
-                        op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
+                        ops::create_op(op_type), operands, self.current_fwd_op, self.operand, self.created_op_index++);
                 }
                 else if (self.epoch_type == graphlib::NodeEpochType::Optimizer)
                 {
                     return self.autograd->create_optimizer_op(
-                        op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
+                        ops::create_op(op_type), operands, self.current_fwd_op, self.operand, self.created_op_index++);
                 }
 
                 throw std::runtime_error("Expected autograd_context.epoch_type to be Backward or Optimizer");
@@ -108,7 +109,7 @@ void AutogradModule(py::module &m_autograd)
                std::vector<graphlib::OpType::Attr> attributes)
             {
                 return self.autograd->create_optimizer_op(
-                    graphlib::OpType(type, attributes),
+                    ops::create_op(graphlib::OpType(type, attributes)),
                     operands,
                     self.current_fwd_op,
                     self.operand,

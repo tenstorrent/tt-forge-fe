@@ -60,7 +60,7 @@ class autograd_engine
         bool copy_golden_transforms = true);
 
     NodeContext create_optimizer_op(
-        graphlib::OpType type,
+        std::unique_ptr<ops::Op> op,
         std::vector<NodeContext> operands,
         Node *current_fwd_op,
         int operand_index,

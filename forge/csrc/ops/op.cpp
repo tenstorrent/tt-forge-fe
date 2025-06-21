@@ -440,6 +440,8 @@ std::unique_ptr<Op> create_op(OpType op_type, Attrs attrs)
     }
 }
 
+std::unique_ptr<Op> create_op(const graphlib::OpType &op_type) { return std::make_unique<Op>(op_type); }
+
 const std::string &op_type_as_string(OpType op_type) { return new_to_old_op_type_mapper[op_type]; };
 
 }  // namespace ops

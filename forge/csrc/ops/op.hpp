@@ -270,12 +270,6 @@ class OpEltwiseNary : public OpEltwise
     bool is_eltwise_nary() const override { return true; };
 };
 
-// Check whether this is needed once refactoring is done.
-// It seems that user can always create wanted op where it is needed.
-std::unique_ptr<Op> create_op(OpType op_type);
-std::unique_ptr<Op> create_op(OpType op_type, Attrs attrs);
-const std::string &op_type_as_string(OpType op_type);
-
 ///////////////////////////////////////////////////
 // Next section contains ops implemented in cpp. //
 ///////////////////////////////////////////////////
@@ -303,6 +297,13 @@ class OpAdd : public OpEltwiseBinary
         const std::vector<std::vector<std::uint32_t>> &in_shapes) const override;
     long initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const override;
 };
+
+// Check whether this is needed once refactoring is done.
+// It seems that user can always create wanted op where it is needed.
+std::unique_ptr<Op> create_op(OpType op_type);
+std::unique_ptr<Op> create_op(OpType op_type, Attrs attrs);
+std::unique_ptr<Op> create_op(const graphlib::OpType &op_type);
+const std::string &op_type_as_string(OpType op_type);
 
 // Create op based on provided type and attributes.
 // Ops should be created using this if op is known at compile time. For example:
