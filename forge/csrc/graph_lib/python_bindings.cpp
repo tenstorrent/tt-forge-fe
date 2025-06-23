@@ -14,6 +14,7 @@
 #include "graph_lib/query.hpp"
 #include "graph_lib/utils.hpp"
 #include "nlohmann/json.hpp"
+#include "ops/op.hpp"
 #include "pybind11_json/pybind11_json.hpp"
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
@@ -296,7 +297,8 @@ void GraphModule(py::module &m_graph)
             "__setattr__",
             [](tt::graphlib::OpType &op_type, std::string const &name, tt::graphlib::OpType::Attr value)
             { return op_type.set_attr(name, value); })
-        .def("__repr__", [](tt::graphlib::OpType const &op_type) { return op_type.as_string(); });
+        .def("__repr__", [](tt::graphlib::OpType const &op_type) { return op_type.as_string(); })
+        .def("new_op", &tt::graphlib::OpType::new_op);
 
     py::enum_<tt::graphlib::UBlockOrder>(m_graph, "UBlockOrder")
         .value("R", tt::graphlib::UBlockOrder::R)
