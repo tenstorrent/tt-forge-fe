@@ -49,7 +49,7 @@ void AutogradModule(py::module &m_autograd)
                         "Error autograd a type with old OpType interface, expects new OpType interface {}",
                         std::get<std::string>(type));
 
-                self.autograd->create_op(self, op_type, operands);
+                return self.autograd->create_op(self, op_type, operands);
             },
             py::arg("type"),
             py::arg("operands"),
@@ -74,7 +74,7 @@ void AutogradModule(py::module &m_autograd)
                         "Error autograd a type with old OpType interface, expects new OpType interface {}",
                         std::get<std::string>(type));
 
-                self.autograd->create_op(self, op_type, operands);
+                return self.autograd->create_op(self, op_type, operands);
             },
             py::arg("type"),
             py::arg("operands"),
