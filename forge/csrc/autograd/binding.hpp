@@ -18,8 +18,7 @@ using OpType = tt::graphlib::OpType;
 using DimBroadcast = tt::graphlib::DimBroadcast;
 using TileDim = tt::TileDim;
 
-std::tuple<Shape, std::vector<DimBroadcast>> get_op_shape(
-    OpType type, std::vector<Shape> &operands, TileDim tile_dim = TileDim::Dim32x32);
+std::tuple<Shape, std::vector<DimBroadcast>> get_op_shape(OpType type, std::vector<Shape> &operands);
 
 NodeContext insert_backward(
     autograd_context context,
