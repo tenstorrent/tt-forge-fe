@@ -39,7 +39,7 @@
 #include "mlir/Target/Cpp/CppEmitter.h"
 #include "tt/runtime/types.h"
 #include "tt_torch_device/tt_device.hpp"
-#include "ttmlir/Dialect/TT/IR/TT.h"
+#include "ttmlir/Dialect/TTCore/IR/TTCore.h"
 #include "ttmlir/Dialect/TTIR/IR/TTIR.h"
 #include "ttmlir/Dialect/TTNN/IR/TTNN.h"
 #include "ttmlir/Dialect/TTNN/Transforms/TTNNToCpp.h"
@@ -61,7 +61,7 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
     mlir::DialectRegistry registry;
 
     registry.insert<
-        mlir::tt::TTDialect,
+        mlir::tt::TTCoreDialect,
         mlir::tt::ttir::TTIRDialect,
         mlir::tt::ttnn::TTNNDialect,
         mlir::arith::ArithDialect,
