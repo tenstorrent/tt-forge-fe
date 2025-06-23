@@ -68,8 +68,8 @@ def generate_model_mobilenetv1_imgcls_hf_pytorch(variant):
     # tt_model = forge.PyTorchModule("mobilenet_v1__hf_075_192", model)
 
     # Image load and pre-processing into pixel_values
-    dataset = load_dataset("cifar10", split="test[:1]")
-    image = dataset[0]["img"]
+    dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+    image = next(iter(dataset.skip(10)))["image"]
     inputs = preprocessor(images=image, return_tensors="pt")
 
     image_tensor = inputs.pixel_values
@@ -114,8 +114,8 @@ def generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant):
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
 
     # Image load and pre-processing into pixel_values
-    dataset = load_dataset("cifar10", split="test[:1]")
-    image = dataset[0]["img"]
+    dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+    image = next(iter(dataset.skip(10)))["image"]
     inputs = preprocessor(images=image, return_tensors="pt")
 
     image_tensor = inputs.pixel_values
