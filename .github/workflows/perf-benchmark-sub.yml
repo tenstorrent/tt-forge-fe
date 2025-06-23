@@ -34,8 +34,9 @@ jobs:
           # { runs-on: "n150", name: "unet",                     dir: "UNet",                         ts: 'na',             bs: 1,   lp: 32, df: 'bfloat16', }
         ]
     runs-on:
-      - ${{ matrix.build.runs-on }}-perf
-      - in-service
+      # - ${{ matrix.build.runs-on }}-perf
+      # - in-service
+      - hang
 
     container:
       image: ${{ inputs.docker-image }}
