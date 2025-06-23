@@ -165,7 +165,7 @@ jobs:
 
           python .github/workflows/test_runner.py  \
                  --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-                 --log-memory-usage --continue-after-crash
+                 --log-memory-usage
 
             if [ -f crashed_pytest.log ]; then
               echo "### Crashed tests: (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})" >>$GITHUB_STEP_SUMMARY
