@@ -431,7 +431,6 @@ at::Tensor Op::eval(const std::vector<at::Tensor> &tensors) const
     switch (type_)
     {
         case OpType::Abs: return abs_eval(tensors);
-        case OpType::Add: return add_eval(tensors);
         default: return base_eval(tensors);
     }
 }
@@ -442,7 +441,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
     switch (type_)
     {
         case OpType::Abs: return abs_shape(inputs);
-        case OpType::Add: return add_shape(inputs);
         default: return base_shape(inputs);
     }
 }
@@ -456,13 +454,12 @@ tt::graphlib::NodeContext Op::backward(
 {
     switch (type_)
     {
-        // case OpType::Abs: return abs_backward(context, operand, inputs, output, gradient);
-        // case OpType::Add: return add_backward(context, operand, inputs, output, gradient);
+        case OpType::Abs: return abs_backward(context, operand, inputs, output, gradient);
         default: return base_backward(context, operand, inputs, output, gradient);
     }
 }
 
-// TODO: Fix this witch proper dispatching based on provided string.
+// TODO: Fix this with proper dispatching based on provided string.
 void Op::decompose(const char *dispatch, DecomposingContext &dc, std::vector<tt::graphlib::NodeContext> &inputs) const
 {
     switch (type_)
@@ -476,7 +473,6 @@ long Op::initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &i
     switch (type_)
     {
         case OpType::Abs: return abs_initial_flops_estimate(inputs);
-        case OpType::Add: return add_initial_flops_estimate(inputs);
         default: return base_initial_flops_estimate(inputs);
     }
 }
@@ -486,7 +482,6 @@ bool Op::is_tm() const
     switch (type_)
     {
         case OpType::Abs: return false;
-        case OpType::Add: return false;
         default: return base_is_tm();
     }
 }
@@ -496,7 +491,6 @@ bool Op::is_eltwise() const
     switch (type_)
     {
         case OpType::Abs: return true;
-        case OpType::Add: return true;
         default: return base_is_eltwise();
     }
 }
@@ -506,7 +500,6 @@ bool Op::is_eltwise_unary() const
     switch (type_)
     {
         case OpType::Abs: return true;
-        case OpType::Add: return false;
         default: return base_is_eltwise_unary();
     }
 }
@@ -516,7 +509,6 @@ bool Op::is_eltwise_binary() const
     switch (type_)
     {
         case OpType::Abs: return false;
-        case OpType::Add: return true;
         default: return base_is_eltwise_binary();
     }
 }
@@ -525,37 +517,9 @@ bool Op::is_eltwise_nary() const
     switch (type_)
     {
         case OpType::Abs: return false;
-        case OpType::Add: return false;
         default: return base_is_eltwise_nary();
     }
 }
 
-// // Check whether this is needed once refactoring is done.
-// // It seems that user can always create wanted op where it is needed.
-// std::unique_ptr<Op> create_op(OpType op_type)
-// {
-// switch (op_type)
-// {
-// case OpType::Abs: return create_op<OpType::Abs>();
-// case OpType::Add: return create_op<OpType::Add>();
-// default: return std::make_unique<Op>(op_type);
-// }
-// }
-
-// std::unique_ptr<Op> create_op(OpType op_type, Attrs attrs)
-// {
-// switch (op_type)
-// {
-// case OpType::Abs: return create_op<OpType::Abs>(std::move(attrs));
-// case OpType::Add: return create_op<OpType::Add>(std::move(attrs));
-// default: return std::make_unique<Op>(op_type);
-// }
-// }
-
-// std::unique_ptr<Op> create_op(const graphlib::OpType &op_type) { return std::make_unique<Op>(op_type); }
-
-// const std::string &op_type_as_string(OpType op_type) { return new_to_old_op_type_mapper[op_type]; };
-
 }  // namespace ops
-
 }  // namespace tt
