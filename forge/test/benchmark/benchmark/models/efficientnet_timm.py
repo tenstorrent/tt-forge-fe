@@ -106,7 +106,7 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
     compiler_config = CompilerConfig()
     # Turn on MLIR optimizations.
     # vkovacevic: Optimizer was breaking on nightly 18_6_2025
-    # compiler_config.mlir_config = MLIRConfig().set_enable_optimizer(True)
+    compiler_config.mlir_config = MLIRConfig().set_enable_optimizer(True).set_enable_memory_layout_analysis(True)
     if data_format == "bfloat16":
         # Convert model to bfloat16
         compiler_config.default_df_override = DataFormat.Float16_b
