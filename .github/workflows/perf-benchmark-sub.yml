@@ -167,7 +167,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.build.runs-on }}_${{ matrix.build.image }}_${{ matrix.build.suite }}_debug_logs
-        path: /opt/ttmlir-toolchain/venv/lib/python3.10/site-packages/ttrt/runtime/generated/
+        path: /opt/ttforge-toolchain/venv/lib/python3.10/site-packages/forge/tt-metal/generated/
 
     - name: Upload Perf Report
       uses: actions/upload-artifact@v4
