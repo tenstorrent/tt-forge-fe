@@ -374,12 +374,14 @@ struct OpType
     Attrs named_attrs;         // new path
     ForgeOpAttrs forge_attrs;  // attrs that will lower directly into the netlist
 
+    ops::Op new_op_;
+
     OpType(
         std::string const &op,
         std::vector<Attr> const &attr = {},
         ForgeOpAttrs const &forge_attrs = {},
         Attrs named_attrs = {}) :
-        op(op), attr(attr), named_attrs(named_attrs), forge_attrs(forge_attrs)
+        op(op), attr(attr), named_attrs(named_attrs), forge_attrs(forge_attrs), new_op_(*this)
     {
     }
 
@@ -392,6 +394,7 @@ struct OpType
     }
     bool operator!=(const OpType &other) const { return not(*this == other); }
 
+    ops::Op const &new_op() const { return new_op_; }
     Attr const &get_attr(std::string const &name) const { return named_attrs.at(name); }
     Attr &get_attr(std::string const &name) { return named_attrs.at(name); }
     template <typename T>
@@ -478,8 +481,7 @@ struct OpType
 class OpNode : public TaggedNode
 {
    private:
-    OpType op_type_;    // Old op implementation. Deprecating.
-    ops::Op op_;        // New op implementation.
+    OpType op_type_;
     bool gradient_op_;  // accumulator op
     std::vector<OpType> golden_transforms;
 
@@ -489,34 +491,27 @@ class OpNode : public TaggedNode
 
    public:
     OpNode(const std::string &name, const std::string &op_type, NodeType node_type) :
-        TaggedNode(name, node_type), op_type_(op_type), op_(op_type_), gradient_op_(false)
+        TaggedNode(name, node_type), op_type_(op_type), gradient_op_(false)
     {
     }
     OpNode(const std::string &name, OpType op_type, NodeType node_type) :
-        TaggedNode(name, node_type), op_type_(op_type), op_(op_type_), gradient_op_(false)
+        TaggedNode(name, node_type), op_type_(op_type), gradient_op_(false)
     {
     }
-    void change_op_type(OpType const &new_op_type)
-    {
-        op_type_ = new_op_type;
-        op_ = op_type_;
-    }
+
+    ops::Op const &new_op() const { return op_type_.new_op(); }
+    void change_op_type(OpType const &new_op_type) { op_type_ = new_op_type; }
     void change_op_type(const std::string &new_op_type, std::vector<OpType::Attr> attrs = {})
     {
         op_type_ = OpType(new_op_type, attrs);
-        op_ = op_type_;
     }
     void change_op_type(const std::string &new_op_type, std::vector<OpType::Attr> attrs, OpType::Attrs named_attrs)
     {
         op_type_ = OpType(new_op_type, attrs, {}, named_attrs);
-        op_ = op_type_;
     }
-    ops::OpType new_op_type() const { return op_.type(); }
-    ops::Op const &op() const { return op_; }
+    ops::OpType new_op_type() const { return new_op().type(); }
     OpType const &op_type() const { return op_type_; }
-    OpType &op_type() { return op_type_; }
     OpType const *op_type_ptr() const { return &op_type_; }
-    OpType *op_type_ptr() { return &op_type_; }
     IRLevel get_ir_level() const { return IRLevel::IR_TT_FORGE; }
     const std::string &op_name() const { return op_type_.op; }
     const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attr; }
@@ -534,7 +529,6 @@ class OpNode : public TaggedNode
         const std::string &name = op_name();
         log_trace(LogGraphCompiler, "op name = {}", name);
         op_type_ = graphlib::OpType(name, op_attrs, {}, named_attrs);
-        op_ = op_type_;
     }
     /**
      * @brief Overwrites the named attributes of the operation.
@@ -545,7 +539,7 @@ class OpNode : public TaggedNode
     void overwrite_named_attrs(graphlib::OpType::Attrs &named_attrs)
     {
         op_type_.named_attrs = named_attrs;
-        op_ = op_type_;
+        op_type_.new_op_.set_attrs(named_attrs);
     }
 
     const ForgeOpAttrs &forge_attrs() const { return op_type_.forge_attrs; }
@@ -571,13 +565,13 @@ class OpNode : public TaggedNode
     bool is_requantization() const { return new_op_type() == ops::OpType::Requantize; }
     bool is_quantization_related_op() const { return is_quantization() or is_dequantization() or is_requantization(); }
     bool is_dense_matmul() const { return is_matmul() and not is_sparse_matmul() and not is_depthwise_matmul(); }
-    bool is_sparse_matmul() const { return is_matmul() and op_.has_attr("identity"); }
+    bool is_sparse_matmul() const { return is_matmul() and new_op().has_attr("identity"); }
     // Check whether this is needed, because it makes no sence.
     bool is_depthwise_matmul() const { return new_op_type() == ops::OpType::Depthwise; }
-    bool is_matmul_not_sparse() const { return is_matmul() and op_.has_attr("identity"); }
+    bool is_matmul_not_sparse() const { return is_matmul() and new_op().has_attr("identity"); }
 
-    bool is_tm() const { return op_.is_tm(); };
-    bool is_eltwise() const { return op_.is_eltwise(); };
+    bool is_tm() const { return new_op().is_tm(); };
+    bool is_eltwise() const { return new_op().is_eltwise(); };
 
     bool should_pair_with_sparse(const OpNode *sparse_op_node, const Graph *graph) const;
     void set_output_df_from_operands(const Graph *graph);

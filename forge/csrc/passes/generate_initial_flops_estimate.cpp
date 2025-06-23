@@ -27,7 +27,7 @@ void generate_initial_flops_estimate(graphlib::Graph *graph)
         for (auto data_operand : graph->data_operands(node))
             operand_tuples.push_back(data_operand->shape().as_vector());
 
-        long flops = op->op().initial_flops_estimate(operand_tuples);
+        long flops = op->new_op().initial_flops_estimate(operand_tuples);
 
         if (macs_per_op.find(op->op_type().op) == macs_per_op.end())
         {
