@@ -6,6 +6,8 @@ from typing import List, Dict, Tuple
 from loguru import logger
 import subprocess
 import fnmatch
+import signal
+import threading
 
 import numpy as np
 import pytest
@@ -39,9 +41,24 @@ from test.exception_utils import extract_refined_error_message, extract_failure_
 
 collect_ignore = ["legacy_tests"]
 
+watchdog_abort_timer = None
+
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_runtest_setup(item):
+    def send_abort_signal():
+        print("WATCHDOG timeout reached! Killing test process.")
+        os.kill(os.getpid(), signal.SIGABRT)
+
+    def reset_abort_timer():
+        global watchdog_abort_timer
+        if watchdog_abort_timer:
+            watchdog_abort_timer.cancel()
+        watchdog_abort_timer = threading.Timer(600, send_abort_signal)  # 10 minute timeout
+        watchdog_abort_timer.daemon = True
+        watchdog_abort_timer.start()
+
+    reset_abort_timer()
     with open(".pytest_current_test_executing", "w") as f:
         f.write(item.nodeid)
         f.flush()

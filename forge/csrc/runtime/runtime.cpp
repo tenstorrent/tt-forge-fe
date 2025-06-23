@@ -11,7 +11,6 @@
 #include "tt_device.hpp"
 #include "utils/assert.hpp"
 #include "utils/logger.hpp"
-#include "utils/watchdog.hpp"
 
 namespace tt
 {
@@ -75,7 +74,6 @@ void verify_input_descs(
 
 std::vector<tt::Tensor> run_program(runtime::Binary& binary, int program_idx, std::vector<tt::Tensor>& inputs)
 {
-    Watchdog wd;
     auto& system = TTSystem::get_system();
     for (auto& device : system.devices)
     {
@@ -84,7 +82,6 @@ std::vector<tt::Tensor> run_program(runtime::Binary& binary, int program_idx, st
             device->open_device();
         }
     }
-    wd.Pet();
 
     // For now, we only support a single device.
     constexpr size_t device_id = 0;
@@ -97,7 +94,6 @@ std::vector<tt::Tensor> run_program(runtime::Binary& binary, int program_idx, st
     auto& device = *tt_device->rt_device;
 
     auto expected_input_descs = binary.getProgramInputs(program_idx);
-    wd.Pet();
 
     std::vector<runtime::TensorDesc> input_descs;
     input_descs.reserve(inputs.size());
@@ -107,10 +103,8 @@ std::vector<tt::Tensor> run_program(runtime::Binary& binary, int program_idx, st
         inputs.end(),
         std::back_inserter(input_descs),
         [](const tt::Tensor& input) { return input.tensor_desc(); });
-    wd.Pet();
 
     verify_input_descs(input_descs, expected_input_descs);
-    wd.Pet();
 
     std::vector<runtime::Tensor> rt_inputs;
     rt_inputs.reserve(inputs.size());
@@ -125,11 +119,9 @@ std::vector<tt::Tensor> run_program(runtime::Binary& binary, int program_idx, st
             runtime::setTensorRetain(tensor, /*retain=*/true);
             return tensor;
         });
-    wd.Pet();
 
     auto output_descs = binary.getProgramOutputs(program_idx);
     std::vector<runtime::Tensor> rt_outputs = runtime::submit(device, binary, program_idx, rt_inputs);
-    wd.Pet();
     TT_ASSERT(output_descs.size() == rt_outputs.size(), "Output count mismatch");
 
     std::vector<tt::Tensor> outputs;
@@ -145,7 +137,6 @@ std::vector<tt::Tensor> run_program(runtime::Binary& binary, int program_idx, st
             auto desc = output_descs[output_id++];
             return tt::Tensor(rt_output, desc);
         });
-    wd.Pet();
 
     return outputs;
 }
