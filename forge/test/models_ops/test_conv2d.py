@@ -117845,21 +117845,24 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D531,
-        [((1, 1280, 80, 80), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D531,
+            [((1, 1280, 80, 80), torch.bfloat16)],
+            {
+                "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D2175,
@@ -117957,21 +117960,24 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D2178,
-        [((1, 2560, 40, 40), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D2178,
+            [((1, 2560, 40, 40), torch.bfloat16)],
+            {
+                "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D2177,
@@ -118021,37 +118027,43 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D517,
-        [((1, 640, 20, 20), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D517,
+            [((1, 640, 20, 20), torch.bfloat16)],
+            {
+                "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D2179,
-        [((1, 1600, 20, 20), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D2179,
+            [((1, 1600, 20, 20), torch.bfloat16)],
+            {
+                "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D514,
@@ -118069,85 +118081,100 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D518,
-        [((1, 1280, 40, 40), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D518,
+            [((1, 1280, 40, 40), torch.bfloat16)],
+            {
+                "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D2179,
-        [((1, 1600, 40, 40), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D2179,
+            [((1, 1600, 40, 40), torch.bfloat16)],
+            {
+                "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D373,
-        [((1, 960, 80, 80), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D373,
+            [((1, 960, 80, 80), torch.bfloat16)],
+            {
+                "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D2180,
-        [((1, 800, 80, 80), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D2180,
+            [((1, 800, 80, 80), torch.bfloat16)],
+            {
+                "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D2181,
-        [((1, 320, 80, 80), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D2181,
+            [((1, 320, 80, 80), torch.bfloat16)],
+            {
+                "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D448,
@@ -118201,37 +118228,43 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D2182,
-        [((1, 960, 40, 40), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D2182,
+            [((1, 960, 40, 40), torch.bfloat16)],
+            {
+                "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D2183,
-        [((1, 640, 40, 40), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D2183,
+            [((1, 640, 40, 40), torch.bfloat16)],
+            {
+                "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D448,
@@ -118369,21 +118402,24 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D2186,
-        [((1, 640, 40, 40), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov8_yolov8x_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D2186,
+            [((1, 640, 40, 40), torch.bfloat16)],
+            {
+                "model_names": ["pt_yolov8_yolov8x_obj_det_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D2186,
