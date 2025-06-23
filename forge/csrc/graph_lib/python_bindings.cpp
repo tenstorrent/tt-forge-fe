@@ -290,10 +290,6 @@ void GraphModule(py::module &m_graph)
         .def_readonly("named_attrs", &tt::graphlib::OpType::named_attrs)
         .def_readonly("forge_attrs", &tt::graphlib::OpType::forge_attrs)
         .def(
-            "set_forge_attr",
-            [](tt::graphlib::OpType &op_type, std::string const &name, tt::graphlib::OpType::Attr const &attr)
-            { op_type.forge_attrs[name] = attr; })
-        .def(
             "__getattr__",
             [](tt::graphlib::OpType const &op_type, std::string const &name) { return op_type.get_attr(name); })
         .def(

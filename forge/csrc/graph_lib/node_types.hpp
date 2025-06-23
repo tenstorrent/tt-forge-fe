@@ -408,7 +408,11 @@ struct OpType
         return std::get<T>(get_attr(name));
     }
 
-    void set_attr(std::string const &name, Attr attr) { named_attrs[name] = attr; }
+    void set_attr(std::string const &name, Attr attr)
+    {
+        named_attrs[name] = attr;
+        new_op_.set_attr(name, attr);
+    }
 
     std::string as_string() const
     {
