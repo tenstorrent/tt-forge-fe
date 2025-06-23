@@ -58,7 +58,7 @@ namespace tt::passes
 template <MLIROutputKind output>
 auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional<MLIRConfig>& mlir_config)
 {
-    Watchdog wd();
+    Watchdog wd;
     // Register all the required dialects.
     mlir::DialectRegistry registry;
 

@@ -75,7 +75,7 @@ void verify_input_descs(
 
 std::vector<tt::Tensor> run_program(runtime::Binary& binary, int program_idx, std::vector<tt::Tensor>& inputs)
 {
-    Watchdog wd();
+    Watchdog wd;
     auto& system = TTSystem::get_system();
     for (auto& device : system.devices)
     {
