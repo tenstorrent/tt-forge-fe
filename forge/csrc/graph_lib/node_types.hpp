@@ -15,6 +15,7 @@
 #include "graph_lib/shape.hpp"
 #include "graph_lib/utils.hpp"
 #include "lower_to_forge/common.hpp"
+#include "ops/op.hpp"
 #include "shared_utils/sparse_matmul_utils.hpp"
 
 namespace tt
@@ -404,9 +405,6 @@ struct OpType
         return std::get<T>(get_attr(name));
     }
 
-    py::function py_attr(char const *name) const;
-    py::function py_attr(char const *name);
-
     void set_attr(std::string const &name, Attr attr) { named_attrs[name] = attr; }
 
     std::string as_string() const
@@ -480,7 +478,8 @@ struct OpType
 class OpNode : public TaggedNode
 {
    private:
-    OpType op_type_;
+    OpType op_type_;    // Old op implementation. Deprecating.
+    ops::Op op_;        // New op implementation.
     bool gradient_op_;  // accumulator op
     std::vector<OpType> golden_transforms;
 
@@ -490,11 +489,11 @@ class OpNode : public TaggedNode
 
    public:
     OpNode(const std::string &name, const std::string &op_type, NodeType node_type) :
-        TaggedNode(name, node_type), op_type_(op_type), gradient_op_(false)
+        TaggedNode(name, node_type), op_type_(op_type), op_(op_type_), gradient_op_(false)
     {
     }
     OpNode(const std::string &name, OpType op_type, NodeType node_type) :
-        TaggedNode(name, node_type), op_type_(op_type), gradient_op_(false)
+        TaggedNode(name, node_type), op_type_(op_type), op_(op_type_), gradient_op_(false)
     {
     }
     void change_op_type(OpType const &new_op_type) { op_type_ = new_op_type; }
@@ -510,18 +509,6 @@ class OpNode : public TaggedNode
     OpType &op_type() { return op_type_; }
     OpType const *op_type_ptr() const { return &op_type_; }
     OpType *op_type_ptr() { return &op_type_; }
-    py::function py_attr(char const *attr_name) const;
-    py::function py_attr(char const *attr_name);
-    template <typename T, typename... Args>
-    T py_attr(char const *attr_name, Args... args) const
-    {
-        return py_attr(attr_name)(args...).template cast<T>();
-    }
-    template <typename T, typename... Args>
-    T py_attr(char const *attr_name, Args... args)
-    {
-        return py_attr(attr_name)(args...).template cast<T>();
-    }
     IRLevel get_ir_level() const { return IRLevel::IR_TT_FORGE; }
     const std::string &op_name() const { return op_type_.op; }
     const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attr; }
