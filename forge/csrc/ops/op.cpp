@@ -442,6 +442,7 @@ void Op::decompose(const char *dispatch, DecomposingContext &dc, std::vector<tt:
 {
     switch (type_)
     {
+        case OpType::Abs: throw std::runtime_error{"Abs does not have decompose."};
         default: return base_decompose(dispatch, dc, inputs);
     }
 }
