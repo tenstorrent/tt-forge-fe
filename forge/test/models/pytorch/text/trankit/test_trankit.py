@@ -28,4 +28,4 @@ def test_trankit():
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Test is currently not executable due to model code dependency.")
+    pytest.xfail(reason="Test is currently not executable due to model code dependency.")

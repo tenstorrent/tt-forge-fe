@@ -41,4 +41,4 @@ def test_qwen3(variant):
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Requires transformers>=4.51.0")
+    pytest.xfail(reason="Requires upgrade of `transformers` version")
