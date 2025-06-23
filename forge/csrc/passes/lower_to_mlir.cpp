@@ -41,7 +41,7 @@
 #pragma clang diagnostic pop
 
 // TTMLIR headers
-#include "ttmlir/Dialect/TT/IR/TTOpsTypes.h"
+#include "ttmlir/Dialect/TTCore/IR/TTCoreOpsTypes.h"
 #include "ttmlir/Dialect/TTIR/IR/TTIROps.h"
 
 // Reportify headers
