@@ -12,6 +12,7 @@ import json
 from typing import Optional, Tuple
 from transformers import Cache
 from third_party.tt_forge_models.tools.utils import get_file
+from datasets import load_dataset
 
 # Mean Pooling - Take attention mask into account for correct averaging
 def mean_pooling(model_output, attention_mask):
@@ -272,3 +273,23 @@ def Gemma2DecoderLayer_patched_forward(
         outputs += (present_key_value,)
 
     return outputs
+
+
+def preprocess_inputs():
+
+    # Load Input
+    dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+    input_image = next(iter(dataset.skip(10)))["image"]
+
+    # Prepare input
+    preprocess = transforms.Compose(
+        [
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ]
+    )
+    input_tensor = preprocess(input_image)
+    input_batch = input_tensor.unsqueeze(0)
+    return [input_batch]
