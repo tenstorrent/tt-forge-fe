@@ -512,6 +512,7 @@ class OpNode : public TaggedNode
         op_ = op_type_;
     }
     ops::OpType new_op_type() const { return op_.type(); }
+    ops::Op const &op() const { return op_; }
     OpType const &op_type() const { return op_type_; }
     OpType &op_type() { return op_type_; }
     OpType const *op_type_ptr() const { return &op_type_; }

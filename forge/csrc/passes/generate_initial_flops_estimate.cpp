@@ -24,25 +24,10 @@ void generate_initial_flops_estimate(graphlib::Graph *graph)
             continue;
 
         std::vector<std::vector<std::uint32_t>> operand_tuples;
-        std::vector<graphlib::Shape> inputs;
         for (auto data_operand : graph->data_operands(node))
-        {
             operand_tuples.push_back(data_operand->shape().as_vector());
-            inputs.push_back(data_operand->shape());
-        }
-        py::object eval_module = py::module_::import("forge.op.eval.forge");
-        py::function initial_flops_estimate = eval_module.attr("get_f_forge_initial_flops_estimate")(op->op_type_ptr());
-        py::object ret = initial_flops_estimate(operand_tuples);
 
-        long flops;
-        if (ret.is_none())
-        {
-            flops = 0;
-        }
-        else
-        {
-            flops = ret.cast<long>();
-        }
+        long flops = op->op().initial_flops_estimate(operand_tuples);
 
         if (macs_per_op.find(op->op_type().op) == macs_per_op.end())
         {

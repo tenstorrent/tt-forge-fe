@@ -380,7 +380,7 @@ long Op::base_initial_flops_estimate(const std::vector<std::vector<std::uint32_t
     py::function initial_flops_estimate = eval_module.attr("get_f_forge_initial_flops_estimate")(old_op_type);
     py::object ret = initial_flops_estimate(inputs);
 
-    return ret.cast<long>();
+    return ret.is_none() ? 0 : ret.cast<long>();
 }
 
 bool Op::base_is_tm() const
