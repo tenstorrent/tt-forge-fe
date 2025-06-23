@@ -1,11 +1,11 @@
 # Getting Started with Building from Source
 
-This document describes how to build the TT-Forge-FE project on your local machine. You must build from source if you want to develop for TT-Forge-FE. If you only want to run models, please choose one of the following sets of instructions instead: 
-* [Installing a Wheel and Running an Example](getting_started.md) - You should choose this option if you want to run models. 
-* [Using a Docker Container to Run an Example](getting_started_docker.md) - Choose this option if you want to keep the environment for running models separate from your existing environment. 
+This document describes how to build the TT-Forge-FE project on your local machine. You must build from source if you want to develop for TT-Forge-FE. If you only want to run models, please choose one of the following sets of instructions instead:
+* [Installing a Wheel and Running an Example](getting_started.md) - You should choose this option if you want to run models.
+* [Using a Docker Container to Run an Example](getting_started_docker.md) - Choose this option if you want to keep the environment for running models separate from your existing environment.
 
 ## Prerequisites
-The prerequisites for building TT-Forge-FE from souce are: 
+The prerequisites for building TT-Forge-FE from souce are:
 
 * Clang 17
 * Ninja
@@ -20,7 +20,7 @@ sudo apt upgrade -y
 ```
 
 ### Install Clang
-To install Clang if you do not have it already, use the following command: 
+To install Clang if you do not have it already, use the following command:
 
 ```bash
 wget https://apt.llvm.org/llvm.sh
@@ -31,7 +31,7 @@ sudo ln -s /usr/bin/clang-17 /usr/bin/clang
 sudo ln -s /usr/bin/clang++-17 /usr/bin/clang++
 ```
 
-You can check the version afterwards with these commands: 
+You can check the version afterwards with these commands:
 
 ```bash
 clang --version
@@ -41,14 +41,14 @@ clang++ --version
 If you already have Clang installed and need to choose the appropriate version, you can use these commands:
 
 ```bash
-sudo update-alternatives --install /usr/bin/clang 
-clang /usr/bin/clang-17 100 
-sudo update-alternatives --install /usr/bin/clang++ 
+sudo update-alternatives --install /usr/bin/clang
+clang /usr/bin/clang-17 100
+sudo update-alternatives --install /usr/bin/clang++
 clang++ /usr/bin/clang++-17 100
 ```
 
 ### Install Ninja
-Install Ninja with the following command: 
+Install Ninja with the following command:
 
 ```bash
 sudo apt install ninja-build
@@ -64,7 +64,7 @@ cmake --version
 ```
 
 ### Check Python Version
-Make sure you have Python 3.10 installed: 
+Make sure you have Python 3.10 installed:
 
 ```bash
 python3 --version
@@ -88,7 +88,7 @@ sudo chown -R $USER /opt/ttmlir-toolchain
 Build FFE environment:
 
 ```bash
-# Clone the Forge FE repo 
+# Clone the Forge FE repo
 git clone https://github.com/tenstorrent/tt-forge-fe.git
 
 # Initialize required env vars

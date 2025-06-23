@@ -1,10 +1,10 @@
 # Getting Started with Docker and Tenstorrent
-This document walks you through how to set up TT-Forge-FE using a Docker image. There are two other available options for getting started: 
+This document walks you through how to set up TT-Forge-FE using a Docker image. There are two other available options for getting started:
 * [Installing a Wheel](getting_started.md) - if you do not want to use Docker, and prefer to use a virtual environment by itself instead, use this method.
-* [Building from Source](getting_started_build_from_source.md) - if you plan to develop TT-Forge-FE further, you must build from source, and should use this method. 
+* [Building from Source](getting_started_build_from_source.md) - if you plan to develop TT-Forge-FE further, you must build from source, and should use this method.
 
 ## Configuring Hardware
-Before setup can happen, you must configure your hardware. This section of the walkthrough shows you how to do a quick setup with Tenstorrent's TT-Installer. 
+Before setup can happen, you must configure your hardware. This section of the walkthrough shows you how to do a quick setup with Tenstorrent's TT-Installer.
 
 1. Configure your hardware with TT-Installer:
 
@@ -15,17 +15,17 @@ Before setup can happen, you must configure your hardware. This section of the w
 > **NOTE:** This walkthrough assumes that you use the [Quick Installation]
 > (https://docs.tenstorrent.com/getting-started/README.html#quick-installation) instructions for set up.
 
-2. Reboot your machine. 
+2. Reboot your machine.
 
 3. Please ensure that after you run this script, after you complete reboot, you activate the virtual environment it sets up - ```source ~/.tenstorrent-venv/bin/activate```.
 
-4. When your environment is running, to check that everything is configured, type the following: 
+4. When your environment is running, to check that everything is configured, type the following:
 
 ```bash
 tt-smi
 ```
 
-You should see the Tenstorrent System Management Interface. It allows you to view real-time stats, diagnostics, and health info about your Tenstorrent device. 
+You should see the Tenstorrent System Management Interface. It allows you to view real-time stats, diagnostics, and health info about your Tenstorrent device.
 
 ![TT-SMI](./imgs/tt_smi.png)
 
@@ -74,7 +74,7 @@ docker run -it --rm \
 docker ps
 ```
 
-6. You are now ready to move on to the next section, and run your first model. 
+6. You are now ready to move on to the next section, and run your first model.
 
 ## Running Models in Docker
 This section shows you how to run a model using Docker. The provided example is from the TT-Forge repo. Do the following:
@@ -97,7 +97,7 @@ source venv-tt-forge-fe/bin/activate
 python tt-forge/demos/tt-forge-fe/cnn/mobile_netv2_demo.py
 ```
 
-4. If all goes well you will get the following output: 
+4. If all goes well you will get the following output:
 
 Prediction: Samoyed, Samoyede (class 258)
 Confidence: 0.868

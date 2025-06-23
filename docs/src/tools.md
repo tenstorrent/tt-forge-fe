@@ -107,6 +107,7 @@ python scripts/export_models_ops_correlation.py
 | `--models_unique_op_configs_output_file_name`                             | Specify the output XLSX file name for saving the Models unique op configurations.                                |
 | `-o`, `--output_directory_path`                                           | Specify the output directory path for saving the XLSX/CSV file.                                                  |
 | `--export_unique_op_config_file_type` (CSV, XLSX)                         | Specify the export unique op configuration file type                                                             |
+
 ### Example:
 
 ```sh
