@@ -4,7 +4,7 @@
 
 #include "op.hpp"
 
-#include <memory>
+#include <map>
 #include <stdexcept>
 #include <tuple>
 #include <unordered_map>
@@ -279,36 +279,14 @@ class OldToNewOpType
 static NewToOldOpType new_to_old_op_type_mapper;
 static OldToNewOpType old_to_new_op_type_mapper;
 
-// Constructs old attributes from provided new attributes. Since new Attr is superset of the old ForgeOpAttrs,
-// we can just visit new attribute.
-ForgeOpAttrs as_old_attrs(const Attrs &attrs)
-{
-    ForgeOpAttrs ret_attrs;
-    for (const auto &attr : attrs)
-        ret_attrs[attr.first] = std::visit([](const auto &value) -> ForgeOpAttr { return value; }, attr.second);
-
-    return ret_attrs;
-}
-
-// Constructs old attributes from provided new attributes. Since new Attr is superset of the old ForgeOpAttrs,
-// we can just visit new attribute.
-Attrs as_new_attrs(const ForgeOpAttrs &attrs)
-{
-    Attrs ret_attrs;
-    for (const auto &attr : attrs)
-        ret_attrs[attr.first] = std::visit([](const auto &value) -> Attr { return value; }, attr.second);
-
-    return ret_attrs;
-}
-
 Op::Op(const graphlib::OpType &old_op_type) :
-    type_(old_to_new_op_type_mapper[old_op_type.op]), attrs_(as_new_attrs(old_op_type.named_attrs))
+    type_(old_to_new_op_type_mapper[old_op_type.op]), attrs_(old_op_type.named_attrs)
 {
 }
 
 graphlib::OpType Op::as_old_op_type() const
 {
-    return graphlib::OpType(new_to_old_op_type_mapper[type_], {}, {}, as_old_attrs(attrs_));
+    return graphlib::OpType(new_to_old_op_type_mapper[type_], {}, {}, attrs_);
 }
 
 const std::string &Op::as_string() const { return new_to_old_op_type_mapper[type_]; }

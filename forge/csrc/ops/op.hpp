@@ -4,10 +4,10 @@
 #pragma once
 
 #include <cstdint>
+#include <map>
 #include <memory>
 #include <string>
 #include <tuple>
-#include <unordered_map>
 #include <utility>
 #include <variant>
 #include <vector>
@@ -163,7 +163,8 @@ using Attr = ::std::variant<
     std::vector<std::tuple<int, int, int, int>>>;
 
 // Op attributes.
-using Attrs = ::std::unordered_map<std::string, Attr>;  // TODO: Conver this into vector.
+using Attrs = ::std::map<std::string, Attr>;  // TODO: Conver this into vector. There is no sence to use
+                                              // map/unordered map for few items.
 
 class Op
 {
