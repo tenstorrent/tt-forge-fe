@@ -14,10 +14,10 @@ class Watchdog
     constexpr static unsigned int WATCHDOG_GRANULARITY = 100;    // Check every 100 milliseconds
     constexpr static unsigned int WATCHDOG_DEF_TIMEOUT = 60000;  // Default timeout in milliseconds (1 minute)
 
-    Watchdog(unsigned int milliseconds = 0, std::function<void()> callback = nullptr)
+    Watchdog(unsigned int milliseconds = WATCHDOG_DEF_TIMEOUT, std::function<void()> callback = nullptr)
     {
-        if (!milliseconds)
-            milliseconds = WATCHDOG_DEF_TIMEOUT;
+        if (milliseconds < WATCHDOG_GRANULARITY)
+            milliseconds = WATCHDOG_GRANULARITY;
         Start(milliseconds, callback);
     }
 
@@ -30,7 +30,7 @@ class Watchdog
         {
             _callback = []()
             {
-                std::cerr << "Watchdog timeout! Application might be unresponsive." << std::endl;
+                std::cout << "WATCHDOG: timeout! Application might be unresponsive." << std::endl;
                 std::abort();
             };
         }
@@ -57,14 +57,15 @@ class Watchdog
     std::atomic<bool> _running;
     std::thread _thread;
     std::function<void()> _callback;
-    std::chrono::steady_clock::time_point _last_pet_time;  // Last time the watchdog was pet
+    std::atomic<std::chrono::steady_clock::time_point> _last_pet_time;  // Last time the watchdog was pet
 
-    void Loop()
+    void __attribute__((optnone)) Loop()
     {
         while (_running)
         {
             auto now = std::chrono::steady_clock::now();
-            auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - _last_pet_time).count();
+            auto lpt = _last_pet_time.load();
+            auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - lpt).count();
 
             if (elapsed >= _interval)
             {
