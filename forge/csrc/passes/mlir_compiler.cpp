@@ -47,6 +47,7 @@
 
 // Reportify headers
 #include "reportify/reportify.hpp"
+#include "utils/watchdog.hpp"
 
 namespace fs = std::filesystem;
 
@@ -57,6 +58,7 @@ namespace tt::passes
 template <MLIROutputKind output>
 auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional<MLIRConfig>& mlir_config)
 {
+    Watchdog wd();
     // Register all the required dialects.
     mlir::DialectRegistry registry;
 
@@ -85,16 +87,20 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
 
     // Load all available dialects
     context.loadAllAvailableDialects();
+    wd.Pet();
 
     // Generate MLIR from the Forge graph.
     mlir::OwningOpRef<mlir::ModuleOp> mlir_module = lower_to_mlir(module, context);
+    wd.Pet();
 
     // Run MLIR pipeline.
     run_mlir_passes<output>(mlir_module, mlir_config);
+    wd.Pet();
 
     tt::log_info(LogMLIRCompiler, "MLIR passes run successfully.");
 
     mlir_module->dump();
+    wd.Pet();
 
     if constexpr (output == MLIROutputKind::Flatbuffer)
     {
