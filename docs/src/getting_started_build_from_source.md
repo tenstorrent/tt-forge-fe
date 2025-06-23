@@ -1,32 +1,72 @@
-# Building
+# Getting Started with Building from Source
 
-This document describes how to build the tt-forge-fe project on your local machine.
+This document describes how to build the TT-Forge-FE project on your local machine. You must build from source if you want to develop for TT-Forge-FE. If you only want to run models, please choose one of the following sets of instructions instead: 
+* [Installing a Wheel and Running an Example](getting_started.md) - You should choose this option if you want to run models. 
+* [Using a Docker Container to Run an Example](getting_started_docker.md) - Choose this option if you want to keep the environment for running models separate from your existing environment. 
 
 ## Prerequisites
-The main project dependencies are:
-1. Clang 17
-2. Ninja
-3. CMake 3.20 or higher
-4. Python 3.10 or higher
+The prerequisites for building TT-Forge-FE from souce are: 
+
+* Clang 17
+* Ninja
+* CMake (latest)
 
 On Ubuntu 22.04 systems, you can install these dependencies using the following commands:
-```sh
+
+```bash
 # Update package list
 sudo apt update -y
 sudo apt upgrade -y
+```
 
-# Install Clang
-sudo apt install clang-17
+### Install Clang
+To install Clang if you do not have it already, use the following command: 
 
-# Install Ninja
+```bash
+wget https://apt.llvm.org/llvm.sh
+chmod u+x llvm.sh
+sudo ./llvm.sh 17
+sudo apt install -y libc++-17-dev libc++abi-17-dev
+sudo ln -s /usr/bin/clang-17 /usr/bin/clang
+sudo ln -s /usr/bin/clang++-17 /usr/bin/clang++
+```
+
+You can check the version afterwards with these commands: 
+
+```bash
+clang --version
+clang++ --version
+```
+
+If you already have Clang installed and need to choose the appropriate version, you can use these commands:
+
+```bash
+sudo update-alternatives --install /usr/bin/clang 
+clang /usr/bin/clang-17 100 
+sudo update-alternatives --install /usr/bin/clang++ 
+clang++ /usr/bin/clang++-17 100
+```
+
+### Install Ninja
+Install Ninja with the following command: 
+
+```bash
 sudo apt install ninja-build
+```
 
-# Install CMake
+### Install CMake
+Install CMake and check the version with the following commands:
+
+```bash
 sudo apt remove cmake -y
 pip3 install cmake --upgrade
 cmake --version
+```
 
-# Check Python version
+### Check Python Version
+Make sure you have Python 3.10 installed: 
+
+```bash
 python3 --version
 ```
 
@@ -34,7 +74,8 @@ python3 --version
 This is a one off step to build the toolchain and create a virtual environment for `tt-forge-fe`. Generally, you need to run this step only once, unless you want to update the toolchain. Since `tt-forge-fe` is using `tt-mlir`, this step also builds the `tt-mlir` environment (toolchain).
 
 First, it's required to create toolchain directories. The proposed example creates directories using the default paths. You can change the paths if you want to use different locations (see the [Useful Build Environment Variables](#useful-build-environment-flags) section below).
-```sh
+
+```bash
 # FFE related toolchain (dafault path)
 sudo mkdir -p /opt/ttforge-toolchain
 sudo chown -R $USER /opt/ttforge-toolchain
@@ -45,12 +86,16 @@ sudo chown -R $USER /opt/ttmlir-toolchain
 ```
 
 Build FFE environment:
-```sh
+
+```bash
+# Clone the Forge FE repo 
+git clone https://github.com/tenstorrent/tt-forge-fe.git
+
 # Initialize required env vars
 source env/activate
 
 # Initialize and update submodules
-git submodule update --init --recursive -f
+sudo git submodule update --init --recursive -f
 
 # Build environment
 cmake -B env/build env
