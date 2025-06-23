@@ -37,17 +37,10 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    pytest.param(
-        (
-            Logicalnot0,
-            [((1, 25, 34), torch.bool)],
-            {"model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
-            )
-        ],
+    (
+        Logicalnot0,
+        [((1, 25, 34), torch.bool)],
+        {"model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
 ]
 

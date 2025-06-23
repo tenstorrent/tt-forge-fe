@@ -52,7 +52,7 @@ def test_dla_pytorch(variant):
     # Load the model and prepare input data
     framework_model, inputs = load_dla_model(variant)
     framework_model.to(torch.bfloat16)
-    inputs = [inputs[0].to(torch.bfloat16)]
+    inputs = [inp.to(torch.bfloat16) for inp in inputs]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -88,7 +88,7 @@ def test_dla_timm(variant):
     # Load the model and inputs
     framework_model, inputs = load_timm_model_and_input(variant)
     framework_model.to(torch.bfloat16)
-    inputs = [inputs.to(torch.bfloat16)]
+    inputs = [inp.to(torch.bfloat16) for inp in inputs]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
