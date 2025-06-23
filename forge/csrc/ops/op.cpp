@@ -311,8 +311,13 @@ graphlib::OpType Op::as_old_op_type() const
     return graphlib::OpType(new_to_old_op_type_mapper[type_], {}, {}, as_old_attrs(attrs_));
 }
 
-// Default implementation for ops that are not cpp implemented yet. We will invoke old python code to evaluate them.
-at::Tensor Op::eval(const std::vector<at::Tensor> &tensors) const
+const std::string &Op::as_string() const { return new_to_old_op_type_mapper[type_]; }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Default implementation for ops that are not cpp implemented yet. We will invoke old python code to evaluate them. //
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+at::Tensor Op::base_eval(const std::vector<at::Tensor> &tensors) const
 {
     graphlib::OpType old_op_type = as_old_op_type();
 
@@ -323,7 +328,7 @@ at::Tensor Op::eval(const std::vector<at::Tensor> &tensors) const
     return result.cast<at::Tensor>();
 }
 
-std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
+std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::base_shape(
     const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
     graphlib::OpType old_op_type = as_old_op_type();
@@ -341,7 +346,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         result[1].cast<std::vector<graphlib::DimBroadcast>>());
 }
 
-tt::graphlib::NodeContext Op::backward(
+tt::graphlib::NodeContext Op::base_backward(
     tt::autograd::autograd_context context,
     int operand,
     const std::vector<tt::graphlib::NodeContext> &inputs,
@@ -356,7 +361,8 @@ tt::graphlib::NodeContext Op::backward(
     return forge_backward(context, operand, inputs, output, gradient).cast<tt::graphlib::NodeContext>();
 }
 
-void Op::decompose(const char *dispatch, DecomposingContext &dc, std::vector<tt::graphlib::NodeContext> &inputs) const
+void Op::base_decompose(
+    const char *dispatch, DecomposingContext &dc, std::vector<tt::graphlib::NodeContext> &inputs) const
 {
     graphlib::OpType old_op_type = as_old_op_type();
 
@@ -366,7 +372,7 @@ void Op::decompose(const char *dispatch, DecomposingContext &dc, std::vector<tt:
     forge_decompose(dc, inputs);
 }
 
-long Op::initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const
+long Op::base_initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
     graphlib::OpType old_op_type = as_old_op_type();
 
@@ -377,7 +383,7 @@ long Op::initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &i
     return ret.cast<long>();
 }
 
-bool Op::is_tm() const
+bool Op::base_is_tm() const
 {
     graphlib::OpType old_op_type = as_old_op_type();
 
@@ -385,7 +391,7 @@ bool Op::is_tm() const
     return fn_is_tm(std::ref(old_op_type)).cast<bool>();
 }
 
-bool Op::is_eltwise() const
+bool Op::base_is_eltwise() const
 {
     graphlib::OpType old_op_type = as_old_op_type();
 
@@ -393,7 +399,7 @@ bool Op::is_eltwise() const
     return fn_is_eltwise(std::ref(old_op_type)).cast<bool>();
 }
 
-bool Op::is_eltwise_unary() const
+bool Op::base_is_eltwise_unary() const
 {
     graphlib::OpType old_op_type = as_old_op_type();
 
@@ -401,14 +407,14 @@ bool Op::is_eltwise_unary() const
     return fn_is_eltwise_unary(std::ref(old_op_type)).cast<bool>();
 }
 
-bool Op::is_eltwise_binary() const
+bool Op::base_is_eltwise_binary() const
 {
     graphlib::OpType old_op_type = as_old_op_type();
 
     static py::function fn_is_eltwise_binary = py::module_::import("forge.op.eval.forge").attr("is_eltwise_binary");
     return fn_is_eltwise_binary(std::ref(old_op_type)).cast<bool>();
 }
-bool Op::is_eltwise_nary() const
+bool Op::base_is_eltwise_nary() const
 {
     graphlib::OpType old_op_type = as_old_op_type();
 
@@ -416,33 +422,139 @@ bool Op::is_eltwise_nary() const
     return fn_is_eltwise_nary(std::ref(old_op_type)).cast<bool>();
 }
 
-const std::string &Op::as_string() const { return new_to_old_op_type_mapper[type_]; }
+///////////////////////////////////
+// Dispatching based on op type. //
+///////////////////////////////////
 
-// Check whether this is needed once refactoring is done.
-// It seems that user can always create wanted op where it is needed.
-std::unique_ptr<Op> create_op(OpType op_type)
+at::Tensor Op::eval(const std::vector<at::Tensor> &tensors) const
 {
-    switch (op_type)
+    switch (type_)
     {
-        case OpType::Abs: return create_op<OpType::Abs>();
-        case OpType::Add: return create_op<OpType::Add>();
-        default: return std::make_unique<Op>(op_type);
+        case OpType::Abs: return abs_eval(tensors);
+        case OpType::Add: return add_eval(tensors);
+        default: return base_eval(tensors);
     }
 }
 
-std::unique_ptr<Op> create_op(OpType op_type, Attrs attrs)
+std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
+    const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
-    switch (op_type)
+    switch (type_)
     {
-        case OpType::Abs: return create_op<OpType::Abs>(std::move(attrs));
-        case OpType::Add: return create_op<OpType::Add>(std::move(attrs));
-        default: return std::make_unique<Op>(op_type);
+        case OpType::Abs: return abs_shape(inputs);
+        case OpType::Add: return add_shape(inputs);
+        default: return base_shape(inputs);
     }
 }
 
-std::unique_ptr<Op> create_op(const graphlib::OpType &op_type) { return std::make_unique<Op>(op_type); }
+tt::graphlib::NodeContext Op::backward(
+    tt::autograd::autograd_context context,
+    int operand,
+    const std::vector<tt::graphlib::NodeContext> &inputs,
+    tt::graphlib::NodeContext output,
+    tt::graphlib::NodeContext gradient) const
+{
+    switch (type_)
+    {
+        case OpType::Abs: return abs_backward(context, operand, inputs, output, gradient);
+        case OpType::Add: return add_backward(context, operand, inputs, output, gradient);
+        default: return base_backward(context, operand, inputs, output, gradient);
+    }
+}
 
-const std::string &op_type_as_string(OpType op_type) { return new_to_old_op_type_mapper[op_type]; };
+// TODO: Fix this witch proper dispatching based on provided string.
+void Op::decompose(const char *dispatch, DecomposingContext &dc, std::vector<tt::graphlib::NodeContext> &inputs) const
+{
+    switch (type_)
+    {
+        default: return base_decompose(dispatch, dc, inputs);
+    }
+}
+
+long Op::initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const
+{
+    switch (type_)
+    {
+        case OpType::Abs: return abs_initial_flops_estimate(inputs);
+        case OpType::Add: return add_initial_flops_estimate(inputs);
+        default: return base_initial_flops_estimate(inputs);
+    }
+}
+
+bool Op::is_tm() const
+{
+    switch (type_)
+    {
+        case OpType::Abs: return false;
+        case OpType::Add: return false;
+        default: return base_is_tm();
+    }
+}
+
+bool Op::is_eltwise() const
+{
+    switch (type_)
+    {
+        case OpType::Abs: return true;
+        case OpType::Add: return true;
+        default: return base_is_eltwise();
+    }
+}
+
+bool Op::is_eltwise_unary() const
+{
+    switch (type_)
+    {
+        case OpType::Abs: return true;
+        case OpType::Add: return false;
+        default: return base_is_eltwise_unary();
+    }
+}
+
+bool Op::is_eltwise_binary() const
+{
+    switch (type_)
+    {
+        case OpType::Abs: return false;
+        case OpType::Add: return true;
+        default: return base_is_eltwise_binary();
+    }
+}
+bool Op::is_eltwise_nary() const
+{
+    switch (type_)
+    {
+        case OpType::Abs: return false;
+        case OpType::Add: return false;
+        default: return base_is_eltwise_nary();
+    }
+}
+
+// // Check whether this is needed once refactoring is done.
+// // It seems that user can always create wanted op where it is needed.
+// std::unique_ptr<Op> create_op(OpType op_type)
+// {
+// switch (op_type)
+// {
+// case OpType::Abs: return create_op<OpType::Abs>();
+// case OpType::Add: return create_op<OpType::Add>();
+// default: return std::make_unique<Op>(op_type);
+// }
+// }
+
+// std::unique_ptr<Op> create_op(OpType op_type, Attrs attrs)
+// {
+// switch (op_type)
+// {
+// case OpType::Abs: return create_op<OpType::Abs>(std::move(attrs));
+// case OpType::Add: return create_op<OpType::Add>(std::move(attrs));
+// default: return std::make_unique<Op>(op_type);
+// }
+// }
+
+// std::unique_ptr<Op> create_op(const graphlib::OpType &op_type) { return std::make_unique<Op>(op_type); }
+
+// const std::string &op_type_as_string(OpType op_type) { return new_to_old_op_type_mapper[op_type]; };
 
 }  // namespace ops
 

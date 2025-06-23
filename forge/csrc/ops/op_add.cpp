@@ -15,7 +15,7 @@ namespace tt
 namespace ops
 {
 
-at::Tensor OpAdd::eval(const std::vector<at::Tensor> &tensors) const
+at::Tensor Op::add_eval(const std::vector<at::Tensor> &tensors) const
 {
     // assert len(tensors) == 1, "Abs should have one input"
     // shape = tensors[0].shape
@@ -31,14 +31,14 @@ at::Tensor OpAdd::eval(const std::vector<at::Tensor> &tensors) const
     return torch::abs(tensors[0]);
 }
 
-std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> OpAdd::shape(
+std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::add_shape(
     const std::vector<std::vector<std::uint32_t>> &in_shapes) const
 {
     TT_ASSERT(in_shapes.size() == 1, "OpAbs::shape should have single input shape.");
     return std::make_tuple(graphlib::Shape::create(in_shapes[0]), std::vector<graphlib::DimBroadcast>{});
 }
 
-long OpAdd::initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const
+long Op::add_initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
     auto shape_tuple = shape(inputs);
     graphlib::Shape out_shape = std::get<0>(shape_tuple);

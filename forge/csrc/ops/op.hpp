@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <tuple>
@@ -162,7 +163,7 @@ using Attr = ::std::variant<
     std::vector<std::tuple<int, int, int, int>>>;
 
 // Op attributes.
-using Attrs = ::std::unordered_map<std::string, Attr>;
+using Attrs = ::std::unordered_map<std::string, Attr>;  // TODO: Conver this into vector.
 
 class Op
 {
@@ -170,11 +171,6 @@ class Op
     Op(OpType type, Attrs attrs) : type_(type), attrs_(std::move(attrs)) {}
     Op(OpType type) : type_(type) {}
     Op(const graphlib::OpType &old_op_type);
-
-    Op(const Op &) = delete;
-    Op &operator=(const Op &) = delete;
-
-    virtual ~Op() = default;
 
     bool operator==(const Op &other) const { return type_ == other.type_ && attrs_ == other.attrs_; }
     bool operator!=(const Op &other) const { return !(*this == other); }
@@ -206,105 +202,175 @@ class Op
     // Calculations. Derived classes must implement these.
     // ========================================
 
-    virtual at::Tensor eval(const std::vector<at::Tensor> &tensors) const;
-    virtual std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(
+    at::Tensor eval(const std::vector<at::Tensor> &tensors) const;
+    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(
         const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
-    virtual tt::graphlib::NodeContext backward(
+    tt::graphlib::NodeContext backward(
         tt::autograd::autograd_context context,
         int operand,
         const std::vector<tt::graphlib::NodeContext> &inputs,
         tt::graphlib::NodeContext output,
         tt::graphlib::NodeContext gradient) const;
 
-    virtual void decompose(
+    void decompose(const char *dispatch, DecomposingContext &dc, std::vector<tt::graphlib::NodeContext> &inputs) const;
+
+    long initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const;
+
+    bool is_tm() const;
+    bool is_eltwise() const;
+    bool is_eltwise_unary() const;
+    bool is_eltwise_binary() const;
+    bool is_eltwise_nary() const;
+
+   private:
+    // ========================================
+    // Ops specific implementation.
+    // ========================================
+
+    //===== //
+    // Base - common for all ops that are not yet migrated to cpp. //
+    //===== //
+
+    at::Tensor base_eval(const std::vector<at::Tensor> &tensors) const;
+    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> base_shape(
+        const std::vector<std::vector<std::uint32_t>> &inputs) const;
+
+    tt::graphlib::NodeContext base_backward(
+        tt::autograd::autograd_context context,
+        int operand,
+        const std::vector<tt::graphlib::NodeContext> &inputs,
+        tt::graphlib::NodeContext output,
+        tt::graphlib::NodeContext gradient) const;
+
+    void base_decompose(
         const char *dispatch, DecomposingContext &dc, std::vector<tt::graphlib::NodeContext> &inputs) const;
 
-    virtual long initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const;
+    long base_initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
-    virtual bool is_tm() const;
-    virtual bool is_eltwise() const;
-    virtual bool is_eltwise_unary() const;
-    virtual bool is_eltwise_binary() const;
-    virtual bool is_eltwise_nary() const;
+    bool base_is_tm() const;
+    bool base_is_eltwise() const;
+    bool base_is_eltwise_unary() const;
+    bool base_is_eltwise_binary() const;
+    bool base_is_eltwise_nary() const;
+
+    //=====//
+    // Abs //
+    //=====//
+
+    at::Tensor abs_eval(const std::vector<at::Tensor> &tensors) const;
+    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> abs_shape(
+        const std::vector<std::vector<std::uint32_t>> &inputs) const;
+
+    tt::graphlib::NodeContext abs_backward(
+        tt::autograd::autograd_context context,
+        int operand,
+        const std::vector<tt::graphlib::NodeContext> &inputs,
+        tt::graphlib::NodeContext output,
+        tt::graphlib::NodeContext gradient) const;
+
+    void abs_decompose(
+        const char *dispatch, DecomposingContext &dc, std::vector<tt::graphlib::NodeContext> &inputs) const;
+
+    long abs_initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const;
+
+    //=====//
+    // Add //
+    //=====//
+
+    at::Tensor add_eval(const std::vector<at::Tensor> &tensors) const;
+    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> add_shape(
+        const std::vector<std::vector<std::uint32_t>> &inputs) const;
+
+    tt::graphlib::NodeContext add_backward(
+        tt::autograd::autograd_context context,
+        int operand,
+        const std::vector<tt::graphlib::NodeContext> &inputs,
+        tt::graphlib::NodeContext output,
+        tt::graphlib::NodeContext gradient) const;
+
+    void add_decompose(
+        const char *dispatch, DecomposingContext &dc, std::vector<tt::graphlib::NodeContext> &inputs) const;
+
+    long add_initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
    private:
     OpType type_;
     Attrs attrs_;
 };
 
-class OpTM : public Op
-{
-    using Op::Op;
-    bool is_tm() const override { return true; };
-    bool is_eltwise() const override { return false; };
-    bool is_eltwise_unary() const override { return false; };
-    bool is_eltwise_binary() const override { return false; };
-    bool is_eltwise_nary() const override { return false; };
-};
+// class OpTM : public Op
+// {
+// using Op::Op;
+// bool is_tm() const override { return true; };
+// bool is_eltwise() const override { return false; };
+// bool is_eltwise_unary() const override { return false; };
+// bool is_eltwise_binary() const override { return false; };
+// bool is_eltwise_nary() const override { return false; };
+// };
 
-class OpEltwise : public Op
-{
-    using Op::Op;
-    bool is_tm() const override { return false; };
-    bool is_eltwise() const override { return true; };
-    bool is_eltwise_unary() const override { return false; };
-    bool is_eltwise_binary() const override { return false; };
-    bool is_eltwise_nary() const override { return false; };
-};
+// class OpEltwise : public Op
+// {
+// using Op::Op;
+// bool is_tm() const override { return false; };
+// bool is_eltwise() const override { return true; };
+// bool is_eltwise_unary() const override { return false; };
+// bool is_eltwise_binary() const override { return false; };
+// bool is_eltwise_nary() const override { return false; };
+// };
 
-class OpEltwiseUnary : public OpEltwise
-{
-    using OpEltwise::OpEltwise;
-    bool is_eltwise_unary() const override { return true; };
-};
+// class OpEltwiseUnary : public OpEltwise
+// {
+// using OpEltwise::OpEltwise;
+// bool is_eltwise_unary() const override { return true; };
+// };
 
-class OpEltwiseBinary : public OpEltwise
-{
-    using OpEltwise::OpEltwise;
-    bool is_eltwise_binary() const override { return true; };
-};
+// class OpEltwiseBinary : public OpEltwise
+// {
+// using OpEltwise::OpEltwise;
+// bool is_eltwise_binary() const override { return true; };
+// };
 
-class OpEltwiseNary : public OpEltwise
-{
-    using OpEltwise::OpEltwise;
-    bool is_eltwise_nary() const override { return true; };
-};
+// class OpEltwiseNary : public OpEltwise
+// {
+// using OpEltwise::OpEltwise;
+// bool is_eltwise_nary() const override { return true; };
+// };
 
 ///////////////////////////////////////////////////
 // Next section contains ops implemented in cpp. //
 ///////////////////////////////////////////////////
 
-class OpAbs : public OpEltwiseUnary
-{
-   public:
-    OpAbs() : OpEltwiseUnary(OpType::Abs) {}
-    explicit OpAbs(Attrs attrs) : OpEltwiseUnary(OpType::Abs, std::move(attrs)) {}
+// class OpAbs : public OpEltwiseUnary
+// {
+// public:
+// OpAbs() : OpEltwiseUnary(OpType::Abs) {}
+// explicit OpAbs(Attrs attrs) : OpEltwiseUnary(OpType::Abs, std::move(attrs)) {}
 
-    at::Tensor eval(const std::vector<at::Tensor> &tensors) const override;
-    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(
-        const std::vector<std::vector<std::uint32_t>> &in_shapes) const override;
-    long initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const override;
-};
+// at::Tensor eval(const std::vector<at::Tensor> &tensors) const override;
+// std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(
+// const std::vector<std::vector<std::uint32_t>> &in_shapes) const override;
+// long initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const override;
+// };
 
-class OpAdd : public OpEltwiseBinary
-{
-   public:
-    OpAdd() : OpEltwiseBinary(OpType::Add) {}
-    explicit OpAdd(Attrs attrs) : OpEltwiseBinary(OpType::Add, std::move(attrs)) {}
+// class OpAdd : public OpEltwiseBinary
+// {
+// public:
+// OpAdd() : OpEltwiseBinary(OpType::Add) {}
+// explicit OpAdd(Attrs attrs) : OpEltwiseBinary(OpType::Add, std::move(attrs)) {}
 
-    at::Tensor eval(const std::vector<at::Tensor> &tensors) const override;
-    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(
-        const std::vector<std::vector<std::uint32_t>> &in_shapes) const override;
-    long initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const override;
-};
+// at::Tensor eval(const std::vector<at::Tensor> &tensors) const override;
+// std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(
+// const std::vector<std::vector<std::uint32_t>> &in_shapes) const override;
+// long initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const override;
+// };
 
 // Check whether this is needed once refactoring is done.
 // It seems that user can always create wanted op where it is needed.
-std::unique_ptr<Op> create_op(OpType op_type);
-std::unique_ptr<Op> create_op(OpType op_type, Attrs attrs);
-std::unique_ptr<Op> create_op(const graphlib::OpType &op_type);
-const std::string &op_type_as_string(OpType op_type);
+// std::unique_ptr<Op> create_op(OpType op_type);
+// std::unique_ptr<Op> create_op(OpType op_type, Attrs attrs);
+// std::unique_ptr<Op> create_op(const graphlib::OpType &op_type);
+// const std::string &op_type_as_string(OpType op_type);
 
 // Create op based on provided type and attributes.
 // Ops should be created using this if op is known at compile time. For example:
@@ -319,13 +385,13 @@ const std::string &op_type_as_string(OpType op_type);
 // Or you can move attributes if they are not used after op creation:
 // create_op<OpType::Abs>(std::move(at));
 //
-template <OpType op_type, typename... Args>
-std::unique_ptr<Op> create_op(Args &&...args)
-{  // clang-format off
-    if      constexpr (op_type == OpType::Abs) return std::make_unique<OpAbs>(std::forward<Args>(args)...);
-    else if constexpr (op_type == OpType::Add) return std::make_unique<OpAdd>(std::forward<Args>(args)...);
-    else                                       return std::make_unique<Op>   (std::forward<Args>(args)...);
-}  // clang-format on
+// template <OpType op_type, typename... Args>
+// std::unique_ptr<Op> create_op(Args &&...args)
+// {  // clang-format off
+// if      constexpr (op_type == OpType::Abs) return std::make_unique<OpAbs>(std::forward<Args>(args)...);
+// else if constexpr (op_type == OpType::Add) return std::make_unique<OpAdd>(std::forward<Args>(args)...);
+// else                                       return std::make_unique<Op>   (std::forward<Args>(args)...);
+// }  // clang-format on
 
 }  // namespace ops
 }  // namespace tt

@@ -144,8 +144,7 @@ void OpsModule(py::module &m_ops)
     // Check whether this needs to change to py::class_<Op, std::unique_ptr<Op>>(m_ops, "Op").
     py::class_<ops::Op>(m_ops, "Op")
         .def(
-            py::init([](ops::OpType type, ops::Attrs attrs)
-                     { return std::make_unique<ops::Op>(type, std::move(attrs)); }),
+            py::init([](ops::OpType type, ops::Attrs attrs) { return ops::Op(type, std::move(attrs)); }),
             py::arg("type") = ops::OpType{},
             py::arg("attr") = ops::Attrs{})
         .def("attr", [](const ops::Op &self, const std::string &name) { return self.attr(name); })
@@ -155,11 +154,6 @@ void OpsModule(py::module &m_ops)
         .def("backward", &ops::Op::backward)
         .def("decompose", &ops::Op::decompose)
         .def("initial_flops_stimate", &ops::Op::initial_flops_estimate);
-
-    py::class_<ops::OpAbs, ops::Op>(m_ops, "OpAbs")
-        .def(
-            py::init([](ops::Attrs attrs) { return std::make_unique<ops::OpAbs>(std::move(attrs)); }),
-            py::arg("attr") = ops::Attrs{});
 }
 
 }  // namespace tt
