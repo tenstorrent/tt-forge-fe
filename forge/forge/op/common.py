@@ -9,7 +9,7 @@ from ..parameter import Parameter
 from forge.op.eval.forge import get_f_forge_eval, get_f_forge_shape
 from forge._C import DataFormat
 from forge._C.graph import OpType as OldOpType
-from forge._C.ops import Op as CppOp, OpAbs, OpType
+from forge._C.ops import Op as CppOp, OpType
 import forge
 from forge.forgeglobal import get_unique_node_id, tracing
 from forge.tensor import pytorch_dtype_to_forge_dataformat
@@ -22,6 +22,7 @@ from loguru import logger
 
 
 op_type_mapping = {
+    "abs": OpType.Abs,
     "adaptive_max_pool2d": OpType.AdaptiveMaxPool2d,
     "add": OpType.Add,
     "adv_index": OpType.AdvIndex,
@@ -134,8 +135,6 @@ op_type_mapping = {
     "where": OpType.Where,
 }
 
-implemented_ops = {"abs": OpAbs}
-
 
 def create_cpp_op(op_type: str, attrs):
     """
@@ -143,10 +142,6 @@ def create_cpp_op(op_type: str, attrs):
     If op has new cpp implementation, we will create that op directly, otherwise, we will create
     base cpp op class and assing it op type from new cpp implementation.
     """
-    if op_type in implemented_ops:
-        return implemented_ops[op_type](attrs)
-
-    assert op_type in op_type_mapping
     return CppOp(op_type_mapping[op_type], attrs)
 
 

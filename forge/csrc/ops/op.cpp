@@ -456,8 +456,8 @@ tt::graphlib::NodeContext Op::backward(
 {
     switch (type_)
     {
-        case OpType::Abs: return abs_backward(context, operand, inputs, output, gradient);
-        case OpType::Add: return add_backward(context, operand, inputs, output, gradient);
+        // case OpType::Abs: return abs_backward(context, operand, inputs, output, gradient);
+        // case OpType::Add: return add_backward(context, operand, inputs, output, gradient);
         default: return base_backward(context, operand, inputs, output, gradient);
     }
 }

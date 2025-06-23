@@ -262,12 +262,12 @@ class Op
     std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> abs_shape(
         const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
-    tt::graphlib::NodeContext abs_backward(
-        tt::autograd::autograd_context context,
-        int operand,
-        const std::vector<tt::graphlib::NodeContext> &inputs,
-        tt::graphlib::NodeContext output,
-        tt::graphlib::NodeContext gradient) const;
+    // tt::graphlib::NodeContext abs_backward(
+    // tt::autograd::autograd_context context,
+    // int operand,
+    // const std::vector<tt::graphlib::NodeContext> &inputs,
+    // tt::graphlib::NodeContext output,
+    // tt::graphlib::NodeContext gradient) const;
 
     void abs_decompose(
         const char *dispatch, DecomposingContext &dc, std::vector<tt::graphlib::NodeContext> &inputs) const;
