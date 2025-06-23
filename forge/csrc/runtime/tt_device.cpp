@@ -10,6 +10,7 @@
 #include "tt/runtime/types.h"
 #include "utils/assert.hpp"
 #include "utils/logger.hpp"
+#include "utils/watchdog.hpp"
 
 namespace tt
 {
@@ -18,6 +19,7 @@ static bool system_is_initialized = false;
 
 TTSystem detect_available_devices()
 {
+    Watchdog wd;
     auto system_desc = runtime::getCurrentSystemDesc();
     std::vector<int> chip_ids;
     std::vector<std::shared_ptr<TTDevice>> devices;
@@ -62,6 +64,7 @@ bool TTSystem::is_initialized() { return system_is_initialized; }
 
 void TTDevice::open_device(const DeviceSettings& settings)
 {
+    Watchdog wd;
     TT_ASSERT(!is_open());
     static constexpr std::uint32_t num_hw_cqs = 1;
     runtime::MeshDeviceOptions options;
@@ -79,6 +82,7 @@ void TTDevice::close_device()
 
 void TTDevice::configure_device(const DeviceSettings& settings)
 {
+    Watchdog wd;
     if (is_open())
     {
         close_device();
