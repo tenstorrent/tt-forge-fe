@@ -48,7 +48,7 @@ You should see the Tenstorrent System Management Interface. It allows you to vie
 
 ## Installing a Wheel and Running an Example
 
-This section walks you through downloading and installing a wheel. You can install the wheel wherever you would like if it's for running a model.
+This section walks you through downloading and installing a wheel. You can install the wheel wherever you would like if it is for running a model.
 
 1. Make sure you are in an active virtual environment. This walkthrough uses the same environment you activated to look at TT-SMI in the [Configuring Hardware](#configuring-hardware) section.
 
