@@ -69,7 +69,7 @@ def test_vit_classify_224_hf_pytorch(variant):
     inputs = [image_processor(image_1, return_tensors="pt").pixel_values.to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override, enable_optimization_passes=True)
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -125,7 +125,7 @@ def test_vit_torchvision(variant):
     inputs = [inputs[0].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override, enable_optimization_passes=True)
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     pcc = 0.99
 
