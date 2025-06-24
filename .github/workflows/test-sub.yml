@@ -168,7 +168,7 @@ jobs:
                -m "${{ inputs.test_mark }}" --collect-only -q \
                 | sed -n '/^Collected tests /,/^collected /p' | sed '/^[Cc]ollected /d' >.pytest_tests_to_run
 
-          echo "Collected $(wc -l .pytest_test_to_run) tests."
+          echo "Collected tests."
           # enable next line for debugging
           # cat .pytest_tests_to_run
 
