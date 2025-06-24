@@ -341,10 +341,12 @@ def test_vgg_torchvision(variant):
 
     pcc = 0.99
     if variant in ["vgg16_bn", "vgg13_bn"]:
-        pcc=0.98
+        pcc = 0.98
 
-    # Model Verification and inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
+    # Model Verificatiogn and inference
+    fw_out, co_out = verify(
+        inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc))
+    )
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
