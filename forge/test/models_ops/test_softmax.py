@@ -731,24 +731,17 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 8, 300, 300), torch.bfloat16)],
         {"model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
-    pytest.param(
-        (
-            Softmax0,
-            [((1, 1, 512, 50176), torch.bfloat16)],
-            {
-                "model_names": [
-                    "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
-                    "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
-                ],
-                "pcc": 0.99,
-                "args": {"dim": "-1"},
-            },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:896: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=7)] grow to 3380192 B which is beyond max L1 size of 1499136 B"
-            )
-        ],
+    (
+        Softmax0,
+        [((1, 1, 512, 50176), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
     ),
     (
         Softmax0,
