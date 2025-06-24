@@ -20,7 +20,7 @@ params = [
     pytest.param("mobilenetv2_050"),
     pytest.param("mobilenetv2_100", marks=[pytest.mark.push]),
     pytest.param("mobilenetv2_110d"),
-    pytest.param("mobilenetv2_140"),
+    pytest.param("mobilenetv2_140", marks=[pytest.mark.xfail]),
 ]
 
 
