@@ -11,6 +11,15 @@ from forge.verify.verify import verify
 import torch.nn.functional as F
 import onnx
 import os
+import time
+
+
+@pytest.mark.push
+def test_hang():
+    print("This test is designed to hang for 1000 seconds to simulate a long-running process.")
+    for i in range(1, 1001):
+        time.sleep(1)
+        print(f"{i} seconds passed")
 
 
 @pytest.mark.parametrize(
