@@ -62,7 +62,7 @@ def create_ttir(ttir_path):
 
     # The first line of the content is system descriptor, we don't need it
     # The second line is the definition of the module with attrubutes, we need to empty the attributes field
-    attr_definition = "attributes {tt.system_desc = #system_desc}"
+    attr_definition = "attributes {ttcore.system_desc = #system_desc}"
     attr_empty = "attributes {}"
     content[2] = content[2].replace(attr_definition, attr_empty)
     content.pop(1)
