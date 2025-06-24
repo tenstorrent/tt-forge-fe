@@ -70,7 +70,6 @@ class FailingReasonsRegister:
         ("remainder", FailingReasons.DATA_MISMATCH),
         ("remainder", FailingReasons.SPECIAL_VALUES),
         ("repeat_interleave", FailingReasons.COMPILATION_FAILED),
-        ("repeat_interleave", FailingReasons.DATA_MISMATCH),
         ("repeat_interleave", FailingReasons.INFERENCE_FAILED),
         ("repeat_interleave", FailingReasons.SPECIAL_VALUES),
         ("reshape", FailingReasons.COMPILATION_FAILED),
@@ -89,8 +88,6 @@ class FailingReasonsRegister:
         ("sum", FailingReasons.NOT_IMPLEMENTED),
         ("tanh", FailingReasons.DATA_MISMATCH),
         ("transpose", FailingReasons.COMPILATION_FAILED),
-        ("transpose", FailingReasons.DATA_MISMATCH),
-        ("transpose", FailingReasons.MLIR_RUNTIME),
         ("unsqueeze", FailingReasons.COMPILATION_FAILED),
     ]
 
