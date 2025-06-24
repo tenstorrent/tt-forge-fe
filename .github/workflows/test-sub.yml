@@ -44,6 +44,10 @@ on:
         required: false
         default: false
         type: boolean
+      continue-on-crash:
+        description: 'Continue if test crashes, otherwise restart the test'
+        required: false
+        type: boolean
 
 jobs:
   run-tests:
@@ -165,10 +169,11 @@ jobs:
 
           python .github/workflows/test_runner.py  \
                  --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-                 --continue-after-crash
+                 --log-memory-usage \
+                 $(if [ -n "${{inputs.continue-on-crash}}" ]; then echo "--continue-after-crash"; fi)
 
             if [ -f crashed_pytest.log ]; then
-              echo "### Crashed tests: (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})" >>$GITHUB_STEP_SUMMARY
+              echo "### Crashed tests: (${{ matrix.build.runs-on }}, ${{ inputs.test_mark }}, ${{ matrix.test_group_id }})" >>$GITHUB_STEP_SUMMARY
               cat crashed_pytest.log >>$GITHUB_STEP_SUMMARY
             fi
 

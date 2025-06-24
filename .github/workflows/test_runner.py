@@ -137,6 +137,9 @@ def main():
                     print(f"FAILURE {test}")
                     f.write(f"FAILURE {test}\n")
 
+            if exit_code == 0:
+                exit_code = 1
+
     # Delete .pytest_current_test_executing file if it exists
     Path(".pytest_current_test_executing").unlink(missing_ok=True)
 
@@ -145,6 +148,18 @@ def main():
         with open("crashed_pytest.log", "w") as f:
             for line in crashed_tests:
                 f.write(line)
+
+        if not run_crashed_tests:
+            print(f"\n========================\nCRASHED TESTS, found {len(crashed_tests)}:")
+            # Append failures to the pytest.log file
+            with open("pytest.log", "a") as f:
+                for test in crashed_tests:
+                    print(f"FAILURE {test}")
+                    f.write(f"FAILURE {test}\n")
+
+            # If there are crashed tests change exit code to failure
+            if exit_code == 0:
+                exit_code = 1
 
     exit(exit_code)
 
