@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 from ..tensor import Tensor
 from .common import ForgeOp as op
-from typing import Union, Tuple, List
 
 
 def Constant(name: str, *, constant: float) -> Tensor:

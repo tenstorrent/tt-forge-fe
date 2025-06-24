@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import torch
 from ..interface import PyTM
-from ..lforge.transpose import TransposeTM as ForgeTransposeTM
 from .. import sparse_utils
 from forge._C import UnsupportedHWOpsError
 
@@ -31,22 +30,6 @@ class TransposeTM(PyTM):
             TransposeTM.create(self.dim0, self.dim1),
             [grad],
         )
-
-    def lower(self, lc, tensors, outputs):
-        assert len(tensors) == 1
-
-        if self.dim0 >= 0:
-            self.dim0 -= tensors[0].shape.len()
-        if self.dim1 >= 0:
-            self.dim1 -= tensors[0].shape.len()
-
-        if self.dim0 == -2 and self.dim1 == -1:
-            lc.tm(
-                ForgeTransposeTM.create(self.dim0, self.dim1),
-                tensors[0],
-            )
-        else:
-            raise UnsupportedHWOpsError(self)
 
     def decompose(self, dc, inputs):
         act = inputs[0]

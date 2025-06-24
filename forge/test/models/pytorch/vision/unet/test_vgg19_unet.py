@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
+import torch
 
 import forge
 from forge._C import DataFormat
@@ -10,6 +11,8 @@ from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
     ModelArch,
+    ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -32,8 +35,8 @@ def test_vgg19_unet():
     )
 
     # Load model and input
-    framework_model = ModelLoader.load_model()
-    input_sample = ModelLoader.load_inputs()
+    framework_model = ModelLoader.load_model(dtype_override=torch.bfloat16)
+    input_sample = ModelLoader.load_inputs(dtype_override=torch.bfloat16)
 
     # Configurations
     compiler_cfg = CompilerConfig()
@@ -49,3 +52,20 @@ def test_vgg19_unet():
 
     # Model Verification
     verify([input_sample], framework_model, compiled_model)
+
+
+@pytest.mark.nightly
+@pytest.mark.xfail
+def test_vgg19_unet_brain_tumor_segmentation():
+    # Record Forge Property
+    record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.VGG19UNET,
+        variant="default",
+        task=Task.BRAIN_TUMOR_SEGMENTATION,
+        source=Source.GITHUB,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
+    )
+
+    raise RuntimeError("Test is currently not executable due to model code dependency.")

@@ -29,7 +29,7 @@ variants = ["microsoft/phi-4"]
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.skip(reason="Skipped due to kill at consteval compilation stage")
+@pytest.mark.xfail
 def test_phi_4_causal_lm_pytorch(variant):
 
     # Record Forge Property
@@ -42,6 +42,8 @@ def test_phi_4_causal_lm_pytorch(variant):
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
     )
+
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load tokenizer and model from HuggingFace
     framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)

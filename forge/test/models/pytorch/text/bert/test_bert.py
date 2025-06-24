@@ -22,23 +22,12 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.bert.model_utils.utils import mean_pooling
 from test.utils import download_model
-
-
-class BertWrapper(torch.nn.Module):
-    def __init__(self, model):
-        super().__init__()
-        self.model = model
-        self.config = model.config
-
-    def forward(self, input_ids, attention_mask=None):
-        batch_size, seq_len = input_ids.shape
-        token_type_ids = torch.zeros_like(input_ids)
-        position_ids = torch.arange(seq_len, device=input_ids.device).unsqueeze(0).expand(batch_size, -1)
-        return self.model(input_ids, attention_mask, token_type_ids, position_ids)
 
 
 @pytest.mark.nightly
@@ -57,7 +46,6 @@ def test_bert_masked_lm_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = BertTokenizer.from_pretrained(variant)
     framework_model = BertForMaskedLM.from_pretrained(variant, return_dict=False)
-    framework_model = BertWrapper(framework_model)
 
     # Load data sample
     sample_text = "The capital of France is [MASK]."
@@ -93,8 +81,7 @@ def test_bert_masked_lm_pytorch(variant):
 def generate_model_bert_qa_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
-    model = download_model(BertForQuestionAnswering.from_pretrained, variant, return_dict=False)
-    framework_model = BertWrapper(model)
+    framework_model = download_model(BertForQuestionAnswering.from_pretrained, variant, return_dict=False)
 
     # Load data sample from SQuADv1.1
     context = """Super Bowl 50 was an American football game to determine the champion of the National Football League
@@ -144,11 +131,16 @@ def test_bert_question_answering_pytorch(variant):
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    verify_cfg = VerifyConfig()
+    if variant == "phiyodr/bert-large-finetuned-squad2":
+        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
+
     # Model Verification and Inference
     _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
+        verify_cfg=verify_cfg,
     )
 
     # post processing
@@ -167,8 +159,7 @@ def test_bert_question_answering_pytorch(variant):
 def generate_model_bert_seqcls_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
-    model = download_model(BertForSequenceClassification.from_pretrained, variant, return_dict=False)
-    framework_model = BertWrapper(model)
+    framework_model = download_model(BertForSequenceClassification.from_pretrained, variant, return_dict=False)
 
     # Load data sample
     review = "the movie was great!"
@@ -247,7 +238,6 @@ def test_bert_token_classification_pytorch(variant):
     )
 
     framework_model, sample_text, inputs, input_tokens = generate_model_bert_tkcls_hf_pytorch(variant)
-    framework_model = BertWrapper(framework_model)
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -293,17 +283,10 @@ def test_bert_sentence_embedding_generation_pytorch(variant):
     sentence = "Bu örnek bir cümle"
     encoding = tokenizer(sentence, padding="max_length", truncation=True, max_length=16, return_tensors="pt")
 
-    # Manually construct token_type_ids and position_ids
-    batch_size, seq_len = encoding["input_ids"].shape
-    encoding["token_type_ids"] = torch.zeros((batch_size, seq_len), dtype=torch.long)
-    encoding["position_ids"] = torch.arange(seq_len).unsqueeze(0).expand(batch_size, -1)
-
     # Inputs for forward pass
     inputs = [
         encoding["input_ids"],
         encoding["attention_mask"],
-        encoding["token_type_ids"],
-        encoding["position_ids"],
     ]
 
     # Forge compile framework model

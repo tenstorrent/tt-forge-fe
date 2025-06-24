@@ -27,7 +27,6 @@ namespace py = pybind11;
 #include "passes/fracture.hpp"
 #include "passes/link_past_cache_ios.hpp"
 #include "passes/mlir_compiler.hpp"
-#include "passes/move_index_to_mm_weights.hpp"
 #include "passes/passes_utils.hpp"
 #include "passes/python_bindings.hpp"
 #include "passes/split_graph.hpp"
@@ -209,7 +208,6 @@ PYBIND11_MODULE(_C, m)
         .def("from_json", [](nlohmann::json const &j) { return j.template get<tt::passes::MLIRConfig>(); });
 
     m.def("link_past_cache_ios", &passes::link_past_cache_ios);
-    m.def("move_index_to_mm_weights", &passes::move_index_to_mm_weights);
     m.def("run_post_initial_graph_passes", &run_post_initial_graph_passes);
     m.def("run_optimization_graph_passes", &run_optimization_graph_passes);
     m.def("run_post_optimize_decompose_graph_passes", &run_post_optimize_decompose_graph_passes);
@@ -224,6 +222,11 @@ PYBIND11_MODULE(_C, m)
     m.def(
         "run_mlir_compiler_to_cpp",
         &passes::run_mlir_compiler_to_cpp,
+        py::arg("module"),
+        py::arg("mlir_config") = std::nullopt);
+    m.def(
+        "run_mlir_compiler_to_shared_object",
+        &passes::run_mlir_compiler_to_shared_object,
         py::arg("module"),
         py::arg("mlir_config") = std::nullopt);
     m.def("split_graph", &passes::split_graph);

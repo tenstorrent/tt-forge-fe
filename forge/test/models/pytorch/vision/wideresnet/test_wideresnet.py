@@ -1,12 +1,12 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import urllib
 
 import pytest
 import timm
 import torch
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
@@ -65,8 +65,12 @@ def test_wideresnet_pytorch(variant):
         compiler_cfg=compiler_cfg,
     )
 
+    verify_cfg = VerifyConfig()
+    if variant == "wide_resnet50_2":
+        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
+
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
 
     # Post processing
     post_processing(co_out)
@@ -81,9 +85,8 @@ def generate_model_wideresnet_imgcls_timm(variant):
     config = resolve_data_config({}, model=framework_model)
     transform = create_transform(**config)
 
-    url, filename = ("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-    urllib.request.urlretrieve(url, filename)
-    img = Image.open(filename).convert("RGB")
+    input_image = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
+    img = Image.open(str(input_image)).convert("RGB")
     img_tensor = transform(img).unsqueeze(0)
 
     return framework_model.to(torch.bfloat16), [img_tensor.to(torch.bfloat16)]

@@ -85,18 +85,6 @@ json node_to_json(const graphlib::Node* node, const graphlib::Graph* graph)
         std::string port_key_string = "port_" + std::to_string(incoming_edge.consumer_input_port_id);
         std::string incoming_port_info = edge_type_string + ": " + incoming_node->name() + " (" + port_key_string + ")";
 
-        if (graph->get_ir_level() == graphlib::IRLevel::IR_FORGE and
-            (incoming_edge.edge_type == graphlib::EdgeType::kData or
-             incoming_edge.edge_type == graphlib::EdgeType::kDataLoopback))
-        {
-            auto edge_attrs = graph->get_edge_attributes(incoming_edge);
-            switch (edge_attrs->get_ublock_order())
-            {
-                case graphlib::UBlockOrder::R: incoming_port_info += " ublock_order(r)"; break;
-                case graphlib::UBlockOrder::C: incoming_port_info += " ublock_order(c)"; break;
-            }
-        }
-
         port_id_to_name_incoming.push_back(incoming_port_info);
 
         if (incoming_edge.edge_type != graphlib::EdgeType::kData and
@@ -154,10 +142,6 @@ json node_to_json(const graphlib::Node* node, const graphlib::Graph* graph)
                 ret_json["constant_value"] = std::to_string(cnode->constant_value());
                 ret_json["constant_dims"] = cnode->constant_dims();
             }
-            else if (cnode->is_single_tile())
-            {
-                ret_json["constant_tile"] = cnode->tile_value();
-            }
             else if (cnode->is_tensor())
             {
                 ret_json["constant_dims"] = cnode->tensor_shape().as_vector();
@@ -197,38 +181,6 @@ json node_to_json(const graphlib::Node* node, const graphlib::Graph* graph)
         ret_json["type"] = opnode->op_type().op;
         to_json(ret_json, opnode->op_type());
         ret_json["gradient_op"] = opnode->is_gradient_op();
-    }
-    else if (node->node_type() == graphlib::NodeType::kForgeOp)
-    {
-        const graphlib::ForgeOpNode* opnode = node->as<graphlib::ForgeOpNode>();
-        ret_json["ir"] = "forge";
-        ret_json["class"] = opnode->op_type().as_string();
-        ret_json["type"] = opnode->op_type().op;
-        to_json(ret_json, opnode->op_type());
-        ret_json["gradient_op"] = opnode->is_gradient_op();
-        {
-            std::stringstream ss;
-            ss << opnode->intermediate_df();
-            ret_json["intermediate_df"] = ss.str();
-        }
-        {
-            std::stringstream ss;
-            ss << opnode->accumulate_df();
-            ret_json["accumulate_df"] = ss.str();
-        }
-        {
-            std::stringstream ss;
-            ss << opnode->math_fidelity();
-            ret_json["fidelity"] = ss.str();
-        }
-    }
-    else if (node->node_type() == graphlib::NodeType::kForgeNaryTM)
-    {
-        const graphlib::ForgeNaryTMNode* tmnode = node->as<graphlib::ForgeNaryTMNode>();
-        ret_json["ir"] = "forge";
-        ret_json["class"] = tmnode->op_type().as_string();
-        ret_json["type"] = tmnode->op_type().op;
-        to_json(ret_json, tmnode->op_type());
     }
     else if (node->node_type() == graphlib::NodeType::kQueue)
     {

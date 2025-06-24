@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import numpy as np
-import math
 import numpy as np
 from tvm.relay.dataflow_pattern import *
 

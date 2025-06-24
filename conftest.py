@@ -7,7 +7,6 @@ import time
 import pytest
 import psutil
 import shutil
-import contextvars
 from loguru import logger
 from datetime import datetime
 from forge.forge_property_utils import (
@@ -23,6 +22,9 @@ def pytest_addoption(parser):
         action="store_true",
         default=False,
         help="log per-test memory usage into pytest-memory-usage.csv",
+    )
+    parser.addoption(
+        "--tests_to_filter", nargs="+", type=str, help="List of test patterns to include (file paths or full test IDs)"
     )
 
 

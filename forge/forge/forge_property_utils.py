@@ -72,6 +72,13 @@ class Task(BaseEnum):
     SENTENCE_EMBEDDING_GENERATION = ("sentence_embed_gen", "Sentence Embedding Generation")
     MULTIMODAL_TEXT_GENERATION = ("multimodal_text_gen", "Multimodal Text Generation")
     ATOMIC_ML = ("atomic_ml", "Atomic Machine Learning")
+    REALTIME_MAP_CONSTRUCTION = ("realtime_map_construction", "Realtime Map Construction")
+    PLANNING_ORIENTED_DRIVING = ("planning_oriented_driving", "Planning-Oriented Driving")
+    OPTICAL_CHARACTER_RECOGNITION = ("optical_character_recognition", "Optical Character Recognition")
+    NOVEL_VIEW_SYNTHESIS = ("novel_view_synthesis", "Novel View Synthesis")
+    BRAIN_TUMOR_SEGMENTATION = ("brain_tumor_segmentation", "Brain Tumor Segmentation")
+    TEXT_TO_VIDEO_GENERATION = ("text_to_video_generation", "Text-to-Video generation")
+    SENETNCE_SEGMENTATION = ("sentence_segmentation", "Sentence Segmentation")
 
 
 class Source(BaseEnum):
@@ -208,6 +215,29 @@ class ModelArch(BaseEnum):
     VGG19UNET = ("VGG19 UNet", "VGG19 UNet")
     WIDERESNET = ("wideresnet", "Wide ResNet")
     XCEPTION = ("xception", "Xception")
+    MAPTR = ("maptr", "MapTR")
+    PHI3_5_MOE = ("phi3.5_moe", "Phi-3.5-MoE")
+    UNIAD = ("uniad", "UniAD")
+    MINIMAX = ("minimax", "MiniMax")
+    MPLUGOWL = ("mplug_owl", "mPLUG-Owl")
+    CENTERNET = ("centernet", "Centernet")
+    SURYAOCR = ("surya_ocr", "Surya_OCR")
+    TRANSFUSER = ("transfuser", "Transfuser")
+    BEVDEPTH = ("bevdepth", "Bevdepth")
+    POINTPILLARS = ("pointpillars", "Pointpillars")
+    BEVFORMER = ("bevformer", "Bevformer")
+    FLUX = ("flux", "Flux")
+    PIXTRAL = ("pixtral", "Pixtral")
+    SOLAR = ("solar", "Solar")
+    VADV2 = ("vadv2", "Vadv2")
+    QWENV3 = ("qwen_v3", "Qwen_v3")
+    GAUSSIAN_SPLATTING = ("gaussian_splatting", "Gaussian Splatting")
+    DETR3D = ("detr_3D", "Detr-3D")
+    MOCHIV1 = ("mochi-1", "Mochi-1")
+    TRANKIT = ("trankit", "Trankit")
+    MPLUGOWL2 = ("mplug_owl2", "mPLUG-Owl2")
+    LLAMA4 = ("llama4", "Llama-4")
+    MIXTRAL = ("mixtral", "Mixtral")
 
 
 def build_module_name(
@@ -443,6 +473,12 @@ class ModelPriority(StrEnum):
     P2 = "P2"
 
 
+class Parallelism(StrEnum):
+    SINGLE_DEVICE = "single_device"
+    DATA_PARALLEL = "data_parallel"
+    PIPELINE_PARALLEL = "pipeline_parallel"
+
+
 @dataclass_json
 @dataclass
 class ModelInfo:
@@ -468,6 +504,8 @@ class Tags:
     failure_category: str = ""
     refined_error_message: str = ""
     group: Optional[str] = None
+    parallelism: Optional[Parallelism] = Parallelism.SINGLE_DEVICE.value
+    emitc_status: Optional[bool] = None
 
 
 @dataclass_json
@@ -628,6 +666,9 @@ class ForgePropertyHandler:
         self.record_execution_stage(execution_stage)
         self.record_execution_depth(ExecutionDepth.from_exec_stage(execution_stage))
 
+    def record_emitc_status(self, is_success: bool):
+        self.add("tags.emitc_status", is_success)
+
     def extract_node_type(self, operand):
         if isinstance(operand, forge.Parameter):
             return "Parameter"
@@ -751,6 +792,14 @@ def record_execution(execution_stage: ExecutionStage):
         return
 
     fph.record_execution(execution_stage)
+
+
+def record_emitc_status(is_success: bool):
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    fph.record_emitc_status(is_success)
 
 
 def record_compiler_config(compiler_config: CompilerConfig):
@@ -989,3 +1038,14 @@ def record_op_model_names(model_names: List[str]):
         return
 
     fph.add("tags.op_info.model_names", model_names)
+
+
+def record_parallelism(parallelism: Parallelism):
+    """
+    Records the paralleism property inside the tags.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    fph.add("tags.parallelism", parallelism.value)

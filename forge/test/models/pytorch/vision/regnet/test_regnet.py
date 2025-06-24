@@ -52,8 +52,7 @@ def test_regnet_img_classification(variant):
     framework_model = RegNetForImageClassification.from_pretrained(variant, return_dict=False).to(torch.bfloat16)
 
     # Preprocess the image
-    image_url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    inputs = preprocess_input_data(image_url, variant)
+    inputs = preprocess_input_data(variant)
     inputs = [inputs[0].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b

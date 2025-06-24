@@ -31,16 +31,6 @@ class Max0(ForgeModule):
         return max_output_1
 
 
-class Max1(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("max1_const_1", shape=(1,), dtype=torch.int32)
-
-    def forward(self, max_input_0):
-        max_output_1 = forge.op.Max("", max_input_0, self.get_constant("max1_const_1"))
-        return max_output_1
-
-
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -48,6 +38,11 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
+    (
+        Max0,
+        [((1, 16, 256, 256), torch.float32)],
+        {"model_names": ["pt_xglm_facebook_xglm_564m_clm_hf", "pt_xglm_facebook_xglm_1_7b_clm_hf"], "pcc": 0.99},
+    ),
     (Max0, [((1, 112, 112, 64), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
     (Max0, [((1, 56, 55, 64), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
     (Max0, [((1, 56, 55, 256), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
@@ -60,40 +55,6 @@ forge_modules_and_shapes_dtypes_list = [
     (Max0, [((1, 14, 14, 512), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
     (Max0, [((1, 7, 7, 512), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
     (Max0, [((1, 7, 7, 2048), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
-    (
-        Max1,
-        [((2441216,), torch.int32)],
-        {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99},
-    ),
-    (
-        Max0,
-        [((1, 12, 32, 32), torch.float32)],
-        {"model_names": ["pt_opt_facebook_opt_125m_qa_hf", "pt_opt_facebook_opt_125m_seq_cls_hf"], "pcc": 0.99},
-    ),
-    (
-        Max0,
-        [((1, 16, 32, 32), torch.float32)],
-        {"model_names": ["pt_opt_facebook_opt_350m_qa_hf", "pt_opt_facebook_opt_350m_seq_cls_hf"], "pcc": 0.99},
-    ),
-    (
-        Max0,
-        [((1, 32, 32, 32), torch.float32)],
-        {"model_names": ["pt_opt_facebook_opt_1_3b_qa_hf", "pt_opt_facebook_opt_1_3b_seq_cls_hf"], "pcc": 0.99},
-    ),
-    (Max0, [((1, 32, 256, 256), torch.float32)], {"model_names": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99}),
-    (
-        Max0,
-        [((1, 16, 256, 256), torch.float32)],
-        {
-            "model_names": [
-                "pt_opt_facebook_opt_350m_clm_hf",
-                "pt_xglm_facebook_xglm_564m_clm_hf",
-                "pt_xglm_facebook_xglm_1_7b_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (Max0, [((1, 12, 256, 256), torch.float32)], {"model_names": ["pt_opt_facebook_opt_125m_clm_hf"], "pcc": 0.99}),
 ]
 
 
@@ -140,11 +101,10 @@ def test_module(forge_module_and_shapes_dtypes):
 
     record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs)
+    compiler_cfg = forge.config.CompilerConfig()
+    if "default_df_override" in metadata.keys():
+        compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])
 
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-    )
+    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))

@@ -120,7 +120,6 @@ class CompilerUtils:
         #     compiler_cfg.default_dram_parameters = input_source_flag.default_dram_parameters
 
         # NOP since we don't use this flag in the compiler, currently.
-        pass
 
     @staticmethod
     def set_math_fidelity(math_fidelity: MathFidelity, compiler_cfg: CompilerConfig):

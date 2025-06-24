@@ -26,8 +26,8 @@ from forge.verify.verify import verify
 from test.utils import download_model
 
 params = [
-    pytest.param("facebook/dpr-ctx_encoder-single-nq-base", marks=[pytest.mark.xfail]),
-    pytest.param("facebook/dpr-ctx_encoder-multiset-base", marks=[pytest.mark.xfail]),
+    "facebook/dpr-ctx_encoder-single-nq-base",
+    "facebook/dpr-ctx_encoder-multiset-base",
 ]
 
 
@@ -80,8 +80,8 @@ def test_dpr_context_encoder_pytorch(variant):
 
 
 params = [
-    pytest.param("facebook/dpr-question_encoder-single-nq-base", marks=[pytest.mark.xfail]),
-    pytest.param("facebook/dpr-question_encoder-multiset-base", marks=[pytest.mark.xfail]),
+    "facebook/dpr-question_encoder-single-nq-base",
+    "facebook/dpr-question_encoder-multiset-base",
 ]
 
 

@@ -31,7 +31,7 @@ const TaggedNode *Node::as<TaggedNode>() const
 template <>
 const OpNode *Node::as<OpNode>() const
 {
-    TT_ASSERT(this->node_type() == NodeType::kPyOp || this->node_type() == NodeType::kForgeOp);
+    TT_ASSERT(this->node_type() == NodeType::kPyOp);
     return dynamic_cast<OpNode const *>(this);
 }
 
@@ -40,20 +40,6 @@ const PyOpNode *Node::as<PyOpNode>() const
 {
     TT_ASSERT(this->node_type() == NodeType::kPyOp);
     return dynamic_cast<PyOpNode const *>(this);
-}
-
-template <>
-const ForgeOpNode *Node::as<ForgeOpNode>() const
-{
-    TT_ASSERT(this->node_type() == NodeType::kForgeOp);
-    return dynamic_cast<ForgeOpNode const *>(this);
-}
-
-template <>
-const ForgeNaryTMNode *Node::as<ForgeNaryTMNode>() const
-{
-    TT_ASSERT(this->node_type() == NodeType::kForgeNaryTM);
-    return dynamic_cast<ForgeNaryTMNode const *>(this);
 }
 
 template <>
@@ -67,7 +53,7 @@ TaggedNode *Node::as<TaggedNode>()
 template <>
 OpNode *Node::as<OpNode>()
 {
-    TT_ASSERT(this->node_type() == NodeType::kPyOp || this->node_type() == NodeType::kForgeOp);
+    TT_ASSERT(this->node_type() == NodeType::kPyOp);
     return dynamic_cast<OpNode *>(this);
 }
 
@@ -76,20 +62,6 @@ PyOpNode *Node::as<PyOpNode>()
 {
     TT_ASSERT(this->node_type() == NodeType::kPyOp);
     return dynamic_cast<PyOpNode *>(this);
-}
-
-template <>
-ForgeOpNode *Node::as<ForgeOpNode>()
-{
-    TT_ASSERT(this->node_type() == NodeType::kForgeOp);
-    return dynamic_cast<ForgeOpNode *>(this);
-}
-
-template <>
-ForgeNaryTMNode *Node::as<ForgeNaryTMNode>()
-{
-    TT_ASSERT(this->node_type() == NodeType::kForgeNaryTM);
-    return dynamic_cast<ForgeNaryTMNode *>(this);
 }
 
 template <>
@@ -210,60 +182,6 @@ std::vector<int> create_permute_xy_order(const int rank)
     return order;
 }
 
-std::unique_ptr<Node> ForgeOpNode::clone(std::string const &name) const
-{
-    std::unique_ptr<ForgeOpNode> node = create_node<ForgeOpNode>(this->name(), this->op_type());
-    node->Node::clone(this, name);
-    node->set_gradient_op(this->is_gradient_op());
-    node->set_golden_transforms(this->get_golden_transforms());
-    node->set_intermediate_df(this->intermediate_df());
-    node->set_accumulate_df(this->accumulate_df());
-    node->set_math_fidelity(this->math_fidelity());
-    node->add_tags(this->as<TaggedNode>()->get_tags());
-    return node;
-}
-
-void ForgeOpNode::copy_lowered_op_attributes(PyOpNode *node)
-{
-    epoch_type_ = node->get_epoch_type();
-    set_gradient_op(node->is_gradient_op());
-    set_output_df(node->output_df());
-    set_intermediate_df(node->output_df());  // by default, same as output
-    // accumulate df will not be set here, we'll have an overall default
-
-    // If there are golden transforms, they operate on forge shapes,
-    // so we need to insert narrowing in order make FORGE compatible
-    set_golden_transforms(node->get_golden_transforms());
-    if (not get_golden_transforms().empty())
-    {
-        int r = node->shape().size() > 1 ? node->shape()[-2] : 1;
-        int c = node->shape()[-1];
-        if ((r % Shape::FORGE_TILE_DIM) != 0)
-            add_golden_transform(graphlib::OpType("narrow", {-2, 0, r, r}, {}));
-        if ((c % Shape::FORGE_TILE_DIM) != 0)
-            add_golden_transform(graphlib::OpType("narrow", {-1, 0, c, c}, {}));
-    }
-
-    if (node->has_golden_id())
-        set_golden_id(node->golden_id());
-    this->as<graphlib::TaggedNode>()->add_tags(node->as<graphlib::TaggedNode>()->get_tags());
-}
-
-void ForgeOpNode::copy_parent_op_attributes(ForgeOpNode *node)
-{
-    epoch_type_ = node->get_epoch_type();
-    set_output_df(node->output_df());
-    set_intermediate_df(node->intermediate_df());
-    set_accumulate_df(node->accumulate_df());
-}
-
-void ForgeNaryTMNode::copy_lowered_op_attributes(PyOpNode *node)
-{
-    epoch_type_ = node->get_epoch_type();
-    set_output_df(node->output_df());
-    this->as<graphlib::TaggedNode>()->add_tags(node->as<graphlib::TaggedNode>()->get_tags());
-}
-
 std::unique_ptr<Node> PyOpNode::clone(std::string const &name) const
 {
     std::unique_ptr<PyOpNode> node = create_node<PyOpNode>(this->name(), this->op_type());
@@ -349,8 +267,8 @@ bool OpNode::should_pair_with_sparse(const OpNode *sparse_op_node, const Graph *
     return false;
 }
 
-py::function OpNode::py_attr(char const *attr_name) const { return op_type().py_attr(attr_name, get_ir_level()); }
-py::function OpNode::py_attr(char const *attr_name) { return op_type().py_attr(attr_name, get_ir_level()); }
+py::function OpNode::py_attr(char const *attr_name) const { return op_type().py_attr(attr_name); }
+py::function OpNode::py_attr(char const *attr_name) { return op_type().py_attr(attr_name); }
 
 InputNode::InputNode(const std::string &name, InputNodeType input_type, bool requires_grad) :
     QueueNode(name, QueueNodeType::Input, NodeType::kInput), input_type_(input_type), requires_grad_(requires_grad)
@@ -419,22 +337,21 @@ std::unique_ptr<Node> OutputNode::clone(std::string const &name) const
     return node;
 }
 
-static py::function get_f_instance(IRLevel ir_level)
+static py::function get_f_instance()
 {
-    auto eval_module =
-        py::module_::import((ir_level == IRLevel::IR_FORGE) ? "forge.op.eval.lforge" : "forge.op.eval.forge");
+    auto eval_module = py::module_::import("forge.op.eval.forge");
     return eval_module.attr("get_f_instance");
 }
 
-py::function OpType::py_attr(char const *name, IRLevel ir_level) const
+py::function OpType::py_attr(char const *name) const
 {
-    auto instance = get_f_instance(ir_level)(this);
+    auto instance = get_f_instance()(this);
     return instance.attr(name);
 }
 
-py::function OpType::py_attr(char const *name, IRLevel ir_level)
+py::function OpType::py_attr(char const *name)
 {
-    auto instance = get_f_instance(ir_level)(this);
+    auto instance = get_f_instance()(this);
     return instance.attr(name);
 }
 
@@ -445,9 +362,6 @@ std::unique_ptr<Node> ConstantInputNode::clone(std::string const &name) const
     {
         case ConstantInputNodeType::SingleValue:
             node = create_node<ConstantInputNode>(this->name(), this->constant_value_);
-            break;
-        case ConstantInputNodeType::SingleTile:
-            node = create_node<ConstantInputNode>(this->name(), this->tile_value_);
             break;
         case ConstantInputNodeType::Tensor:
             node = create_node<ConstantInputNode>(this->name(), this->tensor_handle_, this->tensor_shape_);
@@ -469,11 +383,6 @@ bool ConstantInputNode::equivalent(const ConstantInputNode *other) const
 
     if (is_single_value())
         return constant_value() == other->constant_value();
-
-    if (is_single_tile())
-    {
-        return tile_value() == other->tile_value();
-    }
 
     TT_ASSERT(is_tensor());
     return compare_tensors(tensor(), other->tensor());

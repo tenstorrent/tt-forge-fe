@@ -2,8 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import torch
-import ast
-import os
 import math
 import torch.nn.functional as F
 from forge.forgeglobal import TILE_DIM
@@ -154,9 +152,6 @@ class MaxPool2d(PyOp):
             dc.fuse(result)
 
     def backward(self, ac, operand, inputs, output, grad):
-        pass
-
-    def lower(self, lc, tensors, outputs):
         pass
 
     def is_tm(self) -> bool:
@@ -527,10 +522,6 @@ def shape(type, attr, ops):
         return result, []
 
 
-def lower(type, attr, lc, ops, outputs):
-    assert False, "Pooling lowering is intentionally unimplemented"
-
-
 def backward(type, attr, ac, operand, inputs, output, grad):
     assert False, "Pooling backward is intentionally unimplemented"
 
@@ -683,7 +674,7 @@ def decompose(type, attr, dc, inputs):
                 padding=padding if count_include_pad == False else [0, ceil_pad_right, 0, ceil_pad_bottom],
                 tile_align=False,
             )
-            undo_math_picker_tensor = dc.tensor(undo_math_picker)
+            undo_math_picker_tensor = dc.tensor(undo_math_picker.to_dense())
             result = dc.op("matmul", [undo_math_picker_tensor, result])
 
             if channel_last:

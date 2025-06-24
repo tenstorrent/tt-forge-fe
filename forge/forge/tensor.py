@@ -9,7 +9,6 @@ import paddle
 import torch
 import tensorflow as tf
 import numpy as np
-import math
 from loguru import logger
 import copy
 import jax
@@ -20,8 +19,6 @@ from .forgeglobal import TILE_DIM, align_up_tile, round_up_div
 from forge._C import DataFormat
 from forge._C.graph import OpType, RuntimeTensorTransform, RuntimeTensorTransformType, get_constant_input_value
 from forge.utils import detach_tensors
-from functools import reduce
-from operator import mul
 from .utils import align_up
 
 from forge.tvm_utils import map_tf_dtype_to_pt, map_pt_dtype_to_tf
@@ -946,9 +943,8 @@ def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]
         node = consteval_graph["nodes"][node_name]
         if node["opcode"] == "Input":
             input_value = inputs[node_name]
-
             node_to_tensor[node_name] = input_value
-        elif node["opcode"] in {"ForgeOp", "ForgeOp"}:
+        elif node["opcode"] in {"ForgeOp"}:
             inputs_after_tms: List[torch.Tensor] = []
             for input_index, operand in enumerate(node["input_nodes"]):
                 operand_tensor = node_to_tensor[operand]
@@ -975,22 +971,6 @@ def consteval_input(consteval_trace, name: str, inputs: Dict[str, torch.Tensor])
     # For example, if we had transpose in consteval graph, output tensor would have stride same as input.
     # However, since we store that input as constant tensor, its shape defines its stride.
     return torch.empty(const_eval_tensor.shape, dtype=const_eval_tensor.dtype).copy_(const_eval_tensor)
-
-
-def consteval_shape(
-    compiled_graph_state,
-    name: str,
-    tensor: torch.Tensor,
-) -> torch.Tensor:
-    consteval_graph = compiled_graph_state.consteval_trace.get(name, None)
-    if consteval_graph is None:
-        return tensor.shape
-
-    for node_name in consteval_graph["topological_sorted_nodes"]:
-        node = consteval_graph["nodes"][node_name]
-        if node["opcode"] == "Output":
-            return node["cache"]["shape"]
-    assert False, "No output node found in consteval graph"
 
 
 def compare_tensors(t0, t1):

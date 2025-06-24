@@ -16,8 +16,6 @@ Nightly_workbook.xlsx - Contains two sheet. One is Comparison result (All_Runner
 from datetime import date, timedelta
 import requests
 import os
-import io
-import re
 import json
 import zipfile
 import argparse

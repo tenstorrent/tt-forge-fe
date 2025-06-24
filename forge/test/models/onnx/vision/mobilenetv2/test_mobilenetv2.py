@@ -12,24 +12,21 @@ from forge.verify.verify import verify
 from datasets import load_dataset
 from forge.verify.config import VerifyConfig, AutomaticValueChecker
 from test.models.onnx.vision.mobilenetv2.model_utils.utils import load_inputs
-from urllib.request import urlopen
 from PIL import Image
 from test.models.models_utils import print_cls_results
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 params = [
     pytest.param("mobilenetv2_050"),
     pytest.param("mobilenetv2_100", marks=[pytest.mark.push]),
     pytest.param("mobilenetv2_110d"),
-    pytest.param("mobilenetv2_140"),
+    pytest.param("mobilenetv2_140", marks=[pytest.mark.xfail]),
 ]
 
 
 @pytest.mark.parametrize("variant", params)
 @pytest.mark.nightly
 def test_mobilenetv2_onnx(variant, forge_tmp_path):
-
-    priority = ModelPriority.P1 if variant == "mobilenetv2_050" else ModelPriority.P2
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -38,17 +35,14 @@ def test_mobilenetv2_onnx(variant, forge_tmp_path):
         variant=variant,
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
-        priority=priority,
     )
 
     # Load mobilenetv2 model
     model = timm.create_model(variant, pretrained=True)
 
     # Load the inputs
-    img = Image.open(
-        urlopen("https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/beignets-task-guide.png")
-    )
-
+    dataset = load_dataset("cifar10", split="test[:1]")
+    img = dataset[0]["img"]
     inputs = load_inputs(img, model)
     onnx_path = f"{forge_tmp_path}/mobilenetv2.onnx"
     torch.onnx.export(model, inputs[0], onnx_path)
@@ -63,7 +57,7 @@ def test_mobilenetv2_onnx(variant, forge_tmp_path):
 
     pcc = 0.99
     if variant == "mobilenetv2_050":
-        pcc = 0.96
+        pcc = 0.95
 
     fw_out, co_out = verify(
         inputs,

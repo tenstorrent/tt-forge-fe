@@ -6,10 +6,7 @@
 import pytest
 import time
 import socket
-import subprocess
 import json
-import random
-import os
 from datetime import datetime
 
 # Third-party modules

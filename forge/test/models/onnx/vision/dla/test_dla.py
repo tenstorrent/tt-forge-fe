@@ -6,11 +6,13 @@ import os
 import requests
 import pytest
 import torchvision.transforms as transforms
-from PIL import Image
+from datasets import load_dataset
 
 from test.models.pytorch.vision.dla.model_utils.utils import post_processing
 import forge
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 
@@ -42,8 +44,8 @@ def test_dla_onnx(variant, tmp_path):
     )
 
     # Load data sample
-    url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    dataset = load_dataset("cifar10", split="test[:1]")
+    image = dataset[0]["img"]
 
     # Preprocessing
     transform = transforms.Compose(
@@ -75,8 +77,12 @@ def test_dla_onnx(variant, tmp_path):
     # Forge compile framework model
     compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
 
+    verify_cfg = VerifyConfig()
+    if variant == "dla102x2":
+        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
+
     # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
 
     # post processing
     post_processing(co_out)

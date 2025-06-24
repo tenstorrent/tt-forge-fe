@@ -6,6 +6,7 @@
 
 #include "runtime/runtime.hpp"
 #include "runtime/state.hpp"
+#include "runtime/testutils/testutils.hpp"
 #include "runtime/tt_device.hpp"
 #include "tt/runtime/types.h"
 
@@ -75,6 +76,26 @@ void RuntimeModule(py::module &m_runtime)
         [](DeviceSettings settings) -> void { tt::TTSystem::get_system().configure_devices(settings); },
         py::arg("device_settings") = DeviceSettings(),
         "Configure all devices with the given settings.");
+
+    // TestUtils APIs
+    py::module m_testutils = m_runtime.def_submodule("testutils");
+    m_testutils
+        .def(
+            "test_so",
+            [](std::string so_path,
+               std::string func_name,
+               std::vector<tt::Tensor> &inputs,
+               std::vector<tt::Tensor> &consts_and_params,
+               std::vector<tt::Tensor> &outputs)
+            { return tt::runtime::testutils::test_so(so_path, func_name, inputs, consts_and_params, outputs); })
+        .def(
+            "get_persistent_inputs",
+            [](ProgramType program_type, ModelState &model_state) -> std::vector<tt::Tensor>
+            {
+                std::optional<ProgramState> &opt_program_state = model_state.program_states[program_idx(program_type)];
+                TT_ASSERT(opt_program_state.has_value(), "Program state for {} not initialized", program_type);
+                return opt_program_state.value().persistent_inputs;
+            });
 }
 
 }  // namespace tt

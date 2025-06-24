@@ -25,6 +25,8 @@ import cv2
 import pytest
 import requests
 import torch
+from third_party.tt_forge_models.tools.utils import get_file
+from yolox.data.data_augment import preproc as preprocess
 from yolox.exp import get_exp
 
 import forge
@@ -40,7 +42,9 @@ from forge.forge_property_utils import (
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
 
-from test.models.pytorch.vision.yolo.model_utils.yolox_utils import preprocess
+from test.models.pytorch.vision.yolo.model_utils.yolox_utils import (
+    print_detection_results,
+)
 
 variants = [
     pytest.param("yolox_nano"),
@@ -58,9 +62,7 @@ variants = [
 def test_yolox_pytorch(variant):
 
     pcc = 0.99
-    if variant in ["yolox_l", "yolox_x"]:
-        pcc = 0.97
-    elif variant in ["yolox_nano", "yolox_m", "yolox_darknet"]:
+    if variant in ["yolox_nano", "yolox_m", "yolox_darknet", "yolox_x", "yolox_l", "yolox_tiny", "yolox_s"]:
         pcc = 0.95
 
     # Record Forge Property
@@ -103,12 +105,10 @@ def test_yolox_pytorch(variant):
     else:
         input_shape = (640, 640)
 
-    url = "http://images.cocodataset.org/val2017/000000397133.jpg"
-    response = requests.get(url)
-    with open("input.jpg", "wb") as f:
-        f.write(response.content)
-    img = cv2.imread("input.jpg")
-    img_tensor = preprocess(img, input_shape)
+    image_path = get_file("http://images.cocodataset.org/val2017/000000397133.jpg")
+    img = cv2.imread(str(image_path))
+    img_tensor, ratio = preprocess(img, input_shape)
+    img_tensor = torch.from_numpy(img_tensor)
     img_tensor = img_tensor.unsqueeze(0)
 
     inputs = [img_tensor.to(torch.bfloat16)]
@@ -125,13 +125,15 @@ def test_yolox_pytorch(variant):
     )
 
     # Model Verification
-    verify(
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
         verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
     )
 
+    # Post-processing
+    print_detection_results(co_out, ratio, input_shape)
+
     # remove downloaded weights,image
     os.remove(weight_name)
-    os.remove("input.jpg")

@@ -34,9 +34,10 @@ def test_yolov8(variant):
 
     if variant in ["yolov8x"]:
         group = ModelGroup.RED
-        priority = ModelPriority.P2
+        priority = ModelPriority.P1
     else:
         group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -45,13 +46,13 @@ def test_yolov8(variant):
         variant=variant,
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
-        group=ModelGroup.RED,
-        priority=ModelPriority.P1,
+        group=group,
+        priority=priority,
     )
 
     # Load  model and input
     model, image_tensor = load_yolo_model_and_image(
-        "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8x.pt"
+        f"https://github.com/ultralytics/assets/releases/download/v8.2.0/{variant}.pt"
     )
     framework_model = YoloWrapper(model).to(torch.bfloat16)
     input = [image_tensor.to(torch.bfloat16)]

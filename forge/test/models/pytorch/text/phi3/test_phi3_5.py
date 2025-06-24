@@ -23,7 +23,7 @@ variants = ["microsoft/Phi-3.5-mini-instruct"]
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.skip(reason="Test skipped due to segmentation fault issue")
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_5_causal_lm(variant):
 
@@ -37,6 +37,8 @@ def test_phi3_5_causal_lm(variant):
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
     )
+
+    pytest.xfail(reason="Segmentation Fault")
 
     # Load model and tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -61,3 +63,25 @@ def test_phi3_5_causal_lm(variant):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
+
+
+variants = ["microsoft/Phi-3.5-MoE-instruct"]
+
+
+@pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
+@pytest.mark.xfail
+def test_phi3_5_moe_causal_lm(variant):
+
+    # Record Forge Property
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.PHI3_5_MOE,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
+    )
+
+    raise RuntimeError("Requires multi-chip support")

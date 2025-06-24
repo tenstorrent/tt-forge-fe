@@ -24,19 +24,15 @@ from test.utils import download_model
 variants = [
     pytest.param(
         "openai/whisper-tiny",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "openai/whisper-base",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "openai/whisper-small",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "openai/whisper-medium",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "openai/whisper-large",
@@ -74,7 +70,7 @@ def test_whisper(variant):
     model.config.use_cache = False
 
     # Load and preprocess sample audio
-    sample = torch.load("forge/test/models/files/samples/audio/1272-128104-0000.pt")
+    sample = torch.load("forge/test/models/files/samples/audio/1272-128104-0000.pt", weights_only=False)
     sample_audio = sample["audio"]["array"]
 
     inputs = processor(sample_audio, return_tensors="pt")

@@ -89,4 +89,5 @@ void ModelState::run_program(ProgramType program_type, std::vector<tt::Tensor> a
 
     program_state.outputs = ::tt::run_program(binary, pg_id, inputs);
 }
+
 };  // namespace tt

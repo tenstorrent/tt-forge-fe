@@ -114,7 +114,7 @@ class TrendBasis(t.nn.Module):
             t.tensor(
                 np.concatenate(
                     [
-                        np.power(np.arange(backcast_size, dtype=np.float) / backcast_size, i)[None, :]
+                        np.power(np.arange(backcast_size, dtype=float) / backcast_size, i)[None, :]
                         for i in range(self.polynomial_size)
                     ]
                 ),
@@ -126,7 +126,7 @@ class TrendBasis(t.nn.Module):
             t.tensor(
                 np.concatenate(
                     [
-                        np.power(np.arange(forecast_size, dtype=np.float) / forecast_size, i)[None, :]
+                        np.power(np.arange(forecast_size, dtype=float) / forecast_size, i)[None, :]
                         for i in range(self.polynomial_size)
                     ]
                 ),

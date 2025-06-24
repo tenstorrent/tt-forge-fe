@@ -41,7 +41,7 @@
 #pragma clang diagnostic pop
 
 // TTMLIR headers
-#include "ttmlir/Dialect/TT/IR/TTOpsTypes.h"
+#include "ttmlir/Dialect/TTCore/IR/TTCoreOpsTypes.h"
 #include "ttmlir/Dialect/TTIR/IR/TTIROps.h"
 
 // Reportify headers
@@ -151,6 +151,10 @@ class AttributeMapper
         // pad
         add_op_mapping("pad", "padding", AttributeRemap("padding", TargetType::DenseI32ArrayAttr));
         add_op_mapping("pad", "value", AttributeRemap("value", TargetType::F32Attr));
+
+        // llm cache
+        add_op_mapping("update_cache", "batch_offset", AttributeRemap(std::nullopt, TargetType::I32Attr));
+        add_op_mapping("fill_cache", "batch_offset", AttributeRemap(std::nullopt, TargetType::I32Attr));
 
         // Add more default mappings here
     }
@@ -501,6 +505,35 @@ class MLIRGenerator
         return opResult;
     }
 
+    /// Emit an MLIR operation for a Non DPS ttforge operation.
+    template <typename TTIROp>
+    mlir::Value emit_mlir_ttforge_non_dps_op(tt::graphlib::Graph *graph, tt::graphlib::OpNode *op_node)
+    {
+        // Evaluate operation return type
+        llvm::SmallVector<mlir::Type> return_types = get_mlir_type_range(op_node);
+
+        // Evaluate operation operands: inputs and outputs per DPS
+        llvm::SmallVector<mlir::Value> operands = get_mlir_operands(graph, op_node, false);
+
+        // Map forge to MLIR attributes for this operation.
+        llvm::SmallVector<mlir::NamedAttribute> mlir_attributes;
+        for (const auto &[name, value] : op_node->op_type().named_attrs)
+        {
+            auto [mapped_name, target_type] = attr_mapper_.get_mapped_name_and_type(op_node->op_name(), name);
+
+            mlir_attributes.push_back(
+                builder_.getNamedAttr(mapped_name, convert_to_mlir_attribute(value, target_type)));
+        }
+
+        auto op = builder_.create<TTIROp>(
+            get_tt_forge_operation_location(graph, op_node),
+            mlir::TypeRange(return_types),
+            mlir::ValueRange(operands),
+            mlir_attributes);
+
+        return op.getOperation()->getResult(0);
+    }
+
     /// Emit an MLIR operation for a ttforge operation.
     template <typename TTIROp>
     mlir::Value emit_mlir_ttforge_op(tt::graphlib::Graph *graph, tt::graphlib::OpNode *op_node)
@@ -542,7 +575,8 @@ class MLIRGenerator
     // traversing the TTForge graph using topological sort. We iterate over the
     // operands of the current node and retrieve their corresponding values
     // from the symbol table.
-    llvm::SmallVector<mlir::Value> get_mlir_operands(tt::graphlib::Graph *graph, tt::graphlib::OpNode *op_node)
+    llvm::SmallVector<mlir::Value> get_mlir_operands(
+        tt::graphlib::Graph *graph, tt::graphlib::OpNode *op_node, bool is_dps = true)
     {
         llvm::SmallVector<mlir::Value> operands;
 
@@ -563,7 +597,12 @@ class MLIRGenerator
             operands.push_back(symbolTable_.at(operand->name()).first);
         }
 
-        operands.push_back(emit_mlir_empty_tensor(graph, op_node));
+        if (is_dps)
+        {
+            // If this is a DPS operation, we need to add the output of the operation
+            // to the operands list as well.
+            operands.push_back(emit_mlir_empty_tensor(graph, op_node));
+        }
         return operands;
     }
 
@@ -745,6 +784,7 @@ class MLIRGenerator
         lowering_handler_map["leaky_relu"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LeakyReluOp>;
         lowering_handler_map["less"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LessEqualOp>;
         lowering_handler_map["log"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LogOp>;
+        lowering_handler_map["logical_not"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LogicalNotOp>;
         lowering_handler_map["matmul"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MatmulOp>;
         lowering_handler_map["max_pool2d"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MaxPool2dOp>;
         lowering_handler_map["maximum"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MaximumOp>;
@@ -776,6 +816,9 @@ class MLIRGenerator
         lowering_handler_map["upsample2d"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::Upsample2dOp>;
         lowering_handler_map["pad"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::PadOp>;
         lowering_handler_map["where"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::WhereOp>;
+        lowering_handler_map["fill_cache"] = &MLIRGenerator::emit_mlir_ttforge_non_dps_op<mlir::tt::ttir::FillCacheOp>;
+        lowering_handler_map["update_cache"] =
+            &MLIRGenerator::emit_mlir_ttforge_non_dps_op<mlir::tt::ttir::UpdateCacheOp>;
     }
 };
 

@@ -2,8 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import requests
-from PIL import Image
+from datasets import load_dataset
 from transformers import CLIPModel, CLIPProcessor
 
 import forge
@@ -26,7 +25,6 @@ from test.utils import download_model
     [
         pytest.param(
             "openai/clip-vit-base-patch32",
-            marks=[pytest.mark.xfail],
         ),
     ],
 )
@@ -46,8 +44,8 @@ def test_clip_pytorch(variant):
     processor = download_model(CLIPProcessor.from_pretrained, variant)
 
     # Load image from the IAM dataset
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    dataset = load_dataset("cifar10", split="test[:1]")
+    image = dataset[0]["img"]
 
     # Process image
     text = [

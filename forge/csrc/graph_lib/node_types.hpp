@@ -175,7 +175,6 @@ class InputNode : public QueueNode
     bool prologue_ = false;
     std::string fractured_parameter_mapping_;
     RuntimeTensorTransform runtime_tensor_transform;
-    ForgeQueueLayout layout = ForgeQueueLayout::Tilized;
 
    protected:
     std::unique_ptr<ConstEvalGraph> consteval_graph_;
@@ -192,9 +191,6 @@ class InputNode : public QueueNode
     ConstEvalGraph *get_consteval_graph(Graph *graph = nullptr, bool create = false, bool promote_input = false);
     void clear_consteval_graph();
     virtual std::unique_ptr<Node> clone(std::string const &name = "") const override;
-
-    void set_layout(ForgeQueueLayout new_layout) { layout = new_layout; }
-    ForgeQueueLayout get_layout() const { return layout; }
 
     void set_tile_broadcast_dim(int dim) { tile_broadcast_dims_.push_back(dim); }
     std::vector<int> get_tile_broadcast_dims() const { return tile_broadcast_dims_; }
@@ -221,7 +217,6 @@ class InputNode : public QueueNode
 enum ConstantInputNodeType
 {
     SingleValue,
-    SingleTile,
     Tensor,
 };
 
@@ -230,7 +225,6 @@ class ConstantInputNode : public InputNode
    private:
     ConstantInputNodeType node_type_;
     float constant_value_;
-    std::vector<float> tile_value_;
     std::shared_ptr<void> tensor_handle_;
     Shape tensor_shape_;
     sparse::SparseFORGE sparse_forge{};  // TODO: This should be a void pointer
@@ -247,14 +241,6 @@ class ConstantInputNode : public InputNode
         dim_c_(dim_c)
     {
     }
-    ConstantInputNode(const std::string &name, std::vector<float> const &tile_value) :
-        InputNode(name, InputNodeType::Constant, NodeType::kInput),
-        node_type_(ConstantInputNodeType::SingleTile),
-        tile_value_(tile_value),
-        dim_r_(-1),
-        dim_c_(-1)
-    {
-    }
     ConstantInputNode(const std::string &name, std::shared_ptr<void> tensor_handle, Shape const &tensor_shape) :
         InputNode(name, InputNodeType::Constant, NodeType::kInput),
         node_type_(ConstantInputNodeType::Tensor),
@@ -268,7 +254,6 @@ class ConstantInputNode : public InputNode
 
     virtual std::unique_ptr<Node> clone(std::string const &name = "") const override;
     bool is_single_value() const { return this->node_type_ == ConstantInputNodeType::SingleValue; }
-    bool is_single_tile() const { return this->node_type_ == ConstantInputNodeType::SingleTile; }
     bool is_tensor() const { return this->node_type_ == ConstantInputNodeType::Tensor; }
     float constant_value() const
     {
@@ -279,11 +264,6 @@ class ConstantInputNode : public InputNode
     {
         TT_ASSERT(is_single_value());
         return std::make_pair(dim_r_, dim_c_);
-    }
-    const std::vector<float> &tile_value() const
-    {
-        TT_ASSERT(is_single_tile());
-        return tile_value_;
     }
     std::shared_ptr<void> tensor() const
     {
@@ -424,8 +404,8 @@ struct OpType
         return std::get<T>(get_attr(name));
     }
 
-    py::function py_attr(char const *name, IRLevel ir_level) const;
-    py::function py_attr(char const *name, IRLevel ir_level);
+    py::function py_attr(char const *name) const;
+    py::function py_attr(char const *name);
 
     void set_attr(std::string const &name, Attr attr) { named_attrs[name] = attr; }
 
@@ -542,7 +522,7 @@ class OpNode : public TaggedNode
     {
         return py_attr(attr_name)(args...).template cast<T>();
     }
-    IRLevel get_ir_level() const { return (node_type() == NodeType::kPyOp) ? IRLevel::IR_TT_FORGE : IRLevel::IR_FORGE; }
+    IRLevel get_ir_level() const { return IRLevel::IR_TT_FORGE; }
     const std::string &op_name() const { return op_type_.op; }
     const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attr; }
     OpType::Attrs &named_attrs() { return op_type_.named_attrs; }
@@ -623,55 +603,6 @@ class PyOpNode : public OpNode
     virtual std::unique_ptr<Node> clone(std::string const &name = "") const override;
 
     void copy_parent_op_attributes(PyOpNode *node);
-};
-
-class ForgeOpNode : public OpNode
-{
-   private:
-    tt::DataFormat accumulate_df_ = tt::DataFormat::Float16_b;
-    tt::DataFormat intermediate_df_ = tt::DataFormat::Float16_b;
-    tt::MathFidelity math_fidelity_ = tt::MathFidelity::HiFi3;
-    std::shared_ptr<FusedOp> fused_op_ = nullptr;
-    bool buffering_op_ = false;
-
-   public:
-    ForgeOpNode(const std::string &name, const std::string &op_type) : OpNode(name, op_type, NodeType::kForgeOp) {}
-    ForgeOpNode(const std::string &name, OpType op_type) : OpNode(name, op_type, NodeType::kForgeOp) {}
-
-    tt::DataFormat intermediate_df() const { return intermediate_df_; }
-    void set_intermediate_df(tt::DataFormat df) { intermediate_df_ = df; }
-
-    tt::DataFormat accumulate_df() const { return accumulate_df_; }
-    void set_accumulate_df(tt::DataFormat df) { accumulate_df_ = df; }
-
-    tt::MathFidelity math_fidelity() const { return math_fidelity_; }
-    void set_math_fidelity(tt::MathFidelity mf) { math_fidelity_ = mf; }
-
-    void copy_lowered_op_attributes(PyOpNode *node);
-    void copy_parent_op_attributes(ForgeOpNode *node);
-
-    virtual std::unique_ptr<Node> clone(std::string const &name = "") const override;
-
-    void set_buffering_op(bool buffering_op) { buffering_op_ = buffering_op; }
-    bool is_buffering_op() const { return buffering_op_; }
-};
-
-class ForgeNaryTMNode : public Node
-{
-   private:
-    OpType op_type_;
-
-   public:
-    ForgeNaryTMNode(const std::string &name, OpType const &op_type) :
-        Node(name, NodeType::kForgeNaryTM), op_type_(op_type)
-    {
-    }
-    OpType const &op_type() const { return op_type_; }
-    void change_op_type(OpType const &new_op_type) { op_type_ = new_op_type; }
-    const std::string &tm_name() const { return op_type_.op; }
-    const std::vector<OpType::Attr> &tm_attrs() const { return op_type_.attr; }
-    const ForgeOpAttrs &forge_attrs() const { return op_type_.forge_attrs; }
-    void copy_lowered_op_attributes(PyOpNode *node);
 };
 
 // Modifiable edge attributes outside of Edge itself because Edge is mostly immutable in current

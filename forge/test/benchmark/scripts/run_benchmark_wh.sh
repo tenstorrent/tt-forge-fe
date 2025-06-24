@@ -56,3 +56,6 @@ python forge/test/benchmark/benchmark.py -m yolo_v9 -ts na -bs 1 -df bfloat16 -l
 
 # Yolo10
 python forge/test/benchmark/benchmark.py -m yolo_v10 -ts na -bs 1 -df bfloat16 -lp 32 -o forge-benchmark-e2e-yolo_v10.json
+
+# Unet
+python forge/test/benchmark/benchmark.py -m unet -ts na -bs 1 -df bfloat16 -lp 32 -o forge-benchmark-e2e-unet.json

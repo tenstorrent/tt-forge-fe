@@ -20,8 +20,7 @@ template <graphlib::IRLevel ir_level>
 class GraphTest : public ::testing::Test
 {
    public:
-    using OpType =
-        std::conditional_t<ir_level == graphlib::IRLevel::IR_FORGE, graphlib::ForgeOpNode, graphlib::PyOpNode>;
+    using OpType = graphlib::PyOpNode;
 
     virtual std::vector<OpType*> create_graph() = 0;
 
@@ -55,14 +54,7 @@ class GraphTest : public ::testing::Test
     template <typename... Dims>
     static graphlib::Shape shape(Dims... dims)
     {
-        if constexpr (ir_level == graphlib::IRLevel::IR_FORGE)
-        {
-            return graphlib::Shape::create_forge({static_cast<std::uint32_t>(dims)...});
-        }
-        else
-        {
-            return graphlib::Shape::create({static_cast<std::uint32_t>(dims)...});
-        }
+        return graphlib::Shape::create({static_cast<std::uint32_t>(dims)...});
     }
 
     graphlib::InputNode* create_input(
@@ -219,47 +211,6 @@ class GraphTest : public ::testing::Test
     graphlib::QueueNode* create_queue(graphlib::Node* operand, Attrs... attrs)
     {
         return create_queue(operand, attrs...);
-    }
-
-    void append_tm(graphlib::OpType const& op_type, std::shared_ptr<graphlib::EdgeAttributes> attr)
-    {
-        TT_ASSERT(ir_level == graphlib::IRLevel::IR_FORGE);
-        attr->append_tm(op_type);
-    }
-
-    void append_tm(graphlib::OpType const& op_type, graphlib::Edge edge)
-    {
-        return append_tm(op_type, graph->get_edge_attributes(edge));
-    }
-
-    void append_tm(graphlib::OpType const& op_type, graphlib::Node* node, int operand_idx)
-    {
-        auto edge = graph->operand_data_edges(node).at(operand_idx);
-        return append_tm(op_type, graph->get_edge_attributes(edge));
-    }
-
-    template <typename... Attrs>
-    void append_tm(std::string const& type, graphlib::Edge edge, Attrs... attrs)
-    {
-        return append_tm(graphlib::OpType(type, {attrs...}), edge);
-    }
-
-    template <typename... Attrs>
-    void append_tm(std::string const& type, graphlib::Node* node, int operand_idx, Attrs... attrs)
-    {
-        return append_tm(graphlib::OpType(type, {attrs...}), node, operand_idx);
-    }
-
-    void append_tm(
-        std::string const& type, graphlib::Node* node, int operand_idx, graphlib::OpType::Attrs const& named_attrs)
-    {
-        return append_tm(graphlib::OpType(type, {}, {}, named_attrs), node, operand_idx);
-    }
-
-    std::vector<graphlib::OpType>& get_tms(std::shared_ptr<graphlib::EdgeAttributes> attr)
-    {
-        TT_ASSERT(ir_level == graphlib::IRLevel::IR_FORGE);
-        return attr->get_tms();
     }
 
     std::vector<graphlib::OpType>& get_tms(graphlib::Edge edge) { return get_tms(graph->get_edge_attributes(edge)); }

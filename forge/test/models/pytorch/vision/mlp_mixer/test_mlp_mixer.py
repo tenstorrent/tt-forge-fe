@@ -2,12 +2,12 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import requests
 import timm
 import torch
 from loguru import logger
 from mlp_mixer_pytorch import MLPMixer
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
@@ -81,8 +81,22 @@ def test_mlp_mixer_timm_pytorch(variant):
     transform = create_transform(**config)
 
     try:
-        url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
-        image = Image.open(requests.get(url, stream=True).raw).convert("RGB")
+        if variant in [
+            "mixer_b16_224_in21k",
+            "mixer_b16_224_miil_in21k",
+            "mixer_l16_224_in21k",
+            "mixer_b16_224.goog_in21k",
+        ]:
+            input_image = get_file(
+                "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/beignets-task-guide.png"
+            )
+            use_1k_labels = False
+        else:
+            input_image = get_file(
+                "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
+            )
+            use_1k_labels = True
+        image = Image.open(str(input_image)).convert("RGB")
     except:
         logger.warning(
             "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
@@ -107,11 +121,10 @@ def test_mlp_mixer_timm_pytorch(variant):
     fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
-    print_cls_results(fw_out[0], co_out[0])
+    print_cls_results(fw_out[0], co_out[0], use_1k_labels=use_1k_labels)
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_mlp_mixer_pytorch():
 
     # Record Forge Property
