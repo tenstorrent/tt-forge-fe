@@ -23,6 +23,7 @@ def run_pytest(args=None):
         for line in process.stdout:
             print(line, end="")  # Print to stdout
             output.append(line)  # Capture the output
+            sys.stdout.flush()  # Ensure real-time printing (or CI appears to hang)
 
         exit_code = process.wait()  # Wait for the process to complete
         return output, exit_code
@@ -151,7 +152,7 @@ def main():
 
         if not run_crashed_tests:
             # This summary header for pytest.log is requuired for compatibility with Fail Inspector
-            str = f"\n=========================== short test summary info ============================\n======================== CRASHED TESTS, found {len(crashed_tests)}:"
+            str = f"\n=========================== short test summary info ============================\n=== CRASHED TESTS, found {len(crashed_tests)}:"
             print(str)
             # Append failures to the pytest.log file
             with open("pytest.log", "a") as f:

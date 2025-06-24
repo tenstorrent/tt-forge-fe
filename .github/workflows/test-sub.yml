@@ -168,18 +168,18 @@ jobs:
                -m "${{ inputs.test_mark }}" --collect-only -q \
                 | sed -n '/^Collected tests /,/^collected /p' | sed '/^[Cc]ollected /d' >.pytest_tests_to_run
 
-          echo "Collected tests."
-          cat .pytest_tests_to_run
+          echo "Collected $(wc -l .pytest_test_to_run) tests."
+          # enable next line for debugging
+          # cat .pytest_tests_to_run
 
           python .github/workflows/test_runner.py  \
                --junit-xml=${{ steps.strings.outputs.test_report_path }} \
                --log-memory-usage \
-               $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi)
-
-          if [ -f "crashed_pytest.log" ]; then
-            echo "Creating crash summary for the job..."
-            echo "### Crashed tests: (${{ matrix.build.runs-on }}, ${{ inputs.test_mark }}, ${{ matrix.test_group_id }})" >>$GITHUB_STEP_SUMMARY
-            cat crashed_pytest.log >>$GITHUB_STEP_SUMMARY
+               $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi) || \
+          if [ -f "crashed_pytest.log" ]; then \
+            echo "Creating crash summary for the job..." \
+            echo "### Crashed tests: (${{ matrix.build.runs-on }}, ${{ inputs.test_mark }}, ${{ matrix.test_group_id }})" >>$GITHUB_STEP_SUMMARY \
+            cat crashed_pytest.log >>$GITHUB_STEP_SUMMARY \
           fi
 
       - name: Upload Test Log
