@@ -161,21 +161,26 @@ jobs:
         shell: bash
         run: |
           source env/activate
-            pytest --splits ${{ inputs.test_group_cnt }} \
+          echo "Collecting tests for group ${{ matrix.test_group_id }} with mark '${{ inputs.test_mark }}'..."
+          pytest --splits ${{ inputs.test_group_cnt }} \
                --group ${{ matrix.test_group_id }} \
                --splitting-algorithm least_duration \
                -m "${{ inputs.test_mark }}" --collect-only -q \
                 | sed -n '/^Collected tests /,/^collected /p' | sed '/^[Cc]ollected /d' >.pytest_tests_to_run
 
-          python .github/workflows/test_runner.py  \
-                 --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-                 --log-memory-usage \
-                 $(if [ -n "${{inputs.continue-on-crash}}" ]; then echo "--continue-after-crash"; fi)
+          echo "Collected tests."
+          cat .pytest_tests_to_run
 
-            if [ -f crashed_pytest.log ]; then
-              echo "### Crashed tests: (${{ matrix.build.runs-on }}, ${{ inputs.test_mark }}, ${{ matrix.test_group_id }})" >>$GITHUB_STEP_SUMMARY
-              cat crashed_pytest.log >>$GITHUB_STEP_SUMMARY
-            fi
+          python .github/workflows/test_runner.py  \
+               --junit-xml=${{ steps.strings.outputs.test_report_path }} \
+               --log-memory-usage \
+               $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi)
+
+          if [ -f "crashed_pytest.log" ]; then
+            echo "Creating crash summary for the job..."
+            echo "### Crashed tests: (${{ matrix.build.runs-on }}, ${{ inputs.test_mark }}, ${{ matrix.test_group_id }})" >>$GITHUB_STEP_SUMMARY
+            cat crashed_pytest.log >>$GITHUB_STEP_SUMMARY
+          fi
 
       - name: Upload Test Log
         uses: actions/upload-artifact@v4

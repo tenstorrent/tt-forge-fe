@@ -134,8 +134,8 @@ def main():
             # Append failures to the pytest.log file
             with open("pytest.log", "a") as f:
                 for test in crashed_tests_twice:
-                    print(f"FAILURE {test}")
-                    f.write(f"FAILURE {test}\n")
+                    print(f"FAILED {test}")
+                    f.write(f"FAILED {test}\n")
 
             if exit_code == 0:
                 exit_code = 1
@@ -150,12 +150,15 @@ def main():
                 f.write(line)
 
         if not run_crashed_tests:
-            print(f"\n========================\nCRASHED TESTS, found {len(crashed_tests)}:")
+            # This summary header for pytest.log is requuired for compatibility with Fail Inspector
+            str = f"\n=========================== short test summary info ============================\n======================== CRASHED TESTS, found {len(crashed_tests)}:"
+            print(str)
             # Append failures to the pytest.log file
             with open("pytest.log", "a") as f:
+                f.write(str + "\n")
                 for test in crashed_tests:
-                    print(f"FAILURE {test}")
-                    f.write(f"FAILURE {test}\n")
+                    print(f"FAILED {test}")
+                    f.write(f"FAILED {test}\n")
 
             # If there are crashed tests change exit code to failure
             if exit_code == 0:
