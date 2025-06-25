@@ -366,6 +366,7 @@ class OutputNode : public QueueNode
 
 struct OpType
 {
+    friend class ops::Op;
     using Attr = ForgeOpAttr;
     using Attrs = ForgeOpAttrs;
 
@@ -480,6 +481,30 @@ struct OpType
         }
         return ret;
     }
+
+    // Calculations. This is temporary implementation in ops transition period. It will be deleted once all ops are
+    // migrated from python to cpp.
+
+    at::Tensor eval(const std::vector<at::Tensor> &tensors) const;
+    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
+        const std::vector<std::vector<std::uint32_t>> &inputs) const;
+
+    tt::graphlib::NodeContext backward(
+        tt::autograd::autograd_context context,
+        int operand,
+        const std::vector<tt::graphlib::NodeContext> &inputs,
+        tt::graphlib::NodeContext output,
+        tt::graphlib::NodeContext gradient) const;
+
+    void decompose(const char *dispatch, DecomposingContext &dc, std::vector<tt::graphlib::NodeContext> &inputs) const;
+
+    long initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const;
+
+    bool is_tm() const;
+    bool is_eltwise() const;
+    bool is_eltwise_unary() const;
+    bool is_eltwise_binary() const;
+    bool is_eltwise_nary() const;
 };
 
 class OpNode : public TaggedNode
@@ -556,8 +581,8 @@ class OpNode : public TaggedNode
     bool is_depthwise_matmul() const { return new_op_type() == ops::OpType::Depthwise; }
     bool is_matmul_not_sparse() const { return is_matmul() and new_op().has_attr("identity"); }
 
-    bool is_tm() const { return new_op().is_tm(); };
-    bool is_eltwise() const { return new_op().is_eltwise(); };
+    bool is_tm() const { return op_type_.is_tm(); };
+    bool is_eltwise() const { return op_type_.is_eltwise(); };
 
     bool should_pair_with_sparse(const OpNode *sparse_op_node, const Graph *graph) const;
     void set_output_df_from_operands(const Graph *graph);

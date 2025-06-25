@@ -218,7 +218,7 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_tt_forge_gr
             DecomposingContext dc(graph, py_node, compiler_cfg);
 
             log_trace(LogGraphCompiler, "Decomposing {}", node->name());
-            type.new_op().decompose(dispatcher_name, dc, inputs);
+            type.decompose(dispatcher_name, dc, inputs);
 
             if (dc.get_op_index() == 0)
             {

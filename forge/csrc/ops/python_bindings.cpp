@@ -140,20 +140,6 @@ void OpsModule(py::module &m_ops)
         .value("Vstack", ops::OpType::Vstack)
         .value("Where", ops::OpType::Where)
         .export_values();
-
-    // Check whether this needs to change to py::class_<Op, std::unique_ptr<Op>>(m_ops, "Op").
-    py::class_<ops::Op>(m_ops, "Op")
-        .def(
-            py::init([](ops::OpType type, ops::Attrs attrs) { return ops::Op(type, std::move(attrs)); }),
-            py::arg("type") = ops::OpType{},
-            py::arg("attr") = ops::Attrs{})
-        .def("attr", [](const ops::Op &self, const std::string &name) { return self.attr(name); })
-        .def("type", [](const ops::Op &self) { return self.type(); })
-        .def("eval", &ops::Op::eval)
-        .def("shape", &ops::Op::shape)
-        .def("backward", &ops::Op::backward)
-        .def("decompose", &ops::Op::decompose)
-        .def("initial_flops_stimate", &ops::Op::initial_flops_estimate);
 }
 
 }  // namespace tt

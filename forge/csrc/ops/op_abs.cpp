@@ -65,7 +65,7 @@ tt::graphlib::NodeContext Op::abs_backward(
 
 long Op::abs_initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
-    auto shape_tuple = shape(inputs);
+    auto shape_tuple = abs_shape(inputs);
     graphlib::Shape out_shape = std::get<0>(shape_tuple);
 
     return std::accumulate(out_shape.begin(), out_shape.end(), 1u, std::multiplies<uint32_t>());

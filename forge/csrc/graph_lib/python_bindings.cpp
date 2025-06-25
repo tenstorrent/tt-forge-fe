@@ -21,6 +21,11 @@
 #include "utils/logger.hpp"
 #include "utils/raw_ptr.hpp"
 
+// Below are temporary includes. Delete after ops are migrated to cpp.
+#include "passes/decomposing_context.hpp"
+#include "torch/extension.h"
+#include "torch/torch.h"
+
 using json = nlohmann::json;
 
 PYBIND11_DECLARE_HOLDER_TYPE(T, tt::raw_ptr<T>);
@@ -290,6 +295,11 @@ void GraphModule(py::module &m_graph)
         .def_readonly("attr", &tt::graphlib::OpType::attr)
         .def_readonly("named_attrs", &tt::graphlib::OpType::named_attrs)
         .def_readonly("forge_attrs", &tt::graphlib::OpType::forge_attrs)
+        .def("eval", &tt::graphlib::OpType::eval)
+        .def("shape", &tt::graphlib::OpType::shape)
+        .def("backward", &tt::graphlib::OpType::backward)
+        .def("decompose", &tt::graphlib::OpType::decompose)
+        .def("initial_flops_estimate", &tt::graphlib::OpType::initial_flops_estimate)
         .def(
             "__getattr__",
             [](tt::graphlib::OpType const &op_type, std::string const &name) { return op_type.get_attr(name); })
@@ -297,8 +307,7 @@ void GraphModule(py::module &m_graph)
             "__setattr__",
             [](tt::graphlib::OpType &op_type, std::string const &name, tt::graphlib::OpType::Attr value)
             { return op_type.set_attr(name, value); })
-        .def("__repr__", [](tt::graphlib::OpType const &op_type) { return op_type.as_string(); })
-        .def("new_op", &tt::graphlib::OpType::new_op);
+        .def("__repr__", [](tt::graphlib::OpType const &op_type) { return op_type.as_string(); });
 
     py::enum_<tt::graphlib::UBlockOrder>(m_graph, "UBlockOrder")
         .value("R", tt::graphlib::UBlockOrder::R)

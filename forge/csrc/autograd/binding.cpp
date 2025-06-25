@@ -10,5 +10,5 @@ std::tuple<Shape, std::vector<DimBroadcast>> get_op_shape(OpType type, std::vect
     std::vector<std::vector<std::uint32_t>> operand_tuples;
     for (Shape &shape : operands) operand_tuples.push_back(shape.as_vector());
 
-    return type.new_op().shape(operand_tuples);
+    return type.shape(operand_tuples);
 }

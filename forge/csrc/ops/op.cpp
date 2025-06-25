@@ -284,37 +284,27 @@ Op::Op(const graphlib::OpType &old_op_type) :
 {
 }
 
-graphlib::OpType Op::as_old_op_type() const
-{
-    return graphlib::OpType(new_to_old_op_type_mapper[type_], {}, {}, attrs_);
-}
-
 const std::string &Op::as_string() const { return new_to_old_op_type_mapper[type_]; }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Default implementation for ops that are not cpp implemented yet. We will invoke old python code to evaluate them. //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-at::Tensor Op::base_eval(const std::vector<at::Tensor> &tensors) const
+at::Tensor Op::base_eval(const graphlib::OpType &old_op_type, const std::vector<at::Tensor> &tensors) const
 {
-    graphlib::OpType old_op_type = as_old_op_type();
-
     py::object eval_module = py::module_::import("forge.op.eval.forge");
-    py::function forge_eval = eval_module.attr("get_f_forge_eval")(std::ref(old_op_type));
+    py::function forge_eval = eval_module.attr("get_f_forge_eval")(old_op_type);
 
     py::object result = forge_eval(tensors);
     return result.cast<at::Tensor>();
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::base_shape(
-    const std::vector<std::vector<std::uint32_t>> &inputs) const
+    const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
-    graphlib::OpType old_op_type = as_old_op_type();
-
     py::object eval_module = py::module_::import("forge.op.eval.forge");
-    py::function forge_shape = eval_module.attr("get_f_forge_shape")(std::ref(old_op_type));
+    py::function forge_shape = eval_module.attr("get_f_forge_shape")(old_op_type);
 
-    // Old code returns tuple of (shape, [])
     py::tuple result = forge_shape(inputs);
     if (result.size() != 2)
         throw std::runtime_error("Expected a tuple of shape and broadcast.");
@@ -325,14 +315,13 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::base_shape(
 }
 
 tt::graphlib::NodeContext Op::base_backward(
+    const graphlib::OpType &old_op_type,
     tt::autograd::autograd_context context,
     int operand,
     const std::vector<tt::graphlib::NodeContext> &inputs,
     tt::graphlib::NodeContext output,
     tt::graphlib::NodeContext gradient) const
 {
-    graphlib::OpType old_op_type = as_old_op_type();
-
     auto eval_module = py::module_::import("forge.op.eval.forge");
     py::function forge_backward = eval_module.attr("get_f_forge_backward")(old_op_type);
 
@@ -340,20 +329,20 @@ tt::graphlib::NodeContext Op::base_backward(
 }
 
 void Op::base_decompose(
-    const char *dispatch, DecomposingContext &dc, std::vector<tt::graphlib::NodeContext> &inputs) const
+    const graphlib::OpType &old_op_type,
+    const char *dispatch,
+    DecomposingContext &dc,
+    std::vector<tt::graphlib::NodeContext> &inputs) const
 {
-    graphlib::OpType old_op_type = as_old_op_type();
-
     py::module_ eval_module = py::module_::import("forge.op.eval.forge");
     py::function forge_decompose = eval_module.attr(dispatch)(old_op_type);
 
     forge_decompose(dc, inputs);
 }
 
-long Op::base_initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const
+long Op::base_initial_flops_estimate(
+    const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
-    graphlib::OpType old_op_type = as_old_op_type();
-
     py::object eval_module = py::module_::import("forge.op.eval.forge");
     py::function initial_flops_estimate = eval_module.attr("get_f_forge_initial_flops_estimate")(old_op_type);
     py::object ret = initial_flops_estimate(inputs);
@@ -361,69 +350,60 @@ long Op::base_initial_flops_estimate(const std::vector<std::vector<std::uint32_t
     return ret.is_none() ? 0 : ret.cast<long>();
 }
 
-bool Op::base_is_tm() const
+bool Op::base_is_tm(const graphlib::OpType &old_op_type) const
 {
-    graphlib::OpType old_op_type = as_old_op_type();
-
     static py::function fn_is_tm = py::module_::import("forge.op.eval.forge").attr("is_tm");
-    return fn_is_tm(std::ref(old_op_type)).cast<bool>();
+    return fn_is_tm(old_op_type).cast<bool>();
 }
 
-bool Op::base_is_eltwise() const
+bool Op::base_is_eltwise(const graphlib::OpType &old_op_type) const
 {
-    graphlib::OpType old_op_type = as_old_op_type();
-
     static py::function fn_is_eltwise = py::module_::import("forge.op.eval.forge").attr("is_eltwise");
-    return fn_is_eltwise(std::ref(old_op_type)).cast<bool>();
+    return fn_is_eltwise(old_op_type).cast<bool>();
 }
 
-bool Op::base_is_eltwise_unary() const
+bool Op::base_is_eltwise_unary(const graphlib::OpType &old_op_type) const
 {
-    graphlib::OpType old_op_type = as_old_op_type();
-
     static py::function fn_is_eltwise_unary = py::module_::import("forge.op.eval.forge").attr("is_eltwise_unary");
-    return fn_is_eltwise_unary(std::ref(old_op_type)).cast<bool>();
+    return fn_is_eltwise_unary(old_op_type).cast<bool>();
 }
 
-bool Op::base_is_eltwise_binary() const
+bool Op::base_is_eltwise_binary(const graphlib::OpType &old_op_type) const
 {
-    graphlib::OpType old_op_type = as_old_op_type();
-
     static py::function fn_is_eltwise_binary = py::module_::import("forge.op.eval.forge").attr("is_eltwise_binary");
-    return fn_is_eltwise_binary(std::ref(old_op_type)).cast<bool>();
+    return fn_is_eltwise_binary(old_op_type).cast<bool>();
 }
-bool Op::base_is_eltwise_nary() const
+bool Op::base_is_eltwise_nary(const graphlib::OpType &old_op_type) const
 {
-    graphlib::OpType old_op_type = as_old_op_type();
-
     static py::function fn_is_eltwise_nary = py::module_::import("forge.op.eval.forge").attr("is_eltwise_nary");
-    return fn_is_eltwise_nary(std::ref(old_op_type)).cast<bool>();
+    return fn_is_eltwise_nary(old_op_type).cast<bool>();
 }
 
 ///////////////////////////////////
 // Dispatching based on op type. //
 ///////////////////////////////////
 
-at::Tensor Op::eval(const std::vector<at::Tensor> &tensors) const
+at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::Tensor> &tensors) const
 {
     switch (type_)
     {
         case OpType::Abs: return abs_eval(tensors);
-        default: return base_eval(tensors);
+        default: return base_eval(old_op_type, tensors);
     }
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
-    const std::vector<std::vector<std::uint32_t>> &inputs) const
+    const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
     switch (type_)
     {
         case OpType::Abs: return abs_shape(inputs);
-        default: return base_shape(inputs);
+        default: return base_shape(old_op_type, inputs);
     }
 }
 
 tt::graphlib::NodeContext Op::backward(
+    const graphlib::OpType &old_op_type,
     tt::autograd::autograd_context context,
     int operand,
     const std::vector<tt::graphlib::NodeContext> &inputs,
@@ -433,70 +413,75 @@ tt::graphlib::NodeContext Op::backward(
     switch (type_)
     {
         case OpType::Abs: return abs_backward(context, operand, inputs, output, gradient);
-        default: return base_backward(context, operand, inputs, output, gradient);
+        default: return base_backward(old_op_type, context, operand, inputs, output, gradient);
     }
 }
 
 // TODO: Fix this with proper dispatching based on provided string.
-void Op::decompose(const char *dispatch, DecomposingContext &dc, std::vector<tt::graphlib::NodeContext> &inputs) const
+void Op::decompose(
+    const graphlib::OpType &old_op_type,
+    const char *dispatch,
+    DecomposingContext &dc,
+    std::vector<tt::graphlib::NodeContext> &inputs) const
 {
     switch (type_)
     {
         case OpType::Abs: return;
-        default: return base_decompose(dispatch, dc, inputs);
+        default: return base_decompose(old_op_type, dispatch, dc, inputs);
     }
 }
 
-long Op::initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const
+long Op::initial_flops_estimate(
+    const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
     switch (type_)
     {
         case OpType::Abs: return abs_initial_flops_estimate(inputs);
-        default: return base_initial_flops_estimate(inputs);
+        default: return base_initial_flops_estimate(old_op_type, inputs);
     }
 }
 
-bool Op::is_tm() const
+bool Op::is_tm(const graphlib::OpType &old_op_type) const
 {
     switch (type_)
     {
         case OpType::Abs: return false;
-        default: return base_is_tm();
+        default: return base_is_tm(old_op_type);
     }
 }
 
-bool Op::is_eltwise() const
+bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
 {
     switch (type_)
     {
         case OpType::Abs: return true;
-        default: return base_is_eltwise();
+        default: return base_is_eltwise(old_op_type);
     }
 }
 
-bool Op::is_eltwise_unary() const
+bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
 {
     switch (type_)
     {
         case OpType::Abs: return true;
-        default: return base_is_eltwise_unary();
+        default: return base_is_eltwise_unary(old_op_type);
     }
 }
 
-bool Op::is_eltwise_binary() const
+bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
 {
     switch (type_)
     {
         case OpType::Abs: return false;
-        default: return base_is_eltwise_binary();
+        default: return base_is_eltwise_binary(old_op_type);
     }
 }
-bool Op::is_eltwise_nary() const
+bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
 {
     switch (type_)
     {
         case OpType::Abs: return false;
-        default: return base_is_eltwise_nary();
+        default: return base_is_eltwise_nary(old_op_type);
     }
 }
 

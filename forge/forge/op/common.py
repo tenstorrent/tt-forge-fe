@@ -55,11 +55,11 @@ class ForgeOp:
 
         # get reference output shape
         shapes = [o.shape.get_pytorch_shape() for o in self.operands]
-        shape, self.operand_broadcast = self.cpp_op_type.new_op().shape(shapes)
+        shape, self.operand_broadcast = self.cpp_op_type.shape(shapes)
 
         # get reference output value
         values = [o.value() if isinstance(o, (Tensor, Parameter)) else o for o in self.operands]
-        ref_output = self.cpp_op_type.new_op().eval(values)
+        ref_output = self.cpp_op_type.eval(values)
 
         if out_df is not None:  # User provided output dataformat
             data_format = out_df

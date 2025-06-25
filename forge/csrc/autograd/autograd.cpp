@@ -347,7 +347,7 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
             }
             NodeContext gradient(out_grad);
 
-            NodeContext ret_gradient = op_node->op_type().new_op().backward(
+            NodeContext ret_gradient = op_node->op_type().backward(
                 {this, node, (int)edge.consumer_input_port_id},
                 edge.consumer_input_port_id,
                 operands,
