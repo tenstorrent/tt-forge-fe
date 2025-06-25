@@ -94,6 +94,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "p150"}]'
       run_id: ${{ needs.build.outputs.run_id }}
+      continue-on-crash: true
 
   test_full_model_xfailing_p150:
     if: success() || failure()
@@ -110,6 +111,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ needs.build.outputs.run_id }}
       runs-on: '[{"runs-on": "p150"}]'
+      continue-on-crash: true
 
   test_models_ops_p150:
     if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
@@ -127,6 +129,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "p150"}]'
       allow-fail: true
+      continue-on-crash: true
 
   check-all-green:
     if: always()
