@@ -5,6 +5,7 @@ import pytest
 
 import torch
 from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_mask
+from transformers.cache_utils import DynamicCache
 
 import forge
 from forge.verify.verify import verify
@@ -98,11 +99,16 @@ class LlamaModelWrapper(torch.nn.Module):
         # List(List(Key1, Values1), ... , List(KeyN, ValuesN))
         past_key_values = unflatten_pastkv(past_key_values) if len(past_key_values) > 0 else None
 
+        if past_key_values is not None:
+            past_key_values = DynamicCache.from_legacy_cache(past_key_values)
+            past_key_values_length = past_key_values.get_seq_length()
+        else:
+            past_key_values_length = 0
+
         # The causal_mask calculated inside _update_causal_mask method in LlamaModel module
         # is not properly traced by torch.jit.trace while converting pytorch to relay ops in TVM PyTorch Frontend Conversion
         # which leads to pcc drops, because the causal mask helps to avoid attention calculation on padding token in LlamaAttention module
         # To overcome this jit trace issue, causal mask is calculated by using _prepare_4d_causal_attention_mask function.
-        past_key_values_length = past_key_values[0][0].shape[-2] if past_key_values is not None else 0
         causal_attention_mask = _prepare_4d_causal_attention_mask(
             attention_mask, input_ids.shape, inputs_embeds, past_key_values_length
         )
@@ -116,7 +122,7 @@ class LlamaModelWrapper(torch.nn.Module):
         if outputs.past_key_values is not None:
             # Formate the past key values from List(List(Key1, Values1), ... , List(KeyN, ValuesN)) to
             # List(Key1, Values1, ... , KeyN, ValuesN)
-            model_outputs.extend(flatten_pastkv(outputs.past_key_values))
+            model_outputs.extend(flatten_pastkv(outputs.past_key_values.to_legacy_cache()))
 
         return model_outputs
 
@@ -168,7 +174,7 @@ def test_llama_prefill_on_cpu_decode_on_tt_no_cache(model_path, run_on_tt_device
     use_fast = False if model_path == "openlm-research/open_llama_3b" else True
 
     # Load Llama model and tokenizer
-    model, tokenizer = load_model(model_path, return_dict=True, use_cache=False, use_fast=use_fast)
+    model, tokenizer = load_model(model_path, use_cache=False, use_fast=use_fast)
     framework_model = LlamaModelWrapper(model)
     framework_model.eval()
 
@@ -184,7 +190,7 @@ def test_llama_prefill_on_cpu_decode_on_tt_no_cache(model_path, run_on_tt_device
         prompt,
         return_tensors="pt",
         max_length=max_sequence_length,
-        pad_to_max_length=True,
+        padding="max_length",
         truncation=True,
     )
     input_ids = inputs.input_ids
@@ -285,7 +291,6 @@ def test_llama_prefill_on_cpu_decode_on_tt_cache(model_path, run_on_tt_device, n
     # Load model with optional override for num_hidden_layers
     model, tokenizer = load_model(
         model_path,
-        return_dict=True,
         use_cache=True,
         use_fast=use_fast,
         num_hidden_layers=num_hidden_layers,

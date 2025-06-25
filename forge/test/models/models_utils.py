@@ -170,12 +170,10 @@ def pad_inputs(inputs, max_new_tokens=512):
 
 
 def _prepare_4d_causal_attention_mask_with_cache_position(
-    self,
     attention_mask: torch.Tensor,
     sequence_length: int,
     target_length: int,
     dtype: torch.dtype,
-    device: torch.device,
     cache_position: torch.Tensor,
     batch_size: int,
     **kwargs,
@@ -185,10 +183,10 @@ def _prepare_4d_causal_attention_mask_with_cache_position(
         causal_mask = attention_mask
     else:
         min_dtype = torch.finfo(dtype).min
-        causal_mask = torch.full((sequence_length, target_length), fill_value=min_dtype, dtype=dtype, device=device)
+        causal_mask = torch.full((sequence_length, target_length), fill_value=min_dtype, dtype=dtype, device=cache_position.device)
         if sequence_length != 1:
             causal_mask = torch.triu(causal_mask, diagonal=1)
-        causal_mask *= torch.arange(target_length, device=device) > cache_position.reshape(-1, 1)
+        causal_mask *= torch.arange(target_length, device=cache_position.device) > cache_position.reshape(-1, 1)
         causal_mask = causal_mask[None, None, :, :].expand(batch_size, 1, -1, -1)
         if attention_mask is not None:
             causal_mask = causal_mask.clone()  # copy to contiguous memory for in-place edit
