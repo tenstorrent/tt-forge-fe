@@ -99,7 +99,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(variant):
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Transient failure - Segmentation fault")
+    pytest.xfail(reason="Transient failure - Segmentation fault")
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2Model.from_pretrained(variant)

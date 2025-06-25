@@ -32,4 +32,4 @@ def test_flux(variant):
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Requires multi-chip support")
+    pytest.xfail(reason="Requires multi-chip support")
