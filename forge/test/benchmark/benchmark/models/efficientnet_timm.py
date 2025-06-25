@@ -140,10 +140,6 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
     else:
         raise ValueError(f"Unsupported task: {task}.")
 
-    # fw_out = framework_model(inputs[-1])
-    # co_out = co_out.to("cpu")
-    # AutomaticValueChecker(pcc=pcc).check(fw_out=fw_out, co_out=co_out)
-
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
     total_time = end - start
