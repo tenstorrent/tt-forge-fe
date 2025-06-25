@@ -28,18 +28,13 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::abs_shape(
 }
 
 tt::graphlib::NodeContext Op::abs_backward(
-    tt::autograd::autograd_context ac,
+    tt::autograd::autograd_context &ac,
     int operand,
     const std::vector<tt::graphlib::NodeContext> &inputs,
-    tt::graphlib::NodeContext output,
-    tt::graphlib::NodeContext gradient) const
+    const tt::graphlib::NodeContext &output,
+    const tt::graphlib::NodeContext &gradient) const
 {
-    // "op",
-    // [](tt::autograd::autograd_context &self,
-    // std::variant<std::string, py::object> const &type,
-    // std::vector<tt::autograd::NodeContext> operands,
-    // std::vector<graphlib::OpType::Attr> attributes,
-    // ForgeOpAttrs named_attrs = {})
+    // Example of rewriting python backward to cpp backward.
 
     // assert len(inputs) == 1, "Abs should have one input"
     // assert operand == 0, "Invalid operand index"

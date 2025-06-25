@@ -497,8 +497,11 @@ void TaggedNode::add_tags(const TagHints &other_tags) { this->hints.insert(other
 
 const TagHints &TaggedNode::get_tags() const { return this->hints; }
 
-// Calculations. This is temporary implementation in ops transition period. It will be deleted once all ops are
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Calculations. This is temporary implementation in ops transition period. It will be deleted once all ops are //
 // migrated from python to cpp.
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 at::Tensor OpType::eval(const std::vector<at::Tensor> &tensors) const { return new_op_.eval(*this, tensors); }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> OpType::shape(
@@ -508,17 +511,17 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> OpType::shape(
 };
 
 tt::graphlib::NodeContext OpType::backward(
-    struct tt::autograd::autograd_context context,
+    struct tt::autograd::autograd_context &context,
     int operand,
     const std::vector<tt::graphlib::NodeContext> &inputs,
-    tt::graphlib::NodeContext output,
-    tt::graphlib::NodeContext gradient) const
+    const tt::graphlib::NodeContext &output,
+    const tt::graphlib::NodeContext &gradient) const
 {
     return new_op_.backward(*this, context, operand, inputs, output, gradient);
 }
 
 void OpType::decompose(
-    const char *dispatch, DecomposingContext &dc, std::vector<tt::graphlib::NodeContext> &inputs) const
+    const char *dispatch, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const
 {
     return new_op_.decompose(*this, dispatch, dc, inputs);
 }

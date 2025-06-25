@@ -4,7 +4,6 @@
 
 #include "op.hpp"
 
-#include <map>
 #include <stdexcept>
 #include <tuple>
 #include <unordered_map>
@@ -14,7 +13,6 @@
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
-#include "lower_to_forge/common.hpp"
 #include "passes/decomposing_context.hpp"
 #include "torch/extension.h"
 #include "torch/torch.h"
@@ -316,11 +314,11 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::base_shape(
 
 tt::graphlib::NodeContext Op::base_backward(
     const graphlib::OpType &old_op_type,
-    tt::autograd::autograd_context context,
+    tt::autograd::autograd_context &context,
     int operand,
     const std::vector<tt::graphlib::NodeContext> &inputs,
-    tt::graphlib::NodeContext output,
-    tt::graphlib::NodeContext gradient) const
+    const tt::graphlib::NodeContext &output,
+    const tt::graphlib::NodeContext &gradient) const
 {
     auto eval_module = py::module_::import("forge.op.eval.forge");
     py::function forge_backward = eval_module.attr("get_f_forge_backward")(old_op_type);
@@ -332,7 +330,7 @@ void Op::base_decompose(
     const graphlib::OpType &old_op_type,
     const char *dispatch,
     DecomposingContext &dc,
-    std::vector<tt::graphlib::NodeContext> &inputs) const
+    const std::vector<tt::graphlib::NodeContext> &inputs) const
 {
     py::module_ eval_module = py::module_::import("forge.op.eval.forge");
     py::function forge_decompose = eval_module.attr(dispatch)(old_op_type);
@@ -404,11 +402,11 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
 
 tt::graphlib::NodeContext Op::backward(
     const graphlib::OpType &old_op_type,
-    tt::autograd::autograd_context context,
+    tt::autograd::autograd_context &context,
     int operand,
     const std::vector<tt::graphlib::NodeContext> &inputs,
-    tt::graphlib::NodeContext output,
-    tt::graphlib::NodeContext gradient) const
+    const tt::graphlib::NodeContext &output,
+    const tt::graphlib::NodeContext &gradient) const
 {
     switch (type_)
     {
@@ -422,7 +420,7 @@ void Op::decompose(
     const graphlib::OpType &old_op_type,
     const char *dispatch,
     DecomposingContext &dc,
-    std::vector<tt::graphlib::NodeContext> &inputs) const
+    const std::vector<tt::graphlib::NodeContext> &inputs) const
 {
     switch (type_)
     {

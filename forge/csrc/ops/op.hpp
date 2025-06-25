@@ -202,17 +202,17 @@ class Op
 
     tt::graphlib::NodeContext backward(
         const graphlib::OpType &old_op_type,
-        tt::autograd::autograd_context context,
+        tt::autograd::autograd_context &context,
         int operand,
         const std::vector<tt::graphlib::NodeContext> &inputs,
-        tt::graphlib::NodeContext output,
-        tt::graphlib::NodeContext gradient) const;
+        const tt::graphlib::NodeContext &output,
+        const tt::graphlib::NodeContext &gradient) const;
 
     void decompose(
         const graphlib::OpType &old_op_type,
         const char *dispatch,
         DecomposingContext &dc,
-        std::vector<tt::graphlib::NodeContext> &inputs) const;
+        const std::vector<tt::graphlib::NodeContext> &inputs) const;
 
     long initial_flops_estimate(
         const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const;
@@ -238,17 +238,17 @@ class Op
 
     tt::graphlib::NodeContext base_backward(
         const graphlib::OpType &old_op_type,
-        tt::autograd::autograd_context context,
+        tt::autograd::autograd_context &context,
         int operand,
         const std::vector<tt::graphlib::NodeContext> &inputs,
-        tt::graphlib::NodeContext output,
-        tt::graphlib::NodeContext gradient) const;
+        const tt::graphlib::NodeContext &output,
+        const tt::graphlib::NodeContext &gradient) const;
 
     void base_decompose(
         const graphlib::OpType &old_op_type,
         const char *dispatch,
         DecomposingContext &dc,
-        std::vector<tt::graphlib::NodeContext> &inputs) const;
+        const std::vector<tt::graphlib::NodeContext> &inputs) const;
 
     long base_initial_flops_estimate(
         const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const;
@@ -268,11 +268,11 @@ class Op
         const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
     tt::graphlib::NodeContext abs_backward(
-        tt::autograd::autograd_context context,
+        tt::autograd::autograd_context &context,
         int operand,
         const std::vector<tt::graphlib::NodeContext> &inputs,
-        tt::graphlib::NodeContext output,
-        tt::graphlib::NodeContext gradient) const;
+        const tt::graphlib::NodeContext &output,
+        const tt::graphlib::NodeContext &gradient) const;
 
     long abs_initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const;
 

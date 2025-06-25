@@ -490,13 +490,14 @@ struct OpType
         const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
     tt::graphlib::NodeContext backward(
-        tt::autograd::autograd_context context,
+        tt::autograd::autograd_context &context,
         int operand,
         const std::vector<tt::graphlib::NodeContext> &inputs,
-        tt::graphlib::NodeContext output,
-        tt::graphlib::NodeContext gradient) const;
+        const tt::graphlib::NodeContext &output,
+        const tt::graphlib::NodeContext &gradient) const;
 
-    void decompose(const char *dispatch, DecomposingContext &dc, std::vector<tt::graphlib::NodeContext> &inputs) const;
+    void decompose(
+        const char *dispatch, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
 
     long initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const;
 

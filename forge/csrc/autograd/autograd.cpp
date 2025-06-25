@@ -345,14 +345,12 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
                 operands.push_back(NodeContext(operand));
                 operands.back().shape = node->shape_of_operand(graph, operand);  // Expand out bcast shapes
             }
-            NodeContext gradient(out_grad);
 
-            NodeContext ret_gradient = op_node->op_type().backward(
-                {this, node, (int)edge.consumer_input_port_id},
-                edge.consumer_input_port_id,
-                operands,
-                NodeContext(node),
-                gradient);
+            NodeContext gradient(out_grad);
+            autograd_context ac{this, node, (int)edge.consumer_input_port_id};
+
+            NodeContext ret_gradient =
+                op_node->op_type().backward(ac, edge.consumer_input_port_id, operands, NodeContext(node), gradient);
 
             // Check for broadcast, and create sequence of reduce ops if there are any
             NodeContext last_out = ret_gradient;
