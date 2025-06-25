@@ -41,6 +41,7 @@ from test.exception_utils import extract_refined_error_message, extract_failure_
 
 collect_ignore = ["legacy_tests"]
 
+watchdog_timer_expire = 900  # in seconds
 watchdog_abort_timer = None
 
 
@@ -54,7 +55,7 @@ def pytest_runtest_setup(item):
         global watchdog_abort_timer
         if watchdog_abort_timer:
             watchdog_abort_timer.cancel()
-        watchdog_abort_timer = threading.Timer(600, send_abort_signal)  # 10 minute timeout
+        watchdog_abort_timer = threading.Timer(watchdog_timer_expire, send_abort_signal)  # 10 minute timeout
         watchdog_abort_timer.daemon = True
         watchdog_abort_timer.start()
 
