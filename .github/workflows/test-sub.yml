@@ -179,10 +179,10 @@ jobs:
                $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi)
           exit_code=$?
 
-          if [ -f "crashed_pytest.log" ]; then \
-            echo "Creating crash summary for the job..." \
-            echo "### Crashed tests: (${{ matrix.build.runs-on }}, ${{ inputs.test_mark }}, ${{ matrix.test_group_id }})" >>$GITHUB_STEP_SUMMARY \
-            cat crashed_pytest.log >>$GITHUB_STEP_SUMMARY \
+          if [ -f "crashed_pytest.log" ]; then
+            echo "Creating crash summary for the job..."
+            echo "### Crashed tests: (${{ matrix.build.runs-on }}, ${{ inputs.test_mark }}, ${{ matrix.test_group_id }})" >>$GITHUB_STEP_SUMMARY
+            cat crashed_pytest.log >>$GITHUB_STEP_SUMMARY
           fi
           exit $exit_code
 
