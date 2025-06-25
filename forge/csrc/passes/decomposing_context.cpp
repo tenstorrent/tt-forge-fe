@@ -216,8 +216,6 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_tt_forge_gr
                 inputs.push_back(
                     NodeContext(graph->node_by_id(op_edge.producer_node_id), op_edge.producer_output_port_id));
                 inputs.back().shape = py_node->shape_of_operand(graph, graph->node_by_id(op_edge.producer_node_id));
-                inputs.back().unbroadcast_shape =
-                    py_node->shape_of_operand(graph, graph->node_by_id(op_edge.producer_node_id), true);
             }
 
             DecomposingContext dc(graph, py_node, compiler_cfg);

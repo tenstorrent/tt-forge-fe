@@ -49,14 +49,13 @@ def test_yolo_v4():
     )
 
     # Load model and input
-    framework_model = ModelLoader.load_model()
-    framework_model = Wrapper(framework_model)
-    input_sample = ModelLoader.load_inputs()
+    framework_model = ModelLoader.load_model(dtype_override=torch.bfloat16)
+    framework_model = Wrapper(framework_model).to(torch.bfloat16)
+    input_sample = ModelLoader.load_inputs(dtype_override=torch.bfloat16)
 
     # Configurations
     compiler_cfg = CompilerConfig()
     compiler_cfg.default_df_override = DataFormat.Float16_b
-    compiler_cfg.enable_optimization_passes = True
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -68,3 +67,20 @@ def test_yolo_v4():
 
     # Model Verification
     verify([input_sample], framework_model, compiled_model)
+
+
+@pytest.mark.nightly
+@pytest.mark.xfail
+def test_yolov4_tiny():
+
+    # Record Forge Property
+    record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.YOLOV4,
+        task=Task.OBJECT_DETECTION,
+        source=Source.GITHUB,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
+    )
+
+    pytest.xfail(reason="Test is currently not executable due to model code dependency.")

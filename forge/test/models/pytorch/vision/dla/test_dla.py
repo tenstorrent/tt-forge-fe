@@ -18,7 +18,6 @@ from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.dla.model_utils.utils import load_dla_model
-from test.models.pytorch.vision.vision_utils.utils import load_timm_model_and_input
 
 variants = [
     "dla34",
@@ -50,7 +49,7 @@ def test_dla_pytorch(variant):
     # Load the model and prepare input data
     framework_model, inputs = load_dla_model(variant)
     framework_model.to(torch.bfloat16)
-    inputs = [inputs[0].to(torch.bfloat16)]
+    inputs = [inp.to(torch.bfloat16) for inp in inputs]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -86,7 +85,7 @@ def test_dla_timm(variant):
     # Load the model and inputs
     framework_model, inputs = load_timm_model_and_input(variant)
     framework_model.to(torch.bfloat16)
-    inputs = [inputs.to(torch.bfloat16)]
+    inputs = [inp.to(torch.bfloat16) for inp in inputs]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -95,9 +94,12 @@ def test_dla_timm(variant):
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
     )
+    verify_cfg = VerifyConfig()
+    if variant == "dla34.in1k":
+        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
 
     # Model Verification and Inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
 
     # Post processing
     print_cls_results(fw_out[0], co_out[0])

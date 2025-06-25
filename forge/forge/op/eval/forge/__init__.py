@@ -24,6 +24,8 @@ from .convolution import Conv2dTranspose
 from .pooling import MaxPool2d
 from .cast import Cast
 from .pad import Pad
+from .kv_cache import UpdateCache
+from .kv_cache import FillCache
 
 op_to_module_map = {
     "add": "eltwise_binary",
@@ -141,6 +143,8 @@ op_to_module_map = {
     "requantize": "quantize",
     "forge_requantize": "quantize",
     "forge_dequantize": "quantize",
+    "update_cache": UpdateCache,
+    "fill_cache": FillCache,
 }
 
 
@@ -230,16 +234,6 @@ def get_f_forge_eval(op_type):
         return lambda *inputs: module_or_class.eval(op_type.op, op_type.attr, *inputs)
     else:
         return module_or_class(op_type).eval
-
-
-def get_f_forge_lower(op_type):
-    module_or_class = _get_module_or_class(op_type.op)
-    if isinstance(module_or_class, ModuleType):
-        if op_type.op == "matmul" or op_type.op == "sparse_matmul":
-            return lambda *inputs: module_or_class.lower(op_type.op, op_type.attr, op_type.forge_attrs, *inputs)
-        return lambda *inputs: module_or_class.lower(op_type.op, op_type.attr, *inputs)
-    else:
-        return module_or_class(op_type).lower
 
 
 def get_f_forge_decompose(op_type):

@@ -4,8 +4,8 @@
 
 import pytest
 import torch
+from datasets import load_dataset
 from loguru import logger
-from PIL import Image
 from pytorchcv.model_provider import get_model as ptcv_get_model
 from torchvision import transforms
 
@@ -43,8 +43,9 @@ def test_alexnet_torchhub():
 
     # Load and pre-process image
     try:
-        torch.hub.download_url_to_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-        input_image = Image.open("dog.jpg")
+
+        dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+        input_image = next(iter(dataset.skip(10)))["image"]
         preprocess = transforms.Compose(
             [
                 transforms.Resize(256),
@@ -97,8 +98,8 @@ def test_alexnet_osmr():
 
     # Load and pre-process image
     try:
-        torch.hub.download_url_to_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-        input_image = Image.open("dog.jpg")
+        dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+        input_image = next(iter(dataset.skip(10)))["image"]
         preprocess = transforms.Compose(
             [
                 transforms.Resize(256),

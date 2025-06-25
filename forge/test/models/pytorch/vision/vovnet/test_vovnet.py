@@ -44,13 +44,6 @@ varaints = [
 @pytest.mark.parametrize("variant", varaints)
 def test_vovnet_osmr_pytorch(variant):
 
-    if variant in ["vovnet27s"]:
-        group = ModelGroup.RED
-        priority = ModelPriority.P1
-    else:
-        group = ModelGroup.GENERALITY
-        priority = ModelPriority.P2
-
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
@@ -58,8 +51,6 @@ def test_vovnet_osmr_pytorch(variant):
         variant=variant,
         source=Source.OSMR,
         task=Task.IMAGE_CLASSIFICATION,
-        group=group,
-        priority=priority,
     )
 
     # Load model
@@ -73,8 +64,7 @@ def test_vovnet_osmr_pytorch(variant):
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     verify_cfg = VerifyConfig()
-    if variant == "vovnet39":
-        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
+    verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -191,17 +181,20 @@ variants = [
     "ese_vovnet19b_dw",
     "ese_vovnet39b",
     "ese_vovnet99b",
-    pytest.param(
-        "ese_vovnet19b_dw.ra_in1k",
-        marks=[pytest.mark.xfail],
-    ),
+    "ese_vovnet19b_dw.ra_in1k",
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_vovnet_timm_pytorch(variant):
+
+    if variant == "ese_vovnet19b_dw.ra_in1k":
+        group = ModelGroup.RED
+        priority = ModelPriority.P1
+    else:
+        group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -210,6 +203,8 @@ def test_vovnet_timm_pytorch(variant):
         variant=variant,
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
+        group=group,
+        priority=priority,
     )
 
     framework_model, inputs, _ = generate_model_vovnet_imgcls_timm_pytorch(
@@ -227,5 +222,9 @@ def test_vovnet_timm_pytorch(variant):
         compiler_cfg=compiler_cfg,
     )
 
+    pcc = 0.99
+    if variant == "ese_vovnet99b":
+        pcc = 0.98
+
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))

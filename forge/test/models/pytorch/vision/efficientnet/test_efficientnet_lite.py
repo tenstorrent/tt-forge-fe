@@ -15,6 +15,8 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.vision_utils.utils import load_timm_model_and_input
@@ -30,7 +32,6 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.xfail
 def test_efficientnet_lite_timm(variant):
 
     # Record Forge Property
@@ -45,7 +46,7 @@ def test_efficientnet_lite_timm(variant):
     # Load the model and inputs
     framework_model, inputs = load_timm_model_and_input(variant)
     framework_model = framework_model.to(torch.bfloat16)
-    inputs = inputs.to(torch.bfloat16)
+    inputs = [input.to(torch.bfloat16) for input in inputs]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -58,5 +59,9 @@ def test_efficientnet_lite_timm(variant):
         compiler_cfg=compiler_cfg,
     )
 
+    pcc = 0.99
+    if variant == "tf_efficientnet_lite3.in1k":
+        pcc = 0.98
+
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))

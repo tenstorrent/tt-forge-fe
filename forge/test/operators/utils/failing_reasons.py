@@ -149,7 +149,10 @@ class ComponentChecker(Enum):
             ExceptionCheck(
                 error_log=[
                     M.neg(M.contains("lib/libtt_metal.so")),
-                    M.contains("lib/_ttnn.so"),
+                    M.any(
+                        M.contains("lib/_ttnn.so"),
+                        M.contains("lib/_ttnncpp.so"),
+                    ),
                     M.contains("lib/libTTMLIRRuntime.so"),
                     M.contains("forge/_C.so"),
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
@@ -202,10 +205,12 @@ class ComponentChecker(Enum):
                         M.last_line(M.contains("forge/op/eval/forge/clip.py:")),
                         M.last_line(M.contains("forge/op/eval/forge/convolution.py:")),
                         M.last_line(M.contains("forge/op/eval/forge/tm.py:")),
+                        M.last_line(M.contains("forge/op/eval/forge/embedding.py:")),
                         M.last_line(M.contains("test/operators/utils/compat.py:")),  # Deprecated verification
                         M.last_line(M.contains("test/operators/pytorch/")),
                         # Fail with pytorch also. TODO: check if tests are correct
                         M.last_line(M.contains("torch/nn/modules/conv.py:")),
+                        M.last_line(M.contains("torch/nn/functional.py")),
                     ),
                 ],
             ),
@@ -264,6 +269,25 @@ class FailingReasons(Enum):
 
     UNCLASSIFIED = FailingReason(
         description="Unclassified error",
+    )
+
+    NOT_SUPPORTED_IN_TORCH = FailingReason(
+        description="Not supported in Torch",
+        checks=[
+            ExceptionCheck(
+                class_name="RuntimeError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    # layer_norm RuntimeError: "LayerNormKernelImpl" not implemented for 'Half'
+                    M.regex(r"\".*\" not implemented for '.*'"),
+                ],
+                error_log=[
+                    M.any(
+                        M.last_line(M.contains("torch/nn/functional.py")),
+                    ),
+                ],
+            ),
+        ],
     )
 
     UNSUPPORTED_DATA_FORMAT = FailingReason(
@@ -757,6 +781,35 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
+            # E       tvm._ffi.base.TVMError: Traceback (most recent call last):
+            # E         12: _ZN3tvm7runtime13PackedFuncObj
+            # E         11: tvm::runtime::TypedPackedFunc<tvm::RelayExpr (tvm::runtime::Array<tvm::relay::DFPatternCallback, void>, tvm::RelayExpr, tvm::IRModule)>::AssignTypedLambda<tvm::RelayExpr (*)(tvm::runtime::Array<tvm::relay::DFPatternCallback, void>, tvm::RelayExpr, tvm::IRModule)>(tvm::RelayExpr (*)(tvm::runtime::Array<tvm::relay::DFPatternCallback, void>, tvm::RelayExpr, tvm::IRModule), std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}::operator()(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*) const
+            # E         10: tvm::relay::RewritePatterns(tvm::runtime::Array<tvm::relay::DFPatternCallback, void>, tvm::RelayExpr, tvm::IRModule)
+            # E         9: tvm::relay::PatternRewriter::Rewrite(tvm::runtime::Array<tvm::relay::DFPatternCallback, void> const&, tvm::RelayExpr const&)
+            # E         8: tvm::relay::InferTypeWithModule(tvm::RelayExpr const&, tvm::IRModule const&)
+            # E         7: tvm::transform::Pass::operator()(tvm::IRModule) const
+            # E         6: tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+            # E         5: tvm::transform::ModulePassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+            # E         4: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<tvm::IRModule (tvm::IRModule, tvm::transform::PassContext)>::AssignTypedLambda<tvm::relay::transform::InferType()::{lambda(tvm::IRModule, tvm::transform::PassContext const&)#1}>(tvm::relay::transform::InferType()::{lambda(tvm::IRModule, tvm::transform::PassContext const&)#1})::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+            # E         3: tvm::DiagnosticContext::Render()
+            # E         2: tvm::DiagnosticRenderer::Render(tvm::DiagnosticContext const&)
+            # E         1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::TerminalRenderer(std::ostream&)::{lambda(tvm::DiagnosticContext const&)#1}>(tvm::TerminalRenderer(std::ostream&)::{lambda(tvm::DiagnosticContext const&)#1})::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+            # E         0: tvm::ReportAt(tvm::DiagnosticContext const&, std::ostream&, tvm::Span const&, tvm::Diagnostic const&)
+            # E         File "/__w/tt-forge-fe/tt-forge-fe/third_party/tvm/src/ir/diagnostic.cc", line 267
+            # E       TVMError: The source maps are not populated for this module. Please use `tvm.relay.transform.AnnotateSpans` to attach source maps for error reporting.
+            # E       Error: tensor type `Tensor[(1, 1, 1), float32]` has 3 dimensions, while `float32` has 0 dimensions
+            # /localdev/kmilanovic/src/forge/forge_wheels/venv/lib/python3.10/site-packages/tvm/_ffi/base.py:479: TVMError
+            ExceptionCheck(
+                class_name="tvm._ffi.base.TVMError",
+                component=ComponentChecker.TVM.value,
+                message=[
+                    M.contains("Traceback (most recent call last)"),
+                ],
+                error_log=[
+                    M.regex("tensor type .* has .* dimensions, while .* has .* dimensions"),
+                    M.last_line(M.contains("tvm/_ffi/base.py:")),
+                ],
+            ),
         ],
     )
 
@@ -953,6 +1006,20 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
+            # E       RuntimeError: Unable to cast Python instance to C++ type (#define PYBIND11_DETAILED_ERROR_MESSAGES or compile in debug mode for details)
+            # forge/compile.py:745: RuntimeError
+            ExceptionCheck(
+                class_name="RuntimeError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    M.contains(
+                        "Unable to cast Python instance to C++ type (#define PYBIND11_DETAILED_ERROR_MESSAGES or compile in debug mode for details)"
+                    ),
+                ],
+                error_log=[
+                    M.last_line(M.contains("forge/compile.py:")),
+                ],
+            ),
         ],
     )
 
@@ -1056,37 +1123,31 @@ class FailingReasons(Enum):
         ],
     )
 
-    UNSUPORTED_AXIS = FailingReason(
+    UNSUPPORTED_AXIS = FailingReason(
         description="Unsupported axis parameter",
         checks=[
-            # softmax	RuntimeError: TT_FATAL @ tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.get_dtype() == DataType::BFLOAT16 || input.get_dtype() == DataType::B
+            # softmax	RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.dtype() == DataType::BFLOAT16 || input.dtype() == DataType::BFLOAT8_B
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
-            # E       RuntimeError: TT_FATAL @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.get_dtype() == DataType::BFLOAT16 || input.get_dtype() == DataType::BFLOAT8_B
+            # E       RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.dtype() == DataType::BFLOAT16 || input.dtype() == DataType::BFLOAT8_B
             # E       info:
             # E       Inputs must be of bfloat16 or bfloat8_b type
             # E       backtrace:
-            # E        --- ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::validate_inputs(ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::operation_attributes_t const&, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_args_t const&)
-            # E        --- ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::validate_on_program_cache_miss(ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::operation_attributes_t const&, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_args_t const&)
-            # E        --- void ttnn::device_operation::detail::launch_operation_with_adapter<ttnn::device_operation::MeshDeviceOperationAdapter<ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation> >(tt::stl::StrongType<unsigned char, ttnn::QueueIdTag>, ttnn::device_operation::MeshDeviceOperationAdapter<ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation>::operation_attributes_t const&, ttnn::device_operation::MeshDeviceOperationAdapter<ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation>::tensor_args_t const&)
-            # E        --- ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_return_value_t ttnn::device_operation::detail::launch_on_single_device<ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation>(tt::stl::StrongType<unsigned char, ttnn::QueueIdTag>, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::operation_attributes_t const&, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_args_t const&)
-            # E        --- ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_return_value_t ttnn::device_operation::detail::invoke<ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation>(tt::stl::StrongType<unsigned char, ttnn::QueueIdTag>, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::operation_attributes_t const&, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_args_t const&)
+            # E        --- ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_return_value_t ttnn::device_operation::detail::launch_on_single_device<ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation>(ttsl::StrongType<unsigned char, ttnn::QueueIdTag>, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::operation_attributes_t const&, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_args_t const&)
+            # E        --- ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_return_value_t ttnn::device_operation::detail::invoke<ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation>(ttsl::StrongType<unsigned char, ttnn::QueueIdTag>, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::operation_attributes_t const&, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_args_t const&)
             # E        --- ttnn::operations::normalization::ExecuteSoftmax::invoke(tt::tt_metal::Tensor const&, int, std::optional<tt::tt_metal::MemoryConfig> const&, std::optional<std::variant<ttnn::GrayskullComputeKernelConfig, ttnn::WormholeComputeKernelConfig> const>, bool)
             # E        --- tt::runtime::ttnn::operations::normalization::run(tt::target::ttnn::SoftmaxOp const*, tt::runtime::ttnn::ProgramContext&)
-            # E        --- tt::runtime::ttnn::ProgramExecutor::runOperation(tt::target::ttnn::Operation const*)
             # E        --- tt::runtime::ttnn::ProgramExecutor::execute()
-            # E        --- tt::runtime::ttnn::runProgram(std::shared_ptr<tt::tt_metal::distributed::MeshDevice>, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> >&)
             # E        --- tt::runtime::ttnn::submit(tt::runtime::Device, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> >&)
             # E        --- tt::runtime::submit(tt::runtime::Device, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> >&)
             # E        --- tt::run_program(tt::runtime::Binary&, int, std::vector<tt::Tensor, std::allocator<tt::Tensor> >&)
             # E        --- tt::ModelState::run_program(tt::ProgramType, std::vector<tt::Tensor, std::allocator<tt::Tensor> >)
-            # forge/forge/compiled_graph_state.py:310: RuntimeError
+            # /opt/ttforge-toolchain/venv/lib/python3.10/site-packages/forge/compiled_graph_state.py:316: RuntimeError
             ExceptionCheck(
-                # TODO move to UNSUPPORTED_DATA_FORMAT
                 class_name="RuntimeError",
                 component=ComponentChecker.TTNN.value,
                 message=[
                     M.contains("Inputs must be of bfloat16 or bfloat8_b type"),
-                    M.contains("input.get_dtype() == DataType::BFLOAT16 || input.get_dtype() == DataType::BFLOAT8_B"),
+                    M.contains("input.dtype() == DataType::BFLOAT16 || input.dtype() == DataType::BFLOAT8_B"),
                 ],
                 error_log=[
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
@@ -1685,6 +1746,26 @@ class FailingReasons(Enum):
                     M.contains("def populate_conv2d_transpose_args("),
                     M.contains(">       assert all([dim == dilation[0] for dim in dilation])"),
                     M.last_line(M.contains("forge/tvm_to_python.py:")),
+                ],
+            ),
+        ],
+    )
+
+    INDEX_ERROR = FailingReason(
+        description="Index error",
+        checks=[
+            # >       return torch.embedding(t_ops[1], t_ops[0].to(torch.int32))
+            # E       IndexError: index out of range in self
+            # forge/op/eval/forge/embedding.py:15: IndexError
+            ExceptionCheck(
+                class_name="IndexError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    M.equals("index out of range in self"),
+                ],
+                error_log=[
+                    M.contains(">       return torch.embedding(t_ops[1], t_ops[0].to(torch.int32))"),
+                    M.last_line(M.contains("forge/op/eval/forge/embedding.py:")),
                 ],
             ),
         ],

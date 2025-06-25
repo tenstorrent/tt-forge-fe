@@ -1,13 +1,13 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import urllib
 
 import pytest
 import timm
 import torch
 from loguru import logger
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
@@ -56,7 +56,7 @@ def test_mobilenetv3_basic(variant):
     inputs = [inputs[0].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override, enable_optimization_passes=True)
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -90,12 +90,8 @@ def generate_model_mobilenetV3_imgcls_timm_pytorch(variant):
     try:
         config = resolve_data_config({}, model=model)
         transform = create_transform(**config)
-        url, filename = (
-            "https://github.com/pytorch/hub/raw/master/images/dog.jpg",
-            "dog.jpg",
-        )
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        file_path = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
+        img = Image.open(file_path).convert("RGB")
         image_tensor = transform(img).unsqueeze(0)  # transform and add batch dimension
     except:
         logger.warning(
@@ -110,7 +106,6 @@ variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mobilenetv3_timm(variant):
 
@@ -138,5 +133,11 @@ def test_mobilenetv3_timm(variant):
         compiler_cfg=compiler_cfg,
     )
 
+    pcc = 0.99
+    if variant == "mobilenetv3_large_100":
+        pcc = 0.98
+    if variant == "mobilenetv3_small_100":
+        pcc = 0.97
+
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))

@@ -22,9 +22,24 @@ on:
         type: choice
         options:
           - runner
+          - wormhole_b0
           - n150
           - n300
           - p150
+      tests_to_filter:
+        description: 'Filter specific tests (comma-separated): Generate models ops tests only for the specified test commands'
+        required: false
+        type: string
+      ops_to_filter:
+        description: 'Filter specific operations (comma-separated): Generate models ops tests only for the specified Forge operations'
+        required: false
+        type: string
+      override_existing_ops:
+        description: 'Merge with existing ops: Extract unique ops config from existing models ops tests directory, combine with new filtered tests config, then regenerate all models ops tests'
+        required: false
+        type: boolean
+        default: false
+
 
 permissions:
   packages: write
@@ -78,6 +93,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: ${{ needs.set-inputs.outputs.runs-on }}
       run_id: ${{ needs.build.outputs.run_id }}
+      tests_to_filter: ${{ inputs.tests_to_filter }}
       allow-fail: true
 
   generate-models-ops-tests:
@@ -155,18 +171,35 @@ jobs:
         shell: bash
         run: |
           source env/activate
-          pip install tvm*.whl --force-reinstall
-          pip install forge*.whl --force-reinstall
+          pip install tt_tvm*.whl --force-reinstall
+          pip install tt_forge_fe*.whl --force-reinstall
 
       - name: Generate Models Ops tests
         shell: bash
         run: |
           source env/activate
           set -o pipefail # Ensures that the exit code reflects the first command that fails
-          python scripts/model_analysis/combine_and_generate_ops_tests.py \
-            --extracted_unique_ops_config_directory_path ${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }} \
-            --models_ops_test_output_directory_path ${{ env.MODELS_OPS_TEST_OUTPUT_DIR_PATH }} \
-            --models_ops_test_package_name ${{ env.MODELS_OPS_TEST_PACKAGE_NAME }} \
+
+          command_args=(
+            "--extracted_unique_ops_config_directory_path" "${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }}"
+            "--models_ops_test_output_directory_path" "${{ env.MODELS_OPS_TEST_OUTPUT_DIR_PATH }}"
+            "--models_ops_test_package_name" "${{ env.MODELS_OPS_TEST_PACKAGE_NAME }}"
+          )
+
+          if [ -n "${{ inputs.ops_to_filter }}" ]; then
+            # Split on commas and trim whitespace
+            IFS=',' read -r -a ops_filters <<< "${{ inputs.ops_to_filter }}"
+            command_args+=("--ops_to_filter")
+            for of in "${ops_filters[@]}"; do
+              command_args+=("$(echo "$of" | xargs)")
+            done
+          fi
+
+          if [[ "${{ inputs.override_existing_ops }}" == "true" && -n "${{ inputs.tests_to_filter }}" ]]; then
+            command_args+=("--override_existing_ops")
+          fi
+
+          python scripts/model_analysis/combine_and_generate_ops_tests.py "${command_args[@]}" \
             2>&1 | tee ${{ env.SCRIPT_OUTPUT_LOG }}
 
       - name: Upload Script Output Logs

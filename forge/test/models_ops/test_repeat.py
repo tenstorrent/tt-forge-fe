@@ -48,77 +48,103 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Repeat0,
-        [((1, 100, 256), torch.float32)],
+        [((1, 100, 256), torch.bfloat16)],
         {
             "model_names": [
-                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
-                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
                 "pt_detr_facebook_detr_resnet_50_obj_det_hf",
+                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
             ],
             "pcc": 0.99,
             "args": {"repeats": "[1, 1, 1]"},
         },
     ),
-    pytest.param(
-        (
-            Repeat1,
-            [((1, 1, 32, 107, 160), torch.float32)],
-            {
-                "model_names": [
-                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                ],
-                "pcc": 0.99,
-                "args": {"repeats": "[1, 100, 1, 1, 1]"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Repeat0,
+        [((1, 100, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"repeats": "[1, 1, 1]"},
+        },
     ),
-    pytest.param(
-        (
-            Repeat1,
-            [((1, 1, 64, 54, 80), torch.float32)],
-            {
-                "model_names": [
-                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                ],
-                "pcc": 0.99,
-                "args": {"repeats": "[1, 100, 1, 1, 1]"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Repeat1,
+        [((1, 1, 32, 107, 160), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"repeats": "[1, 100, 1, 1, 1]"},
+        },
     ),
-    pytest.param(
-        (
-            Repeat1,
-            [((1, 1, 128, 27, 40), torch.float32)],
-            {
-                "model_names": [
-                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                ],
-                "pcc": 0.99,
-                "args": {"repeats": "[1, 100, 1, 1, 1]"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Repeat1,
+        [((1, 1, 64, 54, 80), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"repeats": "[1, 100, 1, 1, 1]"},
+        },
     ),
-    pytest.param(
-        (
-            Repeat1,
-            [((1, 1, 256, 14, 20), torch.float32)],
-            {
-                "model_names": [
-                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                ],
-                "pcc": 0.99,
-                "args": {"repeats": "[1, 100, 1, 1, 1]"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Repeat1,
+        [((1, 1, 128, 27, 40), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"repeats": "[1, 100, 1, 1, 1]"},
+        },
+    ),
+    (
+        Repeat1,
+        [((1, 1, 256, 14, 20), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"repeats": "[1, 100, 1, 1, 1]"},
+        },
+    ),
+    (
+        Repeat1,
+        [((1, 1, 32, 200, 267), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"repeats": "[1, 100, 1, 1, 1]"},
+        },
+    ),
+    (
+        Repeat1,
+        [((1, 1, 64, 100, 134), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"repeats": "[1, 100, 1, 1, 1]"},
+        },
+    ),
+    (
+        Repeat1,
+        [((1, 1, 128, 50, 67), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"repeats": "[1, 100, 1, 1, 1]"},
+        },
+    ),
+    (
+        Repeat1,
+        [((1, 1, 256, 25, 34), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"repeats": "[1, 100, 1, 1, 1]"},
+        },
     ),
 ]
 
@@ -166,11 +192,10 @@ def test_module(forge_module_and_shapes_dtypes):
 
     record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs)
+    compiler_cfg = forge.config.CompilerConfig()
+    if "default_df_override" in metadata.keys():
+        compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])
 
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-    )
+    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))

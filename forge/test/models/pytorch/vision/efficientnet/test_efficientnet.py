@@ -1,13 +1,13 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import urllib
 
 import pytest
 import timm
 import torch
 from loguru import logger
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from torch.hub import load_state_dict_from_url
@@ -63,13 +63,9 @@ variants = [
     pytest.param("hf_hub:timm/efficientnet_b0.ra_in1k", id="hf_hub_timm_efficientnet_b0_ra_in1k"),
     pytest.param("hf_hub:timm/efficientnet_b4.ra2_in1k", id="hf_hub_timm_efficientnet_b4_ra2_in1k"),
     pytest.param("hf_hub:timm/efficientnet_b5.in12k_ft_in1k", id="hf_hub_timm_efficientnet_b5_in12k_ft_in1k"),
-    pytest.param(
-        "hf_hub:timm/tf_efficientnet_b0.aa_in1k", id="hf_hub_timm_tf_efficientnet_b0_aa_in1k", marks=[pytest.mark.xfail]
-    ),
+    pytest.param("hf_hub:timm/tf_efficientnet_b0.aa_in1k", id="hf_hub_timm_tf_efficientnet_b0_aa_in1k"),
     pytest.param("hf_hub:timm/efficientnetv2_rw_s.ra2_in1k", id="hf_hub_timm_efficientnetv2_rw_s_ra2_in1k"),
-    pytest.param(
-        "hf_hub:timm/tf_efficientnetv2_s.in21k", id="hf_hub_timm_tf_efficientnetv2_s_in21k", marks=[pytest.mark.xfail]
-    ),
+    pytest.param("hf_hub:timm/tf_efficientnetv2_s.in21k", id="hf_hub_timm_tf_efficientnetv2_s_in21k"),
 ]
 
 
@@ -100,12 +96,16 @@ def test_efficientnet_timm(variant):
 
     # Load and pre-process image
     try:
-        url, filename = (
-            "https://github.com/pytorch/hub/raw/master/images/dog.jpg",
-            "dog.jpg",
-        )
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        if variant == "hf_hub:timm/tf_efficientnetv2_s.in21k":
+            file_path = get_file(
+                "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/beignets-task-guide.png"
+            )
+            img = Image.open(file_path).convert("RGB")
+            use_1k_labels = False
+        else:
+            file_path = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
+            img = Image.open(file_path).convert("RGB")
+            use_1k_labels = True
         config = resolve_data_config({}, model=framework_model)
         transform = create_transform(**config)
         img_tensor = transform(img).unsqueeze(0)
@@ -132,7 +132,7 @@ def test_efficientnet_timm(variant):
     fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
-    print_cls_results(fw_out[0], co_out[0])
+    print_cls_results(fw_out[0], co_out[0], use_1k_labels=use_1k_labels)
 
 
 def get_state_dict(self, *args, **kwargs):
@@ -186,12 +186,8 @@ def test_efficientnet_torchvision(variant):
 
     # Load and pre-process image
     try:
-        url, filename = (
-            "https://github.com/pytorch/hub/raw/master/images/dog.jpg",
-            "dog.jpg",
-        )
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        file_path = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
+        img = Image.open(file_path).convert("RGB")
         config = resolve_data_config({}, model=framework_model)
         transform = create_transform(**config)
         img_tensor = transform(img).unsqueeze(0)

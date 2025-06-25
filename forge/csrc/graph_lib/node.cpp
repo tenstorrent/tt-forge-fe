@@ -30,10 +30,8 @@ NodeId Node::id() const
     TT_ASSERT(unique_id_ >= 0);
     return unique_id_;
 }
-NodeId Node::tt_forge_id() const { return tt_forge_id_; }
 
 void Node::set_id(NodeId node_id) { unique_id_ = node_id; }
-void Node::set_tt_forge_id(NodeId node_id) { tt_forge_id_ = node_id; }
 const std::string& Node::name() const { return name_; }
 void Node::set_name(const std::string& name) { name_ = name; }
 
@@ -101,7 +99,7 @@ void Node::clone(Node const* other, std::string const& name)
 
 std::string Node::get_type() const
 {
-    if (node_type_ == NodeType::kPyOp or node_type_ == NodeType::kForgeOp)
+    if (node_type_ == NodeType::kPyOp)
     {
         OpNode const* op = this->as<OpNode>();
         return node_type_to_string(node_type_) + "::" + op->op_name();
@@ -134,8 +132,6 @@ std::string node_type_to_string(const NodeType& node_type)
         case NodeType::kInput: return "Input";
         case NodeType::kOutput: return "Output";
         case NodeType::kQueue: return "Queue";
-        case NodeType::kForgeOp: return "ForgeOp";
-        case NodeType::kForgeNaryTM: return "ForgeNaryTM";
         case NodeType::kPyOp: return "ForgeOp";
         default: TT_ASSERT(false, "Invalid node type");
     }

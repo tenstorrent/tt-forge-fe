@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
-import ast
 import torch
 import math
 
@@ -162,9 +160,6 @@ class Conv2d(PyOp):
             dc.fuse(result)
 
     def backward(self, ac, operand, inputs, output, grad):
-        pass
-
-    def lower(self, lc, tensors, outputs):
         pass
 
     def is_tm(self) -> bool:
@@ -343,9 +338,6 @@ class Conv2dTranspose(PyOp):
             dc.fuse(result)
 
     def backward(self, ac, operand, inputs, output, grad):
-        pass
-
-    def lower(self, lc, tensors, outputs):
         pass
 
     def is_tm(self) -> bool:

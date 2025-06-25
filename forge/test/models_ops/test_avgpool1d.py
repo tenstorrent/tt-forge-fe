@@ -83,10 +83,11 @@ forge_modules_and_shapes_dtypes_list = [
     pytest.param(
         (
             Avgpool1D1,
-            [((1, 768, 49), torch.float32)],
+            [((1, 768, 49), torch.bfloat16)],
             {
                 "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
                 "pcc": 0.99,
+                "default_df_override": "Float16_b",
                 "args": {
                     "kernel_size": "[49]",
                     "stride": "[49]",
@@ -144,11 +145,10 @@ def test_module(forge_module_and_shapes_dtypes):
 
     record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs)
+    compiler_cfg = forge.config.CompilerConfig()
+    if "default_df_override" in metadata.keys():
+        compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])
 
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-    )
+    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))

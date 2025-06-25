@@ -4,12 +4,11 @@
 
 import forge
 from transformers import AutoImageProcessor
-import os
 import pytest
 import onnx
 import torch
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 from transformers import SegformerForSemanticSegmentation, SegformerForImageClassification
 from test.models.models_utils import get_sample_data
 from test.utils import download_model
@@ -27,8 +26,6 @@ variants_img_classification = [
 @pytest.mark.nightly
 def test_segformer_image_classification_onnx(variant, forge_tmp_path):
 
-    priority = ModelPriority.P1 if variant == "nvidia/mit-b0" else ModelPriority.P2
-
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
@@ -36,7 +33,6 @@ def test_segformer_image_classification_onnx(variant, forge_tmp_path):
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
-        priority=priority,
     )
 
     # Load the model from HuggingFace

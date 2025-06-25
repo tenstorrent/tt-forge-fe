@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from collections.abc import Iterable
 
 from torch.optim.lr_scheduler import _LRScheduler
 import torch

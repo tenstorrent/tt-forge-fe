@@ -20,9 +20,5 @@ def shape(type, attr, ops):
     return ops[0], []
 
 
-def lower(type, attr, lc, ops, outputs):
-    lc.op(type, ops, attr)
-
-
 def backward(type, attr, ac, operand, inputs, output, grad):
     return ac.op(Buffer.create(), (grad,))

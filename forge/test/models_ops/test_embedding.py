@@ -24,22 +24,23 @@ import pytest
 class Embedding0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "embedding0.weight_1",
-            forge.Parameter(*(30522, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("embedding0_const_1", shape=(21128, 128), dtype=torch.float32)
 
     def forward(self, embedding_input_0):
-        embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_parameter("embedding0.weight_1"))
+        embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_constant("embedding0_const_1"))
         return embedding_output_1
 
 
 class Embedding1(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "embedding1.weight_1",
+            forge.Parameter(*(2, 128), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
-    def forward(self, embedding_input_0, embedding_input_1):
-        embedding_output_1 = forge.op.Embedding("", embedding_input_0, embedding_input_1)
+    def forward(self, embedding_input_0):
+        embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_parameter("embedding1.weight_1"))
         return embedding_output_1
 
 
@@ -48,7 +49,7 @@ class Embedding2(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding2.weight_1",
-            forge.Parameter(*(30522, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512, 128), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -61,7 +62,7 @@ class Embedding3(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding3.weight_1",
-            forge.Parameter(*(32000, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(30522, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -87,7 +88,7 @@ class Embedding5(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding5.weight_1",
-            forge.Parameter(*(30522, 384), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -100,7 +101,7 @@ class Embedding6(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding6.weight_1",
-            forge.Parameter(*(32064, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(28996, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -113,7 +114,7 @@ class Embedding7(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding7.weight_1",
-            forge.Parameter(*(30524, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(50272, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -126,7 +127,7 @@ class Embedding8(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding8.weight_1",
-            forge.Parameter(*(512, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(2050, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -139,7 +140,7 @@ class Embedding9(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding9.weight_1",
-            forge.Parameter(*(21128, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(51200, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -150,10 +151,13 @@ class Embedding9(ForgeModule):
 class Embedding10(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("embedding10_const_1", shape=(21128, 128), dtype=torch.float32)
+        self.add_parameter(
+            "embedding10.weight_1",
+            forge.Parameter(*(151936, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, embedding_input_0):
-        embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_constant("embedding10_const_1"))
+        embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_parameter("embedding10.weight_1"))
         return embedding_output_1
 
 
@@ -162,7 +166,7 @@ class Embedding11(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding11.weight_1",
-            forge.Parameter(*(2, 128), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32128, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -173,23 +177,22 @@ class Embedding11(ForgeModule):
 class Embedding12(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "embedding12.weight_1",
-            forge.Parameter(*(512, 128), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
 
-    def forward(self, embedding_input_0):
-        embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_parameter("embedding12.weight_1"))
+    def forward(self, embedding_input_0, embedding_input_1):
+        embedding_output_1 = forge.op.Embedding("", embedding_input_0, embedding_input_1)
         return embedding_output_1
 
 
 class Embedding13(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("embedding13_const_1", shape=(18000, 768), dtype=torch.float32)
+        self.add_parameter(
+            "embedding13.weight_1",
+            forge.Parameter(*(51865, 512), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, embedding_input_0):
-        embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_constant("embedding13_const_1"))
+        embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_parameter("embedding13.weight_1"))
         return embedding_output_1
 
 
@@ -198,7 +201,7 @@ class Embedding14(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding14.weight_1",
-            forge.Parameter(*(513, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(21128, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -209,7 +212,7 @@ class Embedding14(ForgeModule):
 class Embedding15(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("embedding15_const_1", shape=(21128, 768), dtype=torch.float32)
+        self.add_constant("embedding15_const_1", shape=(18000, 768), dtype=torch.float32)
 
     def forward(self, embedding_input_0):
         embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_constant("embedding15_const_1"))
@@ -221,7 +224,7 @@ class Embedding16(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding16.weight_1",
-            forge.Parameter(*(2049, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(513, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -234,7 +237,7 @@ class Embedding17(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding17.weight_1",
-            forge.Parameter(*(32128, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(30000, 128), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -247,7 +250,7 @@ class Embedding18(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding18.weight_1",
-            forge.Parameter(*(2049, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32256, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -260,7 +263,7 @@ class Embedding19(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding19.weight_1",
-            forge.Parameter(*(2049, 1536), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(50257, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -273,7 +276,7 @@ class Embedding20(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding20.weight_1",
-            forge.Parameter(*(51865, 512), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(50280, 1536), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -286,7 +289,7 @@ class Embedding21(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding21.weight_1",
-            forge.Parameter(*(51865, 384), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(50272, 512), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -299,7 +302,7 @@ class Embedding22(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding22.weight_1",
-            forge.Parameter(*(51865, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(2050, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -312,7 +315,7 @@ class Embedding23(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding23.weight_1",
-            forge.Parameter(*(51865, 1280), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(51200, 2560), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -325,7 +328,7 @@ class Embedding24(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding24.weight_1",
-            forge.Parameter(*(51865, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(151936, 896), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -338,7 +341,7 @@ class Embedding25(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding25.weight_1",
-            forge.Parameter(*(51866, 1280), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(151936, 1536), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -351,7 +354,7 @@ class Embedding26(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding26.weight_1",
-            forge.Parameter(*(49408, 512), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(30524, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -362,13 +365,10 @@ class Embedding26(ForgeModule):
 class Embedding27(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "embedding27.weight_1",
-            forge.Parameter(*(77, 512), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("embedding27_const_1", shape=(21128, 768), dtype=torch.float32)
 
     def forward(self, embedding_input_0):
-        embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_parameter("embedding27.weight_1"))
+        embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_constant("embedding27_const_1"))
         return embedding_output_1
 
 
@@ -377,7 +377,7 @@ class Embedding28(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding28.weight_1",
-            forge.Parameter(*(32256, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(250880, 1536), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -390,7 +390,7 @@ class Embedding29(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding29.weight_1",
-            forge.Parameter(*(102400, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(119547, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -403,7 +403,7 @@ class Embedding30(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding30.weight_1",
-            forge.Parameter(*(32064, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32000, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -416,7 +416,7 @@ class Embedding31(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding31.weight_1",
-            forge.Parameter(*(30000, 128), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(51200, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -429,7 +429,7 @@ class Embedding32(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding32.weight_1",
-            forge.Parameter(*(50265, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32128, 512), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -442,7 +442,7 @@ class Embedding33(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding33.weight_1",
-            forge.Parameter(*(28996, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256008, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -455,7 +455,7 @@ class Embedding34(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding34.weight_1",
-            forge.Parameter(*(2, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(30522, 384), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -468,7 +468,7 @@ class Embedding35(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding35.weight_1",
-            forge.Parameter(*(512, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(50265, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -481,7 +481,7 @@ class Embedding36(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding36.weight_1",
-            forge.Parameter(*(250880, 1536), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(50272, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -494,7 +494,7 @@ class Embedding37(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding37.weight_1",
-            forge.Parameter(*(51200, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(2050, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -507,7 +507,7 @@ class Embedding38(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding38.weight_1",
-            forge.Parameter(*(128256, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(51865, 384), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -520,7 +520,7 @@ class Embedding39(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding39.weight_1",
-            forge.Parameter(*(28996, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256008, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -533,7 +533,7 @@ class Embedding40(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding40.weight_1",
-            forge.Parameter(*(119547, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(49408, 512), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -546,7 +546,7 @@ class Embedding41(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding41.weight_1",
-            forge.Parameter(*(131072, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(77, 512), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -559,7 +559,7 @@ class Embedding42(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding42.weight_1",
-            forge.Parameter(*(65024, 4544), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(50257, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -572,7 +572,7 @@ class Embedding43(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding43.weight_1",
-            forge.Parameter(*(131072, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128256, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -585,7 +585,7 @@ class Embedding44(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding44.weight_1",
-            forge.Parameter(*(256000, 2304), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(2049, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -598,7 +598,7 @@ class Embedding45(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding45.weight_1",
-            forge.Parameter(*(256000, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32128, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -611,7 +611,7 @@ class Embedding46(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding46.weight_1",
-            forge.Parameter(*(256000, 3584), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(51866, 1280), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -624,7 +624,7 @@ class Embedding47(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding47.weight_1",
-            forge.Parameter(*(256000, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(30522, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -637,7 +637,7 @@ class Embedding48(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding48.weight_1",
-            forge.Parameter(*(50257, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(2, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -650,7 +650,7 @@ class Embedding49(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding49.weight_1",
-            forge.Parameter(*(50257, 2560), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -663,7 +663,7 @@ class Embedding50(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding50.weight_1",
-            forge.Parameter(*(50257, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(50280, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -676,7 +676,7 @@ class Embedding51(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding51.weight_1",
-            forge.Parameter(*(128256, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(28996, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -689,7 +689,7 @@ class Embedding52(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding52.weight_1",
-            forge.Parameter(*(32000, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(30528, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -702,7 +702,7 @@ class Embedding53(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding53.weight_1",
-            forge.Parameter(*(128256, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(51865, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -715,7 +715,7 @@ class Embedding54(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding54.weight_1",
-            forge.Parameter(*(50280, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(131072, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -728,7 +728,7 @@ class Embedding55(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding55.weight_1",
-            forge.Parameter(*(50280, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256000, 2304), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -741,7 +741,7 @@ class Embedding56(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding56.weight_1",
-            forge.Parameter(*(50280, 2560), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(50265, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -754,7 +754,7 @@ class Embedding57(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding57.weight_1",
-            forge.Parameter(*(50280, 1536), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -767,7 +767,7 @@ class Embedding58(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding58.weight_1",
-            forge.Parameter(*(131072, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(514, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -780,7 +780,7 @@ class Embedding59(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding59.weight_1",
-            forge.Parameter(*(32768, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(250002, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -793,7 +793,7 @@ class Embedding60(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding60.weight_1",
-            forge.Parameter(*(50272, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128256, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -806,7 +806,7 @@ class Embedding61(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding61.weight_1",
-            forge.Parameter(*(2050, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(102400, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -819,7 +819,7 @@ class Embedding62(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding62.weight_1",
-            forge.Parameter(*(50272, 512), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(65024, 4544), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -832,7 +832,7 @@ class Embedding63(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding63.weight_1",
-            forge.Parameter(*(2050, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(50257, 2560), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -845,7 +845,7 @@ class Embedding64(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding64.weight_1",
-            forge.Parameter(*(50272, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32000, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -858,7 +858,7 @@ class Embedding65(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding65.weight_1",
-            forge.Parameter(*(2050, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(50280, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -871,7 +871,7 @@ class Embedding66(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding66.weight_1",
-            forge.Parameter(*(262, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(50280, 2560), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -884,7 +884,7 @@ class Embedding67(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding67.weight_1",
-            forge.Parameter(*(51200, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32064, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -897,7 +897,7 @@ class Embedding68(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding68.weight_1",
-            forge.Parameter(*(51200, 2560), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(100352, 5120), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -910,7 +910,7 @@ class Embedding69(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding69.weight_1",
-            forge.Parameter(*(100352, 5120), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(151936, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -923,7 +923,7 @@ class Embedding70(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding70.weight_1",
-            forge.Parameter(*(151936, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(152064, 3584), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -936,7 +936,7 @@ class Embedding71(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding71.weight_1",
-            forge.Parameter(*(151936, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(2049, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -949,7 +949,7 @@ class Embedding72(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding72.weight_1",
-            forge.Parameter(*(151936, 896), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256000, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -962,7 +962,7 @@ class Embedding73(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding73.weight_1",
-            forge.Parameter(*(152064, 3584), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256000, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -975,7 +975,7 @@ class Embedding74(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding74.weight_1",
-            forge.Parameter(*(151936, 1536), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128256, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -988,7 +988,7 @@ class Embedding75(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding75.weight_1",
-            forge.Parameter(*(250002, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(131072, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -1001,7 +1001,7 @@ class Embedding76(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding76.weight_1",
-            forge.Parameter(*(1, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32768, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -1014,7 +1014,7 @@ class Embedding77(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding77.weight_1",
-            forge.Parameter(*(514, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(131072, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -1027,7 +1027,7 @@ class Embedding78(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding78.weight_1",
-            forge.Parameter(*(50265, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(262, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -1040,7 +1040,7 @@ class Embedding79(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding79.weight_1",
-            forge.Parameter(*(30528, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(2049, 1536), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -1053,50 +1053,11 @@ class Embedding80(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding80.weight_1",
-            forge.Parameter(*(32128, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(51865, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
         embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_parameter("embedding80.weight_1"))
-        return embedding_output_1
-
-
-class Embedding81(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_parameter(
-            "embedding81.weight_1",
-            forge.Parameter(*(32128, 512), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
-
-    def forward(self, embedding_input_0):
-        embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_parameter("embedding81.weight_1"))
-        return embedding_output_1
-
-
-class Embedding82(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_parameter(
-            "embedding82.weight_1",
-            forge.Parameter(*(256008, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
-
-    def forward(self, embedding_input_0):
-        embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_parameter("embedding82.weight_1"))
-        return embedding_output_1
-
-
-class Embedding83(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_parameter(
-            "embedding83.weight_1",
-            forge.Parameter(*(256008, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
-
-    def forward(self, embedding_input_0):
-        embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_parameter("embedding83.weight_1"))
         return embedding_output_1
 
 
@@ -1109,133 +1070,395 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Embedding0,
-        [((1, 384), torch.int64)],
+        [((1, 11), torch.int64)],
+        {"model_names": ["pd_albert_chinese_tiny_mlm_padlenlp"], "pcc": 0.99, "max_int": 21127},
+    ),
+    (
+        Embedding1,
+        [((1, 11), torch.int64)],
+        {"model_names": ["pd_albert_chinese_tiny_mlm_padlenlp"], "pcc": 0.99, "max_int": 1},
+    ),
+    (
+        Embedding2,
+        [((1, 11), torch.int64)],
+        {"model_names": ["pd_albert_chinese_tiny_mlm_padlenlp"], "pcc": 0.99, "max_int": 511},
+    ),
+    (
+        Embedding3,
+        [((1, 128), torch.int64)],
         {
             "model_names": [
-                "onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
-                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+                "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
+                "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
+                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                "pt_bert_bert_base_uncased_mlm_hf",
+                "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
+                "onnx_bert_bert_base_uncased_mlm_hf",
+                "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
+                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
+                "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
+                "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
             ],
             "pcc": 0.99,
             "max_int": 30521,
         },
     ),
     (
-        Embedding1,
-        [((1, 384), torch.int64), ((2, 1024), torch.float32)],
-        {"model_names": ["onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf"], "pcc": 0.99, "max_int": 1},
+        Embedding4,
+        [((1, 128), torch.int64)],
+        {
+            "model_names": [
+                "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
+                "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
+                "pt_bert_bert_base_uncased_mlm_hf",
+                "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
+                "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
+                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
+                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
+                "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
+            ],
+            "pcc": 0.99,
+            "max_int": 1,
+        },
+    ),
+    (
+        Embedding5,
+        [((1, 128), torch.int64)],
+        {
+            "model_names": [
+                "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
+                "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
+                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                "pt_bert_bert_base_uncased_mlm_hf",
+                "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
+                "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
+                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
+                "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
+                "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
+                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+            ],
+            "pcc": 0.99,
+            "max_int": 511,
+        },
+    ),
+    (
+        Embedding6,
+        [((1, 128), torch.int64)],
+        {"model_names": ["pt_distilbert_distilbert_base_cased_mlm_hf"], "pcc": 0.99, "max_int": 28995},
+    ),
+    (
+        Embedding7,
+        [((1, 32), torch.int64)],
+        {
+            "model_names": ["pt_opt_facebook_opt_125m_qa_hf", "pt_opt_facebook_opt_125m_seq_cls_hf"],
+            "pcc": 0.99,
+            "max_int": 50271,
+        },
+    ),
+    (
+        Embedding8,
+        [((1, 32), torch.int64)],
+        {
+            "model_names": ["pt_opt_facebook_opt_125m_qa_hf", "pt_opt_facebook_opt_125m_seq_cls_hf"],
+            "pcc": 0.99,
+            "max_int": 2049,
+        },
+    ),
+    (
+        Embedding9,
+        [((1, 7), torch.int64)],
+        {
+            "model_names": ["pt_phi1_microsoft_phi_1_clm_hf", "pt_phi_1_5_microsoft_phi_1_5_clm_hf"],
+            "pcc": 0.99,
+            "max_int": 51199,
+        },
+    ),
+    (
+        Embedding10,
+        [((1, 29), torch.int64)],
+        {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"], "pcc": 0.99, "max_int": 151935},
+    ),
+    (
+        Embedding11,
+        [((1, 1), torch.int64)],
+        {
+            "model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
+            "pcc": 0.99,
+            "max_int": 32127,
+        },
+    ),
+    (
+        Embedding12,
+        [((1, 1), torch.int32), ((32, 12), torch.float32)],
+        {
+            "model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
+            "pcc": 0.99,
+            "max_int": 31,
+        },
+    ),
+    (
+        Embedding11,
+        [((1, 61), torch.int64)],
+        {
+            "model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
+            "pcc": 0.99,
+            "max_int": 32127,
+        },
+    ),
+    pytest.param(
+        (
+            Embedding12,
+            [((61, 61), torch.int32), ((32, 12), torch.float32)],
+            {
+                "model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
+                "pcc": 0.99,
+                "max_int": 31,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    (
+        Embedding13,
+        [((1, 1), torch.int64)],
+        {"model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"], "pcc": 0.99, "max_int": 51864},
+    ),
+    (
+        Embedding14,
+        [((1, 11), torch.int64)],
+        {
+            "model_names": [
+                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
+                "pd_bert_chinese_roberta_base_qa_padlenlp",
+            ],
+            "pcc": 0.99,
+            "max_int": 21127,
+        },
+    ),
+    (
+        Embedding5,
+        [((1, 11), torch.int64)],
+        {
+            "model_names": [
+                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
+                "pd_roberta_rbt4_ch_clm_padlenlp",
+                "pd_bert_chinese_roberta_base_qa_padlenlp",
+            ],
+            "pcc": 0.99,
+            "max_int": 511,
+        },
+    ),
+    (
+        Embedding4,
+        [((1, 11), torch.int64)],
+        {
+            "model_names": [
+                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
+                "pd_bert_chinese_roberta_base_qa_padlenlp",
+            ],
+            "pcc": 0.99,
+            "max_int": 1,
+        },
+    ),
+    (
+        Embedding15,
+        [((1, 9), torch.int64)],
+        {"model_names": ["pd_ernie_1_0_qa_padlenlp", "pd_ernie_1_0_seq_cls_padlenlp"], "pcc": 0.99, "max_int": 17999},
+    ),
+    (
+        Embedding16,
+        [((1, 9), torch.int64)],
+        {"model_names": ["pd_ernie_1_0_qa_padlenlp", "pd_ernie_1_0_seq_cls_padlenlp"], "pcc": 0.99, "max_int": 512},
+    ),
+    (
+        Embedding4,
+        [((1, 9), torch.int64)],
+        {
+            "model_names": [
+                "pd_ernie_1_0_qa_padlenlp",
+                "pd_ernie_1_0_seq_cls_padlenlp",
+                "pd_bert_bert_base_uncased_mlm_padlenlp",
+                "pd_bert_bert_base_uncased_qa_padlenlp",
+                "pd_bert_chinese_roberta_base_mlm_padlenlp",
+            ],
+            "pcc": 0.99,
+            "max_int": 1,
+        },
+    ),
+    (
+        Embedding17,
+        [((1, 128), torch.int64)],
+        {
+            "model_names": [
+                "pt_albert_xlarge_v2_token_cls_hf",
+                "pt_albert_xxlarge_v2_token_cls_hf",
+                "pt_albert_base_v2_mlm_hf",
+                "pt_albert_xxlarge_v1_token_cls_hf",
+                "pt_albert_xxlarge_v2_mlm_hf",
+                "pt_albert_xlarge_v1_mlm_hf",
+                "pt_albert_xlarge_v2_mlm_hf",
+                "pt_albert_xxlarge_v1_mlm_hf",
+                "pt_albert_large_v1_mlm_hf",
+                "pt_albert_base_v1_token_cls_hf",
+                "pt_albert_base_v2_token_cls_hf",
+                "pt_albert_large_v1_token_cls_hf",
+                "pt_albert_large_v2_mlm_hf",
+                "pt_albert_large_v2_token_cls_hf",
+                "pt_albert_xlarge_v1_token_cls_hf",
+                "pt_albert_base_v1_mlm_hf",
+            ],
+            "pcc": 0.99,
+            "max_int": 29999,
+        },
     ),
     (
         Embedding1,
-        [((1, 384), torch.int64), ((512, 1024), torch.float32)],
-        {"model_names": ["onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf"], "pcc": 0.99, "max_int": 511},
+        [((1, 128), torch.int64)],
+        {
+            "model_names": [
+                "pt_albert_xlarge_v2_token_cls_hf",
+                "pt_albert_xxlarge_v2_token_cls_hf",
+                "pt_albert_base_v2_mlm_hf",
+                "pt_albert_xxlarge_v1_token_cls_hf",
+                "pt_albert_xxlarge_v2_mlm_hf",
+                "pt_albert_xlarge_v1_mlm_hf",
+                "pt_albert_xlarge_v2_mlm_hf",
+                "pt_albert_xxlarge_v1_mlm_hf",
+                "pt_albert_large_v1_mlm_hf",
+                "pt_albert_base_v1_token_cls_hf",
+                "pt_albert_base_v2_token_cls_hf",
+                "pt_albert_large_v1_token_cls_hf",
+                "pt_albert_large_v2_mlm_hf",
+                "pt_albert_large_v2_token_cls_hf",
+                "pt_albert_xlarge_v1_token_cls_hf",
+                "pt_albert_base_v1_mlm_hf",
+            ],
+            "pcc": 0.99,
+            "max_int": 1,
+        },
     ),
     (
         Embedding2,
         [((1, 128), torch.int64)],
         {
             "model_names": [
-                "onnx_bert_bert_base_uncased_mlm_hf",
-                "pt_bert_bert_base_uncased_mlm_hf",
-                "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
-                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
-                "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
-                "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
-                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
-                "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
+                "pt_albert_xlarge_v2_token_cls_hf",
+                "pt_albert_xxlarge_v2_token_cls_hf",
+                "pt_albert_base_v2_mlm_hf",
+                "pt_albert_xxlarge_v1_token_cls_hf",
+                "pt_albert_xxlarge_v2_mlm_hf",
+                "pt_albert_xlarge_v1_mlm_hf",
+                "pt_albert_xlarge_v2_mlm_hf",
+                "pt_albert_xxlarge_v1_mlm_hf",
+                "pt_albert_large_v1_mlm_hf",
+                "pt_albert_base_v1_token_cls_hf",
+                "pt_albert_base_v2_token_cls_hf",
+                "pt_albert_large_v1_token_cls_hf",
+                "pt_albert_large_v2_mlm_hf",
+                "pt_albert_large_v2_token_cls_hf",
+                "pt_albert_xlarge_v1_token_cls_hf",
+                "pt_albert_base_v1_mlm_hf",
             ],
-            "pcc": 0.99,
-            "max_int": 30521,
-        },
-    ),
-    (
-        Embedding1,
-        [((1, 128), torch.int64), ((2, 768), torch.float32)],
-        {
-            "model_names": [
-                "onnx_bert_bert_base_uncased_mlm_hf",
-                "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 1,
-        },
-    ),
-    (
-        Embedding1,
-        [((1, 128), torch.int64), ((512, 768), torch.float32)],
-        {"model_names": ["onnx_bert_bert_base_uncased_mlm_hf"], "pcc": 0.99, "max_int": 511},
-    ),
-    (
-        Embedding3,
-        [((1, 6), torch.int64)],
-        {
-            "model_names": [
-                "onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf",
-                "pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 31999,
-        },
-    ),
-    (
-        Embedding4,
-        [((1, 6), torch.int64)],
-        {
-            "model_names": [
-                "onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf",
-                "pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 1,
-        },
-    ),
-    (
-        Embedding1,
-        [((1, 6), torch.int64), ((512, 768), torch.float32)],
-        {
-            "model_names": ["onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
             "pcc": 0.99,
             "max_int": 511,
         },
     ),
     (
-        Embedding5,
-        [((1, 13), torch.int64)],
-        {
-            "model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 30521,
-        },
+        Embedding18,
+        [((1, 588), torch.int64)],
+        {"model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"], "pcc": 0.99, "max_int": 32255},
     ),
     (
-        Embedding1,
-        [((1, 13), torch.int64), ((2, 384), torch.float32)],
-        {"model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"], "pcc": 0.99, "max_int": 1},
-    ),
-    (
-        Embedding1,
-        [((1, 13), torch.int64), ((512, 384), torch.float32)],
-        {"model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"], "pcc": 0.99, "max_int": 511},
-    ),
-    (
-        Embedding6,
+        Embedding19,
         [((1, 256), torch.int64)],
         {
-            "model_names": [
-                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
-            ],
+            "model_names": ["pt_gpt_gpt2_text_gen_hf", "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf"],
             "pcc": 0.99,
-            "max_int": 32063,
+            "max_int": 50256,
         },
     ),
     (
-        Embedding7,
+        Embedding12,
+        [((1, 256), torch.int64), ((1024, 768), torch.float32)],
+        {"model_names": ["pt_gpt_gpt2_text_gen_hf"], "pcc": 0.99, "max_int": 1023},
+    ),
+    (
+        Embedding19,
+        [((1, 7), torch.int64)],
+        {
+            "model_names": [
+                "pt_gpt_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
+            ],
+            "pcc": 0.99,
+            "max_int": 50256,
+        },
+    ),
+    (
+        Embedding12,
+        [((1, 7), torch.int64), ((1024, 768), torch.float32)],
+        {
+            "model_names": [
+                "pt_gpt_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
+            ],
+            "pcc": 0.99,
+            "max_int": 1023,
+        },
+    ),
+    (
+        Embedding20,
+        [((1, 6), torch.int64)],
+        {"model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"], "pcc": 0.99, "max_int": 50279},
+    ),
+    (
+        Embedding21,
+        [((1, 32), torch.int64)],
+        {
+            "model_names": ["pt_opt_facebook_opt_350m_qa_hf", "pt_opt_facebook_opt_350m_seq_cls_hf"],
+            "pcc": 0.99,
+            "max_int": 50271,
+        },
+    ),
+    (
+        Embedding22,
+        [((1, 32), torch.int64)],
+        {
+            "model_names": ["pt_opt_facebook_opt_350m_qa_hf", "pt_opt_facebook_opt_350m_seq_cls_hf"],
+            "pcc": 0.99,
+            "max_int": 2049,
+        },
+    ),
+    (
+        Embedding23,
+        [((1, 256), torch.int64)],
+        {
+            "model_names": ["pt_phi2_microsoft_phi_2_clm_hf", "pt_phi2_microsoft_phi_2_pytdml_clm_hf"],
+            "pcc": 0.99,
+            "max_int": 51199,
+        },
+    ),
+    (
+        Embedding24,
+        [((1, 39), torch.int64)],
+        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99, "max_int": 151935},
+    ),
+    (
+        Embedding25,
+        [((1, 29), torch.int64)],
+        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "max_int": 151935},
+    ),
+    (
+        Embedding25,
+        [((1, 39), torch.int64)],
+        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"], "pcc": 0.99, "max_int": 151935},
+    ),
+    (
+        Embedding26,
         [((1, 8), torch.int64)],
         {
             "model_names": ["pd_blip_text_salesforce_blip_image_captioning_base_text_enc_padlenlp"],
@@ -1244,7 +1467,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding8,
+        Embedding5,
         [((1, 8), torch.int64)],
         {
             "model_names": [
@@ -1256,135 +1479,58 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Embedding27,
+        [((1, 11), torch.int64)],
+        {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99, "max_int": 21127},
+    ),
+    (
+        Embedding12,
+        [((1, 11), torch.int64), ((2, 768), torch.float32)],
+        {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99, "max_int": 1},
+    ),
+    (
+        Embedding28,
+        [((1, 32), torch.int64)],
+        {"model_names": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "max_int": 250879},
+    ),
+    (
+        Embedding29,
+        [((1, 128), torch.int64)],
+        {
+            "model_names": [
+                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+            ],
+            "pcc": 0.99,
+            "max_int": 119546,
+        },
+    ),
+    (
+        Embedding12,
+        [((1, 256), torch.int64), ((2048, 768), torch.float32)],
+        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_125m_clm_hf"], "pcc": 0.99, "max_int": 2047},
+    ),
+    (
         Embedding9,
-        [((1, 8), torch.int64)],
+        [((1, 12), torch.int64)],
         {
-            "model_names": ["pd_chineseclip_text_ofa_sys_chinese_clip_vit_base_patch16_text_enc_padlenlp"],
+            "model_names": ["pt_phi1_microsoft_phi_1_token_cls_hf", "pt_phi_1_5_microsoft_phi_1_5_token_cls_hf"],
             "pcc": 0.99,
-            "max_int": 21127,
-        },
-    ),
-    (
-        Embedding1,
-        [((1, 8), torch.int64), ((512, 768), torch.float32)],
-        {
-            "model_names": ["pd_chineseclip_text_ofa_sys_chinese_clip_vit_base_patch16_text_enc_padlenlp"],
-            "pcc": 0.99,
-            "max_int": 511,
-        },
-    ),
-    (
-        Embedding1,
-        [((1, 8), torch.int64), ((2, 768), torch.float32)],
-        {
-            "model_names": ["pd_chineseclip_text_ofa_sys_chinese_clip_vit_base_patch16_text_enc_padlenlp"],
-            "pcc": 0.99,
-            "max_int": 1,
+            "max_int": 51199,
         },
     ),
     (
         Embedding10,
-        [((1, 11), torch.int64)],
-        {"model_names": ["pd_albert_chinese_tiny_mlm_padlenlp"], "pcc": 0.99, "max_int": 21127},
+        [((1, 6), torch.int64)],
+        {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "max_int": 151935},
     ),
     (
-        Embedding11,
-        [((1, 11), torch.int64)],
-        {"model_names": ["pd_albert_chinese_tiny_mlm_padlenlp"], "pcc": 0.99, "max_int": 1},
-    ),
-    (
-        Embedding12,
-        [((1, 11), torch.int64)],
-        {"model_names": ["pd_albert_chinese_tiny_mlm_padlenlp"], "pcc": 0.99, "max_int": 511},
-    ),
-    (
-        Embedding9,
-        [((1, 9), torch.int64)],
-        {"model_names": ["pd_bert_chinese_roberta_base_mlm_padlenlp"], "pcc": 0.99, "max_int": 21127},
-    ),
-    (
-        Embedding8,
-        [((1, 9), torch.int64)],
-        {
-            "model_names": [
-                "pd_bert_chinese_roberta_base_mlm_padlenlp",
-                "pd_bert_bert_base_uncased_mlm_padlenlp",
-                "pd_bert_bert_base_uncased_qa_padlenlp",
-                "pd_roberta_rbt4_ch_seq_cls_padlenlp",
-            ],
-            "pcc": 0.99,
-            "max_int": 511,
-        },
-    ),
-    (
-        Embedding4,
-        [((1, 9), torch.int64)],
-        {
-            "model_names": [
-                "pd_bert_chinese_roberta_base_mlm_padlenlp",
-                "pd_bert_bert_base_uncased_mlm_padlenlp",
-                "pd_bert_bert_base_uncased_qa_padlenlp",
-                "pd_ernie_1_0_qa_padlenlp",
-                "pd_ernie_1_0_mlm_padlenlp",
-                "pd_ernie_1_0_seq_cls_padlenlp",
-            ],
-            "pcc": 0.99,
-            "max_int": 1,
-        },
-    ),
-    (
-        Embedding9,
-        [((1, 11), torch.int64)],
-        {
-            "model_names": [
-                "pd_bert_chinese_roberta_base_qa_padlenlp",
-                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
-            ],
-            "pcc": 0.99,
-            "max_int": 21127,
-        },
-    ),
-    (
-        Embedding8,
-        [((1, 11), torch.int64)],
-        {
-            "model_names": [
-                "pd_bert_chinese_roberta_base_qa_padlenlp",
-                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
-                "pd_roberta_rbt4_ch_clm_padlenlp",
-            ],
-            "pcc": 0.99,
-            "max_int": 511,
-        },
-    ),
-    (
-        Embedding4,
-        [((1, 11), torch.int64)],
-        {
-            "model_names": [
-                "pd_bert_chinese_roberta_base_qa_padlenlp",
-                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
-            ],
-            "pcc": 0.99,
-            "max_int": 1,
-        },
-    ),
-    (
-        Embedding2,
-        [((1, 9), torch.int64)],
-        {
-            "model_names": ["pd_bert_bert_base_uncased_mlm_padlenlp", "pd_bert_bert_base_uncased_qa_padlenlp"],
-            "pcc": 0.99,
-            "max_int": 30521,
-        },
-    ),
-    (
-        Embedding3,
+        Embedding30,
         [((1, 10), torch.int64)],
         {"model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"], "pcc": 0.99, "max_int": 31999},
     ),
     (
-        Embedding8,
+        Embedding5,
         [((1, 10), torch.int64)],
         {"model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"], "pcc": 0.99, "max_int": 511},
     ),
@@ -1394,37 +1540,249 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"], "pcc": 0.99, "max_int": 1},
     ),
     (
+        Embedding14,
+        [((1, 8), torch.int64)],
+        {
+            "model_names": ["pd_chineseclip_text_ofa_sys_chinese_clip_vit_base_patch16_text_enc_padlenlp"],
+            "pcc": 0.99,
+            "max_int": 21127,
+        },
+    ),
+    (
+        Embedding12,
+        [((1, 8), torch.int64), ((512, 768), torch.float32)],
+        {
+            "model_names": ["pd_chineseclip_text_ofa_sys_chinese_clip_vit_base_patch16_text_enc_padlenlp"],
+            "pcc": 0.99,
+            "max_int": 511,
+        },
+    ),
+    (
+        Embedding12,
+        [((1, 8), torch.int64), ((2, 768), torch.float32)],
+        {
+            "model_names": ["pd_chineseclip_text_ofa_sys_chinese_clip_vit_base_patch16_text_enc_padlenlp"],
+            "pcc": 0.99,
+            "max_int": 1,
+        },
+    ),
+    (
+        Embedding31,
+        [((1, 256), torch.int64)],
+        {
+            "model_names": [
+                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
+            ],
+            "pcc": 0.99,
+            "max_int": 51199,
+        },
+    ),
+    (
+        Embedding25,
+        [((1, 35), torch.int64)],
+        {
+            "model_names": [
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "max_int": 151935,
+        },
+    ),
+    (
+        Embedding32,
+        [((1, 1), torch.int64)],
+        {
+            "model_names": ["pt_t5_google_flan_t5_small_text_gen_hf", "pt_t5_t5_small_text_gen_hf"],
+            "pcc": 0.99,
+            "max_int": 32127,
+        },
+    ),
+    (
+        Embedding12,
+        [((1, 1), torch.int32), ((32, 6), torch.float32)],
+        {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
+    ),
+    (
+        Embedding32,
+        [((1, 61), torch.int64)],
+        {
+            "model_names": ["pt_t5_google_flan_t5_small_text_gen_hf", "pt_t5_t5_small_text_gen_hf"],
+            "pcc": 0.99,
+            "max_int": 32127,
+        },
+    ),
+    pytest.param(
+        (
+            Embedding12,
+            [((61, 61), torch.int32), ((32, 6), torch.float32)],
+            {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    (
+        Embedding33,
+        [((1, 256), torch.int64)],
+        {"model_names": ["pt_xglm_facebook_xglm_564m_clm_hf"], "pcc": 0.99, "max_int": 256007},
+    ),
+    (
+        Embedding34,
+        [((1, 13), torch.int64)],
+        {
+            "model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"],
+            "pcc": 0.99,
+            "max_int": 30521,
+        },
+    ),
+    (
+        Embedding12,
+        [((1, 13), torch.int64), ((2, 384), torch.float32)],
+        {"model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"], "pcc": 0.99, "max_int": 1},
+    ),
+    (
+        Embedding12,
+        [((1, 13), torch.int64), ((512, 384), torch.float32)],
+        {"model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"], "pcc": 0.99, "max_int": 511},
+    ),
+    (
+        Embedding3,
+        [((1, 9), torch.int64)],
+        {
+            "model_names": ["pd_bert_bert_base_uncased_mlm_padlenlp", "pd_bert_bert_base_uncased_qa_padlenlp"],
+            "pcc": 0.99,
+            "max_int": 30521,
+        },
+    ),
+    (
+        Embedding5,
+        [((1, 9), torch.int64)],
+        {
+            "model_names": [
+                "pd_bert_bert_base_uncased_mlm_padlenlp",
+                "pd_roberta_rbt4_ch_seq_cls_padlenlp",
+                "pd_bert_bert_base_uncased_qa_padlenlp",
+                "pd_bert_chinese_roberta_base_mlm_padlenlp",
+            ],
+            "pcc": 0.99,
+            "max_int": 511,
+        },
+    ),
+    (
+        Embedding17,
+        [((1, 14), torch.int64)],
+        {"model_names": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"], "pcc": 0.99, "max_int": 29999},
+    ),
+    (
+        Embedding1,
+        [((1, 14), torch.int64)],
+        {"model_names": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"], "pcc": 0.99, "max_int": 1},
+    ),
+    (
         Embedding2,
-        [((1, 8), torch.int64)],
-        {"model_names": ["pd_bert_bert_base_uncased_seq_cls_padlenlp"], "pcc": 0.99, "max_int": 30521},
+        [((1, 14), torch.int64)],
+        {"model_names": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"], "pcc": 0.99, "max_int": 511},
+    ),
+    (
+        Embedding35,
+        [((1, 256), torch.int64)],
+        {"model_names": ["pt_bart_facebook_bart_large_mnli_seq_cls_hf"], "pcc": 0.99, "max_int": 50264},
+    ),
+    (
+        Embedding12,
+        [((1, 256), torch.int64), ((1026, 1024), torch.float32)],
+        {"model_names": ["pt_bart_facebook_bart_large_mnli_seq_cls_hf"], "pcc": 0.99, "max_int": 1025},
+    ),
+    (
+        Embedding36,
+        [((1, 256), torch.int64)],
+        {"model_names": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99, "max_int": 50271},
+    ),
+    (
+        Embedding37,
+        [((1, 256), torch.int64)],
+        {"model_names": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99, "max_int": 2049},
+    ),
+    (
+        Embedding36,
+        [((1, 32), torch.int64)],
+        {
+            "model_names": ["pt_opt_facebook_opt_1_3b_qa_hf", "pt_opt_facebook_opt_1_3b_seq_cls_hf"],
+            "pcc": 0.99,
+            "max_int": 50271,
+        },
+    ),
+    (
+        Embedding37,
+        [((1, 32), torch.int64)],
+        {
+            "model_names": ["pt_opt_facebook_opt_1_3b_qa_hf", "pt_opt_facebook_opt_1_3b_seq_cls_hf"],
+            "pcc": 0.99,
+            "max_int": 2049,
+        },
+    ),
+    (
+        Embedding38,
+        [((1, 1), torch.int64)],
+        {"model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99, "max_int": 51864},
+    ),
+    (
+        Embedding39,
+        [((1, 256), torch.int64)],
+        {"model_names": ["pt_xglm_facebook_xglm_1_7b_clm_hf"], "pcc": 0.99, "max_int": 256007},
+    ),
+    (
+        Embedding30,
+        [((1, 6), torch.int64)],
+        {
+            "model_names": ["onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
+            "pcc": 0.99,
+            "max_int": 31999,
+        },
     ),
     (
         Embedding4,
-        [((1, 8), torch.int64)],
-        {"model_names": ["pd_bert_bert_base_uncased_seq_cls_padlenlp"], "pcc": 0.99, "max_int": 1},
+        [((1, 6), torch.int64)],
+        {
+            "model_names": ["onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
+            "pcc": 0.99,
+            "max_int": 1,
+        },
     ),
     (
-        Embedding3,
-        [((1, 15), torch.int64)],
-        {"model_names": ["pd_bert_bert_base_japanese_seq_cls_padlenlp"], "pcc": 0.99, "max_int": 31999},
+        Embedding12,
+        [((1, 6), torch.int64), ((512, 768), torch.float32)],
+        {
+            "model_names": ["onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
+            "pcc": 0.99,
+            "max_int": 511,
+        },
     ),
     (
-        Embedding8,
-        [((1, 15), torch.int64)],
-        {"model_names": ["pd_bert_bert_base_japanese_seq_cls_padlenlp"], "pcc": 0.99, "max_int": 511},
+        Embedding12,
+        [((1, 128), torch.int64), ((2, 768), torch.float32)],
+        {
+            "model_names": [
+                "onnx_bert_bert_base_uncased_mlm_hf",
+                "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "max_int": 1,
+        },
     ),
     (
-        Embedding4,
-        [((1, 15), torch.int64)],
-        {"model_names": ["pd_bert_bert_base_japanese_seq_cls_padlenlp"], "pcc": 0.99, "max_int": 1},
+        Embedding12,
+        [((1, 128), torch.int64), ((512, 768), torch.float32)],
+        {"model_names": ["onnx_bert_bert_base_uncased_mlm_hf"], "pcc": 0.99, "max_int": 511},
     ),
     (
-        Embedding3,
+        Embedding30,
         [((1, 14), torch.int64)],
         {"model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"], "pcc": 0.99, "max_int": 31999},
     ),
     (
-        Embedding8,
+        Embedding5,
         [((1, 14), torch.int64)],
         {"model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"], "pcc": 0.99, "max_int": 511},
     ),
@@ -1434,50 +1792,59 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"], "pcc": 0.99, "max_int": 1},
     ),
     (
-        Embedding13,
-        [((1, 9), torch.int64)],
-        {
-            "model_names": ["pd_ernie_1_0_qa_padlenlp", "pd_ernie_1_0_mlm_padlenlp", "pd_ernie_1_0_seq_cls_padlenlp"],
-            "pcc": 0.99,
-            "max_int": 17999,
-        },
-    ),
-    (
-        Embedding14,
-        [((1, 9), torch.int64)],
-        {
-            "model_names": ["pd_ernie_1_0_qa_padlenlp", "pd_ernie_1_0_mlm_padlenlp", "pd_ernie_1_0_seq_cls_padlenlp"],
-            "pcc": 0.99,
-            "max_int": 512,
-        },
-    ),
-    (
-        Embedding15,
+        Embedding27,
         [((1, 9), torch.int64)],
         {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "max_int": 21127},
     ),
     (
-        Embedding1,
+        Embedding12,
         [((1, 9), torch.int64), ((2, 768), torch.float32)],
         {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "max_int": 1},
     ),
     (
-        Embedding15,
-        [((1, 11), torch.int64)],
-        {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99, "max_int": 21127},
+        Embedding40,
+        [((2, 7), torch.int64)],
+        {"model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"], "pcc": 0.99, "max_int": 49407},
     ),
     (
-        Embedding1,
-        [((1, 11), torch.int64), ((2, 768), torch.float32)],
-        {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99, "max_int": 1},
+        Embedding41,
+        [((1, 7), torch.int64)],
+        {"model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"], "pcc": 0.99, "max_int": 76},
     ),
     (
-        Embedding16,
+        Embedding42,
+        [((1, 32), torch.int64)],
+        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf"], "pcc": 0.99, "max_int": 50256},
+    ),
+    (
+        Embedding12,
+        [((1, 32), torch.int64), ((2048, 2048), torch.float32)],
+        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf"], "pcc": 0.99, "max_int": 2047},
+    ),
+    (
+        Embedding43,
+        [((1, 4), torch.int64)],
+        {
+            "model_names": [
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "max_int": 128255,
+        },
+    ),
+    (
+        Embedding24,
+        [((1, 29), torch.int64)],
+        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "max_int": 151935},
+    ),
+    (
+        Embedding44,
         [((2, 1), torch.int64)],
         {"model_names": ["pt_stereo_facebook_musicgen_small_music_generation_hf"], "pcc": 0.99, "max_int": 2048},
     ),
     (
-        Embedding17,
+        Embedding11,
         [((2, 13), torch.int64)],
         {
             "model_names": [
@@ -1491,7 +1858,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Embedding1,
+            Embedding12,
             [((13, 13), torch.int32), ((32, 12), torch.float32)],
             {
                 "model_names": [
@@ -1506,575 +1873,144 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Embedding18,
-        [((2, 1), torch.int64)],
-        {"model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"], "pcc": 0.99, "max_int": 2048},
-    ),
-    (
-        Embedding19,
-        [((2, 1), torch.int64)],
-        {"model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99, "max_int": 2048},
-    ),
-    (
-        Embedding20,
+        Embedding45,
         [((1, 1), torch.int64)],
-        {"model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"], "pcc": 0.99, "max_int": 51864},
+        {
+            "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
+            "pcc": 0.99,
+            "max_int": 32127,
+        },
     ),
     (
-        Embedding21,
-        [((1, 1), torch.int64)],
-        {"model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99, "max_int": 51864},
+        Embedding12,
+        [((1, 1), torch.int32), ((32, 16), torch.float32)],
+        {
+            "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
+            "pcc": 0.99,
+            "max_int": 31,
+        },
     ),
     (
-        Embedding22,
-        [((1, 1), torch.int64)],
-        {"model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99, "max_int": 51864},
+        Embedding45,
+        [((1, 61), torch.int64)],
+        {
+            "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
+            "pcc": 0.99,
+            "max_int": 32127,
+        },
+    ),
+    pytest.param(
+        (
+            Embedding12,
+            [((61, 61), torch.int32), ((32, 16), torch.float32)],
+            {
+                "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
+                "pcc": 0.99,
+                "max_int": 31,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Embedding23,
-        [((1, 1), torch.int64)],
-        {"model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"], "pcc": 0.99, "max_int": 51864},
-    ),
-    (
-        Embedding24,
-        [((1, 1), torch.int64)],
-        {"model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"], "pcc": 0.99, "max_int": 51864},
-    ),
-    (
-        Embedding25,
+        Embedding46,
         [((1, 2), torch.int64)],
         {
             "model_names": [
-                "pt_whisper_openai_whisper_large_v3_clm_hf",
                 "pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf",
+                "pt_whisper_openai_whisper_large_v3_clm_hf",
             ],
             "pcc": 0.99,
             "max_int": 51865,
         },
     ),
     (
-        Embedding26,
-        [((2, 7), torch.int64)],
-        {"model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"], "pcc": 0.99, "max_int": 49407},
-    ),
-    (
-        Embedding27,
-        [((1, 7), torch.int64)],
-        {"model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"], "pcc": 0.99, "max_int": 76},
-    ),
-    (
-        Embedding28,
-        [((1, 588), torch.int64)],
-        {"model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"], "pcc": 0.99, "max_int": 32255},
-    ),
-    (
-        Embedding29,
-        [((1, 39), torch.int64)],
-        {"model_names": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"], "pcc": 0.99, "max_int": 102399},
-    ),
-    (
-        Embedding1,
-        [((1, 577), torch.int64), ((577, 1024), torch.float32)],
-        {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "max_int": 576},
-    ),
-    (
-        Embedding30,
-        [((1, 596), torch.int64)],
-        {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "max_int": 32063},
-    ),
-    (
-        Embedding31,
-        [((1, 128), torch.int64)],
+        Embedding47,
+        [((1, 384), torch.int64)],
         {
             "model_names": [
-                "pt_albert_xxlarge_v1_token_cls_hf",
-                "pt_albert_base_v1_token_cls_hf",
-                "pt_albert_xxlarge_v2_token_cls_hf",
-                "pt_albert_base_v2_token_cls_hf",
-                "pt_albert_xxlarge_v2_mlm_hf",
-                "pt_albert_xlarge_v2_token_cls_hf",
-                "pt_albert_xxlarge_v1_mlm_hf",
-                "pt_albert_large_v2_mlm_hf",
-                "pt_albert_xlarge_v1_mlm_hf",
-                "pt_albert_base_v2_mlm_hf",
-                "pt_albert_large_v2_token_cls_hf",
-                "pt_albert_large_v1_token_cls_hf",
-                "pt_albert_large_v1_mlm_hf",
-                "pt_albert_base_v1_mlm_hf",
-                "pt_albert_xlarge_v1_token_cls_hf",
-                "pt_albert_xlarge_v2_mlm_hf",
+                "onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
             ],
             "pcc": 0.99,
-            "max_int": 29999,
-        },
-    ),
-    (
-        Embedding11,
-        [((1, 128), torch.int64)],
-        {
-            "model_names": [
-                "pt_albert_xxlarge_v1_token_cls_hf",
-                "pt_albert_base_v1_token_cls_hf",
-                "pt_albert_xxlarge_v2_token_cls_hf",
-                "pt_albert_base_v2_token_cls_hf",
-                "pt_albert_xxlarge_v2_mlm_hf",
-                "pt_albert_xlarge_v2_token_cls_hf",
-                "pt_albert_xxlarge_v1_mlm_hf",
-                "pt_albert_large_v2_mlm_hf",
-                "pt_albert_xlarge_v1_mlm_hf",
-                "pt_albert_base_v2_mlm_hf",
-                "pt_albert_large_v2_token_cls_hf",
-                "pt_albert_large_v1_token_cls_hf",
-                "pt_albert_large_v1_mlm_hf",
-                "pt_albert_base_v1_mlm_hf",
-                "pt_albert_xlarge_v1_token_cls_hf",
-                "pt_albert_xlarge_v2_mlm_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 1,
+            "max_int": 30521,
         },
     ),
     (
         Embedding12,
-        [((1, 128), torch.int64)],
-        {
-            "model_names": [
-                "pt_albert_xxlarge_v1_token_cls_hf",
-                "pt_albert_base_v1_token_cls_hf",
-                "pt_albert_xxlarge_v2_token_cls_hf",
-                "pt_albert_base_v2_token_cls_hf",
-                "pt_albert_xxlarge_v2_mlm_hf",
-                "pt_albert_xlarge_v2_token_cls_hf",
-                "pt_albert_xxlarge_v1_mlm_hf",
-                "pt_albert_large_v2_mlm_hf",
-                "pt_albert_xlarge_v1_mlm_hf",
-                "pt_albert_base_v2_mlm_hf",
-                "pt_albert_large_v2_token_cls_hf",
-                "pt_albert_large_v1_token_cls_hf",
-                "pt_albert_large_v1_mlm_hf",
-                "pt_albert_base_v1_mlm_hf",
-                "pt_albert_xlarge_v1_token_cls_hf",
-                "pt_albert_xlarge_v2_mlm_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 511,
-        },
+        [((1, 384), torch.int64), ((2, 1024), torch.float32)],
+        {"model_names": ["onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf"], "pcc": 0.99, "max_int": 1},
     ),
     (
-        Embedding31,
+        Embedding12,
+        [((1, 384), torch.int64), ((512, 1024), torch.float32)],
+        {"model_names": ["onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf"], "pcc": 0.99, "max_int": 511},
+    ),
+    (
+        Embedding30,
+        [((1, 15), torch.int64)],
+        {"model_names": ["pd_bert_bert_base_japanese_seq_cls_padlenlp"], "pcc": 0.99, "max_int": 31999},
+    ),
+    (
+        Embedding5,
+        [((1, 15), torch.int64)],
+        {"model_names": ["pd_bert_bert_base_japanese_seq_cls_padlenlp"], "pcc": 0.99, "max_int": 511},
+    ),
+    (
+        Embedding4,
+        [((1, 15), torch.int64)],
+        {"model_names": ["pd_bert_bert_base_japanese_seq_cls_padlenlp"], "pcc": 0.99, "max_int": 1},
+    ),
+    (
+        Embedding17,
         [((1, 9), torch.int64)],
         {"model_names": ["pt_albert_textattack_albert_base_v2_imdb_seq_cls_hf"], "pcc": 0.99, "max_int": 29999},
     ),
     (
-        Embedding11,
+        Embedding1,
         [((1, 9), torch.int64)],
         {"model_names": ["pt_albert_textattack_albert_base_v2_imdb_seq_cls_hf"], "pcc": 0.99, "max_int": 1},
     ),
     (
-        Embedding12,
+        Embedding2,
         [((1, 9), torch.int64)],
         {"model_names": ["pt_albert_textattack_albert_base_v2_imdb_seq_cls_hf"], "pcc": 0.99, "max_int": 511},
     ),
     (
-        Embedding31,
-        [((1, 14), torch.int64)],
-        {"model_names": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"], "pcc": 0.99, "max_int": 29999},
-    ),
-    (
-        Embedding11,
-        [((1, 14), torch.int64)],
-        {"model_names": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"], "pcc": 0.99, "max_int": 1},
-    ),
-    (
-        Embedding12,
-        [((1, 14), torch.int64)],
-        {"model_names": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"], "pcc": 0.99, "max_int": 511},
-    ),
-    (
-        Embedding32,
-        [((1, 256), torch.int64)],
-        {"model_names": ["pt_bart_facebook_bart_large_mnli_seq_cls_hf"], "pcc": 0.99, "max_int": 50264},
-    ),
-    (
-        Embedding1,
-        [((1, 256), torch.int64), ((1026, 1024), torch.float32)],
-        {"model_names": ["pt_bart_facebook_bart_large_mnli_seq_cls_hf"], "pcc": 0.99, "max_int": 1025},
-    ),
-    (
-        Embedding4,
-        [((1, 128), torch.int64)],
-        {
-            "model_names": [
-                "pt_bert_bert_base_uncased_mlm_hf",
-                "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
-                "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
-                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
-                "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
-                "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
-                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
-                "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
-            ],
-            "pcc": 0.99,
-            "max_int": 1,
-        },
-    ),
-    (
-        Embedding8,
-        [((1, 128), torch.int64)],
-        {
-            "model_names": [
-                "pt_bert_bert_base_uncased_mlm_hf",
-                "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                "pt_distilbert_distilbert_base_cased_mlm_hf",
-                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
-                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
-                "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
-                "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
-                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
-                "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
-                "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 511,
-        },
-    ),
-    (
-        Embedding33,
-        [((1, 384), torch.int64)],
-        {
-            "model_names": ["pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf"],
-            "pcc": 0.99,
-            "max_int": 28995,
-        },
-    ),
-    (
-        Embedding34,
+        Embedding48,
         [((1, 384), torch.int64)],
         {
             "model_names": [
-                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
                 "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 1,
-        },
-    ),
-    (
-        Embedding35,
-        [((1, 384), torch.int64)],
-        {
-            "model_names": [
                 "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
-                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
             ],
-            "pcc": 0.99,
-            "max_int": 511,
-        },
-    ),
-    (
-        Embedding33,
-        [((1, 128), torch.int64)],
-        {
-            "model_names": ["pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 28995,
-        },
-    ),
-    (
-        Embedding34,
-        [((1, 128), torch.int64)],
-        {
-            "model_names": ["pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf"],
             "pcc": 0.99,
             "max_int": 1,
         },
     ),
     (
-        Embedding35,
-        [((1, 128), torch.int64)],
+        Embedding49,
+        [((1, 384), torch.int64)],
         {
-            "model_names": ["pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf"],
+            "model_names": [
+                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
+            ],
             "pcc": 0.99,
             "max_int": 511,
-        },
-    ),
-    (
-        Embedding8,
-        [((1, 6), torch.int64)],
-        {
-            "model_names": ["pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
-            "pcc": 0.99,
-            "max_int": 511,
-        },
-    ),
-    (
-        Embedding36,
-        [((1, 32), torch.int64)],
-        {"model_names": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "max_int": 250879},
-    ),
-    (
-        Embedding37,
-        [((1, 256), torch.int64)],
-        {
-            "model_names": [
-                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 51199,
-        },
-    ),
-    (
-        Embedding38,
-        [((1, 44), torch.int64)],
-        {
-            "model_names": ["pt_cogito_deepcogito_cogito_v1_preview_llama_3b_text_gen_hf"],
-            "pcc": 0.99,
-            "max_int": 128255,
-        },
-    ),
-    (
-        Embedding39,
-        [((1, 128), torch.int64)],
-        {"model_names": ["pt_distilbert_distilbert_base_cased_mlm_hf"], "pcc": 0.99, "max_int": 28995},
-    ),
-    (
-        Embedding40,
-        [((1, 128), torch.int64)],
-        {
-            "model_names": [
-                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 119546,
-        },
-    ),
-    (
-        Embedding39,
-        [((1, 384), torch.int64)],
-        {"model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"], "pcc": 0.99, "max_int": 28995},
-    ),
-    (
-        Embedding8,
-        [((1, 384), torch.int64)],
-        {"model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"], "pcc": 0.99, "max_int": 511},
-    ),
-    (
-        Embedding41,
-        [((1, 522), torch.int64)],
-        {
-            "model_names": [
-                "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf",
-                "pt_falcon3_tiiuae_falcon3_10b_base_clm_hf",
-                "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 131071,
         },
     ),
     (
         Embedding42,
-        [((1, 6), torch.int64)],
-        {"model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99, "max_int": 65023},
-    ),
-    (
-        Embedding43,
-        [((1, 522), torch.int64)],
-        {"model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"], "pcc": 0.99, "max_int": 131071},
-    ),
-    (
-        Embedding44,
-        [((1, 207), torch.int64)],
-        {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99, "max_int": 255999},
-    ),
-    (
-        Embedding45,
-        [((1, 7), torch.int64)],
-        {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "max_int": 255999},
-    ),
-    (
-        Embedding46,
-        [((1, 207), torch.int64)],
-        {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "max_int": 255999},
-    ),
-    (
-        Embedding45,
-        [((1, 107), torch.int64)],
-        {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "max_int": 255999},
-    ),
-    (
-        Embedding47,
-        [((1, 107), torch.int64)],
-        {"model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99, "max_int": 255999},
-    ),
-    (
-        Embedding48,
-        [((1, 7), torch.int64)],
-        {
-            "model_names": [
-                "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
-                "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 50256,
-        },
-    ),
-    (
-        Embedding1,
-        [((1, 7), torch.int64), ((1024, 768), torch.float32)],
-        {
-            "model_names": [
-                "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
-                "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 1023,
-        },
-    ),
-    (
-        Embedding48,
-        [((1, 256), torch.int64)],
-        {
-            "model_names": ["pt_gpt2_gpt2_text_gen_hf", "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf"],
-            "pcc": 0.99,
-            "max_int": 50256,
-        },
-    ),
-    (
-        Embedding1,
-        [((1, 256), torch.int64), ((1024, 768), torch.float32)],
-        {"model_names": ["pt_gpt2_gpt2_text_gen_hf"], "pcc": 0.99, "max_int": 1023},
-    ),
-    (
-        Embedding49,
-        [((1, 256), torch.int64)],
-        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf"], "pcc": 0.99, "max_int": 50256},
-    ),
-    (
-        Embedding1,
-        [((1, 256), torch.int64), ((2048, 2560), torch.float32)],
-        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf"], "pcc": 0.99, "max_int": 2047},
-    ),
-    (
-        Embedding1,
-        [((1, 256), torch.int64), ((2048, 768), torch.float32)],
-        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_125m_clm_hf"], "pcc": 0.99, "max_int": 2047},
-    ),
-    (
-        Embedding50,
         [((1, 256), torch.int64)],
         {"model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf"], "pcc": 0.99, "max_int": 50256},
     ),
     (
-        Embedding1,
+        Embedding12,
         [((1, 256), torch.int64), ((2048, 2048), torch.float32)],
         {"model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf"], "pcc": 0.99, "max_int": 2047},
     ),
     (
-        Embedding50,
-        [((1, 32), torch.int64)],
-        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf"], "pcc": 0.99, "max_int": 50256},
-    ),
-    (
-        Embedding1,
-        [((1, 32), torch.int64), ((2048, 2048), torch.float32)],
-        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf"], "pcc": 0.99, "max_int": 2047},
-    ),
-    (
-        Embedding48,
-        [((1, 32), torch.int64)],
-        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf"], "pcc": 0.99, "max_int": 50256},
-    ),
-    (
-        Embedding1,
-        [((1, 32), torch.int64), ((2048, 768), torch.float32)],
-        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf"], "pcc": 0.99, "max_int": 2047},
-    ),
-    (
-        Embedding49,
-        [((1, 32), torch.int64)],
-        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"], "pcc": 0.99, "max_int": 50256},
-    ),
-    (
-        Embedding1,
-        [((1, 32), torch.int64), ((2048, 2560), torch.float32)],
-        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"], "pcc": 0.99, "max_int": 2047},
-    ),
-    (
-        Embedding51,
-        [((1, 4), torch.int64)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 128255,
-        },
-    ),
-    (
-        Embedding52,
-        [((1, 32), torch.int64)],
-        {"model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"], "pcc": 0.99, "max_int": 31999},
-    ),
-    (
-        Embedding52,
-        [((1, 4), torch.int64)],
-        {"model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "max_int": 31999},
-    ),
-    (
-        Embedding38,
-        [((1, 32), torch.int64)],
-        {"model_names": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"], "pcc": 0.99, "max_int": 128255},
-    ),
-    (
-        Embedding53,
-        [((1, 256), torch.int64)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 128255,
-        },
-    ),
-    (
-        Embedding38,
-        [((1, 4), torch.int64)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 128255,
-        },
-    ),
-    (
-        Embedding53,
-        [((1, 4), torch.int64)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 128255,
-        },
-    ),
-    (
-        Embedding51,
+        Embedding43,
         [((1, 256), torch.int64)],
         {
             "model_names": [
@@ -2086,191 +2022,247 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding38,
-        [((1, 256), torch.int64)],
-        {"model_names": ["pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf"], "pcc": 0.99, "max_int": 128255},
-    ),
-    (
-        Embedding54,
-        [((1, 6), torch.int64)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"], "pcc": 0.99, "max_int": 50279},
-    ),
-    (
-        Embedding55,
+        Embedding50,
         [((1, 6), torch.int64)],
         {"model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"], "pcc": 0.99, "max_int": 50279},
     ),
     (
-        Embedding56,
-        [((1, 6), torch.int64)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"], "pcc": 0.99, "max_int": 50279},
-    ),
-    (
-        Embedding57,
-        [((1, 6), torch.int64)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"], "pcc": 0.99, "max_int": 50279},
-    ),
-    (
-        Embedding52,
-        [((1, 10), torch.int64)],
-        {"model_names": ["pt_ministral_ministral_ministral_3b_instruct_clm_hf"], "pcc": 0.99, "max_int": 31999},
-    ),
-    (
-        Embedding58,
-        [((1, 8), torch.int64)],
-        {"model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"], "pcc": 0.99, "max_int": 131071},
-    ),
-    (
-        Embedding59,
-        [((1, 135), torch.int64)],
-        {"model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"], "pcc": 0.99, "max_int": 32767},
-    ),
-    (
-        Embedding52,
-        [((1, 128), torch.int64)],
-        {"model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"], "pcc": 0.99, "max_int": 31999},
-    ),
-    (
-        Embedding60,
-        [((1, 32), torch.int64)],
-        {
-            "model_names": ["pt_opt_facebook_opt_125m_qa_hf", "pt_opt_facebook_opt_125m_seq_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 50271,
-        },
-    ),
-    (
-        Embedding61,
-        [((1, 32), torch.int64)],
-        {
-            "model_names": ["pt_opt_facebook_opt_125m_qa_hf", "pt_opt_facebook_opt_125m_seq_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 2049,
-        },
-    ),
-    (
-        Embedding62,
-        [((1, 32), torch.int64)],
-        {
-            "model_names": ["pt_opt_facebook_opt_350m_qa_hf", "pt_opt_facebook_opt_350m_seq_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 50271,
-        },
-    ),
-    (
-        Embedding63,
-        [((1, 32), torch.int64)],
-        {
-            "model_names": ["pt_opt_facebook_opt_350m_qa_hf", "pt_opt_facebook_opt_350m_seq_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 2049,
-        },
-    ),
-    (
-        Embedding64,
-        [((1, 32), torch.int64)],
-        {
-            "model_names": ["pt_opt_facebook_opt_1_3b_qa_hf", "pt_opt_facebook_opt_1_3b_seq_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 50271,
-        },
-    ),
-    (
-        Embedding65,
-        [((1, 32), torch.int64)],
-        {
-            "model_names": ["pt_opt_facebook_opt_1_3b_qa_hf", "pt_opt_facebook_opt_1_3b_seq_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 2049,
-        },
-    ),
-    (
-        Embedding64,
-        [((1, 256), torch.int64)],
-        {"model_names": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99, "max_int": 50271},
-    ),
-    (
-        Embedding65,
-        [((1, 256), torch.int64)],
-        {"model_names": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99, "max_int": 2049},
-    ),
-    (
-        Embedding62,
-        [((1, 256), torch.int64)],
-        {"model_names": ["pt_opt_facebook_opt_350m_clm_hf"], "pcc": 0.99, "max_int": 50271},
-    ),
-    (
-        Embedding63,
-        [((1, 256), torch.int64)],
-        {"model_names": ["pt_opt_facebook_opt_350m_clm_hf"], "pcc": 0.99, "max_int": 2049},
-    ),
-    (
-        Embedding60,
+        Embedding7,
         [((1, 256), torch.int64)],
         {"model_names": ["pt_opt_facebook_opt_125m_clm_hf"], "pcc": 0.99, "max_int": 50271},
     ),
     (
-        Embedding61,
+        Embedding8,
         [((1, 256), torch.int64)],
         {"model_names": ["pt_opt_facebook_opt_125m_clm_hf"], "pcc": 0.99, "max_int": 2049},
     ),
     (
+        Embedding24,
+        [((1, 35), torch.int64)],
+        {"model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99, "max_int": 151935},
+    ),
+    (
+        Embedding12,
+        [((1, 1), torch.int32), ((32, 8), torch.float32)],
+        {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
+    ),
+    pytest.param(
+        (
+            Embedding12,
+            [((61, 61), torch.int32), ((32, 8), torch.float32)],
+            {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    (
+        Embedding3,
+        [((1, 8), torch.int64)],
+        {"model_names": ["pd_bert_bert_base_uncased_seq_cls_padlenlp"], "pcc": 0.99, "max_int": 30521},
+    ),
+    (
+        Embedding4,
+        [((1, 8), torch.int64)],
+        {"model_names": ["pd_bert_bert_base_uncased_seq_cls_padlenlp"], "pcc": 0.99, "max_int": 1},
+    ),
+    (
+        Embedding51,
+        [((1, 384), torch.int64)],
+        {
+            "model_names": ["pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf"],
+            "pcc": 0.99,
+            "max_int": 28995,
+        },
+    ),
+    (
+        Embedding30,
+        [((1, 16), torch.int64)],
+        {
+            "model_names": ["pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
+            "pcc": 0.99,
+            "max_int": 31999,
+        },
+    ),
+    (
+        Embedding4,
+        [((1, 16), torch.int64)],
+        {
+            "model_names": ["pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
+            "pcc": 0.99,
+            "max_int": 1,
+        },
+    ),
+    (
+        Embedding5,
+        [((1, 16), torch.int64)],
+        {
+            "model_names": ["pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
+            "pcc": 0.99,
+            "max_int": 511,
+        },
+    ),
+    (
+        Embedding52,
+        [((1, 128), torch.int64)],
+        {"model_names": ["pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf"], "pcc": 0.99, "max_int": 30527},
+    ),
+    (
+        Embedding53,
+        [((1, 1), torch.int64)],
+        {"model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99, "max_int": 51864},
+    ),
+    (
+        Embedding14,
+        [((1, 9), torch.int64)],
+        {"model_names": ["pd_bert_chinese_roberta_base_mlm_padlenlp"], "pcc": 0.99, "max_int": 21127},
+    ),
+    (
+        Embedding51,
+        [((1, 128), torch.int64)],
+        {
+            "model_names": ["pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf"],
+            "pcc": 0.99,
+            "max_int": 28995,
+        },
+    ),
+    (
+        Embedding48,
+        [((1, 128), torch.int64)],
+        {
+            "model_names": ["pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf"],
+            "pcc": 0.99,
+            "max_int": 1,
+        },
+    ),
+    (
+        Embedding49,
+        [((1, 128), torch.int64)],
+        {
+            "model_names": ["pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf"],
+            "pcc": 0.99,
+            "max_int": 511,
+        },
+    ),
+    (
+        Embedding54,
+        [((1, 522), torch.int64)],
+        {"model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"], "pcc": 0.99, "max_int": 131071},
+    ),
+    (
+        Embedding55,
+        [((1, 207), torch.int64)],
+        {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99, "max_int": 255999},
+    ),
+    (
+        Embedding9,
+        [((1, 256), torch.int64)],
+        {
+            "model_names": ["pt_phi1_microsoft_phi_1_seq_cls_hf", "pt_phi_1_5_microsoft_phi_1_5_seq_cls_hf"],
+            "pcc": 0.99,
+            "max_int": 51199,
+        },
+    ),
+    (
+        Embedding56,
+        [((1, 128), torch.int64)],
+        {
+            "model_names": ["pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf"],
+            "pcc": 0.99,
+            "max_int": 50264,
+        },
+    ),
+    (
+        Embedding57,
+        [((1, 128), torch.int64)],
+        {
+            "model_names": [
+                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_roberta_xlm_roberta_base_mlm_hf",
+            ],
+            "pcc": 0.99,
+            "max_int": 0,
+        },
+    ),
+    (
+        Embedding58,
+        [((1, 128), torch.int64)],
+        {
+            "model_names": [
+                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_roberta_xlm_roberta_base_mlm_hf",
+            ],
+            "pcc": 0.99,
+            "max_int": 513,
+        },
+    ),
+    (
+        Embedding59,
+        [((1, 128), torch.int64)],
+        {"model_names": ["pt_roberta_xlm_roberta_base_mlm_hf"], "pcc": 0.99, "max_int": 250001},
+    ),
+    (
+        Embedding60,
+        [((1, 44), torch.int64)],
+        {
+            "model_names": [
+                "pt_cogito_deepcogito_cogito_v1_preview_llama_3b_text_gen_hf",
+                "onnx_cogito_deepcogito_cogito_v1_preview_llama_3b_text_gen_hf",
+            ],
+            "pcc": 0.99,
+            "max_int": 128255,
+        },
+    ),
+    (
+        Embedding61,
+        [((1, 39), torch.int64)],
+        {"model_names": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"], "pcc": 0.99, "max_int": 102399},
+    ),
+    (
+        Embedding62,
+        [((1, 6), torch.int64)],
+        {"model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99, "max_int": 65023},
+    ),
+    (
+        Embedding19,
+        [((1, 32), torch.int64)],
+        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf"], "pcc": 0.99, "max_int": 50256},
+    ),
+    (
+        Embedding12,
+        [((1, 32), torch.int64), ((2048, 768), torch.float32)],
+        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf"], "pcc": 0.99, "max_int": 2047},
+    ),
+    (
+        Embedding63,
+        [((1, 32), torch.int64)],
+        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"], "pcc": 0.99, "max_int": 50256},
+    ),
+    (
+        Embedding12,
+        [((1, 32), torch.int64), ((2048, 2560), torch.float32)],
+        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"], "pcc": 0.99, "max_int": 2047},
+    ),
+    (
+        Embedding64,
+        [((1, 32), torch.int64)],
+        {"model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"], "pcc": 0.99, "max_int": 31999},
+    ),
+    (
+        Embedding64,
+        [((1, 4), torch.int64)],
+        {"model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "max_int": 31999},
+    ),
+    (
+        Embedding65,
+        [((1, 6), torch.int64)],
+        {"model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"], "pcc": 0.99, "max_int": 50279},
+    ),
+    (
         Embedding66,
-        [((1, 2048), torch.int64)],
-        {"model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"], "pcc": 0.99, "max_int": 261},
+        [((1, 6), torch.int64)],
+        {"model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"], "pcc": 0.99, "max_int": 50279},
     ),
     (
-        Embedding1,
-        [((2048,), torch.int64), ((2048, 768), torch.float32)],
-        {"model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"], "pcc": 0.99, "max_int": 2047},
-    ),
-    (
-        Embedding67,
-        [((1, 256), torch.int64)],
-        {
-            "model_names": ["pt_phi1_5_microsoft_phi_1_5_seq_cls_hf", "pt_phi1_microsoft_phi_1_seq_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 51199,
-        },
-    ),
-    (
-        Embedding67,
-        [((1, 7), torch.int64)],
-        {
-            "model_names": ["pt_phi1_5_microsoft_phi_1_5_clm_hf", "pt_phi1_microsoft_phi_1_clm_hf"],
-            "pcc": 0.99,
-            "max_int": 51199,
-        },
-    ),
-    (
-        Embedding67,
-        [((1, 12), torch.int64)],
-        {
-            "model_names": ["pt_phi1_5_microsoft_phi_1_5_token_cls_hf", "pt_phi1_microsoft_phi_1_token_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 51199,
-        },
-    ),
-    (
-        Embedding68,
-        [((1, 12), torch.int64)],
-        {
-            "model_names": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 51199,
-        },
-    ),
-    (
-        Embedding68,
-        [((1, 256), torch.int64)],
-        {
-            "model_names": ["pt_phi2_microsoft_phi_2_clm_hf", "pt_phi2_microsoft_phi_2_pytdml_clm_hf"],
-            "pcc": 0.99,
-            "max_int": 51199,
-        },
-    ),
-    (
-        Embedding68,
+        Embedding23,
         [((1, 11), torch.int64)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -2279,19 +2271,16 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding6,
-        [((1, 13), torch.int64)],
+        Embedding23,
+        [((1, 12), torch.int64)],
         {
-            "model_names": [
-                "pt_phi3_microsoft_phi_3_mini_128k_instruct_token_cls_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf",
-            ],
+            "model_names": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
             "pcc": 0.99,
-            "max_int": 32063,
+            "max_int": 51199,
         },
     ),
     (
-        Embedding6,
+        Embedding67,
         [((1, 5), torch.int64)],
         {
             "model_names": [
@@ -2303,32 +2292,29 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding69,
+        Embedding67,
+        [((1, 13), torch.int64)],
+        {
+            "model_names": [
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_token_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf",
+            ],
+            "pcc": 0.99,
+            "max_int": 32063,
+        },
+    ),
+    (
+        Embedding68,
+        [((1, 256), torch.int64)],
+        {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "max_int": 100351},
+    ),
+    (
+        Embedding68,
         [((1, 12), torch.int64)],
         {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99, "max_int": 100351},
     ),
     (
         Embedding69,
-        [((1, 6), torch.int64)],
-        {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "max_int": 100351},
-    ),
-    (
-        Embedding69,
-        [((1, 256), torch.int64)],
-        {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "max_int": 100351},
-    ),
-    (
-        Embedding70,
-        [((1, 6), torch.int64)],
-        {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "max_int": 151935},
-    ),
-    (
-        Embedding70,
-        [((1, 29), torch.int64)],
-        {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"], "pcc": 0.99, "max_int": 151935},
-    ),
-    (
-        Embedding71,
         [((1, 35), torch.int64)],
         {
             "model_names": [
@@ -2340,253 +2326,196 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding72,
-        [((1, 35), torch.int64)],
-        {"model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99, "max_int": 151935},
-    ),
-    (
-        Embedding73,
+        Embedding70,
         [((1, 35), torch.int64)],
         {
             "model_names": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
                 "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "max_int": 152063,
         },
     ),
     (
-        Embedding74,
-        [((1, 35), torch.int64)],
-        {
-            "model_names": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 151935,
-        },
-    ),
-    (
-        Embedding73,
-        [((1, 29), torch.int64)],
-        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "max_int": 152063},
-    ),
-    (
-        Embedding72,
-        [((1, 39), torch.int64)],
-        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99, "max_int": 151935},
-    ),
-    (
-        Embedding73,
-        [((1, 39), torch.int64)],
-        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"], "pcc": 0.99, "max_int": 152063},
-    ),
-    (
-        Embedding71,
-        [((1, 29), torch.int64)],
-        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"], "pcc": 0.99, "max_int": 151935},
-    ),
-    (
-        Embedding72,
-        [((1, 29), torch.int64)],
-        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "max_int": 151935},
-    ),
-    (
-        Embedding73,
+        Embedding70,
         [((1, 13), torch.int64)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "max_int": 152063},
     ),
     (
-        Embedding74,
-        [((1, 29), torch.int64)],
-        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "max_int": 151935},
+        Embedding71,
+        [((2, 1), torch.int64)],
+        {"model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"], "pcc": 0.99, "max_int": 2048},
     ),
     (
-        Embedding71,
+        Embedding67,
+        [((1, 256), torch.int64)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "max_int": 32063,
+        },
+    ),
+    (
+        Embedding72,
+        [((1, 107), torch.int64)],
+        {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "max_int": 255999},
+    ),
+    (
+        Embedding73,
+        [((1, 107), torch.int64)],
+        {"model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99, "max_int": 255999},
+    ),
+    (
+        Embedding74,
+        [((1, 256), torch.int64)],
+        {"model_names": ["pt_llama3_meta_llama_llama_3_1_8b_clm_hf"], "pcc": 0.99, "max_int": 128255},
+    ),
+    (
+        Embedding74,
+        [((1, 4), torch.int64)],
+        {
+            "model_names": [
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "max_int": 128255,
+        },
+    ),
+    (
+        Embedding60,
+        [((1, 4), torch.int64)],
+        {
+            "model_names": [
+                "pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "max_int": 128255,
+        },
+    ),
+    (
+        Embedding64,
+        [((1, 10), torch.int64)],
+        {"model_names": ["pt_ministral_ministral_ministral_3b_instruct_clm_hf"], "pcc": 0.99, "max_int": 31999},
+    ),
+    (
+        Embedding75,
+        [((1, 8), torch.int64)],
+        {"model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"], "pcc": 0.99, "max_int": 131071},
+    ),
+    (
+        Embedding76,
+        [((1, 135), torch.int64)],
+        {"model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"], "pcc": 0.99, "max_int": 32767},
+    ),
+    (
+        Embedding64,
+        [((1, 128), torch.int64)],
+        {"model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"], "pcc": 0.99, "max_int": 31999},
+    ),
+    (
+        Embedding68,
+        [((1, 6), torch.int64)],
+        {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "max_int": 100351},
+    ),
+    (
+        Embedding6,
+        [((1, 384), torch.int64)],
+        {"model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"], "pcc": 0.99, "max_int": 28995},
+    ),
+    (
+        Embedding5,
+        [((1, 384), torch.int64)],
+        {"model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"], "pcc": 0.99, "max_int": 511},
+    ),
+    (
+        Embedding77,
+        [((1, 522), torch.int64)],
+        {
+            "model_names": ["pt_falcon3_tiiuae_falcon3_3b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf"],
+            "pcc": 0.99,
+            "max_int": 131071,
+        },
+    ),
+    (
+        Embedding63,
+        [((1, 256), torch.int64)],
+        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf"], "pcc": 0.99, "max_int": 50256},
+    ),
+    (
+        Embedding12,
+        [((1, 256), torch.int64), ((2048, 2560), torch.float32)],
+        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf"], "pcc": 0.99, "max_int": 2047},
+    ),
+    (
+        Embedding60,
+        [((1, 256), torch.int64)],
+        {"model_names": ["pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf"], "pcc": 0.99, "max_int": 128255},
+    ),
+    (
+        Embedding21,
+        [((1, 256), torch.int64)],
+        {"model_names": ["pt_opt_facebook_opt_350m_clm_hf"], "pcc": 0.99, "max_int": 50271},
+    ),
+    (
+        Embedding22,
+        [((1, 256), torch.int64)],
+        {"model_names": ["pt_opt_facebook_opt_350m_clm_hf"], "pcc": 0.99, "max_int": 2049},
+    ),
+    (
+        Embedding78,
+        [((1, 2048), torch.int64)],
+        {"model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"], "pcc": 0.99, "max_int": 261},
+    ),
+    (
+        Embedding12,
+        [((2048,), torch.int64), ((2048, 768), torch.float32)],
+        {"model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"], "pcc": 0.99, "max_int": 2047},
+    ),
+    (
+        Embedding69,
+        [((1, 29), torch.int64)],
+        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"], "pcc": 0.99, "max_int": 151935},
+    ),
+    (
+        Embedding69,
         [((1, 39), torch.int64)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"], "pcc": 0.99, "max_int": 151935},
     ),
     (
-        Embedding74,
+        Embedding70,
+        [((1, 29), torch.int64)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf", "pt_qwen_v2_qwen_qwen2_5_7b_instruct_1m_clm_hf"],
+            "pcc": 0.99,
+            "max_int": 152063,
+        },
+    ),
+    (
+        Embedding70,
         [((1, 39), torch.int64)],
-        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"], "pcc": 0.99, "max_int": 151935},
-    ),
-    (
-        Embedding75,
-        [((1, 128), torch.int64)],
-        {"model_names": ["pt_roberta_xlm_roberta_base_mlm_hf"], "pcc": 0.99, "max_int": 250001},
-    ),
-    (
-        Embedding76,
-        [((1, 128), torch.int64)],
-        {
-            "model_names": [
-                "pt_roberta_xlm_roberta_base_mlm_hf",
-                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 0,
-        },
-    ),
-    (
-        Embedding77,
-        [((1, 128), torch.int64)],
-        {
-            "model_names": [
-                "pt_roberta_xlm_roberta_base_mlm_hf",
-                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 513,
-        },
-    ),
-    (
-        Embedding78,
-        [((1, 128), torch.int64)],
-        {
-            "model_names": ["pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 50264,
-        },
+        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"], "pcc": 0.99, "max_int": 152063},
     ),
     (
         Embedding79,
-        [((1, 128), torch.int64)],
-        {"model_names": ["pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf"], "pcc": 0.99, "max_int": 30527},
-    ),
-    (
-        Embedding17,
-        [((1, 1), torch.int64)],
-        {
-            "model_names": ["pt_t5_google_flan_t5_base_text_gen_hf", "pt_t5_t5_base_text_gen_hf"],
-            "pcc": 0.99,
-            "max_int": 32127,
-        },
-    ),
-    (
-        Embedding1,
-        [((1, 1), torch.int32), ((32, 12), torch.float32)],
-        {
-            "model_names": ["pt_t5_google_flan_t5_base_text_gen_hf", "pt_t5_t5_base_text_gen_hf"],
-            "pcc": 0.99,
-            "max_int": 31,
-        },
-    ),
-    (
-        Embedding17,
-        [((1, 61), torch.int64)],
-        {
-            "model_names": ["pt_t5_google_flan_t5_base_text_gen_hf", "pt_t5_t5_base_text_gen_hf"],
-            "pcc": 0.99,
-            "max_int": 32127,
-        },
-    ),
-    pytest.param(
-        (
-            Embedding1,
-            [((61, 61), torch.int32), ((32, 12), torch.float32)],
-            {
-                "model_names": ["pt_t5_google_flan_t5_base_text_gen_hf", "pt_t5_t5_base_text_gen_hf"],
-                "pcc": 0.99,
-                "max_int": 31,
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+        [((2, 1), torch.int64)],
+        {"model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99, "max_int": 2048},
     ),
     (
         Embedding80,
         [((1, 1), torch.int64)],
-        {
-            "model_names": ["pt_t5_t5_large_text_gen_hf", "pt_t5_google_flan_t5_large_text_gen_hf"],
-            "pcc": 0.99,
-            "max_int": 32127,
-        },
-    ),
-    (
-        Embedding1,
-        [((1, 1), torch.int32), ((32, 16), torch.float32)],
-        {
-            "model_names": ["pt_t5_t5_large_text_gen_hf", "pt_t5_google_flan_t5_large_text_gen_hf"],
-            "pcc": 0.99,
-            "max_int": 31,
-        },
-    ),
-    (
-        Embedding80,
-        [((1, 61), torch.int64)],
-        {
-            "model_names": ["pt_t5_t5_large_text_gen_hf", "pt_t5_google_flan_t5_large_text_gen_hf"],
-            "pcc": 0.99,
-            "max_int": 32127,
-        },
-    ),
-    pytest.param(
-        (
-            Embedding1,
-            [((61, 61), torch.int32), ((32, 16), torch.float32)],
-            {
-                "model_names": ["pt_t5_t5_large_text_gen_hf", "pt_t5_google_flan_t5_large_text_gen_hf"],
-                "pcc": 0.99,
-                "max_int": 31,
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
-    ),
-    (
-        Embedding81,
-        [((1, 1), torch.int64)],
-        {
-            "model_names": ["pt_t5_t5_small_text_gen_hf", "pt_t5_google_flan_t5_small_text_gen_hf"],
-            "pcc": 0.99,
-            "max_int": 32127,
-        },
-    ),
-    (
-        Embedding1,
-        [((1, 1), torch.int32), ((32, 8), torch.float32)],
-        {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
-    ),
-    (
-        Embedding81,
-        [((1, 61), torch.int64)],
-        {
-            "model_names": ["pt_t5_t5_small_text_gen_hf", "pt_t5_google_flan_t5_small_text_gen_hf"],
-            "pcc": 0.99,
-            "max_int": 32127,
-        },
-    ),
-    pytest.param(
-        (
-            Embedding1,
-            [((61, 61), torch.int32), ((32, 8), torch.float32)],
-            {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
-    ),
-    (
-        Embedding1,
-        [((1, 1), torch.int32), ((32, 6), torch.float32)],
-        {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
-    ),
-    pytest.param(
-        (
-            Embedding1,
-            [((61, 61), torch.int32), ((32, 6), torch.float32)],
-            {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
-    ),
-    (
-        Embedding82,
-        [((1, 256), torch.int64)],
-        {"model_names": ["pt_xglm_facebook_xglm_564m_clm_hf"], "pcc": 0.99, "max_int": 256007},
-    ),
-    (
-        Embedding83,
-        [((1, 256), torch.int64)],
-        {"model_names": ["pt_xglm_facebook_xglm_1_7b_clm_hf"], "pcc": 0.99, "max_int": 256007},
+        {"model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"], "pcc": 0.99, "max_int": 51864},
     ),
 ]
 
@@ -2634,11 +2563,10 @@ def test_module(forge_module_and_shapes_dtypes):
 
     record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs)
+    compiler_cfg = forge.config.CompilerConfig()
+    if "default_df_override" in metadata.keys():
+        compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])
 
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-    )
+    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))

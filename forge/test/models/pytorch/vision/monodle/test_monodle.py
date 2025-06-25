@@ -2,10 +2,9 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import requests
 import torch
 import torchvision.transforms as transforms
-from PIL import Image
+from datasets import load_dataset
 
 import forge
 from forge._C import DataFormat
@@ -31,8 +30,8 @@ def test_monodle_pytorch():
     )
 
     # Load data sample
-    url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+    image = next(iter(dataset.skip(10)))["image"]
 
     # Preprocessing
     transform = transforms.Compose(

@@ -1,8 +1,0 @@
-# xfail_max_SPECIAL_VALUES ids
-
-max-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-forge.RawUInt8-HiFi4
-max-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-forge.RawUInt16-HiFi4
-max-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-forge.RawUInt32-HiFi4
-max-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-forge.Int8-HiFi4
-max-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-forge.UInt16-HiFi4
-max-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-forge.Int32-HiFi4

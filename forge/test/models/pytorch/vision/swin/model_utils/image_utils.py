@@ -1,14 +1,14 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import requests
-import torch
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from torchvision import models
 
 
-def load_image(image_path, feature_extractor):
-    image = Image.open(requests.get(image_path, stream=True).raw)
+def load_image(feature_extractor):
+    image_path = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
+    image = Image.open(image_path)
     img_tensor = feature_extractor(images=image, return_tensors="pt").pixel_values
     return [img_tensor]
 
@@ -29,13 +29,3 @@ def load_model(variant):
     model = getattr(models, variant)(weights=weights)
     model.eval()
     return model
-
-
-def load_input(weight_name):
-    weights = getattr(models, weight_name).DEFAULT
-    preprocess = weights.transforms()
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw).convert("RGB")
-    img_t = preprocess(image)
-    batch_t = torch.unsqueeze(img_t, 0)
-    return [batch_t]

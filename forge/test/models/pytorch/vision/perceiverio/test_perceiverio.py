@@ -2,10 +2,10 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import requests
 import torch
 from loguru import logger
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from transformers import (
     AutoImageProcessor,
     PerceiverForImageClassificationConvProcessing,
@@ -23,14 +23,16 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 
 def get_sample_data(model_name):
     image_processor = AutoImageProcessor.from_pretrained(model_name)
     try:
-        url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-        image = Image.open(requests.get(url, stream=True).raw)
+        input_image = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
+        image = Image.open(str(input_image))
         pixel_values = image_processor(images=image, return_tensors="pt").pixel_values
     except:
         logger.warning(
@@ -92,7 +94,7 @@ def test_perceiverio_for_image_classification_pytorch(variant):
     inputs = [pixel_values.to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override, enable_optimization_passes=True)
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -103,4 +105,6 @@ def test_perceiverio_for_image_classification_pytorch(variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(
+        inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
+    )

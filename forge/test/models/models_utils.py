@@ -11,6 +11,8 @@ from tabulate import tabulate
 import json
 from typing import Optional, Tuple
 from transformers import Cache
+from third_party.tt_forge_models.tools.utils import get_file
+from datasets import load_dataset
 
 # Mean Pooling - Take attention mask into account for correct averaging
 def mean_pooling(model_output, attention_mask):
@@ -19,8 +21,9 @@ def mean_pooling(model_output, attention_mask):
     return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
 
 
-def preprocess_input_data(image_url):
-    input_image = Image.open(requests.get(image_url, stream=True).raw).convert("RGB")
+def preprocess_input_data():
+    input_image = get_file("http://images.cocodataset.org/val2017/000000397133.jpg")
+    input_image = Image.open(str(input_image))
     input_tensor = transforms.ToTensor()(input_image)
     input_batch = input_tensor.unsqueeze(0)
     return input_batch
@@ -61,24 +64,34 @@ def build_optimum_cli_command(variant, tmp_path):
 
 
 def get_sample_data(model_name):
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    input_image = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
+    image = Image.open(str(input_image))
     image_processor = AutoImageProcessor.from_pretrained(model_name)
     pixel_values = image_processor(images=image, return_tensors="pt").pixel_values
     return [pixel_values]
 
 
-imagenet_class_index_path = "forge/test/models/files/labels/imagenet_class_index.json"
-
-
 def load_class_labels(file_path):
-    """Load class labels from the local JSON file."""
-    with open(file_path, "r") as f:
-        class_idx = json.load(f)
-    return [class_idx[str(i)][1] for i in range(len(class_idx))]
+    """Load class labels from a JSON or TXT file."""
+    if file_path.endswith(".json"):
+        with open(file_path, "r") as f:
+            class_idx = json.load(f)
+        return [class_idx[str(i)][1] for i in range(len(class_idx))]
+    elif file_path.endswith(".txt"):
+        with open(file_path, "r") as f:
+            return [line.strip() for line in f if line.strip()]
 
 
-def print_cls_results(fw_out, compiled_model_out):
+def print_cls_results(fw_out, compiled_model_out, use_1k_labels: bool = True):
+
+    if use_1k_labels:
+        imagenet_class_index_path = "forge/test/models/files/labels/imagenet_class_index.json"
+    else:
+        imagenet_class_index_path = str(
+            get_file(
+                "https://raw.githubusercontent.com/mosjel/ImageNet_21k_Original_OK/main/imagenet_21k_original_OK.txt"
+            )
+        )
 
     class_labels = load_class_labels(imagenet_class_index_path)
     fw_top1_probabilities, fw_top1_class_indices = torch.topk(fw_out.softmax(dim=1) * 100, k=1)
@@ -260,3 +273,23 @@ def Gemma2DecoderLayer_patched_forward(
         outputs += (present_key_value,)
 
     return outputs
+
+
+def preprocess_inputs():
+
+    # Load Input
+    dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+    input_image = next(iter(dataset.skip(10)))["image"]
+
+    # Prepare input
+    preprocess = transforms.Compose(
+        [
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ]
+    )
+    input_tensor = preprocess(input_image)
+    input_batch = input_tensor.unsqueeze(0)
+    return [input_batch]

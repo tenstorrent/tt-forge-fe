@@ -16,8 +16,6 @@ from ..sparse_utils import (
     create_nearest_neighbor_downsample_picker_matrix,
 )
 
-import os
-
 
 def eval(type, attr, ops):
     if type == "resize1d":
@@ -235,10 +233,6 @@ def shape(type, attr, ops):
         return shape, []
 
 
-def lower(type, attr, lc, ops, outputs):
-    raise RuntimeError("This should never be called.")
-
-
 def backward(type, attr, ac, operand, inputs, output, grad):
     raise RuntimeError("This should never be called.")
 
@@ -398,4 +392,3 @@ def decompose(type, attr, dc, inputs):
         resize_method = INT_TO_RESIZE2d_METHOD[attr[-3]]
 
         decompose_resize3d(attr, dc, inputs, resize_method)
-    pass

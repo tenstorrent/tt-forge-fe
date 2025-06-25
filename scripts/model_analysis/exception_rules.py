@@ -19,7 +19,7 @@ common_failure_matching_rules_list = [
                 "post_initial_graph_passes",
                 [
                     "RuntimeError",
-                    "has_newstyle_interface(std::get<std::string>(type), false)",
+                    "has_newstyle_interface(std::get<std::string>(type))",
                     "decomposing a type with old OpType interface, expects new OpType interface",
                 ],
             ),
@@ -103,7 +103,7 @@ common_failure_matching_rules_list = [
             MatchingExceptionRule(
                 "mlir::AffineMap collapsedLinearAffineMap",
                 [
-                    "tt-mlir/lib/Dialect/TT/IR/TTOpsTypes.cpp",
+                    "tt-mlir/lib/Dialect/TTCore/IR/TTCoreOpsTypes.cpp",
                     "mlir::AffineMap collapsedLinearAffineMap",
                     "Dim does not participate in AffineMap RHS",
                 ],

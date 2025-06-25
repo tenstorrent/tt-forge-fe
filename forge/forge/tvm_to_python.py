@@ -3,8 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import re
 import json
-from typing import Dict, List
-from enum import Enum
 
 from loguru import logger
 
@@ -2803,19 +2801,17 @@ def compile_tvm_to_python(
                     "Both extract_tvm_unique_ops_config and tvm_generate_unique_ops_tests should not be enabled at the same time."
                 )
 
-            # Commenting the below verification between framework outputs and generated forge module outputs
-            # because most of the models are failing with the pcc issue which leads to skip the models in model analysis
+            # Running the inference to verify the generated forge module which helps
+            # to avoid extracting unique ops configuration for not properly traced models
+            file_path = os.path.join(writer.module_directory, writer.filename)
+            module = import_from_path(writer.module_name, file_path)
 
-            # file_path = os.path.join(writer.module_directory, writer.filename)
-            # module = import_from_path(writer.module_name, file_path)
+            TestClass = getattr(module, writer.class_name)
+            forge_mod = TestClass(writer.module_name)
+            forge_mod.process_framework_parameters(framework_mod.module)
 
-            # TestClass = getattr(module, writer.class_name)
-            # forge_mod = TestClass(writer.module_name)
-            # forge_mod.process_framework_parameters(framework_mod.module)
-
-            # framework_outputs = framework_mod.cpu_eval_forward(*inputs)
-            # forge_outputs = get_forge_outputs([forge_mod], ["TTDevice"], forge_inputs)
-            # verify_framework_vs_forge_codegen(framework_outputs, forge_outputs, verify_cfg=verify_cfg)
+            framework_mod.cpu_eval_forward(*inputs)
+            get_forge_outputs([forge_mod], ["TTDevice"], forge_inputs)
 
             extract_and_generate_unique_ops_tests(
                 framework_mod,

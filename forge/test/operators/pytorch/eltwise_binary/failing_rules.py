@@ -4,18 +4,13 @@
 
 # Failing rules for element-wise binary operators
 
-import os
 
 import forge
 import torch
 
-from test.operators.utils import InputSource
 from test.operators.utils import TestCollection
-from test.operators.utils import TestPlanUtils
-from test.operators.utils import TestResultFailing
 from test.operators.utils import FailingReasons
 from test.operators.utils import TestCollectionCommon
-from test.operators.utils import FailingRulesConverter
 from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 
@@ -127,6 +122,11 @@ class FailingRulesData:
         # ),
         common,
         *TestIdsDataLoader.build_failing_rules(operators=["div"]),
+    ]
+
+    remainder = [
+        common,
+        *TestIdsDataLoader.build_failing_rules(operators=["remainder"]),
     ]
 
     ge = [

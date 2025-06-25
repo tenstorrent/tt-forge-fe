@@ -4,8 +4,7 @@
 import os
 
 from enum import Enum
-from typing import Tuple, Dict, List, Optional, Union, Set
-from collections.abc import Iterable
+from typing import Tuple, Dict, List, Optional, Set
 from dataclasses import dataclass, field
 from forge._C import DataFormat, MathFidelity, AMPNodeProperties, MLIRConfig
 import forge.query as query
@@ -63,8 +62,6 @@ class CompilerConfig:
     enable_consteval: bool = True
     # Compile each disjoint graph separately into its own program
     compile_subgraphs: bool = False
-    # Enable auto detection and linking of past key-value pairs
-    enable_link_past_cache_ios: bool = False
     # Enable linking of past key-value pairs in the graph
     enable_pt2_fx_graph_link: bool = False
 

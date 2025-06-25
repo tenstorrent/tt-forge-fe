@@ -43,7 +43,6 @@ namespace graphlib
 struct OpType;
 class QueueNode;
 class InputNode;
-class ForgeOpNode;
 
 // pass through
 bool default_node_filter(Node *);
@@ -93,16 +92,6 @@ std::pair<Edge, Edge> insert_node_on_edge(
 
 QueueNode *create_buffering_queue(
     Graph *graph, const graphlib::Node *producer_node, const std::string name, int num_entries);
-
-// Creates and inserts a nop node on the given edge.
-// Returns newly created node and edges.
-std::tuple<ForgeOpNode *, Edge, Edge> insert_nop_on_edge(
-    Graph *graph,
-    Edge &edge,
-    const std::string &nop_name,
-    bool is_buffering = false,
-    bool hoist_tms = false,
-    bool remove_edge = true);
 
 // Bypass queue, connecting its source to its destination. There has to be only one source for queue, and user is
 // defined by user_edge. Diference from bypassing node (bypass_node) is that here we can bypass some users of queue and
@@ -216,32 +205,8 @@ graphlib::Edge clone_input_forking_edge(
 
 graphlib::Shape default_tm_evaluator(graphlib::OpType const &tm, graphlib::Shape shape, graphlib::IRLevel ir_level);
 
-graphlib::Shape post_tms_shape(
-    graphlib::Shape input_shape,
-    std::vector<OpType> const &tms,
-    std::function<graphlib::Shape(graphlib::OpType const &, graphlib::Shape, graphlib::IRLevel)> tm_evaluator =
-        default_tm_evaluator,
-    graphlib::IRLevel ir_level = IRLevel::IR_FORGE);
-
-graphlib::Shape post_tms_shape(
-    Graph const *graph,
-    graphlib::Edge edge,
-    std::function<graphlib::Shape(graphlib::OpType const &, graphlib::Shape, graphlib::IRLevel)> tm_evaluator =
-        default_tm_evaluator);
-
-std::pair<int, int> get_padding(graphlib::Graph const *graph, graphlib::Node const *node);
-
 // Calculate node shape from operand shapes, using python callback
 void calculate_and_set_node_shape(Graph *graph, Node *node);
-
-tt::graphlib::Node *get_input_queue_producer(Graph const *graph, tt::graphlib::InputNode const *node);
-std::vector<tt::graphlib::UBlockOrder> get_input_ublock_order(Graph const *graph, Node const *node);
-tt::graphlib::UBlockOrder get_input_queue_ublock_order(Graph const *graph, Node const *node);
-tt::graphlib::UBlockOrder get_output_ublock_order(Graph const *graph, Node const *node);
-
-// Insert NOP on an edge with transpose TM, then flip ublock order for better streaming
-// returns true if nop inserted
-bool try_insert_nop_on_transpose_edge(Graph *graph, Edge &edge);
 
 // Return a vector of pairs of optimizer parameter input nodes and optimizer key names for a given model parameter node
 class InputNode;

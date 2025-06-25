@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import os
 
 import torch
 import torch.nn.functional
@@ -13,7 +12,6 @@ from ....forgeglobal import TILE_DIM
 from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from ..lforge.abs import Abs as ForgeAbs
 from .nop import Nop
 
 
@@ -47,9 +45,6 @@ class CumulativeSum(PyEltwiseUnaryOp):
         assert dim == 0, "Unsupported dim different then 0 for cumulative sum backward pass"
         if dim == 0:
             return ac.op(Nop.create(), (grad,))
-
-    def lower(self, lc, tensors, outputs):
-        return None
 
     def initial_flops_estimate(self, tensor_shapes):
         flops = 0

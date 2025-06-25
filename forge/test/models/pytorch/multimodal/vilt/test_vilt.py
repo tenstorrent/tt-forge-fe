@@ -2,9 +2,9 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import requests
 import torch
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
 from transformers import (
     ViltConfig,
     ViltForMaskedLM,
@@ -31,9 +31,8 @@ from test.models.pytorch.multimodal.vilt.model_utils.model import (
 )
 from test.utils import download_model
 
-url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-image = Image.open(requests.get(url, stream=True).raw)
-
+input_image = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
+image = Image.open(str(input_image))
 text1 = "How many cats are there?"
 text2 = "a bunch of cats laying on a [MASK]."
 
@@ -79,7 +78,7 @@ def test_vilt_question_answering_hf_pytorch(variant):
     inputs = [inputs[0].to(torch.bfloat16), inputs[1].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override, enable_optimization_passes=True)
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -146,7 +145,7 @@ def test_vilt_maskedlm_hf_pytorch(variant):
     inputs = [inputs[0].to(torch.bfloat16), inputs[1].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override, enable_optimization_passes=True)
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(

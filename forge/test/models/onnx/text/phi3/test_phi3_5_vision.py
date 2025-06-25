@@ -27,6 +27,7 @@ class Wrapper(torch.nn.Module):
 variants = ["microsoft/Phi-3.5-vision-instruct"]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.skip("Segmentation Fault")
 @pytest.mark.parametrize("variant", variants)

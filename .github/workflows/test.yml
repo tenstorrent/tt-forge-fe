@@ -90,7 +90,6 @@ jobs:
   set-inputs:
     runs-on: ubuntu-latest
     needs: docker-build
-    if: always()
     outputs:
       buildtype: ${{ steps.set-inputs.outputs.buildtype }}
       test_group_cnt: ${{ steps.set-inputs.outputs.test_group_cnt }}
@@ -149,7 +148,7 @@ jobs:
 
 
   run-tests:
-    if: always()
+    if: success() || failure()
     needs:
       - docker-build
       - build

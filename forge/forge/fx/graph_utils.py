@@ -5,7 +5,7 @@
 #
 # Various utility functions for working with FX graphs
 #
-from typing import List, Tuple, Union
+from typing import Tuple, Union
 
 import torch
 from loguru import logger

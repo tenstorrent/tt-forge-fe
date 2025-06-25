@@ -14,7 +14,7 @@ from transformers import (
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 from test.models.models_utils import build_optimum_cli_command
 from test.utils import download_model
 
@@ -34,7 +34,6 @@ def test_phi_causal_lm_onnx(variant, forge_tmp_path):
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.CAUSAL_LM,
-        priority=ModelPriority.P1,
     )
 
     # Load tokenizer and model from HuggingFace

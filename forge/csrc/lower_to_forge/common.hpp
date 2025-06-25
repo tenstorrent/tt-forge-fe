@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
+#include <fmt/ostream.h>
+
 #include <array>
 #include <cstdint>
 #include <map>
@@ -15,43 +17,6 @@
 namespace tt
 {
 
-struct ForgeBlocks
-{
-    int z;
-    int ublock_rt, ublock_ct;
-    int mblock_m, mblock_n;
-};
-
-struct ForgeName
-{
-    std::string name;
-    ForgeName(std::string const &name) : name(name) {}
-};
-
-struct DramLoc
-{
-    std::uint32_t channel;
-    std::uint32_t address;
-
-    DramLoc(std::uint32_t channel, std::uint32_t address) : channel(channel), address(address) {}
-    DramLoc(std::pair<std::uint32_t, std::uint32_t> const &p) : DramLoc(p.first, p.second) {}
-    bool operator==(DramLoc const &o) const { return channel == o.channel and address == o.address; }
-    bool operator==(std::pair<std::uint32_t, std::uint32_t> const &p) const
-    {
-        return channel == p.first and address == p.second;
-    }
-};
-
-using ForgeOpAttrQueueDramLocs = std::vector<DramLoc>;
-
-using ForgeKernelBroadcastInputs = std::unordered_map<std::string, int>;
-
-enum class ForgeQueueLayout
-{
-    Tilized,
-    Flat
-};
-
 using ForgeOpAttr = ::std::variant<
     std::string,
     bool,
@@ -59,14 +24,9 @@ using ForgeOpAttr = ::std::variant<
     float,
     std::vector<int>,
     std::vector<std::tuple<int, int, int>>,
-    std::vector<std::tuple<int, int, int, int>>,
-    ForgeOpAttrQueueDramLocs,
-    ForgeKernelBroadcastInputs>;
+    std::vector<std::tuple<int, int, int, int>>>;
 using ForgeOpAttrs = ::std::map<std::string, ForgeOpAttr>;
 
-std::ostream &operator<<(std::ostream &os, const ForgeName &name);
-std::ostream &operator<<(std::ostream &os, const ForgeBlocks &bb);
-std::ostream &operator<<(std::ostream &os, const DramLoc &attr);
 std::ostream &operator<<(std::ostream &os, const ForgeOpAttr &attr);
 
 enum class ExpPrecision : uint8_t
@@ -262,3 +222,11 @@ struct PytorchTensorDesc
 };
 
 }  // namespace tt
+
+namespace fmt
+{
+template <>
+struct formatter<tt::DataFormat> : ostream_formatter
+{
+};
+}  // namespace fmt

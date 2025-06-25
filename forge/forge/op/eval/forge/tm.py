@@ -2,8 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 from argparse import ArgumentError
-from json.encoder import py_encode_basestring
-from ssl import OP_NO_RENEGOTIATION
 from ..common import to_torch_operands
 from ..sparse_utils import (
     create_index_sparse_picker_matrix,
@@ -22,8 +20,6 @@ from ..sparse_utils import (
 import numpy as np
 import torch
 import math
-import ast
-import os
 from loguru import logger
 import forge
 from forge.tensor import change_rank
@@ -31,9 +27,7 @@ from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div, align_up
 from .transpose import TransposeTM
 from .pad import Pad
-from ..lforge.splice import Splice
 from .nop import Nop
-from ..lforge.nop import Nop as ForgeNop
 from .buffer import Buffer
 
 
@@ -644,161 +638,6 @@ def shape(type, attr, ops):
     assert False, f"{type} not defined in tensor manipulations"
 
 
-def lower(type, attr, lc, ops, outputs):
-    assert len(ops) == 1, "Tensor manipulation ops should have one input"
-
-    if type == "reshape":
-        while len(attr) > 4:
-            assert attr[0] == 1, "Cannot eliminate non-singleton dimension"
-            attr = attr[1:]
-        while len(attr) < 4:
-            attr.insert(0, 1)
-
-        # Pad shape to 4D before lowering
-        orig_shape = []
-        for i in range(ops[0].shape.len()):
-            orig_shape.append(ops[0].shape[i])
-        while len(orig_shape) < 4:
-            orig_shape.insert(0, 1)
-
-        assert len(attr) == 4, "Reshape should have 4 attributes"
-
-        # Squeeze / unsqueeze ops that do not reshape a 4d tensor are nops
-        if all([orig == new for orig, new in zip(orig_shape, attr)]):
-            lc.op(ForgeNop.create(), ops)
-        else:
-            orig_w = orig_shape[-4]
-            orig_z = orig_shape[-3]
-            orig_r = orig_shape[-2]
-            orig_c = orig_shape[-1]
-            forge_attrs = {
-                "orig_w": orig_w,
-                "orig_z": orig_z,
-                "orig_r": orig_r,
-                "orig_c": orig_c,
-                "w": attr[0],
-                "z": attr[1],
-                "r": attr[2],
-                "c": attr[3],
-            }
-            lc.op(type, ops, (orig_w, orig_z, orig_r, orig_c, *attr), forge_attrs)
-
-    elif type == "transpose":
-        # Transpose has 3 attrs, [axis_0, axis_1, output Z-dim size]
-        assert len(attr) == 3, "Transpose should have 3 attributes"
-        if attr[0] < 0:
-            attr[0] += ops[0].shape.len()
-        if attr[1] < 0:
-            attr[1] += ops[0].shape.len()
-
-        # Adjust the broadcast dim if we're moving to more/less dimensions
-        delta = 4 - ops[0].shape.len()
-        attr[0] += delta
-        attr[1] += delta
-        assert attr[0] >= 0 and attr[0] <= 3, f"Invalid transpose dim after lowering: {attr[0]}"
-        assert attr[1] >= 0 and attr[1] <= 3, f"Invalid transpose dim after lowering: {attr[0]}"
-
-        if attr[0] == 2 and attr[1] == 3:
-            lc.tm("transpose", ops[0], attr, named_attrs={"dim0": attr[0], "dim1": attr[1]})
-        else:
-            lc.op("transpose", ops, attr, {"dim0": attr[0], "dim1": attr[1]})
-
-    elif type == "broadcast":
-        if attr[0] < 0:
-            attr[0] += ops[0].shape.len()
-        # Adjust the broadcast dim if we're moving to more/less dimensions
-        delta = 4 - ops[0].shape.len()
-        attr[0] += delta
-        assert attr[0] >= 0 and attr[0] <= 3, f"Invalid broadcast dim after lowering: {attr[0]}"
-
-        if attr[0] == 2 or attr[0] == 3:
-            # Adjust broadcast size if not divisible by tile dim
-            attr[1] = int(math.ceil(attr[1] / TILE_DIM)) * TILE_DIM
-            attr[1] //= TILE_DIM
-
-        return lc.tm("broadcast", ops[0], attr)
-
-    elif type == "repeat":
-        assert False, "repeat should have been decomposed into repeat_interleave"
-
-    elif type == "repeat_interleave":
-        # Adjust the repeat interleave if we're moving to more/less dimensions
-        repeats = attr[0]
-        dim = attr[1]
-
-        if dim < 0:
-            dim += ops[0].shape.len()
-
-        delta = 4 - ops[0].shape.len()
-        dim += delta
-        assert dim >= 0 and dim <= 3, f"Invalid repeat interleave after lowering: {dim}"
-
-        if dim == 2:
-            assert ops[0].shape[-2] % TILE_DIM == 0, "Repeat on R must be TILE_DIM aligned"
-        if dim == 3:
-            assert ops[0].shape[-1] % TILE_DIM == 0, "Repeat on C must be TILE_DIM aligned"
-        return lc.tm("broadcast", ops[0], attr)
-
-    elif type == "select":
-        assert len(attr) == 4, "Select should have 4 attributes"
-        dim, index, length, stride = attr
-        return lc.op(Splice.create_select(dim, index, length, stride, ops[0].shape), ops)
-
-    elif type == "gather":
-        assert len(attr) == 5, "Gather should have 5 attributes"
-        dim, index, length, stride, orig_size = attr
-        if dim >= 0:
-            dim += 4 - ops[0].shape.len()
-        else:
-            dim += 4
-        return lc.op(
-            "gather",
-            ops,
-            (dim, index, length, stride, orig_size),
-            {"index": index, "length": length, "stride": stride, "size": orig_size},
-        )
-
-    elif type == "pad_tile":
-        return lc.op(ForgeNop.create(), ops)
-
-    elif type == "narrow":
-        assert len(attr) == 4
-        dim, start, length, original_length = attr
-        if dim >= 0:
-            dim -= len(ops[0].shape)
-        if dim >= -2 and align_up_tile(length) == align_up_tile(ops[0].shape[dim]):
-            return lc.op(ForgeNop.create(), ops)
-        else:
-            raise NotImplementedError("Unimplemented narrow in forge")
-
-    elif type == "unsqueeze":
-        assert len(attr) == 2
-        input_ndim = attr[1]
-        # assert input_ndim + 1 <= 4, "Cannot unsqueeze beyond 4D"
-        if input_ndim + 1 > 4:
-            assert attr[0] == 0, f"Unsqueeze 4D tensors to 5D is only supported for the 1st dim: {attr[0]}"
-            return lc.op(ForgeNop.create(unsqueeze="unsqueeze", unsqueeze_dim=attr[1]), ops, tag="dont_remove")
-
-        return lc.op(ForgeNop.create(), ops)
-
-    elif type == "squeeze":
-        assert len(attr) == 1
-        if len(ops[0].shape) >= 5:
-            assert attr[0] == 0, f"Squeeze 5D tensors to 4D is only supported for the 1st dim: {attr[0]}"
-            return lc.op(ForgeNop.create(squeeze="squeeze", squeeze_dim=attr[0]), ops, tag="dont_remove")
-
-        return lc.op(ForgeNop.create(), ops)
-
-    elif type == "forge_pad":
-        return lc.tm("forge_pad", ops[0], attr, {"rt": attr[0], "ct": attr[1], "pad_value": attr[2]})
-
-    elif type == "forge_unpad":
-        return lc.tm("forge_unpad", ops[0], attr, {"rt": attr[0], "ct": attr[1], "orig_r": attr[2], "orig_c": attr[3]})
-
-    else:
-        lc.tm(type, ops[0], attr)  # straight 1-1 for other tms
-
-
 def backward(type, attr, ac, operand, inputs, output, grad):
 
     assert operand == 0, "Invalid operand index"
@@ -1090,38 +929,25 @@ def decompose(type, attr, dc, inputs):
             dc.fuse(dc.op(TransposeTM.create(dim0, dim1, orig_size)), inputs)
 
     if type == "pixel_shuffle":
-        result = inputs[0]  # (1, C*r*r, H, W)
-        orig_shape = result.shape
-        if attr[0] != 2:
-            raise NotImplementedError("Pixel shuffle decomposition only supports r=2")
-
+        result = inputs[0]  # Shape: (N, C*r*r, H, W)
+        N, C_r2, H, W = result.shape
         r = attr[0]
-        C = orig_shape[-3] // (r * r)
-        H = orig_shape[-2]
-        W = orig_shape[-1]
+        C = C_r2 // (r * r)
 
-        result = dc.op("vstack", [result], (r * r,))
-        sub_slices = []
-        for subsection in range(r):
-            sub_slice = dc.op("select", [result], (-2, subsection * r * H, r * H, result.shape[-2]))
-            sub_sub_slices = []
-            for subsubsection in range(r):
-                sub_sub_slices.append(dc.op("select", [sub_slice], (-2, subsubsection * H, H, sub_slice.shape[-2])))
+        # Step 1: Reshape to (N, C, r, r, H, W)
+        reshape_dims = (N, C, r, r, H, W)
+        x = dc.op_with_named_attrs("reshape", [result], {"shape": reshape_dims}, reshape_dims)
 
-            curr_sub_sub_slice = sub_sub_slices[0]
-            for sub_sub_slice in sub_sub_slices[1:]:
-                curr_sub_slice = dc.op_with_named_attrs(
-                    "concatenate", [curr_sub_sub_slice, sub_sub_slice], {"dim": -1}, (-1,)
-                )
-            sub_slices.append(curr_sub_sub_slice)
+        # Step 2: Transpose sequence on x
+        x = dc.op(TransposeTM.create(2, 4), [x])  # [0,1,4,3,2,5]
+        x = dc.op(TransposeTM.create(3, 4), [x])  # [0,1,4,2,3,5]
+        x = dc.op(TransposeTM.create(4, 5), [x])  # [0,1,4,2,5,3]
 
-        curr_sub_slice = dc.op(TransposeTM.create(-2, -1), [sub_slices[0]])
-        for sub_slice in sub_slices[1:]:
-            sub_slice = dc.op(TransposeTM.create(-2, -1), [sub_slice])
-            curr_sub_slice = dc.op_with_named_attrs("concatenate", [curr_sub_slice, sub_slice], {"dim": -1}, (-1,))
+        # Step 3: Final reshape to (N, C, H * r, W * r)
+        reshape_dims = (N, C, H * r, W * r)
+        x = dc.op_with_named_attrs("reshape", [x], {"shape": reshape_dims}, reshape_dims)
 
-        result = dc.op(TransposeTM.create(-2, -1), [curr_sub_slice])
-        dc.fuse(result)
+        dc.fuse(x)
 
     if type == "reshape":
         assert len(inputs) == 1

@@ -21,8 +21,6 @@ from .matmul import Matmul
 from .tm import Reshape, Transpose, Unsqueeze
 from forge.forgeglobal import get_unique_node_id
 
-import os
-
 
 def Softmax(name: str, operandA: Tensor, *, dim: int, stable: bool = True) -> Tensor:
 

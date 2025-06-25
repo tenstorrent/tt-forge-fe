@@ -12,6 +12,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -45,8 +46,8 @@ variants = ["llava-hf/llava-1.5-7b-hf"]
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.xfail
 def test_llava(variant):
-    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 30 GB)")
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -56,7 +57,10 @@ def test_llava(variant):
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
+
+    pytest.xfail(reason="Requires multi-chip support")
 
     framework_model, processor = load_model(variant)
     image = "https://www.ilankelman.org/stopsigns/australia.jpg"
