@@ -21,16 +21,9 @@ TT-Forge-FE can be used to run models from any framework. Because TT-Forge-FE is
 * [Building from Source](getting_started_build_from_source.md) - This option is best if you want to develop TT-Forge-FE further. It's a more complex process you are unlikely to need if you want to stick with running a model.
 
 ## Configuring Hardware
-Before setup can happen, you must configure your hardware. This section of the walkthrough shows you how to do a quick setup using TT-Installer.
+Before setup can happen, you must configure your hardware. You can skip this section if you already completed the configuration steps. Otherwise, this section of the walkthrough shows you how to do a quick setup using TT-Installer.
 
-1. Configure your hardware with TT-Installer:
-
-```bash
-/bin/bash -c "$(curl -fsSL https://github.com/tenstorrent/tt-installer/releases/latest/download/install.sh)"
-```
-
-> **NOTE:** This walkthrough assumes that you use the [Quick Installation]
-> (https://docs.tenstorrent.com/getting-started/README.html#quick-installation) instructions for set up.
+1. Configure your hardware with TT-Installer using the [Quick Installation section here.](https://docs.tenstorrent.com/getting-started/README.html#quick-installation) 
 
 2. Reboot your machine.
 
