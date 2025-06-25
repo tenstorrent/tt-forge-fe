@@ -1126,33 +1126,28 @@ class FailingReasons(Enum):
     UNSUPPORTED_AXIS = FailingReason(
         description="Unsupported axis parameter",
         checks=[
-            # softmax	RuntimeError: TT_FATAL @ tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.get_dtype() == DataType::BFLOAT16 || input.get_dtype() == DataType::B
+            # softmax	RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.dtype() == DataType::BFLOAT16 || input.dtype() == DataType::BFLOAT8_B
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
-            # E       RuntimeError: TT_FATAL @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.get_dtype() == DataType::BFLOAT16 || input.get_dtype() == DataType::BFLOAT8_B
+            # E       RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.dtype() == DataType::BFLOAT16 || input.dtype() == DataType::BFLOAT8_B
             # E       info:
             # E       Inputs must be of bfloat16 or bfloat8_b type
             # E       backtrace:
-            # E        --- ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::validate_inputs(ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::operation_attributes_t const&, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_args_t const&)
-            # E        --- ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::validate_on_program_cache_miss(ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::operation_attributes_t const&, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_args_t const&)
-            # E        --- void ttnn::device_operation::detail::launch_operation_with_adapter<ttnn::device_operation::MeshDeviceOperationAdapter<ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation> >(tt::stl::StrongType<unsigned char, ttnn::QueueIdTag>, ttnn::device_operation::MeshDeviceOperationAdapter<ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation>::operation_attributes_t const&, ttnn::device_operation::MeshDeviceOperationAdapter<ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation>::tensor_args_t const&)
-            # E        --- ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_return_value_t ttnn::device_operation::detail::launch_on_single_device<ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation>(tt::stl::StrongType<unsigned char, ttnn::QueueIdTag>, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::operation_attributes_t const&, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_args_t const&)
-            # E        --- ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_return_value_t ttnn::device_operation::detail::invoke<ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation>(tt::stl::StrongType<unsigned char, ttnn::QueueIdTag>, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::operation_attributes_t const&, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_args_t const&)
+            # E        --- ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_return_value_t ttnn::device_operation::detail::launch_on_single_device<ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation>(ttsl::StrongType<unsigned char, ttnn::QueueIdTag>, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::operation_attributes_t const&, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_args_t const&)
+            # E        --- ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_return_value_t ttnn::device_operation::detail::invoke<ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation>(ttsl::StrongType<unsigned char, ttnn::QueueIdTag>, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::operation_attributes_t const&, ttnn::operations::moreh::moreh_softmax::MorehSoftmaxOperation::tensor_args_t const&)
             # E        --- ttnn::operations::normalization::ExecuteSoftmax::invoke(tt::tt_metal::Tensor const&, int, std::optional<tt::tt_metal::MemoryConfig> const&, std::optional<std::variant<ttnn::GrayskullComputeKernelConfig, ttnn::WormholeComputeKernelConfig> const>, bool)
             # E        --- tt::runtime::ttnn::operations::normalization::run(tt::target::ttnn::SoftmaxOp const*, tt::runtime::ttnn::ProgramContext&)
-            # E        --- tt::runtime::ttnn::ProgramExecutor::runOperation(tt::target::ttnn::Operation const*)
             # E        --- tt::runtime::ttnn::ProgramExecutor::execute()
-            # E        --- tt::runtime::ttnn::runProgram(std::shared_ptr<tt::tt_metal::distributed::MeshDevice>, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> >&)
             # E        --- tt::runtime::ttnn::submit(tt::runtime::Device, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> >&)
             # E        --- tt::runtime::submit(tt::runtime::Device, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> >&)
             # E        --- tt::run_program(tt::runtime::Binary&, int, std::vector<tt::Tensor, std::allocator<tt::Tensor> >&)
             # E        --- tt::ModelState::run_program(tt::ProgramType, std::vector<tt::Tensor, std::allocator<tt::Tensor> >)
-            # forge/forge/compiled_graph_state.py:310: RuntimeError
+            # /opt/ttforge-toolchain/venv/lib/python3.10/site-packages/forge/compiled_graph_state.py:316: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
                 component=ComponentChecker.TTNN.value,
                 message=[
                     M.contains("Inputs must be of bfloat16 or bfloat8_b type"),
-                    M.contains("input.get_dtype() == DataType::BFLOAT16 || input.get_dtype() == DataType::BFLOAT8_B"),
+                    M.contains("input.dtype() == DataType::BFLOAT16 || input.dtype() == DataType::BFLOAT8_B"),
                 ],
                 error_log=[
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
