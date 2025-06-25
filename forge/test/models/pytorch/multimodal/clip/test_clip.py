@@ -44,8 +44,8 @@ def test_clip_pytorch(variant):
     processor = download_model(CLIPProcessor.from_pretrained, variant)
 
     # Load image from the IAM dataset
-    dataset = load_dataset("cifar10", split="test[:1]")
-    image = dataset[0]["img"]
+    dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+    image = next(iter(dataset.skip(10)))["image"]
 
     # Process image
     text = [

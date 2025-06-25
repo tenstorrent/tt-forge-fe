@@ -1,5 +1,0 @@
-# xfail_transpose_MLIR_RUNTIME ids
-
-transpose-FROM_HOST-{'dim0': 1, 'dim1': 2}-(1, 2, 3, 4)-torch.int8-HiFi4
-transpose-FROM_HOST-{'dim0': 1, 'dim1': 2}-(1, 2, 3, 4)-torch.int32-HiFi4
-transpose-FROM_HOST-{'dim0': 1, 'dim1': 2}-(1, 2, 3, 4)-torch.int64-HiFi4

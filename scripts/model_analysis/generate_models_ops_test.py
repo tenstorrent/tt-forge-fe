@@ -27,6 +27,13 @@ def main():
         help="Specify the directory or file path containing models test with model_analysis pytest marker",
     )
     parser.add_argument(
+        "--marker",
+        "-m",
+        type=str,
+        required=True,
+        help="Specify the marker to collect the model analysis tests and then extract and export the unique ops config",
+    )
+    parser.add_argument(
         "--unique_ops_output_directory_path",
         default=os.path.join(os.getcwd(), "models_unique_ops_output"),
         required=False,
@@ -88,6 +95,7 @@ def main():
 
     generate_and_export_unique_ops_tests(
         test_directory_or_file_path=args.test_directory_or_file_path,
+        marker=args.marker,
         unique_ops_output_directory_path=args.unique_ops_output_directory_path,
         extract_tvm_unique_ops_config=True,
         tests_to_filter=args.tests_to_filter,

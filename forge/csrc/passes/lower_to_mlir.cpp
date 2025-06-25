@@ -423,7 +423,7 @@ class MLIRGenerator
             llvm::SmallVector<mlir::NamedAttribute, 1> named_attributes;
             named_attributes.push_back(
                 builder_.getNamedAttr("ttir.name", builder_.getStringAttr(argument_node->name())));
-            named_attributes.push_back(builder_.getNamedAttr("tt.argument_type", get_argument_type(argument_node)));
+            named_attributes.push_back(builder_.getNamedAttr("ttcore.argument_type", get_argument_type(argument_node)));
             func.setArgAttrs(i, named_attributes);
             log_trace(LogMLIRCompiler, "Set argument name {} for function argument {}.", argument_node->name(), i);
         }
@@ -803,7 +803,7 @@ class MLIRGenerator
         lowering_handler_map["conv2d_transpose"] =
             &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ConvTranspose2dOp>;
         lowering_handler_map["reshape"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ReshapeOp>;
-        lowering_handler_map["select"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SelectOp>;
+        lowering_handler_map["select"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::IndexSelectOp>;
         lowering_handler_map["sigmoid"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SigmoidOp>;
         lowering_handler_map["sine"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SinOp>;
         lowering_handler_map["softmax"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SoftmaxOp>;

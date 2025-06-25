@@ -187,9 +187,9 @@ def dump_logs(log_files: Union[str, List[str]], content: str):
             logger.info(f"Dumped test logs in {log_file}")
 
 
-def collect_all_model_analysis_test(directory_or_file_path: str, output_directory_path: str):
+def collect_all_model_analysis_test(directory_or_file_path: str, marker: str, output_directory_path: str):
     """
-    Collect all the tests that doesn't contains skip_model_analysis marker in a specified directory or file.
+    Collect all the tests that matches with the specified marker in a specified directory or file.
     """
 
     # Ensure the directory or file path exists
@@ -197,15 +197,13 @@ def collect_all_model_analysis_test(directory_or_file_path: str, output_director
         directory_or_file_path
     ), f"The directory path for collecting test {directory_or_file_path} doesn't exists"
 
-    logger.info(
-        f"Collecting all the tests that doesn't contains skip_model_analysis marker in {directory_or_file_path}"
-    )
+    logger.info(f"Collecting all the tests that matches with {marker} marker in {directory_or_file_path}")
 
     collected_test_outputs = ""
     try:
-        # Run pytest to collect tests with the `model_analysis` marker
+        # Run pytest to collect all the tests that matches with the specified marker
         result = subprocess.run(
-            ["pytest", directory_or_file_path, "-m", "not skip_model_analysis", "--collect-only"],
+            ["pytest", directory_or_file_path, "-m", marker, "--collect-only"],
             capture_output=True,
             text=True,
             check=True,
@@ -556,6 +554,9 @@ def extract_models_ops_test_params(pytest_file_path: str):
                 pcc_value = metadata.get("pcc", None)
                 max_int_value = metadata.get("max_int", None)
                 op_args = metadata.get("args", {})
+                default_df_override = metadata.get("default_df_override", None)
+                if default_df_override is not None:
+                    op_args["default_df_override"] = default_df_override
 
                 # Locate the forward() method to find the forge.op.* call
                 class_node = class_defs.get(module_class_name)
