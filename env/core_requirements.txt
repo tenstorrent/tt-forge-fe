@@ -7,7 +7,7 @@ chex==0.1.6
 dataclasses-json==0.5.7
 datasets==2.14.6
 decorator==5.1.1
-flatbuffers==23.5.26
+flatbuffers==24.3.25
 # This is needed to prevent AttributeError: module 'ml_dtypes' has no attribute 'float8_e4m3b11'
 flax==0.9.0
 jax==0.6.1
@@ -23,8 +23,8 @@ pandas==1.5.3
 pybind11==2.6.2
 pyinstrument>=4.1.1
 scipy>=1.8.0
-tensorflow==2.15
-tensorboard==2.15
+tensorflow==2.19.0
+tensorboard==2.19.0
 tf2onnx==1.15.1
 transformers==4.52.4
 # To avoid warning during the import
