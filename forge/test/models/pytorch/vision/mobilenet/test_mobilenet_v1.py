@@ -68,8 +68,8 @@ def generate_model_mobilenetv1_imgcls_hf_pytorch(variant):
     # tt_model = forge.PyTorchModule("mobilenet_v1__hf_075_192", model)
 
     # Image load and pre-processing into pixel_values
-    dataset = load_dataset("cifar10", split="test[:1]")
-    image = dataset[0]["img"]
+    dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+    image = next(iter(dataset.skip(10)))["image"]
     inputs = preprocessor(images=image, return_tensors="pt")
 
     image_tensor = inputs.pixel_values
@@ -114,8 +114,8 @@ def generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant):
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
 
     # Image load and pre-processing into pixel_values
-    dataset = load_dataset("cifar10", split="test[:1]")
-    image = dataset[0]["img"]
+    dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+    image = next(iter(dataset.skip(10)))["image"]
     inputs = preprocessor(images=image, return_tensors="pt")
 
     image_tensor = inputs.pixel_values
@@ -174,7 +174,7 @@ def test_mobilenet_v1_timm(variant):
     # Load the model and inputs
     framework_model, inputs = load_timm_model_and_input(variant)
     framework_model = framework_model.to(torch.bfloat16)
-    inputs = inputs.to(torch.bfloat16)
+    inputs = [inp.to(torch.bfloat16) for inp in inputs]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -182,10 +182,10 @@ def test_mobilenet_v1_timm(variant):
     # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,
-        sample_inputs=[inputs],
+        sample_inputs=inputs,
         module_name=module_name,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification and Inference
-    fw_out, co_out = verify([inputs], framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model)

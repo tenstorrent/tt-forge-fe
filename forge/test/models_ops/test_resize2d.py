@@ -1123,34 +1123,13 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 640, 20, 20), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
                 "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {
                 "sizes": "[40, 40]",
-                "method": '"nearest_neighbor"',
-                "align_corners": "False",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Resize2D18,
-        [((1, 640, 40, 40), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[80, 80]",
                 "method": '"nearest_neighbor"',
                 "align_corners": "False",
                 "channel_last": "0",
@@ -1747,7 +1726,12 @@ forge_modules_and_shapes_dtypes_list = [
         Resize2D17,
         [((1, 256, 20, 20), torch.bfloat16)],
         {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub", "pt_yolox_yolox_s_obj_det_torchhub"],
+            "model_names": [
+                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+            ],
             "pcc": 0.99,
             "args": {
                 "sizes": "[40, 40]",
@@ -1761,7 +1745,12 @@ forge_modules_and_shapes_dtypes_list = [
         Resize2D18,
         [((1, 128, 40, 40), torch.bfloat16)],
         {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub", "pt_yolox_yolox_s_obj_det_torchhub"],
+            "model_names": [
+                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+            ],
             "pcc": 0.99,
             "args": {
                 "sizes": "[80, 80]",
@@ -3112,6 +3101,21 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
             "pcc": 0.99,
+            "args": {
+                "sizes": "[80, 80]",
+                "method": '"nearest_neighbor"',
+                "align_corners": "False",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Resize2D18,
+        [((1, 640, 40, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[80, 80]",
                 "method": '"nearest_neighbor"',

@@ -36,7 +36,6 @@ variants = [
     ),
     pytest.param(
         "densenet121_hf_xray",
-        marks=[pytest.mark.xfail],
     ),
 ]
 
@@ -68,6 +67,7 @@ def test_densenet_121_pytorch(variant):
     )
 
     # STEP 2: Create Forge module from PyTorch model
+    op_threshs = None
     if variant == "densenet121":
         framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet121", pretrained=True)
         img_tensor = get_input_img()
@@ -77,6 +77,7 @@ def test_densenet_121_pytorch(variant):
         model = download_model(xrv.models.get_model, model_name)
         framework_model = densenet_xray_wrapper(model)
         img_tensor = get_input_img_hf_xray()
+        op_threshs = model.op_threshs
 
     # STEP 3: Run inference on Tenstorrent device
     inputs = [img_tensor.to(torch.bfloat16)]
@@ -102,8 +103,8 @@ def test_densenet_121_pytorch(variant):
     )
 
     # post processing
-    if variant == "densenet121_hf_xray":
-        outputs = op_norm(co_out[0], model.op_threshs)
+    if variant == "densenet121_hf_xray" and op_threshs is not None:
+        op_norm(co_out[0].to(torch.float32), op_threshs.to(torch.float32))
     else:
         print_cls_results(fw_out[0], co_out[0])
 

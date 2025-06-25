@@ -35,6 +35,7 @@ cache_dir = os.path.join("forge/test/models/paddlepaddle/multimodal/paddleocr", 
 os.makedirs(cache_dir, exist_ok=True)
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("det_url,rec_url", [(urls["det"], urls["rec"]) for _, urls in model_urls.items()])

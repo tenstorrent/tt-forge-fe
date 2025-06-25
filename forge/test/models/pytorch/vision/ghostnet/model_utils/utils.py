@@ -18,8 +18,8 @@ def load_ghostnet_model(variant):
     framework_model.eval()
 
     # Prepare input
-    dataset = load_dataset("cifar10", split="test[:1]")
-    img = dataset[0]["img"]
+    dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+    img = next(iter(dataset.skip(10)))["image"]
     data_config = resolve_data_config({}, model=framework_model)
     transforms = create_transform(**data_config, is_training=False)
     img_tensor = transforms(img).unsqueeze(0)

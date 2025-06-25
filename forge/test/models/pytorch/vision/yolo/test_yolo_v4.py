@@ -56,7 +56,6 @@ def test_yolo_v4():
     # Configurations
     compiler_cfg = CompilerConfig()
     compiler_cfg.default_df_override = DataFormat.Float16_b
-    compiler_cfg.enable_optimization_passes = True
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -84,4 +83,4 @@ def test_yolov4_tiny():
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Test is currently not executable due to model code dependency.")
+    pytest.xfail(reason="Test is currently not executable due to model code dependency.")

@@ -99,7 +99,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(variant):
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Transient failure - Segmentation fault")
+    pytest.xfail(reason="Transient failure - Segmentation fault")
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2Model.from_pretrained(variant)
@@ -216,10 +216,10 @@ def test_swin_torchvision(variant):
         inputs = [inputs[0].to(torch.bfloat16)]
 
         data_format_override = DataFormat.Float16_b
-        compiler_cfg = CompilerConfig(default_df_override=data_format_override, enable_optimization_passes=True)
+        compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     else:
-        compiler_cfg = CompilerConfig(enable_optimization_passes=True)
+        compiler_cfg = CompilerConfig()
 
     pcc = 0.99
 

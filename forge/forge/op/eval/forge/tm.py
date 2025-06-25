@@ -929,38 +929,25 @@ def decompose(type, attr, dc, inputs):
             dc.fuse(dc.op(TransposeTM.create(dim0, dim1, orig_size)), inputs)
 
     if type == "pixel_shuffle":
-        result = inputs[0]  # (1, C*r*r, H, W)
-        orig_shape = result.shape
-        if attr[0] != 2:
-            raise NotImplementedError("Pixel shuffle decomposition only supports r=2")
-
+        result = inputs[0]  # Shape: (N, C*r*r, H, W)
+        N, C_r2, H, W = result.shape
         r = attr[0]
-        C = orig_shape[-3] // (r * r)
-        H = orig_shape[-2]
-        W = orig_shape[-1]
+        C = C_r2 // (r * r)
 
-        result = dc.op("vstack", [result], (r * r,))
-        sub_slices = []
-        for subsection in range(r):
-            sub_slice = dc.op("select", [result], (-2, subsection * r * H, r * H, result.shape[-2]))
-            sub_sub_slices = []
-            for subsubsection in range(r):
-                sub_sub_slices.append(dc.op("select", [sub_slice], (-2, subsubsection * H, H, sub_slice.shape[-2])))
+        # Step 1: Reshape to (N, C, r, r, H, W)
+        reshape_dims = (N, C, r, r, H, W)
+        x = dc.op_with_named_attrs("reshape", [result], {"shape": reshape_dims}, reshape_dims)
 
-            curr_sub_sub_slice = sub_sub_slices[0]
-            for sub_sub_slice in sub_sub_slices[1:]:
-                curr_sub_slice = dc.op_with_named_attrs(
-                    "concatenate", [curr_sub_sub_slice, sub_sub_slice], {"dim": -1}, (-1,)
-                )
-            sub_slices.append(curr_sub_sub_slice)
+        # Step 2: Transpose sequence on x
+        x = dc.op(TransposeTM.create(2, 4), [x])  # [0,1,4,3,2,5]
+        x = dc.op(TransposeTM.create(3, 4), [x])  # [0,1,4,2,3,5]
+        x = dc.op(TransposeTM.create(4, 5), [x])  # [0,1,4,2,5,3]
 
-        curr_sub_slice = dc.op(TransposeTM.create(-2, -1), [sub_slices[0]])
-        for sub_slice in sub_slices[1:]:
-            sub_slice = dc.op(TransposeTM.create(-2, -1), [sub_slice])
-            curr_sub_slice = dc.op_with_named_attrs("concatenate", [curr_sub_slice, sub_slice], {"dim": -1}, (-1,))
+        # Step 3: Final reshape to (N, C, H * r, W * r)
+        reshape_dims = (N, C, H * r, W * r)
+        x = dc.op_with_named_attrs("reshape", [x], {"shape": reshape_dims}, reshape_dims)
 
-        result = dc.op(TransposeTM.create(-2, -1), [curr_sub_slice])
-        dc.fuse(result)
+        dc.fuse(x)
 
     if type == "reshape":
         assert len(inputs) == 1
