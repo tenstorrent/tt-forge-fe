@@ -44,13 +44,6 @@ varaints = [
 @pytest.mark.parametrize("variant", varaints)
 def test_vovnet_osmr_pytorch(variant):
 
-    if variant in ["vovnet27s"]:
-        group = ModelGroup.RED
-        priority = ModelPriority.P1
-    else:
-        group = ModelGroup.GENERALITY
-        priority = ModelPriority.P2
-
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
@@ -58,8 +51,6 @@ def test_vovnet_osmr_pytorch(variant):
         variant=variant,
         source=Source.OSMR,
         task=Task.IMAGE_CLASSIFICATION,
-        group=group,
-        priority=priority,
     )
 
     # Load model
