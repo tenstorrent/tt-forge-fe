@@ -1165,27 +1165,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Maxpool2D7,
-        [((1, 320, 20, 20), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "5",
-                "stride": "1",
-                "padding": "[2, 2, 2, 2]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Maxpool2D7,
         [((1, 640, 20, 20), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
@@ -2958,6 +2937,40 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
             "pcc": 0.99,
+            "args": {
+                "kernel_size": "5",
+                "stride": "1",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "ceil_mode": "False",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Maxpool2D7,
+        [((1, 128, 20, 20), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {
+                "kernel_size": "5",
+                "stride": "1",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "ceil_mode": "False",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Maxpool2D7,
+        [((1, 320, 20, 20), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {
                 "kernel_size": "5",
                 "stride": "1",

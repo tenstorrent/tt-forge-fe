@@ -38,7 +38,6 @@ def test_swin_v2_tiny_image_classification_onnx(variant, forge_tmp_path):
     # Prepare input data
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     inputs = load_image(feature_extractor)
-    inputs = [inputs[0].to(torch.bfloat16)]
 
     # Export model to ONNX
     onnx_path = f"{forge_tmp_path}/swin_v2_obj_cls.onnx"
@@ -76,7 +75,6 @@ def test_swin_v2_tiny_masked_onnx(variant, forge_tmp_path):
     # Prepare input data
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     inputs = load_image(feature_extractor)
-    inputs = [inputs[0].to(torch.bfloat16)]
 
     # Export model to ONNX
     onnx_path = f"{forge_tmp_path}/swin_v2_tiny_masked.onnx"

@@ -7,7 +7,6 @@ from torch import nn
 
 import forge
 from forge.verify.verify import verify
-from forge.config import CompilerConfig
 
 
 @pytest.mark.parametrize(
@@ -82,10 +81,8 @@ def test_masked_scatter(input_tensor, mask, source):
     # Inputs for the test
     inputs = [input_tensor, mask, source]
 
-    compiler_cfg = CompilerConfig(enable_optimization_passes=True)
-
     framework_model = MaskedScatterModule()
-    compiled_model = forge.compile(framework_model, inputs, compiler_cfg=compiler_cfg)
+    compiled_model = forge.compile(framework_model, inputs)
 
     # Verify outputs
     verify(inputs, framework_model, compiled_model)

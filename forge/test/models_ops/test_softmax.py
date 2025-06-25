@@ -483,24 +483,15 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
     (
-        Softmax0,
-        [((1, 5, 400, 400), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov10_yolov10n_obj_det_github"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
         Softmax2,
         [((1, 16, 4, 8400), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
                 "pt_yolov9_default_obj_det_github",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolov8_yolov8x_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "1"},
@@ -740,24 +731,17 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 8, 300, 300), torch.bfloat16)],
         {"model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
-    pytest.param(
-        (
-            Softmax0,
-            [((1, 1, 512, 50176), torch.bfloat16)],
-            {
-                "model_names": [
-                    "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
-                    "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
-                ],
-                "pcc": 0.99,
-                "args": {"dim": "-1"},
-            },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:896: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=7)] grow to 3380192 B which is beyond max L1 size of 1499136 B"
-            )
-        ],
+    (
+        Softmax0,
+        [((1, 1, 512, 50176), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
     ),
     (
         Softmax0,
@@ -1561,6 +1545,26 @@ forge_modules_and_shapes_dtypes_list = [
         Softmax0,
         [((1, 16, 1, 1500), torch.float32)],
         {"model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax0,
+        [((1, 2, 400, 400), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 5, 400, 400), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
     ),
 ]
 

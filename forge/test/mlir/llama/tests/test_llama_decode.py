@@ -259,7 +259,10 @@ def test_llama_prefill_on_cpu_decode_on_tt_no_cache(model_path, run_on_tt_device
             "openlm-research/open_llama_3b",
             True,
             None,
-            marks=pytest.mark.nightly,
+            marks=[
+                pytest.mark.nightly,
+                pytest.mark.skip(reason="Temporarily skipping this nightly test because it takes 30GB of host memory"),
+            ],
         ),
         pytest.param(
             "meta-llama/Llama-3.2-1B",

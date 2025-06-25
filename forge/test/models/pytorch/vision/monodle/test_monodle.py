@@ -30,8 +30,8 @@ def test_monodle_pytorch():
     )
 
     # Load data sample
-    dataset = load_dataset("cifar10", split="test[:1]")
-    image = dataset[0]["img"]
+    dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+    image = next(iter(dataset.skip(10)))["image"]
 
     # Preprocessing
     transform = transforms.Compose(

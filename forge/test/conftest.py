@@ -592,16 +592,16 @@ def pytest_collection_modifyitems(config, items):
 
     yield
 
+    is_collect_enabled = config.getoption("--collect-only")
     marker = config.getoption("-m")
-    if marker and marker == "not skip_model_analysis":  # If a marker is specified
-        print("Automatic Model Analysis Collected tests: ")
+    if marker and "skip_model_analysis" in marker and is_collect_enabled:  # If a marker is specified
+        print("\nAutomatic Model Analysis Collected tests: ")
         test_count = 0
         for item in items:
-            if "skip_model_analysis" not in item.keywords:
-                test_file_path = item.location[0]
-                test_name = item.location[2]
-                print(f"{test_file_path}::{test_name}")
-                test_count += 1
+            test_file_path = item.location[0]
+            test_name = item.location[2]
+            print(f"{test_file_path}::{test_name}")
+            test_count += 1
         print(f"Automatic Model Analysis Collected test count: {test_count}")
         if test_count == 0:  # Warn if no tests match the marker
             print(f"Warning: No tests found with marker '{marker}'.")

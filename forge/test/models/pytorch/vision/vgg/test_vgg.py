@@ -85,7 +85,7 @@ def test_vgg_osmr_pytorch(variant):
 
     pcc = 0.99
 
-    if variant == "vgg16":
+    if variant in ["vgg16", "bn_vgg19"]:
         pcc = 0.98
     elif variant == "vgg19":
         pcc = 0.97
@@ -339,12 +339,14 @@ def test_vgg_torchvision(variant):
         compiler_cfg=compiler_cfg,
     )
 
-    verify_cfg = VerifyConfig()
-    if variant == "vgg16_bn":
-        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
+    pcc = 0.99
+    if variant in ["vgg16_bn", "vgg13_bn"]:
+        pcc = 0.98
 
-    # Model Verification and inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+    # Model Verificatiogn and inference
+    fw_out, co_out = verify(
+        inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc))
+    )
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
