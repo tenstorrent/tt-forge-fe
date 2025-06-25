@@ -29,18 +29,19 @@ from utils import (
 def generate_and_export_unique_ops_tests(
     test_directory_or_file_path: str,
     unique_ops_output_directory_path: str,
+    marker: str,
     extract_tvm_unique_ops_config: bool = False,
     timeout: int = 1200,
     tests_to_filter: Optional[List[str]] = None,
 ):
     """
-    Collect all the tests that doesn't contain skip_model_analysis marker in the test_directory_or_file_path specified by the user
+    Collect all the tests that matches with specified marker in the test_directory_or_file_path specified by the user
     and then generate unique op test for all the collected test and return the list of directory path
     containing exported models unique op configuration as xlsx file
     """
 
-    # Collect all the test that doesn't contain skip_model_analysis marker inside the test_directory_or_file_path specified by the user
-    test_list = collect_all_model_analysis_test(test_directory_or_file_path, unique_ops_output_directory_path)
+    # Collect all the test that matches with specified marker inside the test_directory_or_file_path specified by the user
+    test_list = collect_all_model_analysis_test(test_directory_or_file_path, marker, unique_ops_output_directory_path)
 
     assert test_list != [], f"No tests found in the {test_directory_or_file_path} path"
 
@@ -263,6 +264,7 @@ def extract_existing_unique_ops_config(
     models_ops_tests_directory_path: str,
     existing_unique_ops_config_file_path: str,
     ops_to_filter: Optional[List[str]] = None,
+    remove_model_names: Optional[List[str]] = None,
 ):
     """
     Traverse a directory of generated models ops pytest files, extract each
@@ -277,6 +279,8 @@ def extract_existing_unique_ops_config(
         ops_to_filter (Optional[List[str]]): List of forge operation names
             (as strings) to include. If provided, only test files matching these
             names (without 'test_' prefix) will be processed.
+        remove_model_names: (Optional[List[str]]): List of model names to which
+            the unique ops will not be extracted
 
     Returns:
         UniqueOperations: Consolidated unique operations configuration extracted from the generated models ops tests.
@@ -320,6 +324,8 @@ def extract_existing_unique_ops_config(
         # Process each extracted config dict into an Operation instance
         for config in unique_ops_configs:
             for model_variant in config["model_names"]:
+                if remove_model_names and (str(model_variant) in remove_model_names):
+                    continue
                 op_count += 1
 
                 # Convert operand types to NodeType enums
