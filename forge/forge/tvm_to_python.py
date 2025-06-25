@@ -1776,7 +1776,7 @@ tvm_to_forge_op_map = {
     "forge.vstack": "vstack",
     "reciprocal": "reciprocal",
     "reshape": "reshape",
-    "scatter": "index_copy",
+    "scatter_elements": "index_copy",
     "sigmoid": "sigmoid",
     "sigmoid": "sigmoid",
     "sin": "sin",
