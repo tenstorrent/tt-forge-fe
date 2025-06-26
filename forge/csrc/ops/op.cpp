@@ -24,7 +24,9 @@ namespace ops
 
 namespace py = pybind11;
 
-// In transition period we need mapping from new to the old node type, in order to preserve old functionalities.
+/**
+ * In transition period we need mapping from new to the old op type, in order to preserve old functionalities.
+ */
 class NewToOldOpType
 {
    public:
@@ -155,7 +157,9 @@ class NewToOldOpType
     std::unordered_map<OpType, std::string> mapping_;
 };
 
-// In transition period we need mapping from new to the old node type, in order to preserve old functionalities.
+/**
+ * In transition period we need mapping from old to the new op type, in order to preserve old functionalities.
+ */
 class OldToNewOpType
 {
    public:
@@ -296,9 +300,9 @@ Op::Op(const graphlib::OpType &old_op_type) :
 
 const std::string &Op::as_string() const { return new_to_old_op_type_mapper[type_]; }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Default implementation for ops that are not cpp implemented yet. We will invoke old python code to evaluate them. //
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* ------------------------------------------------------------------------------------------------------------------*
+ * Default implementation for ops that are not cpp implemented yet. We will invoke old python code to evaluate them. *
+ * ------------------------------------------------------------------------------------------------------------------*/
 
 at::Tensor Op::base_eval(const graphlib::OpType &old_op_type, const std::vector<at::Tensor> &tensors) const
 {
@@ -381,9 +385,9 @@ bool Op::base_is_eltwise_nary(const graphlib::OpType &old_op_type) const
     return is_eltwise_nary(&old_op_type).cast<bool>();
 }
 
-///////////////////////////////////
-// Dispatching based on op type. //
-///////////////////////////////////
+/* ------------------------------*
+ * Dispatching based on op type. *
+ * ------------------------------*/
 
 at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::Tensor> &tensors) const
 {
@@ -419,7 +423,9 @@ tt::graphlib::NodeContext Op::backward(
     }
 }
 
-// TODO: Fix this with proper dispatching based on provided string.
+/**
+ * TODO: Fix this with proper dispatching based on provided string.
+ */
 void Op::decompose(
     const graphlib::OpType &old_op_type,
     const char *dispatch,

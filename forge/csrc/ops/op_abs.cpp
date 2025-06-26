@@ -34,14 +34,16 @@ tt::graphlib::NodeContext Op::abs_backward(
     const tt::graphlib::NodeContext &output,
     const tt::graphlib::NodeContext &gradient) const
 {
-    // Example of rewriting python backward to cpp backward.
-
-    // assert len(inputs) == 1, "Abs should have one input"
-    // assert operand == 0, "Invalid operand index"
-    // heaviside = ac.op("heaviside", (inputs[0], ac.constant(0.5)))
-    // subtract = ac.op("subtract", (heaviside, ac.constant(0.5)))
-    // stretched = ac.op("multiply", (subtract, ac.constant(2.0)))
-    // return ac.op("multiply", (stretched, grad))
+    /**
+     * Example of rewriting python backward to cpp backward:
+     *
+     * assert len(inputs) == 1, "Abs should have one input"
+     * assert operand == 0, "Invalid operand index"
+     * heaviside = ac.op("heaviside", (inputs[0], ac.constant(0.5)))
+     * subtract = ac.op("subtract", (heaviside, ac.constant(0.5)))
+     * stretched = ac.op("multiply", (subtract, ac.constant(2.0)))
+     * return ac.op("multiply", (stretched, grad))
+     */
 
     TT_ASSERT(inputs.size() == 1, "Abs should have single input.");
     TT_ASSERT(operand == 0, "Invalid operand index.");

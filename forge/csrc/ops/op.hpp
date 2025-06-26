@@ -170,7 +170,8 @@ using Attr = ::std::variant<
 
 // Op attributes.
 using Attrs = ::std::map<std::string, Attr>;  // TODO: Conver this into vector. There is no sence to use
-                                              // map/unordered map for few items.
+                                              // map/unordered map for few items. Also, once migrated to new ops, we
+                                              // should create attribute key enum, and replace mapping strings.
 
 class Op
 {
@@ -198,9 +199,9 @@ class Op
 
     const std::string &as_string() const;
 
-    // ========================================
-    // Calculations. Derived classes must implement these.
-    // ========================================
+    /* ------------------------------------------------------------*
+     * Calculations segment. Derived classes must implement these. *
+     * ------------------------------------------------------------*/
 
     at::Tensor eval(const graphlib::OpType &old_op_type, const std::vector<at::Tensor> &tensors) const;
     std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(
@@ -230,13 +231,9 @@ class Op
     bool is_eltwise_nary(const graphlib::OpType &old_op_type) const;
 
    private:
-    //////////////////////////////////
-    // Ops specific implementation. //
-    //////////////////////////////////
-
-    /////////////////////////////////////////////////////////////////
-    // Base - common for all ops that are not yet migrated to cpp. //
-    /////////////////////////////////////////////////////////////////
+    /* ------------------------------------------------------------*
+     * Base - common for all ops that are not yet migrated to cpp. *
+     * ------------------------------------------------------------*/
 
     at::Tensor base_eval(const graphlib::OpType &old_op_type, const std::vector<at::Tensor> &tensors) const;
     std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> base_shape(
@@ -265,9 +262,13 @@ class Op
     bool base_is_eltwise_binary(const graphlib::OpType &old_op_type) const;
     bool base_is_eltwise_nary(const graphlib::OpType &old_op_type) const;
 
-    //=====//
-    // Abs //
-    //=====//
+    /* -----------------------------*
+     * Ops specific implementation. *
+     * -----------------------------*/
+
+    /* -------------*
+     * OpType::Abs. *
+     * -------------*/
 
     at::Tensor abs_eval(const std::vector<at::Tensor> &tensors) const;
     std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> abs_shape(
