@@ -647,16 +647,9 @@ class MLIRGenerator
     /// Get device Architecture from TTSystem
     mlir::tt::Arch get_device_arch()
     {
-        // Get the system and extract architecture information
         TTSystem &system = TTSystem::get_system();
-
-        // Check if there is at least one device
         TT_ASSERT(!system.devices.empty() && system.devices[0], "No available device found");
-
-        // Use first device's architecture
         ARCH tt_arch = system.devices[0]->arch;
-
-        // Map from ARCH to mlir::tt::Arch
         switch (tt_arch)
         {
             case ARCH::WORMHOLE_B0: return mlir::tt::Arch::WormholeB0;
