@@ -26,6 +26,7 @@
 #include "mlir/IR/Value.h"
 #include "mlir/IR/ValueRange.h"
 #include "passes/extract_unique_op_configuration.hpp"
+#include "runtime/tt_device.hpp"
 #include "utils/logger.hpp"
 
 // MLIR headers
@@ -170,8 +171,35 @@ class MLIRGenerator
     mlir::ModuleOp emit_mlir(tt::ForgeGraphModule &module)
     {
         graphModule_ = mlir::ModuleOp::create(get_module_location(module), module.name());
+
+        // Get the system and extract architecture information
+        TTSystem &system = TTSystem::get_system();
+
+        // Default to WormholeB0 if no devices are available
+        mlir::tt::Arch arch = mlir::tt::Arch::WormholeB0;
+
+        // Use first device's architecture if available
+        if (!system.devices.empty() && system.devices[0])
+        {
+            ARCH tt_arch = system.devices[0]->arch;
+
+            // Map from ARCH to mlir::tt::Arch
+            switch (tt_arch)
+            {
+                case ARCH::WORMHOLE_B0: arch = mlir::tt::Arch::WormholeB0; break;
+                case ARCH::BLACKHOLE: arch = mlir::tt::Arch::Blackhole; break;
+                default:
+                    log_info("Unsupported architecture: {}, using default WormholeB0", to_string_arch(tt_arch));
+                    break;
+            }
+        }
+        else
+        {
+            log_info("No devices found, using default WormholeB0 architecture");
+        }
+
         graphModule_->setAttr(
-            mlir::tt::SystemDescAttr::name, mlir::tt::SystemDescAttr::getDefault(builder_.getContext()));
+            mlir::tt::SystemDescAttr::name, mlir::tt::SystemDescAttr::getDefault(builder_.getContext(), arch));
         builder_.setInsertionPointToStart(&graphModule_.getBodyRegion().front());
 
         // Collect all the supported TTIR operations
