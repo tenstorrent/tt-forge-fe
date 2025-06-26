@@ -35,7 +35,7 @@ size = [
     pytest.param("s", id="yolov5s"),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),
-    pytest.param("x", id="yolov5x", marks=[pytest.mark.xfail]),
+    pytest.param("x", id="yolov5x"),
 ]
 
 

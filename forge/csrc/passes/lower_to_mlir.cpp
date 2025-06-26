@@ -423,7 +423,8 @@ class MLIRGenerator
             llvm::SmallVector<mlir::NamedAttribute, 1> named_attributes;
             named_attributes.push_back(
                 builder_.getNamedAttr("ttir.name", builder_.getStringAttr(argument_node->name())));
-            named_attributes.push_back(builder_.getNamedAttr("ttcore.argument_type", get_argument_type(argument_node)));
+            named_attributes.push_back(
+                builder_.getNamedAttr(mlir::tt::ArgumentTypeAttr::name, get_argument_type(argument_node)));
             func.setArgAttrs(i, named_attributes);
             log_trace(LogMLIRCompiler, "Set argument name {} for function argument {}.", argument_node->name(), i);
         }
