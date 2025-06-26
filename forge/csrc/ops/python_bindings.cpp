@@ -6,24 +6,10 @@
 #include <pybind11/operators.h>
 #include <pybind11/stl.h>
 
-#include <memory>
-
-#include "autograd/autograd.hpp"
-#include "graph_lib/node.hpp"
-#include "graph_lib/node_types.hpp"
-#include "graph_lib/shape.hpp"
 #include "ops/op.hpp"
-#include "passes/decomposing_context.hpp"
-#include "torch/extension.h"
 
 namespace tt
 {
-
-// template <ops::OpType type, class OpAttrs>
-// std::unique_ptr<ops::Op> make_op(OpAttrs &&attrs)
-// {
-// return std::make_unique<ops::Op>(type, std::forward(attrs));
-// }
 
 void OpsModule(py::module &m_ops)
 {
@@ -60,6 +46,7 @@ void OpsModule(py::module &m_ops)
         .value("Depthwise", ops::OpType::Depthwise)
         .value("Divide", ops::OpType::Divide)
         .value("DramQueue", ops::OpType::DramQueue)
+        .value("Downsample2d", ops::OpType::Downsample2d)
         .value("Dropout", ops::OpType::Dropout)
         .value("Embedding", ops::OpType::Embedding)
         .value("EmbeddingBw", ops::OpType::EmbeddingBw)
@@ -67,6 +54,7 @@ void OpsModule(py::module &m_ops)
         .value("Erf", ops::OpType::Erf)
         .value("EthernetDatacopy", ops::OpType::EthernetDatacopy)
         .value("Exp", ops::OpType::Exp)
+        .value("FillCache", ops::OpType::FillCache)
         .value("ForgeDequantize", ops::OpType::ForgeDequantize)
         .value("ForgePad", ops::OpType::ForgePad)
         .value("ForgeQuantize", ops::OpType::ForgeQuantize)
@@ -95,6 +83,9 @@ void OpsModule(py::module &m_ops)
         .value("LogicalNot", ops::OpType::LogicalNot)
         .value("Mask", ops::OpType::Mask)
         .value("Matmul", ops::OpType::Matmul)
+        .value("MaxPool1d", ops::OpType::MaxPool1d)
+        .value("MaxPool2d", ops::OpType::MaxPool2d)
+        .value("MaxPool3d", ops::OpType::MaxPool3d)
         .value("Maximum", ops::OpType::Maximum)
         .value("Minimum", ops::OpType::Minimum)
         .value("Multiply", ops::OpType::Multiply)
@@ -135,6 +126,7 @@ void OpsModule(py::module &m_ops)
         .value("Tilizer", ops::OpType::Tilizer)
         .value("Transpose", ops::OpType::Transpose)
         .value("Unsqueeze", ops::OpType::Unsqueeze)
+        .value("UpdateCache", ops::OpType::UpdateCache)
         .value("Upsample2d", ops::OpType::Upsample2d)
         .value("Vslice", ops::OpType::Vslice)
         .value("Vstack", ops::OpType::Vstack)
