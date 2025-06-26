@@ -5,8 +5,8 @@ import torch
 import pytest
 
 import forge
-from test.mlir.llama.utils.utils import load_model
-from forge.verify.verify import verify
+from test.mlir.llama.utils.utils import load_attention_layer_only
+from forge.verify.verify import verify, DeprecatedVerifyConfig
 from forge.forge_property_utils import Framework, ModelArch, Source, Task, ModelGroup, record_model_properties
 from transformers.cache_utils import StaticCache
 
@@ -127,11 +127,9 @@ def test_llama_attention_prefill_mode(model_path):
     )
 
     # Load Llama model and tokenizer
-    model, tokenizer = load_model(model_path, return_dict=True)
-    llama_attention = model.model.layers[0].self_attn
     layer_idx = 0
-    framework_model = LlamaAttentionWrapper(llama_attention, layer_idx, model.config)
-    config = model.config
+    llama_attention, config = load_attention_layer_only(model_path, layer_idx=layer_idx)
+    framework_model = LlamaAttentionWrapper(llama_attention, layer_idx, config)
 
     # Set input dimensions
     batch_size = 1
@@ -144,7 +142,7 @@ def test_llama_attention_prefill_mode(model_path):
     attention_mask = torch.triu(torch.full((batch_size, 1, seq_len, seq_len), float("-inf")), diagonal=1)
 
     # Fill remaining positions with -inf
-    pad_len = model.config.max_position_embeddings - (seq_len)
+    pad_len = config.max_position_embeddings - (seq_len)
     pad_tensor = torch.full(
         (batch_size, 1, seq_len, pad_len),
         float("-inf"),
@@ -210,11 +208,9 @@ def test_llama_attention_decode_mode(model_path):
     )
 
     # Load Llama model and tokenizer
-    model, tokenizer = load_model(model_path, return_dict=True)
-    llama_attention = model.model.layers[0].self_attn
+    llama_attention, config = load_attention_layer_only(model_path)
     layer_idx = 0
-    framework_model = LlamaDecodeStaticCacheAttentionWrapper(llama_attention, layer_idx, model.config)
-    config = model.config
+    framework_model = LlamaDecodeStaticCacheAttentionWrapper(llama_attention, layer_idx, config)
 
     # Set input dimensions
     batch_size = 1
@@ -235,7 +231,7 @@ def test_llama_attention_decode_mode(model_path):
     attention_mask = torch.zeros(batch_size, 1, seq_len, past_len + seq_len)
 
     # Fill remaining positions with -inf
-    pad_len = model.config.max_position_embeddings - (past_len + seq_len)
+    pad_len = config.max_position_embeddings - (past_len + seq_len)
     pad_tensor = torch.full(
         (batch_size, 1, seq_len, pad_len),
         float("-inf"),
@@ -254,6 +250,10 @@ def test_llama_attention_decode_mode(model_path):
     # Prepare inputs
     inputs = [hidden_states, padded_attention_mask, position_ids, past_key, past_value]
 
-    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
+
+    verify_cfg = DeprecatedVerifyConfig()
+    verify_cfg.verify_all = True
+    verify_cfg.enable_op_level_comparision = True
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name, verify_cfg=verify_cfg)
 
     verify(inputs, framework_model, compiled_model)
