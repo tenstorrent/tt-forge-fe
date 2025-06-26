@@ -37,12 +37,49 @@ bool all_have_same_dim_and_shape_stride1(std::vector<T> const &v)
         });
 }
 
+/*
+ * Decompose ND Reshape Split Pass
+ *
+ * Optimizes: Reshape (dimension split) → Index → Squeeze pattern
+ * Converts to: Direct Select operations
+ *
+ * EXAMPLE:
+ *
+ *   Input: {2, 12}
+ *      |
+ *   [Reshape] {2, 12} -> {2, 4, 3}  (splits dim 1: 12 -> 4×3)
+ *      |
+ *      +-- [Index dim=2, idx=0] -> {2, 4, 1} -> [Squeeze] -> {2, 4}
+ *      +-- [Index dim=2, idx=1] -> {2, 4, 1} -> [Squeeze] -> {2, 4}
+ *      +-- [Index dim=2, idx=2] -> {2, 4, 1} -> [Squeeze] -> {2, 4}
+ *
+ * BECOMES:
+ *
+ *   Input: {2, 12}
+ *      |
+ *      +-- [Select dim=1, start=0, len=4] -> {2, 4}
+ *      +-- [Select dim=1, start=4, len=4] -> {2, 4}
+ *      +-- [Select dim=1, start=8, len=4] -> {2, 4}
+ *
+ * NOTE: The squeeze reshapes remain but become no-ops (input/output shapes match)
+ *       and are removed by later passes like bypass_nop_tms.
+ */
+
 void decompose_nd_reshape_split(graphlib::Graph *graph)
 {
     for (auto node : graph->nodes())
     {
         // Only consider reshape nodes with last dimension tile_dim aligned
         if (not is_reshape(node) or node->shape()[-1] % graphlib::Shape::FORGE_TILE_DIM != 0)
+            continue;
+
+        // Only consider reshape which splits the dim into 2 dimensions
+        // which means that difference between output and input rank must be 1
+        auto reshape_producer = graph->operands(node)[0];
+        int input_rank = reshape_producer->shape().size();
+        int output_rank = node->shape().size();
+
+        if (output_rank - input_rank != 1)
             continue;
 
         auto consumers = graph->users(node);
@@ -103,8 +140,6 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
         if (not all_sequence_consumers_are_squeeze)
             continue;
 
-        auto reshape_producer = graph->operands(node)[0];
-
         // Remove reshape node and update index nodes to select
         int new_dim = dim + 1;
         int producer_dim_size = reshape_producer->shape()[new_dim];
@@ -121,10 +156,10 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
             op_type_.op = "select";
 
             std::vector<Attr> new_op_attrs(4);
-            new_op_attrs[0] = new_dim;
-            new_op_attrs[1] = (int)(std::get<int>(op_attrs[1]) * node->shape()[-1]);
-            new_op_attrs[2] = (int)node->shape()[-1];
-            new_op_attrs[3] = (int)(consumers.size() * node->shape()[-1]);
+            new_op_attrs[0] = new_dim;                                                // dim to select
+            new_op_attrs[1] = (int)(std::get<int>(op_attrs[1]) * node->shape()[-1]);  // start
+            new_op_attrs[2] = (int)node->shape()[-1];                                 // length
+            new_op_attrs[3] = (int)(consumers.size() * node->shape()[-1]);            // stride
             op_type_.attr = new_op_attrs;
             op->change_op_type(op_type_);
 
