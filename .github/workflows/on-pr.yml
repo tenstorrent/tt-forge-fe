@@ -14,6 +14,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.mlir_override }}
   cancel-in-progress: true
 
+env:
+  DOCKER_CACHE_ROOT: /mnt/dockercache
+
 permissions:
   packages: write
   checks: write
