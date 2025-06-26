@@ -28,11 +28,11 @@ from test.models.pytorch.vision.segformer.model_utils.image_utils import get_sam
 
 variants_img_classification = [
     pytest.param("nvidia/mit-b0", marks=pytest.mark.push),
-    pytest.param("nvidia/mit-b1", marks=pytest.mark.xfail),
-    pytest.param("nvidia/mit-b2", marks=pytest.mark.xfail),
-    pytest.param("nvidia/mit-b3", marks=pytest.mark.xfail),
-    pytest.param("nvidia/mit-b4", marks=pytest.mark.xfail),
-    pytest.param("nvidia/mit-b5", marks=pytest.mark.xfail),
+    pytest.param("nvidia/mit-b1"),
+    pytest.param("nvidia/mit-b2"),
+    pytest.param("nvidia/mit-b3"),
+    pytest.param("nvidia/mit-b4"),
+    pytest.param("nvidia/mit-b5"),
 ]
 
 

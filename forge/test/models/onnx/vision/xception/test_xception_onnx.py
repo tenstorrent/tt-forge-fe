@@ -22,7 +22,6 @@ variants = ["xception65", "xception71.tf_in1k"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_xception_onnx(variant, forge_tmp_path):
 
