@@ -28,7 +28,6 @@ class FailingReasonsRegister:
         ("conv_transpose_2d", FailingReasons.ASSERT_GROUPS),
         ("conv_transpose_2d", FailingReasons.ASSERT_STRIDE),
         ("conv_transpose_2d", FailingReasons.DATA_MISMATCH),
-        ("conv_transpose_2d", FailingReasons.DTYPE_MISMATCH),
         ("conv_transpose_2d", FailingReasons.MLIR_RUNTIME),
         ("conv_transpose_2d", FailingReasons.SPECIAL_VALUES),
         ("cumsum", FailingReasons.DATA_MISMATCH),

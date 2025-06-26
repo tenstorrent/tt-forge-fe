@@ -1,6 +1,0 @@
-# xfail_conv_transpose_2d_DTYPE_MISMATCH ids
-
-conv_transpose_2d-FROM_HOST-{'in_channels': 11, 'out_channels': 12, 'kernel_size': (8, 4), 'stride': 1, 'padding': 0, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': torch.bfloat16}-(3, 11, 45, 17)-torch.bfloat16-LoFi
-conv_transpose_2d-FROM_HOST-{'in_channels': 11, 'out_channels': 12, 'kernel_size': (8, 4), 'stride': 1, 'padding': 0, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': torch.bfloat16}-(3, 11, 45, 17)-torch.bfloat16-HiFi2
-conv_transpose_2d-FROM_HOST-{'in_channels': 11, 'out_channels': 12, 'kernel_size': (8, 4), 'stride': 1, 'padding': 0, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': torch.bfloat16}-(3, 11, 45, 17)-torch.bfloat16-HiFi3
-conv_transpose_2d-FROM_HOST-{'in_channels': 11, 'out_channels': 12, 'kernel_size': (8, 4), 'stride': 1, 'padding': 0, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': torch.bfloat16}-(3, 11, 45, 17)-torch.bfloat16-HiFi4

@@ -13,7 +13,9 @@ from loguru import logger
 import torch
 import forge
 import forge.op
+from forge._C import DataFormat
 
+from forge.config import CompilerConfig
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AllCloseValueChecker
 
@@ -27,8 +29,8 @@ from test.operators.utils import (
     TestCollection,
     TestCollectionCommon,
 )
-from test.operators.utils.compat import TestDevice, TestTensorsUtils
-from test.operators.utils.utils import PytorchUtils
+from test.operators.utils.compat import TestDevice
+from test.operators.utils.utils import PytorchUtils, TensorUtils
 from test.operators.utils.test_data import TestCollectionTorch
 from test.operators.utils.plan import TestPlanUtils
 from test.operators.pytorch.ids.loader import TestIdsDataLoader
@@ -78,7 +80,7 @@ class ModelConstEvalPass(torch.nn.Module):
 
     model_name = "model_op_src_const_eval_pass"
 
-    def __init__(self, operator, opname, shape, kwargs, dtype):
+    def __init__(self, operator, opname, shape, kwargs, value_range):
         super(ModelConstEvalPass, self).__init__()
         self.testname = "ConvTranspose2d_pytorch_operator_" + opname + "_test_op_src_const_eval_pass"
         self.operator = operator
@@ -86,7 +88,14 @@ class ModelConstEvalPass(torch.nn.Module):
         self.shape = shape
         self.kwargs = kwargs
 
-        self.constant = torch.rand(self.shape, dtype=dtype)
+        self.constant = TensorUtils.create_torch_constant(
+            input_shape=shape,
+            dev_data_format=kwargs.get("dtype"),
+            value_range=value_range,
+            random_seed=math.prod(shape),
+        )
+        self.register_buffer("constant1", self.constant)
+
         self.ct1 = self.operator(**self.kwargs)
 
     def forward(self, x: torch.Tensor):
@@ -119,6 +128,7 @@ class TestVerification:
 
         operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
 
+        value_range = ValueRanges.SMALL
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
         model_type = cls.MODEL_TYPES[test_vector.input_source]
@@ -128,7 +138,7 @@ class TestVerification:
                 opname=test_vector.operator,
                 shape=test_vector.input_shape,
                 kwargs=kwargs,
-                dtype=TestTensorsUtils.get_dtype_for_df(test_vector.dev_data_format),
+                value_range=value_range,
             )
         else:
             pytorch_model = model_type(
@@ -138,21 +148,33 @@ class TestVerification:
                 kwargs=kwargs,
             )
 
+        dtype = kwargs.get("dtype")
+        compiler_cfg = CompilerConfig()
+
+        if dtype is torch.bfloat16:
+            pytorch_model.to(dtype)
+            compiler_cfg.default_df_override = DataFormat.Float16_b
+
         input_shapes = tuple([test_vector.input_shape for _ in range(number_of_operands)])
         logger.trace(f"***input_shapes: {input_shapes}")
+
+        # We don't test int data type as there is no sense for convtranspose2d operator
+        # Using AllCloseValueChecker
+        verify_config = VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2))
 
         VerifyUtils.verify(
             model=pytorch_model,
             test_device=test_device,
             input_shapes=input_shapes,
             input_params=input_params,
+            compiler_cfg=compiler_cfg,
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             pcc=test_vector.pcc,
             warm_reset=warm_reset,
             deprecated_verification=False,
-            verify_config=VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2)),
-            value_range=ValueRanges.SMALL,
+            verify_config=verify_config,
+            value_range=value_range,
         )
 
 
