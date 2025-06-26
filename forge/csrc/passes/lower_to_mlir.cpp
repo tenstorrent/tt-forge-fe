@@ -172,34 +172,9 @@ class MLIRGenerator
     {
         graphModule_ = mlir::ModuleOp::create(get_module_location(module), module.name());
 
-        // Get the system and extract architecture information
-        TTSystem &system = TTSystem::get_system();
-
-        // Default to WormholeB0 if no devices are available
-        mlir::tt::Arch arch = mlir::tt::Arch::WormholeB0;
-
-        // Use first device's architecture if available
-        if (!system.devices.empty() && system.devices[0])
-        {
-            ARCH tt_arch = system.devices[0]->arch;
-
-            // Map from ARCH to mlir::tt::Arch
-            switch (tt_arch)
-            {
-                case ARCH::WORMHOLE_B0: arch = mlir::tt::Arch::WormholeB0; break;
-                case ARCH::BLACKHOLE: arch = mlir::tt::Arch::Blackhole; break;
-                default:
-                    log_info("Unsupported architecture: {}, using default WormholeB0", to_string_arch(tt_arch));
-                    break;
-            }
-        }
-        else
-        {
-            log_info("No devices found, using default WormholeB0 architecture");
-        }
-
         graphModule_->setAttr(
-            mlir::tt::SystemDescAttr::name, mlir::tt::SystemDescAttr::getDefault(builder_.getContext(), arch));
+            mlir::tt::SystemDescAttr::name,
+            mlir::tt::SystemDescAttr::getDefault(builder_.getContext(), get_device_arch()));
         builder_.setInsertionPointToStart(&graphModule_.getBodyRegion().front());
 
         // Collect all the supported TTIR operations
@@ -667,6 +642,30 @@ class MLIRGenerator
         }
 
         builder_.create<mlir::func::ReturnOp>(builder_.getUnknownLoc(), mlir::ValueRange(returnValues));
+    }
+
+    /// Get device Architecture from TTSystem
+    mlir::tt::Arch get_device_arch()
+    {
+        // Get the system and extract architecture information
+        TTSystem &system = TTSystem::get_system();
+
+        // Check if there is at least one device
+        TT_ASSERT(!system.devices.empty() && system.devices[0], "No available device found");
+
+        // Use first device's architecture
+        ARCH tt_arch = system.devices[0]->arch;
+
+        // Map from ARCH to mlir::tt::Arch
+        switch (tt_arch)
+        {
+            case ARCH::WORMHOLE_B0: return mlir::tt::Arch::WormholeB0;
+            case ARCH::BLACKHOLE: return mlir::tt::Arch::Blackhole;
+            default:
+                log_error("Unsupported architecture: {}", to_string_arch(tt_arch));
+                TT_ASSERT(false, "Unhandled device architecture");
+                std::abort();  // should never reach this point
+        }
     }
 
     /// Get the MLIR data type for a TTForge node.
