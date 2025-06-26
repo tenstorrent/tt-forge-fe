@@ -48,6 +48,18 @@
 // Reportify headers
 #include "reportify/reportify.hpp"
 
+[[noreturn]] inline void unreachable()
+{
+    // Uses compiler specific extensions if possible.
+    // Even if no extension is used, undefined behavior is still raised by
+    // an empty function body and the noreturn attribute.
+#if defined(_MSC_VER) && !defined(__clang__)  // MSVC
+    __assume(false);
+#else  // GCC, Clang
+    __builtin_unreachable();
+#endif
+}
+
 namespace
 {
 using namespace tt;
@@ -654,11 +666,7 @@ class MLIRGenerator
         {
             case ARCH::WORMHOLE_B0: return mlir::tt::Arch::WormholeB0;
             case ARCH::BLACKHOLE: return mlir::tt::Arch::Blackhole;
-            default:
-                log_error("Unsupported architecture: {}", to_string_arch(tt_arch));
-                TT_ASSERT(false, "Unhandled device architecture");
-                std::abort();  // should never reach this point
-        }
+            default: TT_THROW("Unsupported architecture: {}", to_string_arch(tt_arch));[[unreachable]] }
     }
 
     /// Get the MLIR data type for a TTForge node.
