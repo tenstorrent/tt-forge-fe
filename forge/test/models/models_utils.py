@@ -293,3 +293,7 @@ def preprocess_inputs():
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
     return [input_batch]
+
+
+def get_detailed_instruct(task_description: str, query: str) -> str:
+    return f"Instruct: {task_description}\nQuery:{query}"
