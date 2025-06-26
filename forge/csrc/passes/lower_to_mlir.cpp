@@ -654,7 +654,7 @@ class MLIRGenerator
         {
             case ARCH::WORMHOLE_B0: return mlir::tt::Arch::WormholeB0;
             case ARCH::BLACKHOLE: return mlir::tt::Arch::Blackhole;
-            default: TT_THROW("Unsupported architecture: {}", to_string_arch(tt_arch)); tt::assert::unreachable();
+            default: TT_THROW("Unsupported architecture: {}", to_string_arch(tt_arch)); unreachable();
         }
     }
 

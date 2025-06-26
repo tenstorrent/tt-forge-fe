@@ -180,6 +180,8 @@ void tt_assert(
     throw std::runtime_error(trace_message_ss.str());
 }
 
+}  // namespace tt::assert
+
 /**
  * @brief Function to mark a code path as unreachable
  *
@@ -198,8 +200,6 @@ void tt_assert(
     __builtin_unreachable();
 #endif
 }
-
-}  // namespace tt::assert
 
 #define TT_ASSERT(condition, ...)                                                             \
     __builtin_expect(not(condition), 0)                                                       \
