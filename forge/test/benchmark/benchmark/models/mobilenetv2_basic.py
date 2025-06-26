@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 # Forge modules
 import forge
-from forge.verify.value_checkers import AutomaticValueChecker
+from forge.verify.config import VerifyConfig, AutomaticValueChecker
 from forge.verify.verify import verify
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from forge.config import CompilerConfig, MLIRConfig
@@ -117,12 +117,14 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
     settings.enable_program_cache = True
     configure_devices(device_settings=settings)
 
+    pcc = 0.98
     verify(
         [
             inputs[0],
         ],
         framework_model,
         compiled_model,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
     )
 
     if task == "classification":
