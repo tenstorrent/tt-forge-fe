@@ -290,20 +290,15 @@ const std::string &Op::as_string() const { return new_to_old_op_type_mapper[type
 
 at::Tensor Op::base_eval(const graphlib::OpType &old_op_type, const std::vector<at::Tensor> &tensors) const
 {
-    py::object eval_module = py::module_::import("forge.op.eval.forge");
-    py::function forge_eval = eval_module.attr("get_f_forge_eval")(old_op_type);
-
-    py::object result = forge_eval(tensors);
-    return result.cast<at::Tensor>();
+    py::function eval = py::module_::import("forge.op.eval.forge").attr("get_f_forge_eval")(&old_op_type);
+    return eval(&tensors).cast<at::Tensor>();
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::base_shape(
     const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
-    py::object eval_module = py::module_::import("forge.op.eval.forge");
-    py::function forge_shape = eval_module.attr("get_f_forge_shape")(old_op_type);
-
-    py::tuple result = forge_shape(inputs);
+    py::function shape = py::module_::import("forge.op.eval.forge").attr("get_f_forge_shape")(&old_op_type);
+    py::tuple result = shape(&inputs);
     if (result.size() != 2)
         throw std::runtime_error("Expected a tuple of shape and broadcast.");
 
@@ -320,10 +315,8 @@ tt::graphlib::NodeContext Op::base_backward(
     const tt::graphlib::NodeContext &output,
     const tt::graphlib::NodeContext &gradient) const
 {
-    auto eval_module = py::module_::import("forge.op.eval.forge");
-    py::function forge_backward = eval_module.attr("get_f_forge_backward")(old_op_type);
-
-    return forge_backward(context, operand, inputs, output, gradient).cast<tt::graphlib::NodeContext>();
+    py::function backward = py::module_::import("forge.op.eval.forge").attr("get_f_forge_backward")(&old_op_type);
+    return backward(&context, operand, &inputs, &output, &gradient).cast<tt::graphlib::NodeContext>();
 }
 
 void Op::base_decompose(
@@ -332,49 +325,48 @@ void Op::base_decompose(
     DecomposingContext &dc,
     const std::vector<tt::graphlib::NodeContext> &inputs) const
 {
-    py::module_ eval_module = py::module_::import("forge.op.eval.forge");
-    py::function forge_decompose = eval_module.attr(dispatch)(old_op_type);
-
-    forge_decompose(dc, inputs);
+    py::function decompose = py::module_::import("forge.op.eval.forge").attr(dispatch)(&old_op_type);
+    decompose(&dc, &inputs);
 }
 
 long Op::base_initial_flops_estimate(
     const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
-    py::object eval_module = py::module_::import("forge.op.eval.forge");
-    py::function initial_flops_estimate = eval_module.attr("get_f_forge_initial_flops_estimate")(old_op_type);
-    py::object ret = initial_flops_estimate(inputs);
+    py::function initial_flops_estimate =
+        py::module_::import("forge.op.eval.forge").attr("get_f_forge_initial_flops_estimate")(&old_op_type);
+    py::object ret = initial_flops_estimate(&inputs);
 
     return ret.is_none() ? 0 : ret.cast<long>();
 }
 
 bool Op::base_is_tm(const graphlib::OpType &old_op_type) const
 {
-    static py::function fn_is_tm = py::module_::import("forge.op.eval.forge").attr("is_tm");
-    return fn_is_tm(old_op_type).cast<bool>();
+    py::function is_tm = py::module_::import("forge.op.eval.forge").attr("is_tm");
+    return is_tm(&old_op_type).cast<bool>();
 }
 
 bool Op::base_is_eltwise(const graphlib::OpType &old_op_type) const
 {
-    static py::function fn_is_eltwise = py::module_::import("forge.op.eval.forge").attr("is_eltwise");
-    return fn_is_eltwise(old_op_type).cast<bool>();
+    py::function is_eltwise = py::module_::import("forge.op.eval.forge").attr("is_eltwise");
+    return is_eltwise(&old_op_type).cast<bool>();
 }
 
 bool Op::base_is_eltwise_unary(const graphlib::OpType &old_op_type) const
 {
-    static py::function fn_is_eltwise_unary = py::module_::import("forge.op.eval.forge").attr("is_eltwise_unary");
-    return fn_is_eltwise_unary(old_op_type).cast<bool>();
+    py::function is_eltwise_unary = py::module_::import("forge.op.eval.forge").attr("is_eltwise_unary");
+    return is_eltwise_unary(&old_op_type).cast<bool>();
 }
 
 bool Op::base_is_eltwise_binary(const graphlib::OpType &old_op_type) const
 {
-    static py::function fn_is_eltwise_binary = py::module_::import("forge.op.eval.forge").attr("is_eltwise_binary");
-    return fn_is_eltwise_binary(old_op_type).cast<bool>();
+    py::function is_eltwise_binary = py::module_::import("forge.op.eval.forge").attr("is_eltwise_binary");
+    return is_eltwise_binary(&old_op_type).cast<bool>();
 }
+
 bool Op::base_is_eltwise_nary(const graphlib::OpType &old_op_type) const
 {
-    static py::function fn_is_eltwise_nary = py::module_::import("forge.op.eval.forge").attr("is_eltwise_nary");
-    return fn_is_eltwise_nary(old_op_type).cast<bool>();
+    py::function is_eltwise_nary = py::module_::import("forge.op.eval.forge").attr("is_eltwise_nary");
+    return is_eltwise_nary(&old_op_type).cast<bool>();
 }
 
 ///////////////////////////////////

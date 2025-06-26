@@ -48,13 +48,14 @@ class autograd_engine
     // Run and return the modified graph
     Graph *run();
 
-    // Create a backward op for the given fwd op's operand
-    NodeContext create_op(struct autograd_context &self, graphlib::OpType type, std::vector<NodeContext> operands);
+    // Create an op for the given fwd op's operand.
+    NodeContext create_op(
+        struct autograd_context &self, const graphlib::OpType &type, const std::vector<NodeContext> &operands);
 
-    // Create a backward op for the given fwd op's operand
+    // Create a backward op for the given fwd op's operand.
     NodeContext create_backward_op(
-        graphlib::OpType type,
-        std::vector<NodeContext> operands,
+        const graphlib::OpType &type,
+        const std::vector<NodeContext> &operands,
         Node *current_fwd_op,
         int operand_index,
         int created_op_index,
@@ -62,8 +63,8 @@ class autograd_engine
         bool copy_golden_transforms = true);
 
     NodeContext create_optimizer_op(
-        graphlib::OpType type,
-        std::vector<NodeContext> operands,
+        const graphlib::OpType &type,
+        const std::vector<NodeContext> &operands,
         Node *current_fwd_op,
         int operand_index,
         int created_op_index,
@@ -103,7 +104,7 @@ class autograd_engine
         Node *current_fwd_op,
         int operand_index,
         std::shared_ptr<void> tensor,
-        graphlib::Shape shape,
+        const graphlib::Shape &shape,
         int created_op_index,
         graphlib::NodeEpochType epoch_type);
 
@@ -113,7 +114,7 @@ class autograd_engine
         int created_op_index,
         graphlib::NodeEpochType epoch_type,
         std::string &suffix_identifier,
-        std::vector<std::uint32_t> tensor_shape,
+        const std::vector<std::uint32_t> &tensor_shape,
         bool copy_consteval_operations,
         bool disable_consteval = false);
 

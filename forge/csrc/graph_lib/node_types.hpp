@@ -382,7 +382,7 @@ struct OpType
         std::vector<Attr> const &attr = {},
         ForgeOpAttrs const &forge_attrs = {},
         Attrs named_attrs = {}) :
-        op(op), attr(attr), named_attrs(named_attrs), forge_attrs(forge_attrs), new_op_(*this)
+        op(op), attr(attr), named_attrs(std::move(named_attrs)), forge_attrs(forge_attrs), new_op_(*this)
     {
     }
 

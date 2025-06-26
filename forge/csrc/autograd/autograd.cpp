@@ -492,7 +492,7 @@ Graph *autograd_engine::run()
 }
 
 NodeContext autograd_engine::create_op(
-    autograd_context &self, graphlib::OpType op_type, std::vector<NodeContext> operands)
+    autograd_context &self, const graphlib::OpType &op_type, const std::vector<NodeContext> &operands)
 {
     if (self.epoch_type == graphlib::NodeEpochType::Backward)
     {
@@ -510,8 +510,8 @@ NodeContext autograd_engine::create_op(
 
 // Create a backward op for the given fwd op's operand
 NodeContext autograd_engine::create_backward_op(
-    graphlib::OpType type,
-    std::vector<NodeContext> operands,
+    const graphlib::OpType &type,
+    const std::vector<NodeContext> &operands,
     Node *current_fwd_op,
     int operand_index,
     int created_op_index,
@@ -529,7 +529,7 @@ NodeContext autograd_engine::create_backward_op(
         graph->get_subgraph_id_for_node(current_fwd_op->id()));
 
     int i = 0;
-    for (NodeContext &n : operands)
+    for (const NodeContext &n : operands)
     {
         graph->add_edge(Edge(n.id, n.output_index, node->id(), i++, graphlib::EdgeType::kData));
     }
@@ -554,8 +554,8 @@ NodeContext autograd_engine::create_backward_op(
 
 // Create a backward op for the given fwd op's operand
 NodeContext autograd_engine::create_optimizer_op(
-    graphlib::OpType type,
-    std::vector<NodeContext> operands,
+    const graphlib::OpType &type,
+    const std::vector<NodeContext> &operands,
     Node *current_fwd_op,
     int operand_index,
     int created_op_index,
@@ -579,7 +579,7 @@ NodeContext autograd_engine::create_optimizer_op(
     }
 
     std::vector<Shape> operand_shapes;
-    for (NodeContext &n : operands)
+    for (const NodeContext &n : operands)
     {
         operand_shapes.push_back(graph->node_by_id(n.id)->shape());
     }
@@ -620,7 +620,7 @@ NodeContext autograd_engine::create_constant(
     Node *current_fwd_op,
     int operand_index,
     std::shared_ptr<void> tensor,
-    graphlib::Shape shape,
+    const graphlib::Shape &shape,
     int created_op_index,
     graphlib::NodeEpochType epoch_type)
 {
@@ -657,7 +657,7 @@ NodeContext autograd_engine::create_input(
     int created_op_index,
     graphlib::NodeEpochType epoch_type,
     std::string &suffix_identifier,
-    std::vector<std::uint32_t> tensor_shape,
+    const std::vector<std::uint32_t> &tensor_shape,
     bool copy_consteval_operations,
     bool disable_consteval)
 {
