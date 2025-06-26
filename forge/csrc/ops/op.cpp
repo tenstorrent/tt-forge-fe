@@ -4,6 +4,11 @@
 
 #include "op.hpp"
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
+#include <pybind11/pybind11.h>
+#pragma clang diagnostic pop
+
 #include <stdexcept>
 #include <tuple>
 #include <unordered_map>
