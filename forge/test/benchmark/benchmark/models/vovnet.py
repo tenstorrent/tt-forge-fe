@@ -11,7 +11,6 @@ from datetime import datetime
 
 # Third-party modules
 import torch
-import onnx
 import timm
 from tqdm import tqdm
 
