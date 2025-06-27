@@ -1,3 +1,0 @@
-# xfail_matmul_COMPILATION_FAILED ids
-
-matmul-FROM_HOST-None-(1, 2, 3, 4)-torch.float16-HiFi4

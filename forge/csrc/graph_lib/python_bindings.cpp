@@ -14,11 +14,17 @@
 #include "graph_lib/query.hpp"
 #include "graph_lib/utils.hpp"
 #include "nlohmann/json.hpp"
+#include "ops/op.hpp"
 #include "pybind11_json/pybind11_json.hpp"
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
 #include "utils/logger.hpp"
 #include "utils/raw_ptr.hpp"
+
+// Below are temporary includes. Delete after ops are migrated to cpp.
+#include "passes/decomposing_context.hpp"
+#include "torch/extension.h"
+#include "torch/torch.h"
 
 using json = nlohmann::json;
 
@@ -289,10 +295,11 @@ void GraphModule(py::module &m_graph)
         .def_readonly("attr", &tt::graphlib::OpType::attr)
         .def_readonly("named_attrs", &tt::graphlib::OpType::named_attrs)
         .def_readonly("forge_attrs", &tt::graphlib::OpType::forge_attrs)
-        .def(
-            "set_forge_attr",
-            [](tt::graphlib::OpType &op_type, std::string const &name, tt::graphlib::OpType::Attr const &attr)
-            { op_type.forge_attrs[name] = attr; })
+        .def("eval", &tt::graphlib::OpType::eval)
+        .def("shape", &tt::graphlib::OpType::shape)
+        .def("backward", &tt::graphlib::OpType::backward)
+        .def("decompose", &tt::graphlib::OpType::decompose)
+        .def("initial_flops_estimate", &tt::graphlib::OpType::initial_flops_estimate)
         .def(
             "__getattr__",
             [](tt::graphlib::OpType const &op_type, std::string const &name) { return op_type.get_attr(name); })
