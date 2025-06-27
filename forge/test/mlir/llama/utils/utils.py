@@ -26,7 +26,9 @@ def load_model(model_path="openlm-research/open_llama_3b", **kwargs):
     if use_lora:
         lora_r = kwargs.get("lora_r", 4)
         lora_alpha = kwargs.get("lora_alpha", 8)
-        lora_config = LoraConfig(r=lora_r, lora_alpha=lora_alpha, task_type="CAUSAL_LM")
+        # Applying LoRA to the last half of all layers due to memory constraints, this should be configurable
+        ltt = range(framework_model.config.num_hidden_layers // 2, framework_model.config.num_hidden_layers)
+        lora_config = LoraConfig(r=lora_r, lora_alpha=lora_alpha, task_type="CAUSAL_LM", layers_to_transform=ltt)
         framework_model = get_peft_model(framework_model, lora_config)
 
     # Using AutoTokenizer for default tokenizers for both openllama and llama 3.2
