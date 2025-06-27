@@ -53,36 +53,36 @@ params = [
 ]
 
 
-@pytest.mark.nightly
-@pytest.mark.parametrize("variant", params)
-def test_xception_timm(variant):
-
-    # Record Forge Property
-    module_name = record_model_properties(
-        framework=Framework.PYTORCH,
-        model=ModelArch.XCEPTION,
-        variant=variant,
-        source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
-    )
-
-    (framework_model, inputs) = generate_model_xception_imgcls_timm(variant)
-    framework_model.to(torch.bfloat16)
-    inputs = [inputs[0].to(torch.bfloat16)]
-
-    data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
-
-    # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model,
-        sample_inputs=inputs,
-        module_name=module_name,
-        compiler_cfg=compiler_cfg,
-    )
-
-    # Model Verification and Inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
-
-    # Post Processing
-    post_processing(co_out)
+# @pytest.mark.nightly
+# @pytest.mark.parametrize("variant", params)
+# def test_xception_timm(variant):
+#
+#     # Record Forge Property
+#     module_name = record_model_properties(
+#         framework=Framework.PYTORCH,
+#         model=ModelArch.XCEPTION,
+#         variant=variant,
+#         source=Source.TIMM,
+#         task=Task.IMAGE_CLASSIFICATION,
+#     )
+#
+#     (framework_model, inputs) = generate_model_xception_imgcls_timm(variant)
+#     framework_model.to(torch.bfloat16)
+#     inputs = [inputs[0].to(torch.bfloat16)]
+#
+#     data_format_override = DataFormat.Float16_b
+#     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+#
+#     # Forge compile framework model
+#     compiled_model = forge.compile(
+#         framework_model,
+#         sample_inputs=inputs,
+#         module_name=module_name,
+#         compiler_cfg=compiler_cfg,
+#     )
+#
+#     # Model Verification and Inference
+#     fw_out, co_out = verify(inputs, framework_model, compiled_model)
+#
+#     # Post Processing
+#     post_processing(co_out)

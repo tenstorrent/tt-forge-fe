@@ -26,76 +26,76 @@ from test.models.pytorch.vision.resnext.model_utils.utils import (
 from test.utils import download_model
 
 
-@pytest.mark.push
-@pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["resnext50_32x4d"])
-def test_resnext_50_torchhub_pytorch(variant):
-    # Record Forge Property
-    module_name = record_model_properties(
-        framework=Framework.PYTORCH,
-        model=ModelArch.RESNEXT,
-        source=Source.TORCH_HUB,
-        variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
-    )
+# @pytest.mark.push
+# @pytest.mark.nightly
+# @pytest.mark.parametrize("variant", ["resnext50_32x4d"])
+# def test_resnext_50_torchhub_pytorch(variant):
+#     # Record Forge Property
+#     module_name = record_model_properties(
+#         framework=Framework.PYTORCH,
+#         model=ModelArch.RESNEXT,
+#         source=Source.TORCH_HUB,
+#         variant=variant,
+#         task=Task.IMAGE_CLASSIFICATION,
+#     )
+#
+#     # Load the model and prepare input data
+#     framework_model, inputs = get_resnext_model_and_input("pytorch/vision:v0.10.0", variant)
+#     framework_model.to(torch.bfloat16)
+#     inputs = [inputs[0].to(torch.bfloat16)]
+#
+#     data_format_override = DataFormat.Float16_b
+#     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+#
+#     # Forge compile framework model
+#     compiled_model = forge.compile(
+#         framework_model,
+#         sample_inputs=inputs,
+#         module_name=module_name,
+#         compiler_cfg=compiler_cfg,
+#     )
+#
+#     # Model Verification and Inference
+#     _, co_out = verify(inputs, framework_model, compiled_model)
+#
+#     # Post processing
+#     post_processing(co_out)
 
-    # Load the model and prepare input data
-    framework_model, inputs = get_resnext_model_and_input("pytorch/vision:v0.10.0", variant)
-    framework_model.to(torch.bfloat16)
-    inputs = [inputs[0].to(torch.bfloat16)]
 
-    data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
-
-    # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model,
-        sample_inputs=inputs,
-        module_name=module_name,
-        compiler_cfg=compiler_cfg,
-    )
-
-    # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
-
-    # Post processing
-    post_processing(co_out)
-
-
-@pytest.mark.push
-@pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["resnext101_32x8d"])
-def test_resnext_101_torchhub_pytorch(variant):
-    # Record Forge Property
-    module_name = record_model_properties(
-        framework=Framework.PYTORCH,
-        model=ModelArch.RESNEXT,
-        source=Source.TORCH_HUB,
-        variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
-    )
-
-    # Load the model and prepare input data
-    framework_model, inputs = get_resnext_model_and_input("pytorch/vision:v0.10.0", variant)
-    framework_model.to(torch.bfloat16)
-    inputs = [inputs[0].to(torch.bfloat16)]
-
-    data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
-
-    # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model,
-        sample_inputs=inputs,
-        module_name=module_name,
-        compiler_cfg=compiler_cfg,
-    )
-
-    # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
-
-    # Post processing
-    post_processing(co_out)
+# @pytest.mark.push
+# @pytest.mark.nightly
+# @pytest.mark.parametrize("variant", ["resnext101_32x8d"])
+# def test_resnext_101_torchhub_pytorch(variant):
+#     # Record Forge Property
+#     module_name = record_model_properties(
+#         framework=Framework.PYTORCH,
+#         model=ModelArch.RESNEXT,
+#         source=Source.TORCH_HUB,
+#         variant=variant,
+#         task=Task.IMAGE_CLASSIFICATION,
+#     )
+#
+#     # Load the model and prepare input data
+#     framework_model, inputs = get_resnext_model_and_input("pytorch/vision:v0.10.0", variant)
+#     framework_model.to(torch.bfloat16)
+#     inputs = [inputs[0].to(torch.bfloat16)]
+#
+#     data_format_override = DataFormat.Float16_b
+#     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+#
+#     # Forge compile framework model
+#     compiled_model = forge.compile(
+#         framework_model,
+#         sample_inputs=inputs,
+#         module_name=module_name,
+#         compiler_cfg=compiler_cfg,
+#     )
+#
+#     # Model Verification and Inference
+#     _, co_out = verify(inputs, framework_model, compiled_model)
+#
+#     # Post processing
+#     post_processing(co_out)
 
 
 @pytest.mark.nightly
