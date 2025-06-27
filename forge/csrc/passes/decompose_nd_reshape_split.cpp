@@ -41,25 +41,23 @@ bool all_have_same_dim_and_shape_stride1(std::vector<T> const &v)
  * Decompose ND Reshape Split Pass
  *
  * Optimizes: Reshape (dimension split) → Index → Squeeze pattern
- * Converts to: Direct Select operations
+ * Converts to: Direct Index operations on original input
  *
  * EXAMPLE:
  *
  *   Input: {2, 12}
  *      |
- *   [Reshape] {2, 12} -> {2, 4, 3}  (splits dim 1: 12 -> 4×3)
+ *   [Reshape] {2, 12} -> {2, 2, 6}  (splits dim 1: 12 -> 2×6)
  *      |
- *      +-- [Index dim=2, idx=0] -> {2, 4, 1} -> [Squeeze] -> {2, 4}
- *      +-- [Index dim=2, idx=1] -> {2, 4, 1} -> [Squeeze] -> {2, 4}
- *      +-- [Index dim=2, idx=2] -> {2, 4, 1} -> [Squeeze] -> {2, 4}
+ *      +-- [Index dim=1, start=0, stop=1] -> {2, 1, 6} -> [Squeeze] -> {2, 6}
+ *      +-- [Index dim=1, start=1, stop=2] -> {2, 1, 6} -> [Squeeze] -> {2, 6}
  *
  * BECOMES:
  *
  *   Input: {2, 12}
  *      |
- *      +-- [Select dim=1, start=0, len=4] -> {2, 4}
- *      +-- [Select dim=1, start=4, len=4] -> {2, 4}
- *      +-- [Select dim=1, start=8, len=4] -> {2, 4}
+ *      +-- [Index dim=1, start=0, stop=6] -> {2, 6}
+ *      +-- [Index dim=1, start=6, stop=12] -> {2, 6}
  *
  * NOTE: The squeeze reshapes remain but become no-ops (input/output shapes match)
  *       and are removed by later passes like bypass_nop_tms.
@@ -69,8 +67,8 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
 {
     for (auto node : graph->nodes())
     {
-        // Only consider reshape nodes with last dimension tile_dim aligned
-        if (not is_reshape(node) or node->shape()[-1] % graphlib::Shape::FORGE_TILE_DIM != 0)
+        // Only consider reshape nodes
+        if (not is_reshape(node))
             continue;
 
         // Only consider reshape which splits the dim into 2 dimensions
@@ -140,32 +138,51 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
         if (not all_sequence_consumers_are_squeeze)
             continue;
 
-        // Remove reshape node and update index nodes to select
-        int new_dim = dim + 1;
-        int producer_dim_size = reshape_producer->shape()[new_dim];
+        // find the original dim that was split
+        int original_dim = -1;
+        for (int i = 0; i < input_rank; i++)
+        {
+            if (reshape_producer->shape()[i] != node->shape()[i])
+            {
+                original_dim = i;
+                break;
+            }
+        }
+
+        if (original_dim == -1)
+            continue;
+
+        // validate that we found correct split dim
+        int producer_dim_size = reshape_producer->shape()[original_dim];
+        int expected_split_size = node->shape()[original_dim] * node->shape()[original_dim + 1];
+        if (producer_dim_size != expected_split_size)
+            continue;
+
         TT_ASSERT(producer_dim_size % total_index_size == 0);
         int new_dim_size = producer_dim_size / total_index_size;
 
+        auto producer_shape = reshape_producer->shape().as_vector();
+        auto target_shape = graphlib::Shape::create(producer_shape);
+        target_shape[original_dim] = new_dim_size;
+
+        // Remove reshape node and update index nodes to work like slice
         for (uint32_t i = 0; i < consumers.size(); i++)
         {
             auto op = dynamic_cast<graphlib::OpNode *>(consumers[i]);
 
             auto op_type_ = op->op_type();
             TT_ASSERT(op_type_.op == "index");
-            auto op_attrs = op->op_attrs();
-            op_type_.op = "select";
+            int start = std::get<int>(op->op_type().attr[1]);
 
-            std::vector<Attr> new_op_attrs(4);
-            new_op_attrs[0] = new_dim;                                                // dim to select
-            new_op_attrs[1] = (int)(std::get<int>(op_attrs[1]) * node->shape()[-1]);  // start
-            new_op_attrs[2] = (int)node->shape()[-1];                                 // length
-            new_op_attrs[3] = (int)(consumers.size() * node->shape()[-1]);            // stride
-            op_type_.attr = new_op_attrs;
-            op->change_op_type(op_type_);
+            // Update index attributes to slice the original tensor directly
+            std::vector<graphlib::OpType::Attr> new_attrs = {
+                original_dim,                         // dim
+                start * new_dim_size,                 // start
+                start * new_dim_size + new_dim_size,  // stop
+                1                                     // stride
+            };
+            op->change_op_type("index", new_attrs);
 
-            auto producer_shape = reshape_producer->shape().as_vector();
-            auto target_shape = graphlib::Shape::create(producer_shape);
-            target_shape[new_dim] = new_dim_size;
             op->set_shape(target_shape);
         }
 

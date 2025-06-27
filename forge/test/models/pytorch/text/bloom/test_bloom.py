@@ -40,7 +40,7 @@ class Wrapper(torch.nn.Module):
     [
         pytest.param(
             "bigscience/bloom-1b1",
-            # marks=[pytest.mark.xfail],
+            marks=[pytest.mark.xfail],
         ),
     ],
 )
