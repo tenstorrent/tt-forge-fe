@@ -139,7 +139,7 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
         # Run for the first time to warm up the model, it will be done by verify function.
         # This is required to get accurate performance numbers.
         verify_cfg = VerifyConfig()
-        verify_cfg.value_checker = AutomaticValueChecker(pcc=pcc)
+        verify_cfg.value_checker = AutomaticValueChecker()
         verify(
             [
                 inputs[0],
