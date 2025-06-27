@@ -1372,7 +1372,7 @@ graphlib::Edge clone_input_forking_edge(graphlib::Graph *graph, graphlib::Edge u
 graphlib::Shape default_tm_evaluator(graphlib::OpType const &tm, graphlib::Shape shape, graphlib::IRLevel ir_level)
 {
     std::vector<Shape> shapes = {shape};
-    std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(tm, shapes, shape.get_tile_dim());
+    std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(tm, shapes);
     shape = std::get<0>(shape_data);
     TT_ASSERT(std::get<1>(shape_data).size() == 0, "TMs should not cause broadcasts");
     return shape;
@@ -1399,8 +1399,7 @@ void calculate_and_set_node_shape(Graph *graph, Node *node)
         for (OpType tm : tms)
         {
             std::vector<Shape> shapes = {operand_shape};
-            std::tuple<Shape, std::vector<DimBroadcast>> shape_data =
-                get_op_shape(tm, shapes, operand_shape.get_tile_dim());
+            std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(tm, shapes);
             operand_shape = std::get<0>(shape_data);
             TT_ASSERT(std::get<1>(shape_data).size() == 0, "TMs should not cause broadcasts");
             log_trace(LogGraphCompiler, "    TM {} {}", tm.as_string(), operand_shape);
@@ -1427,8 +1426,7 @@ void calculate_and_set_node_shape(Graph *graph, Node *node)
 
     graphlib::OpType op_type = dynamic_cast<graphlib::OpNode *>(node)->op_type();
 
-    std::tuple<Shape, std::vector<DimBroadcast>> shape_data =
-        get_op_shape(op_type, operand_shapes, node->shape().get_tile_dim());
+    std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(op_type, operand_shapes);
 
     log_trace(LogGraphCompiler, "  {}", std::get<0>(shape_data));
     node->set_shape(std::get<0>(shape_data));
