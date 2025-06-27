@@ -122,6 +122,8 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
     configure_devices(device_settings=settings)
 
     if task == "classification":
+
+        compiled_model(inputs[0])  # Warm up the model
         predictions = []
         start = time.time()
         for i in tqdm(range(loop_count)):
@@ -131,6 +133,7 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
         predictions = torch.cat(predictions)
         labels = torch.cat(labels)
         evaluation_score = evaluate_classification(predictions, labels)
+
     elif task == "na":
         start = time.time()
         for i in tqdm(range(loop_count)):
@@ -139,10 +142,6 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
         evaluation_score = 0.0
     else:
         raise ValueError(f"Unsupported task: {task}.")
-
-    # fw_out = framework_model(inputs[-1])
-    # co_out = co_out.to("cpu")
-    # AutomaticValueChecker(pcc=pcc).check(fw_out=fw_out, co_out=co_out)
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
