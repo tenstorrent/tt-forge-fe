@@ -28,7 +28,7 @@ MODELS = {
     "efficientnet_timm": models.efficientnet_timm.efficientnet_timm_benchmark,
     "segformer": models.segformer.segformer_benchmark,
     "vit_base": models.vit.vit_base_benchmark,
-    "vovnet_osmr": models.vovnet.vovnet_osmr_benchmark,
+    "vovnet_timm": models.vovnet.vovnet_timm_benchmark,
     "yolo_v8": models.yolo_v8.yolo_v8_benchmark,
     "yolo_v4": models.yolo_v4.yolo_v4_benchmark,
     "yolo_v9": models.yolo_v9.yolo_v9_benchmark,

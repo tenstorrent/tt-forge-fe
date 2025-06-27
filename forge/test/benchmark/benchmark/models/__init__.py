@@ -10,7 +10,7 @@ from .mobilenetv2_basic import mobilenetv2_basic_benchmark
 from .efficientnet_timm import efficientnet_timm_benchmark
 from .segformer import segformer_benchmark
 from .vit import vit_base_benchmark
-from .vovnet import vovnet_osmr_benchmark
+from .vovnet import vovnet_timm_benchmark
 from .yolo_v8 import yolo_v8_benchmark
 from .yolo_v9 import yolo_v9_benchmark
 from .yolo_v4 import yolo_v4_benchmark
