@@ -286,6 +286,21 @@ class Op
 
     long abs_initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
+    /* ------------------*
+     * OpType::Constant. *
+     * ------------------*/
+
+    at::Tensor constant_eval(const std::vector<at::Tensor> &tensors) const;
+    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> constant_shape(
+        const std::vector<std::vector<std::uint32_t>> &inputs) const;
+
+    tt::graphlib::NodeContext constant_backward(
+        tt::autograd::autograd_context &context,
+        int operand,
+        const std::vector<tt::graphlib::NodeContext> &inputs,
+        const tt::graphlib::NodeContext &output,
+        const tt::graphlib::NodeContext &gradient) const;
+
    private:
     OpType type_;
     Attrs attrs_;

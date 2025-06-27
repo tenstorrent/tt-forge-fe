@@ -2,6 +2,7 @@ add_library(ops
     STATIC
     op.cpp
     op_abs.cpp
+    op_constant.cpp
     python_bindings.cpp)
 
 target_link_libraries(ops PUBLIC coverage_config)
