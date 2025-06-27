@@ -31,7 +31,7 @@ jobs:
           { runs-on: "n150", name: "yolo_v8",                  dir: "YOLOv8",                       ts: 'na',             bs: 1,   lp: 32, df: 'bfloat16', },
           { runs-on: "n150", name: "yolo_v9",                  dir: "YOLOv9",                       ts: 'na',             bs: 1,   lp: 32, df: 'bfloat16', },
           { runs-on: "n150", name: "yolo_v10",                 dir: "YOLOv10",                      ts: 'na',             bs: 1,   lp: 32, df: 'bfloat16', },
-          { runs-on: "n150", name: "unet",                     dir: "UNet",                         ts: 'na',             bs: 1,   lp: 32, df: 'bfloat16', }
+          # { runs-on: "n150", name: "unet",                     dir: "UNet",                         ts: 'na',             bs: 1,   lp: 32, df: 'bfloat16', }
         ]
     runs-on:
       - ${{ matrix.build.runs-on }}-perf
