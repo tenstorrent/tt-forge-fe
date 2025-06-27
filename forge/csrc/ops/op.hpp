@@ -5,7 +5,6 @@
 
 #include <cstdint>
 #include <map>
-#include <memory>
 #include <string>
 #include <tuple>
 #include <utility>
@@ -14,7 +13,7 @@
 
 namespace at
 {
-class Tensor;
+class Tensor;  // Forward declaration of torch tensor.
 }
 
 namespace tt
@@ -158,7 +157,9 @@ enum class OpType : uint32_t
     Where,
 };
 
-// Op attribute.
+/**
+ * Op attribute.
+ */
 using Attr = ::std::variant<
     std::string,
     bool,
@@ -168,10 +169,12 @@ using Attr = ::std::variant<
     std::vector<std::tuple<int, int, int>>,
     std::vector<std::tuple<int, int, int, int>>>;
 
-// Op attributes.
-using Attrs = ::std::map<std::string, Attr>;  // TODO: Conver this into vector. There is no sence to use
-                                              // map/unordered map for few items. Also, once migrated to new ops, we
-                                              // should create attribute key enum, and replace mapping strings.
+/**
+ * Op attributes.
+ * TODO: Conver this into vector. There is no sence to use map/unordered map for few items. Also, once migrated to new
+ * ops, we should create attribute key enum, and replace mapping strings.
+ */
+using Attrs = ::std::map<std::string, Attr>;
 
 class Op
 {

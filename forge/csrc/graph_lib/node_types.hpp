@@ -482,8 +482,10 @@ struct OpType
         return ret;
     }
 
-    // Calculations. This is temporary implementation in ops transition period. It will be deleted once all ops are
-    // migrated from python to cpp.
+    /**
+     * Calculations. This is temporary implementation in ops transition period. It will be deleted once all ops are
+     * migrated from python to cpp.
+     */
 
     at::Tensor eval(const std::vector<at::Tensor> &tensors) const;
     std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
