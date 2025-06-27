@@ -17,6 +17,9 @@ import torch
 import forge
 import forge.op
 
+from forge._C import DataFormat
+
+from forge.config import CompilerConfig
 from forge.verify.config import VerifyConfig
 from forge.config import CompilerConfig
 from forge.verify.value_checkers import AllCloseValueChecker
@@ -44,11 +47,10 @@ class ModelFromAnotherOp(torch.nn.Module):
 
     model_name = "model_op_src_from_another_op"
 
-    def __init__(self, operator, opname, shape, kwargs):
+    def __init__(self, operator, shape, kwargs):
         super(ModelFromAnotherOp, self).__init__()
-        self.testname = "Linear_pytorch_operator_" + opname + "_test_op_src_from_another_op"
+        self.testname = "Linear_pytorch_operator_test_op_src_from_another_op"
         self.operator = operator
-        self.opname = opname
         self.shape = shape
         self.kwargs = {
             "in_features": kwargs["in_features"],
@@ -70,11 +72,10 @@ class ModelDirect(torch.nn.Module):
 
     model_name = "model_op_src_from_host"
 
-    def __init__(self, operator, opname, shape, kwargs):
+    def __init__(self, operator, shape, kwargs):
         super(ModelDirect, self).__init__()
-        self.testname = "Linear_pytorch_operator_" + opname + "_test_op_src_from_host"
+        self.testname = "Linear_pytorch_operator_test_op_src_from_host"
         self.operator = operator
-        self.opname = opname
         self.shape = shape
         self.kwargs = {
             "in_features": kwargs["in_features"],
@@ -94,11 +95,10 @@ class ModelConstEvalPass(torch.nn.Module):
 
     model_name = "model_op_src_const_eval_pass"
 
-    def __init__(self, operator, opname, shape, kwargs, value_range):
+    def __init__(self, operator, shape, kwargs, value_range):
         super(ModelConstEvalPass, self).__init__()
-        self.testname = "Linear_pytorch_operator_" + opname + "_test_op_src_const_eval_pass"
+        self.testname = "Linear_pytorch_operator_test_op_src_const_eval_pass"
         self.operator = operator
-        self.opname = opname
         self.shape = shape
         self.kwargs = {
             "in_features": kwargs["in_features"],
@@ -118,7 +118,7 @@ class ModelConstEvalPass(torch.nn.Module):
         self.l1 = self.operator(**self.kwargs)
 
     def forward(self, x: torch.Tensor):
-        v1 = self.l1(self.constant)
+        v1 = self.l1(self.const)
         # v2 = torch.add(x, x)
         v2 = self.l1(x)
         # add consume inputs
@@ -147,15 +147,13 @@ class TestVerification:
 
         operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
 
-        kwargs = test_vector.kwargs if test_vector.kwargs else {}
-
         value_range = ValueRanges.SMALL
+        kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
         model_type = cls.MODEL_TYPES[test_vector.input_source]
         if test_vector.input_source == InputSource.CONST_EVAL_PASS:
             pytorch_model = model_type(
                 operator=operator,
-                opname=test_vector.operator,
                 shape=test_vector.input_shape,
                 kwargs=kwargs,
                 value_range=value_range,
@@ -163,7 +161,6 @@ class TestVerification:
         else:
             pytorch_model = model_type(
                 operator=operator,
-                opname=test_vector.operator,
                 shape=test_vector.input_shape,
                 kwargs=kwargs,
             )
@@ -178,6 +175,10 @@ class TestVerification:
         input_shapes = tuple([test_vector.input_shape for _ in range(number_of_operands)])
         logger.trace(f"***input_shapes: {input_shapes}")
 
+        # We don't test int data type as there is no sense for linear operator
+        # Using AllCloseValueChecker
+        verify_config = VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2))
+
         VerifyUtils.verify(
             model=pytorch_model,
             test_device=test_device,
@@ -189,7 +190,7 @@ class TestVerification:
             pcc=test_vector.pcc,
             warm_reset=warm_reset,
             deprecated_verification=False,
-            verify_config=VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2)),
+            verify_config=verify_config,
             value_range=value_range,
         )
 
@@ -288,7 +289,7 @@ TestParamsData.test_plan = TestPlan(
             input_sources=TestCollectionData.single.input_sources,
             input_shapes=TestCollectionData.single.input_shapes,
             kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
-            dev_data_formats=TestCollectionData.single.dev_data_formats,
+            dev_data_formats=TestCollectionTorch.single.dev_data_formats,
             math_fidelities=TestCollectionData.all.math_fidelities,
         ),
     ],
