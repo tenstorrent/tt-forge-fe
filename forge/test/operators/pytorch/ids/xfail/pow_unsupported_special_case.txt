@@ -10,7 +10,6 @@ pow-FROM_ANOTHER_OP-{'exponent': -1.26}-(1, 45, 17)-torch.int32-HiFi4
 pow-FROM_ANOTHER_OP-{'exponent': 1.52}-(1, 45, 17)-torch.int32-HiFi4
 pow-FROM_ANOTHER_OP-{'exponent': -1.26}-(1, 45, 17)-torch.int64-HiFi4
 pow-FROM_ANOTHER_OP-{'exponent': 1.52}-(1, 45, 17)-torch.int64-HiFi4
-pow-FROM_ANOTHER_OP-{'exponent': -1.26}-(1, 100, 100)-torch.float32-HiFi4
 pow-FROM_ANOTHER_OP-{'exponent': 1.52}-(1, 100, 100)-torch.float32-HiFi4
 pow-FROM_ANOTHER_OP-{'exponent': -1.26}-(1, 100, 100)-torch.bfloat16-HiFi4
 pow-FROM_ANOTHER_OP-{'exponent': 1.52}-(1, 100, 100)-torch.bfloat16-HiFi4
