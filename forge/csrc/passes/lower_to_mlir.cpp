@@ -173,8 +173,8 @@ class MLIRGenerator
         graphModule_ = mlir::ModuleOp::create(get_module_location(module), module.name());
 
         graphModule_->setAttr(
-            mlir::tt::SystemDescAttr::name,
-            mlir::tt::SystemDescAttr::getDefault(builder_.getContext(), get_device_arch()));
+            mlir::tt::ttcore::SystemDescAttr::name,
+            mlir::tt::ttcore::SystemDescAttr::getDefault(builder_.getContext(), get_device_arch()));
         builder_.setInsertionPointToStart(&graphModule_.getBodyRegion().front());
 
         // Collect all the supported TTIR operations
@@ -427,7 +427,7 @@ class MLIRGenerator
             named_attributes.push_back(
                 builder_.getNamedAttr("ttir.name", builder_.getStringAttr(argument_node->name())));
             named_attributes.push_back(
-                builder_.getNamedAttr(mlir::tt::ArgumentTypeAttr::name, get_argument_type(argument_node)));
+                builder_.getNamedAttr(mlir::tt::ttcore::ArgumentTypeAttr::name, get_argument_type(argument_node)));
             func.setArgAttrs(i, named_attributes);
             log_trace(LogMLIRCompiler, "Set argument name {} for function argument {}.", argument_node->name(), i);
         }
@@ -645,15 +645,15 @@ class MLIRGenerator
     }
 
     /// Get device Architecture from TTSystem
-    mlir::tt::Arch get_device_arch()
+    mlir::tt::ttcore::Arch get_device_arch()
     {
         TTSystem &system = TTSystem::get_system();
         TT_ASSERT(!system.devices.empty() && system.devices[0], "No available device found");
         ARCH tt_arch = system.devices[0]->arch;
         switch (tt_arch)
         {
-            case ARCH::WORMHOLE_B0: return mlir::tt::Arch::WormholeB0;
-            case ARCH::BLACKHOLE: return mlir::tt::Arch::Blackhole;
+            case ARCH::WORMHOLE_B0: return mlir::tt::ttcore::Arch::WormholeB0;
+            case ARCH::BLACKHOLE: return mlir::tt::ttcore::Arch::Blackhole;
             default: TT_THROW("Unsupported architecture: {}", to_string_arch(tt_arch)); unreachable();
         }
     }
@@ -691,7 +691,7 @@ class MLIRGenerator
         return mlir::RankedTensorType::get(shape_vec, get_data_type(node));
     }
 
-    mlir::tt::ArgumentTypeAttr get_argument_type(graphlib::Node *node)
+    mlir::tt::ttcore::ArgumentTypeAttr get_argument_type(graphlib::Node *node)
     {
         auto input_node = node->as<graphlib::InputNode>();
         switch (input_node->input_type())
@@ -701,12 +701,15 @@ class MLIRGenerator
             case tt::graphlib::InputNodeType::Target:
             case tt::graphlib::InputNodeType::Gradient:
             case tt::graphlib::InputNodeType::Accumulator:
-                return mlir::tt::ArgumentTypeAttr::get(builder_.getContext(), mlir::tt::ArgumentType::Input);
+                return mlir::tt::ttcore::ArgumentTypeAttr::get(
+                    builder_.getContext(), mlir::tt::ttcore::ArgumentType::Input);
             case tt::graphlib::InputNodeType::Parameter:
             case tt::graphlib::InputNodeType::OptimizerParameter:
-                return mlir::tt::ArgumentTypeAttr::get(builder_.getContext(), mlir::tt::ArgumentType::Parameter);
+                return mlir::tt::ttcore::ArgumentTypeAttr::get(
+                    builder_.getContext(), mlir::tt::ttcore::ArgumentType::Parameter);
             case tt::graphlib::InputNodeType::Constant:
-                return mlir::tt::ArgumentTypeAttr::get(builder_.getContext(), mlir::tt::ArgumentType::Constant);
+                return mlir::tt::ttcore::ArgumentTypeAttr::get(
+                    builder_.getContext(), mlir::tt::ttcore::ArgumentType::Constant);
             default: throw std::runtime_error("Unknown input node type - cannot map to MLIR argument type");
         }
     }
