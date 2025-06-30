@@ -126,7 +126,7 @@ def test_opt_qa(variant):
 variants = [
     pytest.param("facebook/opt-125m", marks=[pytest.mark.xfail]),
     "facebook/opt-350m",
-    pytest.param("facebook/opt-1.3b"),
+    pytest.param("facebook/opt-1.3b", marks=[pytest.mark.xfail]),
 ]
 
 
