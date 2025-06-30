@@ -29,7 +29,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::multiply_sh
     std::vector<graphlib::DimBroadcast> broadcast;
     std::vector<std::uint32_t> output_shape;
 
-    // Create copies of input shapes that we can modify
     std::vector<std::uint32_t> shape0 = in_shapes[0];
     std::vector<std::uint32_t> shape1 = in_shapes[1];
 
@@ -44,7 +43,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::multiply_sh
         shape1.insert(shape1.begin(), 1);
     }
 
-    // Now both shapes are the same length
     output_shape.resize(shape0.size());
 
     for (size_t dim = 0; dim < shape0.size(); dim++)
@@ -96,7 +94,6 @@ tt::graphlib::NodeContext Op::multiply_backward(
     std::vector<std::uint32_t> input_dims = inputs[operand].shape.as_vector();
     std::vector<std::uint32_t> grad_dims = gradient.shape.as_vector();
 
-    // If shapes are different, we need to handle potential broadcasting
     if (input_dims != grad_dims)
     {
         std::vector<std::uint32_t> other_dims = inputs[1 - operand].shape.as_vector();
@@ -121,7 +118,6 @@ tt::graphlib::NodeContext Op::multiply_backward(
         {
             if (padded_input_dims[i] < padded_grad_dims[i])
             {
-                // Calculate negative indexing as in Python
                 int neg_index = static_cast<int>(i) - static_cast<int>(max_dims);
 
                 // Create attribute dict for reduce_sum
@@ -130,7 +126,6 @@ tt::graphlib::NodeContext Op::multiply_backward(
                 std::vector<int> dim_arg = {neg_index};
                 reduce_attrs["dim_arg"] = dim_arg;
 
-                // Apply reduce_sum operation
                 op_grad = ac.autograd->create_op(ac, graphlib::OpType("reduce_sum"), {op_grad}, reduce_attrs);
             }
         }
