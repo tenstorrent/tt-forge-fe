@@ -18,11 +18,46 @@ params = [
     pytest.param(
         "efficientnet_b1",
     ),
-    pytest.param("efficientnet_b2"),
-    pytest.param("efficientnet_b2a"),
-    pytest.param("efficientnet_b3"),
-    pytest.param("efficientnet_b3a"),
-    pytest.param("efficientnet_b4"),
+    pytest.param(
+        "efficientnet_b2",
+        marks=[
+            pytest.mark.xfail(
+                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
+            )
+        ],
+    ),
+    pytest.param(
+        "efficientnet_b2a",
+        marks=[
+            pytest.mark.xfail(
+                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
+            )
+        ],
+    ),
+    pytest.param(
+        "efficientnet_b3",
+        marks=[
+            pytest.mark.xfail(
+                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
+            )
+        ],
+    ),
+    pytest.param(
+        "efficientnet_b3a",
+        marks=[
+            pytest.mark.xfail(
+                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
+            )
+        ],
+    ),
+    pytest.param(
+        "efficientnet_b4",
+        marks=[
+            pytest.mark.xfail(
+                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
+            )
+        ],
+    ),
     pytest.param(
         "efficientnet_b5",
         marks=[pytest.mark.skip(reason="Out of memory due - not enough space to allocate L1 buffer across banks")],
