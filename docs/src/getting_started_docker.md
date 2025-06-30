@@ -58,7 +58,7 @@ newgrp docker
 docker run -it --rm \
   --device /dev/tenstorrent \
   -v /dev/hugepages-1G:/dev/hugepages-1G \
-  ghcr.io/tenstorrent/tt-forge/tt-forge-slim:dev20250618
+  ghcr.io/tenstorrent/tt-forge/tt-forge-slim:latest
 ```
 
 5. If you want to check that it is running, open a new tab with the **Same Command** option and run the following:
@@ -84,13 +84,25 @@ git clone https://github.com/tenstorrent/tt-forge.git
 source venv-tt-forge-fe/bin/activate
 ```
 
-3. Run a model. For this set up, the **mobile_netv2_demo.py** is used:
+3. Set the path for Python: 
+
+```bash
+export PYTHONPATH=/tt-forge:$PYTHONPATH
+```
+
+4. Navigate into TT-Forge and run the following command: 
+
+```bash
+git submodule update --init --recurisve
+```
+
+5. Run a model. For this set up, the **mobile_netv2_demo.py** is used:
 
 ```bash
 python tt-forge/demos/tt-forge-fe/cnn/mobile_netv2_demo.py
 ```
 
-4. If all goes well you will get the following output:
+6. If all goes well you will get the following output:
 
 Prediction: Samoyed, Samoyede (class 258)
 Confidence: 0.868
