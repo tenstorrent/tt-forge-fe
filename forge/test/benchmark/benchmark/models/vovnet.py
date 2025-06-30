@@ -11,15 +11,14 @@ from datetime import datetime
 
 # Third-party modules
 import torch
+import timm
 from tqdm import tqdm
-from pytorchcv.model_provider import get_model as ptcv_get_model
 
 # Forge modules
 import forge
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
-from test.utils import download_model
 from forge.config import CompilerConfig, MLIRConfig
 from test.benchmark.utils import load_benchmark_dataset, evaluate_classification
 from forge.verify.config import VerifyConfig
@@ -58,7 +57,7 @@ LOOP_COUNT = [1, 2, 4, 8, 16, 32]
 
 # Variants for image classification
 VARIANTS = [
-    "vovnet27s",
+    "ese_vovnet19b_dw.ra_in1k",
 ]
 
 
@@ -68,7 +67,7 @@ VARIANTS = [
 @pytest.mark.parametrize("loop_count", LOOP_COUNT, ids=[f"loop_count={item}" for item in LOOP_COUNT])
 @pytest.mark.parametrize("data_format", DATA_FORMAT, ids=[f"data_format={item}" for item in DATA_FORMAT])
 @pytest.mark.parametrize("task", TASK, ids=[f"task={item}" for item in TASK])
-def test_vovnet_osmr(
+def test_vovnet_timm(
     training,
     batch_size,
     input_size,
@@ -86,7 +85,7 @@ def test_vovnet_osmr(
     if training:
         pytest.skip("Training is not supported")
 
-    module_name = "VovnetOSMR"
+    module_name = "VovnetTimm"
 
     if task == "classification":
         inputs, labels = load_benchmark_dataset(
@@ -108,11 +107,12 @@ def test_vovnet_osmr(
         inputs = [item.to(torch.bfloat16) for item in inputs]
 
     # Load model
-    framework_model = download_model(ptcv_get_model, variant, pretrained=True)
+    framework_model = timm.create_model(variant, pretrained=True)
+    framework_model.eval()
+
     if data_format == "bfloat16":
         # Convert model to bfloat16
         framework_model = framework_model.to(torch.bfloat16)
-    framework_model.eval()
 
     # Compiler configuration
     compiler_config = CompilerConfig()
@@ -132,24 +132,9 @@ def test_vovnet_osmr(
     settings.enable_program_cache = True
     configure_devices(device_settings=settings)
 
-    # Run for the first time to warm up the model, it will be done by verify function.
-    # This is required to get accurate performance numbers.
-    pcc = 0.99
-    verify_cfg = VerifyConfig()
-    if data_format == "bfloat16":
-        # Set smaller pcc for bfloat16
-        pcc = 0.97
-    verify_cfg.value_checker = AutomaticValueChecker(pcc=pcc)
-    verify(
-        [
-            inputs[0],
-        ],
-        framework_model,
-        compiled_model,
-        verify_cfg=verify_cfg,
-    )
-
     if task == "classification":
+
+        compiled_model(inputs[0])
         predictions = []
         start = time.time()
         for i in tqdm(range(loop_count)):
@@ -159,18 +144,38 @@ def test_vovnet_osmr(
         predictions = torch.cat(predictions)
         labels = torch.cat(labels)
         evaluation_score = evaluate_classification(predictions, labels)
+
     elif task == "na":
+
+        # Run for the first time to warm up the model, it will be done by verify function.
+        # This is required to get accurate performance numbers.
+        pcc = 0.99
+        verify_cfg = VerifyConfig()
+        if data_format == "bfloat16":
+            # Set smaller pcc for bfloat16
+            pcc = 0.97
+        verify_cfg.value_checker = AutomaticValueChecker(pcc=pcc)
+        verify(
+            [
+                inputs[0],
+            ],
+            framework_model,
+            compiled_model,
+            verify_cfg=verify_cfg,
+        )
         start = time.time()
         for i in tqdm(range(loop_count)):
             co_out = compiled_model(inputs[0])[0]
         end = time.time()
+
+        fw_out = framework_model(inputs[-1])[0]
+        co_out = co_out.to("cpu")[0]
+        AutomaticValueChecker().check(fw_out=fw_out, co_out=co_out)
+
         evaluation_score = 0.0
+
     else:
         raise ValueError(f"Unsupported task: {task}.")
-
-    fw_out = framework_model(inputs[-1])
-    co_out = co_out.to("cpu")
-    AutomaticValueChecker().check(fw_out=fw_out, co_out=co_out)
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
@@ -178,7 +183,7 @@ def test_vovnet_osmr(
     total_samples = batch_size * loop_count
 
     samples_per_sec = total_samples / total_time
-    model_name = "Vovnet OSMR"
+    model_name = "Vovnet Timm"
     model_type = "Classification"
     if task == "classification":
         model_type += ", ImageNet-1K"
@@ -266,7 +271,7 @@ def test_vovnet_osmr(
     return result
 
 
-def vovnet_osmr_benchmark(config: dict):
+def vovnet_timm_benchmark(config: dict):
     """
     Run the vovnet osmr benchmark.
     This function is a placeholder for the actual benchmark implementation.
@@ -282,7 +287,7 @@ def vovnet_osmr_benchmark(config: dict):
     variant = VARIANTS[0]
     task = config["task"]
 
-    result = test_vovnet_osmr(
+    result = test_vovnet_timm(
         training=training,
         batch_size=batch_size,
         input_size=input_size,

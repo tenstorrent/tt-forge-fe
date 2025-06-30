@@ -9,8 +9,10 @@ import pytest
 from typing import List, Dict
 from loguru import logger
 
-from forge.verify.config import VerifyConfig
+from forge._C import DataFormat
 
+from forge.config import CompilerConfig
+from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
 from forge.verify.verify import verify as forge_verify
 
@@ -18,7 +20,7 @@ from test.operators.utils import VerifyUtils
 from test.operators.utils import InputSource
 from test.operators.utils import TestVector
 from test.operators.utils import TestPlan
-from test.operators.utils.compat import TestDevice, TestTensorsUtils
+from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import ValueRanges
@@ -61,6 +63,7 @@ class ModelConstEvalPass(torch.nn.Module):
             dev_data_format=dtype,
             value_range=value_range,
         )
+        self.register_buffer("constant", self.const)
 
     def forward(self, x):
         cc = self.lnorm(self.const)
@@ -85,6 +88,7 @@ class TestVerification:
         warm_reset: bool = False,
     ):
         operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
+
         value_range = ValueRanges.SMALL
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
@@ -94,7 +98,7 @@ class TestVerification:
                 operator=operator,
                 input_shape=test_vector.input_shape,
                 kwargs=kwargs,
-                dtype=TestTensorsUtils.get_dtype_for_df(test_vector.dev_data_format),
+                dtype=test_vector.dev_data_format,
                 value_range=value_range,
             )
         else:
@@ -103,17 +107,25 @@ class TestVerification:
                 kwargs=kwargs,
             )
 
-        input_shapes = tuple([test_vector.input_shape])
+        dtype = kwargs.get("dtype")
+        compiler_cfg = CompilerConfig()
+        if dtype is torch.bfloat16:
+            pytorch_model.to(dtype)
+            compiler_cfg.default_df_override = DataFormat.Float16_b
 
+        input_shapes = tuple([test_vector.input_shape])
         logger.trace(f"***input_shapes: {input_shapes}")
 
-        verify_config = VerifyConfig(value_checker=AllCloseValueChecker(atol=1e-2, rtol=1e-2))
+        # We don't test int data type as there is no sense for layernorm operator
+        # Using AllCloseValueChecker
+        verify_config = VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2))
 
         VerifyUtils.verify(
             model=pytorch_model,
             test_device=test_device,
             input_shapes=input_shapes,
             input_params=input_params,
+            compiler_cfg=compiler_cfg,
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             warm_reset=warm_reset,

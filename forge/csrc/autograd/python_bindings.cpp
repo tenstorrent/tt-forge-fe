@@ -33,14 +33,14 @@ void AutogradModule(py::module &m_autograd)
         .def(
             "op",
             [](tt::autograd::autograd_context &self,
-               std::variant<std::string, py::object> const &type,
-               std::vector<tt::autograd::NodeContext> operands,
-               std::vector<graphlib::OpType::Attr> attributes,
+               const std::variant<std::string, py::object> &type,
+               const std::vector<tt::autograd::NodeContext> &operands,
+               const std::vector<graphlib::OpType::Attr> &attributes,
                ForgeOpAttrs named_attrs = {})
             {
                 graphlib::OpType op_type =
                     std::holds_alternative<std::string>(type)
-                        ? graphlib::OpType(std::get<std::string>(type), attributes, {}, named_attrs)
+                        ? graphlib::OpType(std::get<std::string>(type), attributes, {}, std::move(named_attrs))
                         : std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
 
                 if (std::holds_alternative<std::string>(type))
@@ -48,18 +48,8 @@ void AutogradModule(py::module &m_autograd)
                         not has_newstyle_interface(std::get<std::string>(type)),
                         "Error autograd a type with old OpType interface, expects new OpType interface {}",
                         std::get<std::string>(type));
-                if (self.epoch_type == graphlib::NodeEpochType::Backward)
-                {
-                    return self.autograd->create_op(
-                        op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
-                }
-                else if (self.epoch_type == graphlib::NodeEpochType::Optimizer)
-                {
-                    return self.autograd->create_optimizer_op(
-                        op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
-                }
 
-                throw std::runtime_error("Expected autograd_context.epoch_type to be Backward or Optimizer");
+                return self.autograd->create_op(self, op_type, operands);
             },
             py::arg("type"),
             py::arg("operands"),
@@ -68,14 +58,14 @@ void AutogradModule(py::module &m_autograd)
         .def(
             "op_with_named_attrs",
             [](tt::autograd::autograd_context &self,
-               std::variant<std::string, py::object> const &type,
-               std::vector<tt::autograd::NodeContext> operands,
-               ForgeOpAttrs named_attrs,
+               const std::variant<std::string, py::object> &type,
+               const std::vector<tt::autograd::NodeContext> &operands,
+               const ForgeOpAttrs &named_attrs,
                std::vector<graphlib::OpType::Attr> attributes = {})
             {
                 graphlib::OpType op_type =
                     std::holds_alternative<std::string>(type)
-                        ? graphlib::OpType(std::get<std::string>(type), attributes, {}, named_attrs)
+                        ? graphlib::OpType(std::get<std::string>(type), std::move(attributes), {}, named_attrs)
                         : std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
 
                 if (std::holds_alternative<std::string>(type))
@@ -83,18 +73,8 @@ void AutogradModule(py::module &m_autograd)
                         not has_newstyle_interface(std::get<std::string>(type)),
                         "Error autograd a type with old OpType interface, expects new OpType interface {}",
                         std::get<std::string>(type));
-                if (self.epoch_type == graphlib::NodeEpochType::Backward)
-                {
-                    return self.autograd->create_op(
-                        op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
-                }
-                else if (self.epoch_type == graphlib::NodeEpochType::Optimizer)
-                {
-                    return self.autograd->create_optimizer_op(
-                        op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
-                }
 
-                throw std::runtime_error("Expected autograd_context.epoch_type to be Backward or Optimizer");
+                return self.autograd->create_op(self, op_type, operands);
             },
             py::arg("type"),
             py::arg("operands"),
@@ -103,9 +83,9 @@ void AutogradModule(py::module &m_autograd)
         .def(
             "create_optimizer_op",
             [](tt::autograd::autograd_context &self,
-               std::string type,
-               std::vector<tt::autograd::NodeContext> operands,
-               std::vector<graphlib::OpType::Attr> attributes)
+               const std::string &type,
+               const std::vector<tt::autograd::NodeContext> &operands,
+               const std::vector<graphlib::OpType::Attr> &attributes)
             {
                 return self.autograd->create_optimizer_op(
                     graphlib::OpType(type, attributes),
@@ -135,7 +115,7 @@ void AutogradModule(py::module &m_autograd)
             "input",
             [](tt::autograd::autograd_context &self,
                std::string input_name,
-               std::vector<std::uint32_t> tensor_shape,
+               const std::vector<std::uint32_t> &tensor_shape,
                bool copy_consteval_operations,
                bool disable_consteval)
             {
