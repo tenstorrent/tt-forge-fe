@@ -156,6 +156,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       allow-fail: true
+      continue-on-crash: true
 
   fail-notify:
     if: always()
