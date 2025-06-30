@@ -291,6 +291,65 @@ class Op
     long base_initial_flops_estimate(
         const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
+<<<<<<< HEAD
+=======
+    /* -----------------------------*
+     * Ops specific implementation. *
+     * -----------------------------*/
+
+    /* -------------*
+     * OpType::Abs. *
+     * -------------*/
+
+    at::Tensor abs_eval(const std::vector<at::Tensor> &tensors) const;
+
+    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> abs_shape(
+        const std::vector<std::vector<std::uint32_t>> &inputs) const;
+
+    tt::graphlib::NodeContext abs_backward(
+        tt::autograd::autograd_context &context,
+        int operand,
+        const std::vector<tt::graphlib::NodeContext> &inputs,
+        const tt::graphlib::NodeContext &output,
+        const tt::graphlib::NodeContext &gradient) const;
+
+    long abs_initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const;
+
+    /* ------------------*
+     * OpType::Constant. *
+     * ------------------*/
+
+    at::Tensor constant_eval(const std::vector<at::Tensor> &tensors) const;
+
+    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> constant_shape(
+        const std::vector<std::vector<std::uint32_t>> &inputs) const;
+
+    tt::graphlib::NodeContext constant_backward(
+        tt::autograd::autograd_context &context,
+        int operand,
+        const std::vector<tt::graphlib::NodeContext> &inputs,
+        const tt::graphlib::NodeContext &output,
+        const tt::graphlib::NodeContext &gradient) const;
+
+    /* -------------*
+     * OpType::Multiply. *
+     * -------------*/
+
+    at::Tensor multiply_eval(const std::vector<at::Tensor> &tensors) const;
+
+    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> multiply_shape(
+        const std::vector<std::vector<std::uint32_t>> &inputs) const;
+
+    tt::graphlib::NodeContext multiply_backward(
+        tt::autograd::autograd_context &context,
+        int operand,
+        const std::vector<tt::graphlib::NodeContext> &inputs,
+        const tt::graphlib::NodeContext &output,
+        const tt::graphlib::NodeContext &gradient) const;
+
+    long multiply_initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const;
+
+>>>>>>> 0126ddbf (add definition of multiply in op.hpp)
    private:
     OpType type_;
     Attrs attrs_;
