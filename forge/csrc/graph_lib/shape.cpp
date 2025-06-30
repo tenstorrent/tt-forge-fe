@@ -27,7 +27,7 @@ Shape::Shape(bool valid, Shape::Type type, std::vector<std::uint32_t> dims)
 Shape Shape::create(std::vector<std::uint32_t> values)
 {
     Shape s;
-    s.dims_ = values;
+    s.dims_ = std::move(values);
     s.valid_ = true;
     s.type_ = FREE;
     return s;
@@ -48,7 +48,7 @@ Shape Shape::create_forge(std::vector<std::uint32_t> values, int tile_height, in
 
     TileDim tile_dim = tt::graphlib::get_tile_dim_from_height_width(tile_height, tile_width);
     Shape s;
-    s.dims_ = values;
+    s.dims_ = std::move(values);
     s.valid_ = true;
     s.type_ = FORGE;
     s.tile_dim_ = tile_dim;
@@ -70,7 +70,7 @@ Shape Shape::create_with_type_from_other(const Shape &other, std::vector<std::ui
 {
     Shape s;
 
-    s.dims_ = dims;
+    s.dims_ = std::move(dims);
     s.valid_ = true;
     s.type_ = FREE;
 

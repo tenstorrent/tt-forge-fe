@@ -166,14 +166,16 @@ div-CONST_EVAL_PASS-{'rounding_mode': 'trunc'}-(1000, 100)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'floor'}-(1000, 100)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'trunc'}-(10, 1000)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'floor'}-(10, 1000)-None-None
+div-CONST_EVAL_PASS-{'rounding_mode': 'trunc'}-(9920, 1)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'floor'}-(9920, 1)-None-None
+div-CONST_EVAL_PASS-{'rounding_mode': 'trunc'}-(10000, 1)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'floor'}-(10000, 1)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'trunc'}-(32, 64)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'floor'}-(32, 64)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'trunc'}-(160, 96)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'floor'}-(160, 96)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'trunc'}-(17, 41)-None-None
-div-CONST_EVAL_PASS-{'rounding_mode': 'floor'}-(17, 41)-None-None
+div-CONST_EVAL_PASS-{'rounding_mode': 'trunc'}-(89, 3)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'floor'}-(89, 3)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'trunc'}-(1, 45, 17)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'floor'}-(1, 45, 17)-None-None
@@ -247,14 +249,10 @@ div-CONST_EVAL_PASS-{'rounding_mode': 'trunc'}-(5, 11, 64, 1)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'floor'}-(5, 11, 64, 1)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'trunc'}-(6, 100, 100, 100)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'floor'}-(6, 100, 100, 100)-None-None
-div-CONST_EVAL_PASS-{'rounding_mode': 'trunc'}-(7, 10, 1000, 100)-None-None
-div-CONST_EVAL_PASS-{'rounding_mode': 'floor'}-(7, 10, 1000, 100)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'trunc'}-(8, 1, 10, 1000)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'floor'}-(8, 1, 10, 1000)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'trunc'}-(9, 1, 9920, 1)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'floor'}-(9, 1, 9920, 1)-None-None
-div-CONST_EVAL_PASS-{'rounding_mode': 'trunc'}-(10, 10, 10000, 1)-None-None
-div-CONST_EVAL_PASS-{'rounding_mode': 'floor'}-(10, 10, 10000, 1)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'trunc'}-(11, 32, 32, 64)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'floor'}-(11, 32, 32, 64)-None-None
 div-CONST_EVAL_PASS-{'rounding_mode': 'trunc'}-(12, 64, 160, 96)-None-None

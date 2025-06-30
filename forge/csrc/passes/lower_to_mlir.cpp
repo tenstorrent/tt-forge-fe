@@ -26,6 +26,7 @@
 #include "mlir/IR/Value.h"
 #include "mlir/IR/ValueRange.h"
 #include "passes/extract_unique_op_configuration.hpp"
+#include "runtime/tt_device.hpp"
 #include "utils/logger.hpp"
 
 // MLIR headers
@@ -170,8 +171,10 @@ class MLIRGenerator
     mlir::ModuleOp emit_mlir(tt::ForgeGraphModule &module)
     {
         graphModule_ = mlir::ModuleOp::create(get_module_location(module), module.name());
+
         graphModule_->setAttr(
-            mlir::tt::SystemDescAttr::name, mlir::tt::SystemDescAttr::getDefault(builder_.getContext()));
+            mlir::tt::SystemDescAttr::name,
+            mlir::tt::SystemDescAttr::getDefault(builder_.getContext(), get_device_arch()));
         builder_.setInsertionPointToStart(&graphModule_.getBodyRegion().front());
 
         // Collect all the supported TTIR operations
@@ -423,7 +426,8 @@ class MLIRGenerator
             llvm::SmallVector<mlir::NamedAttribute, 1> named_attributes;
             named_attributes.push_back(
                 builder_.getNamedAttr("ttir.name", builder_.getStringAttr(argument_node->name())));
-            named_attributes.push_back(builder_.getNamedAttr("ttcore.argument_type", get_argument_type(argument_node)));
+            named_attributes.push_back(
+                builder_.getNamedAttr(mlir::tt::ArgumentTypeAttr::name, get_argument_type(argument_node)));
             func.setArgAttrs(i, named_attributes);
             log_trace(LogMLIRCompiler, "Set argument name {} for function argument {}.", argument_node->name(), i);
         }
@@ -638,6 +642,20 @@ class MLIRGenerator
         }
 
         builder_.create<mlir::func::ReturnOp>(builder_.getUnknownLoc(), mlir::ValueRange(returnValues));
+    }
+
+    /// Get device Architecture from TTSystem
+    mlir::tt::Arch get_device_arch()
+    {
+        TTSystem &system = TTSystem::get_system();
+        TT_ASSERT(!system.devices.empty() && system.devices[0], "No available device found");
+        ARCH tt_arch = system.devices[0]->arch;
+        switch (tt_arch)
+        {
+            case ARCH::WORMHOLE_B0: return mlir::tt::Arch::WormholeB0;
+            case ARCH::BLACKHOLE: return mlir::tt::Arch::Blackhole;
+            default: TT_THROW("Unsupported architecture: {}", to_string_arch(tt_arch)); unreachable();
+        }
     }
 
     /// Get the MLIR data type for a TTForge node.

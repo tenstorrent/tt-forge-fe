@@ -280,44 +280,6 @@ def AvgPool2d(
     ).get_tensor()
 
 
-def AdaptiveMaxPool2d(
-    name: str,
-    activations: Tensor,
-    output_size: Union[int, Tuple[int, int]],
-    channel_last: bool = False,
-) -> Tensor:
-    """
-    Adaptive MaxPool2d transformation on input activations
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-    activations: Tensor
-        Input tensor of shape (N, C, H, W)
-    output_size: int or Tuple[int, int]
-        The target output size (height, width) after pooling
-    channel_last: bool
-        Whether the input tensor has channel last layout (NHWC). Default is False (NCHW)
-    """
-
-    if isinstance(output_size, int):
-        output_size = [output_size, output_size]
-    elif isinstance(output_size, tuple):
-        output_size = list(output_size)
-
-    assert len(output_size) == 2, f"Expected 2D output size, got: {output_size}"
-
-    attrs = output_size + [channel_last]
-
-    return op(
-        "adaptive_max_pool2d",
-        name,
-        activations,
-        attrs=attrs,
-    ).get_tensor()
-
-
 def AvgPool3d(
     name: str,
     activations: Tensor,

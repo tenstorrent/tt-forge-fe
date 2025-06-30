@@ -320,7 +320,7 @@ class TestCollectionTorch:
 
     float = TestCollection(
         dev_data_formats=[
-            torch.float16,
+            # torch.float16, # not supported in torch cpu
             torch.float32,
             # torch.float64,
             torch.bfloat16,

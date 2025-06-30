@@ -27,7 +27,7 @@ variants = [
     "hrnet_w18_small_v2",
     "hrnetv2_w18",
     "hrnetv2_w30",
-    pytest.param("hrnetv2_w44", marks=[pytest.mark.xfail]),
+    "hrnetv2_w44",
     "hrnetv2_w48",
     "hrnetv2_w64",
 ]
