@@ -5,14 +5,11 @@ from dataclasses import dataclass
 import math
 import os
 import random
-import pytest
 
 from typing import List, Dict
 from loguru import logger
 
 import torch
-import forge
-import forge.op
 from forge._C import DataFormat
 
 from forge.config import CompilerConfig
@@ -198,8 +195,8 @@ class ConvTranspose2DParams:
     def to_kwargs(cls):
         return cls.__dict__
 
-    def to_kwargs_list(cls):
-        return [cls.__dict__]
+    def to_kwargs_list(self):
+        return [self.__dict__]
 
     @classmethod
     def get_kernel_param(cls, rng, H_in, W_in, k_min_h=1, k_min_w=1, odd: bool = False):
@@ -313,16 +310,16 @@ class ConvTranspose2DParams:
         return results
 
     def is_output_shape_valid(self, H_in, W_in):
-        k_h = self.kernel_size if type(self.kernel_size) == int else self.kernel_size[0]
-        k_w = self.kernel_size if type(self.kernel_size) == int else self.kernel_size[1]
-        p_h = self.padding if type(self.padding) == int else self.padding[0]
-        p_w = self.padding if type(self.padding) == int else self.padding[1]
-        s_h = self.stride if type(self.stride) == int else self.stride[0]
-        s_w = self.stride if type(self.stride) == int else self.stride[1]
-        d_h = self.dilation if type(self.dilation) == int else self.dilation[0]
-        d_w = self.dilation if type(self.dilation) == int else self.dilation[1]
-        op_h = self.output_padding if type(self.output_padding) == int else self.output_padding[0]
-        op_w = self.output_padding if type(self.output_padding) == int else self.output_padding[1]
+        k_h = self.kernel_size if isinstance(self.kernel_size, int) else self.kernel_size[0]
+        k_w = self.kernel_size if isinstance(self.kernel_size, int) else self.kernel_size[1]
+        p_h = self.padding if isinstance(self.padding, int) else self.padding[0]
+        p_w = self.padding if isinstance(self.padding, int) else self.padding[1]
+        s_h = self.stride if isinstance(self.stride, int) else self.stride[0]
+        s_w = self.stride if isinstance(self.stride, int) else self.stride[1]
+        d_h = self.dilation if isinstance(self.dilation, int) else self.dilation[0]
+        d_w = self.dilation if isinstance(self.dilation, int) else self.dilation[1]
+        op_h = self.output_padding if isinstance(self.output_padding, int) else self.output_padding[0]
+        op_w = self.output_padding if isinstance(self.output_padding, int) else self.output_padding[1]
 
         H_out = (H_in - 1) * s_h - 2 * p_h + d_h * (k_h - 1) + op_h + 1
         W_out = (W_in - 1) * s_w - 2 * p_w + d_w * (k_w - 1) + op_w + 1
@@ -378,7 +375,7 @@ class TestParamsData:
             padding=rng.randint(1, 4),
             bias=bias,
         )
-        if conv2DParams.is_output_shape_valid(H_in, W_in) == False:
+        if conv2DParams.is_output_shape_valid(H_in, W_in) is False:
             return []
         return conv2DParams.to_kwargs_list()
 
@@ -419,7 +416,7 @@ class TestParamsData:
             padding=rng.randint(1, 4),
             bias=bias,
         )
-        if conv2DParams.is_output_shape_valid(H_in, W_in) == False:
+        if conv2DParams.is_output_shape_valid(H_in, W_in) is False:
             return []
         return conv2DParams.to_kwargs_list()
 
