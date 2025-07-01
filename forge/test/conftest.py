@@ -6,7 +6,6 @@ from typing import List, Dict, Tuple
 from loguru import logger
 import subprocess
 import fnmatch
-import signal
 import threading
 
 import numpy as np
@@ -48,8 +47,9 @@ watchdog_abort_timer = None
 @pytest.hookimpl(tryfirst=True)
 def pytest_runtest_setup(item):
     def send_abort_signal():
-        print("WATCHDOG timeout reached! Killing test process.")
-        os.kill(os.getpid(), signal.SIGABRT)
+        pytest.exit("WATCHDOG timeout reached! Killing test process.", -69)
+        # print("WATCHDOG timeout reached! Killing test process.")
+        # os.kill(os.getpid(), signal.SIGABRT)
 
     def reset_abort_timer():
         global watchdog_abort_timer

@@ -52,13 +52,15 @@ def remove_test(test_path, restart=False):
             idx = next(i for i, line in enumerate(lines) if test_path in line) + 1
             filtered_lines = lines[idx:]
         except StopIteration:
-            print("error: test_path not found in .pytest_tests_to_run")
+            print(f"error: {test_path} not found in .pytest_tests_to_run")
             exit(8)
 
     # Write filtered lines back to file
     with open(file_path, "w") as f:
         for line in filtered_lines:
             f.write(line + "\n")
+
+    return len(filtered_lines)
 
 
 def main():
@@ -101,7 +103,9 @@ def main():
                 if test_path not in crashed_tests:
                     crashed_tests.append(test_path)
                     print(f"    Crashed test: {test_path}")
-                    remove_test(test_path, restart_afer_crash)
+                    if remove_test(test_path, restart_afer_crash) == 0:
+                        print("No tests left to run.")
+                        break
                 else:
                     # If the test is already in the crashed tests list, print a message and exit
                     print(f"    Test {test_path} already in crashed tests list\nInternal error, exiting.")
@@ -139,7 +143,7 @@ def main():
                     f.write(f"FAILED {test}\n")
 
             if exit_code == 0:
-                exit_code = 1
+                exit_code = 11
 
     # Delete .pytest_current_test_executing file if it exists
     Path(".pytest_current_test_executing").unlink(missing_ok=True)
@@ -163,7 +167,7 @@ def main():
 
             # If there are crashed tests change exit code to failure
             if exit_code == 0:
-                exit_code = 1
+                exit_code = 10
 
     exit(exit_code)
 
