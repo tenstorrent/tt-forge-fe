@@ -52,8 +52,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::multiply_sh
             if (shape1[dim] == 1)
             {
                 // Broadcast shape1 to shape0
-                int neg_index = static_cast<int>(dim) - static_cast<int>(shape1.size());
-                broadcast.push_back(graphlib::DimBroadcast(1, neg_index, shape0[dim]));
+                broadcast.push_back(graphlib::DimBroadcast(1, dim, shape0[dim]));
                 output_shape[dim] = shape0[dim];
             }
             else
@@ -63,8 +62,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::multiply_sh
                     "Eltwise binary ops must have the same shape in both inputs, or one operand must be 1 wide to "
                     "broadcast");
                 // Broadcast shape0 to shape1
-                int neg_index = static_cast<int>(dim) - static_cast<int>(shape0.size());
-                broadcast.push_back(graphlib::DimBroadcast(0, neg_index, shape1[dim]));
+                broadcast.push_back(graphlib::DimBroadcast(0, dim, shape1[dim]));
                 output_shape[dim] = shape1[dim];
             }
         }
