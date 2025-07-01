@@ -4,18 +4,18 @@ This document describes how to build the TT-Forge-FE project on your local machi
 * [Installing a Wheel and Running an Example](getting_started.md) - You should choose this option if you want to run models.
 * [Using a Docker Container to Run an Example](getting_started_docker.md) - Choose this option if you want to keep the environment for running models separate from your existing environment.
 
-The topics covered in this document are: 
+The topics covered in this document are:
 * [Configuring Your Hardware](#configuring-your-hardware)
-* [Prerequisites](#prerequisites) 
+* [Prerequisites](#prerequisites)
 * [Building the Environment](#building-the-environment)
 * [Building the Docs](#building-the-docs)
 * [Build Cleanup](#build-cleanup)
 * [Useful Build Environment Variables](#useful-build-environment-variables)
 
-## Configuring Your Hardware 
-If you already configured your hardware, you can skip this section. Otherwise do the following: 
+## Configuring Your Hardware
+If you already configured your hardware, you can skip this section. Otherwise do the following:
 
-1. Configure your hardware with TT-Installer using the [Quick Installation section here.](https://docs.tenstorrent.com/getting-started/README.html#quick-installation) 
+1. Configure your hardware with TT-Installer using the [Quick Installation section here.](https://docs.tenstorrent.com/getting-started/README.html#quick-installation)
 
 2. Reboot your machine.
 
@@ -87,7 +87,7 @@ Make sure you have Python 3.10 installed:
 python3 --version
 ```
 
-If you do not have Python 3.10 installed: 
+If you do not have Python 3.10 installed:
 
 ```bash
 sudo apt install python3.10
@@ -100,16 +100,16 @@ Install CMake and check the version with the following commands:
 pip install cmake
 ```
 
-Check that it installed: 
+Check that it installed:
 
 ```bash
 cmake --version
 ```
 
-### Installing Additional Dependencies 
-This section goes over additional required dependencies. You may wish to check if you already have them installed before running installation steps for each item. Run the following commands: 
+### Installing Additional Dependencies
+This section goes over additional required dependencies. You may wish to check if you already have them installed before running installation steps for each item. Run the following commands:
 
-1. Install the required development packages: 
+1. Install the required development packages:
 
 ```bash
 sudo apt install -y \
@@ -129,7 +129,7 @@ wget -q https://github.com/dmakoviichuk-tt/mpi-ulfm/releases/download/v5.0.7-ulf
 sudo apt install -y /tmp/openmpi-ulfm.deb
 ```
 
-3. Export environment variables: 
+3. Export environment variables:
 
 ```bash
 export PATH=/opt/openmpi-v5.0.7-ulfm/bin:$PATH
@@ -165,7 +165,7 @@ git clone https://github.com/tenstorrent/tt-forge-fe.git
 source env/activate
 ```
 
-> **NOTE:** You will not see a virtual environment start from this command. That is expected behavior. 
+> **NOTE:** You will not see a virtual environment start from this command. That is expected behavior.
 
 5. Initialize and update submodules:
 
@@ -180,7 +180,7 @@ cmake -B env/build env
 cmake --build env/build
 ```
 
-> **Expert Tip:** If you already have the TT-MLIR toolchain built, you can use the `TTFORGE_SKIP_BUILD_TTMLIR_ENV` option to skip rebuilding the TT-MLIR environment (toolchain) to save time. Like so: 
+> **Expert Tip:** If you already have the TT-MLIR toolchain built, you can use the `TTFORGE_SKIP_BUILD_TTMLIR_ENV` option to skip rebuilding the TT-MLIR environment (toolchain) to save time. Like so:
 > ```bash
 > cmake -B env/build env -DTTFORGE_SKIP_BUILD_TTMLIR_ENV=ON
 > cmake --build env/build
@@ -201,7 +201,7 @@ cmake -G Ninja -B build -DCMAKE_CXX_COMPILER=clang++-17 -DCMAKE_C_COMPILER=clang
 cmake --build build
 ```
 
-> **NOTE:** Tenstorrent's official compiler is Clang 17. 
+> **NOTE:** Tenstorrent's official compiler is Clang 17.
 >
 > If you want to try other compilers, while they are not tested, you can do so by changing the `-DCMAKE_CXX_COMPILER` and `-DCMAKE_C_COMPILER` options.
 
@@ -278,4 +278,3 @@ This section goes over some useful environment variables for use with the [Build
 * `TTFORGE_TOOLCHAIN_DIR` - Specifies the directory where tt-forge dependencies will be installed. Defaults to `/opt/ttforge-toolchain` if not defined.
 * `TTFORGE_VENV_DIR` - Specifies the virtual environment directory for tt-forge. Defaults to `/opt/ttforge-toolchain/venv` if not defined.
 * `TTFORGE_PYTHON_VERSION` - Specifies the Python version to use. Defaults to `python3.10` if not defined.
-

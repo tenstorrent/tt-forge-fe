@@ -9,7 +9,7 @@ The following topics are covered:
 * [Other Setup Options](#other-set-up-options)
     * [Using a Docker Container to Run an Example](getting_started_docker.md)
     * [Building From Source](getting_started_build_from_source.md)
-* [Where to Go Next]
+* [Where to Go Next](#where-to-go-next)
 
 > **NOTE:** If you encounter issues, please request assistance on the
 >[TT-Forge-FE Issues](https://github.com/tenstorrent/tt-forge-fe/issues) page.
@@ -23,7 +23,7 @@ TT-Forge-FE can be used to run models from any framework. Because TT-Forge-FE is
 ## Configuring Hardware
 Before setup can happen, you must configure your hardware. You can skip this section if you already completed the configuration steps. Otherwise, this section of the walkthrough shows you how to do a quick setup using TT-Installer.
 
-1. Configure your hardware with TT-Installer using the [Quick Installation section here.](https://docs.tenstorrent.com/getting-started/README.html#quick-installation) 
+1. Configure your hardware with TT-Installer using the [Quick Installation section here.](https://docs.tenstorrent.com/getting-started/README.html#quick-installation)
 
 2. Reboot your machine.
 
@@ -51,14 +51,14 @@ This section walks you through downloading and installing a wheel. You can insta
 
 4. Go to the bottom of the section for your release and click on the triangle next to **Assets**. You are presented with two installable wheels, one for **tt_forge_fe** and one for **tt_tvm**. You can also download the source code for everything as a **.zip** or a **tar.gz** file.
 
-The links listed in this walkthrough are taken from the releases page as an example, however for the most current results get the links from the [Tenstorrent Nightly Releases](https://github.com/tenstorrent/tt-forge/releases) page. Here are the example links for install:
+Install the wheels:
 
 ```bash
-pip install https://github.com/tenstorrent/tt-forge/releases/download/nightly-0.1.0.dev20250514060212/forge-0.1.0.dev20250514060212-cp310-cp310-linux_x86_64.whl
+pip install NAME_OF_FORGE_WHEEL
 ```
 
 ```bash
-pip install  https://github.com/tenstorrent/tt-forge/releases/download/nightly-0.1.0.dev20250509060216//tvm-0.1.0.dev20250509060216-cp310-cp310-linux_x86_64.whl
+pip install NAME_OF_TVM_WHEEL
 ```
 
 5. To test that everything is running correctly, try an example model. You can use nano or another text editor to paste this code into a file named **forge_example.py** and then run it from the terminal. You should still have your virtual environment running after installing the wheels when running this example:

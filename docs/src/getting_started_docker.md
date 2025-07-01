@@ -6,7 +6,7 @@ This document walks you through how to set up TT-Forge-FE using a Docker image. 
 ## Configuring Hardware
 Before setup can happen, you must configure your hardware. You can skip this section if you already completed the configuration steps. Otherwise, this section of the walkthrough shows you how to do a quick setup using TT-Installer.
 
-1. Configure your hardware with TT-Installer using the [Quick Installation section here.](https://docs.tenstorrent.com/getting-started/README.html#quick-installation) 
+1. Configure your hardware with TT-Installer using the [Quick Installation section here.](https://docs.tenstorrent.com/getting-started/README.html#quick-installation)
 
 2. Reboot your machine.
 
@@ -84,13 +84,13 @@ git clone https://github.com/tenstorrent/tt-forge.git
 source venv-tt-forge-fe/bin/activate
 ```
 
-3. Set the path for Python: 
+3. Set the path for Python:
 
 ```bash
 export PYTHONPATH=/tt-forge:$PYTHONPATH
 ```
 
-4. Navigate into TT-Forge and run the following command: 
+4. Navigate into TT-Forge and run the following command:
 
 ```bash
 git submodule update --init --recurisve
