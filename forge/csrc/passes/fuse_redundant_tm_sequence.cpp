@@ -34,18 +34,13 @@ bool equivalent_pattern(const TMPattern& pattern1, const TMPattern& pattern2)
 
 graphlib::Shape replacement_output_shape(graphlib::Shape input_shape, const TMPattern& pattern)
 {
-    py::object eval_module = py::module_::import("forge.op.eval.forge");
-
     for (uint i = 0; i < pattern.size(); i++)
     {
-        auto op_name = pattern[i].op_name;
-        auto attrs = pattern[i].attrs;
-
-        py::function forge_shape = eval_module.attr("get_f_forge_shape")(pattern[i].as_op_type());
         std::vector<std::vector<std::uint32_t>> operand_tuples;
         operand_tuples.push_back(input_shape.as_vector());
-        py::tuple ret = forge_shape(operand_tuples);
-        graphlib::Shape shape = graphlib::Shape::create(ret[0].cast<std::vector<std::uint32_t>>());
+
+        auto ret = pattern[i].as_op_type().shape(operand_tuples);
+        graphlib::Shape shape = std::get<0>(ret);
         input_shape = shape;
     }
     return input_shape;

@@ -52,13 +52,12 @@ NodeContext DecomposingContext::op(
     }
     new_node->set_golden_transforms(this->node_->get_golden_transforms());
 
-    py::module_ eval_module = py::module_::import("forge.op.eval.forge");
-    py::function forge_shape = eval_module.attr("get_f_forge_shape")(op_type);
     std::vector<std::vector<std::uint32_t>> operand_tuples;
     for (NodeContext const &op_node : operands) operand_tuples.push_back(op_node.shape.as_vector());
-    py::tuple ret = forge_shape(operand_tuples);
-    graphlib::Shape shape = graphlib::Shape::create(ret[0].cast<std::vector<std::uint32_t>>());
-    std::vector<graphlib::DimBroadcast> broadcasts = ret[1].cast<std::vector<graphlib::DimBroadcast>>();
+
+    auto ret = op_type.shape(operand_tuples);
+    graphlib::Shape shape = std::get<0>(ret);
+    std::vector<graphlib::DimBroadcast> broadcasts = std::get<1>(ret);
 
     new_node->set_shape(shape);
 
