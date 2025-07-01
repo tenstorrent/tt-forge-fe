@@ -347,14 +347,6 @@ class Op
         const tt::graphlib::NodeContext &output,
         const tt::graphlib::NodeContext &gradient) const;
 
-    void multiply_decompose(
-        const graphlib::OpType &old_op_type,
-        const char *dispatch,
-        DecomposingContext &dc,
-        const std::vector<tt::graphlib::NodeContext> &inputs) const
-    {
-    }
-
     void multiply_decompose_post_autograd(
         const graphlib::OpType &old_op_type,
         const char *dispatch,
