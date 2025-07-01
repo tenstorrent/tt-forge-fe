@@ -45,23 +45,14 @@ This section walks you through downloading and installing a wheel. You can insta
 
 1. Make sure you are in an active virtual environment. This walkthrough uses the same environment you activated to look at TT-SMI in the [Configuring Hardware](#configuring-hardware) section.
 
-2. Navigate to the [Tenstorrent Nightly Releases](https://github.com/tenstorrent/tt-forge/releases) page.
-
-3. For this walkthrough, TT-Forge-FE is used. You need to install two wheels for set up, **forge** and **tvm**. Scroll down the releases page until you see the latest release for **tt-forge-fe nightly**.
-
-4. Go to the bottom of the section for your release and click on the triangle next to **Assets**. You are presented with two installable wheels, one for **tt_forge_fe** and one for **tt_tvm**. You can also download the source code for everything as a **.zip** or a **tar.gz** file.
-
-Install the wheels:
+2. For this walkthrough, TT-Forge-FE is used. You need to install two wheels for set up, **forge** and **tvm**. Install the wheels:
 
 ```bash
-pip install NAME_OF_FORGE_WHEEL
+pip install tt_forge_fe --extra-index-url https://pypi.eng.aws.tenstorrent.com/
+pip install tt_tvm  --extra-index-url https://pypi.eng.aws.tenstorrent.com/
 ```
 
-```bash
-pip install NAME_OF_TVM_WHEEL
-```
-
-5. To test that everything is running correctly, try an example model. You can use nano or another text editor to paste this code into a file named **forge_example.py** and then run it from the terminal. You should still have your virtual environment running after installing the wheels when running this example:
+3. To test that everything is running correctly, try an example model. You can use nano or another text editor to paste this code into a file named **forge_example.py** and then run it from the terminal. You should still have your virtual environment running after installing the wheels when running this example:
 
 ```python
 import torch
@@ -85,7 +76,7 @@ out = compiled_model(a, b)
 print("compiled output:", out)
 ```
 
-6. You have now set up the latest wheels for TT-Forge-FE, and can run any models you want inside your virtual environment.
+4. You have now set up the latest wheels for TT-Forge-FE, and can run any models you want inside your virtual environment.
 
 ## Other Set up Options
 If you want to keep your environment completely separate in a Docker container, or you want to develop TT-Forge-FE further, this section links you to the pages with those options:
