@@ -67,7 +67,31 @@ docker run -it --rm \
 docker ps
 ```
 
-6. You are now ready to move on to the next section, and run your first model.
+6. To check that everything is running as expected, try an example model. You can use nano or another text editor to paste this code into a file named **forge_example.py** and then run it from the terminal:
+
+```python
+import torch
+import forge
+
+class Add(torch.nn.Module):
+  def __init__(self):
+    super().__init__()
+
+  def forward(self, a, b):
+    return a + b
+
+a = torch.rand(size=(2, 32, 32))
+b = torch.rand(size=(2, 32, 32))
+
+framework_module = Add()
+compiled_model = forge.compile(framework_module, sample_inputs=[a, b])
+
+out = compiled_model(a, b)
+
+print("compiled output:", out)
+```
+
+6. If all goes well, you are now ready to move on to the next section, and run your first demo model.
 
 ## Running Models in Docker
 This section shows you how to run a model using Docker. The provided example is from the TT-Forge repo. Do the following:
