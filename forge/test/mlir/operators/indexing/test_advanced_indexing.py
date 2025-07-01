@@ -150,15 +150,11 @@ def test_index_fill(input_dim_index_value):
                 torch.tensor([0, 2]),
                 torch.tensor([[1.0, 1.0, 1.0, 1.0, 1.0], [2.0, 2.0, 2.0, 2.0, 2.0]]),
             ),
-            marks=pytest.mark.xfail(
-                reason="AttributeError: module 'tvm.relay.op.transform' has no attribute 'scatter'"
-            ),
+            marks=pytest.mark.xfail(reason="IndexCopy - unsupported op in lowering to TTIR"),
         ),
         pytest.param(
             (torch.zeros(4, 4, 4, dtype=torch.float32), 1, torch.tensor([1, 3]), torch.ones(4, 2, 4)),
-            marks=pytest.mark.xfail(
-                reason="AttributeError: module 'tvm.relay.op.transform' has no attribute 'scatter'"
-            ),
+            marks=pytest.mark.xfail(reason="IndexCopy - unsupported op in lowering to TTIR"),
         ),
     ],
 )

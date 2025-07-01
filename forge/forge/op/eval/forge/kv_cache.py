@@ -71,9 +71,8 @@ class UpdateCache(PyOp):
 
 class FillCache(PyOp):
     @classmethod
-    def create(cls, update_idx, batch_offset=0):
+    def create(cls, batch_offset=0):
         self = cls("fill_cache")
-        self.update_idx = update_idx
         self.batch_offset = batch_offset
         return self
 
