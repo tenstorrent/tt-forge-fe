@@ -4,12 +4,7 @@
 import pytest
 import subprocess
 import onnx
-from transformers import (
-    AutoTokenizer,
-    PhiForCausalLM,
-    PhiForSequenceClassification,
-    PhiForTokenClassification,
-)
+from transformers import AutoTokenizer
 
 import forge
 from forge.verify.verify import verify
@@ -36,13 +31,18 @@ def test_phi_causal_lm_onnx(variant, forge_tmp_path):
         task=Task.CAUSAL_LM,
     )
 
-    # Load tokenizer and model from HuggingFace
-    framework_model = download_model(PhiForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)
+    # Load tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
 
     # input_prompt
     input_prompt = "Africa is an emerging economy because"
-    inputs = tokenizer(input_prompt, return_tensors="pt")
+    inputs = tokenizer(
+        input_prompt,
+        return_tensors="pt",
+        max_length=256,
+        padding="max_length",
+        truncation=True,
+    )
 
     input_ids = inputs["input_ids"]
     attn_mask = inputs["attention_mask"]

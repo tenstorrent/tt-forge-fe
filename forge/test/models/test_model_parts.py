@@ -110,3 +110,63 @@ def test_clamp(input_shape, clamp_min, clamp_max, dtype):
 
     compiled_model = forge.compile(onnx_model, inputs)
     verify(inputs, model, compiled_model)
+
+
+@pytest.mark.push
+def test_rotary_pos_emb():
+    class RotaryPosEmb(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, q, cos, sin):
+            cos = cos.unsqueeze(1)
+            sin = sin.unsqueeze(1)
+
+            rotary_dim = cos.shape[-1]
+            q_rot, q_pass = q[..., :rotary_dim], q[..., rotary_dim:]
+
+            q_embed = torch.cat([q_pass, (q_rot * cos) + (self.rotate_half(q_rot) * sin)], dim=-1)
+            return q_embed
+
+        def rotate_half(self, x):
+            x1 = x[..., : x.shape[-1] // 2]
+            x2 = x[..., x.shape[-1] // 2 :]
+            return torch.cat((-x2, x1), dim=-1)
+
+    framework_model = RotaryPosEmb()
+    framework_model.eval()
+
+    query = torch.rand((1, 32, 256, 96))
+    cos_emb = torch.rand([1, 256, 96])
+    sin_emb = torch.rand([1, 256, 96])
+    inputs = [query, cos_emb, sin_emb]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.push
+@pytest.mark.parametrize(
+    "dim",
+    [-4, -3, -2, -1, 0, 1, 2, 3],
+)
+def test_remove_concat_pass(dim):
+    class SliceConcat(torch.nn.Module):
+        def __init__(self, dim):
+            super().__init__()
+            self.dim = dim
+
+        def forward(self, q):
+            sl = [slice(None)] * len(q.shape)
+            sl[self.dim] = slice(q.shape[self.dim], None)
+            q_pass = q[tuple(sl)]
+            q_embed = torch.cat([q_pass, (q * q)], dim=self.dim)
+            return q_embed
+
+    model = SliceConcat(dim)
+
+    query = torch.rand((1, 32, 256, 96))
+    inputs = [query]
+
+    compiled_model = forge.compile(model, sample_inputs=inputs)
+    verify(inputs, model, compiled_model)
