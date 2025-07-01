@@ -4990,6 +4990,27 @@ class DecomposeDepthToSpace(DFPatternCallback):
         return out
 
 
+class RemoveConcat(DFPatternCallback):
+    def __init__(self):
+        super().__init__(rewrite_once=False, require_type=True)
+        self.act1 = wildcard()
+        self.act2 = wildcard()
+        self.pattern = is_op("concatenate")(is_tuple([self.act1, self.act2]))
+
+    def callback(self, pre, post, node_map):
+        concat_axis = int(node_map[self.pattern][0].attrs.axis)
+        act1 = node_map[self.act1][0]
+        act2 = node_map[self.act2][0]
+        act1_shape = list(act1.checked_type.shape)
+        act2_shape = list(act2.checked_type.shape)
+        if act1_shape[concat_axis] == 0:
+            return act2
+        elif act2_shape[concat_axis] == 0:
+            return act1
+        else:
+            return post
+
+
 def _get_callback_name(callback):
     if isinstance(callback, DFPatternCallback):
         return type(callback).__name__
@@ -5141,6 +5162,7 @@ def run_forge_compile_passes(
             SimplifyVITOnnxAttention(),
             GQABroadcastReshape(),
             RemoveDenseInputSqueeze(),
+            RemoveConcat(),
         ],
         params=params,
         inputs=inputs,

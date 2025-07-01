@@ -6,9 +6,9 @@ import torch.nn as nn
 
 
 def generate_fuyu_embedding(model, input_ids, image_patches, image_patches_indices):
-    inputs_embeds = model.language_model.get_input_embeddings()(input_ids)
-    patch_embeddings = model.vision_embed_tokens(image_patches.to(model.vision_embed_tokens.weight.dtype))
-    inputs_embeds = model.gather_continuous_embeddings(
+    inputs_embeds = model.model.language_model.get_input_embeddings()(input_ids)
+    patch_embeddings = model.model.vision_embed_tokens(image_patches.to(model.model.vision_embed_tokens.weight.dtype))
+    inputs_embeds = model.model.gather_continuous_embeddings(
         word_embeddings=inputs_embeds,
         continuous_embeddings=patch_embeddings,
         image_patch_input_indices=image_patches_indices,
@@ -39,10 +39,10 @@ class FuyuModelWrapper(nn.Module):
         position_ids = position_ids.unsqueeze(0)
 
         # PersimmonForCausalLM
-        output_hidden_states = self.fuyu_model.language_model.config.output_hidden_states
+        output_hidden_states = self.fuyu_model.model.language_model.config.output_hidden_states
 
         # decoder outputs consists of (dec_features, layer_state, dec_hidden, dec_attn)
-        outputs = self.fuyu_model.language_model.model(
+        outputs = self.fuyu_model.model.language_model(
             input_ids=None,
             attention_mask=None,
             position_ids=position_ids,

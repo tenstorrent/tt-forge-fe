@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoTokenizer
 
 import forge
 from forge.verify.verify import verify
@@ -33,10 +33,6 @@ def test_phi3_5_causal_lm_onnx(variant, forge_tmp_path):
 
     # Load model and tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    framework_model = download_model(
-        AutoModelForCausalLM.from_pretrained, variant, return_dict=False, trust_remote_code=True, use_cache=False
-    )
-    framework_model.eval()
 
     # prepare input
     input_prompt = "Africa is an emerging economy because"
@@ -44,7 +40,7 @@ def test_phi3_5_causal_lm_onnx(variant, forge_tmp_path):
         input_prompt,
         return_tensors="pt",
         max_length=256,
-        pad_to_max_length=True,
+        padding="max_length",
         truncation=True,
     )
     inputs = [inputs["input_ids"], inputs["attention_mask"]]

@@ -11,6 +11,7 @@ from tabulate import tabulate
 import json
 from typing import Optional, Tuple
 from transformers import Cache
+from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_mask
 from third_party.tt_forge_models.tools.utils import get_file
 from datasets import load_dataset
 
@@ -170,13 +171,31 @@ def pad_inputs(inputs, max_new_tokens=512):
     return padded_inputs, seq_len
 
 
+class TextModelWrapper(torch.nn.Module):
+    def __init__(self, model, text_embedding=None):
+        super().__init__()
+        self.model = model
+        self.text_embedding = text_embedding
+
+    def forward(self, input_ids, attention_mask=None):
+        if attention_mask is not None and self.text_embedding is not None:
+            inputs_embeds = self.text_embedding(input_ids)
+            past_key_values_length = 0
+            causal_attention_mask = _prepare_4d_causal_attention_mask(
+                attention_mask, input_ids.shape, inputs_embeds, past_key_values_length
+            )
+            logits = self.model(attention_mask=causal_attention_mask, inputs_embeds=inputs_embeds).logits
+        else:
+            logits = self.model(input_ids=input_ids).logits
+        return logits
+
+
 def _prepare_4d_causal_attention_mask_with_cache_position(
     self,
     attention_mask: torch.Tensor,
     sequence_length: int,
     target_length: int,
     dtype: torch.dtype,
-    device: torch.device,
     cache_position: torch.Tensor,
     batch_size: int,
     **kwargs,
@@ -186,10 +205,12 @@ def _prepare_4d_causal_attention_mask_with_cache_position(
         causal_mask = attention_mask
     else:
         min_dtype = torch.finfo(dtype).min
-        causal_mask = torch.full((sequence_length, target_length), fill_value=min_dtype, dtype=dtype, device=device)
+        causal_mask = torch.full(
+            (sequence_length, target_length), fill_value=min_dtype, dtype=dtype, device=cache_position.device
+        )
         if sequence_length != 1:
             causal_mask = torch.triu(causal_mask, diagonal=1)
-        causal_mask *= torch.arange(target_length, device=device) > cache_position.reshape(-1, 1)
+        causal_mask *= torch.arange(target_length, device=cache_position.device) > cache_position.reshape(-1, 1)
         causal_mask = causal_mask[None, None, :, :].expand(batch_size, 1, -1, -1)
         if attention_mask is not None:
             causal_mask = causal_mask.clone()  # copy to contiguous memory for in-place edit
