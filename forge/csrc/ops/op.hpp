@@ -202,11 +202,12 @@ class Op
 
     const std::string &as_string() const;
 
-    /* ------------------------------------------------------------*
-     * Calculations segment. Derived classes must implement these. *
-     * ------------------------------------------------------------*/
+    /* ----------------------------------------------------*
+     * Calculations segment. All ops must implement these. *
+     * ----------------------------------------------------*/
 
     at::Tensor eval(const graphlib::OpType &old_op_type, const std::vector<at::Tensor> &tensors) const;
+
     std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(
         const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
@@ -218,6 +219,16 @@ class Op
         const tt::graphlib::NodeContext &output,
         const tt::graphlib::NodeContext &gradient) const;
 
+    bool is_tm(const graphlib::OpType &old_op_type) const;
+    bool is_eltwise(const graphlib::OpType &old_op_type) const;
+    bool is_eltwise_unary(const graphlib::OpType &old_op_type) const;
+    bool is_eltwise_binary(const graphlib::OpType &old_op_type) const;
+    bool is_eltwise_nary(const graphlib::OpType &old_op_type) const;
+
+    /* --------------------------*
+     * Optional implementations. *
+     * --------------------------*/
+
     void decompose(
         const graphlib::OpType &old_op_type,
         const char *dispatch,
@@ -227,18 +238,13 @@ class Op
     long initial_flops_estimate(
         const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
-    bool is_tm(const graphlib::OpType &old_op_type) const;
-    bool is_eltwise(const graphlib::OpType &old_op_type) const;
-    bool is_eltwise_unary(const graphlib::OpType &old_op_type) const;
-    bool is_eltwise_binary(const graphlib::OpType &old_op_type) const;
-    bool is_eltwise_nary(const graphlib::OpType &old_op_type) const;
-
    private:
     /* ------------------------------------------------------------*
      * Base - common for all ops that are not yet migrated to cpp. *
      * ------------------------------------------------------------*/
 
     at::Tensor base_eval(const graphlib::OpType &old_op_type, const std::vector<at::Tensor> &tensors) const;
+
     std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> base_shape(
         const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
@@ -250,6 +256,12 @@ class Op
         const tt::graphlib::NodeContext &output,
         const tt::graphlib::NodeContext &gradient) const;
 
+    bool base_is_tm(const graphlib::OpType &old_op_type) const;
+    bool base_is_eltwise(const graphlib::OpType &old_op_type) const;
+    bool base_is_eltwise_unary(const graphlib::OpType &old_op_type) const;
+    bool base_is_eltwise_binary(const graphlib::OpType &old_op_type) const;
+    bool base_is_eltwise_nary(const graphlib::OpType &old_op_type) const;
+
     void base_decompose(
         const graphlib::OpType &old_op_type,
         const char *dispatch,
@@ -258,12 +270,6 @@ class Op
 
     long base_initial_flops_estimate(
         const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const;
-
-    bool base_is_tm(const graphlib::OpType &old_op_type) const;
-    bool base_is_eltwise(const graphlib::OpType &old_op_type) const;
-    bool base_is_eltwise_unary(const graphlib::OpType &old_op_type) const;
-    bool base_is_eltwise_binary(const graphlib::OpType &old_op_type) const;
-    bool base_is_eltwise_nary(const graphlib::OpType &old_op_type) const;
 
     /* -----------------------------*
      * Ops specific implementation. *
@@ -274,6 +280,7 @@ class Op
      * -------------*/
 
     at::Tensor abs_eval(const std::vector<at::Tensor> &tensors) const;
+
     std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> abs_shape(
         const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
@@ -285,6 +292,22 @@ class Op
         const tt::graphlib::NodeContext &gradient) const;
 
     long abs_initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const;
+
+    /* ------------------*
+     * OpType::Constant. *
+     * ------------------*/
+
+    at::Tensor constant_eval(const std::vector<at::Tensor> &tensors) const;
+
+    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> constant_shape(
+        const std::vector<std::vector<std::uint32_t>> &inputs) const;
+
+    tt::graphlib::NodeContext constant_backward(
+        tt::autograd::autograd_context &context,
+        int operand,
+        const std::vector<tt::graphlib::NodeContext> &inputs,
+        const tt::graphlib::NodeContext &output,
+        const tt::graphlib::NodeContext &gradient) const;
 
    private:
     OpType type_;
