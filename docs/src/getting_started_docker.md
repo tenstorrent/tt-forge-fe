@@ -91,7 +91,7 @@ out = compiled_model(a, b)
 print("compiled output:", out)
 ```
 
-6. If all goes well, you are now ready to move on to the next section, and run your first demo model.
+7. If all goes well, you are now ready to move on to the next section, and run your first demo model.
 
 ## Running Models in Docker
 This section shows you how to run a model using Docker. The provided example is from the TT-Forge repo. Do the following:
