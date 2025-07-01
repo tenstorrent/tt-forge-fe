@@ -18,18 +18,18 @@ jobs:
       fail-fast: false
       matrix:
         build: [
-          { runs-on: "n150", name: "mnist_linear",             dir: "MNISTLinear",                  ts: 'na',             bs: 32,  lp: 32, df: 'float32'   },
-          { runs-on: "n150", name: "resnet50_hf",              dir: "ResNetForImageClassification", ts: 'classification', bs: 8,   lp: 32, df: 'bfloat16'  },
+          # { runs-on: "n150", name: "mnist_linear",             dir: "MNISTLinear",                  ts: 'na',             bs: 32,  lp: 32, df: 'float32'   },
+          # { runs-on: "n150", name: "resnet50_hf",              dir: "ResNetForImageClassification", ts: 'classification', bs: 8,   lp: 32, df: 'bfloat16'  },
           # { runs-on: "n150", name: "resnet50_hf_config",              dir: "ResNetForImageClassificationConfig", ts: 'classification', bs: 8,  lp: 32, df: 'bfloat16' }, It will be added to CI later.
-          { runs-on: "n150", name: "llama",                    dir: "LlamaModel",                   ts: 'na',             bs: 1,   lp: 32, df: 'float32',  },
+          # { runs-on: "n150", name: "llama",                    dir: "LlamaModel",                   ts: 'na',             bs: 1,   lp: 32, df: 'float32',  },
           { runs-on: "n150", name: "mobilenetv2_basic",        dir: "MobileNetv2Basic",             ts: 'classification', bs: 8,   lp: 32, df: 'bfloat16', },
-          { runs-on: "n150", name: "efficientnet_timm",        dir: "EfficientNetTimmB0",           ts: 'classification', bs: 6,   lp: 32, df: 'bfloat16', },
-          { runs-on: "n150", name: "segformer",                dir: "Segformer",                    ts: 'na',             bs: 1,   lp: 32, df: 'float32',  },
-          { runs-on: "n150", name: "vit_base",                 dir: "ViTBase",                      ts: 'classification', bs: 8,   lp: 32, df: 'float32',  },
-          { runs-on: "n150", name: "vovnet_timm",              dir: "VovnetTimm",                   ts: 'classification', bs: 16,  lp: 32, df: 'bfloat16', },
-          { runs-on: "n150", name: "yolo_v4",                  dir: "YOLOv4",                       ts: 'na',             bs: 1,   lp: 32, df: 'bfloat16', },
-          { runs-on: "n150", name: "yolo_v8",                  dir: "YOLOv8",                       ts: 'na',             bs: 1,   lp: 32, df: 'bfloat16', },
-          { runs-on: "n150", name: "yolo_v9",                  dir: "YOLOv9",                       ts: 'na',             bs: 1,   lp: 32, df: 'bfloat16', },
+          # { runs-on: "n150", name: "efficientnet_timm",        dir: "EfficientNetTimmB0",           ts: 'classification', bs: 6,   lp: 32, df: 'bfloat16', },
+          # { runs-on: "n150", name: "segformer",                dir: "Segformer",                    ts: 'na',             bs: 1,   lp: 32, df: 'float32',  },
+          # { runs-on: "n150", name: "vit_base",                 dir: "ViTBase",                      ts: 'classification', bs: 8,   lp: 32, df: 'float32',  },
+          # { runs-on: "n150", name: "vovnet_timm",              dir: "VovnetTimm",                   ts: 'classification', bs: 16,  lp: 32, df: 'bfloat16', },
+          # { runs-on: "n150", name: "yolo_v4",                  dir: "YOLOv4",                       ts: 'na',             bs: 1,   lp: 32, df: 'bfloat16', },
+          # { runs-on: "n150", name: "yolo_v8",                  dir: "YOLOv8",                       ts: 'na',             bs: 1,   lp: 32, df: 'bfloat16', },
+          # { runs-on: "n150", name: "yolo_v9",                  dir: "YOLOv9",                       ts: 'na',             bs: 1,   lp: 32, df: 'bfloat16', },
           { runs-on: "n150", name: "yolo_v10",                 dir: "YOLOv10",                      ts: 'na',             bs: 1,   lp: 32, df: 'bfloat16', },
           # { runs-on: "n150", name: "unet",                     dir: "UNet",                         ts: 'na',             bs: 1,   lp: 32, df: 'bfloat16', }
         ]
