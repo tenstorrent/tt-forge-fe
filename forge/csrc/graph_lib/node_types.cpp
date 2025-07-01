@@ -497,10 +497,10 @@ void TaggedNode::add_tags(const TagHints &other_tags) { this->hints.insert(other
 
 const TagHints &TaggedNode::get_tags() const { return this->hints; }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Calculations. This is temporary implementation in ops transition period. It will be deleted once all ops are //
-// migrated from python to cpp.
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * Calculations. This is temporary implementation in ops transition period. It will be deleted once all ops are
+ * migrated from python to cpp.
+ */
 
 at::Tensor OpType::eval(const std::vector<at::Tensor> &tensors) const { return new_op_.eval(*this, tensors); }
 
