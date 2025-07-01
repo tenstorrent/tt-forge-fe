@@ -355,9 +355,12 @@ class Op
     {
     }
 
+<<<<<<< HEAD
     long multiply_initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
 >>>>>>> 0126ddbf (add definition of multiply in op.hpp)
+=======
+>>>>>>> 10c6549a (return neg_dims + remove unused functions)
    private:
     OpType type_;
     Attrs attrs_;
