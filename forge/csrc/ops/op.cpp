@@ -502,7 +502,7 @@ long Op::initial_flops_estimate(
     {
         case OpType::Abs: return abs::initial_flops_estimate(*this, inputs);
         case OpType::Constant: return 0;
-        case OpType::Multiply: return multiply_initial_flops_estimate(inputs);
+        case OpType::Multiply: return 0;
         default: return base_initial_flops_estimate(old_op_type, inputs);
     }
 }
