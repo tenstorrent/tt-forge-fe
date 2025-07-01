@@ -88,11 +88,11 @@ print("compiled output:", out)
 6. You have now set up the latest wheels for TT-Forge-FE, and can run any models you want inside your virtual environment.
 
 ## Other Set up Options
-If you want to keep your environment completely separate in a docker container, or you want to develop TT-Forge-FE further, this section links you to the pages with those options:
+If you want to keep your environment completely separate in a Docker container, or you want to develop TT-Forge-FE further, this section links you to the pages with those options:
 
 * [Setting up a Docker Container](getting_started_docker.md) - keep everything for running models in a container
 * [Building from Source](getting_started_build_from_source.md) - set up so you can develop TT-Forge-FE
 
 ## Where to Go Next
 
-Now that you have set up TT-Forge-FE, you can compile and run your own models. See [Running a Custom Model](running_a_custom_model.md) for more details.
+Now that you have set up TT-Forge-FE, you can compile and run other demos or your own models. See the [TT-Forge-FE folder in the TT-Forge repo](https://github.com/tenstorrent/tt-forge/tree/main/demos/tt-forge-fe) for more demo options.
