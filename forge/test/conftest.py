@@ -2,11 +2,11 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
-import signal
 from typing import List, Dict, Tuple
 from loguru import logger
 import subprocess
 import fnmatch
+import signal
 import threading
 
 import numpy as np
@@ -71,7 +71,7 @@ def pytest_runtest_setup(item):
             except (FileNotFoundError, json.JSONDecodeError):
                 watchdog_test_durations = {}
 
-        if tst.nodeid in watchdog_test_durations:
+        if tst in watchdog_test_durations:
             duration = watchdog_test_durations[tst] * 2
             if duration < watchdog_timer_minimum:
                 duration = watchdog_timer_minimum
