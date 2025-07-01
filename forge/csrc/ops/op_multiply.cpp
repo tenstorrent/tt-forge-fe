@@ -128,10 +128,8 @@ tt::graphlib::NodeContext Op::multiply_backward(
 
 long Op::multiply_initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
-    auto shape_tuple = multiply_shape(inputs);
-    graphlib::Shape out_shape = std::get<0>(shape_tuple);
-
-    return std::accumulate(out_shape.begin(), out_shape.end(), 1u, std::multiplies<uint32_t>());
+    TT_THROW("got inside multiply_initial_flops_estimate which should not be called");
+    unreachable();
 }
 
 }  // namespace ops
