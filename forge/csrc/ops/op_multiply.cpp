@@ -118,15 +118,10 @@ tt::graphlib::NodeContext Op::multiply_backward(
         {
             if (padded_input_dims[i] < padded_grad_dims[i])
             {
-                int neg_index = static_cast<int>(i) - static_cast<int>(max_dims);
-
-                // Create attribute dict for reduce_sum
-                graphlib::AttributeMap reduce_attrs;
-                reduce_attrs["keep_dim"] = true;
-                std::vector<int> dim_arg = {neg_index};
-                reduce_attrs["dim_arg"] = dim_arg;
-
-                op_grad = ac.autograd->create_op(ac, graphlib::OpType("reduce_sum"), {op_grad}, reduce_attrs);
+                int dim = static_cast<int>(i);
+                Attrs named_attrs = {{"keep_dim", true}, {"dim_arg", dim}};
+                op_grad =
+                    ac.autograd->create_op(ac, graphlib::OpType("reduce_sum", {dim, true}, {}, named_attrs), {op_grad});
             }
         }
     }
