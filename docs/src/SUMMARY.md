@@ -3,8 +3,8 @@
 # Introduction
 - [Introduction](./introduction.md)
 - [Getting Started](./getting_started.md)
-- [Getting Started with Docker](./getting_started_docker.md)
-- [Getting Started with Building from Source](./getting_started_build_from_source.md)
+    - [Getting Started with Docker](./getting_started_docker.md)
+    - [Getting Started with Building from Source](./getting_started_build_from_source.md)
 - [Architecture Overview](./architecture_overview.md)
 
 # Project setup
