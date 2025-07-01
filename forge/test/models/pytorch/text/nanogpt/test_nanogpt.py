@@ -5,6 +5,7 @@
 import pytest
 import torch
 from transformers import AutoModel, AutoTokenizer
+from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_mask
 
 import forge
 from forge.forge_property_utils import (
@@ -17,14 +18,19 @@ from forge.forge_property_utils import (
 from forge.verify.verify import verify
 
 
-# Wrapper to get around attention mask
-class Wrapper(torch.nn.Module):
+class GPTModelWrapper(torch.nn.Module):
     def __init__(self, model):
         super().__init__()
         self.model = model
 
     def forward(self, input_ids, attention_mask):
-        return self.model(input_ids, None, attention_mask)
+        inputs_embeds = self.model.wte(input_ids)
+        past_key_values_length = 0
+        causal_attention_mask = _prepare_4d_causal_attention_mask(
+            attention_mask, input_ids.shape, inputs_embeds, past_key_values_length
+        )
+        output = self.model(attention_mask=causal_attention_mask, inputs_embeds=inputs_embeds)
+        return output
 
 
 @pytest.mark.nightly
@@ -58,14 +64,15 @@ def test_nanogpt_text_generation(variant):
         input_prompt,
         return_tensors="pt",
         max_length=150,
-        padding=True,
+        padding="max_length",
         truncation=True,
     )
     input_ids = inputs["input_ids"]
     attn_mask = inputs["attention_mask"]
     inputs = [input_ids, attn_mask]
 
-    framework_model = Wrapper(model)
+    framework_model = GPTModelWrapper(model)
+    framework_model.eval()
 
     # Forge compile framework model
     compiled_model = forge.compile(

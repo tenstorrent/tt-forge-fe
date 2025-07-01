@@ -110,3 +110,36 @@ def test_clamp(input_shape, clamp_min, clamp_max, dtype):
 
     compiled_model = forge.compile(onnx_model, inputs)
     verify(inputs, model, compiled_model)
+
+
+@pytest.mark.push
+def test_rotary_pos_emb():
+    class RotaryPosEmb(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, q, cos, sin):
+            cos = cos.unsqueeze(1)
+            sin = sin.unsqueeze(1)
+
+            rotary_dim = cos.shape[-1]
+            q_rot, q_pass = q[..., :rotary_dim], q[..., rotary_dim:]
+
+            q_embed = torch.cat([(q_rot * cos) + (self.rotate_half(q_rot) * sin), q_pass], dim=3)
+            return q_embed
+
+        def rotate_half(self, x):
+            x1 = x[..., : x.shape[-1] // 2]
+            x2 = x[..., x.shape[-1] // 2 :]
+            return torch.cat((-x2, x1), dim=-1)
+
+    framework_model = RotaryPosEmb()
+    framework_model.eval()
+
+    query = torch.rand((1, 32, 256, 96))
+    cos_emb = torch.rand([1, 256, 96])
+    sin_emb = torch.rand([1, 256, 96])
+    inputs = [query, cos_emb, sin_emb]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    verify(inputs, framework_model, compiled_model)

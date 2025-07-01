@@ -3,13 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-import torch
-from transformers import (
-    AutoModelForCausalLM,
-    AutoTokenizer,
-    GemmaConfig,
-    GemmaForCausalLM,
-)
+from transformers import AutoModelForCausalLM, AutoTokenizer, GemmaForCausalLM
 
 import forge
 from forge.forge_property_utils import (
@@ -23,6 +17,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
+from test.models.models_utils import TextModelWrapper
 from test.models.pytorch.text.gemma.model_utils.model_utils import (
     generate_no_cache,
     pad_inputs,
@@ -38,7 +33,7 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b(variant):
-    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 48 GB)")
+    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 24 GB)")
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -49,15 +44,9 @@ def test_gemma_2b(variant):
         task=Task.TEXT_GENERATION,
     )
 
-    # Random see for reproducibility
-    torch.manual_seed(42)
-
-    config = download_model(GemmaConfig.from_pretrained, variant)
-    config_dict = config.to_dict()
-    config_dict["return_dict"] = False
-    config_dict["use_cache"] = False
-    config = GemmaConfig(**config_dict)
-    framework_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
+    model = download_model(GemmaForCausalLM.from_pretrained, variant, use_cache=False)
+    framework_model = TextModelWrapper(model=model, text_embedding=model.model.embed_tokens)
+    framework_model.eval()
 
     # Load tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -65,15 +54,13 @@ def test_gemma_2b(variant):
 
     # Sample input
     prompt = "What is your favorite city?"
-    inputs = tokenizer(prompt, return_tensors="pt")
-
-    # Sanity run
-    generate_ids = framework_model.generate(inputs.input_ids, max_length=30)
-    generated_text = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[
-        0
-    ]
-
-    print(f"Sanity run generated text: {generated_text}")
+    inputs = tokenizer(
+        prompt,
+        return_tensors="pt",
+        max_length=128,
+        padding="max_length",
+        truncation=True,
+    )
 
     input_ids = inputs["input_ids"]
     attn_mask = inputs["attention_mask"]

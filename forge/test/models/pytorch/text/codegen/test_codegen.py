@@ -4,8 +4,7 @@
 # CodeGen Demo - CasualLM
 
 import pytest
-import torch
-from transformers import AutoTokenizer, CodeGenForCausalLM, CodeGenModel
+from transformers import AutoTokenizer, CodeGenForCausalLM
 
 import forge
 from forge.forge_property_utils import (
@@ -17,15 +16,8 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.models_utils import (
-    _prepare_4d_causal_attention_mask_with_cache_position,
-)
+from test.models.models_utils import TextModelWrapper
 from test.utils import download_model
-
-CodeGenModel._prepare_4d_causal_attention_mask_with_cache_position = (
-    _prepare_4d_causal_attention_mask_with_cache_position
-)
-
 
 variants = [
     "Salesforce/codegen-350M-mono",
@@ -35,7 +27,6 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_codegen(variant):
 
@@ -51,7 +42,8 @@ def test_codegen(variant):
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.add_special_tokens({"pad_token": "[PAD]"})
-    framework_model = download_model(CodeGenForCausalLM.from_pretrained, variant, use_cache=False, return_dict=False)
+    model = download_model(CodeGenForCausalLM.from_pretrained, variant, use_cache=False)
+    model.eval()
 
     # Input prompt
     input_prompt = "def hello_world():"
@@ -61,27 +53,15 @@ def test_codegen(variant):
         input_prompt,
         return_tensors="pt",
         max_length=256,
-        pad_to_max_length=True,
+        padding="max_length",
         truncation=True,
     )
     input_ids = inputs["input_ids"]
     attn_mask = inputs["attention_mask"]
-
-    # Wrapper to get around attention mask
-    class Wrapper(torch.nn.Module):
-        def __init__(self, model):
-            super().__init__()
-            self.model = model
-
-        def forward(self, input_ids, attention_mask):
-            return self.model(input_ids, None, attention_mask)
-
-    framework_model = Wrapper(framework_model)
-
-    # Sanity run
-    attn_mask = attn_mask.to(torch.float32)
-
     inputs = [input_ids, attn_mask]
+
+    framework_model = TextModelWrapper(model=model, text_embedding=model.transformer.wte)
+    framework_model.eval()
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)

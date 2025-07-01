@@ -63,7 +63,7 @@ def test_whisper_large_v3_speech_translation(variant):
     model_config = WhisperConfig.from_pretrained(variant)
     framework_model = Wrapper(framework_model)
 
-    sample = torch.load("forge/test/models/files/samples/audio/1272-128104-0000.pt")
+    sample = torch.load("forge/test/models/files/samples/audio/1272-128104-0000.pt", weights_only=False)
     sample_audio = sample["audio"]["array"]
     processed_inputs = processor(sample_audio, return_tensors="pt", sampling_rate=16000)
     input_features = processed_inputs.input_features

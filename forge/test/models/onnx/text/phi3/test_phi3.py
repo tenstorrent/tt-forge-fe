@@ -2,10 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from transformers import (
-    AutoTokenizer,
-    Phi3ForCausalLM,
-)
+from transformers import AutoTokenizer
 
 import forge
 import subprocess
@@ -36,10 +33,6 @@ def test_phi3_causal_lm_onnx(variant, forge_tmp_path):
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, return_tensors="pt", trust_remote_code=True)
     tokenizer.add_special_tokens({"pad_token": "[PAD]"})
-    torch_model = download_model(
-        Phi3ForCausalLM.from_pretrained, variant, trust_remote_code=True, use_cache=False, return_dict=False
-    )
-    torch_model.eval()
 
     # prepare input
     input_prompt = "Africa is an emerging economy because"
@@ -47,7 +40,7 @@ def test_phi3_causal_lm_onnx(variant, forge_tmp_path):
         input_prompt,
         return_tensors="pt",
         max_length=256,
-        pad_to_max_length=True,
+        padding="max_length",
         truncation=True,
     )
     input_ids = inputs["input_ids"]

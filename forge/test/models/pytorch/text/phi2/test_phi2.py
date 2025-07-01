@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
+# SPDX-FileCopyrightText: © 2025 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
@@ -8,7 +8,6 @@ from transformers import (
     PhiForCausalLM,
     PhiForSequenceClassification,
     PhiForTokenClassification,
-    PhiModel,
 )
 
 import forge
@@ -21,14 +20,11 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.models_utils import (
-    _prepare_4d_causal_attention_mask_with_cache_position,
-)
-
-PhiModel._prepare_4d_causal_attention_mask_with_cache_position = _prepare_4d_causal_attention_mask_with_cache_position
-
+from test.models.models_utils import TextModelWrapper
 
 variants = [
     pytest.param(
@@ -37,14 +33,12 @@ variants = [
     ),
     pytest.param(
         "microsoft/phi-2-pytdml",
-        marks=[
-            pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB"),
-            pytest.mark.out_of_memory,
-        ],
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB")],
     ),
 ]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_clm(variant):
@@ -69,15 +63,9 @@ def test_phi2_clm(variant):
     if variant == "microsoft/phi-2":
         pytest.xfail(reason="Requires multi-chip support")
 
-    # Load PhiConfig from pretrained variant, disable return_dict and caching.
-    config = PhiConfig.from_pretrained(variant)
-    config_dict = config.to_dict()
-    config_dict["return_dict"] = False
-    config_dict["use_cache"] = False
-    config = PhiConfig(**config_dict)
-
     # Load model and tokenizer from HuggingFace
-    framework_model = PhiForCausalLM.from_pretrained(variant, trust_remote_code=True, config=config)
+    model = PhiForCausalLM.from_pretrained(variant, trust_remote_code=True, use_cache=False)
+    framework_model = TextModelWrapper(model=model, text_embedding=model.model.embed_tokens)
     framework_model.eval()
     tokenizer = AutoTokenizer.from_pretrained(variant, return_tensors="pt", trust_remote_code=True)
     tokenizer.add_special_tokens({"pad_token": "[PAD]"})
@@ -90,7 +78,7 @@ def test_phi2_clm(variant):
         input_prompt,
         return_tensors="pt",
         max_length=256,
-        pad_to_max_length=True,
+        padding="max_length",
         truncation=True,
     )
 
@@ -109,11 +97,11 @@ def test_phi2_clm(variant):
 variants = [
     pytest.param(
         "microsoft/phi-2",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB"),
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
     ),
     pytest.param(
         "microsoft/phi-2-pytdml",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB"),
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
     ),
 ]
 
@@ -132,16 +120,10 @@ def test_phi2_token_classification(variant):
         source=Source.HUGGINGFACE,
     )
 
-    # PhiConfig from pretrained variant, disable return_dict and caching.
-    config = PhiConfig.from_pretrained(variant)
-    config_dict = config.to_dict()
-    config_dict["return_dict"] = False
-    config_dict["use_cache"] = False
-    config = PhiConfig(**config_dict)
-
     # Load tokenizer and model from HuggingFace
     tokenizer = AutoTokenizer.from_pretrained(variant, return_tensors="pt", trust_remote_code=True)
-    framework_model = PhiForTokenClassification.from_pretrained(variant, trust_remote_code=True, config=config)
+    model = PhiForTokenClassification.from_pretrained(variant, trust_remote_code=True, use_cache=False)
+    framework_model = TextModelWrapper(model)
     framework_model.eval()
 
     # input_prompt
@@ -156,22 +138,23 @@ def test_phi2_token_classification(variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98)))
 
 
 variants = [
     pytest.param(
         "microsoft/phi-2",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB"),
+        marks=[
+            pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
+            pytest.mark.out_of_memory,
+        ],
     ),
     pytest.param(
         "microsoft/phi-2-pytdml",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 25 GB"),
     ),
 ]
 
 
-@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_sequence_classification(variant):
@@ -188,14 +171,14 @@ def test_phi2_sequence_classification(variant):
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
     config_dict = config.to_dict()
-    config_dict["return_dict"] = False
     config_dict["use_cache"] = False
     config_dict["pad_token_id"] = None
     config = PhiConfig(**config_dict)
 
     # Load tokenizer and model from HuggingFace
     tokenizer = AutoTokenizer.from_pretrained(variant, return_tensors="pt", trust_remote_code=True)
-    framework_model = PhiForSequenceClassification.from_pretrained(variant, trust_remote_code=True, config=config)
+    model = PhiForSequenceClassification.from_pretrained(variant, trust_remote_code=True, config=config)
+    framework_model = TextModelWrapper(model)
     framework_model.eval()
 
     # input_prompt

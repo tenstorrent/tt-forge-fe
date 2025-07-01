@@ -23,16 +23,6 @@ from forge.verify.verify import verify
 from test.utils import download_model
 
 
-# Wrapper to get around past key values
-class Wrapper(torch.nn.Module):
-    def __init__(self, model):
-        super().__init__()
-        self.model = model
-
-    def forward(self, input_ids, attention_mask):
-        return self.model(input_ids, None, attention_mask)
-
-
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",
@@ -61,16 +51,13 @@ def test_gpt2_text_gen(variant):
     input_ids = torch.cat(
         [torch.randint(1, model.config.vocab_size, (1, 255)), torch.zeros(1, 1, dtype=torch.int64)], dim=-1
     ).to(torch.int64)
-    attn_mask = torch.ones(1, 256)
-    inputs = [input_ids, attn_mask]
-
-    framework_model = Wrapper(model)
+    inputs = [input_ids]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -97,18 +84,17 @@ def test_gpt2_sequence_classification(variant):
         AutoModelForSequenceClassification.from_pretrained, variant, return_dict=False, use_cache=False
     )
     model.eval()
-    framework_model = Wrapper(model)
 
     # Prepare input
     test_input = "This is a sample text from "
     input_tokens = tokenizer(test_input, return_tensors="pt")
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    inputs = [input_tokens["input_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, model, compiled_model)
 
     # post processing
     predicted_value = co_out[0].argmax(-1).item()
