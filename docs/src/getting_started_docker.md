@@ -1,4 +1,4 @@
-# Getting Started with Docker and Tenstorrent
+# Getting Started with Docker
 This document walks you through how to set up TT-Forge-FE using a Docker image. There are two other available options for getting started:
 * [Installing a Wheel](getting_started.md) - if you do not want to use Docker, and prefer to use a virtual environment by itself instead, use this method.
 * [Building from Source](getting_started_build_from_source.md) - if you plan to develop TT-Forge-FE further, you must build from source, and should use this method.
