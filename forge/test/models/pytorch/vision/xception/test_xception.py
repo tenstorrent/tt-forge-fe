@@ -38,7 +38,7 @@ def generate_model_xception_imgcls_timm(variant):
     img = Image.open(file_path).convert("RGB")
     img_tensor = transform(img).unsqueeze(0)
 
-    return framework_model.to(torch.bfloat16), [img_tensor.to(torch.bfloat16)]
+    return framework_model, [img_tensor]
 
 
 params = [
@@ -67,6 +67,8 @@ def test_xception_timm(variant):
     )
 
     (framework_model, inputs) = generate_model_xception_imgcls_timm(variant)
+    framework_model.to(torch.bfloat16)
+    inputs = [inputs[0].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)

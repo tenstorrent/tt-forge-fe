@@ -22,4 +22,4 @@ def Constant(name: str, *, constant: float) -> Tensor:
     Tensor
         Forge tensor
     """
-    return op("constant", name, attrs=(constant,)).get_tensor()
+    return op("constant", name, **{"c": constant}).get_tensor()

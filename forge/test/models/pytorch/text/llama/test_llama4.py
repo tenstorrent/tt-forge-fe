@@ -32,4 +32,4 @@ def test_llama4(variant):
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Requires multi-chip support and transformers>=4.51.0")
+    pytest.xfail(reason="Requires upgrade of `transformers` version")

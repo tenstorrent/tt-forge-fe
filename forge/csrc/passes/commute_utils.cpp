@@ -925,53 +925,25 @@ void update_select_attr(
 {
     TT_ASSERT(select_op->op_name() == "select", "update_select_attr called for a non-select operation");
 
-    graphlib::OpType::Attrs named_attrs = select_op->named_attrs();
-    std::vector<graphlib::OpType::Attr> attr = select_op->op_attrs();
-
-    assert(attr.size() == 4 && "Invalid attribute size for select operation: expected 4");
-
-    std::get<int>(attr[0]) = select_dim;
-    named_attrs["select_dim"] = select_dim;
+    select_op->set_op_attr("select_dim", select_dim);
 
     if (begin.has_value())
-    {
-        std::get<int>(attr[1]) = begin.value();
-        named_attrs["begin"] = begin.value();
-    }
-    else
-    {
-        named_attrs["begin"] = std::get<int>(attr[1]);
-    }
+        select_op->set_op_attr("begin", begin.value());
 
     if (length.has_value())
-    {
-        std::get<int>(attr[2]) = length.value();
-        named_attrs["length"] = length.value();
-    }
-    else
-    {
-        named_attrs["length"] = std::get<int>(attr[2]);
-    }
+        select_op->set_op_attr("lenght", length.value());
 
     if (stride.has_value())
-    {
-        std::get<int>(attr[3]) = stride.value();
-        named_attrs["stride"] = stride.value();
-    }
-    else
-    {
-        named_attrs["stride"] = std::get<int>(attr[3]);
-    }
+        select_op->set_op_attr("stride", stride.value());
 
-    select_op->overwrite_op_named_attrs(attr, named_attrs);
     log_trace(
         LogGraphCompiler,
         "Updated select operation {}: select_dim = {}, begin = {}, length = {}, stride = {}",
         select_op->name(),
         select_dim,
-        begin.value_or(std::get<int>(attr[1])),
-        length.value_or(std::get<int>(attr[2])),
-        stride.value_or(std::get<int>(attr[3])));
+        begin.value_or(std::get<int>(select_op->op_attr("begin"))),
+        length.value_or(std::get<int>(select_op->op_attr("lenght"))),
+        stride.value_or(std::get<int>(select_op->op_attr("stride"))));
 }
 
 /**
@@ -985,9 +957,8 @@ void update_concat_attr(graphlib::OpNode *concatenate, int dim)
     attr.push_back(dim);
 
     graphlib::OpType::Attrs named_attrs = concatenate->named_attrs();
-    named_attrs["dim"] = dim;
+    concatenate->set_op_attr("dim", dim);
 
-    concatenate->overwrite_op_named_attrs(attr, named_attrs);
     log_trace(LogGraphCompiler, "Concatenate operation updated with new dim: {}", dim);
 }
 /**
@@ -1001,9 +972,8 @@ void update_vstack_attr(graphlib::OpNode *vstack, int slice_size)
     attr.push_back(slice_size);
 
     graphlib::OpType::Attrs named_attrs = vstack->named_attrs();
-    named_attrs["slice_size"] = slice_size;
+    vstack->set_op_attr("slice_size", slice_size);
 
-    vstack->overwrite_op_named_attrs(attr, named_attrs);
     log_trace(LogGraphCompiler, "Vstack operation updated with new slice_size: {}", slice_size);
 }
 /**
@@ -1015,17 +985,7 @@ void update_grouped_reduce_avg_attr(graphlib::OpNode *reduce, int reduce_dim)
         reduce->op_name().find("grouped_reduce_avg") != std::string::npos,
         "update_grouped_reduce_avg_attr called for non-grouped_reduce_avg op");
 
-    graphlib::OpType::Attrs named_attrs = reduce->named_attrs();
-    std::vector<graphlib::OpType::Attr> attr;
-
-    auto current_attrs = reduce->op_attrs();
-
-    attr.push_back(reduce_dim);
-    attr.push_back(current_attrs.size() > 1 ? current_attrs[1] : 1);  // Update groups attribute
-    attr.push_back(current_attrs.size() > 2 ? current_attrs[2] : 0);  // Update keep_dims attribute
-
-    named_attrs["reduce_dim"] = reduce_dim;
-    reduce->overwrite_op_named_attrs(attr, named_attrs);
+    reduce->set_op_attr("reduce_dim", reduce_dim);
 }
 /**
  * @brief Updates the attributes and named attributes of reduce operation(reduce_sum, reduce_avg, reduce_max) with new
@@ -1042,15 +1002,8 @@ void update_reduce_attr(graphlib::OpNode *reduce, int reduce_dim, bool keep_dim)
         update_grouped_reduce_avg_attr(reduce, reduce_dim);
         return;
     }
-    std::vector<graphlib::OpType::Attr> attr;
-    attr.push_back(reduce_dim);
-    attr.push_back(keep_dim);
-
-    graphlib::OpType::Attrs named_attrs = reduce->named_attrs();
-    named_attrs["dim"] = reduce_dim;
-    named_attrs["keep_dim"] = keep_dim;
-
-    reduce->overwrite_op_named_attrs(attr, named_attrs);
+    reduce->set_op_attr("dim", reduce_dim);
+    reduce->set_op_attr("keep_dim", keep_dim);
     log_trace(LogGraphCompiler, "Reduce operation updated with reduce_dim: {}", reduce_dim);
 }
 /**
@@ -1060,11 +1013,7 @@ void update_matmul_attr(graphlib::OpNode *matmul, int requant_zp)
 {
     TT_ASSERT(matmul->op_name() == "matmul", "update_matmul_attr called for a non-matmul operation");
 
-    auto matmul_attrs = matmul->op_attrs();
-    matmul_attrs.push_back(requant_zp);
-    graphlib::OpType::Attrs named_attrs = matmul->named_attrs();
-    named_attrs["requant_zp"] = requant_zp;
-    matmul->overwrite_op_named_attrs(matmul_attrs, named_attrs);
+    matmul->set_op_attr("requant_zp", requant_zp);
     log_trace(LogGraphCompiler, "MatMul operation updated with new requant_zp: {}", requant_zp);
 }
 /**
@@ -1084,9 +1033,7 @@ void update_conv_attr(graphlib::OpNode *conv, const std::vector<int> &pad_attrs)
             conv_attrs[pad_idx_offset + i] = pad_attrs[i];
         }
     }
-    graphlib::OpType::Attrs named_attrs = conv->named_attrs();
-    named_attrs["padding"] = pad_attrs;
-    conv->overwrite_op_named_attrs(conv_attrs, named_attrs);
+    conv->set_op_attr("padding", pad_attrs);
     log_trace(LogGraphCompiler, "Conv2d operation updated with new padding values: {}", pad_attrs);
 }
 /**
@@ -1098,18 +1045,12 @@ void update_reshape_attr(graphlib::OpNode *reshape, graphlib::Shape new_shape)
         return;
 
     TT_ASSERT(reshape->op_name() == "reshape", "update_reshape_attr called for a non-reshape operation");
-    graphlib::OpType::Attrs named_attrs;
-    std::vector<graphlib::OpType::Attr> attr;
     std::vector<int> shape_vector;
-    for (auto dim : new_shape)
-    {
-        int dim_value = static_cast<int>(dim);
-        shape_vector.push_back(dim);
-        attr.push_back(dim_value);
-    }
-    named_attrs["shape"] = shape_vector;
-    reshape->overwrite_op_named_attrs(attr, named_attrs);
+    for (auto dim : new_shape) shape_vector.push_back(dim);
+
+    reshape->set_op_attr("shape", shape_vector);
 }
+
 std::pair<bool, std::pair<std::vector<int>, std::vector<int>>> handle_shape_change_through_bcast(
     graphlib::Graph *graph,
     graphlib::OpNode *initial_op,

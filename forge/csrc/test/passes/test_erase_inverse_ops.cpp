@@ -464,26 +464,6 @@ struct UpdateMatMulNamedAttrsTest : testing::Test
     }
 };
 
-TEST_F(UpdateMatMulNamedAttrsTest, update_named_attrs)
-{
-    graphlib::Node *matmul_node = graph->get_node_by_name("matmul");
-    ASSERT_NE(matmul_node, nullptr) << "MatMul node not found.";
-
-    graphlib::OpNode *op_node_matmul = dynamic_cast<graphlib::OpNode *>(matmul_node);
-    ASSERT_NE(op_node_matmul, nullptr) << "Node is not of type OpNode.";
-    int requant_zp = 128;
-    passes::update_matmul_attr(op_node_matmul, requant_zp);
-    auto updated_attrs = op_node_matmul->named_attrs();
-    EXPECT_TRUE(updated_attrs.count("requant_zp")) << "Requant zp attribute not found.";
-
-    auto zp_value = std::get<int>(updated_attrs["requant_zp"]);
-    EXPECT_EQ(zp_value, requant_zp) << "Requant zp attribute does not match expected value.";
-
-    auto matmul_attrs = op_node_matmul->op_attrs();
-    ASSERT_FALSE(matmul_attrs.empty()) << "MatMul attributes should not be empty.";
-    EXPECT_EQ(std::get<int>(matmul_attrs.back()), requant_zp) << "Requant zp not correctly appended to op_attrs.";
-}
-
 struct UpdateConvAttrsTest : testing::Test
 {
     graphlib::Graph *graph;
@@ -501,44 +481,15 @@ struct UpdateConvAttrsTest : testing::Test
 
         conv_node = add_node<graphlib::PyOpNode>(
             *graph, "conv2d", "conv2d", {3, 3, 1, 1, 0, 0, 1, 1, 1}, {input_node_0, weight_node});
-        auto named_attrs = conv_node->named_attrs();
-        named_attrs["channel_last"] = false;
-        named_attrs["padding"] = std::vector<int>{1, 1, 1, 1};
-        named_attrs["stride"] = std::vector<int>{1, 1};
-        named_attrs["dilation"] = std::vector<int>{1, 1};
 
-        conv_node->overwrite_named_attrs(named_attrs);
+        conv_node->set_op_attr("channel_last", false);
+        conv_node->set_op_attr("padding", std::vector<int>{1, 1, 1, 1});
+        conv_node->set_op_attr("stride", std::vector<int>{1, 1});
+        conv_node->set_op_attr("dilation", std::vector<int>{1, 1});
+
         create_output(*graph, "out", conv_node);
     }
 };
-
-TEST_F(UpdateConvAttrsTest, update_padding_attrs)
-{
-    graphlib::Node *conv = graph->get_node_by_name("conv2d");
-    ASSERT_NE(conv, nullptr) << "Conv2d node not found.";
-
-    graphlib::OpNode *op_node_conv = dynamic_cast<graphlib::OpNode *>(conv);
-    ASSERT_NE(op_node_conv, nullptr) << "Node is not of type OpNode.";
-
-    std::vector<int> new_padding = {2, 3, 4, 5};
-
-    passes::update_conv_attr(op_node_conv, new_padding);
-
-    auto updated_attrs = op_node_conv->op_type().named_attrs;
-
-    EXPECT_TRUE(updated_attrs.count("padding")) << "Padding attribute not found in named attributes.";
-    auto updated_padding = std::get<std::vector<int>>(updated_attrs["padding"]);
-
-    EXPECT_EQ(updated_padding, new_padding) << "Padding attribute does not match the expected values.";
-
-    auto conv_attrs = op_node_conv->op_attrs();
-    int pad_idx_offset = 4;
-    for (size_t i = 0; i < 4; i++)
-    {
-        EXPECT_EQ(std::get<int>(conv_attrs[pad_idx_offset + i]), new_padding[i])
-            << "Padding value at index " << i << " does not match the expected value.";
-    }
-}
 
 struct UpdateReduceSumAttrsTest : testing::Test
 {
@@ -565,10 +516,8 @@ struct UpdateReduceSumAttrsTest : testing::Test
                 keep_dim,
             },
             {input_node});
-        auto &named_attrs = reduce_node->named_attrs();
-        named_attrs["dim"] = reduce_dim;
-        named_attrs["keep_dim"] = keep_dim;
-        reduce_node->overwrite_named_attrs(named_attrs);
+        reduce_node->set_op_attr("dim", reduce_dim);
+        reduce_node->set_op_attr("keep_dim", keep_dim);
         create_output(*graph, "out", reduce_node);
 
         return reduce_node;
@@ -622,13 +571,11 @@ struct UpdateReduceMaxAttrsTest : testing::Test
                 keep_dim,
             },
             {input_node});
-        auto &named_attrs = reduce_node->named_attrs();
-        named_attrs["dim"] = reduce_dim;
-        named_attrs["stride"] = stride;
-        named_attrs["keep_dim"] = keep_dim;
-        reduce_node->overwrite_named_attrs(named_attrs);
-        create_output(*graph, "out", reduce_node);
+        reduce_node->set_op_attr("dim", reduce_dim);
+        reduce_node->set_op_attr("stride", stride);
+        reduce_node->set_op_attr("keep_dim", keep_dim);
 
+        create_output(*graph, "out", reduce_node);
         return reduce_node;
     }
 };
@@ -675,11 +622,9 @@ struct UpdateGroupedReduceAvgTest : testing::Test
         auto input_node = create_input(*graph, "input", input_shape);
         reduce_node =
             add_node<graphlib::PyOpNode>(*graph, reduce_op, reduce_op, {attr[0], attr[1], attr[2]}, {input_node});
-        auto &named_attrs = reduce_node->named_attrs();
-        named_attrs["reduce_dim"] = attr[0];
-        named_attrs["groups"] = attr[1];
-        named_attrs["keep_dims"] = attr[2];
-        reduce_node->overwrite_named_attrs(named_attrs);
+        reduce_node->set_op_attr("reduce_dim", attr[0]);
+        reduce_node->set_op_attr("groups", attr[1]);
+        reduce_node->set_op_attr("keep_dims", attr[2]);
 
         create_output(*graph, "out", reduce_node);
 

@@ -138,12 +138,23 @@ class TestVerification:
         #     value_range = ValueRanges.SMALL_POSITIVE
 
         operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
-
+        value_range = ValueRanges.LARGE
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
         model_type = cls.MODEL_TYPES[test_vector.input_source]
-        pytorch_model = model_type(
-            operator=operator, opname=test_vector.operator, shape=test_vector.input_shape, kwargs=kwargs
+        pytorch_model = (
+            model_type(
+                operator=operator,
+                opname=test_vector.operator,
+                shape=test_vector.input_shape,
+                kwargs=kwargs,
+                dtype=test_vector.dev_data_format,
+                value_range=value_range,
+            )
+            if test_vector.input_source in (InputSource.CONST_EVAL_PASS,)
+            else model_type(
+                operator=operator, opname=test_vector.operator, shape=test_vector.input_shape, kwargs=kwargs
+            )
         )
         # forge_model = forge.PyTorchModule(pytorch_model.model_name, pytorch_model)
 
@@ -165,7 +176,7 @@ class TestVerification:
             input_params=input_params,
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
-            value_range=ValueRanges.LARGE,
+            value_range=value_range,
             warm_reset=warm_reset,
             deprecated_verification=False,
             verify_config=verify_config,

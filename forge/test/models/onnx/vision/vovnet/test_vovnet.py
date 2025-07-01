@@ -15,7 +15,15 @@ from test.models.pytorch.vision.vovnet.model_utils.model_utils import (
     preprocess_timm_model,
 )
 from test.models.pytorch.vision.vovnet.model_utils.src_vovnet_stigma import vovnet39, vovnet57
-from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    Source,
+    Task,
+    ModelArch,
+    record_model_properties,
+    ModelGroup,
+    ModelPriority,
+)
 from test.utils import download_model
 
 
@@ -144,6 +152,13 @@ def generate_model_vovnet_imgcls_timm_pytorch(variant):
 @pytest.mark.parametrize("variant", ["ese_vovnet19b_dw.ra_in1k"])
 def test_vovnet_timm_onnx(variant, forge_tmp_path):
 
+    if variant == "ese_vovnet19b_dw.ra_in1k":
+        group = ModelGroup.RED
+        priority = ModelPriority.P1
+    else:
+        group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
+
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
@@ -151,6 +166,8 @@ def test_vovnet_timm_onnx(variant, forge_tmp_path):
         variant=variant,
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
+        group=group,
+        priority=priority,
     )
 
     framework_model, inputs, _ = generate_model_vovnet_imgcls_timm_pytorch(

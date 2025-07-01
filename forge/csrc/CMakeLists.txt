@@ -44,6 +44,7 @@ add_subdirectory(runtime)
 add_subdirectory(tt_torch_device)
 add_subdirectory(test)
 add_subdirectory(verif)
+add_subdirectory(ops)
 
 ### ttforge_csrc_objs ###
 
@@ -84,6 +85,7 @@ target_link_libraries(ttforge_csrc PRIVATE
     runtime_testutils
     ttforge_csrc_objs
     verif
+    ops
 
     TTMLIRCompiler
     TTMLIRRuntime

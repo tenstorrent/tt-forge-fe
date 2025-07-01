@@ -43,10 +43,11 @@ class TestVerification:
     ):
 
         operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
+
         value_range = ValueRanges.SMALL
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
-        model_type = cls.MODEL_TYPES[test_vector.input_source]
 
+        model_type = cls.MODEL_TYPES[test_vector.input_source]
         pytorch_model = (
             model_type(
                 operator, test_vector.input_shape, kwargs, dtype=test_vector.dev_data_format, value_range=value_range

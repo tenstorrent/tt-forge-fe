@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+import math
 from typing import List, Dict
 from loguru import logger
 
@@ -11,6 +12,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
 
 from test.operators.utils import (
+    TensorUtils,
     VerifyUtils,
     InputSource,
     TestVector,
@@ -68,7 +70,7 @@ class ModelConstEvalPass(torch.nn.Module):
 
     model_name = "model_op_src_const_eval_pass"
 
-    def __init__(self, operator, opname, shape, kwargs):
+    def __init__(self, operator, opname, shape, kwargs, dtype=None, value_range=None):
         super(ModelConstEvalPass, self).__init__()
         self.testname = "Concatenate_pytorch_operator_" + opname + "_test_op_src_const_eval_pass"
         self.operator = operator
@@ -76,9 +78,21 @@ class ModelConstEvalPass(torch.nn.Module):
         self.shape = shape
         self.kwargs = kwargs
 
+        g = torch.Generator().manual_seed(17)
+        const_shape = shape[0]
         self.constants = tuple()
-        for _ in range(len(shape)):
-            self.constants += (torch.rand(*self.shape[0]) - 0.5,)
+        for i in range(len(shape)):
+            random_seed = torch.randint(low=math.prod(const_shape), high=2**32 - 1, size=(1,), generator=g).item()
+            g.manual_seed(random_seed)
+            self.constants += (
+                TensorUtils.create_torch_constant(
+                    input_shape=const_shape,
+                    dev_data_format=dtype,
+                    value_range=value_range,
+                    random_seed=random_seed,
+                ),
+            )
+            self.register_buffer(f"constant{i}", self.constants[i])
 
     def forward(self, *x: torch.Tensor):
         v1 = self.operator(self.constants, **self.kwargs)
@@ -111,14 +125,23 @@ class TestVerification:
 
         operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
 
+        value_range = ValueRanges.SMALL
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
         model_type = cls.MODEL_TYPES[test_vector.input_source]
-        pytorch_model = model_type(
-            operator=operator,
-            opname=test_vector.operator,
-            shape=test_vector.input_shape,
-            kwargs=kwargs,
+        pytorch_model = (
+            model_type(
+                operator=operator,
+                opname=test_vector.operator,
+                shape=test_vector.input_shape,
+                kwargs=kwargs,
+                dtype=test_vector.dev_data_format,
+                value_range=value_range,
+            )
+            if test_vector.input_source in (InputSource.CONST_EVAL_PASS,)
+            else model_type(
+                operator=operator, opname=test_vector.operator, shape=test_vector.input_shape, kwargs=kwargs
+            )
         )
 
         dim = test_vector.kwargs["dim"]
@@ -146,7 +169,7 @@ class TestVerification:
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             warm_reset=warm_reset,
-            value_range=ValueRanges.SMALL,
+            value_range=value_range,
             deprecated_verification=False,
             verify_config=verify_config,
         )

@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+import math
 import torch
 
 from typing import List, Dict
@@ -10,7 +11,7 @@ from loguru import logger
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
 
-from test.operators.utils import VerifyUtils
+from test.operators.utils import TensorUtils, VerifyUtils
 from test.operators.utils import FailingReasons
 from test.operators.utils import ValueRanges
 from test.operators.utils import InputSource
@@ -47,12 +48,24 @@ class ModelFromHost(torch.nn.Module):
 
 
 class ModelConstEvalPass(torch.nn.Module):
-    def __init__(self, operator, shape_1, shape_2):
+    def __init__(self, operator, shape_1, shape_2, dtype, value_range):
         super().__init__()
         self.testname = "Matmul_operator_test_op_src_const_eval_pass"
         self.operator = operator
-        self.c1 = (torch.rand(shape_1, requires_grad=False) - 0.5).detach()
-        self.c2 = (torch.rand(shape_2, requires_grad=False) - 0.5).detach()
+        self.c1 = TensorUtils.create_torch_constant(
+            input_shape=shape_1,
+            dev_data_format=dtype,
+            value_range=value_range,
+            random_seed=math.prod(shape_1),
+        )
+        self.c2 = TensorUtils.create_torch_constant(
+            input_shape=shape_2,
+            dev_data_format=dtype,
+            value_range=value_range,
+            random_seed=sum(shape_2),
+        )
+        self.register_buffer("constant1", self.c1)
+        self.register_buffer("constant2", self.c2)
 
     def forward(self, x, y):
         mm1 = self.operator(self.c1, self.c2)
@@ -78,6 +91,8 @@ class TestVerification:
         warm_reset: bool = False,
     ):
         model_type = cls.MODEL_TYPES[test_vector.input_source]
+
+        value_range = ValueRanges.SMALL
         operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
 
         if isinstance(test_vector.input_shape[0], int):
@@ -88,7 +103,9 @@ class TestVerification:
             input_shapes = [test_vector.input_shape[0], test_vector.input_shape[1]]
 
         if test_vector.input_source == InputSource.CONST_EVAL_PASS:
-            pytorch_model = model_type(operator, *input_shapes)
+            pytorch_model = model_type(
+                operator, *input_shapes, dtype=test_vector.dev_data_format, value_range=value_range
+            )
         else:
             pytorch_model = model_type(operator)
 
@@ -107,7 +124,7 @@ class TestVerification:
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             warm_reset=warm_reset,
-            value_range=ValueRanges.SMALL,
+            value_range=value_range,
             deprecated_verification=False,
             verify_config=verify_config,
         )

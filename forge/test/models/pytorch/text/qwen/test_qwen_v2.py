@@ -177,7 +177,4 @@ def test_qwen2_conditional_generation(variant):
         priority=ModelPriority.P1,
     )
 
-    if variant in ["Qwen/Qwen2.5-VL-72B-Instruct", "Qwen/QVQ-72B-Preview"]:
-        raise RuntimeError("Requires transformers>=4.49.0 and multi-chip support")
-    else:
-        raise RuntimeError("Requires transformers>=4.49.0")
+    pytest.xfail(reason="Requires upgrade of `transformers` version")

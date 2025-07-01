@@ -26,6 +26,7 @@
 #include "mlir/IR/Value.h"
 #include "mlir/IR/ValueRange.h"
 #include "passes/extract_unique_op_configuration.hpp"
+#include "runtime/tt_device.hpp"
 #include "utils/logger.hpp"
 
 // MLIR headers
@@ -170,8 +171,10 @@ class MLIRGenerator
     mlir::ModuleOp emit_mlir(tt::ForgeGraphModule &module)
     {
         graphModule_ = mlir::ModuleOp::create(get_module_location(module), module.name());
+
         graphModule_->setAttr(
-            mlir::tt::SystemDescAttr::name, mlir::tt::SystemDescAttr::getDefault(builder_.getContext()));
+            mlir::tt::ttcore::SystemDescAttr::name,
+            mlir::tt::ttcore::SystemDescAttr::getDefault(builder_.getContext(), get_device_arch()));
         builder_.setInsertionPointToStart(&graphModule_.getBodyRegion().front());
 
         // Collect all the supported TTIR operations
@@ -423,7 +426,8 @@ class MLIRGenerator
             llvm::SmallVector<mlir::NamedAttribute, 1> named_attributes;
             named_attributes.push_back(
                 builder_.getNamedAttr("ttir.name", builder_.getStringAttr(argument_node->name())));
-            named_attributes.push_back(builder_.getNamedAttr("tt.argument_type", get_argument_type(argument_node)));
+            named_attributes.push_back(
+                builder_.getNamedAttr(mlir::tt::ttcore::ArgumentTypeAttr::name, get_argument_type(argument_node)));
             func.setArgAttrs(i, named_attributes);
             log_trace(LogMLIRCompiler, "Set argument name {} for function argument {}.", argument_node->name(), i);
         }
@@ -640,6 +644,20 @@ class MLIRGenerator
         builder_.create<mlir::func::ReturnOp>(builder_.getUnknownLoc(), mlir::ValueRange(returnValues));
     }
 
+    /// Get device Architecture from TTSystem
+    mlir::tt::ttcore::Arch get_device_arch()
+    {
+        TTSystem &system = TTSystem::get_system();
+        TT_ASSERT(!system.devices.empty() && system.devices[0], "No available device found");
+        ARCH tt_arch = system.devices[0]->arch;
+        switch (tt_arch)
+        {
+            case ARCH::WORMHOLE_B0: return mlir::tt::ttcore::Arch::WormholeB0;
+            case ARCH::BLACKHOLE: return mlir::tt::ttcore::Arch::Blackhole;
+            default: TT_THROW("Unsupported architecture: {}", to_string_arch(tt_arch)); unreachable();
+        }
+    }
+
     /// Get the MLIR data type for a TTForge node.
     mlir::Type get_data_type(graphlib::Node *node)
     {
@@ -673,7 +691,7 @@ class MLIRGenerator
         return mlir::RankedTensorType::get(shape_vec, get_data_type(node));
     }
 
-    mlir::tt::ArgumentTypeAttr get_argument_type(graphlib::Node *node)
+    mlir::tt::ttcore::ArgumentTypeAttr get_argument_type(graphlib::Node *node)
     {
         auto input_node = node->as<graphlib::InputNode>();
         switch (input_node->input_type())
@@ -683,12 +701,15 @@ class MLIRGenerator
             case tt::graphlib::InputNodeType::Target:
             case tt::graphlib::InputNodeType::Gradient:
             case tt::graphlib::InputNodeType::Accumulator:
-                return mlir::tt::ArgumentTypeAttr::get(builder_.getContext(), mlir::tt::ArgumentType::Input);
+                return mlir::tt::ttcore::ArgumentTypeAttr::get(
+                    builder_.getContext(), mlir::tt::ttcore::ArgumentType::Input);
             case tt::graphlib::InputNodeType::Parameter:
             case tt::graphlib::InputNodeType::OptimizerParameter:
-                return mlir::tt::ArgumentTypeAttr::get(builder_.getContext(), mlir::tt::ArgumentType::Parameter);
+                return mlir::tt::ttcore::ArgumentTypeAttr::get(
+                    builder_.getContext(), mlir::tt::ttcore::ArgumentType::Parameter);
             case tt::graphlib::InputNodeType::Constant:
-                return mlir::tt::ArgumentTypeAttr::get(builder_.getContext(), mlir::tt::ArgumentType::Constant);
+                return mlir::tt::ttcore::ArgumentTypeAttr::get(
+                    builder_.getContext(), mlir::tt::ttcore::ArgumentType::Constant);
             default: throw std::runtime_error("Unknown input node type - cannot map to MLIR argument type");
         }
     }
@@ -803,7 +824,7 @@ class MLIRGenerator
         lowering_handler_map["conv2d_transpose"] =
             &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ConvTranspose2dOp>;
         lowering_handler_map["reshape"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ReshapeOp>;
-        lowering_handler_map["select"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SelectOp>;
+        lowering_handler_map["select"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::IndexSelectOp>;
         lowering_handler_map["sigmoid"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SigmoidOp>;
         lowering_handler_map["sine"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SinOp>;
         lowering_handler_map["softmax"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SoftmaxOp>;

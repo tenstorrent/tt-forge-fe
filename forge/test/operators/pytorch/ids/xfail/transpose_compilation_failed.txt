@@ -1,8 +1,0 @@
-# xfail_transpose_COMPILATION_FAILED ids
-
-transpose-FROM_HOST-{'dim0': 0, 'dim1': 1}-(1, 2, 3, 4)-torch.float16-HiFi4
-transpose-FROM_HOST-{'dim0': 0, 'dim1': 2}-(1, 2, 3, 4)-torch.float16-HiFi4
-transpose-FROM_HOST-{'dim0': 0, 'dim1': 3}-(1, 2, 3, 4)-torch.float16-HiFi4
-transpose-FROM_HOST-{'dim0': 1, 'dim1': 2}-(1, 2, 3, 4)-torch.float16-HiFi4
-transpose-FROM_HOST-{'dim0': 1, 'dim1': 3}-(1, 2, 3, 4)-torch.float16-HiFi4
-transpose-FROM_HOST-{'dim0': 2, 'dim1': 3}-(1, 2, 3, 4)-torch.float16-HiFi4

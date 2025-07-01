@@ -164,5 +164,4 @@ def test_gemma_pytorch_27b(variant):
         priority=ModelPriority.P1,
     )
 
-    # Force the test to fail explicitly
-    raise RuntimeError("Requires multi-chip support")
+    pytest.xfail(reason="Requires multi-chip support")

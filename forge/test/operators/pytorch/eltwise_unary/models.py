@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+import math
 import torch
 import torch.nn as nn
 
@@ -33,7 +34,7 @@ class ModelDirect(nn.Module):
 
 
 class ModelConstEvalPass(nn.Module):
-    def __init__(self, operator, shape: TensorShape, kwargs, dtype=None, value_range=None):
+    def __init__(self, operator, shape: TensorShape, kwargs, dtype, value_range):
         super().__init__()
         self.testname = "Element_wise_unary_operators_test_op_src_const_eval_pass"
         self.operator = operator
@@ -42,7 +43,9 @@ class ModelConstEvalPass(nn.Module):
             input_shape=shape,
             dev_data_format=dtype,
             value_range=value_range,
+            random_seed=math.prod(shape),
         )
+        self.register_buffer("constant", self.c)
 
     def forward(self, x):
         cc = self.operator(self.c, **self.kwargs)

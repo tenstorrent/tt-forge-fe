@@ -182,6 +182,25 @@ void tt_assert(
 
 }  // namespace tt::assert
 
+/**
+ * @brief Function to mark a code path as unreachable
+ *
+ * This function is marked [[noreturn]] and will trigger compiler-specific
+ * mechanisms to indicate unreachable code. It can be used to tell the compiler
+ * that a certain branch will not be taken, helping with optimization.
+ */
+[[noreturn]] inline void unreachable()
+{
+    // Uses compiler specific extensions if possible.
+    // Even if no extension is used, undefined behavior is still raised by
+    // an empty function body and the noreturn attribute.
+#if defined(_MSC_VER) && !defined(__clang__)  // MSVC
+    __assume(false);
+#else  // GCC, Clang
+    __builtin_unreachable();
+#endif
+}
+
 #define TT_ASSERT(condition, ...)                                                             \
     __builtin_expect(not(condition), 0)                                                       \
         ? ::tt::assert::tt_assert<false>(                                                     \

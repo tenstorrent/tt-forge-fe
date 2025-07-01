@@ -2360,13 +2360,54 @@ class LowerAdaptiveMaxPool(DFPatternCallback):
         self.pattern = is_op("nn.adaptive_max_pool2d")(wildcard())
 
     def callback(self, pre, post, node_map):
+        input_expr = post.args[0]
         input_shape = [int(dim) for dim in post.args[0].checked_type.shape]
         output_shape = [int(dim) for dim in pre.checked_type.shape]
 
         assert post.attrs.layout == "NCHW"
-        if input_shape[-1] != input_shape[-2]:
-            return post
-        assert output_shape[-1] == output_shape[-2], "Only support same factor of the output for H and W"
+
+        b, c, h, w = input_shape
+        out_h, out_w = output_shape[2], output_shape[3]
+
+        # Ensure output size is not larger than input size
+        assert out_h <= h and out_w <= w, "AdaptiveMaxPool2d output size must be <= input size"
+
+        # Use decomposition for non-square or asymmetric shapes
+        if (h != w) or (out_h != out_w):
+
+            pooled_rows = []
+
+            # Loop over output height index
+            for oh in range(out_h):
+                # Input height slice range
+                h_start = math.floor(oh * h / out_h)
+                h_end = math.ceil((oh + 1) * h / out_h)
+
+                row = []
+
+                # Loop over output width index
+                for ow in range(out_w):
+                    # Input width slice range
+                    w_start = math.floor(ow * w / out_w)
+                    w_end = math.ceil((ow + 1) * w / out_w)
+
+                    # Extract slice window from input
+                    window = tvm.relay.strided_slice(
+                        input_expr, begin=[0, 0, h_start, w_start], end=[b, c, h_end, w_end]
+                    )
+
+                    # Reduce over H and W using two-stage max
+                    pooled_h = tvm.relay.max(window, axis=2, keepdims=True)  # (B, C, 1, W')
+                    pooled = tvm.relay.max(pooled_h, axis=3, keepdims=True)  # (B, C, 1, 1)
+                    row.append(pooled)
+
+                # Concatenate width-wise
+                row_cat = tvm.relay.concatenate(row, axis=3)
+                pooled_rows.append(row_cat)
+
+            # Concatenate height-wise
+            result = tvm.relay.concatenate(pooled_rows, axis=2)
+            return result
 
         input_size = input_shape[-1]
         output_size = output_shape[-1]

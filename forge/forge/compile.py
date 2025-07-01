@@ -1352,7 +1352,7 @@ def generate_graph(
                 continue
 
         elif tensor.src_op.op_type == "constant":
-            constant_value = tensor.src_op.attrs[0]
+            constant_value = tensor.src_op.named_attrs["c"]
             constant = create_constant_input(
                 graph,
                 "constant_" + str(port_index) + "_" + graph.get_node_name(output),

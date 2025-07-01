@@ -61,7 +61,7 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
     mlir::DialectRegistry registry;
 
     registry.insert<
-        mlir::tt::TTCoreDialect,
+        mlir::tt::ttcore::TTCoreDialect,
         mlir::tt::ttir::TTIRDialect,
         mlir::tt::ttnn::TTNNDialect,
         mlir::arith::ArithDialect,

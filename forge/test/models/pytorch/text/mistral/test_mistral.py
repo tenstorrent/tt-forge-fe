@@ -129,7 +129,7 @@ def test_mistral_Nemo(variant):
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Requires multi-chip support")
+    pytest.xfail(reason="Requires multi-chip support")
 
 
 variants = ["mistralai/Mistral-Small-24B-Instruct-2501"]
@@ -152,7 +152,7 @@ def test_mistral_small_24b(variant):
     )
 
     # Force the test to fail explicitly
-    raise RuntimeError("Requires multi-chip support")
+    pytest.xfail(reason="Requires multi-chip support")
 
 
 variants = ["mistralai/Mistral-Large-Instruct-2411"]
@@ -175,4 +175,4 @@ def test_mistral_large(variant):
     )
 
     # Force the test to fail explicitly
-    raise RuntimeError("Requires multi-chip support")
+    pytest.xfail(reason="Requires multi-chip support")

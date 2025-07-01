@@ -32,7 +32,7 @@ def test_mplug_owl(variant):
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Requires multi-chip support")
+    pytest.xfail(reason="Requires multi-chip support")
 
 
 @pytest.mark.nightly
@@ -49,4 +49,4 @@ def test_mplug_owl2():
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Test is currently not executable due to model code dependency.")
+    pytest.xfail(reason="Test is currently not executable due to model code dependency.")

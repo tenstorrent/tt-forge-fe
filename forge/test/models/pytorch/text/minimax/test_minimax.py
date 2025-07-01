@@ -33,7 +33,7 @@ def test_minimax_text(variant):
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Requires multi-chip support")
+    pytest.xfail(reason="Requires multi-chip support")
 
 
 variants = ["MiniMaxAI/MiniMax-VL-01"]
@@ -55,4 +55,4 @@ def test_minimax_vl(variant):
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Requires multi-chip support")
+    pytest.xfail(reason="Requires multi-chip support")

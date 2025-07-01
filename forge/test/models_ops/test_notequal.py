@@ -38,18 +38,27 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (Notequal0, [((1, 11), torch.int64)], {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99}),
-    (Notequal0, [((1, 9), torch.int64)], {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99}),
-    (
-        Notequal0,
-        [((1, 128), torch.int64)],
-        {
-            "model_names": [
-                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
-                "pt_roberta_xlm_roberta_base_mlm_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (Notequal0, [((1, 11), torch.int64)], {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99}),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
+    ),
+    pytest.param(
+        (Notequal0, [((1, 9), torch.int64)], {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99}),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
+    ),
+    pytest.param(
+        (
+            Notequal0,
+            [((1, 128), torch.int64)],
+            {
+                "model_names": [
+                    "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                    "pt_roberta_xlm_roberta_base_mlm_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
 ]
 

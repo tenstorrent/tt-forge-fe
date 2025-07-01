@@ -14,10 +14,13 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.dla.model_utils.utils import load_dla_model
+from test.models.pytorch.vision.vision_utils.utils import load_timm_model_and_input
 
 variants = [
     "dla34",
