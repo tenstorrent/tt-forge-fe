@@ -129,5 +129,15 @@ tt::graphlib::NodeContext Op::add_backward(
     return result_grad;
 }
 
+long Op::add_initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const
+{
+    TT_ASSERT(inputs.size() == 2, "Add should have two inputs");
+
+    auto shape_tuple = add_shape(inputs);
+    graphlib::Shape out_shape = std::get<0>(shape_tuple);
+
+    return std::accumulate(out_shape.begin(), out_shape.end(), 1L, std::multiplies<long>());
+}
+
 }  // namespace ops
 }  // namespace tt

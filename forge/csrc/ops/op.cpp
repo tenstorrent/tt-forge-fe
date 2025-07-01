@@ -510,6 +510,7 @@ long Op::initial_flops_estimate(
     {
         case OpType::Abs: return abs::initial_flops_estimate(*this, inputs);
         case OpType::Constant: return 0;
+        case OpType::Add: return add::initial_flops_estimate(inputs);
         case OpType::Multiply: return 0;
         case OpType::Transpose: return 0;
         default: return base_initial_flops_estimate(old_op_type, inputs);
@@ -522,6 +523,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return false;
         case OpType::Constant: return false;
+        case OpType::Add: return false;
         case OpType::Multiply: return false;
         case OpType::Transpose: return true;
         default: return base_is_tm(old_op_type);
@@ -534,6 +536,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return true;
         case OpType::Constant: return false;
+        case OpType::Add: return true;
         case OpType::Multiply: return true;
         case OpType::Transpose: return false;
         default: return base_is_eltwise(old_op_type);
@@ -546,6 +549,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return true;
         case OpType::Constant: return false;
+        case OpType::Add: return false;
         case OpType::Multiply: return false;
         case OpType::Transpose: return false;
         default: return base_is_eltwise_unary(old_op_type);
@@ -558,6 +562,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return false;
         case OpType::Constant: return false;
+        case OpType::Add: return true;
         case OpType::Multiply: return true;
         case OpType::Transpose: return false;
         default: return base_is_eltwise_binary(old_op_type);
@@ -569,6 +574,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return false;
         case OpType::Constant: return false;
+        case OpType::Add: return false;
         case OpType::Multiply: return true;
         case OpType::Transpose: return false;
         default: return base_is_eltwise_nary(old_op_type);
