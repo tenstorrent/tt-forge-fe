@@ -206,8 +206,6 @@ bool replace_pattern_with_new_pattern(
 bool fuse_tm_sequences(tt::graphlib::Graph* graph, TMPatternPairs& pattern_map)
 {
     bool updated = true;
-    py::object eval_module = py::module_::import("forge.op.eval.forge");
-    py::function is_tm = eval_module.attr("is_tm");
     bool updated_anything = false;
     while (updated)
     {

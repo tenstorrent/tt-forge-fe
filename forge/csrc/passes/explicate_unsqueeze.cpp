@@ -27,7 +27,7 @@ void explicate_unsqueeze(graphlib::Graph *graph)
         {
             continue;
         }
-        if (graphlib::is_eltwise_binary(op))
+        if (op->is_eltwise_binary())
         {
             auto operand_a = graph->operands(node)[0];
             auto operand_b = graph->operands(node)[1];
