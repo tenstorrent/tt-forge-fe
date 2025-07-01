@@ -287,6 +287,7 @@ def test_equal(shape):
     [
         ((2, 32, 32), torch.float32),
         ((1, 128), torch.int64),
+        ((2, 64, 64), torch.float32),
     ],
 )
 @pytest.mark.push
