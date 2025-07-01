@@ -60,10 +60,9 @@ def test_pt_bart_classifier(variant):
     inputs_dict = tokenizer(
         premise,
         hypothesis,
-        truncation=True,
+        truncation="only_first",
         padding="max_length",
         max_length=256,
-        truncation_strategy="only_first",
         return_tensors="pt",
     )
     decoder_input_ids = shift_tokens_right(

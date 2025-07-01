@@ -4990,6 +4990,23 @@ class DecomposeDepthToSpace(DFPatternCallback):
         return out
 
 
+class RemoveStridedSliceConcat(DFPatternCallback):
+    def __init__(self):
+        super().__init__(rewrite_once=False, require_type=True)
+        self.slice_act = wildcard()
+        self.concat_act = wildcard()
+        self.slice = is_op("strided_slice")(self.slice_act)
+        self.pattern = is_op("concatenate")(is_tuple([self.concat_act, self.slice]))
+
+    def callback(self, pre, post, node_map):
+        act = node_map[self.concat_act][0]
+        concat_axis = int(node_map[self.pattern][0].attrs.axis)
+        slice_shape = list(node_map[self.slice][0].checked_type.shape)
+        if slice_shape[-1] == 0 and (concat_axis == -1 or concat_axis == int(len(slice_shape) - 1)):
+            return act
+        return post
+
+
 def _get_callback_name(callback):
     if isinstance(callback, DFPatternCallback):
         return type(callback).__name__
@@ -5141,6 +5158,7 @@ def run_forge_compile_passes(
             SimplifyVITOnnxAttention(),
             GQABroadcastReshape(),
             RemoveDenseInputSqueeze(),
+            RemoveStridedSliceConcat(),
         ],
         params=params,
         inputs=inputs,
