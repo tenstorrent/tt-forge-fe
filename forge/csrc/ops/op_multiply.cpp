@@ -47,28 +47,27 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::multiply_sh
 
     for (size_t dim = 0; dim < shape0.size(); dim++)
     {
-        if (shape0[dim] != shape1[dim])
+        if (shape0[dim] == shape1[dim])
         {
-            if (shape1[dim] == 1)
-            {
-                // Broadcast shape1 to shape0
-                broadcast.push_back(graphlib::DimBroadcast(1, dim, shape0[dim]));
-                output_shape[dim] = shape0[dim];
-            }
-            else
-            {
-                TT_ASSERT(
-                    shape0[dim] == 1,
-                    "Eltwise binary ops must have the same shape in both inputs, or one operand must be 1 wide to "
-                    "broadcast");
-                // Broadcast shape0 to shape1
-                broadcast.push_back(graphlib::DimBroadcast(0, dim, shape1[dim]));
-                output_shape[dim] = shape1[dim];
-            }
+            output_shape[dim] = shape0[dim];
+            continue;
+        }
+
+        if (shape1[dim] == 1)
+        {
+            // Broadcast shape1 to shape0
+            broadcast.push_back(graphlib::DimBroadcast(1, dim, shape0[dim]));
+            output_shape[dim] = shape0[dim];
         }
         else
         {
-            output_shape[dim] = shape0[dim];
+            TT_ASSERT(
+                shape0[dim] == 1,
+                "Eltwise binary ops must have the same shape in both inputs, or one operand must be 1 wide to "
+                "broadcast");
+            // Broadcast shape0 to shape1
+            broadcast.push_back(graphlib::DimBroadcast(0, dim, shape1[dim]));
+            output_shape[dim] = shape1[dim];
         }
     }
 
@@ -92,36 +91,36 @@ tt::graphlib::NodeContext Op::multiply_backward(
     std::vector<std::uint32_t> input_dims = inputs[operand].shape.as_vector();
     std::vector<std::uint32_t> grad_dims = gradient.shape.as_vector();
 
-    if (input_dims != grad_dims)
+    // If the shapes are the same, no need to reduce dimensions
+    if (input_dims == grad_dims)
+        return op_grad;
+
+    // Pad shapes with leading 1s to make dimensions match
+    std::vector<std::uint32_t> other_dims = inputs[1 - operand].shape.as_vector();
+
+    size_t max_dims = std::max(input_dims.size(), std::max(other_dims.size(), grad_dims.size()));
+
+    std::vector<int> padded_input_dims(max_dims, 1);
+    for (size_t i = 0; i < input_dims.size(); i++)
     {
-        std::vector<std::uint32_t> other_dims = inputs[1 - operand].shape.as_vector();
+        padded_input_dims[max_dims - input_dims.size() + i] = input_dims[i];
+    }
 
-        // Pad shapes with leading 1s to make dimensions match
-        size_t max_dims = std::max(input_dims.size(), std::max(other_dims.size(), grad_dims.size()));
+    std::vector<int> padded_grad_dims(max_dims, 1);
+    for (size_t i = 0; i < grad_dims.size(); i++)
+    {
+        padded_grad_dims[max_dims - grad_dims.size() + i] = grad_dims[i];
+    }
 
-        std::vector<int> padded_input_dims(max_dims, 1);
-        for (size_t i = 0; i < input_dims.size(); i++)
-        {
-            padded_input_dims[max_dims - input_dims.size() + i] = input_dims[i];
-        }
+    // For each dimension, if input_dim < grad_dim, we need to reduce_sum
+    for (size_t i = 0; i < max_dims; i++)
+    {
+        if (padded_input_dims[i] >= padded_grad_dims[i])
+            continue;
 
-        std::vector<int> padded_grad_dims(max_dims, 1);
-        for (size_t i = 0; i < grad_dims.size(); i++)
-        {
-            padded_grad_dims[max_dims - grad_dims.size() + i] = grad_dims[i];
-        }
-
-        // For each dimension, if input dim < grad dim, we need to reduce_sum
-        for (size_t i = 0; i < max_dims; i++)
-        {
-            if (padded_input_dims[i] < padded_grad_dims[i])
-            {
-                int dim = static_cast<int>(i);
-                Attrs named_attrs = {{"keep_dim", true}, {"dim_arg", dim}};
-                op_grad =
-                    ac.autograd->create_op(ac, graphlib::OpType("reduce_sum", {dim, true}, {}, named_attrs), {op_grad});
-            }
-        }
+        int dim = static_cast<int>(i);
+        Attrs named_attrs = {{"keep_dim", true}, {"dim_arg", dim}};
+        op_grad = ac.autograd->create_op(ac, graphlib::OpType("reduce_sum", {dim, true}, {}, named_attrs), {op_grad});
     }
 
     return op_grad;
