@@ -117,16 +117,17 @@ export PYTHONPATH=/tt-forge:$PYTHONPATH
 4. Navigate into TT-Forge and run the following command:
 
 ```bash
-git submodule update --init --recurisve
+git submodule update --init --recursive
 ```
+5. Navigate back out of the TT-Forge directory.
 
-5. Run a model. For this set up, the **mobile_netv2_demo.py** is used:
+6. Run a model. For this set up, the **mobile_netv2_demo.py** is used:
 
 ```bash
 python tt-forge/demos/tt-forge-fe/cnn/mobile_netv2_demo.py
 ```
 
-6. If all goes well you will get the following output:
+7. If all goes well you will get the following output:
 
 Prediction: Samoyed, Samoyede (class 258)
 Confidence: 0.868
