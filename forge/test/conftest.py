@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
+import signal
 from typing import List, Dict, Tuple
 from loguru import logger
 import subprocess
@@ -37,29 +38,49 @@ from forge.tvm_to_python import ExitTest
 
 import test.utils
 from test.exception_utils import extract_refined_error_message, extract_failure_category
+import json
 
 collect_ignore = ["legacy_tests"]
 
-watchdog_timer_expire = 900  # in seconds
+watchdog_timer_default = 1800  # default expiration in seconds (test not in .test_durations)
+watchdog_timer_minimum = 300  # minimum expiration in seconds
 watchdog_abort_timer = None
+watchdog_test_durations = None
 
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_runtest_setup(item):
     def send_abort_signal():
-        pytest.exit("WATCHDOG timeout reached! Killing test process.", -69)
-        # print("WATCHDOG timeout reached! Killing test process.")
-        # os.kill(os.getpid(), signal.SIGABRT)
+        print("WATCHDOG timeout reached! Killing test process.")
+        os.kill(os.getpid(), signal.SIGABRT)
 
-    def reset_abort_timer():
+    def reset_abort_timer(timeout=watchdog_timer_default):
         global watchdog_abort_timer
         if watchdog_abort_timer:
             watchdog_abort_timer.cancel()
-        watchdog_abort_timer = threading.Timer(watchdog_timer_expire, send_abort_signal)  # 10 minute timeout
+        watchdog_abort_timer = threading.Timer(timeout, send_abort_signal)  # 10 minute timeout
         watchdog_abort_timer.daemon = True
         watchdog_abort_timer.start()
 
-    reset_abort_timer()
+    def check_test_durations(tst):
+        global watchdog_test_durations, watchdog_timer_default, watchdog_timer_minimum
+        if watchdog_test_durations is None:
+            try:
+                with open(".test_durations", "r") as f:
+                    watchdog_test_durations = json.load(f)
+            except (FileNotFoundError, json.JSONDecodeError):
+                watchdog_test_durations = {}
+
+        if tst.nodeid in watchdog_test_durations:
+            duration = watchdog_test_durations[tst] * 2
+            if duration < watchdog_timer_minimum:
+                duration = watchdog_timer_minimum
+        else:
+            duration = watchdog_timer_default
+
+        return duration
+
+    reset_abort_timer(check_test_durations(item.nodeid))
     with open(".pytest_current_test_executing", "w") as f:
         f.write(item.nodeid)
         f.flush()
