@@ -139,9 +139,9 @@ Confidence: 0.868
 
 ## Where to Go Next
 
-Now that you have set up TT-Forge-FE, you can compile and run your own models.
+Now that you have set up TT-Forge-FE, you can compile and run your own models. See the [TT-Forge-FE folder in the TT-Forge repo](https://github.com/tenstorrent/tt-forge/tree/main/demos/tt-forge-fe) for more demo options. 
 
-For a quick start, here is an example of a custom model. Note the introduction of the `forge.compile` call:
+For a quick start creating your own model, here is an example of a custom model. Note the introduction of the `forge.compile` call:
 
 ```py
 import torch
