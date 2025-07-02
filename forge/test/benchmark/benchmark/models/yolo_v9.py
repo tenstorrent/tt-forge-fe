@@ -96,7 +96,9 @@ def test_yolo_v9(
     # Compiler configuration
     compiler_config = CompilerConfig(enable_optimization_passes=True)
     # Turn on MLIR optimizations.
-    compiler_config.mlir_config = MLIRConfig().set_enable_optimizer(True).set_enable_memory_layout_analysis(False).set_enable_fusing(True)
+    compiler_config.mlir_config = (
+        MLIRConfig().set_enable_optimizer(True).set_enable_memory_layout_analysis(False).set_enable_fusing(True)
+    )
     if data_format == "bfloat16":
         # Convert model to bfloat16
         compiler_config.default_df_override = DataFormat.Float16_b
