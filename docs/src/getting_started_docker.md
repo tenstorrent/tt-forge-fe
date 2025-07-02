@@ -3,6 +3,16 @@ This document walks you through how to set up TT-Forge-FE using a Docker image. 
 * [Installing a Wheel](getting_started.md) - if you do not want to use Docker, and prefer to use a virtual environment by itself instead, use this method.
 * [Building from Source](getting_started_build_from_source.md) - if you plan to develop TT-Forge-FE further, you must build from source, and should use this method.
 
+The following topics are covered:
+
+* [Configuring Hardware](#configuring-hardware)
+* [Setting up the Docker Container](#setting-up-the-docker-container)
+* [Running Models in Docker](#running-models-in-docker)
+* [Where to Go Next](#where-to-go-next)
+
+> **NOTE:** If you encounter issues, please request assistance on the
+>[TT-Forge-FE Issues](https://github.com/tenstorrent/tt-forge-fe/issues) page.
+
 ## Configuring Hardware
 Before setup can happen, you must configure your hardware. You can skip this section if you already completed the configuration steps. Otherwise, this section of the walkthrough shows you how to do a quick setup using TT-Installer.
 
