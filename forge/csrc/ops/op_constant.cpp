@@ -7,6 +7,7 @@
 #include "autograd/autograd.hpp"
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
+#include "op_interface.hpp"
 #include "torch/extension.h"
 #include "torch/torch.h"
 #include "utils/assert.hpp"
@@ -15,35 +16,40 @@ namespace tt
 {
 namespace ops
 {
-at::Tensor Op::constant_eval(const std::vector<at::Tensor> &tensors) const
+namespace constant
 {
-    TT_DBG_ASSERT(type_ == OpType::Constant, "Wrong op type.");
-    TT_DBG_ASSERT(tensors.size() == 0, "Constant eval should not have any operands");
-    TT_DBG_ASSERT(attrs().size() == 1, "Constant eval should contain 1 attr.");
 
-    return torch::tensor({attr_as<float>("c")});
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
+{
+    TT_DBG_ASSERT(op.type() == OpType::Constant, "Wrong op type.");
+    TT_ASSERT(tensors.size() == 0, "Constant eval should not have any operands");
+    TT_ASSERT(op.attrs().size() == 1, "Constant eval should contain 1 attr.");
+
+    return torch::tensor({op.attr_as<float>("c")});
 }
 
-std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::constant_shape(
-    const std::vector<std::vector<std::uint32_t>> &in_shapes) const
+std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
-    TT_DBG_ASSERT(type_ == OpType::Constant, "Wrong op type.");
-    TT_DBG_ASSERT(in_shapes.size() == 0, "Constant should not have any operands");
+    TT_DBG_ASSERT(op.type() == OpType::Constant, "Wrong op type.");
+    TT_ASSERT(in_shapes.size() == 0, "Constant should not have any operands");
 
     return std::make_tuple(graphlib::Shape::create({1}), std::vector<graphlib::DimBroadcast>{});
 }
 
-tt::graphlib::NodeContext Op::constant_backward(
+tt::graphlib::NodeContext backward(
+    const Op &op,
     tt::autograd::autograd_context &context,
     int operand,
     const std::vector<tt::graphlib::NodeContext> &inputs,
     const tt::graphlib::NodeContext &output,
-    const tt::graphlib::NodeContext &gradient) const
+    const tt::graphlib::NodeContext &gradient)
 {
-    TT_DBG_ASSERT(type_ == OpType::Constant, "Wrong op type.");
+    TT_DBG_ASSERT(op.type() == OpType::Constant, "Wrong op type.");
     TT_THROW("OpType::Constant does not have backward.");
-    __builtin_unreachable();
+    unreachable();
 }
 
+}  // namespace constant
 }  // namespace ops
 }  // namespace tt

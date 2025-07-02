@@ -271,44 +271,6 @@ class Op
     long base_initial_flops_estimate(
         const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
-    /* -----------------------------*
-     * Ops specific implementation. *
-     * -----------------------------*/
-
-    /* -------------*
-     * OpType::Abs. *
-     * -------------*/
-
-    at::Tensor abs_eval(const std::vector<at::Tensor> &tensors) const;
-
-    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> abs_shape(
-        const std::vector<std::vector<std::uint32_t>> &inputs) const;
-
-    tt::graphlib::NodeContext abs_backward(
-        tt::autograd::autograd_context &context,
-        int operand,
-        const std::vector<tt::graphlib::NodeContext> &inputs,
-        const tt::graphlib::NodeContext &output,
-        const tt::graphlib::NodeContext &gradient) const;
-
-    long abs_initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const;
-
-    /* ------------------*
-     * OpType::Constant. *
-     * ------------------*/
-
-    at::Tensor constant_eval(const std::vector<at::Tensor> &tensors) const;
-
-    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> constant_shape(
-        const std::vector<std::vector<std::uint32_t>> &inputs) const;
-
-    tt::graphlib::NodeContext constant_backward(
-        tt::autograd::autograd_context &context,
-        int operand,
-        const std::vector<tt::graphlib::NodeContext> &inputs,
-        const tt::graphlib::NodeContext &output,
-        const tt::graphlib::NodeContext &gradient) const;
-
    private:
     OpType type_;
     Attrs attrs_;

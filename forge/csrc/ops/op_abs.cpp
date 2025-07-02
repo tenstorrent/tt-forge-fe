@@ -6,6 +6,7 @@
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
+#include "op_interface.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
 #include "utils/assert.hpp"
@@ -14,25 +15,31 @@ namespace tt
 {
 namespace ops
 {
-at::Tensor Op::abs_eval(const std::vector<at::Tensor> &tensors) const
+namespace abs
 {
+
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
+{
+    TT_DBG_ASSERT(op.type() == OpType::Abs, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "OpAbs::eval should have single input tensor.");
     return torch::abs(tensors[0]);
 }
 
-std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::abs_shape(
-    const std::vector<std::vector<std::uint32_t>> &in_shapes) const
+std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
+    TT_DBG_ASSERT(op.type() == OpType::Abs, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "OpAbs::shape should have single input shape.");
     return std::make_tuple(graphlib::Shape::create(in_shapes[0]), std::vector<graphlib::DimBroadcast>{});
 }
 
-tt::graphlib::NodeContext Op::abs_backward(
+tt::graphlib::NodeContext backward(
+    const Op &op,
     tt::autograd::autograd_context &ac,
     int operand,
     const std::vector<tt::graphlib::NodeContext> &inputs,
     const tt::graphlib::NodeContext &output,
-    const tt::graphlib::NodeContext &gradient) const
+    const tt::graphlib::NodeContext &gradient)
 {
     /**
      * Example of rewriting python backward to cpp backward:
@@ -45,6 +52,7 @@ tt::graphlib::NodeContext Op::abs_backward(
      * return ac.op("multiply", (stretched, grad))
      */
 
+    TT_DBG_ASSERT(op.type() == OpType::Abs, "Wrong op type.");
     TT_ASSERT(inputs.size() == 1, "Abs should have single input.");
     TT_ASSERT(operand == 0, "Invalid operand index.");
 
@@ -60,13 +68,16 @@ tt::graphlib::NodeContext Op::abs_backward(
     return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {stretched, gradient});
 }
 
-long Op::abs_initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const
+long initial_flops_estimate(const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
 {
-    auto shape_tuple = abs_shape(inputs);
+    TT_DBG_ASSERT(op.type() == OpType::Abs, "Wrong op type.");
+
+    auto shape_tuple = abs::shape(op, inputs);
     graphlib::Shape out_shape = std::get<0>(shape_tuple);
 
     return std::accumulate(out_shape.begin(), out_shape.end(), 1u, std::multiplies<uint32_t>());
 }
 
+}  // namespace abs
 }  // namespace ops
 }  // namespace tt
