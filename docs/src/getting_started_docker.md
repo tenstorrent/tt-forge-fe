@@ -102,32 +102,27 @@ This section shows you how to run a model using Docker. The provided example is 
 git clone https://github.com/tenstorrent/tt-forge.git
 ```
 
-2. Activate the virtual environment provided for TT-Forge:
-
-```bash
-source venv-tt-forge-fe/bin/activate
-```
-
-3. Set the path for Python:
+2. Set the path for Python:
 
 ```bash
 export PYTHONPATH=/tt-forge:$PYTHONPATH
 ```
 
-4. Navigate into TT-Forge and run the following command:
+3. Navigate into TT-Forge and run the following command:
 
 ```bash
 git submodule update --init --recursive
 ```
-5. Navigate back out of the TT-Forge directory.
 
-6. Run a model. For this set up, the **mobile_netv2_demo.py** is used:
+4. Navigate back out of the TT-Forge directory.
+
+5. Run a model. For this set up, the **mobile_netv2_demo.py** is used:
 
 ```bash
 python tt-forge/demos/tt-forge-fe/cnn/mobile_netv2_demo.py
 ```
 
-7. If all goes well you will get the following output:
+6. If all goes well you will get the following output:
 
 Prediction: Samoyed, Samoyede (class 258)
 Confidence: 0.868
