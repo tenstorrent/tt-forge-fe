@@ -12,6 +12,9 @@ The topics covered in this document are:
 * [Build Cleanup](#build-cleanup)
 * [Useful Build Environment Variables](#useful-build-environment-variables)
 
+> **NOTE:** If you encounter issues, please request assistance on the
+>[TT-Forge-FE Issues](https://github.com/tenstorrent/tt-forge-fe/issues) page.
+
 ## Configuring Your Hardware
 If you already configured your hardware, you can skip this section. Otherwise do the following:
 
