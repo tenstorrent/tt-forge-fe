@@ -14,6 +14,11 @@ from transformers import Cache
 from third_party.tt_forge_models.tools.utils import get_file
 from datasets import load_dataset
 
+
+def get_detailed_instruct(task_description: str, query: str) -> str:
+    return f"Instruct: {task_description}\nQuery:{query}"
+
+
 # Mean Pooling - Take attention mask into account for correct averaging
 def mean_pooling(model_output, attention_mask):
     token_embeddings = model_output[0]  # First element of model_output contains all token embeddings

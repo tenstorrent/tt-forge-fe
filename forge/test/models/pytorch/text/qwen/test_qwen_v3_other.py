@@ -65,22 +65,22 @@ def test_qwen3_embedding(variant):
 
     # Load model and tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    framework_model = download_model(AutoModel.from_pretrained, variant, return_dict=False, use_cache=False)
+    framework_model = download_model(AutoModel.from_pretrained, variant, use_cache=False)
     framework_model.eval()
 
     logger.info("framework_model={}",framework_model)
 
-    # has_trainable_params = False
-    # for name, param in framework_model.named_parameters():
-    #     if param.requires_grad:
-    #         has_trainable_params = True
-    #         logger.info(f"Trainable parameter found: {name}")
-    #         param.requires_grad = False  # Freeze it
+    has_trainable_params = False
+    for name, param in framework_model.named_parameters():
+        if param.requires_grad:
+            has_trainable_params = True
+            logger.info(f"Trainable parameter found: {name}")
+            param.requires_grad = False  # Freeze it
 
-    # if has_trainable_params:
-    #     logger.info("Trainable parameters found and frozen.")
-    # else:
-    #     logger.info("No trainable parameters found.")
+    if has_trainable_params:
+        logger.info("Trainable parameters found and frozen.")
+    else:
+        logger.info("No trainable parameters found.")
 
     # prepare input
     task = "Given a web search query, retrieve relevant passages that answer the query"
