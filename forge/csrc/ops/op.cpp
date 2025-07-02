@@ -18,6 +18,7 @@
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
+#include "op_interface.hpp"
 #include "passes/decomposing_context.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
@@ -398,8 +399,8 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
 {
     switch (type_)
     {
-        case OpType::Abs: return abs_eval(tensors);
-        case OpType::Constant: return constant_eval(tensors);
+        case OpType::Abs: return abs::eval(*this, tensors);
+        case OpType::Constant: return constant::eval(*this, tensors);
         default: return base_eval(old_op_type, tensors);
     }
 }
@@ -409,8 +410,8 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
 {
     switch (type_)
     {
-        case OpType::Abs: return abs_shape(inputs);
-        case OpType::Constant: return constant_shape(inputs);
+        case OpType::Abs: return abs::shape(*this, inputs);
+        case OpType::Constant: return constant::shape(*this, inputs);
         default: return base_shape(old_op_type, inputs);
     }
 }
@@ -425,8 +426,8 @@ tt::graphlib::NodeContext Op::backward(
 {
     switch (type_)
     {
-        case OpType::Abs: return abs_backward(context, operand, inputs, output, gradient);
-        case OpType::Constant: return constant_backward(context, operand, inputs, output, gradient);
+        case OpType::Abs: return abs::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Constant: return constant::backward(*this, context, operand, inputs, output, gradient);
         default: return base_backward(old_op_type, context, operand, inputs, output, gradient);
     }
 }
@@ -453,7 +454,7 @@ long Op::initial_flops_estimate(
 {
     switch (type_)
     {
-        case OpType::Abs: return abs_initial_flops_estimate(inputs);
+        case OpType::Abs: return abs::initial_flops_estimate(*this, inputs);
         case OpType::Constant: return 0;
         default: return base_initial_flops_estimate(old_op_type, inputs);
     }
