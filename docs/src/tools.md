@@ -8,7 +8,7 @@ This page covers setup of various tools that can help you with development of TT
 
 ## Pre-commit
 
-Tenstorrent defines various pre-commit hooks that check the code for formatting, licensing issues, etc.
+TT-Forge-FE defines various pre-commit hooks that check the code for formatting, licensing issues, etc.
 
 To install pre-commit, run the following command:
 
@@ -35,7 +35,7 @@ For more information visit [pre-commit](https://pre-commit.com/).
 
 ## mdbook
 
-Tenstorrent uses `mdbook` to generate the documentation. To install `mdbook` on Ubuntu, run the following commands:
+TT-Forge-FE uses `mdbook` to generate the documentation. To install `mdbook` on Ubuntu, run the following commands:
 
 ```sh
 sudo apt install cargo
