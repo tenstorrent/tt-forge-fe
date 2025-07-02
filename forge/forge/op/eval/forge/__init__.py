@@ -201,12 +201,6 @@ def _get_module_or_class(op_name):
         return module_name_or_cls
 
 
-def get_f_instance(op_type):
-    module_or_class = _get_module_or_class(op_type.op)
-    assert not isinstance(module_or_class, ModuleType)
-    return module_or_class(op_type)
-
-
 def empty_function(*inputs):
     pass
 

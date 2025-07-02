@@ -6,7 +6,6 @@ from typing import Tuple, Union
 
 from ..tensor import Tensor
 from ..parameter import Parameter
-from forge.op.eval.forge import get_f_forge_eval, get_f_forge_shape
 from forge._C import DataFormat
 from forge._C.graph import OpType
 import forge

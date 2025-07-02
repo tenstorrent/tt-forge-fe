@@ -931,8 +931,8 @@ def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]
         return inputs[name]
 
     def eval_op(op_type, inputs):
-        forge_eval = eval_module.get_f_forge_eval(OpType(op_type["type"], op_type["attrs"], op_type["named_attrs"]))
-        return forge_eval(inputs)
+        op = OpType(op_type["type"], op_type["attrs"], op_type["named_attrs"])
+        return op.eval(inputs)
 
     logger.debug("ConstEval graph: {}", name)
     node_to_tensor: Dict[str, torch.Tensor] = {}

@@ -586,6 +586,9 @@ class OpNode : public TaggedNode
 
     bool is_tm() const { return op_type_.is_tm(); };
     bool is_eltwise() const { return op_type_.is_eltwise(); };
+    bool is_eltwise_unary() const { return op_type_.is_eltwise_unary(); }
+    bool is_eltwise_binary() const { return op_type_.is_eltwise_binary(); }
+    bool is_eltwise_nary() const { return op_type_.is_eltwise_nary(); }
 
     bool should_pair_with_sparse(const OpNode *sparse_op_node, const Graph *graph) const;
     void set_output_df_from_operands(const Graph *graph);

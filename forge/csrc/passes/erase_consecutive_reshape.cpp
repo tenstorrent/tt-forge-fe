@@ -82,7 +82,7 @@ static std::vector<graphlib::Node *> path_to_reshape_after_communable_unaries(
             path.clear();
             break;
         }
-        if (graphlib::is_eltwise_unary(user) or graphlib::is_eltwise_binary(user))
+        if (user->is_eltwise_unary() or user->is_eltwise_binary())
         {
             path.push_back(op);
         }
@@ -126,7 +126,7 @@ static void commute_eltwise_ops(graphlib::Graph *graph, std::vector<graphlib::No
             op->add_golden_transform(first->op_type());
 
             // Handle the other operand if it's eltwise-binary op  (taken from erase-inverse-ops)
-            if (graphlib::is_eltwise_binary(op))
+            if (op->is_eltwise_binary())
             {
                 std::vector<graphlib::Edge> edges = graph->operand_data_edges(op);
                 graphlib::Edge current_edge = (edges[0].producer_node_id == path[i - 1]->id()) ? edges[0] : edges[1];

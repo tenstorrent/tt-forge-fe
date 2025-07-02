@@ -23,25 +23,6 @@ namespace tt
 
 namespace graphlib
 {
-
-bool is_eltwise_nary(const OpNode *op)
-{
-    static py::function fn_is_eltwise_nary = py::module_::import("forge.op.eval.forge").attr("is_eltwise_nary");
-    return fn_is_eltwise_nary(std::ref(op->op_type())).cast<bool>();
-}
-
-bool is_eltwise_unary(const OpNode *op)
-{
-    static py::function fn_is_eltwise_unary = py::module_::import("forge.op.eval.forge").attr("is_eltwise_unary");
-    return fn_is_eltwise_unary(std::ref(op->op_type())).cast<bool>();
-}
-
-bool is_eltwise_binary(const OpNode *op)
-{
-    static py::function fn_is_eltwise_binary = py::module_::import("forge.op.eval.forge").attr("is_eltwise_binary");
-    return fn_is_eltwise_binary(std::ref(op->op_type())).cast<bool>();
-}
-
 bool is_reduce_z(OpNode const *op)
 {
     return (op->op_name() == "reduce" and std::get<std::string>(op->forge_attrs().at("dim")) == "z") or
@@ -121,7 +102,7 @@ TileDim get_tile_dim_from_height_width(int tile_height, int tile_width)
 
 void validate_tile_dims(Graph *graph, graphlib::OpNode *op_node)
 {
-    if (graphlib::is_eltwise_binary(op_node))
+    if (op_node->is_eltwise_binary())
     {
         auto srcA_tile_dim = graph->operands(op_node)[0]->shape().get_tile_dim();
         auto srcB_tile_dim = graph->operands(op_node)[1]->shape().get_tile_dim();
