@@ -61,7 +61,7 @@ jobs:
       run_id: ${{ github.run_id }}
       runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
   perf-benchmark:
-    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'uplfit')
+    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'uplift')
     needs:
       - docker-build
       - build
