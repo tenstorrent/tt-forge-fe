@@ -55,7 +55,8 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::add_shape(
             if (shape0[dim] == 1)
             {
                 // Broadcast first operand
-                broadcast.emplace_back(0, static_cast<int>(dim), shape1[dim]);
+                int negative_dim = static_cast<int>(dim) - static_cast<int>(shape0.size());
+                broadcast.emplace_back(0, negative_dim, shape1[dim]);
                 output_shape.push_back(shape1[dim]);
             }
             else
@@ -67,7 +68,8 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::add_shape(
                     "broadcast");
 
                 // Broadcast second operand
-                broadcast.emplace_back(1, static_cast<int>(dim), shape0[dim]);
+                int negative_dim = static_cast<int>(dim) - static_cast<int>(shape1.size());
+                broadcast.emplace_back(1, negative_dim, shape0[dim]);
                 output_shape.push_back(shape0[dim]);
             }
         }
