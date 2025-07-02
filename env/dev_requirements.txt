@@ -4,16 +4,10 @@
 requests==2.28.2
 
 #model based
-transformers==4.47.0
 datasets==2.14.6
-dataclasses-json==0.5.7
 opencv-python-headless==4.11.0.86
 ultralytics==8.3.91
 
-# Paddle stack
-paddlepaddle==2.6.2
-paddlenlp==2.8.1
-aistudio-sdk==0.2.6
 
 # PyTorch ecosystem
 pytorch_forecasting==1.0.0

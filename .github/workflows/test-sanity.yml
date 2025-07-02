@@ -1,0 +1,118 @@
+name: Sanity Test - Forge Add
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'Run id to download wheels from (or leave empty to search latest)'
+        required: false
+        type: string
+  workflow_call:
+    inputs:
+      run_id:
+        description: 'Run id to download wheels from'
+        required: false
+        type: string
+      docker-image:
+        description: 'Docker image to use for test'
+        required: true
+        type: string
+
+permissions:
+  packages: read
+  actions: read
+
+jobs:
+  sanity-forge-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        wheel: [
+          { name: "compiler", artifact: "forge-wheel-compiler" },
+          { name: "dev", artifact: "forge-wheel-dev" }
+        ]
+
+    runs-on:
+      - tt-beta-ubuntu-2204-large
+
+    container:
+      image: ${{ inputs.docker-image || 'ghcr.io/tenstorrent/tt-forge-fe:latest' }}
+
+    steps:
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+
+      - name: Git safe dir
+        run: |
+          git config --system --add safe.directory ${{ steps.strings.outputs.work-dir }}
+          chown -R root:root ${{ steps.strings.outputs.work-dir }}
+
+      - uses: actions/checkout@v4
+        with:
+            sparse-checkout: |
+              env/
+              forge/test/test_sanity_forge_add.py
+              pytest.ini
+              conftest.py
+            clean: true
+            fetch-depth: 1
+
+      - name: Download ${{ matrix.wheel.name }} wheel
+        if: ${{ inputs.run_id }}
+        continue-on-error: true
+        uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
+        with:
+          name: ${{ matrix.wheel.artifact }}
+          run_id: ${{ inputs.run_id }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Find and download ${{ matrix.wheel.name }} wheel
+        if: ${{ !inputs.run_id }}
+        uses: dawidd6/action-download-artifact@v9
+        with:
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          workflow_conclusion: success
+          workflow_search: true
+          workflow: build.yml
+          name: ${{ matrix.wheel.artifact }}
+          repo: tenstorrent/tt-forge-fe
+          check_artifacts: true
+          search_artifacts: true
+
+      - name: Install wheel and dependencies
+        shell: bash
+        run: |
+          source env/activate
+          # Install the wheel
+          wheel_file=$(find . -name "*forge*.whl" | head -1)
+          echo "Installing wheel: $wheel_file"
+          pip install "$wheel_file" --force-reinstall
+
+      - name: Run sanity forge add test
+        shell: bash
+        run: |
+          source env/activate
+          echo "Running forge add sanity test for ${{ matrix.wheel.name }} wheel..."
+          pytest forge/test/test_sanity_forge_add.py -v -m "sanity" --tb=short --junit-xml=sanity-test-${{ matrix.wheel.name }}.xml
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: sanity-test-results-${{ matrix.wheel.name }}
+          path: sanity-test-${{ matrix.wheel.name }}.xml
+
+      - name: Show Test Results
+        uses: mikepenz/action-junit-report@v5
+        if: success() || failure()
+        with:
+          report_paths: sanity-test-${{ matrix.wheel.name }}.xml
+          check_name: Forge Add Sanity Test (${{ matrix.wheel.name }})
+          comment: false
+          updateComment: false
+          detailed_summary: true
+          group_suite: true

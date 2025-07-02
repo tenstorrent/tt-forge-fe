@@ -115,22 +115,38 @@ jobs:
         create-symlink: true
         key: forge-build-${{ matrix.build.build-type }}
 
-    - name: Build (creates tvm and tt-forge-fe wheels)
+    - name: Build (creates tvm and both variant tt-forge-fe wheels)
       shell: bash
       run: |
         source env/activate
-        python3 setup.py bdist_wheel
+        # Build both wheel variants (compiler and dev)
+        python3 build_wheels.py
+        # Build TVM wheel
         cd third_party/tvm/python
         python3 setup.py bdist_wheel
         cd ../../..
         cp third_party/tvm/python/dist/*.whl dist/
 
-    - name: Upload Build
+    - name: Upload Compiler Wheel
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
-        name: forge-wheel
-        path: dist/*.whl
+        name: forge-wheel-compiler
+        path: dist/compiler/*.whl
+
+    - name: Upload Dev Wheel
+      uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+        name: forge-wheel-dev
+        path: dist/dev/*.whl
+
+    - name: Upload TVM Wheel
+      uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+        name: tvm-wheel
+        path: dist/tvm*.whl
 
 
   unit-test-build:
@@ -246,8 +262,137 @@ jobs:
           disable_search: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
+  sanity-test:
+    needs: [forge-build]
+    if: ${{ needs.forge-build.result == 'success' }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        wheel: [
+          { name: "compiler", artifact: "forge-wheel-compiler" }
+        ]
+
+    runs-on:
+      - tt-beta-ubuntu-2204-large
+
+    container:
+      image: ${{ inputs.docker-image }}
+
+    steps:
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+
+      - name: Git safe dir
+        run: |
+          git config --system --add safe.directory ${{ steps.strings.outputs.work-dir }}
+          chown -R root:root ${{ steps.strings.outputs.work-dir }}
+
+      - uses: actions/checkout@v4
+        with:
+            sparse-checkout: |
+              env/
+              forge/test
+              pytest.ini
+              conftest.py
+            clean: true
+            fetch-depth: 1  # Shallow checkout for test only
+
+      - name: Download ${{ matrix.wheel.name }} wheel
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.wheel.artifact }}
+          path: ./wheel-test/
+
+      - name: Create test environment and install wheel
+        shell: bash
+        run: |
+          source env/activate
+          # Install the wheel
+          wheel_file=$(find ./wheel-test/ -name "*.whl" | head -1)
+          echo "Installing wheel: $wheel_file"
+          pip install "$wheel_file" --force-reinstall
+
+      - name: Run sanity test
+        shell: bash
+        run: |
+          source env/activate
+          echo "Running forge add sanity test for ${{ matrix.wheel.name }} wheel..."
+          pytest forge/test/test_sanity_forge_add.py -v -m "sanity" --tb=short
+
+      - name: Cleanup
+        shell: bash
+        run: |
+          rm -rf wheel-test
+
+  forge-test:
+    needs: [sanity-test]
+    if: ${{ needs.sanity-test.result == 'success' }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        wheel: [
+          { name: "compiler", artifact: "forge-wheel-compiler" }
+        ]
+
+    runs-on:
+      - tt-beta-ubuntu-2204-large
+
+    container:
+      image: ${{ inputs.docker-image }}
+
+    steps:
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+
+      - name: Git safe dir
+        run: |
+          git config --system --add safe.directory ${{ steps.strings.outputs.work-dir }}
+          chown -R root:root ${{ steps.strings.outputs.work-dir }}
+
+      - uses: actions/checkout@v4
+        with:
+            submodules: recursive
+            clean: true
+            fetch-depth: 1  # Shallow checkout for test only
+
+      - name: Download ${{ matrix.wheel.name }} wheel
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.wheel.artifact }}
+          path: ./wheel-test/
+
+      - name: Create test environment and install wheel
+        shell: bash
+        run: |
+          source env/activate
+          # Install the wheel
+          wheel_file=$(find ./wheel-test/ -name "*.whl" | head -1)
+          echo "Installing wheel: $wheel_file"
+          pip install "$wheel_file" --force-reinstall
+
+      - name: Run sanity forge test
+        shell: bash
+        run: |
+          source env/activate
+          pytest forge/test/test_sanity_forge_add.py -v -m "sanity" --tb=short
+
+      - name: Cleanup
+        shell: bash
+        run: |
+          rm -rf wheel-test
+
   build-conclusion:
-    needs: [forge-build, unit-test-build]
+    needs: [forge-build, unit-test-build, sanity-test, forge-test]
     if: always()
     runs-on: ubuntu-latest
     outputs:
@@ -257,10 +402,17 @@ jobs:
         id: conclusion
         shell: bash
         run: |
-          if [ "${{ needs.forge-build.result }}" == "success" ]; then
-            echo "Forge wheel is available"
+          if [ "${{ needs.forge-build.result }}" == "success" ] && [ "${{ needs.sanity-test.result }}" == "success" ] && [ "${{ needs.forge-test.result }}" == "success" ]; then
+            echo "Forge wheels are available and fully tested"
+            echo "- Compiler wheel: PASSED"
+            echo "- Sanity tests: PASSED"
+            echo "- Forge tests: PASSED"
             echo "run_id=${{ github.run_id }}" >> $GITHUB_OUTPUT
           else
-            echo "Forge wheel is NOT available"
+            echo "Build or tests failed"
+            echo "- Forge build result: ${{ needs.forge-build.result }}"
+            echo "- Unit test result: ${{ needs.unit-test-build.result }}"
+            echo "- Sanity test result: ${{ needs.sanity-test.result }}"
+            echo "- Forge test result: ${{ needs.forge-test.result }}"
             echo "run_id=" >> $GITHUB_OUTPUT
           fi
