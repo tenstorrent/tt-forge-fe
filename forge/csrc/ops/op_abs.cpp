@@ -20,7 +20,7 @@ namespace abs
 
 at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Abs);
+    TT_DBG_ASSERT(op.type() == OpType::Abs, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "OpAbs::eval should have single input tensor.");
     return torch::abs(tensors[0]);
 }
@@ -28,7 +28,7 @@ at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Abs);
+    TT_DBG_ASSERT(op.type() == OpType::Abs, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "OpAbs::shape should have single input shape.");
     return std::make_tuple(graphlib::Shape::create(in_shapes[0]), std::vector<graphlib::DimBroadcast>{});
 }
@@ -52,7 +52,7 @@ tt::graphlib::NodeContext backward(
      * return ac.op("multiply", (stretched, grad))
      */
 
-    TT_DBG_ASSERT(op.type() == OpType::Abs);
+    TT_DBG_ASSERT(op.type() == OpType::Abs, "Wrong op type.");
     TT_ASSERT(inputs.size() == 1, "Abs should have single input.");
     TT_ASSERT(operand == 0, "Invalid operand index.");
 
@@ -70,7 +70,7 @@ tt::graphlib::NodeContext backward(
 
 long initial_flops_estimate(const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Abs);
+    TT_DBG_ASSERT(op.type() == OpType::Abs, "Wrong op type.");
 
     auto shape_tuple = abs::shape(op, inputs);
     graphlib::Shape out_shape = std::get<0>(shape_tuple);
