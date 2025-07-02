@@ -58,7 +58,7 @@ newgrp docker
 docker run -it --rm \
   --device /dev/tenstorrent \
   -v /dev/hugepages-1G:/dev/hugepages-1G \
-  ghcr.io/tenstorrent/tt-forge/tt-forge-slim:latest
+  ghcr.io/tenstorrent/tt-forge/tt-forge-fe-slim:latest
 ```
 
 5. If you want to check that it is running, open a new tab with the **Same Command** option and run the following:
