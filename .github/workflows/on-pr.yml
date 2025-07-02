@@ -30,6 +30,7 @@ jobs:
     secrets: inherit
     with:
       mlir_override: ${{ inputs.mlir_override }}
+
   build:
     needs: docker-build
     uses: ./.github/workflows/build.yml
@@ -37,6 +38,7 @@ jobs:
     with:
       mlir_override: ${{ inputs.mlir_override }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+
   build-docs:
     needs: docker-build
     uses: ./.github/workflows/build-docs.yml
@@ -47,6 +49,7 @@ jobs:
     secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+
   test:
     needs:
       - docker-build
@@ -60,6 +63,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ github.run_id }}
       runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
+
   perf-benchmark:
     if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'uplift')
     needs:
