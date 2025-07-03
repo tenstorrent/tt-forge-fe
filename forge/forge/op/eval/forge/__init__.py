@@ -9,7 +9,6 @@ from .exp import Exp
 from .cosine import Cosine
 from .ethernet_datacopy import EthernetDatacopy
 from .reciprocal import Reciprocal
-from .abs import Abs
 from .tanh import Tanh
 from .log import Log
 from .nop import Nop
@@ -58,7 +57,6 @@ op_to_module_map = {
     "sigmoid": "eltwise_unary",
     "clip": Clip,
     "cosine": Cosine,
-    "abs": Abs,
     "sine": "eltwise_unary",
     "atan": "eltwise_unary",
     "tile_broadcast": "eltwise_unary",
@@ -122,7 +120,6 @@ op_to_module_map = {
     "avg_pool1d": "pooling",
     "avg_pool2d": "pooling",
     "avg_pool3d": "pooling",
-    "constant": "constant",
     "resize1d": "resize",
     "resize2d": "resize",
     "resize3d": "resize",
