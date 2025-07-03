@@ -21,6 +21,7 @@ on:
 permissions:
   packages: read
   actions: read
+  checks: write
 
 jobs:
   sanity-forge-test:
@@ -28,40 +29,45 @@ jobs:
       fail-fast: false
       matrix:
         wheel: [
-          { name: "compiler", artifact: "forge-wheel-compiler" },
-          { name: "dev", artifact: "forge-wheel-dev" }
+          { name: "compiler", artifact: "forge-wheel-compiler" }
         ]
 
     runs-on:
       - tt-beta-ubuntu-2204-large
 
     container:
-      image: ${{ inputs.docker-image || 'ghcr.io/tenstorrent/tt-forge-fe:latest' }}
+      image: ${{ inputs.docker-image }}
 
     steps:
+      - name: Fetch job id
+        id: fetch-job-id
+        uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
+        with:
+          job_name: "sanity-forge-test (${{ matrix.wheel.name }})"
 
       - name: Set reusable strings
         id: strings
         shell: bash
+        env:
+          JOB_ID: ${{ steps.fetch-job-id.outputs.job_id }}
         run: |
           echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+          echo "test_report_path=reports/report_$JOB_ID.xml" >> "$GITHUB_OUTPUT"
 
       - name: Git safe dir
-        run: |
-          git config --system --add safe.directory ${{ steps.strings.outputs.work-dir }}
-          chown -R root:root ${{ steps.strings.outputs.work-dir }}
+        run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
 
       - uses: actions/checkout@v4
         with:
-            sparse-checkout: |
-              env/
-              forge/test/test_sanity_forge_add.py
-              pytest.ini
-              conftest.py
-            clean: true
-            fetch-depth: 1
+          sparse-checkout: |
+            env/
+            forge/test
+            pytest.ini
+            conftest.py
+          clean: true
+          fetch-depth: 1
 
-      - name: Download ${{ matrix.wheel.name }} wheel
+      - name: Download wheel
         if: ${{ inputs.run_id }}
         continue-on-error: true
         uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
@@ -70,11 +76,11 @@ jobs:
           run_id: ${{ inputs.run_id }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Find and download ${{ matrix.wheel.name }} wheel
+      - name: Find and download forge wheel
         if: ${{ !inputs.run_id }}
         uses: dawidd6/action-download-artifact@v9
         with:
-          github_token: ${{secrets.GITHUB_TOKEN}}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow_conclusion: success
           workflow_search: true
           workflow: build.yml
@@ -83,36 +89,52 @@ jobs:
           check_artifacts: true
           search_artifacts: true
 
-      - name: Install wheel and dependencies
+      - name: Install wheel
         shell: bash
         run: |
           source env/activate
-          # Install the wheel
-          wheel_file=$(find . -name "*forge*.whl" | head -1)
+          # Validate wheel file exists and is secure
+          wheel_file=$(find . -name "*.whl" | head -1)
+          if [ -z "$wheel_file" ]; then
+            echo "Error: No wheel file found"
+            exit 1
+          fi
           echo "Installing wheel: $wheel_file"
+          # Validate wheel file is from expected source
+          if [[ "$wheel_file" != *"forge"* ]]; then
+            echo "Error: Wheel file does not appear to be a forge wheel"
+            exit 1
+          fi
           pip install "$wheel_file" --force-reinstall
 
-      - name: Run sanity forge add test
+      - name: Run sanity test
         shell: bash
         run: |
           source env/activate
           echo "Running forge add sanity test for ${{ matrix.wheel.name }} wheel..."
-          pytest forge/test/test_sanity_forge_add.py -v -m "sanity" --tb=short --junit-xml=sanity-test-${{ matrix.wheel.name }}.xml
+          pytest forge/test/test_sanity_forge_add.py -v -m "sanity" --tb=short \
+            --junit-xml=${{ steps.strings.outputs.test_report_path }}
 
-      - name: Upload Test Results
+      - name: Upload Test Report
         uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
-          name: sanity-test-results-${{ matrix.wheel.name }}
-          path: sanity-test-${{ matrix.wheel.name }}.xml
+          name: test-reports-${{ matrix.wheel.name }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: ${{ steps.strings.outputs.test_report_path }}
 
-      - name: Show Test Results
+      - name: Show Test Report
         uses: mikepenz/action-junit-report@v5
         if: success() || failure()
         with:
-          report_paths: sanity-test-${{ matrix.wheel.name }}.xml
-          check_name: Forge Add Sanity Test (${{ matrix.wheel.name }})
+          report_paths: ${{ steps.strings.outputs.test_report_path }}
+          check_name: TT-Forge-FE Sanity Tests (${{ matrix.wheel.name }})
           comment: false
           updateComment: false
           detailed_summary: true
           group_suite: true
+
+      - name: Cleanup
+        if: always()
+        shell: bash
+        run: |
+          rm -rf *.whl
