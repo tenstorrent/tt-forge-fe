@@ -68,6 +68,7 @@ class Op;
  */
 DECLARE_OP_INTERFACE(abs);
 DECLARE_OP_INTERFACE(constant);
+DECLARE_OP_INTERFACE(multiply);
 
 #undef DECLARE_OP_INTERFACE
 
