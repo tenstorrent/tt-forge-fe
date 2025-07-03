@@ -300,7 +300,7 @@ static NewToOldOpType new_to_old_op_type_mapper;
 static OldToNewOpType old_to_new_op_type_mapper;
 
 Op::Op(const graphlib::OpType &old_op_type) :
-    type_(old_to_new_op_type_mapper[old_op_type.op]), attrs_(old_op_type.named_attrs)
+    type_(old_to_new_op_type_mapper[old_op_type.op_]), attrs_(old_op_type.named_attrs_)
 {
 }
 

@@ -6,6 +6,7 @@
 #include "autograd/binding.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "utils/logger.hpp"
 
 using NodeType = tt::graphlib::NodeType;
@@ -357,15 +358,15 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
             int created_op_index = 0;
             for (graphlib::OpType tm : graph->get_edge_attributes(edge)->get_tms())
             {
-                if (tm.op == "broadcast")
+                if (tm.type() == ops::OpType::Broadcast)
                 {
-                    TT_ASSERT(tm.attr.size() <= 3);
+                    TT_ASSERT(tm.attrs_.size() <= 3);
                     log_debug(
                         tt::LogAutograd,
                         "Edge has broadcast: dim={} size={}",
-                        std::get<int>(tm.attr[0]),
-                        std::get<int>(tm.attr[1]));
-                    int dim = std::get<int>(tm.attr[0]);
+                        std::get<int>(tm.attrs_[0]),
+                        std::get<int>(tm.attrs_[1]));
+                    int dim = std::get<int>(tm.attrs_[0]);
 
                     NodeContext src = last_out;
                     last_out = create_backward_op(
@@ -521,7 +522,7 @@ NodeContext autograd_engine::create_backward_op(
     std::string op_name = "bw_in" + std::to_string(operand_index) + "_" + current_fwd_op->name() + "_";
     if (name_prefix.length() > 0)
         op_name += name_prefix + "_";
-    op_name += type.op + "_" + std::to_string(created_op_index);
+    op_name += type.name() + "_" + std::to_string(created_op_index);
 
     auto node = graph->add_node(
         graphlib::create_node<graphlib::PyOpNode>(op_name, type),
@@ -566,7 +567,7 @@ NodeContext autograd_engine::create_optimizer_op(
         op_name += name_prefix + "_";
     }
 
-    op_name += type.op + "_" + std::to_string(created_op_index);
+    op_name += type.name() + "_" + std::to_string(created_op_index);
 
     auto node = graph->add_node(
         graphlib::create_node<graphlib::PyOpNode>(op_name, type),

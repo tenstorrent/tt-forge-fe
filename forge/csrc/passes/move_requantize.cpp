@@ -9,6 +9,7 @@
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "passes/commute_utils.hpp"
 #include "passes/passes_utils.hpp"
 #include "python_bindings_common.hpp"
@@ -98,12 +99,12 @@ void commute_through_requant(graphlib::Graph *graph, std::vector<graphlib::Node 
                 auto [commute_bcasts, clone_bcasts] =
                     handle_shape_change_through_bcast(graph, first, producer_as_op, op, &commute_shape, &clone_shape)
                         .second;
-                if (golden_transform.op == "reshape")
+                if (golden_transform.type() == ops::OpType::Reshape)
                 {
-                    for (std::size_t i = 0; i < golden_transform.attr.size(); i++)
+                    for (std::size_t i = 0; i < golden_transform.attrs_.size(); i++)
                     {
-                        int current_dim = std::get<int>(golden_transform.attr[i]);
-                        golden_transform.attr[i] = clone_bcasts[i] * current_dim;
+                        int current_dim = std::get<int>(golden_transform.attrs_[i]);
+                        golden_transform.attrs_[i] = clone_bcasts[i] * current_dim;
                     }
                 }
 

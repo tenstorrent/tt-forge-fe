@@ -292,9 +292,9 @@ void GraphModule(py::module &m_graph)
             py::arg("op"),
             py::arg("attr") = std::vector<tt::graphlib::OpType::Attr>{},
             py::arg("named_attrs") = tt::graphlib::OpType::Attrs{})
-        .def_readonly("op", &tt::graphlib::OpType::op)
-        .def_readonly("attr", &tt::graphlib::OpType::attr)
-        .def_readonly("named_attrs", &tt::graphlib::OpType::named_attrs)
+        .def_readonly("op", &tt::graphlib::OpType::op_)
+        .def_readonly("attr", &tt::graphlib::OpType::attrs_)
+        .def_readonly("named_attrs", &tt::graphlib::OpType::named_attrs_)
         .def("eval", &tt::graphlib::OpType::eval)
         .def("shape", &tt::graphlib::OpType::shape)
         .def(
@@ -389,7 +389,7 @@ void GraphModule(py::module &m_graph)
             node->set_shape(Shape::create(shape));
             node->set_output_df(data_format);
             node->as<graphlib::TaggedNode>()->tag("original_op_name", name);
-            node->as<graphlib::TaggedNode>()->tag("original_op_type", op_type.op);
+            node->as<graphlib::TaggedNode>()->tag("original_op_type", op_type.name());
             node->as<graphlib::TaggedNode>()->add_tags(tags);
             return node->id();
         });
@@ -722,7 +722,7 @@ py::object eval_op(graphlib::OpType type, std::vector<py::object> inputs)
 
     log_trace(LogEval, "  eval_op: {}", type);
     py::object common_module = py::module_::import("forge.op.eval");
-    common_module.attr("eval_debug_print")(type.op, inputs, result);
+    common_module.attr("eval_debug_print")(type.name(), inputs, result);
 
     return result;
 }
@@ -739,7 +739,7 @@ py::object eval_golden_transforms(graphlib::Node *node, py::object tensor, bool 
         // Don't eval reshapes on output as its already done by reinterpret shape.
         // Don't eval transpose on output as transposed tensor should be passed to output node.
         //
-        if (!eval_for_output || (op_type.op != "reshape" && op_type.op != "transpose"))
+        if (!eval_for_output || (op_type.type() != ops::OpType::Reshape && op_type.type() != ops::OpType::Transpose))
         {
             tensor = eval_op(op_type, {tensor});
         }
