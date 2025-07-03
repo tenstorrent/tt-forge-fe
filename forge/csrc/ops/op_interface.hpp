@@ -67,6 +67,7 @@ class Op;
  * Ops declaration.
  */
 DECLARE_OP_INTERFACE(abs);
+DECLARE_OP_INTERFACE(add);
 DECLARE_OP_INTERFACE(constant);
 DECLARE_OP_INTERFACE(multiply);
 DECLARE_OP_INTERFACE(transpose);

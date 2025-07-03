@@ -8,6 +8,7 @@
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
+#include "op_interface.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
 #include "utils/assert.hpp"
@@ -18,14 +19,17 @@ namespace tt
 namespace ops
 {
 
-at::Tensor Op::add_eval(const std::vector<at::Tensor> &tensors) const
+namespace add
+{
+
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_ASSERT(tensors.size() == 2, "OpAdd::eval should have two input tensors.");
     return torch::add(tensors[0], tensors[1]);
 }
 
-std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::add_shape(
-    const std::vector<std::vector<std::uint32_t>> &in_shapes) const
+std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_ASSERT(in_shapes.size() == 2, "OpAdd::shape should have two input shapes.");
 
@@ -83,12 +87,13 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::add_shape(
     return std::make_tuple(graphlib::Shape::create(output_shape), broadcast);
 }
 
-tt::graphlib::NodeContext Op::add_backward(
+tt::graphlib::NodeContext backward(
+    const Op &op,
     tt::autograd::autograd_context &ac,
     int operand,
     const std::vector<tt::graphlib::NodeContext> &inputs,
     const tt::graphlib::NodeContext &output,
-    const tt::graphlib::NodeContext &gradient) const
+    const tt::graphlib::NodeContext &gradient)
 {
     TT_ASSERT(inputs.size() == 2, "Add should have two inputs");
     TT_ASSERT(operand >= 0 && operand < 2, "Invalid operand index for add");
@@ -131,15 +136,16 @@ tt::graphlib::NodeContext Op::add_backward(
     return result_grad;
 }
 
-long Op::add_initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const
+long initial_flops_estimate(const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
 {
     TT_ASSERT(inputs.size() == 2, "Add should have two inputs");
 
-    auto shape_tuple = add_shape(inputs);
+    auto shape_tuple = add::shape(op, inputs);
     graphlib::Shape out_shape = std::get<0>(shape_tuple);
 
     return std::accumulate(out_shape.begin(), out_shape.end(), 1L, std::multiplies<long>());
 }
 
+}  // namespace add
 }  // namespace ops
 }  // namespace tt
