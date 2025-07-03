@@ -546,7 +546,7 @@ bool commute_through_concat(
     concat_attr.push_back(new_dim);
     graphlib::OpType::Attrs named_attrs;
     named_attrs["dim"] = new_dim;
-    op->change_op_type(graphlib::OpType("concatenate", concat_attr, {}, named_attrs));
+    op->change_op_type(graphlib::OpType("concatenate", concat_attr, named_attrs));
 
     *commute_shape = concat_shape;
     *golden_transform = concat_golden_transform;

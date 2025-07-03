@@ -54,7 +54,7 @@ void explicate_unsqueeze(graphlib::Graph *graph)
                                        std::to_string(rank) + "_operand_0";
                     auto attr = std::vector<graphlib::OpType::Attr>{0, 0};
                     auto named_attr = graphlib::OpType::Attrs{{"dim", 0}};
-                    auto op_type = graphlib::OpType("unsqueeze", attr, {}, named_attr);
+                    auto op_type = graphlib::OpType("unsqueeze", attr, named_attr);
                     auto change_rank = graph->add_node(
                         std::make_unique<graphlib::PyOpNode>(name, op_type),
                         graph->get_subgraph_id_for_node(current_node->id()));
@@ -132,7 +132,7 @@ void hoist_unsqueeze_squeeze_to_reshape(graphlib::Graph *graph)
             std::vector<int> shape_vector(target_shape.begin(), target_shape.end());
             graphlib::OpType::Attrs named_attrs;
             named_attrs["shape"] = shape_vector;
-            op->change_op_type(graphlib::OpType("reshape", new_reshape_attr, {}, named_attrs));
+            op->change_op_type(graphlib::OpType("reshape", new_reshape_attr, named_attrs));
             op->set_shape(user_op->shape());
             nodes_to_remove.insert(users[0]);
         }

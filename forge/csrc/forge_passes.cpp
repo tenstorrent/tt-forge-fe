@@ -52,19 +52,6 @@ using EdgeType = graphlib::EdgeType;
 using NodeId = graphlib::NodeId;
 using PortId = graphlib::PortId;
 
-void lower_reshape(Graph *, graphlib::OpNode *node)
-{
-    graphlib::OpType op_type = node->op_type();
-    TT_ASSERT(op_type.attr.size() == 4);
-    op_type.forge_attrs = {
-        {"w", std::get<int>(op_type.attr[0])},
-        {"z", std::get<int>(op_type.attr[1])},
-        {"r", std::get<int>(op_type.attr[2])},
-        {"c", std::get<int>(op_type.attr[3])},
-    };
-    node->change_op_type(op_type);
-}
-
 // *****************************************************************
 //  ************************** Main APIs **************************
 // *****************************************************************
@@ -190,21 +177,6 @@ graphlib::Graph *run_pre_lowering_passes(graphlib::Graph *graph, const std::opti
     passes::print_graph(graph, "PRE_MLIR");
     // Recalculate shapes, and figure out implicit broadcasts that are missing
     recalculate_shapes(graph);
-
-    // Fuse bias into matmuls
-    if (env_as<bool>("FORGE_FUSE_MATMUL_BIAS"))
-    {
-        fuse_bias(graph);
-    }
-
-    // Fuse requantize into matmuls
-    fuse_requantize(graph);
-
-    // Fuse gelu into matmuls
-    if (env_as<bool>("FORGE_FUSE_MATMUL_GELU"))
-    {
-        fuse_gelu(graph);
-    }
 
     // Manually convert broadcast ops to tms, so insert tile broadcast ops can work generically
     // Note this is not lowering, these are still forge tms
