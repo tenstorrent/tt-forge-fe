@@ -400,6 +400,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
     switch (type_)
     {
         case OpType::Abs: return abs::eval(*this, tensors);
+        case OpType::Add: return add::eval(*this, tensors);
         case OpType::Constant: return constant::eval(*this, tensors);
         default: return base_eval(old_op_type, tensors);
     }
@@ -411,6 +412,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
     switch (type_)
     {
         case OpType::Abs: return abs::shape(*this, inputs);
+        case OpType::Add: return add::shape(*this, inputs);
         case OpType::Constant: return constant::shape(*this, inputs);
         default: return base_shape(old_op_type, inputs);
     }
@@ -427,6 +429,7 @@ tt::graphlib::NodeContext Op::backward(
     switch (type_)
     {
         case OpType::Abs: return abs::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Add: return add::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Constant: return constant::backward(*this, context, operand, inputs, output, gradient);
         default: return base_backward(old_op_type, context, operand, inputs, output, gradient);
     }
@@ -444,8 +447,8 @@ void Op::decompose(
     switch (type_)
     {
         case OpType::Abs: return;
-        case OpType::Constant: return;
         case OpType::Add: return;
+        case OpType::Constant: return;
         default: return base_decompose(old_op_type, dispatch, dc, inputs);
     }
 }
@@ -456,8 +459,8 @@ long Op::initial_flops_estimate(
     switch (type_)
     {
         case OpType::Abs: return abs::initial_flops_estimate(*this, inputs);
+        case OpType::Add: return add::initial_flops_estimate(*this, inputs);
         case OpType::Constant: return 0;
-        case OpType::Add: return add_initial_flops_estimate(inputs);
         default: return base_initial_flops_estimate(old_op_type, inputs);
     }
 }
@@ -467,8 +470,8 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
     switch (type_)
     {
         case OpType::Abs: return false;
-        case OpType::Constant: return false;
         case OpType::Add: return false;
+        case OpType::Constant: return false;
         default: return base_is_tm(old_op_type);
     }
 }
@@ -478,8 +481,8 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
     switch (type_)
     {
         case OpType::Abs: return true;
-        case OpType::Constant: return false;
         case OpType::Add: return true;
+        case OpType::Constant: return false;
         default: return base_is_eltwise(old_op_type);
     }
 }
@@ -489,8 +492,8 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
     switch (type_)
     {
         case OpType::Abs: return true;
-        case OpType::Constant: return false;
         case OpType::Add: return false;
+        case OpType::Constant: return false;
         default: return base_is_eltwise_unary(old_op_type);
     }
 }
@@ -500,8 +503,8 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
     switch (type_)
     {
         case OpType::Abs: return false;
-        case OpType::Constant: return false;
         case OpType::Add: return true;
+        case OpType::Constant: return false;
         default: return base_is_eltwise_binary(old_op_type);
     }
 }
@@ -510,8 +513,8 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
     switch (type_)
     {
         case OpType::Abs: return false;
-        case OpType::Constant: return false;
         case OpType::Add: return false;
+        case OpType::Constant: return false;
         default: return base_is_eltwise_nary(old_op_type);
     }
 }
