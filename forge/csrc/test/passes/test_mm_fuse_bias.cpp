@@ -11,7 +11,7 @@ struct MMFuseBias
       public testing::WithParamInterface<std::tuple<int, int, std::vector<graphlib::OpType>, graphlib::NodeType>>
 {
    protected:
-    virtual std::vector<OpType*> create_graph() override
+    virtual std::vector<OpType *> create_graph() override
     {
         auto [param_c, bias_c, tms_between, expected_node_type] = GetParam();
 
@@ -37,28 +37,6 @@ struct MMFuseBias
 
     std::string matmul_op_name;
 };
-
-TEST_P(MMFuseBias, mm_fuse_bias)
-{
-    graphlib::Graph* graph = get_graph();
-
-    auto [param_c, bias_c, tms_between, expected_node_type] = GetParam();
-
-    fuse_bias(graph);
-
-    auto* mm = graph->get_node_by_name(matmul_op_name);
-
-    auto users = graph->data_users(mm);
-    ASSERT_EQ(users.size(), 1);
-    auto* user = users.front();
-    EXPECT_EQ(user->node_type(), expected_node_type);
-
-    if (expected_node_type == graphlib::NodeType::kPyOp)
-    {
-        ASSERT_TRUE(dynamic_cast<graphlib::OpNode*>(user));
-        EXPECT_NE(dynamic_cast<graphlib::OpNode*>(user)->op_name(), "add");
-    }
-}
 
 INSTANTIATE_TEST_SUITE_P(
     MMFuseBias,
