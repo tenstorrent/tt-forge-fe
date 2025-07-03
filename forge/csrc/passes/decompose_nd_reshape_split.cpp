@@ -74,8 +74,8 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
         // Only consider reshape which splits the dim into 2 dimensions
         // which means that difference between output and input rank must be 1
         auto reshape_producer = graph->operands(node)[0];
-        int input_rank = reshape_producer->shape().size();
-        int output_rank = node->shape().size();
+        uint32_t input_rank = reshape_producer->shape().size();
+        uint32_t output_rank = node->shape().size();
 
         if (output_rank - input_rank != 1)
             continue;
@@ -139,30 +139,31 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
             continue;
 
         // find the original dim that was split
-        int original_dim = -1;
-        for (int i = 0; i < input_rank; i++)
+        std::optional<uint32_t> different_dim;
+        for (uint32_t i = 0; i < input_rank; i++)
         {
             if (reshape_producer->shape()[i] != node->shape()[i])
             {
-                original_dim = i;
+                different_dim = i;
                 break;
             }
         }
 
-        if (original_dim == -1)
+        if (!different_dim.has_value())
             continue;
 
+        uint32_t original_dim = different_dim.value();
+
         // validate that we found correct split dim
-        int producer_dim_size = reshape_producer->shape()[original_dim];
-        int expected_split_size = node->shape()[original_dim] * node->shape()[original_dim + 1];
+        uint32_t producer_dim_size = reshape_producer->shape()[original_dim];
+        uint32_t expected_split_size = node->shape()[original_dim] * node->shape()[original_dim + 1];
         if (producer_dim_size != expected_split_size)
             continue;
 
         TT_ASSERT(producer_dim_size % total_index_size == 0);
-        int new_dim_size = producer_dim_size / total_index_size;
+        uint32_t new_dim_size = producer_dim_size / total_index_size;
 
-        auto producer_shape = reshape_producer->shape().as_vector();
-        auto target_shape = graphlib::Shape::create(producer_shape);
+        auto target_shape = reshape_producer->shape();
         target_shape[original_dim] = new_dim_size;
 
         // Remove reshape node and update index nodes to work like slice
@@ -176,10 +177,10 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
 
             // Update index attributes to slice the original tensor directly
             std::vector<graphlib::OpType::Attr> new_attrs = {
-                original_dim,                         // dim
-                start * new_dim_size,                 // start
-                start * new_dim_size + new_dim_size,  // stop
-                1                                     // stride
+                (int)original_dim,                           // dim
+                (int)(start * new_dim_size),                 // start
+                (int)(start * new_dim_size + new_dim_size),  // stop
+                1                                            // stride
             };
             op->change_op_type("index", new_attrs);
 
