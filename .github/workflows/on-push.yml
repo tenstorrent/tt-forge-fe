@@ -5,6 +5,9 @@ on:
   push:
     branches: [ "main" ]
 
+env:
+  DOCKER_CACHE_ROOT: /mnt/dockercache
+
 permissions:
   packages: write
   checks: write
