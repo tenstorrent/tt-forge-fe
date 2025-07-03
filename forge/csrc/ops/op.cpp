@@ -401,7 +401,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
     {
         case OpType::Abs: return abs::eval(*this, tensors);
         case OpType::Constant: return constant::eval(*this, tensors);
-        case OpType::Multiply: return multiply_eval(tensors);
+        case OpType::Multiply: return multiply::eval(*this, tensors);
         default: return base_eval(old_op_type, tensors);
     }
 }
@@ -413,7 +413,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
     {
         case OpType::Abs: return abs::shape(*this, inputs);
         case OpType::Constant: return constant::shape(*this, inputs);
-        case OpType::Multiply: return multiply_shape(inputs);
+        case OpType::Multiply: return multiply::shape(*this, inputs);
         default: return base_shape(old_op_type, inputs);
     }
 }
@@ -430,7 +430,7 @@ tt::graphlib::NodeContext Op::backward(
     {
         case OpType::Abs: return abs::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Constant: return constant::backward(*this, context, operand, inputs, output, gradient);
-        case OpType::Multiply: return multiply_backward(context, operand, inputs, output, gradient);
+        case OpType::Multiply: return multiply::backward(*this, context, operand, inputs, output, gradient);
         default: return base_backward(old_op_type, context, operand, inputs, output, gradient);
     }
 }
