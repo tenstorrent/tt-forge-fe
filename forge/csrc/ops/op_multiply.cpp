@@ -100,13 +100,15 @@ tt::graphlib::NodeContext backward(
     // For multiply x * y: dx = grad * y, dy = grad * x
     NodeContext op_grad = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {gradient, inputs[1 - operand]});
 
-    // Handle broadcasting - need to reduce dimensions where broadcasting occurred
-    std::vector<std::uint32_t> input_dims = inputs[operand].shape.as_vector();
-    std::vector<std::uint32_t> grad_dims = gradient.shape.as_vector();
-
     // If the shapes are the same, no need to reduce dimensions
-    if (input_dims == grad_dims)
+    const graphlib::Shape &input_shape = inputs[operand].shape;
+    const graphlib::Shape &grad_shape = gradient.shape;
+    if (input_shape == grad_shape)
         return op_grad;
+
+    // Handle broadcasting - need to reduce dimensions where broadcasting occurred
+    std::vector<std::uint32_t> input_dims = input_shape.as_vector();
+    std::vector<std::uint32_t> grad_dims = grad_shape.as_vector();
 
     // Pad shapes with leading 1s to make dimensions match
     std::vector<std::uint32_t> other_dims = inputs[1 - operand].shape.as_vector();
