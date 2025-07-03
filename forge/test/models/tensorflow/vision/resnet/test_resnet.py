@@ -7,6 +7,7 @@ import pytest
 from tensorflow.keras.applications import ResNet50
 
 import forge
+from forge.config import CompilerConfig, MLIRConfig
 from forge.forge_property_utils import Framework, Source, Task, record_model_properties, ModelArch
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
@@ -34,8 +35,12 @@ def test_resnet_tensorflow():
     sample_input = get_sample_inputs()
     inputs = [sample_input]
 
+    # Configure compiler to disable fusing for OOM avoidance
+    compiler_cfg = CompilerConfig()
+    compiler_cfg.mlir_config = MLIRConfig().set_enable_fusing(False)
+
     # Compile model
-    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name, compiler_cfg=compiler_cfg)
 
     # Verify data on sample input
     verify(

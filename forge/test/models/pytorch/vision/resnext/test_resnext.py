@@ -8,7 +8,7 @@ from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
 from forge._C import DataFormat
-from forge.config import CompilerConfig
+from forge.config import CompilerConfig, MLIRConfig
 from forge.forge_property_utils import (
     Framework,
     ModelArch,
@@ -46,6 +46,10 @@ def test_resnext_50_torchhub_pytorch(variant):
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
+    if "resnext50_32x4d" in variant:
+        # Disable fusing to avoid OOM issues with latest tt-mlir uplift
+        compiler_cfg.mlir_config = MLIRConfig().set_enable_fusing(False)
 
     # Forge compile framework model
     compiled_model = forge.compile(

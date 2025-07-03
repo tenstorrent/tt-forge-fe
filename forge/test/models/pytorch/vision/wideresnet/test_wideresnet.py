@@ -12,7 +12,7 @@ from timm.data.transforms_factory import create_transform
 
 import forge
 from forge._C import DataFormat
-from forge.config import CompilerConfig
+from forge.config import CompilerConfig, MLIRConfig
 from forge.forge_property_utils import (
     Framework,
     ModelArch,
@@ -56,6 +56,10 @@ def test_wideresnet_pytorch(variant):
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
+    if "wide_resnet50_2" in variant:
+        # Disable fusing to avoid OOM issues with latest tt-mlir uplift
+        compiler_cfg.mlir_config = MLIRConfig().set_enable_fusing(False)
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -112,6 +116,9 @@ def test_wideresnet_timm(variant):
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
+    # Disable fusing to avoid OOM issues with latest tt-mlir uplift
+    compiler_cfg.mlir_config = MLIRConfig().set_enable_fusing(False)
 
     # Forge compile framework model
     compiled_model = forge.compile(
