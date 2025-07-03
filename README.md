@@ -22,7 +22,7 @@
 -----
 # Quick Links
 - [Getting Started / How to Run a Model](docs/src/getting_started.md)
-- [Build](docs/src/build.md) - Use these instructions if you plan to do development work.
+- [Build](docs/src/getting_started_build_from_source.md) - Use these instructions if you plan to do development work.
 
 -----
 # What is this Repo?
