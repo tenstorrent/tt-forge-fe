@@ -15,6 +15,7 @@
 #include "graph_lib/graph.hpp"
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
+#include "ops/op.hpp"
 #include "reportify/reportify.hpp"
 #include "utils/logger.hpp"
 
@@ -94,7 +95,7 @@ TileDim get_tile_dim_from_height_width(int tile_height, int tile_width)
     return ret;
 }
 
-void validate_tile_dims(Graph *graph, graphlib::OpNode *op_node)
+void validate_tile_dims(Graph *graph, const graphlib::OpNode *op_node)
 {
     if (op_node->is_eltwise_binary())
     {
@@ -151,7 +152,7 @@ void validate_tile_dims(Graph *graph, graphlib::OpNode *op_node)
             rhs->set_shape(padded_rhs_shape);
         }
     }
-    else if (op_node->op_type().op == "reduce")
+    else if (op_node->is_reduce())
     {
         auto operand = graph->operands(op_node)[0];
         if (operand->shape().get_tile_dim() != TileDim::Dim32x32)
@@ -162,7 +163,7 @@ void validate_tile_dims(Graph *graph, graphlib::OpNode *op_node)
             operand->set_shape(padded_shape);
         }
     }
-    else if (op_node->op_type().op == "embedding")
+    else if (op_node->is_embedding())
     {
         for (auto operand : graph->operands(op_node))
         {
@@ -1144,10 +1145,10 @@ void convert_implicit_to_explicit_bcasts(Graph *graph, Edge edge)
     auto edge_attr = graph->get_edge_attributes(edge);
     for (OpType &op_type : graph->get_edge_attributes(edge)->get_tms())
     {
-        if (op_type.op == "broadcast")
+        if (op_type.type() == ops::OpType::Broadcast)
         {
             constexpr bool explicit_bcast = true;
-            std::get<bool>(op_type.attr[2]) = explicit_bcast;
+            std::get<bool>(op_type.attrs_[2]) = explicit_bcast;
         }
     }
 }
@@ -1205,11 +1206,11 @@ bool swap_broadcast_dims(graphlib::Graph *graph, graphlib::Edge edge, int old_di
     std::vector<graphlib::OpType> new_tms;
     for (graphlib::OpType &op_type : tms)
     {
-        if (op_type.op == "broadcast")
+        if (op_type.type() == ops::OpType::Broadcast)
         {
-            int dim = std::get<int>(op_type.attr[0]);
-            int size = std::get<int>(op_type.attr[1]);
-            bool explicit_bcast = std::get<bool>(op_type.attr[2]);
+            int dim = std::get<int>(op_type.attrs_[0]);
+            int size = std::get<int>(op_type.attrs_[1]);
+            bool explicit_bcast = std::get<bool>(op_type.attrs_[2]);
             if (dim == old_dim)
             {
                 graphlib::OpType updated_bcast("broadcast", {new_dim, size, explicit_bcast});
@@ -1238,11 +1239,11 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Edge edge)
         graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(node);
         if (not op)
             return consumer_size;
-        if (op->op_name() == "reshape")
+        if (op->new_op_type() == ops::OpType::Reshape)
             return producer_size;
-        if (op->op_name() == "squeeze")
+        if (op->new_op_type() == ops::OpType::Squeeze)
             return (consumer_size + 1);
-        if (op->op_name() == "unsqueeze")
+        if (op->new_op_type() == ops::OpType::Unsqueeze)
             return (consumer_size - 1);
         return consumer_size;
     };
@@ -1254,7 +1255,7 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Edge edge)
         return;
 
     graphlib::OpNode *consumer = dynamic_cast<graphlib::OpNode *>(graph->node_by_id(edge.consumer_node_id));
-    if (consumer and consumer->op_type() == "embedding")
+    if (consumer and consumer->op_type().type() == ops::OpType::Embedding)
         return;
 
     // This is one of the few cases where we actually want to move tms downstream
@@ -1307,10 +1308,10 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Edge edge)
     int diff = (int)producer_size - orig_producer_size;
     for (OpType &op_type : tms)
     {
-        if (op_type.op == "broadcast")
+        if (op_type.type() == ops::OpType::Broadcast)
         {
-            if (std::get<int>(op_type.attr[0]) >= 0)
-                std::get<int>(op_type.attr[0]) += diff;
+            if (std::get<int>(op_type.attrs_[0]) >= 0)
+                std::get<int>(op_type.attrs_[0]) += diff;
         }
     }
     graph->get_edge_attributes(edge)->set_tms(tms);
@@ -1887,36 +1888,6 @@ bool try_consteval_input_no_operand_forks(Graph *graph, InputNode *input, bool d
         reportify::dump_consteval_graph(graph->name(), input->name(), consteval_graph->get_graph());
 
     return true;
-}
-
-bool can_swap_operands(Graph *graph, Node *node)
-{
-    if (graph->data_operands(node).size() != 2)
-        return false;
-
-    if (node->node_type() == kPyOp)
-    {
-        auto op = node->as<PyOpNode>()->op_type().op;
-        return ((op != "sub") && (op != "matmul"));
-    }
-
-    return false;
-}
-
-void swap_operands(Graph *graph, Node *node)
-{
-    TT_ASSERT(can_swap_operands(graph, node));
-
-    auto operand_edges = graph->operand_edges(node);
-
-    for (Edge operand_edge : operand_edges)
-    {
-        Edge new_edge(operand_edge);
-        new_edge.consumer_input_port_id = 1 - new_edge.consumer_input_port_id;
-        graph->add_edge(new_edge);
-        graph->copy_edge_attributes(operand_edge, new_edge);
-        graph->remove_edge(operand_edge);
-    }
 }
 
 Edge retrieve_between_edge(Graph *graph, Node *producer, Node *consumer)

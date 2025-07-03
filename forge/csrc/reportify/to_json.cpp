@@ -22,9 +22,9 @@ void to_json(json& j, UBlockOrder const& ublock_order)
 void to_json(json& j, OpType const& op_type)
 {
     j["op_type"] = {};
-    j["op_type"]["type"] = op_type.op;
-    j["op_type"]["attrs"] = op_type.attr;
-    j["op_type"]["named_attrs"] = op_type.named_attrs;
+    j["op_type"]["type"] = op_type.name();
+    j["op_type"]["attrs"] = op_type.attrs_;
+    j["op_type"]["named_attrs"] = op_type.named_attrs_;
 }
 
 void to_json(json& j, EdgeAttributes const& attrs)

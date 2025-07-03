@@ -213,9 +213,6 @@ bool is_constant_input(const Node *node);
 bool is_recompute(const Graph *graph, const Node *node);
 Node *get_fwd_from_recompute(const Graph *graph, const Node *node);
 
-bool can_swap_operands(Graph *graph, Node *node);
-void swap_operands(Graph *graph, Node *node);
-
 Edge retrieve_between_edge(Graph *graph, Node *producer, Node *consumer);
 bool are_bcasts_between_ops(Graph *graph, Node *producer, Node *consumer);
 //

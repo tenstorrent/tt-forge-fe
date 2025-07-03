@@ -4,6 +4,7 @@
 #include <pybind11/pybind11.h>
 
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "passes/passes_utils.hpp"
 
 namespace tt::passes
@@ -172,8 +173,8 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
             auto op = dynamic_cast<graphlib::OpNode *>(consumers[i]);
 
             auto op_type_ = op->op_type();
-            TT_ASSERT(op_type_.op == "index");
-            int start = std::get<int>(op->op_type().attr[1]);
+            TT_ASSERT(op_type_.type() == ops::OpType::Index);
+            int start = std::get<int>(op->op_type().attrs_[1]);
 
             // Update index attributes to slice the original tensor directly.
             // NOTE: since the old op infrastructure is used we need to set both the vector of attributes and the named

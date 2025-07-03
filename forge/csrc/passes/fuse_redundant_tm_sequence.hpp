@@ -6,7 +6,9 @@
 #include <string>
 #include <unordered_map>
 
+#include "ops/op.hpp"
 #include "passes/passes_utils.hpp"
+
 namespace tt::passes
 {
 using OpType = tt::graphlib::OpType;
@@ -16,11 +18,11 @@ struct OpTypeItem
     std::vector<OpType::Attr> attrs;
     bool check_attrs;
     OpTypeItem(OpType const& op_type, bool check_attrs) :
-        op_name(op_type.op),
+        op_name(op_type.name()),
         attrs(
-            op_type.op == "transpose"
+            op_type.type() == ops::OpType::Transpose
                 ? std::vector<OpType::Attr>({op_type.get_attr_as<int>("dim0"), op_type.get_attr_as<int>("dim1")})
-                : op_type.attr),
+                : op_type.attrs_),
         check_attrs(check_attrs)
     {
     }

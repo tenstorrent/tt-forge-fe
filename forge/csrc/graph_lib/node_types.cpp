@@ -219,44 +219,6 @@ void OpNode::set_output_df_from_operands(const Graph *graph)
     set_output_df(operands[0]->output_df());
 }
 
-bool OpNode::should_pair_with_sparse(const OpNode *sparse_op_node, const Graph *graph) const
-{
-    TT_ASSERT(sparse_op_node->is_sparse_matmul());
-    if (is_matmul_not_sparse() or op_name().compare("reduce") == 0)
-    {
-        if (this->has_tag("original_op_name") and sparse_op_node->has_tag("original_op_name"))
-        {
-            std::string original_op_name = std::get<std::string>(this->tag_value("original_op_name"));
-            std::string sparse_original_op_name = std::get<std::string>(sparse_op_node->tag_value("original_op_name"));
-            if (original_op_name.compare(sparse_original_op_name) == 0)
-            {
-                if (graph->data_users(sparse_op_node).size() == 1)
-                {
-                    bool can_be_paired = false;
-                    for (const Node *operand_node : graph->data_operands(this))
-                    {
-                        if (operand_node == sparse_op_node)
-                        {
-                            can_be_paired = true;
-                            continue;
-                        }
-
-                        if (operand_node->node_type() != graphlib::NodeType::kInput)
-                        {
-                            can_be_paired = false;
-                            break;
-                        }
-                    }
-
-                    return can_be_paired;
-                }
-            }
-        }
-    }
-
-    return false;
-}
-
 InputNode::InputNode(const std::string &name, InputNodeType input_type, bool requires_grad) :
     QueueNode(name, QueueNodeType::Input, NodeType::kInput), input_type_(input_type), requires_grad_(requires_grad)
 {
@@ -359,17 +321,21 @@ bool ConstantInputNode::equivalent(const ConstantInputNode *other) const
 
 bool EdgeAttributes::has_broadcast_dims() const
 {
-    return std::find_if(tms.begin(), tms.end(), [](const OpType &o) { return o.op == "broadcast"; }) != tms.end();
+    return std::find_if(tms.begin(), tms.end(), [](const OpType &o) { return o.type() == ops::OpType::Broadcast; }) !=
+           tms.end();
 }
 
 void EdgeAttributes::clear_broadcast_dims()
 {
-    tms.erase(std::remove_if(tms.begin(), tms.end(), [](const OpType &o) { return o.op == "broadcast"; }), tms.end());
+    tms.erase(
+        std::remove_if(tms.begin(), tms.end(), [](const OpType &o) { return o.type() == ops::OpType::Broadcast; }),
+        tms.end());
 }
 
 void EdgeAttributes::remove_broadcast_dim(int dim)
 {
-    auto filter = [=](const OpType &o) { return o.op == "broadcast" && std::get<int>(o.attr[0]) == dim; };
+    auto filter = [=](const OpType &o)
+    { return o.type() == ops::OpType::Broadcast && std::get<int>(o.attrs_[0]) == dim; };
     tms.erase(std::remove_if(tms.begin(), tms.end(), filter), tms.end());
 }
 

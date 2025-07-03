@@ -199,7 +199,7 @@ class Op
 
     bool has_attr(const std::string &attr_name) const { return attrs_.find(attr_name) != attrs_.end(); }
     void set_attrs(Attrs attrs) { attrs_ = std::move(attrs); }
-    void set_attr(std::string const &name, Attr attr) { attrs_[name] = attr; }
+    void set_attr(std::string const &name, Attr attr) { attrs_[name] = std::move(attr); }
 
     const std::string &as_string() const;
 

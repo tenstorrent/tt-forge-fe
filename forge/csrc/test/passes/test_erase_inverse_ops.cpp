@@ -4,6 +4,7 @@
 #include "graph_lib/edge.hpp"
 #include "graph_lib/node_types.hpp"
 #include "gtest/gtest.h"
+#include "ops/op.hpp"
 #include "passes/commute_utils.hpp"
 #include "passes/erase_inverse_ops.hpp"
 #include "passes/insert_inverse_on_io.hpp"
@@ -54,7 +55,7 @@ TEST_F(EraseInverseOps, erase_transpose)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            EXPECT_NE(node->as<graphlib::PyOpNode>()->op_type().op, "transpose");
+            EXPECT_NE(node->as<graphlib::PyOpNode>()->op_type().type(), ops::OpType::Transpose);
         }
     }
     EXPECT_EQ(graph->nodes().size(), 8);
@@ -89,7 +90,7 @@ TEST_F(EraseInverseOps, erase_transpose_fork)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            if (node->as<graphlib::PyOpNode>()->op_type().op == "transpose")
+            if (node->as<graphlib::PyOpNode>()->op_type().type() == ops::OpType::Transpose)
                 transpose_count++;
         }
     }
@@ -136,7 +137,7 @@ TEST_F(EraseInverseOps, erase_inverse_ops_transpose_fork_join)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            if (node->as<graphlib::PyOpNode>()->op_type().op == "transpose")
+            if (node->as<graphlib::PyOpNode>()->op_type().type() == ops::OpType::Transpose)
                 transpose_count++;
         }
     }
@@ -184,11 +185,11 @@ TEST_F(EraseInverseOps, erase_inverse_ops_dual_reduce)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            if (node->as<graphlib::PyOpNode>()->op_type().op == "transpose")
+            if (node->as<graphlib::PyOpNode>()->op_type().type() == ops::OpType::Transpose)
                 transpose_count++;
-            else if (node->as<graphlib::PyOpNode>()->op_type().op == "reduce_sum")
+            else if (node->as<graphlib::PyOpNode>()->op_type().type() == ops::OpType::ReduceSum)
                 reduce_count++;
-            else if (node->as<graphlib::PyOpNode>()->op_type().op == "reshape")
+            else if (node->as<graphlib::PyOpNode>()->op_type().type() == ops::OpType::Reshape)
                 reshape_count++;
         }
     }
@@ -220,7 +221,7 @@ TEST_F(EraseInverseOps, replace_x_y_change_concat_pattern)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            if (node->as<graphlib::PyOpNode>()->op_type().op == "reshape")
+            if (node->as<graphlib::PyOpNode>()->op_type().type() == ops::OpType::Reshape)
                 reshape_count++;
         }
     }
@@ -272,12 +273,12 @@ TEST_F(CommuteBroadcastThroughTranspose, commute_broadcast_through_transpose)
     graphlib::Edge edge = graph->get_edges(transpose, multiply)[0];
     std::vector<graphlib::OpType> tms = graph->get_edge_attributes(edge)->get_tms();
     EXPECT_EQ(tms.size(), 2);
-    EXPECT_EQ(tms[0].op, "broadcast");
-    EXPECT_EQ(tms[1].op, "broadcast");
+    EXPECT_EQ(tms[0].type(), ops::OpType::Broadcast);
+    EXPECT_EQ(tms[1].type(), ops::OpType::Broadcast);
     // Broadcast along dimension -2 should become broadcast along -3
     // after commuting through transpose.
-    EXPECT_EQ(std::get<int>(tms[1].attr[0]), -3);
-    EXPECT_EQ(std::get<int>(tms[1].attr[1]), 112);
+    EXPECT_EQ(std::get<int>(tms[1].attrs_[0]), -3);
+    EXPECT_EQ(std::get<int>(tms[1].attrs_[1]), 112);
 }
 
 struct UpdateReshapeNamedAttrsTest : testing::Test
@@ -309,7 +310,7 @@ TEST_F(UpdateReshapeNamedAttrsTest, update_named_attrs)
     op_node_reshape->set_shape(new_shape);
     passes::update_reshape_attr(op_node_reshape, new_shape);
 
-    auto updated_attrs = op_node_reshape->op_type().named_attrs;
+    auto updated_attrs = op_node_reshape->op_type().named_attrs_;
     EXPECT_TRUE(updated_attrs.count("shape")) << "Shape attribute not found.";
     auto shape_vector = std::get<std::vector<int>>(updated_attrs["shape"]);
 
