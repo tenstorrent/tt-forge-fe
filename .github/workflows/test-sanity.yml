@@ -1,12 +1,6 @@
 name: Sanity Test - Forge Add
 
 on:
-  workflow_dispatch:
-    inputs:
-      run_id:
-        description: 'Run id to download wheels from (or leave empty to search latest)'
-        required: false
-        type: string
   workflow_call:
     inputs:
       run_id:
@@ -17,6 +11,11 @@ on:
         description: 'Docker image to use for test'
         required: true
         type: string
+      runs-on:
+        description: 'Runs on'
+        required: false
+        type: string
+        default: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
 
 permissions:
   packages: read
@@ -28,22 +27,31 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        wheel: [
-          { name: "compiler", artifact: "forge-wheel-compiler" }
-        ]
+        build: ${{ fromJson(inputs.runs-on) }}
 
     runs-on:
-      - tt-beta-ubuntu-2204-large
+      - in-service
+      - ${{ matrix.build.runs-on }}
 
     container:
       image: ${{ inputs.docker-image }}
+      options: --device /dev/tenstorrent/0
+      volumes:
+        - /dev/hugepages:/dev/hugepages
+        - /dev/hugepages-1G:/dev/hugepages-1G
+        - /etc/udev/rules.d:/etc/udev/rules.d
+        - /lib/modules:/lib/modules
+        - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+        - /mnt/dockercache:/mnt/dockercache
+
+    name: "sanity-forge-test (${{ matrix.build.runs-on }})"
 
     steps:
       - name: Fetch job id
         id: fetch-job-id
         uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
         with:
-          job_name: "sanity-forge-test (${{ matrix.wheel.name }})"
+          job_name: "sanity-forge-test (${{ matrix.build.runs-on }})"
 
       - name: Set reusable strings
         id: strings
@@ -52,6 +60,7 @@ jobs:
           JOB_ID: ${{ steps.fetch-job-id.outputs.job_id }}
         run: |
           echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+          echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
           echo "test_report_path=reports/report_$JOB_ID.xml" >> "$GITHUB_OUTPUT"
 
       - name: Git safe dir
@@ -60,19 +69,29 @@ jobs:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
+            .github/workflows/
             env/
             forge/test
             pytest.ini
             conftest.py
-          clean: true
-          fetch-depth: 1
+            .test_durations
+
+      - name: Setup Forge Models repo
+        shell: bash
+        run: |
+          git submodule update --init --recursive -f third_party/tt_forge_models
+
+      - name: Cleanup submodules
+        run: |
+          git submodule foreach --recursive git clean -ffdx
+          git submodule foreach --recursive git reset --hard
 
       - name: Download wheel
         if: ${{ inputs.run_id }}
         continue-on-error: true
         uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
         with:
-          name: ${{ matrix.wheel.artifact }}
+          name: forge-wheel
           run_id: ${{ inputs.run_id }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -83,8 +102,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow_conclusion: success
           workflow_search: true
-          workflow: build.yml
-          name: ${{ matrix.wheel.artifact }}
+          workflow: on-push.yml
+          name: forge-wheel
           repo: tenstorrent/tt-forge-fe
           check_artifacts: true
           search_artifacts: true
@@ -93,33 +112,68 @@ jobs:
         shell: bash
         run: |
           source env/activate
-          # Validate wheel file exists and is secure
-          wheel_file=$(find . -name "*.whl" | head -1)
-          if [ -z "$wheel_file" ]; then
-            echo "Error: No wheel file found"
-            exit 1
-          fi
-          echo "Installing wheel: $wheel_file"
-          # Validate wheel file is from expected source
-          if [[ "$wheel_file" != *"forge"* ]]; then
-            echo "Error: Wheel file does not appear to be a forge wheel"
-            exit 1
-          fi
-          pip install "$wheel_file" --force-reinstall
+          pip install tt_tvm*.whl --force-reinstall
+          pip install compiler/tt_forge_fe_compiler*.whl --force-reinstall
 
-      - name: Run sanity test
+      - name: Run Test
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HOME: /mnt/dockercache/huggingface
+          FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
+          HF_HUB_DISABLE_PROGRESS_BARS: 1
+          FORGE_DISABLE_REPORTIFY_DUMP: 1
         shell: bash
         run: |
           source env/activate
-          echo "Running forge add sanity test for ${{ matrix.wheel.name }} wheel..."
-          pytest forge/test/test_sanity_forge_add.py -v -m "sanity" --tb=short \
-            --junit-xml=${{ steps.strings.outputs.test_report_path }}
+          echo "Collecting sanity tests..."
+          pytest --splits 1 \
+               --group 1 \
+               --splitting-algorithm least_duration \
+               -m "sanity" --collect-only -q forge/test/test_sanity_forge_add.py \
+                | sed -n '/^Collected tests /,/^collected /p' | sed '/^[Cc]ollected /d' >.pytest_tests_to_run
+
+          echo "Collected tests."
+          cat .pytest_tests_to_run
+
+          set +e
+          python .github/workflows/test_runner.py  \
+               --junit-xml=${{ steps.strings.outputs.test_report_path }} \
+               --log-memory-usage
+          exit_code=$?
+
+          if [ -f "crashed_pytest.log" ]; then
+            echo "Creating crash summary for the job..."
+            echo "### Crashed tests:" >>$GITHUB_STEP_SUMMARY
+            cat crashed_pytest.log >>$GITHUB_STEP_SUMMARY
+          fi
+          exit $exit_code
+
+      - name: Upload Test Log
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: test-log-${{ matrix.build.runs-on }}-sanity-${{ steps.fetch-job-id.outputs.job_id }}
+          path: pytest.log
+
+      - name: Upload Test Crash Log
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: test-crash-log-${{ matrix.build.runs-on }}-sanity-${{ steps.fetch-job-id.outputs.job_id }}
+          path: crashed_pytest.log
+
+      - name: Upload Memory Usage Log
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: memory-usage-${{ matrix.build.runs-on }}-sanity-${{ steps.fetch-job-id.outputs.job_id }}
+          path: pytest-memory-usage.csv
 
       - name: Upload Test Report
         uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
-          name: test-reports-${{ matrix.wheel.name }}-${{ steps.fetch-job-id.outputs.job_id }}
+          name: test-reports-sanity-${{ steps.fetch-job-id.outputs.job_id }}
           path: ${{ steps.strings.outputs.test_report_path }}
 
       - name: Show Test Report
@@ -127,11 +181,19 @@ jobs:
         if: success() || failure()
         with:
           report_paths: ${{ steps.strings.outputs.test_report_path }}
-          check_name: TT-Forge-FE Sanity Tests (${{ matrix.wheel.name }})
+          check_name: TT-Forge-FE Sanity Tests
           comment: false
           updateComment: false
           detailed_summary: true
           group_suite: true
+
+      - name: Upload test results to Codecov
+        if: success() || failure()
+        uses: codecov/test-results-action@v1
+        with:
+          files: ${{ steps.strings.outputs.test_report_path }}
+          disable_search: true
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Cleanup
         if: always()
