@@ -23,20 +23,9 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
+from test.models.pytorch.vision.yolo.model_utils.yolov4_utils import Wrapper
+
 from third_party.tt_forge_models.yolov4 import ModelLoader  # isort:skip
-
-
-class Wrapper(torch.nn.Module):
-    def __init__(self, model):
-        super().__init__()
-        self.model = model
-
-    def forward(self, image: torch.Tensor):
-        x, y, z = self.model(image)
-        # Post processing inside model casts output to float32,
-        # even though raw output is aligned with image.dtype
-        # Therefore we need to cast it back to image.dtype
-        return x.to(image.dtype), y.to(image.dtype), z.to(image.dtype)
 
 
 @pytest.mark.nightly
