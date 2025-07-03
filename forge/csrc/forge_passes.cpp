@@ -180,7 +180,10 @@ graphlib::Graph *run_pre_lowering_passes(graphlib::Graph *graph, const std::opti
 
     // Manually convert broadcast ops to tms, so insert tile broadcast ops can work generically
     // Note this is not lowering, these are still forge tms
-    convert_broadcast_ops_to_tms(graph);
+    if (not env_as<bool>("FORGE_ENABLE_TTMLIR_BROADCAST", false))
+    {
+        convert_broadcast_ops_to_tms(graph);
+    }
 
     passes::remove_nops(graph);
 
