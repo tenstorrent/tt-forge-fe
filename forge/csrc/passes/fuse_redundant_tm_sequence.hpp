@@ -34,7 +34,7 @@ struct OpTypeItem
     {
         return op_name == "transpose"
                    ? graphlib::OpType(
-                         op_name, {}, {}, {{"dim0", std::get<int>(attrs[0])}, {"dim1", std::get<int>(attrs[1])}})
+                         op_name, {}, {{"dim0", std::get<int>(attrs[0])}, {"dim1", std::get<int>(attrs[1])}})
                    : graphlib::OpType(op_name, attrs);
     }
 };

@@ -14,7 +14,6 @@ namespace tt
 
 using NodeId = graphlib::NodeId;
 using PortId = graphlib::PortId;
-void lower_reshape(graphlib::Graph *, graphlib::OpNode *node);  // unused
 
 // Run post initial graph passes
 std::tuple<std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>>, passes::FractureChipIdAssignments>

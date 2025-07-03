@@ -371,18 +371,13 @@ struct OpType
     using Attrs = ForgeOpAttrs;
 
     std::string op;
-    std::vector<Attr> attr;    // legacy path
-    Attrs named_attrs;         // new path
-    ForgeOpAttrs forge_attrs;  // attrs that will lower directly into the netlist
+    std::vector<Attr> attr;  // legacy path
+    Attrs named_attrs;       // new path
 
     ops::Op new_op_;
 
-    OpType(
-        std::string const &op,
-        std::vector<Attr> const &attr = {},
-        ForgeOpAttrs const &forge_attrs = {},
-        Attrs named_attrs = {}) :
-        op(op), attr(attr), named_attrs(std::move(named_attrs)), forge_attrs(forge_attrs), new_op_(*this)
+    OpType(std::string const &op, std::vector<Attr> const &attr = {}, Attrs named_attrs = {}) :
+        op(op), attr(attr), named_attrs(std::move(named_attrs)), new_op_(*this)
     {
     }
 
@@ -390,8 +385,7 @@ struct OpType
     bool operator==(const std::string &name) const { return op == name; }
     bool operator==(const OpType &other) const
     {
-        return op == other.op and attr == other.attr and named_attrs == other.named_attrs and
-               forge_attrs == other.forge_attrs;
+        return op == other.op and attr == other.attr and named_attrs == other.named_attrs;
     }
     bool operator!=(const OpType &other) const { return not(*this == other); }
 
@@ -539,7 +533,7 @@ class OpNode : public TaggedNode
     }
     void change_op_type(const std::string &new_op_type, std::vector<OpType::Attr> attrs, OpType::Attrs named_attrs)
     {
-        op_type_ = OpType(new_op_type, attrs, {}, named_attrs);
+        op_type_ = OpType(new_op_type, attrs, named_attrs);
     }
     ops::OpType new_op_type() const { return new_op().type(); }
     OpType const &op_type() const { return op_type_; }
@@ -556,8 +550,6 @@ class OpNode : public TaggedNode
     }
     void set_op_attr(const std::string &name, OpType::Attr value) { op_type_.set_attr(name, std::move(value)); }
 
-    const ForgeOpAttrs &forge_attrs() const { return op_type_.forge_attrs; }
-    void overwrite_forge_attrs(ForgeOpAttrs forge_attrs) { op_type_.forge_attrs = forge_attrs; }
     void set_gradient_op(bool value = true) { gradient_op_ = value; }
     bool is_op_type(std::string const &type) const { return type == op_name(); }
     bool is_gradient_op() const { return gradient_op_; }

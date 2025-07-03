@@ -288,14 +288,13 @@ void GraphModule(py::module &m_graph)
             py::init([](std::string const &op,
                         std::vector<tt::graphlib::OpType::Attr> const &attr,
                         tt::graphlib::OpType::Attrs const &named_attrs)
-                     { return graphlib::OpType(op, attr, {}, named_attrs); }),
+                     { return graphlib::OpType(op, attr, named_attrs); }),
             py::arg("op"),
             py::arg("attr") = std::vector<tt::graphlib::OpType::Attr>{},
             py::arg("named_attrs") = tt::graphlib::OpType::Attrs{})
         .def_readonly("op", &tt::graphlib::OpType::op)
         .def_readonly("attr", &tt::graphlib::OpType::attr)
         .def_readonly("named_attrs", &tt::graphlib::OpType::named_attrs)
-        .def_readonly("forge_attrs", &tt::graphlib::OpType::forge_attrs)
         .def("eval", &tt::graphlib::OpType::eval)
         .def("shape", &tt::graphlib::OpType::shape)
         .def("backward", &tt::graphlib::OpType::backward)
@@ -938,10 +937,6 @@ py::object consteval_input(
             node->name(),
             node->node_type());
         graphlib::OpNode *op_node = node->as<graphlib::OpNode>();
-
-        auto type = op_node->op_type();
-        auto relu_match = type.forge_attrs.find("relu");
-        TT_ASSERT(relu_match == type.forge_attrs.end(), "ConstEval doesn't support relu");
 
         std::vector<py::object> inputs = eval_operand_tms(consteval_graph, node, node_outputs);
         output = eval_op(op_node->op_type(), inputs);
