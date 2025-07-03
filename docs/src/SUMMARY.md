@@ -8,7 +8,7 @@
 - [Architecture Overview](./architecture_overview.md)
 
 # Project setup
-- [Building](./build.md)
+- [Building](./getting_started_build_from_source.md)
 - [Testing](./test.md)
     - [Pytest](./pytest.md)
 - [Tools](./tools.md)
