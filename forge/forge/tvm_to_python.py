@@ -999,25 +999,6 @@ def populate_maxpool2d_args(graph, nid, compiler_cfg):
     return args
 
 
-def populate_adaptive_maxpool2d_args(graph, nid, compiler_cfg):
-    args = []
-    node = graph["nodes"][nid]
-
-    output_size = [int(size) for size in node["attrs"]["output_size"][0]]
-    args.append(
-        (
-            "output_size",
-            f"{output_size[0]}",
-        )
-    )
-
-    layout = node["attrs"].get("layout", [["NCHW"]])[0][0]
-    channel_last = int(layout == "NHWC")
-    args.append(("channel_last", f"{channel_last}"))
-
-    return args
-
-
 def populate_maxpool3d_args(graph, nid, compiler_cfg):
     args = []
     node = graph["nodes"][nid]
@@ -1756,7 +1737,6 @@ tvm_to_forge_op_map = {
     "nn.max_pool1d": "max_pool1d",
     "nn.max_pool2d": "max_pool2d",
     "nn.max_pool3d": "max_pool3d",
-    "nn.adaptive_max_pool2d": "adaptive_max_pool2d",
     "nn.pad": "pad",
     "nn.relu": "relu",
     "nn.softmax": "softmax",
@@ -1844,7 +1824,6 @@ forge_op_to_function_name = {
     "max_pool1d": "forge.op.MaxPool1d",
     "max_pool2d": "forge.op.MaxPool2d",
     "max_pool3d": "forge.op.MaxPool3d",
-    "adaptive_max_pool2d": "forge.op.AdaptiveMaxPool2d",
     "maximum": "forge.op.Max",
     "mean": "forge.op.ReduceAvg",
     "minimum": "forge.op.Min",
@@ -1912,7 +1891,6 @@ forge_ops_needing_arguments = {
     "max_pool1d": populate_maxpool1d_args,
     "max_pool2d": populate_maxpool2d_args,
     "max_pool3d": populate_maxpool3d_args,
-    "adaptive_max_pool2d": populate_adaptive_maxpool2d_args,
     "pad": populate_pad_args,
     "pixel_shuffle": populate_pixel_shuffle_args,
     "prelu": populate_prelu_args,
@@ -2801,19 +2779,17 @@ def compile_tvm_to_python(
                     "Both extract_tvm_unique_ops_config and tvm_generate_unique_ops_tests should not be enabled at the same time."
                 )
 
-            # Commenting the below verification between framework outputs and generated forge module outputs
-            # because most of the models are failing with the pcc issue which leads to skip the models in model analysis
+            # Running the inference to verify the generated forge module which helps
+            # to avoid extracting unique ops configuration for not properly traced models
+            file_path = os.path.join(writer.module_directory, writer.filename)
+            module = import_from_path(writer.module_name, file_path)
 
-            # file_path = os.path.join(writer.module_directory, writer.filename)
-            # module = import_from_path(writer.module_name, file_path)
+            TestClass = getattr(module, writer.class_name)
+            forge_mod = TestClass(writer.module_name)
+            forge_mod.process_framework_parameters(framework_mod.module)
 
-            # TestClass = getattr(module, writer.class_name)
-            # forge_mod = TestClass(writer.module_name)
-            # forge_mod.process_framework_parameters(framework_mod.module)
-
-            # framework_outputs = framework_mod.cpu_eval_forward(*inputs)
-            # forge_outputs = get_forge_outputs([forge_mod], ["TTDevice"], forge_inputs)
-            # verify_framework_vs_forge_codegen(framework_outputs, forge_outputs, verify_cfg=verify_cfg)
+            framework_mod.cpu_eval_forward(*inputs)
+            get_forge_outputs([forge_mod], ["TTDevice"], forge_inputs)
 
             extract_and_generate_unique_ops_tests(
                 framework_mod,

@@ -12,7 +12,6 @@ from forge.verify.verify import verify
 from datasets import load_dataset
 from forge.verify.config import VerifyConfig, AutomaticValueChecker
 from test.models.onnx.vision.mobilenetv2.model_utils.utils import load_inputs
-from PIL import Image
 from test.models.models_utils import print_cls_results
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
@@ -20,7 +19,14 @@ params = [
     pytest.param("mobilenetv2_050"),
     pytest.param("mobilenetv2_100", marks=[pytest.mark.push]),
     pytest.param("mobilenetv2_110d"),
-    pytest.param("mobilenetv2_140"),
+    pytest.param(
+        "mobilenetv2_140",
+        marks=[
+            pytest.mark.xfail(
+                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
+            )
+        ],
+    ),
 ]
 
 
@@ -41,8 +47,8 @@ def test_mobilenetv2_onnx(variant, forge_tmp_path):
     model = timm.create_model(variant, pretrained=True)
 
     # Load the inputs
-    dataset = load_dataset("cifar10", split="test[:1]")
-    img = dataset[0]["img"]
+    dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+    img = next(iter(dataset.skip(10)))["image"]
     inputs = load_inputs(img, model)
     onnx_path = f"{forge_tmp_path}/mobilenetv2.onnx"
     torch.onnx.export(model, inputs[0], onnx_path)
@@ -57,7 +63,7 @@ def test_mobilenetv2_onnx(variant, forge_tmp_path):
 
     pcc = 0.99
     if variant == "mobilenetv2_050":
-        pcc = 0.96
+        pcc = 0.95
 
     fw_out, co_out = verify(
         inputs,

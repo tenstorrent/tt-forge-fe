@@ -6,13 +6,13 @@ from typing import Tuple, Union
 
 from ..tensor import Tensor
 from ..parameter import Parameter
-from forge.op.eval.forge import get_f_forge_eval, get_f_forge_shape
 from forge._C import DataFormat
 from forge._C.graph import OpType
 import forge
 from forge.forgeglobal import get_unique_node_id, tracing
 from forge.tensor import pytorch_dtype_to_forge_dataformat
 from loguru import logger
+
 
 deprecated_name_dict = {}
 deprecated_op_id = 0
@@ -54,11 +54,11 @@ class ForgeOp:
 
         # get reference output shape
         shapes = [o.shape.get_pytorch_shape() for o in self.operands]
-        shape, self.operand_broadcast = get_f_forge_shape(self.cpp_op_type)(shapes)
+        shape, self.operand_broadcast = self.cpp_op_type.shape(shapes)
 
         # get reference output value
         values = [o.value() if isinstance(o, (Tensor, Parameter)) else o for o in self.operands]
-        ref_output = get_f_forge_eval(self.cpp_op_type)(values)
+        ref_output = self.cpp_op_type.eval(values)
 
         if out_df is not None:  # User provided output dataformat
             data_format = out_df

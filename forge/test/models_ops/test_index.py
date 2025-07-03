@@ -557,7 +557,7 @@ class Index59(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=80, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=64, stride=1)
         return index_output_1
 
 
@@ -566,7 +566,7 @@ class Index60(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=80, stop=160, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=64, stop=144, stride=1)
         return index_output_1
 
 
@@ -575,7 +575,7 @@ class Index61(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=160, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=2, stride=1)
         return index_output_1
 
 
@@ -584,7 +584,7 @@ class Index62(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=160, stop=320, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2, stop=4, stride=1)
         return index_output_1
 
 
@@ -593,7 +593,7 @@ class Index63(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=320, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=640, stride=2)
         return index_output_1
 
 
@@ -602,7 +602,7 @@ class Index64(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=320, stop=640, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=640, stride=2)
         return index_output_1
 
 
@@ -611,7 +611,7 @@ class Index65(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=64, stop=128, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=640, stride=2)
         return index_output_1
 
 
@@ -620,7 +620,7 @@ class Index66(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=32, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=1, stop=640, stride=2)
         return index_output_1
 
 
@@ -629,7 +629,7 @@ class Index67(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=32, stop=64, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=32, stride=1)
         return index_output_1
 
 
@@ -638,7 +638,7 @@ class Index68(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=64, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=64, stop=128, stride=1)
         return index_output_1
 
 
@@ -647,7 +647,7 @@ class Index69(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=64, stop=144, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=128, stride=1)
         return index_output_1
 
 
@@ -656,7 +656,7 @@ class Index70(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=2, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=128, stop=256, stride=1)
         return index_output_1
 
 
@@ -665,7 +665,7 @@ class Index71(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2, stop=4, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=64, stop=160, stride=1)
         return index_output_1
 
 
@@ -674,7 +674,7 @@ class Index72(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=640, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=160, stop=176, stride=1)
         return index_output_1
 
 
@@ -683,7 +683,7 @@ class Index73(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=640, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=288, stride=1)
         return index_output_1
 
 
@@ -692,7 +692,7 @@ class Index74(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=640, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=192, stride=1)
         return index_output_1
 
 
@@ -701,7 +701,7 @@ class Index75(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=1, stop=640, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=192, stop=288, stride=1)
         return index_output_1
 
 
@@ -710,7 +710,7 @@ class Index76(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=32, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=288, stop=304, stride=1)
         return index_output_1
 
 
@@ -719,7 +719,7 @@ class Index77(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=64, stop=128, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=160, stride=1)
         return index_output_1
 
 
@@ -728,7 +728,7 @@ class Index78(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=128, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=160, stop=272, stride=1)
         return index_output_1
 
 
@@ -737,7 +737,7 @@ class Index79(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=128, stop=256, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=272, stop=296, stride=1)
         return index_output_1
 
 
@@ -746,7 +746,7 @@ class Index80(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=64, stop=160, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=280, stride=1)
         return index_output_1
 
 
@@ -755,7 +755,7 @@ class Index81(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=160, stop=176, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=112, stride=1)
         return index_output_1
 
 
@@ -764,7 +764,7 @@ class Index82(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=288, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=112, stop=256, stride=1)
         return index_output_1
 
 
@@ -773,7 +773,7 @@ class Index83(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=192, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=416, stride=1)
         return index_output_1
 
 
@@ -782,7 +782,7 @@ class Index84(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=192, stop=288, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=416, stop=448, stride=1)
         return index_output_1
 
 
@@ -791,7 +791,7 @@ class Index85(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=288, stop=304, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=576, stop=624, stride=1)
         return index_output_1
 
 
@@ -800,7 +800,7 @@ class Index86(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=160, stop=272, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=2, stop=3, stride=1)
         return index_output_1
 
 
@@ -809,7 +809,7 @@ class Index87(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=272, stop=296, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=3, stop=4, stride=1)
         return index_output_1
 
 
@@ -818,7 +818,7 @@ class Index88(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=280, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=4, stop=5, stride=1)
         return index_output_1
 
 
@@ -827,7 +827,7 @@ class Index89(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=112, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=5, stop=6, stride=1)
         return index_output_1
 
 
@@ -836,7 +836,7 @@ class Index90(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=112, stop=256, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=6, stop=7, stride=1)
         return index_output_1
 
 
@@ -845,7 +845,7 @@ class Index91(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=416, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=7, stop=8, stride=1)
         return index_output_1
 
 
@@ -854,7 +854,7 @@ class Index92(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=416, stop=448, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=8, stop=9, stride=1)
         return index_output_1
 
 
@@ -863,7 +863,7 @@ class Index93(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=576, stop=624, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=9, stop=10, stride=1)
         return index_output_1
 
 
@@ -872,7 +872,7 @@ class Index94(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=2, stop=3, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=10, stop=11, stride=1)
         return index_output_1
 
 
@@ -881,7 +881,7 @@ class Index95(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=3, stop=4, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=11, stop=12, stride=1)
         return index_output_1
 
 
@@ -890,7 +890,7 @@ class Index96(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=4, stop=5, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=12, stop=13, stride=1)
         return index_output_1
 
 
@@ -899,7 +899,7 @@ class Index97(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=5, stop=6, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=13, stop=14, stride=1)
         return index_output_1
 
 
@@ -908,7 +908,7 @@ class Index98(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=6, stop=7, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=14, stop=15, stride=1)
         return index_output_1
 
 
@@ -917,7 +917,7 @@ class Index99(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=7, stop=8, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=15, stop=16, stride=1)
         return index_output_1
 
 
@@ -926,7 +926,7 @@ class Index100(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=8, stop=9, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=16, stop=17, stride=1)
         return index_output_1
 
 
@@ -935,7 +935,7 @@ class Index101(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=9, stop=10, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=17, stop=18, stride=1)
         return index_output_1
 
 
@@ -944,7 +944,7 @@ class Index102(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=10, stop=11, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=18, stop=19, stride=1)
         return index_output_1
 
 
@@ -953,7 +953,7 @@ class Index103(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=11, stop=12, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=19, stop=20, stride=1)
         return index_output_1
 
 
@@ -962,7 +962,7 @@ class Index104(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=12, stop=13, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=20, stop=21, stride=1)
         return index_output_1
 
 
@@ -971,7 +971,7 @@ class Index105(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=13, stop=14, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=21, stop=22, stride=1)
         return index_output_1
 
 
@@ -980,7 +980,7 @@ class Index106(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=14, stop=15, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=22, stop=23, stride=1)
         return index_output_1
 
 
@@ -989,7 +989,7 @@ class Index107(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=15, stop=16, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=23, stop=24, stride=1)
         return index_output_1
 
 
@@ -998,7 +998,7 @@ class Index108(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=16, stop=17, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=24, stop=25, stride=1)
         return index_output_1
 
 
@@ -1007,7 +1007,7 @@ class Index109(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=17, stop=18, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=144, stop=192, stride=1)
         return index_output_1
 
 
@@ -1016,7 +1016,7 @@ class Index110(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=18, stop=19, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=48, stop=96, stride=1)
         return index_output_1
 
 
@@ -1025,7 +1025,7 @@ class Index111(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=19, stop=20, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=48, stride=1)
         return index_output_1
 
 
@@ -1034,7 +1034,7 @@ class Index112(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=20, stop=21, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=96, stop=144, stride=1)
         return index_output_1
 
 
@@ -1043,7 +1043,7 @@ class Index113(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=21, stop=22, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=729, stride=1)
         return index_output_1
 
 
@@ -1052,7 +1052,7 @@ class Index114(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=22, stop=23, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=729, stop=732, stride=1)
         return index_output_1
 
 
@@ -1061,7 +1061,7 @@ class Index115(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=23, stop=24, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=197, stride=1)
         return index_output_1
 
 
@@ -1070,7 +1070,7 @@ class Index116(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=24, stop=25, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-1, stop=25, stride=1)
         return index_output_1
 
 
@@ -1079,7 +1079,7 @@ class Index117(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=144, stop=192, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=-1, stop=34, stride=1)
         return index_output_1
 
 
@@ -1088,7 +1088,7 @@ class Index118(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=48, stop=96, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=128, stride=2)
         return index_output_1
 
 
@@ -1097,7 +1097,7 @@ class Index119(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=48, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=1, stop=128, stride=2)
         return index_output_1
 
 
@@ -1106,7 +1106,7 @@ class Index120(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=96, stop=144, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=88, stride=1)
         return index_output_1
 
 
@@ -1115,7 +1115,7 @@ class Index121(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=729, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=88, stop=132, stride=1)
         return index_output_1
 
 
@@ -1124,7 +1124,7 @@ class Index122(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=729, stop=732, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=132, stop=176, stride=1)
         return index_output_1
 
 
@@ -1133,7 +1133,7 @@ class Index123(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=197, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=44, stride=1)
         return index_output_1
 
 
@@ -1142,7 +1142,7 @@ class Index124(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-1, stop=25, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=44, stop=88, stride=1)
         return index_output_1
 
 
@@ -1151,7 +1151,7 @@ class Index125(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=-1, stop=34, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=88, stop=176, stride=1)
         return index_output_1
 
 
@@ -1160,7 +1160,7 @@ class Index126(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=128, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=64, stop=192, stride=1)
         return index_output_1
 
 
@@ -1169,7 +1169,7 @@ class Index127(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=1, stop=128, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=192, stop=448, stride=1)
         return index_output_1
 
 
@@ -1178,7 +1178,7 @@ class Index128(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=88, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=384, stride=1)
         return index_output_1
 
 
@@ -1187,7 +1187,7 @@ class Index129(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=88, stop=132, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=384, stop=448, stride=1)
         return index_output_1
 
 
@@ -1196,7 +1196,7 @@ class Index130(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=132, stop=176, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=256, stride=1)
         return index_output_1
 
 
@@ -1205,7 +1205,7 @@ class Index131(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=44, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=32, stride=1)
         return index_output_1
 
 
@@ -1214,7 +1214,7 @@ class Index132(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=44, stop=88, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=256, stride=1)
         return index_output_1
 
 
@@ -1223,7 +1223,7 @@ class Index133(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=88, stop=176, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-5, start=0, stop=1, stride=1)
         return index_output_1
 
 
@@ -1232,7 +1232,7 @@ class Index134(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=64, stop=192, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-5, start=1, stop=2, stride=1)
         return index_output_1
 
 
@@ -1241,7 +1241,7 @@ class Index135(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=192, stop=448, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-5, start=2, stop=3, stride=1)
         return index_output_1
 
 
@@ -1250,7 +1250,7 @@ class Index136(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=384, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=768, stop=1024, stride=1)
         return index_output_1
 
 
@@ -1259,7 +1259,7 @@ class Index137(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=384, stop=448, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1536, stop=1792, stride=1)
         return index_output_1
 
 
@@ -1268,7 +1268,7 @@ class Index138(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=256, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2304, stop=2560, stride=1)
         return index_output_1
 
 
@@ -1277,7 +1277,7 @@ class Index139(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=256, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=512, stop=768, stride=1)
         return index_output_1
 
 
@@ -1286,7 +1286,7 @@ class Index140(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-5, start=0, stop=1, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1280, stop=1536, stride=1)
         return index_output_1
 
 
@@ -1295,7 +1295,7 @@ class Index141(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-5, start=1, stop=2, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2048, stop=2304, stride=1)
         return index_output_1
 
 
@@ -1304,7 +1304,7 @@ class Index142(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-5, start=2, stop=3, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2816, stop=3072, stride=1)
         return index_output_1
 
 
@@ -1313,7 +1313,7 @@ class Index143(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=768, stop=1024, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=256, stop=512, stride=1)
         return index_output_1
 
 
@@ -1322,7 +1322,7 @@ class Index144(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1536, stop=1792, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1024, stop=1280, stride=1)
         return index_output_1
 
 
@@ -1331,7 +1331,7 @@ class Index145(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2304, stop=2560, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1792, stop=2048, stride=1)
         return index_output_1
 
 
@@ -1340,7 +1340,7 @@ class Index146(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=512, stop=768, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2560, stop=2816, stride=1)
         return index_output_1
 
 
@@ -1349,7 +1349,7 @@ class Index147(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1280, stop=1536, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=1, stop=32, stride=2)
         return index_output_1
 
 
@@ -1358,7 +1358,7 @@ class Index148(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2048, stop=2304, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=32, stride=2)
         return index_output_1
 
 
@@ -1367,7 +1367,7 @@ class Index149(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2816, stop=3072, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=3, stop=56, stride=1)
         return index_output_1
 
 
@@ -1376,7 +1376,7 @@ class Index150(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=256, stop=512, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=3, stride=1)
         return index_output_1
 
 
@@ -1385,7 +1385,7 @@ class Index151(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1024, stop=1280, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=3, stop=56, stride=1)
         return index_output_1
 
 
@@ -1394,7 +1394,7 @@ class Index152(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1792, stop=2048, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=3, stride=1)
         return index_output_1
 
 
@@ -1403,7 +1403,7 @@ class Index153(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2560, stop=2816, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=53, stop=56, stride=1)
         return index_output_1
 
 
@@ -1412,7 +1412,7 @@ class Index154(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=1, stop=32, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=53, stride=1)
         return index_output_1
 
 
@@ -1421,7 +1421,7 @@ class Index155(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=32, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=53, stop=56, stride=1)
         return index_output_1
 
 
@@ -1430,7 +1430,7 @@ class Index156(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=3, stop=56, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=53, stride=1)
         return index_output_1
 
 
@@ -1439,7 +1439,7 @@ class Index157(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=3, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=56, stride=2)
         return index_output_1
 
 
@@ -1448,7 +1448,7 @@ class Index158(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=3, stop=56, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=56, stride=2)
         return index_output_1
 
 
@@ -1457,7 +1457,7 @@ class Index159(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=3, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=56, stride=2)
         return index_output_1
 
 
@@ -1466,7 +1466,7 @@ class Index160(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=53, stop=56, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=56, stride=2)
         return index_output_1
 
 
@@ -1475,7 +1475,7 @@ class Index161(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=53, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=3, stop=28, stride=1)
         return index_output_1
 
 
@@ -1484,7 +1484,7 @@ class Index162(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=53, stop=56, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=3, stop=28, stride=1)
         return index_output_1
 
 
@@ -1493,7 +1493,7 @@ class Index163(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=53, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=25, stop=28, stride=1)
         return index_output_1
 
 
@@ -1502,7 +1502,7 @@ class Index164(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=56, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=25, stride=1)
         return index_output_1
 
 
@@ -1511,7 +1511,7 @@ class Index165(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=56, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=25, stop=28, stride=1)
         return index_output_1
 
 
@@ -1520,7 +1520,7 @@ class Index166(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=56, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=25, stride=1)
         return index_output_1
 
 
@@ -1529,7 +1529,7 @@ class Index167(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=56, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=28, stride=2)
         return index_output_1
 
 
@@ -1538,7 +1538,7 @@ class Index168(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=3, stop=28, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=28, stride=2)
         return index_output_1
 
 
@@ -1547,7 +1547,7 @@ class Index169(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=3, stop=28, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=28, stride=2)
         return index_output_1
 
 
@@ -1556,7 +1556,7 @@ class Index170(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=25, stop=28, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=28, stride=2)
         return index_output_1
 
 
@@ -1565,7 +1565,7 @@ class Index171(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=25, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=3, stop=14, stride=1)
         return index_output_1
 
 
@@ -1574,7 +1574,7 @@ class Index172(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=25, stop=28, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=3, stop=14, stride=1)
         return index_output_1
 
 
@@ -1583,7 +1583,7 @@ class Index173(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=25, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=11, stop=14, stride=1)
         return index_output_1
 
 
@@ -1592,7 +1592,7 @@ class Index174(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=28, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=11, stride=1)
         return index_output_1
 
 
@@ -1601,7 +1601,7 @@ class Index175(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=28, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=11, stop=14, stride=1)
         return index_output_1
 
 
@@ -1610,7 +1610,7 @@ class Index176(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=28, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=11, stride=1)
         return index_output_1
 
 
@@ -1619,7 +1619,7 @@ class Index177(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=28, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=14, stride=2)
         return index_output_1
 
 
@@ -1628,7 +1628,7 @@ class Index178(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=3, stop=14, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=14, stride=2)
         return index_output_1
 
 
@@ -1637,7 +1637,7 @@ class Index179(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=3, stop=14, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=14, stride=2)
         return index_output_1
 
 
@@ -1646,7 +1646,7 @@ class Index180(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=11, stop=14, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=14, stride=2)
         return index_output_1
 
 
@@ -1655,7 +1655,7 @@ class Index181(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=11, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2, stop=258, stride=1)
         return index_output_1
 
 
@@ -1664,7 +1664,7 @@ class Index182(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=11, stop=14, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=40, stride=1)
         return index_output_1
 
 
@@ -1673,7 +1673,7 @@ class Index183(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=11, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=40, stop=120, stride=1)
         return index_output_1
 
 
@@ -1682,7 +1682,7 @@ class Index184(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=14, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=120, stop=280, stride=1)
         return index_output_1
 
 
@@ -1691,7 +1691,7 @@ class Index185(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=14, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=160, stop=240, stride=1)
         return index_output_1
 
 
@@ -1700,7 +1700,7 @@ class Index186(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=14, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=240, stop=280, stride=1)
         return index_output_1
 
 
@@ -1709,7 +1709,7 @@ class Index187(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=14, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=80, stride=1)
         return index_output_1
 
 
@@ -1718,7 +1718,7 @@ class Index188(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2, stop=258, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=80, stop=120, stride=1)
         return index_output_1
 
 
@@ -1727,7 +1727,7 @@ class Index189(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=40, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=120, stop=160, stride=1)
         return index_output_1
 
 
@@ -1736,7 +1736,7 @@ class Index190(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=40, stop=120, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=40, stop=80, stride=1)
         return index_output_1
 
 
@@ -1745,7 +1745,7 @@ class Index191(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=120, stop=280, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=80, stop=160, stride=1)
         return index_output_1
 
 
@@ -1754,7 +1754,7 @@ class Index192(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=160, stop=240, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=416, stride=2)
         return index_output_1
 
 
@@ -1763,7 +1763,7 @@ class Index193(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=240, stop=280, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=416, stride=2)
         return index_output_1
 
 
@@ -1772,7 +1772,7 @@ class Index194(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=80, stop=120, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=416, stride=2)
         return index_output_1
 
 
@@ -1781,7 +1781,7 @@ class Index195(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=120, stop=160, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=1, stop=416, stride=2)
         return index_output_1
 
 
@@ -1790,7 +1790,7 @@ class Index196(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=40, stop=80, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=7, stride=1)
         return index_output_1
 
 
@@ -1799,7 +1799,7 @@ class Index197(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=416, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=31, stop=32, stride=1)
         return index_output_1
 
 
@@ -1808,7 +1808,7 @@ class Index198(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=416, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=32, stop=96, stride=1)
         return index_output_1
 
 
@@ -1817,7 +1817,7 @@ class Index199(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=416, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=224, stride=1)
         return index_output_1
 
 
@@ -1826,7 +1826,7 @@ class Index200(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=1, stop=416, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=128, stop=192, stride=1)
         return index_output_1
 
 
@@ -1835,7 +1835,7 @@ class Index201(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=7, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=192, stop=224, stride=1)
         return index_output_1
 
 
@@ -1844,7 +1844,7 @@ class Index202(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=31, stop=32, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=128, stride=1)
         return index_output_1
 
 
@@ -1853,7 +1853,7 @@ class Index203(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=32, stop=96, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=-24, stop=96, stride=1)
         return index_output_1
 
 
@@ -1862,7 +1862,7 @@ class Index204(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=224, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=72, stride=1)
         return index_output_1
 
 
@@ -1871,7 +1871,7 @@ class Index205(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=128, stop=192, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=4, stop=64, stride=1)
         return index_output_1
 
 
@@ -1880,7 +1880,7 @@ class Index206(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=192, stop=224, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=4, stride=1)
         return index_output_1
 
 
@@ -1889,7 +1889,7 @@ class Index207(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=128, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=4, stop=64, stride=1)
         return index_output_1
 
 
@@ -1898,7 +1898,7 @@ class Index208(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=-24, stop=96, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=4, stride=1)
         return index_output_1
 
 
@@ -1907,7 +1907,7 @@ class Index209(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=72, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=-4, stop=64, stride=1)
         return index_output_1
 
 
@@ -1916,7 +1916,7 @@ class Index210(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=4, stop=64, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=-4, stride=1)
         return index_output_1
 
 
@@ -1925,7 +1925,7 @@ class Index211(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=4, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-4, stop=64, stride=1)
         return index_output_1
 
 
@@ -1934,7 +1934,7 @@ class Index212(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=4, stop=64, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=-4, stride=1)
         return index_output_1
 
 
@@ -1943,7 +1943,7 @@ class Index213(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=4, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=64, stride=2)
         return index_output_1
 
 
@@ -1952,7 +1952,7 @@ class Index214(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=-4, stop=64, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=64, stride=2)
         return index_output_1
 
 
@@ -1961,7 +1961,7 @@ class Index215(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=-4, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=60, stop=64, stride=1)
         return index_output_1
 
 
@@ -1970,7 +1970,7 @@ class Index216(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-4, stop=64, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=60, stride=1)
         return index_output_1
 
 
@@ -1979,7 +1979,7 @@ class Index217(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=-4, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=60, stop=64, stride=1)
         return index_output_1
 
 
@@ -1988,7 +1988,7 @@ class Index218(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=64, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=60, stride=1)
         return index_output_1
 
 
@@ -1997,7 +1997,7 @@ class Index219(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=64, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=64, stride=2)
         return index_output_1
 
 
@@ -2006,7 +2006,7 @@ class Index220(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=60, stop=64, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=64, stride=2)
         return index_output_1
 
 
@@ -2015,7 +2015,7 @@ class Index221(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=60, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=4, stop=32, stride=1)
         return index_output_1
 
 
@@ -2024,7 +2024,7 @@ class Index222(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=60, stop=64, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=4, stop=32, stride=1)
         return index_output_1
 
 
@@ -2033,7 +2033,7 @@ class Index223(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=60, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=-4, stop=32, stride=1)
         return index_output_1
 
 
@@ -2042,7 +2042,7 @@ class Index224(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=64, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-4, stop=32, stride=1)
         return index_output_1
 
 
@@ -2051,7 +2051,7 @@ class Index225(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=64, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=32, stride=2)
         return index_output_1
 
 
@@ -2060,7 +2060,7 @@ class Index226(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=4, stop=32, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=32, stride=2)
         return index_output_1
 
 
@@ -2069,7 +2069,7 @@ class Index227(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=4, stop=32, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=28, stop=32, stride=1)
         return index_output_1
 
 
@@ -2078,7 +2078,7 @@ class Index228(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=-4, stop=32, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=28, stride=1)
         return index_output_1
 
 
@@ -2087,7 +2087,7 @@ class Index229(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-4, stop=32, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=28, stop=32, stride=1)
         return index_output_1
 
 
@@ -2096,7 +2096,7 @@ class Index230(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=32, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=28, stride=1)
         return index_output_1
 
 
@@ -2105,7 +2105,7 @@ class Index231(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=32, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=32, stride=2)
         return index_output_1
 
 
@@ -2114,7 +2114,7 @@ class Index232(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=28, stop=32, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=32, stride=2)
         return index_output_1
 
 
@@ -2123,7 +2123,7 @@ class Index233(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=28, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=4, stop=16, stride=1)
         return index_output_1
 
 
@@ -2132,7 +2132,7 @@ class Index234(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=28, stop=32, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=4, stop=16, stride=1)
         return index_output_1
 
 
@@ -2141,7 +2141,7 @@ class Index235(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=28, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=-4, stop=16, stride=1)
         return index_output_1
 
 
@@ -2150,7 +2150,7 @@ class Index236(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=32, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-4, stop=16, stride=1)
         return index_output_1
 
 
@@ -2159,7 +2159,7 @@ class Index237(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=32, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=16, stride=2)
         return index_output_1
 
 
@@ -2168,7 +2168,7 @@ class Index238(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=4, stop=16, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=16, stride=2)
         return index_output_1
 
 
@@ -2177,7 +2177,7 @@ class Index239(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=4, stop=16, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=12, stop=16, stride=1)
         return index_output_1
 
 
@@ -2186,7 +2186,7 @@ class Index240(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=-4, stop=16, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=12, stride=1)
         return index_output_1
 
 
@@ -2195,7 +2195,7 @@ class Index241(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-4, stop=16, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=12, stop=16, stride=1)
         return index_output_1
 
 
@@ -2204,7 +2204,7 @@ class Index242(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=16, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=12, stride=1)
         return index_output_1
 
 
@@ -2213,7 +2213,7 @@ class Index243(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=16, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=16, stride=2)
         return index_output_1
 
 
@@ -2222,7 +2222,7 @@ class Index244(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=12, stop=16, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=16, stride=2)
         return index_output_1
 
 
@@ -2231,7 +2231,7 @@ class Index245(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=12, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=18, stride=1)
         return index_output_1
 
 
@@ -2240,7 +2240,7 @@ class Index246(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=12, stop=16, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=18, stop=54, stride=1)
         return index_output_1
 
 
@@ -2249,7 +2249,7 @@ class Index247(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=12, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=54, stop=126, stride=1)
         return index_output_1
 
 
@@ -2258,7 +2258,7 @@ class Index248(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=16, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=72, stride=1)
         return index_output_1
 
 
@@ -2267,7 +2267,7 @@ class Index249(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=16, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=72, stop=108, stride=1)
         return index_output_1
 
 
@@ -2276,7 +2276,7 @@ class Index250(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=18, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=108, stop=126, stride=1)
         return index_output_1
 
 
@@ -2285,7 +2285,7 @@ class Index251(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=18, stop=54, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=36, stride=1)
         return index_output_1
 
 
@@ -2294,7 +2294,7 @@ class Index252(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=54, stop=126, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=36, stop=54, stride=1)
         return index_output_1
 
 
@@ -2303,7 +2303,7 @@ class Index253(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=72, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=54, stop=72, stride=1)
         return index_output_1
 
 
@@ -2312,7 +2312,7 @@ class Index254(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=72, stop=108, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=18, stop=36, stride=1)
         return index_output_1
 
 
@@ -2321,7 +2321,7 @@ class Index255(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=108, stop=126, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=36, stop=72, stride=1)
         return index_output_1
 
 
@@ -2330,7 +2330,7 @@ class Index256(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=36, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=192, stop=256, stride=1)
         return index_output_1
 
 
@@ -2339,7 +2339,7 @@ class Index257(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=36, stop=54, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=2048, stride=1)
         return index_output_1
 
 
@@ -2348,7 +2348,7 @@ class Index258(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=54, stop=72, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2048, stop=4096, stride=1)
         return index_output_1
 
 
@@ -2357,7 +2357,7 @@ class Index259(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=18, stop=36, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=64, stop=80, stride=1)
         return index_output_1
 
 
@@ -2366,7 +2366,7 @@ class Index260(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=36, stop=72, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=80, stop=96, stride=1)
         return index_output_1
 
 
@@ -2375,7 +2375,7 @@ class Index261(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=192, stop=256, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=512, stride=1)
         return index_output_1
 
 
@@ -2384,7 +2384,7 @@ class Index262(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=2048, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=48, stride=1)
         return index_output_1
 
 
@@ -2393,7 +2393,7 @@ class Index263(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2048, stop=4096, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=48, stop=144, stride=1)
         return index_output_1
 
 
@@ -2402,7 +2402,7 @@ class Index264(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=64, stop=80, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=144, stop=336, stride=1)
         return index_output_1
 
 
@@ -2411,7 +2411,7 @@ class Index265(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=80, stop=96, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=288, stop=336, stride=1)
         return index_output_1
 
 
@@ -2420,7 +2420,7 @@ class Index266(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=512, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=144, stride=1)
         return index_output_1
 
 
@@ -2429,7 +2429,7 @@ class Index267(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=48, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=144, stop=192, stride=1)
         return index_output_1
 
 
@@ -2438,7 +2438,7 @@ class Index268(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=48, stop=144, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=48, stop=96, stride=1)
         return index_output_1
 
 
@@ -2447,7 +2447,7 @@ class Index269(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=144, stop=336, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=192, stride=1)
         return index_output_1
 
 
@@ -2456,7 +2456,7 @@ class Index270(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=288, stop=336, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=-100, stride=1)
         return index_output_1
 
 
@@ -2465,7 +2465,7 @@ class Index271(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=144, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-100, stop=4251, stride=1)
         return index_output_1
 
 
@@ -2474,7 +2474,7 @@ class Index272(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=144, stop=192, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-100, stop=1445, stride=1)
         return index_output_1
 
 
@@ -2483,7 +2483,7 @@ class Index273(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=48, stop=96, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=128, stop=256, stride=1)
         return index_output_1
 
 
@@ -2492,7 +2492,7 @@ class Index274(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=192, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=30, stride=1)
         return index_output_1
 
 
@@ -2501,7 +2501,7 @@ class Index275(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=-100, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=30, stop=90, stride=1)
         return index_output_1
 
 
@@ -2510,7 +2510,7 @@ class Index276(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-100, stop=4251, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=90, stop=210, stride=1)
         return index_output_1
 
 
@@ -2519,7 +2519,7 @@ class Index277(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-100, stop=1445, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=120, stride=1)
         return index_output_1
 
 
@@ -2528,7 +2528,7 @@ class Index278(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=128, stop=256, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=120, stop=180, stride=1)
         return index_output_1
 
 
@@ -2537,7 +2537,7 @@ class Index279(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=30, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=180, stop=210, stride=1)
         return index_output_1
 
 
@@ -2546,7 +2546,7 @@ class Index280(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=30, stop=90, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=60, stop=90, stride=1)
         return index_output_1
 
 
@@ -2555,7 +2555,7 @@ class Index281(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=90, stop=210, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=90, stop=120, stride=1)
         return index_output_1
 
 
@@ -2564,7 +2564,7 @@ class Index282(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=120, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=30, stop=60, stride=1)
         return index_output_1
 
 
@@ -2573,7 +2573,7 @@ class Index283(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=120, stop=180, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=60, stop=120, stride=1)
         return index_output_1
 
 
@@ -2582,7 +2582,7 @@ class Index284(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=180, stop=210, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=255, stop=256, stride=1)
         return index_output_1
 
 
@@ -2591,7 +2591,7 @@ class Index285(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=60, stop=90, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=-2, stride=1)
         return index_output_1
 
 
@@ -2600,7 +2600,7 @@ class Index286(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=90, stop=120, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-2, stop=-1, stride=1)
         return index_output_1
 
 
@@ -2609,7 +2609,7 @@ class Index287(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=30, stop=60, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=72, stop=73, stride=1)
         return index_output_1
 
 
@@ -2618,7 +2618,7 @@ class Index288(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=60, stop=120, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=44, stop=132, stride=1)
         return index_output_1
 
 
@@ -2627,7 +2627,7 @@ class Index289(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=255, stop=256, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=132, stop=308, stride=1)
         return index_output_1
 
 
@@ -2636,7 +2636,7 @@ class Index290(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=-2, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=176, stride=1)
         return index_output_1
 
 
@@ -2645,7 +2645,7 @@ class Index291(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-2, stop=-1, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=176, stop=264, stride=1)
         return index_output_1
 
 
@@ -2654,7 +2654,7 @@ class Index292(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=72, stop=73, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=264, stop=308, stride=1)
         return index_output_1
 
 
@@ -2663,7 +2663,7 @@ class Index293(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=44, stop=132, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=4096, stride=1)
         return index_output_1
 
 
@@ -2672,7 +2672,7 @@ class Index294(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=132, stop=308, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=4096, stop=8192, stride=1)
         return index_output_1
 
 
@@ -2681,7 +2681,7 @@ class Index295(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=176, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=128, stride=1)
         return index_output_1
 
 
@@ -2690,7 +2690,7 @@ class Index296(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=176, stop=264, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=128, stop=144, stride=1)
         return index_output_1
 
 
@@ -2699,7 +2699,7 @@ class Index297(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=264, stop=308, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=144, stop=160, stride=1)
         return index_output_1
 
 
@@ -2708,7 +2708,7 @@ class Index298(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=4096, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=5120, stride=1)
         return index_output_1
 
 
@@ -2717,7 +2717,7 @@ class Index299(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=4096, stop=8192, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=5120, stop=10240, stride=1)
         return index_output_1
 
 
@@ -2726,7 +2726,7 @@ class Index300(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=128, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=160, stride=1)
         return index_output_1
 
 
@@ -2735,7 +2735,7 @@ class Index301(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=128, stop=144, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=160, stop=176, stride=1)
         return index_output_1
 
 
@@ -2744,7 +2744,7 @@ class Index302(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=144, stop=160, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=176, stop=192, stride=1)
         return index_output_1
 
 
@@ -2753,7 +2753,7 @@ class Index303(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=5120, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=10, stop=11, stride=1)
         return index_output_1
 
 
@@ -2762,7 +2762,7 @@ class Index304(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=5120, stop=10240, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=3072, stride=1)
         return index_output_1
 
 
@@ -2771,7 +2771,7 @@ class Index305(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=160, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=3072, stop=6144, stride=1)
         return index_output_1
 
 
@@ -2780,7 +2780,7 @@ class Index306(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=160, stop=176, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=6144, stop=9216, stride=1)
         return index_output_1
 
 
@@ -2789,7 +2789,7 @@ class Index307(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=176, stop=192, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=8192, stop=16384, stride=1)
         return index_output_1
 
 
@@ -2798,7 +2798,7 @@ class Index308(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=10, stop=11, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=8192, stride=1)
         return index_output_1
 
 
@@ -2807,7 +2807,7 @@ class Index309(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=3072, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=5120, stride=1)
         return index_output_1
 
 
@@ -2816,7 +2816,7 @@ class Index310(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=3072, stop=6144, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=5120, stop=6400, stride=1)
         return index_output_1
 
 
@@ -2825,7 +2825,7 @@ class Index311(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=6144, stop=9216, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=6400, stop=7680, stride=1)
         return index_output_1
 
 
@@ -2834,7 +2834,7 @@ class Index312(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=8192, stop=16384, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=17920, stop=35840, stride=1)
         return index_output_1
 
 
@@ -2843,7 +2843,7 @@ class Index313(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=8192, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=17920, stride=1)
         return index_output_1
 
 
@@ -2852,7 +2852,7 @@ class Index314(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=5120, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=8192, stop=16384, stride=1)
         return index_output_1
 
 
@@ -2861,7 +2861,7 @@ class Index315(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=5120, stop=6400, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=8192, stride=1)
         return index_output_1
 
 
@@ -2870,7 +2870,7 @@ class Index316(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=6400, stop=7680, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=64, stop=128, stride=1)
         return index_output_1
 
 
@@ -2879,7 +2879,7 @@ class Index317(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=17920, stop=35840, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=32, stop=64, stride=1)
         return index_output_1
 
 
@@ -2888,7 +2888,7 @@ class Index318(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=17920, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=512, stop=768, stride=1)
         return index_output_1
 
 
@@ -2897,7 +2897,7 @@ class Index319(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=8192, stop=16384, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=768, stop=1024, stride=1)
         return index_output_1
 
 
@@ -2906,7 +2906,7 @@ class Index320(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=8192, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1024, stop=1280, stride=1)
         return index_output_1
 
 
@@ -2915,7 +2915,7 @@ class Index321(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=512, stop=768, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1280, stop=1536, stride=1)
         return index_output_1
 
 
@@ -2924,7 +2924,7 @@ class Index322(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=768, stop=1024, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1536, stop=1792, stride=1)
         return index_output_1
 
 
@@ -2933,7 +2933,7 @@ class Index323(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1024, stop=1280, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=4, stride=1)
         return index_output_1
 
 
@@ -2942,7 +2942,7 @@ class Index324(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1280, stop=1536, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=4, stop=8, stride=1)
         return index_output_1
 
 
@@ -2951,7 +2951,7 @@ class Index325(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1536, stop=1792, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=160, stop=320, stride=1)
         return index_output_1
 
 
@@ -2960,7 +2960,7 @@ class Index326(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=4, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=320, stride=1)
         return index_output_1
 
 
@@ -2969,7 +2969,7 @@ class Index327(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=4, stop=8, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=320, stop=640, stride=1)
         return index_output_1
 
 
@@ -4014,205 +4014,66 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Index59,
-        [((1, 160, 160, 160), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "80", "stride": "1"},
-        },
-    ),
-    (
-        Index60,
-        [((1, 160, 160, 160), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "80", "stop": "160", "stride": "1"},
-        },
-    ),
-    (
-        Index61,
-        [((1, 320, 80, 80), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "160", "stride": "1"},
-        },
-    ),
-    (
-        Index62,
-        [((1, 320, 80, 80), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "160", "stop": "320", "stride": "1"},
-        },
-    ),
-    (
-        Index63,
-        [((1, 640, 40, 40), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "320", "stride": "1"},
-        },
-    ),
-    (
-        Index64,
-        [((1, 640, 40, 40), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "320", "stop": "640", "stride": "1"},
-        },
-    ),
-    (
-        Index63,
-        [((1, 640, 20, 20), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "320", "stride": "1"},
-        },
-    ),
-    (
-        Index64,
-        [((1, 640, 20, 20), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "320", "stop": "640", "stride": "1"},
-        },
-    ),
-    (
-        Index65,
-        [((1, 5, 128, 400), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov10_yolov10n_obj_det_github"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index66,
-        [((1, 5, 128, 400), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov10_yolov10n_obj_det_github"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "32", "stride": "1"},
-        },
-    ),
-    (
-        Index67,
-        [((1, 5, 128, 400), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov10_yolov10n_obj_det_github"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "32", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index68,
         [((1, 144, 8400), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
                 "pt_yolov9_default_obj_det_github",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolov8_yolov8x_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "0", "stop": "64", "stride": "1"},
         },
     ),
     (
-        Index69,
+        Index60,
         [((1, 144, 8400), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
                 "pt_yolov9_default_obj_det_github",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolov8_yolov8x_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "64", "stop": "144", "stride": "1"},
         },
     ),
     (
-        Index70,
+        Index61,
         [((1, 4, 8400), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
                 "pt_yolov9_default_obj_det_github",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolov8_yolov8x_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "0", "stop": "2", "stride": "1"},
         },
     ),
     (
-        Index71,
+        Index62,
         [((1, 4, 8400), torch.bfloat16)],
         {
             "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
                 "pt_yolov9_default_obj_det_github",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolov8_yolov8x_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "2", "stop": "4", "stride": "1"},
         },
     ),
     (
-        Index72,
+        Index63,
         [((1, 3, 640, 640), torch.bfloat16)],
         {
             "model_names": [
@@ -4226,7 +4087,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index73,
+        Index64,
         [((1, 3, 640, 640), torch.bfloat16)],
         {
             "model_names": [
@@ -4240,7 +4101,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index74,
+        Index65,
         [((1, 3, 320, 640), torch.bfloat16)],
         {
             "model_names": [
@@ -4254,7 +4115,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index75,
+        Index66,
         [((1, 3, 320, 640), torch.bfloat16)],
         {
             "model_names": [
@@ -4286,7 +4147,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index76,
+        Index67,
         [((1, 64, 80, 80), torch.float32)],
         {
             "model_names": ["onnx_yolov8_default_obj_det_github", "onnx_yolov10_default_obj_det_github"],
@@ -4313,7 +4174,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index77,
+        Index68,
         [((1, 128, 40, 40), torch.float32)],
         {
             "model_names": ["onnx_yolov8_default_obj_det_github", "onnx_yolov10_default_obj_det_github"],
@@ -4322,7 +4183,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index78,
+        Index69,
         [((1, 256, 20, 20), torch.float32)],
         {
             "model_names": ["onnx_yolov8_default_obj_det_github", "onnx_yolov10_default_obj_det_github"],
@@ -4331,7 +4192,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index79,
+        Index70,
         [((1, 256, 20, 20), torch.float32)],
         {
             "model_names": ["onnx_yolov8_default_obj_det_github", "onnx_yolov10_default_obj_det_github"],
@@ -4340,7 +4201,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index68,
+        Index59,
         [((1, 144, 8400), torch.float32)],
         {
             "model_names": ["onnx_yolov8_default_obj_det_github", "onnx_yolov10_default_obj_det_github"],
@@ -4349,7 +4210,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index69,
+        Index60,
         [((1, 144, 8400), torch.float32)],
         {
             "model_names": ["onnx_yolov8_default_obj_det_github", "onnx_yolov10_default_obj_det_github"],
@@ -4358,7 +4219,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index70,
+        Index61,
         [((1, 4, 8400), torch.float32)],
         {
             "model_names": ["onnx_yolov8_default_obj_det_github", "onnx_yolov10_default_obj_det_github"],
@@ -4367,7 +4228,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index71,
+        Index62,
         [((1, 4, 8400), torch.float32)],
         {
             "model_names": ["onnx_yolov8_default_obj_det_github", "onnx_yolov10_default_obj_det_github"],
@@ -4411,7 +4272,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index80,
+        Index71,
         [((1, 176, 27, 27), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4420,7 +4281,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index81,
+        Index72,
         [((1, 176, 27, 27), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4429,7 +4290,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index78,
+        Index69,
         [((1, 288, 27, 27), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4438,7 +4299,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index79,
+        Index70,
         [((1, 288, 27, 27), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4447,7 +4308,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index82,
+        Index73,
         [((1, 288, 27, 27), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4456,7 +4317,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index83,
+        Index74,
         [((1, 304, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4465,7 +4326,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index84,
+        Index75,
         [((1, 304, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4474,7 +4335,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index85,
+        Index76,
         [((1, 304, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4483,7 +4344,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index61,
+        Index77,
         [((1, 296, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4492,7 +4353,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index86,
+        Index78,
         [((1, 296, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4501,7 +4362,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index87,
+        Index79,
         [((1, 296, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4510,7 +4371,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index78,
+        Index69,
         [((1, 280, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4519,7 +4380,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index79,
+        Index70,
         [((1, 280, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4528,7 +4389,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index88,
+        Index80,
         [((1, 280, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4537,7 +4398,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index89,
+        Index81,
         [((1, 288, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4546,7 +4407,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index90,
+        Index82,
         [((1, 288, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4555,7 +4416,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index82,
+        Index73,
         [((1, 288, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4573,7 +4434,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index91,
+        Index83,
         [((1, 448, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4582,7 +4443,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index92,
+        Index84,
         [((1, 448, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4600,7 +4461,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index91,
+        Index83,
         [((1, 448, 6, 6), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4609,7 +4470,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index92,
+        Index84,
         [((1, 448, 6, 6), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4636,7 +4497,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index93,
+        Index85,
         [((1, 624, 6, 6), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -4669,7 +4530,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index94,
+        Index86,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4681,7 +4542,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index95,
+        Index87,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4693,7 +4554,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index96,
+        Index88,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4705,7 +4566,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index97,
+        Index89,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4717,7 +4578,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index98,
+        Index90,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4729,7 +4590,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index99,
+        Index91,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4741,7 +4602,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index100,
+        Index92,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4753,7 +4614,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index101,
+        Index93,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4765,7 +4626,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index102,
+        Index94,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4777,7 +4638,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index103,
+        Index95,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4789,7 +4650,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index104,
+        Index96,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4801,7 +4662,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index105,
+        Index97,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4813,7 +4674,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index106,
+        Index98,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4825,7 +4686,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index107,
+        Index99,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4837,7 +4698,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index108,
+        Index100,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4849,7 +4710,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index109,
+        Index101,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4861,7 +4722,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index110,
+        Index102,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4873,7 +4734,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index111,
+        Index103,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4885,7 +4746,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index112,
+        Index104,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4897,7 +4758,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index113,
+        Index105,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4909,7 +4770,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index114,
+        Index106,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4921,7 +4782,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index115,
+        Index107,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4933,7 +4794,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index116,
+        Index108,
         [((25, 1, 288), torch.float32)],
         {
             "model_names": [
@@ -4945,7 +4806,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index117,
+        Index109,
         [((1, 192), torch.float32)],
         {
             "model_names": [
@@ -4957,7 +4818,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index118,
+        Index110,
         [((1, 192), torch.float32)],
         {
             "model_names": [
@@ -4969,7 +4830,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index119,
+        Index111,
         [((1, 192), torch.float32)],
         {
             "model_names": [
@@ -4981,7 +4842,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index120,
+        Index112,
         [((1, 192), torch.float32)],
         {
             "model_names": [
@@ -5017,7 +4878,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index94,
+        Index86,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5029,7 +4890,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index95,
+        Index87,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5041,7 +4902,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index96,
+        Index88,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5053,7 +4914,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index97,
+        Index89,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5065,7 +4926,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index98,
+        Index90,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5077,7 +4938,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index99,
+        Index91,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5089,7 +4950,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index100,
+        Index92,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5101,7 +4962,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index101,
+        Index93,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5113,7 +4974,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index102,
+        Index94,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5125,7 +4986,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index103,
+        Index95,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5137,7 +4998,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index104,
+        Index96,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5149,7 +5010,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index105,
+        Index97,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5161,7 +5022,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index106,
+        Index98,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5173,7 +5034,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index107,
+        Index99,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5185,7 +5046,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index108,
+        Index100,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5197,7 +5058,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index109,
+        Index101,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5209,7 +5070,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index110,
+        Index102,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5221,7 +5082,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index111,
+        Index103,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5233,7 +5094,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index112,
+        Index104,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5245,7 +5106,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index113,
+        Index105,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5257,7 +5118,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index114,
+        Index106,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5269,7 +5130,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index115,
+        Index107,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5281,7 +5142,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index116,
+        Index108,
         [((25, 1, 96), torch.float32)],
         {
             "model_names": [
@@ -5293,7 +5154,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index121,
+        Index113,
         [((732, 12), torch.bfloat16)],
         {
             "model_names": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"],
@@ -5302,7 +5163,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index122,
+        Index114,
         [((732, 12), torch.bfloat16)],
         {
             "model_names": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"],
@@ -5311,7 +5172,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index123,
+        Index115,
         [((1, 197, 768), torch.bfloat16)],
         {
             "model_names": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"],
@@ -5334,7 +5195,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index121,
+        Index113,
         [((732, 16), torch.bfloat16)],
         {
             "model_names": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"],
@@ -5343,7 +5204,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index122,
+        Index114,
         [((732, 16), torch.bfloat16)],
         {
             "model_names": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"],
@@ -5352,7 +5213,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index123,
+        Index115,
         [((1, 197, 1024), torch.bfloat16)],
         {
             "model_names": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"],
@@ -5406,7 +5267,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index124,
+        Index116,
         [((1, 25, 34), torch.bfloat16)],
         {
             "model_names": [
@@ -5418,7 +5279,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index125,
+        Index117,
         [((1, 25, 34), torch.bfloat16)],
         {
             "model_names": [
@@ -5430,7 +5291,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index126,
+        Index118,
         [((1, 25, 34, 128), torch.bfloat16)],
         {
             "model_names": [
@@ -5442,7 +5303,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index127,
+        Index119,
         [((1, 25, 34, 128), torch.bfloat16)],
         {
             "model_names": [
@@ -5472,7 +5333,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index94,
+        Index86,
         [((1, 3, 224, 224), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5490,7 +5351,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index80,
+        Index71,
         [((1, 176, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5499,7 +5360,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index81,
+        Index72,
         [((1, 176, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5508,7 +5369,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index128,
+        Index120,
         [((1, 176, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
@@ -5517,7 +5378,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index129,
+        Index121,
         [((1, 176, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
@@ -5526,7 +5387,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index130,
+        Index122,
         [((1, 176, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
@@ -5535,7 +5396,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index131,
+        Index123,
         [((1, 176, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
@@ -5544,7 +5405,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index132,
+        Index124,
         [((1, 176, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
@@ -5553,7 +5414,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index133,
+        Index125,
         [((1, 176, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
@@ -5562,7 +5423,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index78,
+        Index69,
         [((1, 288, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5571,7 +5432,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index79,
+        Index70,
         [((1, 288, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5580,7 +5441,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index82,
+        Index73,
         [((1, 288, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5589,7 +5450,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index83,
+        Index74,
         [((1, 304, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5598,7 +5459,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index84,
+        Index75,
         [((1, 304, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5607,7 +5468,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index85,
+        Index76,
         [((1, 304, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5616,7 +5477,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index61,
+        Index77,
         [((1, 296, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5625,7 +5486,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index86,
+        Index78,
         [((1, 296, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5634,7 +5495,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index87,
+        Index79,
         [((1, 296, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5643,7 +5504,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index78,
+        Index69,
         [((1, 280, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5652,7 +5513,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index79,
+        Index70,
         [((1, 280, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5661,7 +5522,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index88,
+        Index80,
         [((1, 280, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5670,7 +5531,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index89,
+        Index81,
         [((1, 288, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5679,7 +5540,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index90,
+        Index82,
         [((1, 288, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5688,7 +5549,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index82,
+        Index73,
         [((1, 288, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5706,7 +5567,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index91,
+        Index83,
         [((1, 448, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5715,7 +5576,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index92,
+        Index84,
         [((1, 448, 14, 14), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5737,7 +5598,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index91,
+        Index83,
         [((1, 448, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5746,7 +5607,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index92,
+        Index84,
         [((1, 448, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5764,7 +5625,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index134,
+        Index126,
         [((1, 448, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
@@ -5773,7 +5634,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index135,
+        Index127,
         [((1, 448, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
@@ -5782,7 +5643,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index136,
+        Index128,
         [((1, 448, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
@@ -5791,7 +5652,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index137,
+        Index129,
         [((1, 448, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
@@ -5818,7 +5679,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index93,
+        Index85,
         [((1, 624, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -5827,7 +5688,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index138,
+        Index130,
         [((1, 1, 2048, 2048), torch.bool)],
         {
             "model_names": [
@@ -5840,7 +5701,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index66,
+        Index131,
         [((1, 1, 2048, 2048), torch.bool)],
         {
             "model_names": [
@@ -5853,7 +5714,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index139,
+        Index132,
         [((1, 1, 256, 2048), torch.bool)],
         {
             "model_names": [
@@ -5866,7 +5727,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index140,
+        Index133,
         [((3, 1, 12, 257, 64), torch.bfloat16)],
         {
             "model_names": ["pt_mgp_alibaba_damo_mgp_str_base_scene_text_recognition_hf"],
@@ -5875,7 +5736,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index141,
+        Index134,
         [((3, 1, 12, 257, 64), torch.bfloat16)],
         {
             "model_names": ["pt_mgp_alibaba_damo_mgp_str_base_scene_text_recognition_hf"],
@@ -5884,7 +5745,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index142,
+        Index135,
         [((3, 1, 12, 257, 64), torch.bfloat16)],
         {
             "model_names": ["pt_mgp_alibaba_damo_mgp_str_base_scene_text_recognition_hf"],
@@ -5957,7 +5818,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index138,
+        Index130,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -5970,7 +5831,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index143,
+        Index136,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -5983,7 +5844,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index144,
+        Index137,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -5996,7 +5857,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index145,
+        Index138,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -6009,7 +5870,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index146,
+        Index139,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -6022,7 +5883,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index147,
+        Index140,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -6035,7 +5896,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index148,
+        Index141,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -6048,7 +5909,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index149,
+        Index142,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -6061,7 +5922,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index150,
+        Index143,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -6074,7 +5935,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index151,
+        Index144,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -6087,7 +5948,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index152,
+        Index145,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -6100,7 +5961,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index153,
+        Index146,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -6139,7 +6000,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index154,
+        Index147,
         [((1, 256, 16, 32), torch.float32)],
         {
             "model_names": [
@@ -6152,7 +6013,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index155,
+        Index148,
         [((1, 256, 16, 32), torch.float32)],
         {
             "model_names": [
@@ -6271,7 +6132,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index140,
+        Index133,
         [((3, 64, 3, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -6280,7 +6141,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index141,
+        Index134,
         [((3, 64, 3, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -6289,7 +6150,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index142,
+        Index135,
         [((3, 64, 3, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -6298,7 +6159,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index156,
+        Index149,
         [((1, 56, 56, 96), torch.bfloat16)],
         {
             "model_names": [
@@ -6311,7 +6172,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index157,
+        Index150,
         [((1, 56, 56, 96), torch.bfloat16)],
         {
             "model_names": [
@@ -6324,7 +6185,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index158,
+        Index151,
         [((1, 56, 56, 96), torch.bfloat16)],
         {
             "model_names": [
@@ -6337,7 +6198,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index159,
+        Index152,
         [((1, 56, 56, 96), torch.bfloat16)],
         {
             "model_names": [
@@ -6350,7 +6211,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index160,
+        Index153,
         [((1, 56, 56, 96), torch.bfloat16)],
         {
             "model_names": [
@@ -6363,7 +6224,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index161,
+        Index154,
         [((1, 56, 56, 96), torch.bfloat16)],
         {
             "model_names": [
@@ -6376,7 +6237,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index162,
+        Index155,
         [((1, 56, 56, 96), torch.bfloat16)],
         {
             "model_names": [
@@ -6389,7 +6250,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index163,
+        Index156,
         [((1, 56, 56, 96), torch.bfloat16)],
         {
             "model_names": [
@@ -6402,7 +6263,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index164,
+        Index157,
         [((1, 56, 56, 96), torch.bfloat16)],
         {
             "model_names": [
@@ -6415,7 +6276,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index165,
+        Index158,
         [((1, 56, 56, 96), torch.bfloat16)],
         {
             "model_names": [
@@ -6428,7 +6289,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index166,
+        Index159,
         [((1, 28, 56, 96), torch.bfloat16)],
         {
             "model_names": [
@@ -6441,7 +6302,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index167,
+        Index160,
         [((1, 28, 56, 96), torch.bfloat16)],
         {
             "model_names": [
@@ -6454,7 +6315,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index140,
+        Index133,
         [((3, 16, 6, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -6463,7 +6324,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index141,
+        Index134,
         [((3, 16, 6, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -6472,7 +6333,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index142,
+        Index135,
         [((3, 16, 6, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -6481,7 +6342,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index168,
+        Index161,
         [((1, 28, 28, 192), torch.bfloat16)],
         {
             "model_names": [
@@ -6494,7 +6355,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index157,
+        Index150,
         [((1, 28, 28, 192), torch.bfloat16)],
         {
             "model_names": [
@@ -6507,7 +6368,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index169,
+        Index162,
         [((1, 28, 28, 192), torch.bfloat16)],
         {
             "model_names": [
@@ -6520,7 +6381,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index159,
+        Index152,
         [((1, 28, 28, 192), torch.bfloat16)],
         {
             "model_names": [
@@ -6533,7 +6394,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index170,
+        Index163,
         [((1, 28, 28, 192), torch.bfloat16)],
         {
             "model_names": [
@@ -6546,7 +6407,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index171,
+        Index164,
         [((1, 28, 28, 192), torch.bfloat16)],
         {
             "model_names": [
@@ -6559,7 +6420,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index172,
+        Index165,
         [((1, 28, 28, 192), torch.bfloat16)],
         {
             "model_names": [
@@ -6572,7 +6433,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index173,
+        Index166,
         [((1, 28, 28, 192), torch.bfloat16)],
         {
             "model_names": [
@@ -6585,7 +6446,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index174,
+        Index167,
         [((1, 28, 28, 192), torch.bfloat16)],
         {
             "model_names": [
@@ -6598,7 +6459,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index175,
+        Index168,
         [((1, 28, 28, 192), torch.bfloat16)],
         {
             "model_names": [
@@ -6611,7 +6472,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index176,
+        Index169,
         [((1, 14, 28, 192), torch.bfloat16)],
         {
             "model_names": [
@@ -6624,7 +6485,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index177,
+        Index170,
         [((1, 14, 28, 192), torch.bfloat16)],
         {
             "model_names": [
@@ -6637,7 +6498,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index140,
+        Index133,
         [((3, 4, 12, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -6646,7 +6507,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index141,
+        Index134,
         [((3, 4, 12, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -6655,7 +6516,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index142,
+        Index135,
         [((3, 4, 12, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -6664,7 +6525,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index178,
+        Index171,
         [((1, 14, 14, 384), torch.bfloat16)],
         {
             "model_names": [
@@ -6677,7 +6538,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index157,
+        Index150,
         [((1, 14, 14, 384), torch.bfloat16)],
         {
             "model_names": [
@@ -6690,7 +6551,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index179,
+        Index172,
         [((1, 14, 14, 384), torch.bfloat16)],
         {
             "model_names": [
@@ -6703,7 +6564,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index159,
+        Index152,
         [((1, 14, 14, 384), torch.bfloat16)],
         {
             "model_names": [
@@ -6716,7 +6577,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index180,
+        Index173,
         [((1, 14, 14, 384), torch.bfloat16)],
         {
             "model_names": [
@@ -6729,7 +6590,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index181,
+        Index174,
         [((1, 14, 14, 384), torch.bfloat16)],
         {
             "model_names": [
@@ -6742,7 +6603,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index182,
+        Index175,
         [((1, 14, 14, 384), torch.bfloat16)],
         {
             "model_names": [
@@ -6755,7 +6616,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index183,
+        Index176,
         [((1, 14, 14, 384), torch.bfloat16)],
         {
             "model_names": [
@@ -6768,7 +6629,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index184,
+        Index177,
         [((1, 14, 14, 384), torch.bfloat16)],
         {
             "model_names": [
@@ -6781,7 +6642,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index185,
+        Index178,
         [((1, 14, 14, 384), torch.bfloat16)],
         {
             "model_names": [
@@ -6794,7 +6655,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index186,
+        Index179,
         [((1, 7, 14, 384), torch.bfloat16)],
         {
             "model_names": [
@@ -6807,7 +6668,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index187,
+        Index180,
         [((1, 7, 14, 384), torch.bfloat16)],
         {
             "model_names": [
@@ -6820,7 +6681,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index140,
+        Index133,
         [((3, 1, 24, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -6829,7 +6690,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index141,
+        Index134,
         [((3, 1, 24, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -6838,7 +6699,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index142,
+        Index135,
         [((3, 1, 24, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -6847,7 +6708,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index188,
+        Index181,
         [((2050, 1024), torch.float32)],
         {
             "model_names": ["pt_xglm_facebook_xglm_564m_clm_hf"],
@@ -6865,7 +6726,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index189,
+        Index182,
         [((1, 280, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -6874,7 +6735,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index190,
+        Index183,
         [((1, 280, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -6883,7 +6744,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index191,
+        Index184,
         [((1, 280, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -6892,7 +6753,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index61,
+        Index77,
         [((1, 280, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -6901,7 +6762,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index192,
+        Index185,
         [((1, 280, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -6910,7 +6771,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index193,
+        Index186,
         [((1, 280, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -6919,7 +6780,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index59,
+        Index187,
         [((1, 160, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -6928,7 +6789,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index194,
+        Index188,
         [((1, 160, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -6937,7 +6798,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index195,
+        Index189,
         [((1, 160, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -6946,7 +6807,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index189,
+        Index182,
         [((1, 160, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -6955,7 +6816,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index196,
+        Index190,
         [((1, 160, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -6964,7 +6825,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index60,
+        Index191,
         [((1, 160, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr", "pt_hrnet_hrnet_w40_pose_estimation_timm"],
@@ -6991,7 +6852,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index140,
+        Index133,
         [((3, 64, 4, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7000,7 +6861,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index141,
+        Index134,
         [((3, 64, 4, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7009,7 +6870,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index142,
+        Index135,
         [((3, 64, 4, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7018,7 +6879,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index156,
+        Index149,
         [((1, 56, 56, 128), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7027,7 +6888,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index157,
+        Index150,
         [((1, 56, 56, 128), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7036,7 +6897,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index158,
+        Index151,
         [((1, 56, 56, 128), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7045,7 +6906,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index159,
+        Index152,
         [((1, 56, 56, 128), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7054,7 +6915,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index160,
+        Index153,
         [((1, 56, 56, 128), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7063,7 +6924,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index161,
+        Index154,
         [((1, 56, 56, 128), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7072,7 +6933,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index162,
+        Index155,
         [((1, 56, 56, 128), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7081,7 +6942,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index163,
+        Index156,
         [((1, 56, 56, 128), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7090,7 +6951,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index164,
+        Index157,
         [((1, 56, 56, 128), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7099,7 +6960,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index165,
+        Index158,
         [((1, 56, 56, 128), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7108,7 +6969,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index166,
+        Index159,
         [((1, 28, 56, 128), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7117,7 +6978,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index167,
+        Index160,
         [((1, 28, 56, 128), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7126,7 +6987,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index140,
+        Index133,
         [((3, 16, 8, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7135,7 +6996,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index141,
+        Index134,
         [((3, 16, 8, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7144,7 +7005,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index142,
+        Index135,
         [((3, 16, 8, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7153,7 +7014,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index168,
+        Index161,
         [((1, 28, 28, 256), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7162,7 +7023,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index157,
+        Index150,
         [((1, 28, 28, 256), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7171,7 +7032,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index169,
+        Index162,
         [((1, 28, 28, 256), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7180,7 +7041,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index159,
+        Index152,
         [((1, 28, 28, 256), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7189,7 +7050,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index170,
+        Index163,
         [((1, 28, 28, 256), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7198,7 +7059,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index171,
+        Index164,
         [((1, 28, 28, 256), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7207,7 +7068,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index172,
+        Index165,
         [((1, 28, 28, 256), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7216,7 +7077,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index173,
+        Index166,
         [((1, 28, 28, 256), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7225,7 +7086,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index174,
+        Index167,
         [((1, 28, 28, 256), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7234,7 +7095,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index175,
+        Index168,
         [((1, 28, 28, 256), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7243,7 +7104,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index176,
+        Index169,
         [((1, 14, 28, 256), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7252,7 +7113,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index177,
+        Index170,
         [((1, 14, 28, 256), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7261,7 +7122,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index140,
+        Index133,
         [((3, 4, 16, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7270,7 +7131,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index141,
+        Index134,
         [((3, 4, 16, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7279,7 +7140,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index142,
+        Index135,
         [((3, 4, 16, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7288,7 +7149,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index178,
+        Index171,
         [((1, 14, 14, 512), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7297,7 +7158,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index157,
+        Index150,
         [((1, 14, 14, 512), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7306,7 +7167,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index179,
+        Index172,
         [((1, 14, 14, 512), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7315,7 +7176,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index159,
+        Index152,
         [((1, 14, 14, 512), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7324,7 +7185,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index180,
+        Index173,
         [((1, 14, 14, 512), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7333,7 +7194,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index181,
+        Index174,
         [((1, 14, 14, 512), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7342,7 +7203,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index182,
+        Index175,
         [((1, 14, 14, 512), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7351,7 +7212,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index183,
+        Index176,
         [((1, 14, 14, 512), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7360,7 +7221,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index184,
+        Index177,
         [((1, 14, 14, 512), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7369,7 +7230,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index185,
+        Index178,
         [((1, 14, 14, 512), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7378,7 +7239,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index186,
+        Index179,
         [((1, 7, 14, 512), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7387,7 +7248,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index187,
+        Index180,
         [((1, 7, 14, 512), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7396,7 +7257,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index140,
+        Index133,
         [((3, 1, 32, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7405,7 +7266,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index141,
+        Index134,
         [((3, 1, 32, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7414,7 +7275,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index142,
+        Index135,
         [((3, 1, 32, 49, 32), torch.bfloat16)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -7423,7 +7284,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index188,
+        Index181,
         [((2050, 2048), torch.float32)],
         {
             "model_names": ["pt_xglm_facebook_xglm_1_7b_clm_hf"],
@@ -7432,7 +7293,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index197,
+        Index192,
         [((1, 3, 416, 416), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub", "pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -7441,7 +7302,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index198,
+        Index193,
         [((1, 3, 416, 416), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub", "pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -7450,7 +7311,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index199,
+        Index194,
         [((1, 3, 208, 416), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub", "pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -7459,7 +7320,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index200,
+        Index195,
         [((1, 3, 208, 416), torch.bfloat16)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub", "pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -7495,7 +7356,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index140,
+        Index133,
         [((3, 1, 8, 12, 15), torch.float32)],
         {
             "model_names": [
@@ -7507,7 +7368,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index141,
+        Index134,
         [((3, 1, 8, 12, 15), torch.float32)],
         {
             "model_names": [
@@ -7519,7 +7380,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index142,
+        Index135,
         [((3, 1, 8, 12, 15), torch.float32)],
         {
             "model_names": [
@@ -7531,7 +7392,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index201,
+        Index196,
         [((1, 77), torch.int64)],
         {
             "model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
@@ -7562,7 +7423,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index202,
+        Index197,
         [((1, 32, 2), torch.float32)],
         {
             "model_names": [
@@ -7575,7 +7436,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index76,
+        Index67,
         [((1, 224, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
@@ -7584,7 +7445,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index203,
+        Index198,
         [((1, 224, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
@@ -7593,7 +7454,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index204,
+        Index199,
         [((1, 224, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
@@ -7602,7 +7463,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index78,
+        Index69,
         [((1, 224, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
@@ -7611,7 +7472,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index205,
+        Index200,
         [((1, 224, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
@@ -7620,7 +7481,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index206,
+        Index201,
         [((1, 224, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
@@ -7647,7 +7508,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index207,
+        Index202,
         [((1, 128, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
@@ -7656,7 +7517,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index76,
+        Index67,
         [((1, 128, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
@@ -7674,7 +7535,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index77,
+        Index68,
         [((1, 128, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
@@ -7749,7 +7610,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index208,
+        Index203,
         [((1024, 96), torch.float32)],
         {
             "model_names": ["pt_nbeats_generic_basis_clm_hf"],
@@ -7758,7 +7619,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index209,
+        Index204,
         [((1024, 96), torch.float32)],
         {
             "model_names": ["pt_nbeats_generic_basis_clm_hf"],
@@ -7917,7 +7778,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index210,
+        Index205,
         [((1, 64, 64, 96), torch.float32)],
         {
             "model_names": [
@@ -7931,7 +7792,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index211,
+        Index206,
         [((1, 64, 64, 96), torch.float32)],
         {
             "model_names": [
@@ -7945,7 +7806,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index212,
+        Index207,
         [((1, 64, 64, 96), torch.float32)],
         {
             "model_names": [
@@ -7959,7 +7820,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index213,
+        Index208,
         [((1, 64, 64, 96), torch.float32)],
         {
             "model_names": [
@@ -7973,7 +7834,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index214,
+        Index209,
         [((1, 64, 64, 96), torch.float32)],
         {
             "model_names": [
@@ -7985,7 +7846,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index215,
+        Index210,
         [((1, 64, 64, 96), torch.float32)],
         {
             "model_names": [
@@ -7997,7 +7858,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index216,
+        Index211,
         [((1, 64, 64, 96), torch.float32)],
         {
             "model_names": [
@@ -8009,7 +7870,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index217,
+        Index212,
         [((1, 64, 64, 96), torch.float32)],
         {
             "model_names": [
@@ -8021,7 +7882,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index218,
+        Index213,
         [((1, 64, 64, 96), torch.float32)],
         {
             "model_names": [
@@ -8035,7 +7896,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index219,
+        Index214,
         [((1, 64, 64, 96), torch.float32)],
         {
             "model_names": [
@@ -8049,7 +7910,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index220,
+        Index215,
         [((1, 64, 64, 96), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -8058,7 +7919,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index221,
+        Index216,
         [((1, 64, 64, 96), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -8067,7 +7928,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index222,
+        Index217,
         [((1, 64, 64, 96), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -8076,7 +7937,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index223,
+        Index218,
         [((1, 64, 64, 96), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -8085,7 +7946,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index224,
+        Index219,
         [((1, 32, 64, 96), torch.float32)],
         {
             "model_names": [
@@ -8099,7 +7960,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index225,
+        Index220,
         [((1, 32, 64, 96), torch.float32)],
         {
             "model_names": [
@@ -8113,7 +7974,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index226,
+        Index221,
         [((1, 32, 32, 192), torch.float32)],
         {
             "model_names": [
@@ -8127,7 +7988,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index211,
+        Index206,
         [((1, 32, 32, 192), torch.float32)],
         {
             "model_names": [
@@ -8141,7 +8002,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index227,
+        Index222,
         [((1, 32, 32, 192), torch.float32)],
         {
             "model_names": [
@@ -8155,7 +8016,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index213,
+        Index208,
         [((1, 32, 32, 192), torch.float32)],
         {
             "model_names": [
@@ -8169,7 +8030,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index228,
+        Index223,
         [((1, 32, 32, 192), torch.float32)],
         {
             "model_names": [
@@ -8181,7 +8042,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index215,
+        Index210,
         [((1, 32, 32, 192), torch.float32)],
         {
             "model_names": [
@@ -8193,7 +8054,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index229,
+        Index224,
         [((1, 32, 32, 192), torch.float32)],
         {
             "model_names": [
@@ -8205,7 +8066,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index217,
+        Index212,
         [((1, 32, 32, 192), torch.float32)],
         {
             "model_names": [
@@ -8217,7 +8078,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index230,
+        Index225,
         [((1, 32, 32, 192), torch.float32)],
         {
             "model_names": [
@@ -8231,7 +8092,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index231,
+        Index226,
         [((1, 32, 32, 192), torch.float32)],
         {
             "model_names": [
@@ -8245,7 +8106,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index232,
+        Index227,
         [((1, 32, 32, 192), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -8254,7 +8115,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index233,
+        Index228,
         [((1, 32, 32, 192), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -8263,7 +8124,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index234,
+        Index229,
         [((1, 32, 32, 192), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -8272,7 +8133,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index235,
+        Index230,
         [((1, 32, 32, 192), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -8281,7 +8142,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index236,
+        Index231,
         [((1, 16, 32, 192), torch.float32)],
         {
             "model_names": [
@@ -8295,7 +8156,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index237,
+        Index232,
         [((1, 16, 32, 192), torch.float32)],
         {
             "model_names": [
@@ -8309,7 +8170,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index238,
+        Index233,
         [((1, 16, 16, 384), torch.float32)],
         {
             "model_names": [
@@ -8323,7 +8184,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index211,
+        Index206,
         [((1, 16, 16, 384), torch.float32)],
         {
             "model_names": [
@@ -8337,7 +8198,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index239,
+        Index234,
         [((1, 16, 16, 384), torch.float32)],
         {
             "model_names": [
@@ -8351,7 +8212,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index213,
+        Index208,
         [((1, 16, 16, 384), torch.float32)],
         {
             "model_names": [
@@ -8365,7 +8226,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index240,
+        Index235,
         [((1, 16, 16, 384), torch.float32)],
         {
             "model_names": [
@@ -8377,7 +8238,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index215,
+        Index210,
         [((1, 16, 16, 384), torch.float32)],
         {
             "model_names": [
@@ -8389,7 +8250,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index241,
+        Index236,
         [((1, 16, 16, 384), torch.float32)],
         {
             "model_names": [
@@ -8401,7 +8262,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index217,
+        Index212,
         [((1, 16, 16, 384), torch.float32)],
         {
             "model_names": [
@@ -8413,7 +8274,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index242,
+        Index237,
         [((1, 16, 16, 384), torch.float32)],
         {
             "model_names": [
@@ -8427,7 +8288,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index243,
+        Index238,
         [((1, 16, 16, 384), torch.float32)],
         {
             "model_names": [
@@ -8441,7 +8302,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index244,
+        Index239,
         [((1, 16, 16, 384), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -8450,7 +8311,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index245,
+        Index240,
         [((1, 16, 16, 384), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -8459,7 +8320,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index246,
+        Index241,
         [((1, 16, 16, 384), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -8468,7 +8329,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index247,
+        Index242,
         [((1, 16, 16, 384), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -8477,7 +8338,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index248,
+        Index243,
         [((1, 8, 16, 384), torch.float32)],
         {
             "model_names": [
@@ -8491,7 +8352,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index249,
+        Index244,
         [((1, 8, 16, 384), torch.float32)],
         {
             "model_names": [
@@ -8514,7 +8375,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index250,
+        Index245,
         [((1, 126, 7, 7), torch.bfloat16)],
         {
             "model_names": [
@@ -8529,7 +8390,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index251,
+        Index246,
         [((1, 126, 7, 7), torch.bfloat16)],
         {
             "model_names": [
@@ -8544,7 +8405,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index252,
+        Index247,
         [((1, 126, 7, 7), torch.bfloat16)],
         {
             "model_names": [
@@ -8559,7 +8420,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index253,
+        Index248,
         [((1, 126, 7, 7), torch.bfloat16)],
         {
             "model_names": [
@@ -8574,7 +8435,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index254,
+        Index249,
         [((1, 126, 7, 7), torch.bfloat16)],
         {
             "model_names": [
@@ -8589,7 +8450,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index255,
+        Index250,
         [((1, 126, 7, 7), torch.bfloat16)],
         {
             "model_names": [
@@ -8604,7 +8465,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index256,
+        Index251,
         [((1, 72, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -8619,7 +8480,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index257,
+        Index252,
         [((1, 72, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -8634,7 +8495,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index258,
+        Index253,
         [((1, 72, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -8649,7 +8510,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index250,
+        Index245,
         [((1, 72, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -8664,7 +8525,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index259,
+        Index254,
         [((1, 72, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -8679,7 +8540,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index260,
+        Index255,
         [((1, 72, 28, 28), torch.bfloat16)],
         {
             "model_names": [
@@ -8694,7 +8555,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index78,
+        Index69,
         [((1, 256, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
@@ -8703,7 +8564,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index205,
+        Index200,
         [((1, 256, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
@@ -8712,7 +8573,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index261,
+        Index256,
         [((1, 256, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
@@ -8730,7 +8591,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index77,
+        Index68,
         [((1, 256, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
@@ -8739,7 +8600,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index79,
+        Index70,
         [((1, 256, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
@@ -8800,7 +8661,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index262,
+        Index257,
         [((1, 4096, 6), torch.float32)],
         {
             "model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"],
@@ -8809,7 +8670,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index263,
+        Index258,
         [((1, 4096, 6), torch.float32)],
         {
             "model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"],
@@ -8827,7 +8688,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index68,
+        Index59,
         [((96, 2048), torch.float32)],
         {
             "model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"],
@@ -8836,7 +8697,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index264,
+        Index259,
         [((96, 2048), torch.float32)],
         {
             "model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"],
@@ -8845,7 +8706,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index265,
+        Index260,
         [((96, 2048), torch.float32)],
         {
             "model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"],
@@ -8998,7 +8859,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index266,
+        Index261,
         [((1, 512, 20, 20), torch.bfloat16)],
         {
             "model_names": ["pt_yolov9_default_obj_det_github"],
@@ -9025,7 +8886,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index267,
+        Index262,
         [((1, 336, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -9034,7 +8895,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index268,
+        Index263,
         [((1, 336, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -9043,7 +8904,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index269,
+        Index264,
         [((1, 336, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -9052,7 +8913,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index83,
+        Index74,
         [((1, 336, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -9061,7 +8922,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index84,
+        Index75,
         [((1, 336, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -9070,7 +8931,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index270,
+        Index265,
         [((1, 336, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -9088,7 +8949,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index271,
+        Index266,
         [((1, 192, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -9097,7 +8958,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index272,
+        Index267,
         [((1, 192, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -9106,7 +8967,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index267,
+        Index262,
         [((1, 192, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -9115,7 +8976,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index273,
+        Index268,
         [((1, 192, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -9124,7 +8985,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index274,
+        Index269,
         [((1, 192, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -9133,7 +8994,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index140,
+        Index133,
         [((3, 64, 4, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9142,7 +9003,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index141,
+        Index134,
         [((3, 64, 4, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9151,7 +9012,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index142,
+        Index135,
         [((3, 64, 4, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9160,7 +9021,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index210,
+        Index205,
         [((1, 64, 64, 128), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9169,7 +9030,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index211,
+        Index206,
         [((1, 64, 64, 128), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9178,7 +9039,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index212,
+        Index207,
         [((1, 64, 64, 128), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9187,7 +9048,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index213,
+        Index208,
         [((1, 64, 64, 128), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9196,7 +9057,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index220,
+        Index215,
         [((1, 64, 64, 128), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9205,7 +9066,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index221,
+        Index216,
         [((1, 64, 64, 128), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9214,7 +9075,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index222,
+        Index217,
         [((1, 64, 64, 128), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9223,7 +9084,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index223,
+        Index218,
         [((1, 64, 64, 128), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9232,7 +9093,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index218,
+        Index213,
         [((1, 64, 64, 128), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9241,7 +9102,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index219,
+        Index214,
         [((1, 64, 64, 128), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9250,7 +9111,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index224,
+        Index219,
         [((1, 32, 64, 128), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9259,7 +9120,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index225,
+        Index220,
         [((1, 32, 64, 128), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9268,7 +9129,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index140,
+        Index133,
         [((3, 16, 8, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9277,7 +9138,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index141,
+        Index134,
         [((3, 16, 8, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9286,7 +9147,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index142,
+        Index135,
         [((3, 16, 8, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9295,7 +9156,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index226,
+        Index221,
         [((1, 32, 32, 256), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9304,7 +9165,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index211,
+        Index206,
         [((1, 32, 32, 256), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9313,7 +9174,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index227,
+        Index222,
         [((1, 32, 32, 256), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9322,7 +9183,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index213,
+        Index208,
         [((1, 32, 32, 256), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9331,7 +9192,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index232,
+        Index227,
         [((1, 32, 32, 256), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9340,7 +9201,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index233,
+        Index228,
         [((1, 32, 32, 256), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9349,7 +9210,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index234,
+        Index229,
         [((1, 32, 32, 256), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9358,7 +9219,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index235,
+        Index230,
         [((1, 32, 32, 256), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9367,7 +9228,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index230,
+        Index225,
         [((1, 32, 32, 256), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9376,7 +9237,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index231,
+        Index226,
         [((1, 32, 32, 256), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9385,7 +9246,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index236,
+        Index231,
         [((1, 16, 32, 256), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9394,7 +9255,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index237,
+        Index232,
         [((1, 16, 32, 256), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9403,7 +9264,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index140,
+        Index133,
         [((3, 4, 16, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9412,7 +9273,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index141,
+        Index134,
         [((3, 4, 16, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9421,7 +9282,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index142,
+        Index135,
         [((3, 4, 16, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9430,7 +9291,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index238,
+        Index233,
         [((1, 16, 16, 512), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9439,7 +9300,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index211,
+        Index206,
         [((1, 16, 16, 512), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9448,7 +9309,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index239,
+        Index234,
         [((1, 16, 16, 512), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9457,7 +9318,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index213,
+        Index208,
         [((1, 16, 16, 512), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9466,7 +9327,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index244,
+        Index239,
         [((1, 16, 16, 512), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9475,7 +9336,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index245,
+        Index240,
         [((1, 16, 16, 512), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9484,7 +9345,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index246,
+        Index241,
         [((1, 16, 16, 512), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9493,7 +9354,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index247,
+        Index242,
         [((1, 16, 16, 512), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9502,7 +9363,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index242,
+        Index237,
         [((1, 16, 16, 512), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9511,7 +9372,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index243,
+        Index238,
         [((1, 16, 16, 512), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9520,7 +9381,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index248,
+        Index243,
         [((1, 8, 16, 512), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9529,7 +9390,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index249,
+        Index244,
         [((1, 8, 16, 512), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9538,7 +9399,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index140,
+        Index133,
         [((3, 1, 32, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9547,7 +9408,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index141,
+        Index134,
         [((3, 1, 32, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9556,7 +9417,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index142,
+        Index135,
         [((3, 1, 32, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
@@ -9565,7 +9426,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index140,
+        Index133,
         [((3, 64, 3, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -9574,7 +9435,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index141,
+        Index134,
         [((3, 64, 3, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -9583,7 +9444,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index142,
+        Index135,
         [((3, 64, 3, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -9592,7 +9453,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index140,
+        Index133,
         [((3, 16, 6, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -9601,7 +9462,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index141,
+        Index134,
         [((3, 16, 6, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -9610,7 +9471,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index142,
+        Index135,
         [((3, 16, 6, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -9619,7 +9480,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index140,
+        Index133,
         [((3, 4, 12, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -9628,7 +9489,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index141,
+        Index134,
         [((3, 4, 12, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -9637,7 +9498,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index142,
+        Index135,
         [((3, 4, 12, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -9646,7 +9507,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index140,
+        Index133,
         [((3, 1, 24, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -9655,7 +9516,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index141,
+        Index134,
         [((3, 1, 24, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -9664,7 +9525,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index142,
+        Index135,
         [((3, 1, 24, 64, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
@@ -9727,7 +9588,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index275,
+        Index270,
         [((1, 4251, 192), torch.bfloat16)],
         {
             "model_names": ["pt_yolos_hustvl_yolos_tiny_obj_det_hf"],
@@ -9736,7 +9597,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index276,
+        Index271,
         [((1, 4251, 192), torch.bfloat16)],
         {
             "model_names": ["pt_yolos_hustvl_yolos_tiny_obj_det_hf"],
@@ -9745,7 +9606,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index277,
+        Index272,
         [((1, 1445, 192), torch.bfloat16)],
         {
             "model_names": ["pt_yolos_hustvl_yolos_tiny_obj_det_hf"],
@@ -9772,7 +9633,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index278,
+        Index273,
         [((1, 8, 522, 256), torch.float32)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"],
@@ -9790,7 +9651,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index278,
+        Index273,
         [((1, 4, 522, 256), torch.float32)],
         {
             "model_names": [
@@ -9816,7 +9677,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index278,
+        Index273,
         [((1, 8, 207, 256), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"],
@@ -9834,7 +9695,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index278,
+        Index273,
         [((1, 4, 207, 256), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"],
@@ -9852,7 +9713,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index279,
+        Index274,
         [((1, 210, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
@@ -9861,7 +9722,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index280,
+        Index275,
         [((1, 210, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
@@ -9870,7 +9731,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index281,
+        Index276,
         [((1, 210, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
@@ -9879,7 +9740,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index282,
+        Index277,
         [((1, 210, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
@@ -9888,7 +9749,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index283,
+        Index278,
         [((1, 210, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
@@ -9897,7 +9758,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index284,
+        Index279,
         [((1, 210, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
@@ -9906,7 +9767,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index221,
+        Index216,
         [((1, 120, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
@@ -9915,7 +9776,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index285,
+        Index280,
         [((1, 120, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
@@ -9924,7 +9785,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index286,
+        Index281,
         [((1, 120, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
@@ -9933,7 +9794,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index279,
+        Index274,
         [((1, 120, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
@@ -9942,7 +9803,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index287,
+        Index282,
         [((1, 120, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
@@ -9951,7 +9812,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index288,
+        Index283,
         [((1, 120, 28, 28), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
@@ -9960,7 +9821,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index289,
+        Index284,
         [((1, 256, 2), torch.float32)],
         {
             "model_names": ["pt_phi1_microsoft_phi_1_seq_cls_hf", "pt_phi_1_5_microsoft_phi_1_5_seq_cls_hf"],
@@ -10017,7 +9878,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index77,
+        Index68,
         [((1, 128, 160, 160), torch.bfloat16)],
         {
             "model_names": ["pt_yolov9_default_obj_det_github"],
@@ -10026,7 +9887,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index78,
+        Index69,
         [((1, 256, 159, 159), torch.bfloat16)],
         {
             "model_names": ["pt_yolov9_default_obj_det_github"],
@@ -10035,7 +9896,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index79,
+        Index70,
         [((1, 256, 159, 159), torch.bfloat16)],
         {
             "model_names": ["pt_yolov9_default_obj_det_github"],
@@ -10044,7 +9905,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index78,
+        Index69,
         [((1, 256, 80, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolov9_default_obj_det_github"],
@@ -10053,7 +9914,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index79,
+        Index70,
         [((1, 256, 80, 80), torch.bfloat16)],
         {
             "model_names": ["pt_yolov9_default_obj_det_github"],
@@ -10071,7 +9932,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index266,
+        Index261,
         [((1, 512, 79, 79), torch.bfloat16)],
         {
             "model_names": ["pt_yolov9_default_obj_det_github"],
@@ -10089,7 +9950,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index266,
+        Index261,
         [((1, 512, 40, 40), torch.bfloat16)],
         {
             "model_names": ["pt_yolov9_default_obj_det_github"],
@@ -10107,7 +9968,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index266,
+        Index261,
         [((1, 512, 39, 39), torch.bfloat16)],
         {
             "model_names": ["pt_yolov9_default_obj_det_github"],
@@ -10116,7 +9977,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index78,
+        Index69,
         [((1, 256, 79, 79), torch.bfloat16)],
         {
             "model_names": ["pt_yolov9_default_obj_det_github"],
@@ -10125,7 +9986,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index79,
+        Index70,
         [((1, 256, 79, 79), torch.bfloat16)],
         {
             "model_names": ["pt_yolov9_default_obj_det_github"],
@@ -10209,7 +10070,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index290,
+        Index285,
         [((1, 6, 73, 64), torch.float32)],
         {
             "model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
@@ -10218,7 +10079,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index291,
+        Index286,
         [((1, 6, 73, 64), torch.float32)],
         {
             "model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
@@ -10227,7 +10088,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index292,
+        Index287,
         [((1, 6, 73, 64), torch.float32)],
         {
             "model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
@@ -10335,7 +10196,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index131,
+        Index123,
         [((1, 308, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
@@ -10344,7 +10205,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index293,
+        Index288,
         [((1, 308, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
@@ -10353,7 +10214,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index294,
+        Index289,
         [((1, 308, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
@@ -10362,7 +10223,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index295,
+        Index290,
         [((1, 308, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
@@ -10371,7 +10232,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index296,
+        Index291,
         [((1, 308, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
@@ -10380,7 +10241,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index297,
+        Index292,
         [((1, 308, 7, 7), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
@@ -10437,7 +10298,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index298,
+        Index293,
         [((1, 8192, 6), torch.float32)],
         {
             "model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"],
@@ -10446,7 +10307,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index299,
+        Index294,
         [((1, 8192, 6), torch.float32)],
         {
             "model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"],
@@ -10464,7 +10325,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index300,
+        Index295,
         [((160, 4096), torch.float32)],
         {
             "model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"],
@@ -10473,7 +10334,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index301,
+        Index296,
         [((160, 4096), torch.float32)],
         {
             "model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"],
@@ -10482,7 +10343,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index302,
+        Index297,
         [((160, 4096), torch.float32)],
         {
             "model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"],
@@ -10545,7 +10406,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index303,
+        Index298,
         [((1, 10240, 6), torch.float32)],
         {
             "model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"],
@@ -10554,7 +10415,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index304,
+        Index299,
         [((1, 10240, 6), torch.float32)],
         {
             "model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"],
@@ -10572,7 +10433,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index305,
+        Index300,
         [((192, 5120), torch.float32)],
         {
             "model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"],
@@ -10581,7 +10442,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index306,
+        Index301,
         [((192, 5120), torch.float32)],
         {
             "model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"],
@@ -10590,7 +10451,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index307,
+        Index302,
         [((192, 5120), torch.float32)],
         {
             "model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"],
@@ -10689,7 +10550,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index308,
+        Index303,
         [((1, 11, 2), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -10716,7 +10577,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index309,
+        Index304,
         [((1, 5, 9216), torch.float32)],
         {
             "model_names": [
@@ -10728,7 +10589,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index310,
+        Index305,
         [((1, 5, 9216), torch.float32)],
         {
             "model_names": [
@@ -10740,7 +10601,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index311,
+        Index306,
         [((1, 5, 9216), torch.float32)],
         {
             "model_names": [
@@ -10752,7 +10613,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index118,
+        Index110,
         [((1, 32, 5, 96), torch.float32)],
         {
             "model_names": [
@@ -10764,7 +10625,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index119,
+        Index111,
         [((1, 32, 5, 96), torch.float32)],
         {
             "model_names": [
@@ -10776,7 +10637,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index312,
+        Index307,
         [((16384, 3072), torch.float32)],
         {
             "model_names": [
@@ -10793,7 +10654,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index313,
+        Index308,
         [((16384, 3072), torch.float32)],
         {
             "model_names": [
@@ -10822,7 +10683,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index309,
+        Index304,
         [((1, 13, 9216), torch.float32)],
         {
             "model_names": [
@@ -10834,7 +10695,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index310,
+        Index305,
         [((1, 13, 9216), torch.float32)],
         {
             "model_names": [
@@ -10846,7 +10707,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index311,
+        Index306,
         [((1, 13, 9216), torch.float32)],
         {
             "model_names": [
@@ -10858,7 +10719,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index118,
+        Index110,
         [((1, 32, 13, 96), torch.float32)],
         {
             "model_names": [
@@ -10870,7 +10731,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index119,
+        Index111,
         [((1, 32, 13, 96), torch.float32)],
         {
             "model_names": [
@@ -10882,7 +10743,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index314,
+        Index309,
         [((1, 256, 7680), torch.float32)],
         {
             "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
@@ -10891,7 +10752,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index315,
+        Index310,
         [((1, 256, 7680), torch.float32)],
         {
             "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
@@ -10900,7 +10761,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index316,
+        Index311,
         [((1, 256, 7680), torch.float32)],
         {
             "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
@@ -10945,7 +10806,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index317,
+        Index312,
         [((35840, 5120), torch.float32)],
         {
             "model_names": [
@@ -10958,7 +10819,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index318,
+        Index313,
         [((35840, 5120), torch.float32)],
         {
             "model_names": [
@@ -10971,7 +10832,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index314,
+        Index309,
         [((1, 12, 7680), torch.float32)],
         {
             "model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"],
@@ -10980,7 +10841,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index315,
+        Index310,
         [((1, 12, 7680), torch.float32)],
         {
             "model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"],
@@ -10989,7 +10850,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index316,
+        Index311,
         [((1, 12, 7680), torch.float32)],
         {
             "model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"],
@@ -11151,7 +11012,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index309,
+        Index304,
         [((1, 256, 9216), torch.float32)],
         {
             "model_names": [
@@ -11167,7 +11028,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index310,
+        Index305,
         [((1, 256, 9216), torch.float32)],
         {
             "model_names": [
@@ -11183,7 +11044,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index311,
+        Index306,
         [((1, 256, 9216), torch.float32)],
         {
             "model_names": [
@@ -11199,7 +11060,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index118,
+        Index110,
         [((1, 32, 256, 96), torch.float32)],
         {
             "model_names": [
@@ -11215,7 +11076,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index119,
+        Index111,
         [((1, 32, 256, 96), torch.float32)],
         {
             "model_names": [
@@ -11231,7 +11092,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index319,
+        Index314,
         [((1, 256, 16384), torch.float32)],
         {
             "model_names": [
@@ -11244,7 +11105,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index320,
+        Index315,
         [((1, 256, 16384), torch.float32)],
         {
             "model_names": [
@@ -11257,7 +11118,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index278,
+        Index273,
         [((1, 8, 107, 256), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"],
@@ -11275,7 +11136,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index278,
+        Index273,
         [((1, 1, 107, 256), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"],
@@ -11293,7 +11154,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index278,
+        Index273,
         [((1, 16, 107, 256), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"],
@@ -11553,7 +11414,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index314,
+        Index309,
         [((1, 6, 7680), torch.float32)],
         {
             "model_names": ["pt_phi4_microsoft_phi_4_clm_hf"],
@@ -11562,7 +11423,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index315,
+        Index310,
         [((1, 6, 7680), torch.float32)],
         {
             "model_names": ["pt_phi4_microsoft_phi_4_clm_hf"],
@@ -11571,7 +11432,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index316,
+        Index311,
         [((1, 6, 7680), torch.float32)],
         {
             "model_names": ["pt_phi4_microsoft_phi_4_clm_hf"],
@@ -11616,7 +11477,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index65,
+        Index316,
         [((1, 2, 128, 400), torch.float32)],
         {
             "model_names": ["onnx_yolov10_default_obj_det_github"],
@@ -11625,7 +11486,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index66,
+        Index131,
         [((1, 2, 128, 400), torch.float32)],
         {
             "model_names": ["onnx_yolov10_default_obj_det_github"],
@@ -11634,7 +11495,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index67,
+        Index317,
         [((1, 2, 128, 400), torch.float32)],
         {
             "model_names": ["onnx_yolov10_default_obj_det_github"],
@@ -11643,7 +11504,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index278,
+        Index273,
         [((1, 12, 522, 256), torch.float32)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_3b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf"],
@@ -11689,7 +11550,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index266,
+        Index261,
         [((1, 1792, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_monodle_base_obj_det_torchvision"],
@@ -11699,7 +11560,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index321,
+        Index318,
         [((1, 1792, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_monodle_base_obj_det_torchvision"],
@@ -11709,7 +11570,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index322,
+        Index319,
         [((1, 1792, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_monodle_base_obj_det_torchvision"],
@@ -11719,7 +11580,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index323,
+        Index320,
         [((1, 1792, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_monodle_base_obj_det_torchvision"],
@@ -11729,7 +11590,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index324,
+        Index321,
         [((1, 1792, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_monodle_base_obj_det_torchvision"],
@@ -11739,7 +11600,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index325,
+        Index322,
         [((1, 1792, 56, 56), torch.bfloat16)],
         {
             "model_names": ["pt_monodle_base_obj_det_torchvision"],
@@ -11749,7 +11610,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index326,
+        Index323,
         [((1024, 8), torch.float32)],
         {
             "model_names": ["pt_nbeats_trend_basis_clm_hf"],
@@ -11758,7 +11619,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index327,
+        Index324,
         [((1024, 8), torch.float32)],
         {
             "model_names": ["pt_nbeats_trend_basis_clm_hf"],
@@ -11881,6 +11742,226 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index23,
+        [((1, 32, 160, 160), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-3", "start": "0", "stop": "16", "stride": "1"},
+        },
+    ),
+    (
+        Index24,
+        [((1, 32, 160, 160), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-3", "start": "16", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index67,
+        [((1, 64, 80, 80), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-3", "start": "0", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index25,
+        [((1, 64, 80, 80), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-3", "start": "32", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index26,
+        [((1, 128, 40, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-3", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index68,
+        [((1, 128, 40, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-3", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index69,
+        [((1, 256, 20, 20), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-3", "start": "0", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index70,
+        [((1, 256, 20, 20), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github", "pt_yolov8_yolov8n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-3", "start": "128", "stop": "256", "stride": "1"},
+        },
+    ),
+    (
+        Index316,
+        [((1, 2, 128, 400), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index131,
+        [((1, 2, 128, 400), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2", "start": "0", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index317,
+        [((1, 2, 128, 400), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2", "start": "32", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index187,
+        [((1, 160, 160, 160), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-3", "start": "0", "stop": "80", "stride": "1"},
+        },
+    ),
+    (
+        Index191,
+        [((1, 160, 160, 160), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-3", "start": "80", "stop": "160", "stride": "1"},
+        },
+    ),
+    (
+        Index77,
+        [((1, 320, 80, 80), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-3", "start": "0", "stop": "160", "stride": "1"},
+        },
+    ),
+    (
+        Index325,
+        [((1, 320, 80, 80), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-3", "start": "160", "stop": "320", "stride": "1"},
+        },
+    ),
+    (
+        Index326,
+        [((1, 640, 40, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-3", "start": "0", "stop": "320", "stride": "1"},
+        },
+    ),
+    (
+        Index327,
+        [((1, 640, 40, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-3", "start": "320", "stop": "640", "stride": "1"},
+        },
+    ),
+    (
+        Index326,
+        [((1, 640, 20, 20), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-3", "start": "0", "stop": "320", "stride": "1"},
+        },
+    ),
+    (
+        Index327,
+        [((1, 640, 20, 20), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-3", "start": "320", "stop": "640", "stride": "1"},
+        },
+    ),
+    (
+        Index316,
+        [((1, 5, 128, 400), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index131,
+        [((1, 5, 128, 400), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2", "start": "0", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index317,
+        [((1, 5, 128, 400), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov10_yolov10x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2", "start": "32", "stop": "64", "stride": "1"},
         },
     ),
 ]

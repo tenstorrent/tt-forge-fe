@@ -24,6 +24,8 @@ from .convolution import Conv2dTranspose
 from .pooling import MaxPool2d
 from .cast import Cast
 from .pad import Pad
+from .kv_cache import UpdateCache
+from .kv_cache import FillCache
 
 op_to_module_map = {
     "add": "eltwise_binary",
@@ -120,7 +122,6 @@ op_to_module_map = {
     "avg_pool1d": "pooling",
     "avg_pool2d": "pooling",
     "avg_pool3d": "pooling",
-    "adaptive_max_pool2d": "pooling",
     "constant": "constant",
     "resize1d": "resize",
     "resize2d": "resize",
@@ -141,6 +142,8 @@ op_to_module_map = {
     "requantize": "quantize",
     "forge_requantize": "quantize",
     "forge_dequantize": "quantize",
+    "update_cache": UpdateCache,
+    "fill_cache": FillCache,
 }
 
 
@@ -196,12 +199,6 @@ def _get_module_or_class(op_name):
         return importlib.import_module("." + module_name_or_cls, package="forge.op.eval.forge")
     else:
         return module_name_or_cls
-
-
-def get_f_instance(op_type):
-    module_or_class = _get_module_or_class(op_type.op)
-    assert not isinstance(module_or_class, ModuleType)
-    return module_or_class(op_type)
 
 
 def empty_function(*inputs):

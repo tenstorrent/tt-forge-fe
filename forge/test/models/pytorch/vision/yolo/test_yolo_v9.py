@@ -48,7 +48,7 @@ def test_yolov9():
 
     data_format_override = DataFormat.Float16_b
 
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override, enable_optimization_passes=True)
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
     # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,

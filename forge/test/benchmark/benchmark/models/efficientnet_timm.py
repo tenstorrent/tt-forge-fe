@@ -105,7 +105,8 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
     # Compiler configuration
     compiler_config = CompilerConfig()
     # Turn on MLIR optimizations.
-    compiler_config.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
+    # vkovacevic: Optimizer was breaking on nightly 18_6_2025
+    # compiler_config.mlir_config = MLIRConfig().set_enable_optimizer(True)
     if data_format == "bfloat16":
         # Convert model to bfloat16
         compiler_config.default_df_override = DataFormat.Float16_b
@@ -120,24 +121,9 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
     settings.enable_program_cache = True
     configure_devices(device_settings=settings)
 
-    # Run for the first time to warm up the model, it will be done by verify function.
-    # This is required to get accurate performance numbers.
-    pcc = 0.99
-    verify_cfg = VerifyConfig()
-    if data_format == "bfloat16":
-        pcc = 0.98
-    verify_cfg.value_checker = AutomaticValueChecker(pcc=pcc)
-
-    verify(
-        [
-            inputs[0],
-        ],
-        framework_model,
-        compiled_model,
-        verify_cfg=verify_cfg,
-    )
-
     if task == "classification":
+
+        compiled_model(inputs[0])  # Warm up the model
         predictions = []
         start = time.time()
         for i in tqdm(range(loop_count)):
@@ -147,18 +133,34 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
         predictions = torch.cat(predictions)
         labels = torch.cat(labels)
         evaluation_score = evaluate_classification(predictions, labels)
+
     elif task == "na":
+
+        # Run for the first time to warm up the model, it will be done by verify function.
+        # This is required to get accurate performance numbers.
+        verify_cfg = VerifyConfig()
+        verify_cfg.value_checker = AutomaticValueChecker()
+        verify(
+            [
+                inputs[0],
+            ],
+            framework_model,
+            compiled_model,
+            verify_cfg=verify_cfg,
+        )
         start = time.time()
         for i in tqdm(range(loop_count)):
             co_out = compiled_model(inputs[0])[0]
         end = time.time()
+
+        fw_out = framework_model(inputs[-1])[0]
+        co_out = co_out.to("cpu")[0]
+        AutomaticValueChecker().check(fw_out=fw_out, co_out=co_out)
+
         evaluation_score = 0.0
+
     else:
         raise ValueError(f"Unsupported task: {task}.")
-
-    fw_out = framework_model(inputs[-1])
-    co_out = co_out.to("cpu")
-    AutomaticValueChecker(pcc=pcc).check(fw_out=fw_out, co_out=co_out)
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()

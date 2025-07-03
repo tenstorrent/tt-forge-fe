@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "graph_lib/python_bindings.hpp"
 
+#include <ATen/core/TensorBody.h>
 #include <pybind11/operators.h>
 #include <pybind11/stl.h>
 
@@ -14,11 +15,17 @@
 #include "graph_lib/query.hpp"
 #include "graph_lib/utils.hpp"
 #include "nlohmann/json.hpp"
+#include "ops/op.hpp"
 #include "pybind11_json/pybind11_json.hpp"
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
 #include "utils/logger.hpp"
 #include "utils/raw_ptr.hpp"
+
+// Below are temporary includes. Delete after ops are migrated to cpp.
+#include "passes/decomposing_context.hpp"
+#include "torch/extension.h"
+#include "torch/torch.h"
 
 using json = nlohmann::json;
 
@@ -289,10 +296,11 @@ void GraphModule(py::module &m_graph)
         .def_readonly("attr", &tt::graphlib::OpType::attr)
         .def_readonly("named_attrs", &tt::graphlib::OpType::named_attrs)
         .def_readonly("forge_attrs", &tt::graphlib::OpType::forge_attrs)
-        .def(
-            "set_forge_attr",
-            [](tt::graphlib::OpType &op_type, std::string const &name, tt::graphlib::OpType::Attr const &attr)
-            { op_type.forge_attrs[name] = attr; })
+        .def("eval", &tt::graphlib::OpType::eval)
+        .def("shape", &tt::graphlib::OpType::shape)
+        .def("backward", &tt::graphlib::OpType::backward)
+        .def("decompose", &tt::graphlib::OpType::decompose)
+        .def("initial_flops_estimate", &tt::graphlib::OpType::initial_flops_estimate)
         .def(
             "__getattr__",
             [](tt::graphlib::OpType const &op_type, std::string const &name) { return op_type.get_attr(name); })
@@ -707,57 +715,20 @@ void GraphModule(py::module &m_graph)
     m_graph_query.def("op_type", graphlib::query::op_type);
 }
 
-py::object eval_relu(py::object tensor, graphlib::OpType type);
-
-py::object eval_op(graphlib::OpType type, std::vector<py::object> inputs, bool evaluate_output_relu = true)
+py::object eval_op(graphlib::OpType type, std::vector<py::object> inputs)
 {
-    py::object eval_module = py::module_::import("forge.op.eval.forge");
-    py::function forge_eval = eval_module.attr("get_f_forge_eval")(std::ref(type));
+    std::vector<at::Tensor> tensors;
+
+    tensors.reserve(inputs.size());
+    for (const auto &tensor : inputs) tensors.emplace_back(tensor.cast<at::Tensor>());
+
+    py::object result = py::cast(type.eval(tensors));
 
     log_trace(LogEval, "  eval_op: {}", type);
-    bool has_requant =
-        type.forge_attrs.find("requant") != type.forge_attrs.end() and std::get<bool>(type.forge_attrs.at("requant"));
-
-    std::vector<py::object> inputs_;
-    if (has_requant)
-    {
-        inputs_.assign(inputs.begin(), inputs.end());
-        inputs_.erase(inputs_.end() - 1);  // skip requantization input (last input)
-    }
-    else
-    {
-        inputs_ = inputs;
-    }
-
-    py::object result = forge_eval(inputs_);
-
     py::object common_module = py::module_::import("forge.op.eval");
     common_module.attr("eval_debug_print")(type.op, inputs, result);
 
-    if (evaluate_output_relu)
-        result = eval_relu(result, type);
-
     return result;
-}
-
-py::object eval_relu(py::object tensor, graphlib::OpType type)
-{
-    auto relu_match = type.forge_attrs.find("relu_en");
-    if (relu_match != type.forge_attrs.end())
-    {
-        std::vector<py::object> inputs;
-        inputs.push_back(tensor);
-        float relu_threshold = (type.forge_attrs.find("relu_threshold") != type.forge_attrs.end())
-                                   ? std::get<float>(type.forge_attrs["relu_threshold"])
-                                   : 0.0;
-        std::string relu_mode = (type.forge_attrs.find("relu_mode") != type.forge_attrs.end())
-                                    ? std::get<std::string>(type.forge_attrs["relu_mode"])
-                                    : "min";
-
-        graphlib::OpType relu("relu", {relu_threshold, relu_mode});
-        tensor = eval_op(relu, inputs);
-    }
-    return tensor;
 }
 
 py::object eval_golden_transforms(graphlib::Node *node, py::object tensor, bool eval_for_output = false)
@@ -1472,7 +1443,7 @@ eval_graph(
 
             std::vector<py::object> inputs = eval_operand_tms(graph, node, node_outputs);
 
-            py::object obj = eval_op(op_node->op_type(), inputs, false);  // Don't Eval relu for intermediate checking
+            py::object obj = eval_op(op_node->op_type(), inputs);
 
             auto gradient_edges = graph->operand_edges(
                 node, [](const auto &edge) { return edge.edge_type == graphlib::EdgeType::kAutogradFwdToGradient; });
@@ -1551,8 +1522,6 @@ eval_graph(
                 }
             }
 
-            // Eval relu after checking intermediate tensors
-            obj = eval_relu(obj, op_node->op_type());
             node_outputs[node->id()].push_back(obj);
 
             std::vector<graphlib::Edge> loopback_edges = graph->user_edges(

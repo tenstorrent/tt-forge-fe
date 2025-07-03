@@ -18,6 +18,7 @@ on:
           - "2"
           - "3"
           - "4"
+          - "8"
       run_ops_sweeps:
         description: 'Run models ops tests'
         required: false
@@ -51,7 +52,7 @@ jobs:
       - name: Set Inputs
         id: set-inputs
         run: |
-          default_test_group_cnt=4
+          default_test_group_cnt=8
           default_run_ops_sweeps=Yes
 
           ros_res=$(if [ -z "${{ inputs.run_ops_sweeps }}" ]; then echo $default_run_ops_sweeps; else echo ${{ inputs.run_ops_sweeps }}; fi)
@@ -93,6 +94,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "p150"}]'
       run_id: ${{ needs.build.outputs.run_id }}
+      continue-on-crash: true
 
   test_full_model_xfailing_p150:
     if: success() || failure()
@@ -109,6 +111,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ needs.build.outputs.run_id }}
       runs-on: '[{"runs-on": "p150"}]'
+      continue-on-crash: true
 
   test_models_ops_p150:
     if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
@@ -126,6 +129,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "p150"}]'
       allow-fail: true
+      continue-on-crash: true
 
   check-all-green:
     if: always()

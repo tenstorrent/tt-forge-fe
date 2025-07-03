@@ -103,7 +103,7 @@ common_failure_matching_rules_list = [
             MatchingExceptionRule(
                 "mlir::AffineMap collapsedLinearAffineMap",
                 [
-                    "tt-mlir/lib/Dialect/TT/IR/TTOpsTypes.cpp",
+                    "tt-mlir/lib/Dialect/TTCore/IR/TTCoreOpsTypes.cpp",
                     "mlir::AffineMap collapsedLinearAffineMap",
                     "Dim does not participate in AffineMap RHS",
                 ],

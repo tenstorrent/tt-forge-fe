@@ -28,11 +28,46 @@ from test.models.pytorch.vision.segformer.model_utils.image_utils import get_sam
 
 variants_img_classification = [
     pytest.param("nvidia/mit-b0", marks=pytest.mark.push),
-    pytest.param("nvidia/mit-b1", marks=pytest.mark.xfail),
-    pytest.param("nvidia/mit-b2", marks=pytest.mark.xfail),
-    pytest.param("nvidia/mit-b3", marks=pytest.mark.xfail),
-    pytest.param("nvidia/mit-b4", marks=pytest.mark.xfail),
-    pytest.param("nvidia/mit-b5", marks=pytest.mark.xfail),
+    pytest.param(
+        "nvidia/mit-b1",
+        marks=[
+            pytest.mark.xfail(
+                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
+            )
+        ],
+    ),
+    pytest.param(
+        "nvidia/mit-b2",
+        marks=[
+            pytest.mark.xfail(
+                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
+            )
+        ],
+    ),
+    pytest.param(
+        "nvidia/mit-b3",
+        marks=[
+            pytest.mark.xfail(
+                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
+            )
+        ],
+    ),
+    pytest.param(
+        "nvidia/mit-b4",
+        marks=[
+            pytest.mark.xfail(
+                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
+            )
+        ],
+    ),
+    pytest.param(
+        "nvidia/mit-b5",
+        marks=[
+            pytest.mark.xfail(
+                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
+            )
+        ],
+    ),
 ]
 
 
@@ -73,7 +108,7 @@ def test_segformer_image_classification_pytorch(variant):
     inputs = [pixel_values.to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override, enable_optimization_passes=True)
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(

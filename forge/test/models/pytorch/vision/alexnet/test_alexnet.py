@@ -44,8 +44,8 @@ def test_alexnet_torchhub():
     # Load and pre-process image
     try:
 
-        dataset = load_dataset("cifar10", split="test[:1]")
-        input_image = dataset[0]["img"]
+        dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+        input_image = next(iter(dataset.skip(10)))["image"]
         preprocess = transforms.Compose(
             [
                 transforms.Resize(256),
@@ -98,8 +98,8 @@ def test_alexnet_osmr():
 
     # Load and pre-process image
     try:
-        dataset = load_dataset("cifar10", split="test[:1]")
-        input_image = dataset[0]["img"]
+        dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+        input_image = next(iter(dataset.skip(10)))["image"]
         preprocess = transforms.Compose(
             [
                 transforms.Resize(256),

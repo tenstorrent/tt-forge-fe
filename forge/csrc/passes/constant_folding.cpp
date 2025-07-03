@@ -47,7 +47,7 @@ static graphlib::OpNode *get_producer_input(graphlib::Graph *graph, graphlib::Op
 
 bool is_constant_eltwise_binary(graphlib::Graph *graph, graphlib::OpNode *binary)
 {
-    if (not graphlib::is_eltwise_binary(binary))
+    if (not binary->is_eltwise_binary())
         return false;
 
     return bool(get_constant_input(graph, binary)) and bool(get_producer_input(graph, binary));

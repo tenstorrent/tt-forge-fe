@@ -10,7 +10,6 @@ from datasets import load_dataset
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig, AutomaticValueChecker
 from test.models.onnx.vision.vision_utils import load_inputs
-from PIL import Image
 from test.models.models_utils import print_cls_results
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
@@ -19,11 +18,46 @@ params = [
     pytest.param(
         "efficientnet_b1",
     ),
-    pytest.param("efficientnet_b2"),
-    pytest.param("efficientnet_b2a"),
-    pytest.param("efficientnet_b3"),
-    pytest.param("efficientnet_b3a"),
-    pytest.param("efficientnet_b4"),
+    pytest.param(
+        "efficientnet_b2",
+        marks=[
+            pytest.mark.xfail(
+                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
+            )
+        ],
+    ),
+    pytest.param(
+        "efficientnet_b2a",
+        marks=[
+            pytest.mark.xfail(
+                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
+            )
+        ],
+    ),
+    pytest.param(
+        "efficientnet_b3",
+        marks=[
+            pytest.mark.xfail(
+                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
+            )
+        ],
+    ),
+    pytest.param(
+        "efficientnet_b3a",
+        marks=[
+            pytest.mark.xfail(
+                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
+            )
+        ],
+    ),
+    pytest.param(
+        "efficientnet_b4",
+        marks=[
+            pytest.mark.xfail(
+                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
+            )
+        ],
+    ),
     pytest.param(
         "efficientnet_b5",
         marks=[pytest.mark.skip(reason="Out of memory due - not enough space to allocate L1 buffer across banks")],
@@ -49,8 +83,8 @@ def test_efficientnet_onnx(variant, forge_tmp_path):
     model = timm.create_model(variant, pretrained=True)
 
     # Load the inputs
-    dataset = load_dataset("cifar10", split="test[:1]")
-    img = dataset[0]["img"]
+    dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+    img = next(iter(dataset.skip(10)))["image"]
     inputs = load_inputs(img, model)
     onnx_path = f"{forge_tmp_path}/efficientnet.onnx"
     torch.onnx.export(model, inputs[0], onnx_path)

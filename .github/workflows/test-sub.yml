@@ -44,6 +44,10 @@ on:
         required: false
         default: false
         type: boolean
+      continue-on-crash:
+        description: 'Continue if test crashes, otherwise restart the test'
+        required: false
+        type: boolean
 
 jobs:
   run-tests:
@@ -97,6 +101,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
+            .github/workflows/
             env/
             forge/test
             pytest.ini
@@ -156,13 +161,30 @@ jobs:
         shell: bash
         run: |
           source env/activate
+          echo "Collecting tests for group ${{ matrix.test_group_id }} with mark '${{ inputs.test_mark }}'..."
           pytest --splits ${{ inputs.test_group_cnt }} \
-                 --group ${{ matrix.test_group_id }} \
-                 --splitting-algorithm least_duration \
-                 -m "${{ inputs.test_mark }}" \
-                 --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-                 --log-memory-usage \
-                 2>&1 | tee pytest.log
+               --group ${{ matrix.test_group_id }} \
+               --splitting-algorithm least_duration \
+               -m "${{ inputs.test_mark }}" --collect-only -q \
+                | sed -n '/^Collected tests /,/^collected /p' | sed '/^[Cc]ollected /d' >.pytest_tests_to_run
+
+          echo "Collected tests."
+          # enable next line for debugging
+          # cat .pytest_tests_to_run
+
+          set +e
+          python .github/workflows/test_runner.py  \
+               --junit-xml=${{ steps.strings.outputs.test_report_path }} \
+               --log-memory-usage \
+               $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi)
+          exit_code=$?
+
+          if [ -f "crashed_pytest.log" ]; then
+            echo "Creating crash summary for the job..."
+            echo "### Crashed tests:" >>$GITHUB_STEP_SUMMARY
+            cat crashed_pytest.log >>$GITHUB_STEP_SUMMARY
+          fi
+          exit $exit_code
 
       - name: Upload Test Log
         uses: actions/upload-artifact@v4
@@ -170,6 +192,13 @@ jobs:
         with:
           name: test-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
           path: pytest.log
+
+      - name: Upload Test Crash Log
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: test-crash-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: crashed_pytest.log
 
       - name: Upload Memory Usage Log
         uses: actions/upload-artifact@v4

@@ -401,12 +401,6 @@ sub-FROM_HOST-{'alpha': -37}-(14, 13, 89, 3)-None-None
 sub-FROM_HOST-{'alpha': 37}-(14, 13, 89, 3)-None-None
 sub-FROM_HOST-{'alpha': 0.17234435}-(14, 13, 89, 3)-None-None
 sub-FROM_HOST-{'alpha': 589.34546459345}-(14, 13, 89, 3)-None-None
-sub-CONST_EVAL_PASS-{'alpha': 589.34546459345}-(1000, 100)-None-None
-sub-CONST_EVAL_PASS-{'alpha': 589.34546459345}-(10, 1000)-None-None
-sub-CONST_EVAL_PASS-{'alpha': 589.34546459345}-(9920, 1)-None-None
-sub-CONST_EVAL_PASS-{'alpha': 589.34546459345}-(10000, 1)-None-None
-sub-CONST_EVAL_PASS-{'alpha': 589.34546459345}-(32, 64)-None-None
-sub-CONST_EVAL_PASS-{'alpha': 589.34546459345}-(160, 96)-None-None
 sub-FROM_HOST-{'alpha': -37}-(1, 2, 3, 4)-torch.float32-HiFi4
 sub-FROM_HOST-{'alpha': 37}-(1, 2, 3, 4)-torch.float32-HiFi4
 sub-FROM_HOST-{'alpha': 0.17234435}-(1, 2, 3, 4)-torch.float32-HiFi4

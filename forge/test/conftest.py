@@ -6,6 +6,8 @@ from typing import List, Dict, Tuple
 from loguru import logger
 import subprocess
 import fnmatch
+import signal
+import threading
 
 import numpy as np
 import pytest
@@ -36,8 +38,52 @@ from forge.tvm_to_python import ExitTest
 
 import test.utils
 from test.exception_utils import extract_refined_error_message, extract_failure_category
+import json
 
 collect_ignore = ["legacy_tests"]
+
+watchdog_timer_default = 1800  # default expiration in seconds (test not in .test_durations)
+watchdog_timer_minimum = 300  # minimum expiration in seconds
+watchdog_abort_timer = None
+watchdog_test_durations = None
+
+
+@pytest.hookimpl(tryfirst=True)
+def pytest_runtest_setup(item):
+    def send_abort_signal():
+        print("WATCHDOG timeout reached! Killing test process.")
+        os.kill(os.getpid(), signal.SIGABRT)
+
+    def reset_abort_timer(timeout=watchdog_timer_default):
+        global watchdog_abort_timer
+        if watchdog_abort_timer:
+            watchdog_abort_timer.cancel()
+        watchdog_abort_timer = threading.Timer(timeout, send_abort_signal)  # 10 minute timeout
+        watchdog_abort_timer.daemon = True
+        watchdog_abort_timer.start()
+
+    def check_test_durations(tst):
+        global watchdog_test_durations, watchdog_timer_default, watchdog_timer_minimum
+        if watchdog_test_durations is None:
+            try:
+                with open(".test_durations", "r") as f:
+                    watchdog_test_durations = json.load(f)
+            except (FileNotFoundError, json.JSONDecodeError):
+                watchdog_test_durations = {}
+
+        if tst in watchdog_test_durations:
+            duration = watchdog_test_durations[tst] * 2
+            if duration < watchdog_timer_minimum:
+                duration = watchdog_timer_minimum
+        else:
+            duration = watchdog_timer_default
+
+        return duration
+
+    reset_abort_timer(check_test_durations(item.nodeid))
+    with open(".pytest_current_test_executing", "w") as f:
+        f.write(item.nodeid)
+        f.flush()
 
 
 def pytest_sessionstart(session):
@@ -592,16 +638,16 @@ def pytest_collection_modifyitems(config, items):
 
     yield
 
+    is_collect_enabled = config.getoption("--collect-only")
     marker = config.getoption("-m")
-    if marker and marker == "not skip_model_analysis":  # If a marker is specified
-        print("Automatic Model Analysis Collected tests: ")
+    if marker and "skip_model_analysis" in marker and is_collect_enabled:  # If a marker is specified
+        print("\nAutomatic Model Analysis Collected tests: ")
         test_count = 0
         for item in items:
-            if "skip_model_analysis" not in item.keywords:
-                test_file_path = item.location[0]
-                test_name = item.location[2]
-                print(f"{test_file_path}::{test_name}")
-                test_count += 1
+            test_file_path = item.location[0]
+            test_name = item.location[2]
+            print(f"{test_file_path}::{test_name}")
+            test_count += 1
         print(f"Automatic Model Analysis Collected test count: {test_count}")
         if test_count == 0:  # Warn if no tests match the marker
             print(f"Warning: No tests found with marker '{marker}'.")

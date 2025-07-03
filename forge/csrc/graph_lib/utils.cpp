@@ -23,25 +23,6 @@ namespace tt
 
 namespace graphlib
 {
-
-bool is_eltwise_nary(const OpNode *op)
-{
-    static py::function fn_is_eltwise_nary = py::module_::import("forge.op.eval.forge").attr("is_eltwise_nary");
-    return fn_is_eltwise_nary(std::ref(op->op_type())).cast<bool>();
-}
-
-bool is_eltwise_unary(const OpNode *op)
-{
-    static py::function fn_is_eltwise_unary = py::module_::import("forge.op.eval.forge").attr("is_eltwise_unary");
-    return fn_is_eltwise_unary(std::ref(op->op_type())).cast<bool>();
-}
-
-bool is_eltwise_binary(const OpNode *op)
-{
-    static py::function fn_is_eltwise_binary = py::module_::import("forge.op.eval.forge").attr("is_eltwise_binary");
-    return fn_is_eltwise_binary(std::ref(op->op_type())).cast<bool>();
-}
-
 bool is_reduce_z(OpNode const *op)
 {
     return (op->op_name() == "reduce" and std::get<std::string>(op->forge_attrs().at("dim")) == "z") or
@@ -121,7 +102,7 @@ TileDim get_tile_dim_from_height_width(int tile_height, int tile_width)
 
 void validate_tile_dims(Graph *graph, graphlib::OpNode *op_node)
 {
-    if (graphlib::is_eltwise_binary(op_node))
+    if (op_node->is_eltwise_binary())
     {
         auto srcA_tile_dim = graph->operands(op_node)[0]->shape().get_tile_dim();
         auto srcB_tile_dim = graph->operands(op_node)[1]->shape().get_tile_dim();
@@ -1372,7 +1353,7 @@ graphlib::Edge clone_input_forking_edge(graphlib::Graph *graph, graphlib::Edge u
 graphlib::Shape default_tm_evaluator(graphlib::OpType const &tm, graphlib::Shape shape, graphlib::IRLevel ir_level)
 {
     std::vector<Shape> shapes = {shape};
-    std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(tm, shapes, shape.get_tile_dim());
+    std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(tm, shapes);
     shape = std::get<0>(shape_data);
     TT_ASSERT(std::get<1>(shape_data).size() == 0, "TMs should not cause broadcasts");
     return shape;
@@ -1399,8 +1380,7 @@ void calculate_and_set_node_shape(Graph *graph, Node *node)
         for (OpType tm : tms)
         {
             std::vector<Shape> shapes = {operand_shape};
-            std::tuple<Shape, std::vector<DimBroadcast>> shape_data =
-                get_op_shape(tm, shapes, operand_shape.get_tile_dim());
+            std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(tm, shapes);
             operand_shape = std::get<0>(shape_data);
             TT_ASSERT(std::get<1>(shape_data).size() == 0, "TMs should not cause broadcasts");
             log_trace(LogGraphCompiler, "    TM {} {}", tm.as_string(), operand_shape);
@@ -1427,8 +1407,7 @@ void calculate_and_set_node_shape(Graph *graph, Node *node)
 
     graphlib::OpType op_type = dynamic_cast<graphlib::OpNode *>(node)->op_type();
 
-    std::tuple<Shape, std::vector<DimBroadcast>> shape_data =
-        get_op_shape(op_type, operand_shapes, node->shape().get_tile_dim());
+    std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(op_type, operand_shapes);
 
     log_trace(LogGraphCompiler, "  {}", std::get<0>(shape_data));
     node->set_shape(std::get<0>(shape_data));

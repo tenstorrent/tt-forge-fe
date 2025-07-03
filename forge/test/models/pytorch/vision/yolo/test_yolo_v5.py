@@ -35,7 +35,15 @@ size = [
     pytest.param("s", id="yolov5s"),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),
-    pytest.param("x", id="yolov5x", marks=[pytest.mark.xfail]),
+    pytest.param(
+        "x",
+        id="yolov5x",
+        marks=[
+            pytest.mark.xfail(
+                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
+            )
+        ],
+    ),
 ]
 
 

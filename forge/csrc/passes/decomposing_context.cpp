@@ -52,13 +52,12 @@ NodeContext DecomposingContext::op(
     }
     new_node->set_golden_transforms(this->node_->get_golden_transforms());
 
-    py::module_ eval_module = py::module_::import("forge.op.eval.forge");
-    py::function forge_shape = eval_module.attr("get_f_forge_shape")(op_type);
     std::vector<std::vector<std::uint32_t>> operand_tuples;
     for (NodeContext const &op_node : operands) operand_tuples.push_back(op_node.shape.as_vector());
-    py::tuple ret = forge_shape(operand_tuples);
-    graphlib::Shape shape = graphlib::Shape::create(ret[0].cast<std::vector<std::uint32_t>>());
-    std::vector<graphlib::DimBroadcast> broadcasts = ret[1].cast<std::vector<graphlib::DimBroadcast>>();
+
+    auto ret = op_type.shape(operand_tuples);
+    graphlib::Shape shape = std::get<0>(ret);
+    std::vector<graphlib::DimBroadcast> broadcasts = std::get<1>(ret);
 
     new_node->set_shape(shape);
 
@@ -189,7 +188,6 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_tt_forge_gr
     Graph *graph, const char *dispatcher_name, std::shared_ptr<void> compiler_cfg)
 {
     std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> inserted_node_id_mapping;
-    py::module_ eval_module = py::module_::import("forge.op.eval.forge");
     uint32_t nodes_removed = 1;
     while (nodes_removed)
     {
@@ -208,8 +206,6 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_tt_forge_gr
                 continue;
             }
 
-            py::function forge_decompose = eval_module.attr(dispatcher_name)(type);
-
             std::vector<NodeContext> inputs;
             for (graphlib::Edge op_edge : graph->operand_data_edges(node))
             {
@@ -221,7 +217,7 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_tt_forge_gr
             DecomposingContext dc(graph, py_node, compiler_cfg);
 
             log_trace(LogGraphCompiler, "Decomposing {}", node->name());
-            forge_decompose(&dc, inputs);
+            type.decompose(dispatcher_name, dc, inputs);
 
             if (dc.get_op_index() == 0)
             {

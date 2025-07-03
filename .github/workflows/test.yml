@@ -43,6 +43,14 @@ on:
           - "3"
           - "4"
           - "8"
+      on-crash:
+        description: 'If test crashes, continue or restart test suite'
+        required: false
+        default: "Continue"
+        type: choice
+        options:
+          - "Continue"
+          - "Restart"
       operators:
         description: 'Operators to test (comma separated)'
         required: false
@@ -72,11 +80,12 @@ jobs:
           echo "- Test Mark: ${{ inputs.test_mark }}" >> $GITHUB_STEP_SUMMARY
           echo "- Runs On: ${{ inputs.runs-on }}" >> $GITHUB_STEP_SUMMARY
           echo "- Test Group Count: ${{ inputs.test_group_cnt }}" >> $GITHUB_STEP_SUMMARY
+          echo "- On Crash: ${{ inputs.on-crash }}" >> $GITHUB_STEP_SUMMARY
           echo "- Operators: ${{ inputs.operators }}" >> $GITHUB_STEP_SUMMARY
           echo "- Filters: ${{ inputs.filters }}" >> $GITHUB_STEP_SUMMARY
       - name: Save inputs to file
         run: |
-          echo '{ "branch_name": "${{ github.ref_name }}", "rebuild": "${{ inputs.rebuild }}", "preset": "${{ inputs.preset }}", "test_mark": "${{ inputs.test_mark }}", "runs-on": "${{ inputs.runs-on }}", "test_group_cnt": "${{ inputs.test_group_cnt }}", "operators": "${{ inputs.operators }}", "filters": "${{ inputs.filters }}" }' > inputs.json
+          echo '{ "branch_name": "${{ github.ref_name }}", "rebuild": "${{ inputs.rebuild }}", "preset": "${{ inputs.preset }}", "test_mark": "${{ inputs.test_mark }}", "runs-on": "${{ inputs.runs-on }}", "test_group_cnt": "${{ inputs.test_group_cnt }}", "on-crash": "${{ inputs.on-crash }}", "operators": "${{ inputs.operators }}", "filters": "${{ inputs.filters }}" }' > inputs.json
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -99,6 +108,7 @@ jobs:
       operators: ${{ steps.set-inputs.outputs.operators }}
       filters: ${{ steps.set-inputs.outputs.filters }}
       run_id: ${{ steps.set-inputs.outputs.runid }}
+      continue_on_crash: ${{ inputs.on-crash == 'Continue' }}
     steps:
       - name: Inputs Management
         id: set-inputs
