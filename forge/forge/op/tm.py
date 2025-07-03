@@ -5,7 +5,7 @@ from typing import Union, Tuple, List
 from ..forgeglobal import TILE_DIM
 from .common import ForgeOp as op
 from ..tensor import Tensor, pytorch_dtype_to_forge_dataformat
-
+import os
 import torch
 
 
@@ -361,8 +361,15 @@ def Broadcast(name: str, operandA: Tensor, dim: int, shape: int) -> Tensor:
     Tensor
         Forge tensor
     """
-
-    return op("broadcast", name, operandA, attrs=(dim, shape, True)).get_tensor()
+    enable_ttmlir_broadcast = bool(os.getenv("FORGE_ENABLE_TTMLIR_BROADCAST", False))
+    if enable_ttmlir_broadcast:
+        broadcast_dimensions = [1] * len(operandA.shape.dims)
+        broadcast_dimensions[dim] = shape
+        return op(
+            "broadcast", name, operandA, attrs=(dim, shape, True), broadcast_dimensions=broadcast_dimensions
+        ).get_tensor()
+    else:
+        return op("broadcast", name, operandA, attrs=(dim, shape, True)).get_tensor()
 
 
 def Repeat(name: str, operandA: Tensor, repeats: List[int]) -> Tensor:
