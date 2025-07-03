@@ -171,19 +171,19 @@ variant = os.environ.get("FORGE_VARIANT", "compiler")
 if variant == "compiler":
     package_name = "tt_forge_fe_compiler"
     requirements = core_requirements
-    description = "🛠 Building tt-forge-fe-compiler (core only)"
+    description = "Building tt-forge-fe-compiler (core only)"
 elif variant == "dev":
     package_name = "tt_forge_fe_dev"
     requirements = core_requirements + dev_requirements + model_requirements
-    description = "🧪 Building tt-forge-fe-dev (core + dev + model requirements)"
+    description = "Building tt-forge-fe-dev (core + dev + model requirements)"
 else:
     # Default to base package
     package_name = "tt_forge_fe"
     requirements = core_requirements
-    description = "🔧 Building tt-forge-fe (core only)"
+    description = "Building tt-forge-fe (core only)"
 
 print(description)
-print(f"💡 Packaging as: {package_name} - version {version}")
+print(f"Packaging as: {package_name} - version {version}")
 
 forge_c = TTExtension("forge")
 packages = [p for p in find_packages("forge") if not p.startswith("test")]

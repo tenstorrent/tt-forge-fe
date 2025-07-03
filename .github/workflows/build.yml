@@ -127,26 +127,14 @@ jobs:
         cd ../../..
         cp third_party/tvm/python/dist/*.whl dist/
 
-    - name: Upload Compiler Wheel
+    - name: Upload Build
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
-        name: forge-wheel-compiler
-        path: dist/compiler/*.whl
-
-    - name: Upload Dev Wheel
-      uses: actions/upload-artifact@v4
-      if: success() || failure()
-      with:
-        name: forge-wheel-dev
-        path: dist/dev/*.whl
-
-    - name: Upload TVM Wheel
-      uses: actions/upload-artifact@v4
-      if: success() || failure()
-      with:
-        name: tvm-wheel
-        path: dist/tvm*.whl
+        name: forge-wheel
+        path: |
+          dist/**/*.whl
+          dist/*.whl
 
 
   unit-test-build:
