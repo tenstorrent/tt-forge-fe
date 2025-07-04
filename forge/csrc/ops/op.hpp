@@ -230,6 +230,10 @@ class Op
      * Optional implementations. *
      * --------------------------*/
 
+    /**
+     * Note: We will most likely get rid of distinct implementations for decompose, once we investigate why they even
+     * exist. They are needed for now in order to unblock ops migration from python to cpp.
+     */
     template <DecomposeEpoch epoch>
     void decompose(
         const graphlib::OpType &old_op_type,
