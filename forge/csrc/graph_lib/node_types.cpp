@@ -18,6 +18,7 @@
 
 // Below are temporary includes. Delete after ops are migrated to cpp.
 #include "autograd/autograd.hpp"
+#include "passes/decomposing_context.hpp"
 #include "torch/torch.h"
 
 namespace tt
@@ -520,10 +521,10 @@ tt::graphlib::NodeContext OpType::backward(
     return new_op_.backward(*this, context, operand, inputs, output, gradient);
 }
 
-void OpType::decompose(
-    const char *dispatch, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const
+template <DecomposeEpoch epoch>
+void OpType::decompose(DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const
 {
-    return new_op_.decompose(*this, dispatch, dc, inputs);
+    return new_op_.decompose<epoch>(*this, dc, inputs);
 }
 
 long OpType::initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const
@@ -536,6 +537,18 @@ bool OpType::is_eltwise() const { return new_op_.is_eltwise(*this); }
 bool OpType::is_eltwise_unary() const { return new_op_.is_eltwise_unary(*this); }
 bool OpType::is_eltwise_binary() const { return new_op_.is_eltwise_binary(*this); }
 bool OpType::is_eltwise_nary() const { return new_op_.is_eltwise_nary(*this); }
+
+/**
+ * Explicit instantiations to enable pybind symbol resolution.
+ */
+template void OpType::decompose<DecomposeEpoch::Initial>(
+    DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
+
+template void OpType::decompose<DecomposeEpoch::PostOptimize>(
+    DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
+
+template void OpType::decompose<DecomposeEpoch::PostAutograd>(
+    DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
 
 }  // namespace graphlib
 }  // namespace tt

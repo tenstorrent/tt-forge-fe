@@ -51,11 +51,14 @@ class Op;
         const tt::graphlib::NodeContext &output,                                                      \
         const tt::graphlib::NodeContext &gradient);                                                   \
                                                                                                       \
-    void decompose(                                                                                   \
-        const Op &op,                                                                                 \
-        const char *dispatch,                                                                         \
-        DecomposingContext &dc,                                                                       \
-        const std::vector<tt::graphlib::NodeContext> &inputs);                                        \
+    void decompose_initial(                                                                           \
+        const Op &op, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs);  \
+                                                                                                      \
+    void decompose_post_optimize(                                                                     \
+        const Op &op, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs);  \
+                                                                                                      \
+    void decompose_post_autograd(                                                                     \
+        const Op &op, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs);  \
                                                                                                       \
     long initial_flops_estimate(const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs); \
     }
@@ -65,6 +68,7 @@ class Op;
  */
 DECLARE_OP_INTERFACE(abs);
 DECLARE_OP_INTERFACE(constant);
+DECLARE_OP_INTERFACE(multiply);
 
 #undef DECLARE_OP_INTERFACE
 

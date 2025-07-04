@@ -297,9 +297,6 @@ void GraphModule(py::module &m_graph)
         .def_readonly("named_attrs", &tt::graphlib::OpType::named_attrs)
         .def("eval", &tt::graphlib::OpType::eval)
         .def("shape", &tt::graphlib::OpType::shape)
-        .def("backward", &tt::graphlib::OpType::backward)
-        .def("decompose", &tt::graphlib::OpType::decompose)
-        .def("initial_flops_estimate", &tt::graphlib::OpType::initial_flops_estimate)
         .def(
             "__getattr__",
             [](tt::graphlib::OpType const &op_type, std::string const &name) { return op_type.get_attr(name); })
