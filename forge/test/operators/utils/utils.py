@@ -30,7 +30,6 @@ from .compat import TestDevice
 from .compat import (
     create_torch_inputs,
     verify_module_for_inputs,
-    verify_module_for_inputs_deprecated,
     verify_module_for_inputs_torch,
 )
 from .datatypes import ValueRange, ValueRanges
@@ -156,7 +155,6 @@ class VerifyUtils:
         value_range: Optional[ValueRanges] = None,
         random_seed: Optional[int] = None,
         warm_reset: bool = False,
-        deprecated_verification: bool = True,
         verify_config: Optional[VerifyConfig] = VerifyConfig(),
         skip_forge_verification: bool = TestSweepsFeatures.params.skip_forge_verification,
     ):
@@ -176,18 +174,13 @@ class VerifyUtils:
             value_range: Value range of input tensors
             random_seed: Random seed
             warm_reset: Warm reset the device before verification
-            deprecated_verification: Use deprecated verification method
             verify_config: Verification configuration
             skip_forge_verification: Skip verification with Forge module
         """
 
         # Conclude if we should convert to forge data format
-        if convert_to_forge is None:
-            if deprecated_verification:
-                convert_to_forge = True
-            else:
-                if isinstance(model, ForgeModule):
-                    convert_to_forge = True
+        if convert_to_forge is None and isinstance(model, ForgeModule):
+            convert_to_forge = True
 
         cls.setup(
             compiler_cfg=compiler_cfg,
@@ -211,7 +204,6 @@ class VerifyUtils:
             verify_config=verify_config,
             dev_data_format=dev_data_format,
             convert_to_forge=convert_to_forge,
-            deprecated_verification=deprecated_verification,
             skip_forge_verification=skip_forge_verification,
         )
 
@@ -263,20 +255,10 @@ class VerifyUtils:
         verify_config: Optional[VerifyConfig] = None,
         dev_data_format: forge.DataFormat = None,
         convert_to_forge: bool = True,  # explicit conversion to forge data format
-        deprecated_verification: bool = True,
         skip_forge_verification: bool = TestSweepsFeatures.params.skip_forge_verification,
     ):
 
-        if deprecated_verification:
-            verify_module_for_inputs_deprecated(
-                model=model,
-                inputs=inputs,
-                compiler_cfg=compiler_cfg,
-                pcc=pcc,
-                dev_data_format=dev_data_format,
-                convert_to_forge=convert_to_forge,
-            )
-        elif skip_forge_verification:
+        if skip_forge_verification:
             if isinstance(model, ForgeModule):
                 logger.warning("Nothing to validate while skipping Forge verification for Forge module")
             else:
