@@ -407,43 +407,6 @@ TEST_F(UpdateConcatNamedAttrsTest, update_named_attrs)
     EXPECT_EQ(dim_value, new_dim) << "Dim attribute does not match expected value.";
 }
 
-struct UpdateVStackAttrsTest : testing::Test
-{
-    graphlib::Graph *graph;
-    graphlib::OpNode *vstack_node;
-
-    UpdateVStackAttrsTest()
-    {
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE, "UpdateVStackAttrs");
-
-        graphlib::Shape shape_0 = graphlib::Shape::create({32, 512, 160});
-
-        auto input_node_0 = create_input(*graph, "input_0", shape_0);
-
-        vstack_node = add_node<graphlib::PyOpNode>(*graph, "vstack", "vstack", {16}, {input_node_0});
-
-        create_output(*graph, "out", vstack_node);
-    }
-};
-
-TEST_F(UpdateVStackAttrsTest, update_vstack_attr)
-{
-    graphlib::Node *vstack = graph->get_node_by_name("vstack");
-    ASSERT_NE(vstack, nullptr) << "VStack node not found.";
-    graphlib::OpNode *op_node_vstack = dynamic_cast<graphlib::OpNode *>(vstack);
-    ASSERT_NE(op_node_vstack, nullptr) << "Node is not of type OpNode.";
-
-    int new_slice_size = 32;
-
-    passes::update_vstack_attr(op_node_vstack, new_slice_size);
-
-    auto updated_attrs = op_node_vstack->named_attrs();
-
-    EXPECT_TRUE(updated_attrs.count("slice_size")) << "Slice size attribute not found.";
-    auto slice_size_value = std::get<int>(updated_attrs["slice_size"]);
-    EXPECT_EQ(slice_size_value, new_slice_size) << "Slice size attribute does not match expected value.";
-}
-
 struct UpdateMatMulNamedAttrsTest : testing::Test
 {
     graphlib::Graph *graph;

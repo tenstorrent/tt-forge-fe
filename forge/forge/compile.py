@@ -15,7 +15,6 @@ from forge.config import (
     CompileDepth,
 )
 from forge._C import (
-    link_past_cache_ios,
     run_post_initial_graph_passes,
     run_optimization_graph_passes,
     run_post_optimize_decompose_graph_passes,

@@ -8,12 +8,6 @@ import torch
 
 from forge.forgeglobal import TILE_DIM
 from ..common import to_torch_operands, cast_for_cpu_eval
-from ..sparse_utils import (
-    transpose_sparse_picker_matrix,
-    create_sparse_forge,
-    shapeify_sparse_tiles_and_encodings,
-    is_kernel_fracturing_candidate,
-)
 from forge.utils import round_up_div
 from forge.op.eval.common import calculate_tile_size
 from .transpose import TransposeTM
@@ -185,14 +179,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     in0 = inputs[0]
     in1 = inputs[1]
-
-    if type == "sparse_matmul":
-        assert operand == 1, "Only support gradients through operand 1"
-        in0_value = ac.get_pytorch_tensor(in0)
-        assert in0_value.is_sparse
-        in0t_value = transpose_sparse_picker_matrix(in0_value)
-        in0t = ac.tensor(in0t_value)
-        return ac.op("sparse_matmul", (in0t, grad))
 
     if operand == 0:
         shape_len = len(ac.get_shape(in1))

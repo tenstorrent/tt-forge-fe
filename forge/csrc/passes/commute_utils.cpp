@@ -923,6 +923,7 @@ void update_select_attr(
     std::optional<int> length,
     std::optional<int> stride)
 {
+    log_info(LogGraphCompiler, "Updating select operation attributes");
     TT_ASSERT(select_op->op_name() == "select", "update_select_attr called for a non-select operation");
 
     select_op->set_op_attr("select_dim", select_dim);
@@ -936,7 +937,7 @@ void update_select_attr(
     if (stride.has_value())
         select_op->set_op_attr("stride", stride.value());
 
-    log_trace(
+    log_info(
         LogGraphCompiler,
         "Updated select operation {}: select_dim = {}, begin = {}, length = {}, stride = {}",
         select_op->name(),
@@ -960,21 +961,6 @@ void update_concat_attr(graphlib::OpNode *concatenate, int dim)
     concatenate->set_op_attr("dim", dim);
 
     log_trace(LogGraphCompiler, "Concatenate operation updated with new dim: {}", dim);
-}
-/**
- * @brief Updates the attributes and named attributes of vstack operation with new slice_size.
- */
-void update_vstack_attr(graphlib::OpNode *vstack, int slice_size)
-{
-    TT_ASSERT(vstack->op_name() == "vstack", "update_vstack_attr called for a non-vstack operation");
-
-    std::vector<graphlib::OpType::Attr> attr;
-    attr.push_back(slice_size);
-
-    graphlib::OpType::Attrs named_attrs = vstack->named_attrs();
-    vstack->set_op_attr("slice_size", slice_size);
-
-    log_trace(LogGraphCompiler, "Vstack operation updated with new slice_size: {}", slice_size);
 }
 /**
  * @brief Updates the attributes and named attributes of grouped_reduce_avg operation with new reduction dimension.

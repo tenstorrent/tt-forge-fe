@@ -390,7 +390,11 @@ struct OpType
     bool operator!=(const OpType &other) const { return not(*this == other); }
 
     ops::Op const &new_op() const { return new_op_; }
-    Attr const &get_attr(std::string const &name) const { return named_attrs.at(name); }
+    Attr const &get_attr(std::string const &name) const
+    {
+        TT_ASSERT(named_attrs.find(name) != named_attrs.end(), "Attribute " + name + " doesn't exist!");
+        return named_attrs.at(name);
+    }
     Attr &get_attr(std::string const &name) { return named_attrs.at(name); }
     template <typename T>
     T const &get_attr_as(std::string const &name) const
