@@ -37,7 +37,7 @@ python forge/test/benchmark/benchmark.py -m mobilenetv2_basic -ts classification
 python forge/test/benchmark/benchmark.py -m efficientnet_timm -ts classification -bs 6 -df bfloat16 -lp 32 -o forge-benchmark-e2e-efficientnet_timm.json
 
 # Segformer Classification
-python forge/test/benchmark/benchmark.py -m segformer -bs 1 -df float32 -lp 32 -o forge-benchmark-e2e-segformer.json
+python forge/test/benchmark/benchmark.py -m segformer -bs 1 -df bfloat16 -lp 32 -o forge-benchmark-e2e-segformer.json
 
 # ViT Base
 python forge/test/benchmark/benchmark.py -m vit_base -ts classification -bs 1 -df float32 -lp 32 -o forge-benchmark-e2e-vit_base.json
