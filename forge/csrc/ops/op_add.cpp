@@ -51,7 +51,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     }
 
     // Adjust each dimension to match the broadcast rules
-
     for (size_t dim = 0; dim < shape0.size(); dim++)
     {
         if (shape0[dim] != shape1[dim])
@@ -128,7 +127,7 @@ tt::graphlib::NodeContext backward(
 
             result_grad = ac.autograd->create_op(
                 ac,
-                graphlib::OpType("reduce_sum", {dim, true}, {}, {{"dim", std::vector<int>({dim})}, {"keep_dim", true}}),
+                graphlib::OpType("reduce_sum", {dim, true}, {{"dim", std::vector<int>({dim})}, {"keep_dim", true}}),
                 {result_grad});
         }
     }
