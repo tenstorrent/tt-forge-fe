@@ -937,7 +937,7 @@ void update_select_attr(
     if (stride.has_value())
         select_op->set_op_attr("stride", stride.value());
 
-    log_info(
+    log_trace(
         LogGraphCompiler,
         "Updated select operation {}: select_dim = {}, begin = {}, length = {}, stride = {}",
         select_op->name(),
