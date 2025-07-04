@@ -27,6 +27,8 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
+
 
 def get_sample_data(model_name):
     image_processor = AutoImageProcessor.from_pretrained(model_name)
@@ -105,6 +107,9 @@ def test_perceiverio_for_image_classification_pytorch(variant):
     )
 
     # Model Verification
-    verify(
+    fw_out, co_out = verify(
         inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
     )
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])
