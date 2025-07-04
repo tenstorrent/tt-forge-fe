@@ -25,7 +25,6 @@ import forge
 from forge.tensor import change_rank
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div, align_up
-from .transpose import TransposeTM
 from .pad import Pad
 from .nop import Nop
 from .buffer import Buffer
@@ -769,18 +768,20 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         if attr[0] == 2 or attr[0] == 3:
             ret = ac.op("reduce_sum", (grad,), (attr[0],), {"keep_dim": True})
         else:
-            ret = ac.op(
-                TransposeTM.create(attr[0], -2),
+            ret = ac.op_with_named_attrs(
+                "transpose",
                 [
                     grad,
                 ],
+                {"dim0": attr[0], "dim1": -2},
             )
             ret = ac.op("reduce_sum", (ret,), (-2,), {"keep_dim": True})
-            ret = ac.op(
-                TransposeTM.create(attr[0], -2),
+            ret = ac.op_with_named_attrs(
+                "transpose",
                 [
                     ret,
                 ],
+                {"dim0": attr[0], "dim1": -2},
             )
         return ret
 
@@ -865,7 +866,7 @@ def decompose(type, attr, dc, inputs):
         if dim != 0:
             current = inputs[0]
             for i in range(dim, 0, -1):
-                current = dc.op(TransposeTM.create(i, i - 1), [current])
+                current = dc.op_with_named_attrs("transpose", [current], {"dim0": i, "dim1": i - 1})
             permuted = current
         else:
             # No need to transpose if dim is already 0
@@ -905,7 +906,7 @@ def decompose(type, attr, dc, inputs):
             # Move dimension 0 to position 'dim' using transposes
             current = reshaped_output
             for i in range(0, dim):
-                current = dc.op(TransposeTM.create(i, i + 1), [current])
+                current = dc.op_with_named_attrs("transpose", [current], {"dim0": i, "dim1": i + 1})
             result = current
         else:
             # No need to transpose if dim is already 0
@@ -926,7 +927,7 @@ def decompose(type, attr, dc, inputs):
                 dim0 -= inputs[0].shape.len()
             if dim1 >= 0:
                 dim1 -= inputs[0].shape.len()
-            dc.fuse(dc.op(TransposeTM.create(dim0, dim1, orig_size)), inputs)
+            dc.fuse(dc.op_with_named_attrs("transpose", inputs, {"dim0": dim0, "dim1": dim1}))
 
     if type == "pixel_shuffle":
         result = inputs[0]  # Shape: (N, C*r*r, H, W)
@@ -939,9 +940,9 @@ def decompose(type, attr, dc, inputs):
         x = dc.op_with_named_attrs("reshape", [result], {"shape": reshape_dims}, reshape_dims)
 
         # Step 2: Transpose sequence on x
-        x = dc.op(TransposeTM.create(2, 4), [x])  # [0,1,4,3,2,5]
-        x = dc.op(TransposeTM.create(3, 4), [x])  # [0,1,4,2,3,5]
-        x = dc.op(TransposeTM.create(4, 5), [x])  # [0,1,4,2,5,3]
+        x = dc.op_with_named_attrs("transpose", [x], {"dim0": 2, "dim1": 4})  # [0,1,4,3,2,5]
+        x = dc.op_with_named_attrs("transpose", [x], {"dim0": 3, "dim1": 4})  # [0,1,4,2,3,5]
+        x = dc.op_with_named_attrs("transpose", [x], {"dim0": 4, "dim1": 5})  # [0,1,4,2,5,3]
 
         # Step 3: Final reshape to (N, C, H * r, W * r)
         reshape_dims = (N, C, H * r, W * r)
@@ -1101,12 +1102,12 @@ def decompose_select(attr, dc, inputs):
 
         is_x_select = dim == -1
         if is_x_select:
-            x = dc.op(TransposeTM.create(-2, -1), [x])
+            x = dc.op_with_named_attrs("transpose", [x], {"dim0": -2, "dim1": -1})
 
         result = dc.op("sparse_matmul", [spm, x])
 
         if is_x_select:
-            result = dc.op(TransposeTM.create(-2, -1), [result])
+            result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
 
         if is_x_select:
             result = dc.op("narrow", [result], (-1, 0, size, result.shape[-1]))
@@ -1331,15 +1332,26 @@ def decompose_post_optimize(type, attr, dc, inputs):
                 )
 
             spm = torch.stack([spm] * result.shape[-3], -3).unsqueeze(0)
-            result = dc.op(
-                TransposeTM.create(-2, -1),
+            result = dc.op_with_named_attrs(
+                "transpose",
                 [
                     result,
                 ],
+                {"dim0": -2, "dim1": -1},
+            )
+            result = picker_matmul(True, dc, spm, result)
+            result = dc.op_with_named_attrs(
+                "transpose",
+                [
+                    result,
+                ],
+                {"dim0": -2, "dim1": -1},
             )
             result = picker_matmul(True, dc, spm, result)
             result = dc.op(
-                TransposeTM.create(-2, -1),
+                "transpose",
+                [result],
+                {"dim0": -2, "dim1": -1},
                 [
                     result,
                 ],
@@ -1431,14 +1443,18 @@ def decompose_post_optimize(type, attr, dc, inputs):
             )
             spm = torch.stack([spm] * result.shape[-3], -3).unsqueeze(0)
             result = dc.op(
-                TransposeTM.create(-2, -1),
+                "transpose",
+                [result],
+                {"dim0": -2, "dim1": -1},
                 [
                     result,
                 ],
             )
             result = picker_matmul(True, dc, spm, result)
             result = dc.op(
-                TransposeTM.create(-2, -1),
+                "transpose",
+                [result],
+                {"dim0": -2, "dim1": -1},
                 [
                     result,
                 ],
