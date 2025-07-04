@@ -23,8 +23,8 @@ namespace multiply
 at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Multiply, "Wrong op type.");
-    TT_ASSERT(tensors.size() == 2, "OpMultiply::eval should have two input tensors.");
-    TT_ASSERT(op.attrs().size() == 0, "OpMultiply::eval should not have any attrs.");
+    TT_ASSERT(tensors.size() == 2, "multiply::eval should have two input tensors.");
+    TT_ASSERT(op.attrs().size() == 0, "multiply::eval should not have any attrs.");
 
     return torch::multiply(tensors[0], tensors[1]);
 }
@@ -33,8 +33,8 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Multiply, "Wrong op type.");
-    TT_ASSERT(in_shapes.size() == 2, "OpMultiply::shape should have two input shapes.");
-    TT_ASSERT(op.attrs().size() == 0, "OpMultiply::shape should not have any attrs.");
+    TT_ASSERT(in_shapes.size() == 2, "multiply::shape should have two input shapes.");
+    TT_ASSERT(op.attrs().size() == 0, "multiply::shape should not have any attrs.");
 
     std::vector<graphlib::DimBroadcast> broadcast;
     std::vector<std::uint32_t> output_shape;
@@ -89,8 +89,8 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
 void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Multiply, "Wrong op type.");
-    TT_ASSERT(inputs.size() == 2, "OpMultiply::decompose_post_autograd should have two input tensors.");
-    TT_ASSERT(op.attrs().size() == 0, "OpMultiply::decompose_post_autograd should not have any attrs.");
+    TT_ASSERT(inputs.size() == 2, "multiply::decompose_post_autograd should have two input tensors.");
+    TT_ASSERT(op.attrs().size() == 0, "multiply::decompose_post_autograd should not have any attrs.");
 
     // Get dimensions of both inputs
     Shape input0_shape = inputs[0].shape;
@@ -144,8 +144,8 @@ tt::graphlib::NodeContext backward(
     const tt::graphlib::NodeContext &gradient)
 {
     TT_DBG_ASSERT(op.type() == OpType::Multiply, "Wrong op type.");
-    TT_ASSERT(inputs.size() == 2, "OpMultiply::backward should have two input tensors.");
-    TT_ASSERT(op.attrs().size() == 0, "OpMultiply::backward should not have any attrs.");
+    TT_ASSERT(inputs.size() == 2, "multiply::backward should have two input tensors.");
+    TT_ASSERT(op.attrs().size() == 0, "multiply::backward should not have any attrs.");
     TT_ASSERT(operand < 2, "Invalid operand index.");
 
     // For multiply x * y: dx = grad * y, dy = grad * x
