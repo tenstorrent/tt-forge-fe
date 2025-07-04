@@ -433,11 +433,27 @@ tt::graphlib::NodeContext Op::backward(
 }
 
 /**
- * TODO: Fix this with proper dispatching based on provided string.
+ * Note: We will most likely get rid of distinct implementations for decompose, once we investigate why they even exist.
+ * They are needed for now in order to unblock ops migration from python to cpp.
  */
+template <DecomposeEpoch epoch>
 void Op::decompose(
     const graphlib::OpType &old_op_type,
-    const char *dispatch,
+    DecomposingContext &dc,
+    const std::vector<tt::graphlib::NodeContext> &inputs) const
+{
+    if constexpr (epoch == DecomposeEpoch::Initial)
+        return decompose_initial(old_op_type, dc, inputs);
+    else if constexpr (epoch == DecomposeEpoch::PostOptimize)
+        return decompose_post_optimize(old_op_type, dc, inputs);
+    else if constexpr (epoch == DecomposeEpoch::PostAutograd)
+        return decompose_post_autograd(old_op_type, dc, inputs);
+    else
+        static_assert("Invalid decomposing epoch.");
+}
+
+void Op::decompose_initial(
+    const graphlib::OpType &old_op_type,
     DecomposingContext &dc,
     const std::vector<tt::graphlib::NodeContext> &inputs) const
 {
@@ -445,7 +461,33 @@ void Op::decompose(
     {
         case OpType::Abs: return;
         case OpType::Constant: return;
-        default: return base_decompose(old_op_type, dispatch, dc, inputs);
+        default: return base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
+    }
+}
+
+void Op::decompose_post_optimize(
+    const graphlib::OpType &old_op_type,
+    DecomposingContext &dc,
+    const std::vector<tt::graphlib::NodeContext> &inputs) const
+{
+    switch (type_)
+    {
+        case OpType::Abs: return;
+        case OpType::Constant: return;
+        default: return base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
+    }
+}
+
+void Op::decompose_post_autograd(
+    const graphlib::OpType &old_op_type,
+    DecomposingContext &dc,
+    const std::vector<tt::graphlib::NodeContext> &inputs) const
+{
+    switch (type_)
+    {
+        case OpType::Abs: return;
+        case OpType::Constant: return;
+        default: return base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
     }
 }
 
@@ -508,6 +550,24 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         default: return base_is_eltwise_nary(old_op_type);
     }
 }
+
+/**
+ * Explicit instantiations to enable pybind symbol resolution.
+ */
+template void Op::decompose<DecomposeEpoch::Initial>(
+    const graphlib::OpType &old_op_type,
+    DecomposingContext &dc,
+    const std::vector<tt::graphlib::NodeContext> &inputs) const;
+
+template void Op::decompose<DecomposeEpoch::PostOptimize>(
+    const graphlib::OpType &old_op_type,
+    DecomposingContext &dc,
+    const std::vector<tt::graphlib::NodeContext> &inputs) const;
+
+template void Op::decompose<DecomposeEpoch::PostAutograd>(
+    const graphlib::OpType &old_op_type,
+    DecomposingContext &dc,
+    const std::vector<tt::graphlib::NodeContext> &inputs) const;
 
 }  // namespace ops
 }  // namespace tt
