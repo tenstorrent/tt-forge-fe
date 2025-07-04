@@ -8,7 +8,6 @@ from forge.forgeglobal import TILE_DIM
 from forge.tensor import Tensor
 import numpy as np
 import torch
-from .transpose import TransposeTM
 from .reciprocal import Reciprocal
 from .log import Log
 from .nop import Nop

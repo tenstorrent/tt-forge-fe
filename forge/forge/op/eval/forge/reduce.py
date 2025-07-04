@@ -5,7 +5,6 @@
 from ..common import to_torch_operands
 from ....forgeglobal import TILE_DIM, align_up_tile
 from ....tensor import forge_dataformat_to_pytorch_dtype
-from .transpose import TransposeTM
 from .nop import Nop
 import torch
 import numpy as np
@@ -158,12 +157,12 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         spm = ac.tensor(sparse)
 
         if dim == -1:
-            grad = ac.op(TransposeTM.create(-2, -1), [grad])
+            grad = ac.op_with_named_attrs("transpose", [grad], {"dim0": -2, "dim1": -1})
 
         grad = ac.op("sparse_matmul", (spm, grad))
 
         if dim == -1:
-            grad = ac.op(TransposeTM.create(-2, -1), [grad])
+            grad = ac.op_with_named_attrs("transpose", [grad], {"dim0": -2, "dim1": -1})
 
         size = ac.get_shape(inputs[0])[dim] // groups
         return ac.op("multiply", (grad, ac.constant(1 / size)))

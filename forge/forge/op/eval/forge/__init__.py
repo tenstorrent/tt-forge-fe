@@ -4,7 +4,6 @@
 import importlib
 from types import ModuleType
 from functools import lru_cache
-from .transpose import TransposeTM
 from .exp import Exp
 from .cosine import Cosine
 from .ethernet_datacopy import EthernetDatacopy
@@ -80,7 +79,7 @@ op_to_module_map = {
     "embedding": "embedding",
     "embedding_bw": "embedding_bw",
     "ethernet_datacopy": EthernetDatacopy,
-    "transpose": TransposeTM,
+    "transpose": "tm",
     "adv_index": "tm",
     "reshape": "tm",
     "index": "tm",
