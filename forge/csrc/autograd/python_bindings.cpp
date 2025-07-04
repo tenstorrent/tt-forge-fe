@@ -40,7 +40,7 @@ void AutogradModule(py::module &m_autograd)
             {
                 graphlib::OpType op_type =
                     std::holds_alternative<std::string>(type)
-                        ? graphlib::OpType(std::get<std::string>(type), attributes, {}, std::move(named_attrs))
+                        ? graphlib::OpType(std::get<std::string>(type), attributes, std::move(named_attrs))
                         : std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
 
                 if (std::holds_alternative<std::string>(type))
@@ -65,7 +65,7 @@ void AutogradModule(py::module &m_autograd)
             {
                 graphlib::OpType op_type =
                     std::holds_alternative<std::string>(type)
-                        ? graphlib::OpType(std::get<std::string>(type), std::move(attributes), {}, named_attrs)
+                        ? graphlib::OpType(std::get<std::string>(type), std::move(attributes), named_attrs)
                         : std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
 
                 if (std::holds_alternative<std::string>(type))

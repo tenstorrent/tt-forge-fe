@@ -81,7 +81,7 @@ void PassesModule(py::module &m_passes)
                         "Error decomposing a type with old OpType interface, expects new OpType interface {}",
                         std::get<std::string>(type));
                     return self.op(
-                        graphlib::OpType(std::get<std::string>(type), attrs, {}, named_attrs),
+                        graphlib::OpType(std::get<std::string>(type), attrs, named_attrs),
                         operands,
                         copy_tms,
                         dont_decompose,

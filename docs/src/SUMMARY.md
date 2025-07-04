@@ -7,8 +7,7 @@
     - [Getting Started with Building from Source](./getting_started_build_from_source.md)
 - [Architecture Overview](./architecture_overview.md)
 
-# Project setup
-- [Building](./build.md)
+# Project Setup
 - [Testing](./test.md)
     - [Pytest](./pytest.md)
 - [Tools](./tools.md)

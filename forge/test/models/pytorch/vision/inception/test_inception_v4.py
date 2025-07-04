@@ -20,6 +20,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.inception.model_utils.model_utils import (
     get_image,
     preprocess_timm_model,
@@ -62,7 +63,12 @@ def test_inception_v4_osmr_pytorch():
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98)))
+    fw_out, co_out = verify(
+        inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
+    )
+
+    # Post processing
+    print_cls_results(fw_out[0], co_out[0])
 
 
 def generate_model_inceptionV4_imgcls_timm_pytorch(variant):
@@ -108,4 +114,7 @@ def test_inception_v4_timm_pytorch(variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post processing
+    print_cls_results(fw_out[0], co_out[0])

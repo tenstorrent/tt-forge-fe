@@ -2,7 +2,7 @@
 
 The **TT-Forge FE** is a graph compiler designed to optimize and transform computational graphs for deep learning models, enhancing their performance and efficiency.
 
-Built on top of the [TT-MLIR](https://docs.tenstorrent.com/tt-mlir/) backend, **TT-Forge FE** is an integral component of the [TT-Forge]() project, which provides a comprehensive suite of tools for optimizing and deploying deep learning models on [Tenstorrent](https://tenstorrent.com/) hardware.
+Built on top of the [TT-MLIR](https://docs.tenstorrent.com/tt-mlir/) backend, **TT-Forge FE** is an integral component of the [TT-Forge](https://docs.tenstorrent.com/tt-forge/) project, which provides a comprehensive suite of tools for optimizing and deploying deep learning models on [Tenstorrent](https://tenstorrent.com/) hardware.
 
 The main project goals are:
 - Provide abstraction of many different frontend frameworks (PyTorch, TensorFlow, ONNX, etc.)

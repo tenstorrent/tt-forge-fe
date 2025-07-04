@@ -49,7 +49,6 @@ bool default_node_filter(Node *);
 
 // Checks if given opnode is element-wise
 class OpNode;
-bool is_reduce_z(OpNode const *op);
 
 // Find Row/Col size of TileDim
 int get_row_size_from_tile_size(TileDim tile_dim);

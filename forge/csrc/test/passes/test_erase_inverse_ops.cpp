@@ -29,17 +29,17 @@ struct EraseInverseOps : testing::Test
         auto in0_b = create_input(*graph, "in0_b", graphlib::Shape::create({1, 1, 256, shape[3]}));
         auto matmul0 = add_node<graphlib::PyOpNode>(*graph, "matmul0", "matmul", {}, {in0_a, in0_b});
         auto transpose0 = add_node<graphlib::PyOpNode>(
-            *graph, "transpose0", graphlib::OpType("transpose", {}, {}, {{"dim0", 0}, {"dim1", 1}}), {matmul0});
+            *graph, "transpose0", graphlib::OpType("transpose", {}, {{"dim0", 0}, {"dim1", 1}}), {matmul0});
 
         auto in1_a = create_input(*graph, "in1_a", graphlib::Shape::create({1, 1, shape[2], 128}));
         auto in1_b = create_input(*graph, "in1_b", graphlib::Shape::create({1, 1, 128, shape[3]}));
         auto matmul1 = add_node<graphlib::PyOpNode>(*graph, "matmul1", "matmul", {}, {in1_a, in1_b});
         auto transpose1 = add_node<graphlib::PyOpNode>(
-            *graph, "transpose1", graphlib::OpType("transpose", {}, {}, {{"dim0", 0}, {"dim1", 1}}), {matmul1});
+            *graph, "transpose1", graphlib::OpType("transpose", {}, {{"dim0", 0}, {"dim1", 1}}), {matmul1});
 
         auto add = add_node<graphlib::PyOpNode>(*graph, "add", "add", {}, {transpose0, transpose1});
         auto post_transpose = add_node<graphlib::PyOpNode>(
-            *graph, "post_transpose", graphlib::OpType("transpose", {}, {}, {{"dim0", 0}, {"dim1", 1}}), {add});
+            *graph, "post_transpose", graphlib::OpType("transpose", {}, {{"dim0", 0}, {"dim1", 1}}), {add});
 
         create_output(*graph, "out0", post_transpose);
     }
@@ -110,7 +110,7 @@ TEST_F(EraseInverseOps, erase_inverse_ops_transpose_fork_join)
     auto post_transpose = graph->get_node_by_name("post_transpose");
     auto unary = add_node<graphlib::PyOpNode>(*graph, "unary", "exp", {}, {post_transpose});
     auto unary_transpose = add_node<graphlib::PyOpNode>(
-        *graph, "unary_transpose", graphlib::OpType("transpose", {}, {}, {{"dim0", 0}, {"dim1", 1}}), {unary});
+        *graph, "unary_transpose", graphlib::OpType("transpose", {}, {{"dim0", 0}, {"dim1", 1}}), {unary});
     auto join = add_node<graphlib::PyOpNode>(*graph, "join", "add", {}, {unary_transpose, buffer2});
 
     graph->remove_node(graph->get_node_by_name("out0"));
@@ -241,7 +241,7 @@ struct CommuteBroadcastThroughTranspose : testing::Test
 
         tt::graphlib::InputNode *in0_a = create_input(*graph, "in0_a", shape, graphlib::InputNodeType::Constant);
         graphlib::PyOpNode *transpose = add_node<graphlib::PyOpNode>(
-            *graph, "transpose", graphlib::OpType("transpose", {}, {}, {{"dim0", -3}, {"dim1", -2}}), {in0_a});
+            *graph, "transpose", graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {in0_a});
 
         // There is only one edge between in0_a and transpose nodes.
         graphlib::Edge edge_with_bcst = graph->get_edges(in0_a, transpose)[0];
@@ -721,7 +721,7 @@ struct CommuteTransposeThroughReduce : testing::Test
 
         // Add a transpose that swaps the first two dimensions (after which dims are [64, 32, 128])
         auto transpose_node = add_node<graphlib::PyOpNode>(
-            *graph, "transpose", graphlib::OpType("transpose", {}, {}, {{"dim0", 0}, {"dim1", 1}}), {input_node});
+            *graph, "transpose", graphlib::OpType("transpose", {}, {{"dim0", 0}, {"dim1", 1}}), {input_node});
 
         // Add a reshape to increase dimensionality (3D -> 5D)
         // Reshape to [64, 4, 8, 16, 8] (same volume as [64, 32, 128])

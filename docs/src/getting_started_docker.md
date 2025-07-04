@@ -71,6 +71,8 @@ docker run -it --rm \
   ghcr.io/tenstorrent/tt-forge/tt-forge-fe-slim:latest
 ```
 
+>**NOTE:** You cannot isolate devices in containers. You must pass through all devices even if you are only using one. You can do this by passing ```--device /dev/tenstorrent```. Do not try to pass ```--device /dev/tenstorrent/1``` or similar, as this type of device-in-container isolation will result in fatal errors later on during execution.
+
 5. If you want to check that it is running, open a new tab with the **Same Command** option and run the following:
 
 ```bash
@@ -139,7 +141,7 @@ Confidence: 0.868
 
 ## Where to Go Next
 
-Now that you have set up TT-Forge-FE, you can compile and run your own models. See the [TT-Forge-FE folder in the TT-Forge repo](https://github.com/tenstorrent/tt-forge/tree/main/demos/tt-forge-fe) for more demo options. 
+Now that you have set up TT-Forge-FE, you can compile and run your own models. See the [TT-Forge-FE folder in the TT-Forge repo](https://github.com/tenstorrent/tt-forge/tree/main/demos/tt-forge-fe) for more demo options.
 
 For a quick start creating your own model, here is an example of a custom model. Note the introduction of the `forge.compile` call:
 

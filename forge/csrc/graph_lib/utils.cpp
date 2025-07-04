@@ -23,12 +23,6 @@ namespace tt
 
 namespace graphlib
 {
-bool is_reduce_z(OpNode const *op)
-{
-    return (op->op_name() == "reduce" and std::get<std::string>(op->forge_attrs().at("dim")) == "z") or
-           op->has_tag("reduce_z");
-}
-
 bool default_node_filter(Node *) { return true; }
 
 static bool requires_visit(const std::unordered_map<NodeId, bool> &visited, NodeId node_id)
@@ -2016,19 +2010,19 @@ bool is_linked_queue(const graphlib::Graph *graph, const graphlib::Node *node)
                              not graph
                                      ->user_edges(
                                          node,
-                                         [](graphlib::Edge e) {
+                                         [](graphlib::Edge e) {  // clang-format off
                                              return e.edge_type == graphlib::EdgeType::kPartialDataCopy or
                                                     e.edge_type == graphlib::EdgeType::kSubgraphLink;
-                                         })
+                                         })  // clang-format on
                                      .empty();
     bool input_link_queue = node->node_type() == graphlib::NodeType::kInput and
                             not graph
                                     ->operand_edges(
                                         node,
-                                        [](graphlib::Edge e) {
+                                        [](graphlib::Edge e) {  // clang-format off
                                             return e.edge_type == graphlib::EdgeType::kPartialDataCopy or
                                                    e.edge_type == graphlib::EdgeType::kSubgraphLink;
-                                        })
+                                        })  // clang-format on
                                     .empty();
     return output_link_queue or input_link_queue;
 }
