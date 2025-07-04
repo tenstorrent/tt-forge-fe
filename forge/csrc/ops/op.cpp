@@ -492,7 +492,7 @@ void Op::decompose_post_autograd(
     {
         case OpType::Abs: return;
         case OpType::Constant: return;
-        case OpType::Multiply: return multiply::decompose_post_autograd(old_op_type, dc, inputs);
+        case OpType::Multiply: return multiply::decompose_post_autograd(*this, dc, inputs);
         default: return base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
     }
 }
