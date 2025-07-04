@@ -87,7 +87,7 @@ def test_llama_prefil_on_device_decode_on_cpu(model_path):
     )
 
     # Load Llama model and tokenizer
-    model, tokenizer = load_model(model_path, return_dict=True)
+    model, tokenizer = load_model(model_path)
 
     # Prepare input sentence
     prompt = "Q: What is the largest animal?\nA:"

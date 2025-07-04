@@ -21,6 +21,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
+from test.models.models_utils import TextModelWrapper
 from test.utils import download_model
 
 variants = ["microsoft/phi-4"]
@@ -46,13 +47,22 @@ def test_phi_4_causal_lm_pytorch(variant):
     pytest.xfail(reason="Requires multi-chip support")
 
     # Load tokenizer and model from HuggingFace
-    framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)
+    model = download_model(AutoModelForCausalLM.from_pretrained, variant, use_cache=False)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
+    framework_model = TextModelWrapper(model=model, text_embedding=model.model.embed_tokens)
     framework_model.eval()
 
     # input_prompt
     input_prompt = "Africa is an emerging economy because"
-    inputs = tokenizer(input_prompt, return_tensors="pt")
+
+    inputs = tokenizer(
+        input_prompt,
+        return_tensors="pt",
+        max_length=128,
+        padding="max_length",
+        truncation=True,
+    )
+
     sample_inputs = [inputs["input_ids"], inputs["attention_mask"]]
 
     # Forge compile framework model
@@ -78,10 +88,9 @@ def test_phi_4_token_classification_pytorch(variant):
     )
 
     # Load tokenizer and model from HuggingFace
-    framework_model = download_model(
-        AutoModelForTokenClassification.from_pretrained, variant, return_dict=False, use_cache=False
-    )
+    model = download_model(AutoModelForTokenClassification.from_pretrained, variant, use_cache=False)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
+    framework_model = TextModelWrapper(model=model)
     framework_model.eval()
 
     # input_prompt
@@ -114,20 +123,13 @@ def test_phi_4_sequence_classification_pytorch(variant):
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.pad_token = tokenizer.eos_token
-    framework_model = download_model(
-        AutoModelForSequenceClassification.from_pretrained, variant, return_dict=False, use_cache=False
-    )
+    model = download_model(AutoModelForSequenceClassification.from_pretrained, variant, use_cache=False)
+    framework_model = TextModelWrapper(model=model)
     framework_model.eval()
 
     # input_prompt
     input_prompt = "the movie was great!"
-    inputs = tokenizer(
-        input_prompt,
-        return_tensors="pt",
-        max_length=256,
-        pad_to_max_length=True,
-        truncation=True,
-    )
+    inputs = tokenizer(input_prompt, return_tensors="pt")
     inputs = [inputs["input_ids"]]
 
     # Forge compile framework model

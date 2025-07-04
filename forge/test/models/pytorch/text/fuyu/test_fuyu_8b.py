@@ -61,7 +61,6 @@ def test_fuyu8b(variant):
 
     # Create Forge module from PyTorch model
     fuyu_model = FuyuForCausalLM.from_pretrained(variant, config=config)
-    # fuyu_model = FuyuForCausalLM(config=config)
     framework_model = FuyuModelWrapper(fuyu_model)
     framework_model.eval()
 

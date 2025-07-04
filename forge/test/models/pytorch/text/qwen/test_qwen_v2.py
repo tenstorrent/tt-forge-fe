@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from torch import nn
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
@@ -20,6 +19,8 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
+
+from test.models.models_utils import TextModelWrapper
 
 # Variants for testing
 variants = [
@@ -91,7 +92,9 @@ def test_qwen_clm(variant):
         pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and tokenizer
-    framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")
+    model = AutoModelForCausalLM.from_pretrained(variant, use_cache=False)
+    framework_model = TextModelWrapper(model=model, text_embedding=model.model.embed_tokens)
+    framework_model.eval()
     tokenizer = AutoTokenizer.from_pretrained(variant)
 
     # Prepare input
@@ -100,18 +103,13 @@ def test_qwen_clm(variant):
     text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
 
     # Tokenize and generate
-    model_inputs = tokenizer([text], return_tensors="pt")
-    inputs = [model_inputs["input_ids"]]
+    tokenized_inputs = tokenizer([text], return_tensors="pt", padding=True, truncation=True, max_length=128)
 
-    class Wrapper(nn.Module):
-        def __init__(self, model):
-            super().__init__()
-            self.model = model
+    # Get input_ids and attention_mask
+    input_ids = tokenized_inputs["input_ids"]
+    attention_mask = tokenized_inputs["attention_mask"]
 
-        def forward(self, input_ids):
-            return self.model(input_ids).logits
-
-    framework_model = Wrapper(framework_model)
+    inputs = [input_ids, attention_mask]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -136,7 +134,8 @@ def test_qwen2_token_classification(variant):
     )
 
     # Load model and tokenizer
-    framework_model = Qwen2ForTokenClassification.from_pretrained(variant)
+    model = Qwen2ForTokenClassification.from_pretrained(variant, use_cache=False)
+    framework_model = TextModelWrapper(model=model)
     framework_model.eval()
     tokenizer = AutoTokenizer.from_pretrained(variant)
 
@@ -144,7 +143,7 @@ def test_qwen2_token_classification(variant):
     text = "HuggingFace is a company based in Paris and New York."
     model_inputs = tokenizer(text, add_special_tokens=False, return_tensors="pt")
 
-    inputs = [model_inputs["input_ids"], model_inputs["attention_mask"]]
+    inputs = [model_inputs["input_ids"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
