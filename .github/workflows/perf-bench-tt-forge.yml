@@ -15,6 +15,7 @@ on:
         description: 'Branch of tt-forge to run the benchmarks on (empty=main)'
         required: false
         type: string
+
 permissions:
   packages: write
   checks: write
