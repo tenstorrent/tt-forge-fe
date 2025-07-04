@@ -3,56 +3,56 @@ name: Performance benchmark
 on:
   workflow_dispatch:
     inputs:
-      rebuild:
-        description: 'Rebuild the Forge'
+      mlir_override:
+        description: 'Git SHA of commit in tenstorrent/tt-mlir'
         required: false
-        default: false
+        type: string
+      same_branch:
+        description: 'Run on the branch with same name in tt-forge as the current workflow'
+        required: false
         type: boolean
-
+      tt_forge_branch:
+        description: 'Branch of tt-forge to run the benchmarks on (empty=main)'
+        required: false
+        type: string
 permissions:
   packages: write
   checks: write
+  contents: write
 
 jobs:
   docker-build:
     uses: ./.github/workflows/build-image.yml
     secrets: inherit
-
-  set-inputs:
-    runs-on: ubuntu-latest
-    needs: docker-build
-    outputs:
-      buildtype: ${{ steps.set-inputs.outputs.buildtype }}
-      run-id: ${{ steps.set-inputs.outputs.runid }}
-    steps:
-      - name: Set Inputs
-        id: set-inputs
-        run: |
-          if [ ${{ inputs.rebuild }} == 'true' ]; then
-            echo "buildtype=Release" >> $GITHUB_OUTPUT
-            echo "runid=${{ github.run_id }}" >> $GITHUB_OUTPUT
-          else
-            echo "buildtype=None" >> $GITHUB_OUTPUT
-          fi
-
+    with:
+      mlir_override: ${{ inputs.mlir_override }}
   build:
-    needs:
-      - docker-build
-      - set-inputs
+    needs: docker-build
     uses: ./.github/workflows/build.yml
     secrets: inherit
     with:
+      mlir_override: ${{ inputs.mlir_override }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      build: ${{ needs.set-inputs.outputs.buildtype}}
-
+      build: Release
   run-perf-benchmarks:
-    if: success() || failure()
-    needs:
-      - docker-build
-      - set-inputs
-      - build
-    uses: ./.github/workflows/perf-benchmark-sub.yml
-    secrets: inherit
-    with:
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      run_id: ${{ needs.set-inputs.outputs.run-id }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - id: set-inputs
+        run: |
+          if [ "${{ inputs.same_branch }}" == 'true' ]; then
+            echo "ref=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          else
+            if [ -z "${{ inputs.tt_forge_branch }}" ]; then
+              echo "ref=main" >> $GITHUB_OUTPUT
+            else
+            fi
+              echo "ref=${{ inputs.tt_forge_branch }}" >> $GITHUB_OUTPUT
+            fi
+      - name: Trigger Perf Benchmark workflow
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          repository: tenstorrent/tt-forge
+          event-type: trigger-workflow
+          client-payload: '{"project": "tt-forge-fe", "run_id": "${{ github.run_id }}", "ref": "${{ steps.set-inputs.outputs.ref }}"}'
