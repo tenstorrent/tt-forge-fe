@@ -38,10 +38,12 @@ class FailingReasonsRegister:
         ("embedding", FailingReasons.COMPILATION_FAILED),
         ("embedding", FailingReasons.SPECIAL_VALUES),
         ("exp", FailingReasons.DATA_MISMATCH),
-        ("ge", FailingReasons.DATA_MISMATCH),
+        ("floor_divide", FailingReasons.NOT_IMPLEMENTED),
+        ("fmod", FailingReasons.NOT_IMPLEMENTED),
         ("ge", FailingReasons.DTYPE_MISMATCH),
-        ("gt", FailingReasons.DATA_MISMATCH),
+        ("ge", FailingReasons.SPECIAL_VALUES),
         ("gt", FailingReasons.DTYPE_MISMATCH),
+        ("gt", FailingReasons.SPECIAL_VALUES),
         ("isnan", FailingReasons.DTYPE_MISMATCH),
         ("layer_norm", FailingReasons.DATA_MISMATCH),
         ("layer_norm", FailingReasons.INTERNAL_TVM_ERROR),
@@ -52,8 +54,8 @@ class FailingReasonsRegister:
         ("log1p", FailingReasons.DATA_MISMATCH),
         ("log1p", FailingReasons.DTYPE_MISMATCH),
         ("log1p", FailingReasons.SPECIAL_VALUES),
-        ("lt", FailingReasons.DATA_MISMATCH),
         ("lt", FailingReasons.DTYPE_MISMATCH),
+        ("lt", FailingReasons.SPECIAL_VALUES),
         ("matmul", FailingReasons.DATA_MISMATCH),
         ("matmul", FailingReasons.INTERNAL_TVM_ERROR),
         ("matmul", FailingReasons.TTNN_RUNTIME),
@@ -65,6 +67,7 @@ class FailingReasonsRegister:
         ("minimum", FailingReasons.DATA_MISMATCH),
         ("mul", FailingReasons.DATA_MISMATCH),
         ("ne", FailingReasons.DTYPE_MISMATCH),
+        ("ne", FailingReasons.SPECIAL_VALUES),
         ("neg", FailingReasons.DTYPE_MISMATCH),
         ("pow", FailingReasons.DATA_MISMATCH),
         ("pow", FailingReasons.SPECIAL_VALUES),
@@ -93,4 +96,14 @@ class FailingReasonsRegister:
 
     # List of skip reasons for each operator
     # Format: (operator, skip_reason, failing_reason)
-    skip = []
+    skip = [
+        ("matmul", FailingReasons.HIGH_MEMORY, None),
+        ("conv2d", FailingReasons.FATAL_ERROR, None),
+        ("conv_transpose_2d", FailingReasons.FATAL_ERROR, FailingReasons.ASSERT_STRIDE),
+        ("conv_transpose_2d", FailingReasons.FATAL_ERROR, FailingReasons.UNSUPPORTED_DATA_FORMAT),
+        ("embedding", FailingReasons.FATAL_ERROR, None),
+        ("layer_norm", FailingReasons.FATAL_ERROR, None),
+        ("linear", FailingReasons.FATAL_ERROR, None),
+        ("pow", FailingReasons.FATAL_ERROR, None),
+        ("square", FailingReasons.FATAL_ERROR, None),
+    ]
