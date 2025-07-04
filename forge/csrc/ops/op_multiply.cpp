@@ -135,7 +135,7 @@ tt::graphlib::NodeContext backward(
 
         int dim = static_cast<int>(i);
         Attrs named_attrs = {{"keep_dim", true}, {"dim_arg", dim}};
-        op_grad = ac.autograd->create_op(ac, graphlib::OpType("reduce_sum", {dim, true}, {}, named_attrs), {op_grad});
+        op_grad = ac.autograd->create_op(ac, graphlib::OpType("reduce_sum", {dim, true}, named_attrs), {op_grad});
     }
 
     return op_grad;
