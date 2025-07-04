@@ -464,6 +464,7 @@ void Op::decompose_initial(
     {
         case OpType::Abs: return;
         case OpType::Constant: return;
+        case OpType::Multiply: return;
         default: return base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
     }
 }
@@ -477,6 +478,7 @@ void Op::decompose_post_optimize(
     {
         case OpType::Abs: return;
         case OpType::Constant: return;
+        case OpType::Multiply: return;
         default: return base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
     }
 }
@@ -490,7 +492,7 @@ void Op::decompose_post_autograd(
     {
         case OpType::Abs: return;
         case OpType::Constant: return;
-        case OpType::Multiply: return;
+        case OpType::Multiply: return multiply::decompose_post_autograd(old_op_type, dc, inputs);
         default: return base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
     }
 }
