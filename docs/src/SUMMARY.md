@@ -12,6 +12,9 @@
     - [Pytest](./pytest.md)
 - [Tools](./tools.md)
 
+# Operator Reference
+- [Supported Operators](./ops/supported_ops.md)
+
 # Dev Notes
 - [Running standalone FFE generated TTIRs](./dev_notes/standalone_ttir_run.md)
 - [Verification in tests](./dev_notes/verification.md)
