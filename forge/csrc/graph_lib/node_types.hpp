@@ -22,6 +22,9 @@ namespace tt
 {
 class FusedOp;
 
+enum class DecomposeEpoch : uint8_t;
+class DecomposingContext;
+
 namespace graphlib
 {
 
@@ -492,8 +495,8 @@ struct OpType
         const tt::graphlib::NodeContext &output,
         const tt::graphlib::NodeContext &gradient) const;
 
-    void decompose(
-        const char *dispatch, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
+    template <DecomposeEpoch epoch>
+    void decompose(DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
 
     long initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const;
 

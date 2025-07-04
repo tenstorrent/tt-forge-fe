@@ -32,6 +32,7 @@ struct autograd_context;
 }
 
 class DecomposingContext;
+enum class DecomposeEpoch : uint8_t;
 
 namespace ops
 {
@@ -229,9 +230,24 @@ class Op
      * Optional implementations. *
      * --------------------------*/
 
+    template <DecomposeEpoch epoch>
     void decompose(
         const graphlib::OpType &old_op_type,
-        const char *dispatch,
+        DecomposingContext &dc,
+        const std::vector<tt::graphlib::NodeContext> &inputs) const;
+
+    void decompose_initial(
+        const graphlib::OpType &old_op_type,
+        DecomposingContext &dc,
+        const std::vector<tt::graphlib::NodeContext> &inputs) const;
+
+    void decompose_post_optimize(
+        const graphlib::OpType &old_op_type,
+        DecomposingContext &dc,
+        const std::vector<tt::graphlib::NodeContext> &inputs) const;
+
+    void decompose_post_autograd(
+        const graphlib::OpType &old_op_type,
         DecomposingContext &dc,
         const std::vector<tt::graphlib::NodeContext> &inputs) const;
 
