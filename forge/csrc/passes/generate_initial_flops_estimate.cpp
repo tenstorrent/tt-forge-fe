@@ -29,14 +29,15 @@ void generate_initial_flops_estimate(graphlib::Graph *graph)
 
         long flops = op->op_type().initial_flops_estimate(operand_tuples);
 
-        if (macs_per_op.find(op->op_type().op) == macs_per_op.end())
+        if (macs_per_op.find(op->op_type().name()) == macs_per_op.end())
         {
-            macs_per_op[op->op_type().op] = std::make_pair(flops, 1);
+            macs_per_op[op->op_type().name()] = std::make_pair(flops, 1);
         }
         else
         {
-            macs_per_op[op->op_type().op] = std::make_pair(
-                std::get<0>(macs_per_op[op->op_type().op]) + flops, std::get<1>(macs_per_op[op->op_type().op]) + 1);
+            macs_per_op[op->op_type().name()] = std::make_pair(
+                std::get<0>(macs_per_op[op->op_type().name()]) + flops,
+                std::get<1>(macs_per_op[op->op_type().name()]) + 1);
         }
         total_flops += flops;
         total_ops += 1;

@@ -7,6 +7,7 @@
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "passes/commute_utils.hpp"
 #include "passes/passes_utils.hpp"
 #include "utils/logger.hpp"
@@ -134,10 +135,10 @@ static void commute_eltwise_ops(graphlib::Graph *graph, std::vector<graphlib::No
 
                 for (graphlib::OpType &op_type : current_edge_tms)
                 {
-                    if (op_type.op == "broadcast")
+                    if (op_type.type() == ops::OpType::Broadcast)
                     {
-                        int bcast_dim = std::get<int>(op_type.attr[0]);
-                        int volume = std::get<int>(op_type.attr[1]);
+                        int bcast_dim = std::get<int>(op_type.attrs_[0]);
+                        int volume = std::get<int>(op_type.attrs_[1]);
                         if (bcast_dim < 0)
                             bcast_dim += commute_shape.size();
 

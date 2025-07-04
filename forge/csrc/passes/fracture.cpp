@@ -6,6 +6,7 @@
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/query.hpp"
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "passes/nd_slice.hpp"
 #include "utils/assert.hpp"
 #include "utils/logger.hpp"
@@ -230,7 +231,7 @@ static std::unique_ptr<graphlib::PyOpNode> create_gather(
         (dim == NDSlice::k_dim) ? graphlib::OpType("add", {}, {}) : graphlib::OpType("concatenate", {dim}, {});
 
     graphlib::Shape shape = operand_shape;
-    if (gather_op.op == "concatenate")
+    if (gather_op.type() == ops::OpType::Concatenate)
     {
         shape[dim] *= factor;
     }

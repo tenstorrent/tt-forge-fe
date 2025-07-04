@@ -5,6 +5,7 @@
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "passes/commute_utils.hpp"
 #include "passes/passes_utils.hpp"
 #include "passes/print_graph.hpp"
@@ -31,12 +32,12 @@ static bool hoist_bcast_through_path(graphlib::Graph *graph, std::vector<graphli
     int bcast_volume = -1;
     for (auto &op_type : graph->get_edge_attributes(last_user_edge)->get_tms())
     {
-        if (op_type.op == "broadcast")
+        if (op_type.type() == ops::OpType::Broadcast)
         {
-            int dim = std::get<int>(op_type.attr[0]);
+            int dim = std::get<int>(op_type.attrs_[0]);
             if (dim == bcast_dim)
             {
-                bcast_volume = std::get<int>(op_type.attr[1]);
+                bcast_volume = std::get<int>(op_type.attrs_[1]);
 
                 // Just incase, remove both
                 graph->get_edge_attributes(last_user_edge)->remove_broadcast_dim(bcast_dim);
@@ -113,11 +114,11 @@ static bool is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim(
 
             for (auto &op_type : graph->get_edge_attributes(next_next_edge)->get_tms())
             {
-                if (op_type.op == "broadcast")
+                if (op_type.type() == ops::OpType::Broadcast)
                 {
-                    int bcast_dim = std::get<int>(op_type.attr[0]);
+                    int bcast_dim = std::get<int>(op_type.attrs_[0]);
                     contains_y_bcast |=
-                        bcast_dim == reduce_dim and std::get<int>(op_type.attr[1]) == (int)clone_shape[reduce_dim];
+                        bcast_dim == reduce_dim and std::get<int>(op_type.attrs_[1]) == (int)clone_shape[reduce_dim];
                 }
             }
             if (contains_y_bcast)
@@ -233,10 +234,10 @@ static bool attempt_replace_downward_pattern(
 
             for (auto &op_type : tms)
             {
-                if (op_type.op == "broadcast")
+                if (op_type.type() == ops::OpType::Broadcast)
                 {
-                    int bcast_dim = std::get<int>(op_type.attr[0]);
-                    int volume = std::get<int>(op_type.attr[1]);
+                    int bcast_dim = std::get<int>(op_type.attrs_[0]);
+                    int volume = std::get<int>(op_type.attrs_[1]);
                     if (bcast_dim == reduce_dim)
                     {
                         continue;

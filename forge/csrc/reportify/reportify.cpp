@@ -178,7 +178,7 @@ json node_to_json(const graphlib::Node* node, const graphlib::Graph* graph)
         const graphlib::PyOpNode* opnode = node->as<graphlib::PyOpNode>();
         ret_json["ir"] = "forge";
         ret_json["class"] = opnode->op_type().as_string();
-        ret_json["type"] = opnode->op_type().op;
+        ret_json["type"] = opnode->op_type().name();
         to_json(ret_json, opnode->op_type());
         ret_json["gradient_op"] = opnode->is_gradient_op();
     }

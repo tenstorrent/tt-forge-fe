@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #include <stdlib.h>
 
+#include "ops/op.hpp"
 #include "passes/link_past_cache_ios.hpp"
 #include "test/common.hpp"
 
@@ -93,7 +94,8 @@ TEST_F(WhisperPastCacheBase, whisper_past_cache_base)
     auto cache_users = graph->user_edges(cache);
     EXPECT_EQ(cache_users.size(), 2);
     for (auto user : cache_users)
-        EXPECT_EQ(graph->node_by_id(user.consumer_node_id)->as<graphlib::OpNode>()->op_type().op, "hslice");
+        EXPECT_EQ(
+            graph->node_by_id(user.consumer_node_id)->as<graphlib::OpNode>()->op_type().type(), ops::OpType::Hslice);
 }
 
 // test past-cache pass of Whisper models (V2)
@@ -182,7 +184,8 @@ TEST_F(WhisperPastCacheSubGraph, whisper_past_cache_subgraph)
     auto cache = graph->node_by_id(graph->user_edges(output_nodes[0])[0].consumer_node_id);
     auto cache_users = graph->user_edges(cache);
     EXPECT_EQ(cache_users.size(), 1);
-    EXPECT_EQ(graph->node_by_id(cache_users[0].consumer_node_id)->as<graphlib::OpNode>()->op_type().op, "nop");
+    EXPECT_EQ(
+        graph->node_by_id(cache_users[0].consumer_node_id)->as<graphlib::OpNode>()->op_type().type(), ops::OpType::Nop);
 }
 
 // test past-cache with rotate of T5 models
@@ -284,18 +287,22 @@ TEST_F(T5PastCacheRotate, t5_past_cache_rotate)
     auto cache = graph->node_by_id(graph->user_edges(output_nodes[0])[0].consumer_node_id);
     auto cache_users = graph->user_edges(cache);
     EXPECT_EQ(cache_users.size(), 4);
-    EXPECT_EQ(graph->node_by_id(cache_users[0].consumer_node_id)->as<graphlib::OpNode>()->op_type().op, "hslice");
-    EXPECT_EQ(graph->node_by_id(cache_users[1].consumer_node_id)->as<graphlib::OpNode>()->op_type().op, "hslice");
+    EXPECT_EQ(
+        graph->node_by_id(cache_users[0].consumer_node_id)->as<graphlib::OpNode>()->op_type().type(),
+        ops::OpType::Hslice);
+    EXPECT_EQ(
+        graph->node_by_id(cache_users[1].consumer_node_id)->as<graphlib::OpNode>()->op_type().type(),
+        ops::OpType::Hslice);
 
     // check the node connection in rotated parts
     auto left_sel = graph->node_by_id(cache_users[2].consumer_node_id);
     auto right_sel = graph->node_by_id(cache_users[3].consumer_node_id);
-    EXPECT_EQ(left_sel->as<graphlib::OpNode>()->op_type().op, "index");
-    EXPECT_EQ(right_sel->as<graphlib::OpNode>()->op_type().op, "index");
+    EXPECT_EQ(left_sel->as<graphlib::OpNode>()->op_type().type(), ops::OpType::Index);
+    EXPECT_EQ(right_sel->as<graphlib::OpNode>()->op_type().type(), ops::OpType::Index);
     EXPECT_EQ(single_user_operand(graph, left_sel), true);
     EXPECT_EQ(single_user_operand(graph, right_sel), true);
     auto rotate_concat_op = graph->data_users(left_sel)[0];
-    EXPECT_EQ(rotate_concat_op->as<graphlib::OpNode>()->op_type().op, "concatenate");
+    EXPECT_EQ(rotate_concat_op->as<graphlib::OpNode>()->op_type().type(), ops::OpType::Concatenate);
     EXPECT_EQ(single_user_operand(graph, graph->data_users(rotate_concat_op)[0]), true);
     EXPECT_EQ(graph->data_users(graph->data_users(rotate_concat_op)[0])[0], output_nodes[2]);
 }
@@ -408,8 +415,12 @@ TEST_F(Falcon40bPastCache, falcon40b_past_cache)
     auto cache = graph->node_by_id(graph->user_edges(output_nodes[0])[0].consumer_node_id);
     auto cache_users = graph->user_edges(cache);
     EXPECT_EQ(cache_users.size(), 2);
-    EXPECT_EQ(graph->node_by_id(cache_users[0].consumer_node_id)->as<graphlib::OpNode>()->op_type().op, "multiply");
-    EXPECT_EQ(graph->node_by_id(cache_users[1].consumer_node_id)->as<graphlib::OpNode>()->op_type().op, "reshape");
+    EXPECT_EQ(
+        graph->node_by_id(cache_users[0].consumer_node_id)->as<graphlib::OpNode>()->op_type().type(),
+        ops::OpType::Multiply);
+    EXPECT_EQ(
+        graph->node_by_id(cache_users[1].consumer_node_id)->as<graphlib::OpNode>()->op_type().type(),
+        ops::OpType::Reshape);
 }
 
 // test past-cache pass of Fuyu-8b
@@ -498,7 +509,9 @@ TEST_F(Fuyu8bPastCache, fuyu8b_past_cache)
     auto cache = graph->node_by_id(graph->user_edges(output_nodes[0])[0].consumer_node_id);
     auto cache_users = graph->user_edges(cache);
     EXPECT_EQ(cache_users.size(), 1);
-    EXPECT_EQ(graph->node_by_id(cache_users[0].consumer_node_id)->as<graphlib::OpNode>()->op_type().op, "hslice");
+    EXPECT_EQ(
+        graph->node_by_id(cache_users[0].consumer_node_id)->as<graphlib::OpNode>()->op_type().type(),
+        ops::OpType::Hslice);
 }
 
 }  // namespace tt::test

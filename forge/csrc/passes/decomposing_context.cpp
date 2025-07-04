@@ -23,7 +23,7 @@ NodeContext DecomposingContext::op(
     bool optimize_hoist,
     DataFormat output_df)
 {
-    std::string suffix = ".dc." + op_type.op + "." + std::to_string(op_index);
+    std::string suffix = ".dc." + op_type.name() + "." + std::to_string(op_index);
 
     graphlib::PyOpNode *new_node = this->graph->add_node(
         graphlib::create_node<graphlib::PyOpNode>(this->node_->name() + suffix, op_type), subgraph_idx);

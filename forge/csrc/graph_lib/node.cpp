@@ -7,6 +7,7 @@
 #include <memory>
 
 #include "autograd/binding.hpp"
+#include "ops/op.hpp"
 #include "utils/assert.hpp"
 
 namespace tt
@@ -55,7 +56,7 @@ Shape Node::shape_of_operand(const Graph* graph, const Node* operand, bool ignor
         std::vector<OpType> tms = graph->get_edge_attributes(e)->get_tms();
         for (OpType tm : tms)
         {
-            if (ignore_broadcasts and tm.op == "broadcast")
+            if (ignore_broadcasts and tm.type() == ops::OpType::Broadcast)
                 continue;
             std::vector<Shape> shapes = {operand_shape};
             std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(tm, shapes);
