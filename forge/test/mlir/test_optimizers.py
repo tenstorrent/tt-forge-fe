@@ -172,3 +172,85 @@ def test_adam(shape, betas, weight_decay):
         golden_model=golden_model,
         golden_optimizer=golden_optimizer,
     )
+
+
+@pytest.mark.parametrize(
+    "shape",
+    [
+        # input, hidden, output
+        (784, 784, 10),
+        (33, 27, 127),
+        (128, 10, 20),
+    ],
+)
+@pytest.mark.parametrize(
+    "betas",
+    [
+        (0.9, 0.999),
+        (0.8, 0.99),
+    ],
+)
+@pytest.mark.parametrize(
+    "weight_decay",
+    [
+        0.0,
+        0.1,
+    ],
+)
+@pytest.mark.parametrize(
+    "decoupled_weight_decay",
+    [
+        False,
+        True,
+    ],
+)
+@pytest.mark.push
+def test_radam(shape, betas, weight_decay, decoupled_weight_decay):
+    torch.manual_seed(0)
+    num_epochs = 30
+    # Large learning rate to propagate possible errors faster
+    learning_rate = 1
+    batch_size = 10
+    eps = 1e-8
+
+    framework_model = MNISTLinear(input_size=shape[0], hidden_size=shape[1], output_size=shape[2], bias=False)
+    golden_model = MNISTLinear(input_size=shape[0], hidden_size=shape[1], output_size=shape[2], bias=False)
+
+    copy_params(framework_model, golden_model)
+
+    tt_optimizer = forge.optimizers.RAdam(
+        learning_rate=learning_rate,
+        epsilon=eps,
+        beta1=betas[0],
+        beta2=betas[1],
+        weight_decay=weight_decay,
+        decoupled_weight_decay=decoupled_weight_decay,
+    )
+    golden_optimizer = torch.optim.RAdam(
+        golden_model.parameters(),
+        lr=learning_rate,
+        eps=eps,
+        betas=betas,
+        weight_decay=weight_decay,
+        decoupled_weight_decay=decoupled_weight_decay,
+    )
+
+    tt_model = forge.compile(
+        framework_model,
+        sample_inputs=[torch.randn(batch_size, shape[0])],
+        optimizer=tt_optimizer,
+        training=True,
+    )
+
+    loss_fn = nn.MSELoss()
+
+    train_and_compare_optimizers(
+        num_epochs=num_epochs,
+        batch_size=batch_size,
+        shape=shape,
+        loss_fn=loss_fn,
+        tt_model=tt_model,
+        tt_optimizer=tt_optimizer,
+        golden_model=golden_model,
+        golden_optimizer=golden_optimizer,
+    )
