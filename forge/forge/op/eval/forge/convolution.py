@@ -153,8 +153,8 @@ class Conv2d(PyOp):
             )
 
             if not is_channel_last:
-                activations = dc.op_with_named_attrs("transpose", [activations], {"dim0": -3, "dim1": -2})
-                activations = dc.op_with_named_attrs("transpose", [activations], {"dim0": -2, "dim1": -1})
+                result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
+                result = dc.op_with_named_attrs("transpose", [result], {"dim0": -3, "dim1": -2})
 
             dc.fuse(result)
 
