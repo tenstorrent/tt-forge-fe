@@ -37,11 +37,6 @@ def eval(type, attr, ops):
     t_ops = to_torch_operands(*ops)
     dtype = ops[0].dtype
 
-    if type == "transpose":
-        assert len(attr) == 3, "Transpose should have 3 attributes"
-        dim0, dim1, orig_size = attr
-        return torch.transpose(t_ops[0], dim0, dim1)
-
     if type == "reshape":
         return t_ops[0].reshape(attr)
 
@@ -348,18 +343,6 @@ def shape(type, attr, ops):
         type == "adv_index" and len(ops) == 2
     ), f"Tensor manipulation ops should have one input, has {len(ops)} input instead"
 
-    if type == "transpose":
-        # Transpose has 3 attrs, [axis_0, axis_1, output Z-dim size]
-        assert len(attr) == 3, f"{len(attr)}"
-        dim0 = attr[0]
-        dim1 = attr[1]
-        shape = list(ops[0])
-        a = shape[dim0]
-        b = shape[dim1]
-        shape[dim0] = b
-        shape[dim1] = a
-        return tuple(shape), []
-
     if type == "reshape":
         return attr, []
 
@@ -641,21 +624,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     assert operand == 0, "Invalid operand index"
 
-    if type == "transpose":
-        assert len(attr) == 3
-
-        if (attr[0] == -3 and attr[1] == -4) or (attr[0] == -4 and attr[1] == -3):
-            attr[-1] = -1
-        elif attr[0] == -3 or attr[0] == -4:
-            attr[-1] = grad.shape[attr[1]]
-        elif attr[1] == -3 or attr[1] == -4:
-            attr[-1] = grad.shape[attr[0]]
-        else:
-            attr[-1] = -1
-
-        return ac.op("transpose", (grad,), attr)
-
-    elif type == "reshape":
+    if type == "reshape":
         shape = inputs[0].shape
         return ac.op(type, (grad,), attributes=(shape), named_attrs={"shape": shape})
 
@@ -918,16 +887,6 @@ def decompose(type, attr, dc, inputs):
     if type == "broadcast":
         if attr[1] == 1:
             dc.fuse(dc.op(Nop.create(), [inputs[0]]))
-
-    if type == "transpose":
-        # canonicalize dims to use negative indexing
-        dim0, dim1, orig_size = attr
-        if dim0 >= 0 or dim1 >= 0:
-            if dim0 >= 0:
-                dim0 -= inputs[0].shape.len()
-            if dim1 >= 0:
-                dim1 -= inputs[0].shape.len()
-            dc.fuse(dc.op_with_named_attrs("transpose", inputs, {"dim0": dim0, "dim1": dim1}))
 
     if type == "pixel_shuffle":
         result = inputs[0]  # Shape: (N, C*r*r, H, W)
@@ -1340,14 +1299,7 @@ def decompose_post_optimize(type, attr, dc, inputs):
                 {"dim0": -2, "dim1": -1},
             )
             result = picker_matmul(True, dc, spm, result)
-            result = dc.op(
-                "transpose",
-                [result],
-                {"dim0": -2, "dim1": -1},
-                [
-                    result,
-                ],
-            )
+            result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
             result = dc.op(
                 "hslice",
                 [
@@ -1434,23 +1386,9 @@ def decompose_post_optimize(type, attr, dc, inputs):
                 dtype=torch.float32,
             )
             spm = torch.stack([spm] * result.shape[-3], -3).unsqueeze(0)
-            result = dc.op(
-                "transpose",
-                [result],
-                {"dim0": -2, "dim1": -1},
-                [
-                    result,
-                ],
-            )
+            result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
             result = picker_matmul(True, dc, spm, result)
-            result = dc.op(
-                "transpose",
-                [result],
-                {"dim0": -2, "dim1": -1},
-                [
-                    result,
-                ],
-            )
+            result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
             if input_shape[-2] % TILE_DIM != 0:
                 result = dc.op(
                     "narrow",
