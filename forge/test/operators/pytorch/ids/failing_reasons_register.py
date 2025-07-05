@@ -38,6 +38,8 @@ class FailingReasonsRegister:
         ("embedding", FailingReasons.COMPILATION_FAILED),
         ("embedding", FailingReasons.SPECIAL_VALUES),
         ("exp", FailingReasons.DATA_MISMATCH),
+        ("floor_divide", FailingReasons.NOT_IMPLEMENTED),
+        ("fmod", FailingReasons.NOT_IMPLEMENTED),
         ("ge", FailingReasons.DATA_MISMATCH),
         ("ge", FailingReasons.DTYPE_MISMATCH),
         ("gt", FailingReasons.DATA_MISMATCH),
