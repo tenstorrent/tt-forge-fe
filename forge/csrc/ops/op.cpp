@@ -504,11 +504,7 @@ long Op::initial_flops_estimate(
     {
         case OpType::Abs: return abs::initial_flops_estimate(*this, inputs);
         case OpType::Constant: return 0;
-<<<<<<< Updated upstream
-=======
         case OpType::Matmul: return matmul::initial_flops_estimate(*this, inputs);
-        case OpType::Transpose: return 0;
->>>>>>> Stashed changes
         default: return base_initial_flops_estimate(old_op_type, inputs);
     }
 }
@@ -519,11 +515,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return false;
         case OpType::Constant: return false;
-<<<<<<< Updated upstream
-=======
         case OpType::Matmul: return false;
-        case OpType::Transpose: return true;
->>>>>>> Stashed changes
         default: return base_is_tm(old_op_type);
     }
 }
@@ -534,11 +526,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return true;
         case OpType::Constant: return false;
-<<<<<<< Updated upstream
-=======
         case OpType::Matmul: return false;
-        case OpType::Transpose: return false;
->>>>>>> Stashed changes
         default: return base_is_eltwise(old_op_type);
     }
 }
@@ -549,11 +537,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return true;
         case OpType::Constant: return false;
-<<<<<<< Updated upstream
-=======
         case OpType::Matmul: return false;
-        case OpType::Transpose: return false;
->>>>>>> Stashed changes
         default: return base_is_eltwise_unary(old_op_type);
     }
 }
@@ -564,11 +548,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return false;
         case OpType::Constant: return false;
-<<<<<<< Updated upstream
-=======
         case OpType::Matmul: return false;
-        case OpType::Transpose: return false;
->>>>>>> Stashed changes
         default: return base_is_eltwise_binary(old_op_type);
     }
 }
@@ -578,11 +558,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return false;
         case OpType::Constant: return false;
-<<<<<<< Updated upstream
-=======
         case OpType::Matmul: return false;
-        case OpType::Transpose: return false;
->>>>>>> Stashed changes
         default: return base_is_eltwise_nary(old_op_type);
     }
 }

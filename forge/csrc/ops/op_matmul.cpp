@@ -20,39 +20,14 @@ namespace matmul
 at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_ASSERT(op.type() == OpType::Matmul, "Wrong op type.");
-    TT_ASSERT(tensors.size() >= 2 && tensors.size() <= 3, "Matmul should have 2 or 3 input tensors.");
-
-    bool accumulate = op.has_attr("accumulate") ? op.attr_as<bool>("accumulate") : false;
+    TT_ASSERT(tensors.size() == 2, "Matmul should have 2 input tensors.");
 
     // Get the tensors and cast them for CPU evaluation
     auto t0 = tensors[0];
     auto t1 = tensors[1];
 
-    // Handle different data types for CPU evaluation
-    at::ScalarType original_type = t0.scalar_type();
-    if (t0.scalar_type() == at::ScalarType::BFloat16)
-    {
-        t0 = t0.to(at::ScalarType::Float);
-        t1 = t1.to(at::ScalarType::Float);
-    }
-
     // Perform matrix multiplication
     at::Tensor result = torch::matmul(t0, t1);
-
-    // Convert back to original type
-    result = result.to(original_type);
-
-    // Add bias if present
-    if (tensors.size() > 2)
-    {
-        result = result + tensors[2];
-    }
-
-    // Apply accumulation if requested
-    if (accumulate && result.dim() >= 3)
-    {
-        result = torch::sum(result, -3, true);
-    }
 
     return result;
 }
@@ -61,31 +36,30 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_ASSERT(op.type() == OpType::Matmul, "Wrong op type.");
-    TT_ASSERT(in_shapes.size() >= 2 && in_shapes.size() <= 4, "Matmul should have 2 to 4 input shapes.");
-
-    bool accumulate = op.has_attr("accumulate") ? op.attr_as<bool>("accumulate") : false;
+    TT_ASSERT(in_shapes.size() == 2, "Matmul should have 2 input tensors.");
 
     std::vector<std::uint32_t> shape0 = in_shapes[0];
     std::vector<std::uint32_t> shape1 = in_shapes[1];
 
-    int ops0_padding = 0;
+    int in0_padding = 0;
     while (shape0.size() < shape1.size())
     {
         shape0.insert(shape0.begin(), 1);
-        ops0_padding++;
+        in0_padding++;
     }
 
-    int ops1_padding = 0;
+    int in1_padding = 0;
     while (shape1.size() < shape0.size())
     {
         shape1.insert(shape1.begin(), 1);
-        ops1_padding++;
+        in1_padding++;
     }
 
     std::vector<graphlib::DimBroadcast> broadcast;
     std::vector<std::uint32_t> output_shape;
 
     // Handle higher dimensions (beyond 3rd)
+    // NOTE: remove this limit, and also consolidate the checks with the torch matmul impl
     for (int dim = 4; dim <= static_cast<int>(shape0.size()); dim++)
     {
         int idx = shape0.size() - dim;
@@ -128,11 +102,11 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     {
         if (shape0[last_idx] == 1)
         {
-            broadcast.push_back(std::make_tuple(0, last_idx - ops0_padding, shape1[second_last_idx]));
+            broadcast.push_back(std::make_tuple(0, last_idx - in0_padding, shape1[second_last_idx]));
         }
         else if (shape1[second_last_idx] == 1)
         {
-            broadcast.push_back(std::make_tuple(1, second_last_idx - ops1_padding, shape0[last_idx]));
+            broadcast.push_back(std::make_tuple(1, second_last_idx - in1_padding, shape0[last_idx]));
         }
         else
         {
@@ -143,12 +117,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     // Output dimensions: [batch_dims...], shape0[-2], shape1[-1]
     output_shape.push_back(shape0[second_last_idx]);
     output_shape.push_back(shape1[last_idx]);
-
-    if (accumulate)
-    {
-        TT_ASSERT(output_shape.size() >= 3, "Accumulate requires at least 3 dimensions");
-        output_shape[output_shape.size() - 3] = 1;
-    }
 
     return std::make_tuple(graphlib::Shape::create(output_shape), broadcast);
 }
