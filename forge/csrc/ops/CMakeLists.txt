@@ -3,6 +3,7 @@ add_library(ops
     op.cpp
     op_abs.cpp
     op_constant.cpp
+    op_matmul.cpp
     python_bindings.cpp)
 
 target_link_libraries(ops PUBLIC coverage_config)

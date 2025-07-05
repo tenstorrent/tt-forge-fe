@@ -16,6 +16,9 @@ def Matmul(
     """
     Matrix multiplication transformation on input activations, with optional bias. y = ab + bias
 
+    NOTE: Core implementation moved to C++ (forge/csrc/ops/op_matmul.cpp)
+    This Python function serves as a high-level interface.
+
     Parameters
     ----------
     name: str
@@ -27,7 +30,7 @@ def Matmul(
     operandB: Tensor
         Input operand B
 
-    bias: Tenor, optional
+    bias: Tensor, optional
         Optional bias tensor
     """
 
