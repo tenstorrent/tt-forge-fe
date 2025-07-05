@@ -24,7 +24,6 @@ from forge.verify.verify import verify
 from test.utils import download_model
 
 
-@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["xlm-roberta-base"])
 def test_roberta_masked_lm(variant):
