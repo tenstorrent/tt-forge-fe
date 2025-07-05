@@ -178,9 +178,9 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
             // Update index attributes to slice the original tensor directly.
             // NOTE: since the old op infrastructure is used we need to set both the vector of attributes and the named
             // attributes. Once we transition to the new op infrastructure, only named attributes will be used.
-            int new_dim = (int)original_dim;
-            int new_start = (int)(start * new_dim_size);
-            int new_stop = (int)(start * new_dim_size + new_dim_size);
+            auto new_dim = static_cast<int>(original_dim);
+            auto new_start = static_cast<int>(start * new_dim_size);
+            auto new_stop = static_cast<int>(start * new_dim_size + new_dim_size);
             int new_stride = 1;
 
             std::vector<graphlib::OpType::Attr> new_attrs = {new_dim, new_start, new_stop, new_stride};
