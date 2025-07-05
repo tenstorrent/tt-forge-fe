@@ -30,6 +30,7 @@ at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
     // Handle negative indices if needed (torch::transpose should handle this automatically)
     return torch::transpose(tensors[0], dim0, dim1);
 }
+
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
@@ -59,6 +60,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
 
     return std::make_tuple(graphlib::Shape::create(shape), std::vector<graphlib::DimBroadcast>{});
 }
+
 tt::graphlib::NodeContext backward(
     const Op &op,
     tt::autograd::autograd_context &ac,
@@ -76,8 +78,8 @@ tt::graphlib::NodeContext backward(
 
     // Transpose is its own inverse - apply the same transpose to the gradient
     graphlib::OpType transpose_op("transpose");
-    transpose_op.named_attrs["dim0"] = dim0;
-    transpose_op.named_attrs["dim1"] = dim1;
+    transpose_op.set_attr("dim0", dim0);
+    transpose_op.set_attr("dim1", dim1);
 
     return ac.autograd->create_op(ac, transpose_op, {gradient});
 }

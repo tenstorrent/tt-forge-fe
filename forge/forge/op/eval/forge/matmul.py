@@ -195,7 +195,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     if operand == 0:
         shape_len = len(ac.get_shape(in1))
-        in1t = ac.op_with_named_attrs("tranpose", [in1], {"dim0": -2, "dim1": -1})
+        in1t = ac.op_with_named_attrs("transpose", [in1], {"dim0": -2, "dim1": -1})
         return ac.op("matmul", (grad, in1t))
 
     if operand == 1:
