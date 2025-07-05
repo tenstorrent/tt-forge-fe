@@ -928,13 +928,19 @@ void update_select_attr(
     select_op->set_op_attr("select_dim", select_dim);
 
     if (begin.has_value())
+    {
         select_op->set_op_attr("begin", begin.value());
+    }
 
     if (length.has_value())
-        select_op->set_op_attr("lenght", length.value());
+    {
+        select_op->set_op_attr("length", length.value());
+    }
 
     if (stride.has_value())
+    {
         select_op->set_op_attr("stride", stride.value());
+    }
 
     log_trace(
         LogGraphCompiler,
@@ -942,7 +948,7 @@ void update_select_attr(
         select_op->name(),
         select_dim,
         begin.value_or(std::get<int>(select_op->op_attr("begin"))),
-        length.value_or(std::get<int>(select_op->op_attr("lenght"))),
+        length.value_or(std::get<int>(select_op->op_attr("length"))),
         stride.value_or(std::get<int>(select_op->op_attr("stride"))));
 }
 
