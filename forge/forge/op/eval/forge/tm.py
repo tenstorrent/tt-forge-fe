@@ -1340,14 +1340,6 @@ def decompose_post_optimize(type, attr, dc, inputs):
                 {"dim0": -2, "dim1": -1},
             )
             result = picker_matmul(True, dc, spm, result)
-            result = dc.op_with_named_attrs(
-                "transpose",
-                [
-                    result,
-                ],
-                {"dim0": -2, "dim1": -1},
-            )
-            result = picker_matmul(True, dc, spm, result)
             result = dc.op(
                 "transpose",
                 [result],
