@@ -1,5 +1,0 @@
-# xfail_ne_SPECIAL_VALUES ids
-
-ne-FROM_HOST-None-(1, 2, 3, 4)-torch.int8-HiFi4
-ne-FROM_HOST-None-(1, 2, 3, 4)-torch.int32-HiFi4
-ne-FROM_HOST-None-(1, 2, 3, 4)-torch.int64-HiFi4
