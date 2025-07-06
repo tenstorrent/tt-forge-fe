@@ -41,6 +41,33 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     std::vector<std::uint32_t> shape0 = in_shapes[0];
     std::vector<std::uint32_t> shape1 = in_shapes[1];
 
+    // Handle special cases for 1D tensors following torch.matmul rules
+    if (shape0.size() == 1 && shape1.size() == 1)
+    {
+        // Both 1D: dot product -> scalar (empty shape)
+        return std::make_tuple(graphlib::Shape::create({}), std::vector<graphlib::DimBroadcast>());
+    }
+
+    bool shape0_was_1d = shape0.size() == 1;
+    bool shape1_was_1d = shape1.size() == 1;
+
+    // Prepend 1 to 1D tensors to enable matrix multiplication
+    if (shape0_was_1d)
+    {
+        shape0.insert(shape0.begin(), 1);
+    }
+    if (shape1_was_1d)
+    {
+        shape1.push_back(1);
+    }
+
+    // Now both tensors are at least 2D
+    TT_ASSERT(shape0.size() >= 2 && shape1.size() >= 2, "Tensors should be at least 2D after preprocessing");
+
+    // Check matrix multiplication compatibility
+    TT_ASSERT(shape0.back() == shape1[shape1.size() - 2], "Matrix dimensions must be compatible for multiplication");
+
+    // Pad shapes to same length for batch dimension broadcasting
     int in0_padding = 0;
     while (shape0.size() < shape1.size())
     {
@@ -58,65 +85,51 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     std::vector<graphlib::DimBroadcast> broadcast;
     std::vector<std::uint32_t> output_shape;
 
-    // Handle higher dimensions (beyond 3rd)
-    // NOTE: remove this limit, and also consolidate the checks with the torch matmul impl
-    for (int dim = 4; dim <= static_cast<int>(shape0.size()); dim++)
+    // Handle batch dimension broadcasting (all dimensions except the last 2)
+    for (int i = 0; i < static_cast<int>(shape0.size()) - 2; i++)
     {
-        int idx = shape0.size() - dim;
-        TT_ASSERT(shape0[idx] == shape1[idx], "Broadcast on dimensions beyond 3rd is not supported");
-        output_shape.insert(output_shape.begin(), shape0[idx]);
-    }
+        std::uint32_t dim0 = shape0[i];
+        std::uint32_t dim1 = shape1[i];
 
-    // Handle Z dimension broadcast
-    if (shape0.size() >= 3)
-    {
-        int z_idx = shape0.size() - 3;
-        if (shape0[z_idx] != shape1[z_idx])
+        if (dim0 == dim1)
         {
-            if (shape0[z_idx] == 1)
-            {
-                broadcast.push_back(std::make_tuple(0, static_cast<int>(shape0.size()) - 3, shape1[z_idx]));
-                output_shape.insert(output_shape.begin(), shape1[z_idx]);
-            }
-            else if (shape1[z_idx] == 1)
-            {
-                broadcast.push_back(std::make_tuple(1, static_cast<int>(shape0.size()) - 3, shape0[z_idx]));
-                output_shape.insert(output_shape.begin(), shape0[z_idx]);
-            }
-            else
-            {
-                TT_ASSERT(false, "If Z dimension is not the same for matmul, one of operands must have it be 1.");
-            }
+            // Same size, no broadcast needed
+            output_shape.push_back(dim0);
+        }
+        else if (dim0 == 1)
+        {
+            // Broadcast operand 0
+            broadcast.push_back(std::make_tuple(0, i - in0_padding, dim1));
+            output_shape.push_back(dim1);
+        }
+        else if (dim1 == 1)
+        {
+            // Broadcast operand 1
+            broadcast.push_back(std::make_tuple(1, i - in1_padding, dim0));
+            output_shape.push_back(dim0);
         }
         else
         {
-            output_shape.insert(output_shape.begin(), shape0[z_idx]);
+            // Incompatible dimensions
+            TT_ASSERT(false, "Batch dimensions must be broadcastable");
         }
     }
 
-    // Handle inner dimension broadcast
-    int last_idx = shape0.size() - 1;
-    int second_last_idx = shape0.size() - 2;
+    // Matrix dimensions: output is [batch_dims...], shape0[-2], shape1[-1]
+    output_shape.push_back(shape0[shape0.size() - 2]);
+    output_shape.push_back(shape1[shape1.size() - 1]);
 
-    if (shape0[last_idx] != shape1[second_last_idx])
+    // Remove dimensions that were added for 1D tensor handling
+    if (shape0_was_1d)
     {
-        if (shape0[last_idx] == 1)
-        {
-            broadcast.push_back(std::make_tuple(0, last_idx - in0_padding, shape1[second_last_idx]));
-        }
-        else if (shape1[second_last_idx] == 1)
-        {
-            broadcast.push_back(std::make_tuple(1, second_last_idx - in1_padding, shape0[last_idx]));
-        }
-        else
-        {
-            TT_ASSERT(false, "If inner dimension is not the same for matmul, one of operands must have it be 1");
-        }
+        // Remove the prepended dimension from output
+        output_shape.erase(output_shape.end() - 2);
     }
-
-    // Output dimensions: [batch_dims...], shape0[-2], shape1[-1]
-    output_shape.push_back(shape0[second_last_idx]);
-    output_shape.push_back(shape1[last_idx]);
+    if (shape1_was_1d)
+    {
+        // Remove the appended dimension from output
+        output_shape.pop_back();
+    }
 
     return std::make_tuple(graphlib::Shape::create(output_shape), broadcast);
 }
