@@ -18,8 +18,9 @@ from transformers import SegformerForImageClassification
 import forge
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
-from forge.config import CompilerConfig, MLIRConfig, VerifyConfig
+from forge.config import CompilerConfig, MLIRConfig
 from forge._C import DataFormat
 from test.benchmark.utils import YoloWrapper
 
