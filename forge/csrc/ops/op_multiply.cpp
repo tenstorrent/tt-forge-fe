@@ -99,6 +99,10 @@ void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::ve
     uint32_t input0_size = input0_shape.size();
     uint32_t input1_size = input1_shape.size();
 
+    TT_ASSERT(
+        input0_size <= 5 && input1_size <= 5,
+        "multiply::decompose_post_autograd got input with more than 5 dimensions.");
+
     if (input0_size > input1_size && input0_size == 5)
     {
         // Reshape input[1] to match input[0] shape
