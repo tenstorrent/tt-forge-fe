@@ -469,6 +469,7 @@ void Op::decompose_initial(
     switch (type_)
     {
         case OpType::Abs: return;
+        case OpType::Add: return;
         case OpType::Constant: return;
         case OpType::Multiply: return;
         case OpType::Transpose: return;
@@ -484,6 +485,7 @@ void Op::decompose_post_optimize(
     switch (type_)
     {
         case OpType::Abs: return;
+        case OpType::Add: return;
         case OpType::Constant: return;
         case OpType::Multiply: return;
         case OpType::Transpose: return;
@@ -499,6 +501,7 @@ void Op::decompose_post_autograd(
     switch (type_)
     {
         case OpType::Abs: return;
+        case OpType::Add: return;
         case OpType::Constant: return;
         case OpType::Multiply: return multiply::decompose_post_autograd(*this, dc, inputs);
         case OpType::Transpose: return;
