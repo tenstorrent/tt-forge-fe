@@ -32,7 +32,6 @@ op_to_module_map = {
     "divide": "eltwise_binary",
     "remainder": "eltwise_binary",
     "subtract": "eltwise_binary",
-    "multiply": "eltwise_binary",
     "maximum": "eltwise_binary",
     "minimum": "eltwise_binary",
     "heaviside": "eltwise_binary",
