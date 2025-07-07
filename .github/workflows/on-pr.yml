@@ -66,7 +66,7 @@ jobs:
       runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
 
   perf-benchmark:
-    if: inputs.run_perf_benchmark == 'true'
+    if: inputs.run_perf_benchmark
     needs:
       - docker-build
       - build
