@@ -129,7 +129,7 @@ void print_unique_op_configuration(const UniqueOpShapesAttrsType &unique_op_shap
             {
                 for (size_t i = 0; i < op_attrs.size(); i++)
                 {
-                    if (op_attrs[i].attr.size() > 0 or op_attrs[i].named_attrs.size() > 0)
+                    if (op_attrs[i].legacy_attrs_.size() > 0 or op_attrs[i].named_attrs.size() > 0)
                     {
                         std::cout << "\t\t\t\t\t Attributes: " << op_attrs[i].as_string() << std::endl;
                     }
@@ -189,7 +189,7 @@ void export_unique_op_configuration_to_csv_file(
                         fs << op_shapes[j] << ", ";
                     }
                     fs << "]" << delimiter;
-                    if (op_attrs[i].attr.size() > 0 or op_attrs[i].named_attrs.size() > 0)
+                    if (op_attrs[i].legacy_attrs_.size() > 0 or op_attrs[i].named_attrs.size() > 0)
                     {
                         fs << op_attrs[i].as_string();
                     }
@@ -246,7 +246,7 @@ void export_unique_op_configuration_to_xlsx_file(
             {
                 for (graphlib::OpType attr : attrs)
                 {
-                    if (attr.attr.size() > 0 or attr.named_attrs.size() > 0)
+                    if (attr.legacy_attrs_.size() > 0 or attr.named_attrs.size() > 0)
                         py_attrs.append(attr.as_string());
                 }
             }

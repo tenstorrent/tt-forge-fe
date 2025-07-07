@@ -335,7 +335,7 @@ void EdgeAttributes::clear_broadcast_dims()
 void EdgeAttributes::remove_broadcast_dim(int dim)
 {
     auto filter = [=](const OpType &o)
-    { return o.type() == ops::OpType::Broadcast && std::get<int>(o.attr[0]) == dim; };
+    { return o.type() == ops::OpType::Broadcast && std::get<int>(o.legacy_attrs_[0]) == dim; };
     tms.erase(std::remove_if(tms.begin(), tms.end(), filter), tms.end());
 }
 

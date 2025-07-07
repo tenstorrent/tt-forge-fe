@@ -101,10 +101,10 @@ void commute_through_requant(graphlib::Graph *graph, std::vector<graphlib::Node 
                         .second;
                 if (golden_transform.type() == ops::OpType::Reshape)
                 {
-                    for (std::size_t i = 0; i < golden_transform.attr.size(); i++)
+                    for (std::size_t i = 0; i < golden_transform.legacy_attrs_.size(); i++)
                     {
-                        int current_dim = std::get<int>(golden_transform.attr[i]);
-                        golden_transform.attr[i] = clone_bcasts[i] * current_dim;
+                        int current_dim = std::get<int>(golden_transform.legacy_attrs_[i]);
+                        golden_transform.legacy_attrs_[i] = clone_bcasts[i] * current_dim;
                     }
                 }
 
