@@ -99,10 +99,6 @@ void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::ve
     uint32_t input0_size = input0_shape.size();
     uint32_t input1_size = input1_shape.size();
 
-    TT_ASSERT(
-        input0_size <= 5 && input1_size <= 5,
-        "multiply::decompose_post_autograd got input with more than 5 dimensions.");
-
     if (input0_size > input1_size && input0_size == 5)
     {
         // Reshape input[1] to match input[0] shape
@@ -150,7 +146,7 @@ tt::graphlib::NodeContext backward(
     TT_DBG_ASSERT(op.type() == OpType::Multiply, "Wrong op type.");
     TT_ASSERT(inputs.size() == 2, "multiply::backward should have two input tensors.");
     TT_ASSERT(op.attrs().size() == 0, "multiply::backward should not have any attrs.");
-    TT_ASSERT(operand < 2, "Invalid operand index.");
+    TT_ASSERT(operand >= 0 && operand < 2, "Invalid operand index.");
 
     // For multiply x * y: dx = grad * y, dy = grad * x
     NodeContext op_grad = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {gradient, inputs[1 - operand]});
