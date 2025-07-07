@@ -55,7 +55,7 @@ TEST_F(EraseInverseOps, erase_transpose)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            EXPECT_NE(node->as<graphlib::PyOpNode>()->op_type().type(), ops::OpType::Transpose);
+            EXPECT_NE(node->as<graphlib::PyOpNode>()->new_op_type(), ops::OpType::Transpose);
         }
     }
     EXPECT_EQ(graph->nodes().size(), 8);
@@ -90,7 +90,7 @@ TEST_F(EraseInverseOps, erase_transpose_fork)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            if (node->as<graphlib::PyOpNode>()->op_type().type() == ops::OpType::Transpose)
+            if (node->as<graphlib::PyOpNode>()->new_op_type() == ops::OpType::Transpose)
                 transpose_count++;
         }
     }
@@ -137,7 +137,7 @@ TEST_F(EraseInverseOps, erase_inverse_ops_transpose_fork_join)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            if (node->as<graphlib::PyOpNode>()->op_type().type() == ops::OpType::Transpose)
+            if (node->as<graphlib::PyOpNode>()->new_op_type() == ops::OpType::Transpose)
                 transpose_count++;
         }
     }
@@ -185,11 +185,11 @@ TEST_F(EraseInverseOps, erase_inverse_ops_dual_reduce)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            if (node->as<graphlib::PyOpNode>()->op_type().type() == ops::OpType::Transpose)
+            if (node->as<graphlib::PyOpNode>()->new_op_type() == ops::OpType::Transpose)
                 transpose_count++;
-            else if (node->as<graphlib::PyOpNode>()->op_type().type() == ops::OpType::ReduceSum)
+            else if (node->as<graphlib::PyOpNode>()->new_op_type() == ops::OpType::ReduceSum)
                 reduce_count++;
-            else if (node->as<graphlib::PyOpNode>()->op_type().type() == ops::OpType::Reshape)
+            else if (node->as<graphlib::PyOpNode>()->new_op_type() == ops::OpType::Reshape)
                 reshape_count++;
         }
     }
@@ -221,7 +221,7 @@ TEST_F(EraseInverseOps, replace_x_y_change_concat_pattern)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            if (node->as<graphlib::PyOpNode>()->op_type().type() == ops::OpType::Reshape)
+            if (node->as<graphlib::PyOpNode>()->new_op_type() == ops::OpType::Reshape)
                 reshape_count++;
         }
     }

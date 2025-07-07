@@ -22,7 +22,7 @@ static bool has_fusable_upstream_conv2d(graphlib::Graph *graph, graphlib::PyOpNo
     if (op == nullptr)
         return false;
 
-    if (op->op_type().type() != ops::OpType::Conv2d)
+    if (op->new_op_type() != ops::OpType::Conv2d)
         return false;
     // If conv2d has more outputs than just to bias, we can't merge
     if (graph->user_data_edges(op).size() > 1)
@@ -41,7 +41,7 @@ void fuse_conv2d_bias(graphlib::Graph *graph)
     {
         // Look for bias
         if ((node->node_type() != graphlib::kPyOp) ||
-            (node->as<graphlib::PyOpNode>()->op_type().type() != ops::OpType::Add))
+            (node->as<graphlib::PyOpNode>()->new_op_type() != ops::OpType::Add))
             continue;
 
         graphlib::PyOpNode *op = node->as<graphlib::PyOpNode>();

@@ -16,7 +16,7 @@ bool shape_compatible(graphlib::OpNode *output_producer, graphlib::Node *input_c
 {
     auto p_shape = output_producer->shape().canonical();
     auto c_shape = input_consumer->shape().canonical();
-    if (output_producer->op_type().type() == ops::OpType::Concatenate)
+    if (output_producer->new_op_type() == ops::OpType::Concatenate)
     {
         int dim = std::get<int>(output_producer->op_type().attrs_[0]);
         c_shape[dim] = p_shape[dim];
@@ -46,7 +46,7 @@ std::unordered_map<graphlib::Node *, graphlib::Node *> link_cache_outputs_to_par
         // get the parameter, if the producer is a transpose, we need to go one more back
         graphlib::Node *operand = graph->data_operands(producer_mm)[1];
         if (operand->node_type() == graphlib::NodeType::kPyOp and
-            operand->as<graphlib::OpNode>()->op_type().type() == ops::OpType::Transpose)
+            operand->as<graphlib::OpNode>()->new_op_type() == ops::OpType::Transpose)
         {
             operand = graph->data_operands(operand)[0];
         }
@@ -159,7 +159,7 @@ graphlib::Node *detect_inputs_to_convert(graphlib::Graph *graph, graphlib::Node 
 
     // 2.5 handle the case that output-producer is 'nop' first, since it does not have span tag
     // currently only accept input -> nop -> output pattern for pt1.x
-    if (output_producer->op_type().type() == ops::OpType::Nop)
+    if (output_producer->new_op_type() == ops::OpType::Nop)
     {
         if (producer_input_nodes.size() == 1 and graph->data_users(producer_input_nodes[0])[0] == output_producer)
         {
@@ -225,8 +225,8 @@ std::map<std::string, std::size_t> convert_inputs_to_params(
             continue;
 
         // handle slice-op in producer chain of concatenate op
-        bool output_all = (producers[0]->as<graphlib::OpNode>()->op_type().type() != ops::OpType::Nop);
-        bool is_concat = (producers[0]->as<graphlib::OpNode>()->op_type().type() == ops::OpType::Concatenate);
+        bool output_all = (producers[0]->as<graphlib::OpNode>()->new_op_type() != ops::OpType::Nop);
+        bool is_concat = (producers[0]->as<graphlib::OpNode>()->new_op_type() == ops::OpType::Concatenate);
         int slice_factor = 1;
         std::vector<graphlib::Edge> edges;
         if (is_concat)

@@ -113,7 +113,7 @@ bool replace_pattern_with_new_pattern(
                     return false;
                 }
 
-                if (user->as<graphlib::OpNode>()->op_type().type() != op_type.type())
+                if (user->as<graphlib::OpNode>()->new_op_type() != op_type.type())
                 {
                     // All users should be the same op
                     log_debug(

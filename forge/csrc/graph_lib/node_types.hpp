@@ -549,7 +549,6 @@ class OpNode : public TaggedNode
     OpType const *op_type_ptr() const { return &op_type_; }
     IRLevel get_ir_level() const { return IRLevel::IR_TT_FORGE; }
     const std::string &op_name() const { return op_type_.name(); }
-    // const ops::OpType op_type() const { return op_type_.type(); }
     const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attrs_; }
     const OpType::Attrs &named_attrs() { return op_type_.named_attrs_; }
     const OpType::Attr &op_attr(std::string const &name) const { return op_type_.get_attr(name); }

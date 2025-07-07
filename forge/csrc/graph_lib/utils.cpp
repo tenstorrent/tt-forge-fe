@@ -1255,7 +1255,7 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Edge edge)
         return;
 
     graphlib::OpNode *consumer = dynamic_cast<graphlib::OpNode *>(graph->node_by_id(edge.consumer_node_id));
-    if (consumer and consumer->op_type().type() == ops::OpType::Embedding)
+    if (consumer and consumer->new_op_type() == ops::OpType::Embedding)
         return;
 
     // This is one of the few cases where we actually want to move tms downstream
