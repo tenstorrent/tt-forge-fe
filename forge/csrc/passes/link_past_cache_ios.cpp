@@ -18,7 +18,7 @@ bool shape_compatible(graphlib::OpNode *output_producer, graphlib::Node *input_c
     auto c_shape = input_consumer->shape().canonical();
     if (output_producer->new_op_type() == ops::OpType::Concatenate)
     {
-        int dim = std::get<int>(output_producer->op_type().attrs_[0]);
+        int dim = std::get<int>(output_producer->op_type().attr[0]);
         c_shape[dim] = p_shape[dim];
     }
     return (p_shape == c_shape);
@@ -250,7 +250,7 @@ std::map<std::string, std::size_t> convert_inputs_to_params(
                 continue;
 
             // select out the last tile to stream to dram
-            slice_factor = (slice != nullptr) ? std::get<int>(slice->as<graphlib::OpNode>()->op_type().attrs_[0]) : 1;
+            slice_factor = (slice != nullptr) ? std::get<int>(slice->as<graphlib::OpNode>()->op_type().attr[0]) : 1;
 
             // if we're only producing a single tile, we don't need to select anything
             bool control_edge_needed = false;

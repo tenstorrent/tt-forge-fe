@@ -22,7 +22,7 @@ struct OpTypeItem
         attrs(
             op_type.type() == ops::OpType::Transpose
                 ? std::vector<OpType::Attr>({op_type.get_attr_as<int>("dim0"), op_type.get_attr_as<int>("dim1")})
-                : op_type.attrs_),
+                : op_type.attr),
         check_attrs(check_attrs)
     {
     }

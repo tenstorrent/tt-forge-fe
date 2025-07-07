@@ -78,11 +78,11 @@ static void insert_pad_within_tile(graphlib::Graph *graph, graphlib::Edge edge, 
             break;
         }
 
-        int tm_dim = consumer->shape().negative_index(std::get<int>(tm.attrs_[0]));
+        int tm_dim = consumer->shape().negative_index(std::get<int>(tm.attr[0]));
         if (tm_dim == dim)
         {
-            std::get<int>(tm.attrs_[0]) = tm_dim;
-            std::get<int>(tm.attrs_[1]) = size;
+            std::get<int>(tm.attr[0]) = tm_dim;
+            std::get<int>(tm.attr[1]) = size;
             return;
         }
     }
@@ -129,7 +129,7 @@ static bool try_hoist_above_narrow(graphlib::Graph *graph, graphlib::OpNode *nar
         return false;
 
     auto shape = narrow->shape();
-    auto attr = narrow->op_type().attrs_;
+    auto attr = narrow->op_type().attr;
     TT_ASSERT(attr.size() == 4);
     int dim = shape.negative_index(std::get<int>(attr[0]));
     int start = std::get<int>(attr[1]);
@@ -270,10 +270,10 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
         {
             if (tm.type() == ops::OpType::Broadcast)
             {
-                int tm_dim = multiply->shape().negative_index(std::get<int>(tm.attrs_[0]));
+                int tm_dim = multiply->shape().negative_index(std::get<int>(tm.attr[0]));
                 if (tm_dim == -2)
                 {
-                    std::get<int>(tm.attrs_[1]) = matmul_rhs->shape()[-2];
+                    std::get<int>(tm.attr[1]) = matmul_rhs->shape()[-2];
                 }
             }
         }

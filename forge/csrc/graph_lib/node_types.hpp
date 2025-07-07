@@ -374,15 +374,15 @@ struct OpType
     using Attrs = ForgeOpAttrs;
 
     std::string op_;
-    std::vector<Attr> attrs_;  // legacy path
-    Attrs named_attrs_;        // new path
+    std::vector<Attr> attr;  // legacy path
+    Attrs named_attrs_;      // new path
 
    private:
     ops::Op new_op_;
 
    public:
     OpType(std::string const &op, std::vector<Attr> const &attr = {}, Attrs named_attrs = {}) :
-        op_(op), attrs_(attr), named_attrs_(std::move(named_attrs)), new_op_(*this)
+        op_(op), attr(attr), named_attrs_(std::move(named_attrs)), new_op_(*this)
     {
     }
 
@@ -391,7 +391,7 @@ struct OpType
 
     bool operator==(const OpType &other) const
     {
-        return *this == other.type() and attrs_ == other.attrs_ and named_attrs_ == other.named_attrs_;
+        return *this == other.type() and attr == other.attr and named_attrs_ == other.named_attrs_;
     }
     bool operator!=(const OpType &other) const { return !(*this == other); }
 
@@ -421,30 +421,30 @@ struct OpType
     std::string as_string() const
     {
         std::string ret = op_;
-        if (attrs_.size() > 0)
+        if (attr.size() > 0)
         {
             ret += "(";
-            for (unsigned int i = 0; i < attrs_.size(); i++)
+            for (unsigned int i = 0; i < attr.size(); i++)
             {
-                if (std::holds_alternative<bool>(attrs_[i]))
+                if (std::holds_alternative<bool>(attr[i]))
                 {
-                    ret += std::to_string(std::get<bool>(attrs_[i])) + ",";
+                    ret += std::to_string(std::get<bool>(attr[i])) + ",";
                 }
-                else if (std::holds_alternative<int>(attrs_[i]))
+                else if (std::holds_alternative<int>(attr[i]))
                 {
-                    ret += std::to_string(std::get<int>(attrs_[i])) + ",";
+                    ret += std::to_string(std::get<int>(attr[i])) + ",";
                 }
-                else if (std::holds_alternative<float>(attrs_[i]))
+                else if (std::holds_alternative<float>(attr[i]))
                 {
-                    ret += std::to_string(std::get<float>(attrs_[i])) + ",";
+                    ret += std::to_string(std::get<float>(attr[i])) + ",";
                 }
-                else if (std::holds_alternative<std::string>(attrs_[i]))
+                else if (std::holds_alternative<std::string>(attr[i]))
                 {
-                    ret += std::get<std::string>(attrs_[i]) + ",";
+                    ret += std::get<std::string>(attr[i]) + ",";
                 }
-                else if (std::holds_alternative<std::vector<int>>(attrs_[i]))
+                else if (std::holds_alternative<std::vector<int>>(attr[i]))
                 {
-                    auto attr_val = std::get<std::vector<int>>(attrs_[i]);
+                    auto attr_val = std::get<std::vector<int>>(attr[i]);
                     size_t num_items = attr_val.size();
 
                     ret += "[";
@@ -549,7 +549,7 @@ class OpNode : public TaggedNode
     OpType const *op_type_ptr() const { return &op_type_; }
     IRLevel get_ir_level() const { return IRLevel::IR_TT_FORGE; }
     const std::string &op_name() const { return op_type_.name(); }
-    const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attrs_; }
+    const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attr; }
     const OpType::Attrs &named_attrs() { return op_type_.named_attrs_; }
     const OpType::Attr &op_attr(std::string const &name) const { return op_type_.get_attr(name); }
     template <typename T>

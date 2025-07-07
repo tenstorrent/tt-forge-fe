@@ -110,7 +110,7 @@ bool match_unsqueeze(graphlib::OpType const &a, graphlib::OpType const &b)
     if (not fns_match)
         return false;
 
-    return std::get<int>(a.attrs_[0]) == std::get<int>(b.attrs_[0]);
+    return std::get<int>(a.attr[0]) == std::get<int>(b.attr[0]);
 }
 
 bool match_squeeze(graphlib::OpType const &a, graphlib::OpType const &b)
@@ -120,7 +120,7 @@ bool match_squeeze(graphlib::OpType const &a, graphlib::OpType const &b)
     if (not fns_match)
         return false;
 
-    return std::get<int>(a.attrs_[0]) == std::get<int>(b.attrs_[0]);
+    return std::get<int>(a.attr[0]) == std::get<int>(b.attr[0]);
 }
 
 bool match_reshape(graphlib::OpType const &a, graphlib::OpType const &) { return a.type() == ops::OpType::Reshape; }
@@ -151,7 +151,7 @@ size_t total_broadcast_volume(graphlib::Graph *graph, graphlib::Edge edge)
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
-            volume *= std::get<int>(op_type.attrs_[1]);
+            volume *= std::get<int>(op_type.attr[1]);
         }
     }
     return volume;
@@ -405,7 +405,7 @@ bool commute_through_select(
     auto concat_golden_transform = *golden_transform;
 
     if (concat_golden_transform.type() == ops::OpType::Reshape)
-        concat_golden_transform.attrs_[select_dim] = concat_output_len;
+        concat_golden_transform.attr[select_dim] = concat_output_len;
     op->add_golden_transform(concat_golden_transform);
     update_select_attr(op, new_dim);
 
@@ -540,8 +540,7 @@ bool commute_through_concat(
     auto concat_golden_transform = *golden_transform;
 
     if (concat_golden_transform.type() == ops::OpType::Reshape)
-        concat_golden_transform
-            .attrs_[concat_dim >= 0 ? concat_dim : concat_dim + concat_golden_transform.attrs_.size()] =
+        concat_golden_transform.attr[concat_dim >= 0 ? concat_dim : concat_dim + concat_golden_transform.attr.size()] =
             concat_output_len;
     op->add_golden_transform(concat_golden_transform);
     std::vector<graphlib::OpType::Attr> concat_attr;
@@ -779,8 +778,8 @@ bool commute_through_reduce(
         auto reduce_golden_transform = *golden_transform;
         if (reduce_golden_transform.type() == ops::OpType::Reshape)
         {
-            reduce_golden_transform.attrs_[op_reduce_dim] = 1;
-            reduce_golden_transform.attrs_[producer_reduce_dim] = 1;
+            reduce_golden_transform.attr[op_reduce_dim] = 1;
+            reduce_golden_transform.attr[producer_reduce_dim] = 1;
         }
 
         op->add_golden_transform(reduce_golden_transform);
@@ -821,7 +820,7 @@ bool commute_through_reduce(
 
         auto reduce_golden_transform = *golden_transform;
         if (reduce_golden_transform.type() == ops::OpType::Reshape)
-            reduce_golden_transform.attrs_[reduce_dim] = 1;
+            reduce_golden_transform.attr[reduce_dim] = 1;
 
         op->add_golden_transform(reduce_golden_transform);
 
@@ -1078,8 +1077,8 @@ std::pair<bool, std::pair<std::vector<int>, std::vector<int>>> handle_shape_chan
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
-            int bcast_dim = std::get<int>(op_type.attrs_[0]);
-            int volume = std::get<int>(op_type.attrs_[1]);
+            int bcast_dim = std::get<int>(op_type.attr[0]);
+            int volume = std::get<int>(op_type.attr[1]);
             if (bcast_dim < 0)
                 bcast_dim += clone_shape->size();
             auto [can_commute_bcast_through_dim, new_dim] = can_commute_through_dim(initial_op, graph, bcast_dim);
@@ -1116,9 +1115,9 @@ void add_or_compound_bcast(graphlib::Graph *graph, graphlib::Edge edge, int dim,
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
-            int existing_dim = std::get<int>(op_type.attrs_[0]);
+            int existing_dim = std::get<int>(op_type.attr[0]);
 
-            int existing_volume = std::get<int>(op_type.attrs_[1]);
+            int existing_volume = std::get<int>(op_type.attr[1]);
             if (existing_dim == dim)
             {
                 compounded_bcast = true;
@@ -1126,7 +1125,7 @@ void add_or_compound_bcast(graphlib::Graph *graph, graphlib::Edge edge, int dim,
             }
 
             graph->get_edge_attributes(edge)->set_broadcast_dim(
-                existing_dim, existing_volume, std::get<bool>(op_type.attrs_[2]));
+                existing_dim, existing_volume, std::get<bool>(op_type.attr[2]));
         }
     }
 
@@ -1148,8 +1147,8 @@ void restore_bcast_on_condition(
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
-            int dim = std::get<int>(op_type.attrs_[0]);
-            int volume = std::get<int>(op_type.attrs_[1]);
+            int dim = std::get<int>(op_type.attr[0]);
+            int volume = std::get<int>(op_type.attr[1]);
             if (dim < 0)
                 dim += operand_shape.size();
 
@@ -1211,9 +1210,9 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
         {
             has_bcasts = true;
             num_bcasts++;
-            int dim = std::get<int>(op_type.attrs_[0]);
+            int dim = std::get<int>(op_type.attr[0]);
             bcast_dims.push_back(dim);
-            int volume = std::get<int>(op_type.attrs_[1]);
+            int volume = std::get<int>(op_type.attr[1]);
             if (dim < 0)
             {
                 while (-dim > (int)operand_shape.size())
@@ -1299,7 +1298,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
 
             if (is_transpose_reshape)
             {
-                int bcast_dim = std::get<int>(tms[0].attrs_[0]);
+                int bcast_dim = std::get<int>(tms[0].attr[0]);
                 if (bcast_dim < 0)
                     bcast_dim += operand_shape.size();
                 int bcast_volume = op->shape()[bcast_dim];
@@ -1420,12 +1419,12 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
                 {
                     if (t.type() == ops::OpType::Broadcast)
                     {
-                        int dim = std::get<int>(t.attrs_[0]);
+                        int dim = std::get<int>(t.attr[0]);
                         if (dim >= 0)
                         {
                             dim -= operand_shape.size();
                         }
-                        int volume = std::get<int>(t.attrs_[1]);
+                        int volume = std::get<int>(t.attr[1]);
                         add_or_compound_bcast(graph, user_edge, dim, volume);
                     }
                 }
@@ -1448,7 +1447,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
             graphlib::OpType op_type = tms[i];
             if (op_type.type() == ops::OpType::Broadcast)
             {
-                int dim = std::get<int>(op_type.attrs_[0]);
+                int dim = std::get<int>(op_type.attr[0]);
                 if (dim > 0)
                     dim -= operand_shape.size();
 
@@ -1457,7 +1456,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
                 erase_tms.push_back(i);
                 int updated_bcast_dim = update_bcast_dim_commuted_through_transpose(dim, op);
                 updated_shape[updated_bcast_dim] = operand_dim_size;
-                std::get<int>(op_type.attrs_[0]) = updated_bcast_dim;
+                std::get<int>(op_type.attr[0]) = updated_bcast_dim;
                 for (graphlib::Edge user_edge : graph->user_data_edges(op))
                     graph->get_edge_attributes(user_edge)->prepend_tm(op_type);
             }
@@ -1494,12 +1493,12 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
         {
             if (t.type() == ops::OpType::Broadcast)
             {
-                int dim = std::get<int>(t.attrs_[0]);
+                int dim = std::get<int>(t.attr[0]);
                 if (dim >= 0)
                 {
                     dim -= operand_shape.size();
                 }
-                int volume = std::get<int>(t.attrs_[1]);
+                int volume = std::get<int>(t.attr[1]);
                 add_or_compound_bcast(graph, user_edge, dim, volume);
             }
         }

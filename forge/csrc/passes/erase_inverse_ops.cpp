@@ -91,7 +91,7 @@ bool has_broadcast_on_dim(graphlib::Graph *graph, graphlib::Edge edge, int neede
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
-            int dim = std::get<int>(op_type.attrs_[0]);
+            int dim = std::get<int>(op_type.attr[0]);
             if (dim == needed_dim)
             {
                 return true;
@@ -188,10 +188,10 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
                         .second;
                 if (golden_transform.type() == ops::OpType::Reshape)
                 {
-                    for (std::size_t i = 0; i < golden_transform.attrs_.size(); i++)
+                    for (std::size_t i = 0; i < golden_transform.attr.size(); i++)
                     {
-                        int current_dim = std::get<int>(golden_transform.attrs_[i]);
-                        golden_transform.attrs_[i] = clone_bcasts[i] * current_dim;
+                        int current_dim = std::get<int>(golden_transform.attr[i]);
+                        golden_transform.attr[i] = clone_bcasts[i] * current_dim;
                     }
                 }
 
@@ -335,8 +335,8 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
                 {
                     if (tm.type() == ops::OpType::Broadcast)
                     {
-                        int dim = std::get<int>(tm.attrs_[0]);
-                        int volume = std::get<int>(tm.attrs_[1]);
+                        int dim = std::get<int>(tm.attr[0]);
+                        int volume = std::get<int>(tm.attr[1]);
                         op_shape[dim] *= volume;
                     }
                 }

@@ -174,7 +174,7 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
 
             auto op_type_ = op->op_type();
             TT_ASSERT(op_type_.type() == ops::OpType::Index);
-            int start = std::get<int>(op->op_type().attrs_[1]);
+            int start = std::get<int>(op->op_type().attr[1]);
 
             // Update index attributes to slice the original tensor directly.
             // NOTE: since the old op infrastructure is used we need to set both the vector of attributes and the named
