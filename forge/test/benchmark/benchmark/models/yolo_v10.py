@@ -115,7 +115,7 @@ def test_yolo_v10(
     configure_devices(device_settings=settings)
 
     # Model YOLOv10 has smaller PCC than 0.99, but still acceptable, so we set it to 0.80.
-    pcc = 0.80
+    pcc = 0.99
     verify_cfg = VerifyConfig()
     verify_cfg.value_checker = AutomaticValueChecker(pcc=pcc)
 
