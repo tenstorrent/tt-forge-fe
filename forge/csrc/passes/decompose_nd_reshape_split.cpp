@@ -31,9 +31,9 @@ bool all_have_same_dim_and_shape_stride1(std::vector<T> const &v)
         v.end(),
         [&](T const &e)
         {
-            auto attrs = dynamic_cast<graphlib::OpNode const *>(e)->op_attrs();
+            auto attrs = dynamic_cast<graphlib::OpNode const *>(e)->op_legacy_attrs();
             int dim = std::get<int>(attrs[0]);
-            return dim == std::get<int>(dynamic_cast<graphlib::OpNode const *>(v.front())->op_attrs()[0]) and
+            return dim == std::get<int>(dynamic_cast<graphlib::OpNode const *>(v.front())->op_legacy_attrs()[0]) and
                    e->shape() == v.front()->shape() and std::get<int>(attrs[3]) == 1;
         });
 }
@@ -102,7 +102,7 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
             continue;
 
         uint32_t total_index_size = 0;
-        int dim = std::get<int>(dynamic_cast<graphlib::OpNode const *>(consumers[0])->op_attrs()[0]);
+        int dim = std::get<int>(dynamic_cast<graphlib::OpNode const *>(consumers[0])->op_legacy_attrs()[0]);
 
         for (auto const &consumer : consumers)
         {
@@ -115,7 +115,7 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
             [](auto const &consumer)
             {
                 auto op = dynamic_cast<graphlib::OpNode const *>(consumer);
-                return std::get<int>(op->op_attrs()[2]) - std::get<int>(op->op_attrs()[1]) == 1;
+                return std::get<int>(op->op_legacy_attrs()[2]) - std::get<int>(op->op_legacy_attrs()[1]) == 1;
             });
 
         // All index must have length 1 and total indexed size must be equal to node dim

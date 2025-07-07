@@ -295,15 +295,18 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
             if (first->op_name() == "unsqueeze")
             {
                 op->change_op_type(
-                    "squeeze", {first->op_attrs()[0]}, graphlib::OpType::Attrs{{"dim", first->op_attrs()[0]}});
+                    "squeeze",
+                    {first->op_legacy_attrs()[0]},
+                    graphlib::OpType::Attrs{{"dim", first->op_legacy_attrs()[0]}});
             }
             else if (first->op_name() == "squeeze")
             {
                 op->change_op_type("unsqueeze");
                 op->change_op_type(
                     "unsqueeze",
-                    {first->op_attrs()[0], (int)graph->node_by_id(operand_edge.producer_node_id)->shape().size()},
-                    graphlib::OpType::Attrs{{"dim", first->op_attrs()[0]}});
+                    {first->op_legacy_attrs()[0],
+                     (int)graph->node_by_id(operand_edge.producer_node_id)->shape().size()},
+                    graphlib::OpType::Attrs{{"dim", first->op_legacy_attrs()[0]}});
             }
 
             // Inputs can have mismatched number of dims and still function corretly to the consuming op

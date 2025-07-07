@@ -102,7 +102,7 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
                 EXPECT_EQ(operands[0]->name(), "input") << "Index should connect directly to input";
 
                 // Check attributes
-                auto attrs = op_node->op_attrs();
+                auto attrs = op_node->op_legacy_attrs();
                 EXPECT_EQ(attrs.size(), 4) << "Index should have 4 attributes";
 
                 int dim = std::get<int>(attrs[0]);

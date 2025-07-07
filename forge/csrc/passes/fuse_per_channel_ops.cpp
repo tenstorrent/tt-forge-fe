@@ -38,14 +38,16 @@ static bool can_fuse_select_concat(
             return false;
 
         bool same_op = firstOp->op_name() == compare_op->op_name();
-        bool same_dim = (std::get<int>(firstOp->op_attrs()[0]) == std::get<int>(compare_op->op_attrs()[0])) and
-                        (std::get<int>(firstOp->op_attrs()[0]) == concat_dim);
+        bool same_dim =
+            (std::get<int>(firstOp->op_legacy_attrs()[0]) == std::get<int>(compare_op->op_legacy_attrs()[0])) and
+            (std::get<int>(firstOp->op_legacy_attrs()[0]) == concat_dim);
         bool same_producer = (graph->data_operands(firstOp)[0] == graph->data_operands(compare_op)[0]);
 
         // Stride must equal to producer concat dim
         const int stride = graph->data_operands(firstOp)[0]->shape()[concat_dim];
-        bool same_stride = (std::get<int>(firstOp->op_attrs()[3]) == std::get<int>(compare_op->op_attrs()[3])) and
-                           (std::get<int>(firstOp->op_attrs()[3]) == stride);
+        bool same_stride =
+            (std::get<int>(firstOp->op_legacy_attrs()[3]) == std::get<int>(compare_op->op_legacy_attrs()[3])) and
+            (std::get<int>(firstOp->op_legacy_attrs()[3]) == stride);
 
         return same_op and same_dim and same_stride and same_producer;
     };
@@ -59,7 +61,7 @@ static bool can_fuse_select_concat(
     uint32_t select_amount = 0;
     for (auto const &[key, value] : map)
     {
-        select_amount += std::get<int>(value.back().first->op_attrs()[2]);
+        select_amount += std::get<int>(value.back().first->op_legacy_attrs()[2]);
     }
 
     bool select_all_channels =
@@ -71,8 +73,8 @@ static bool can_fuse_select_concat(
 
     for (auto const &[key, value] : map)
     {
-        auto start_index = std::get<int>(value.back().first->op_attrs()[1]);
-        auto length = std::get<int>(value.back().first->op_attrs()[2]);
+        auto start_index = std::get<int>(value.back().first->op_legacy_attrs()[1]);
+        auto length = std::get<int>(value.back().first->op_legacy_attrs()[2]);
 
         for (auto i = start_index; i < start_index + length; i++)
         {
@@ -257,7 +259,7 @@ static bool fuse_per_channel_concat(graphlib::Graph *graph, graphlib::OpNode *co
     bool can_fuse = true;
     auto operands = graph->data_operands(concat);
     int num_operands = operands.size();
-    int concat_dim = std::get<int>(concat->op_attrs()[0]);
+    int concat_dim = std::get<int>(concat->op_legacy_attrs()[0]);
     std::map<int, std::vector<std::pair<graphlib::OpNode *, graphlib::InputNode *>>> ops_to_fuse;
 
     // Find path from each operand of concat to producer select, if possible
