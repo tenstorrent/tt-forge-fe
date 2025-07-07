@@ -188,18 +188,20 @@ class Op
     bool operator!=(const Op &other) const { return !(*this == other); }
 
     OpType type() const { return type_; }
+
     const Attrs &attrs() const { return attrs_; }
 
-    const Attr &attr(std::string const &name) const { return attrs_.at(name); }
     template <typename T>
     const T &attr_as(std::string const &name) const
     {
-        return std::get<T>(attr(name));
+        return std::get<T>(attrs_.at(name));
     }
 
     bool has_attr(const std::string &attr_name) const { return attrs_.find(attr_name) != attrs_.end(); }
     void set_attrs(Attrs attrs) { attrs_ = std::move(attrs); }
     void set_attr(std::string const &name, Attr attr) { attrs_[name] = std::move(attr); }
+    bool remove_attr(const std::string &attr_name) { return attrs_.erase(attr_name) > 0; }
+    void clear_attrs() { attrs_.clear(); }
 
     const std::string &as_string() const;
 

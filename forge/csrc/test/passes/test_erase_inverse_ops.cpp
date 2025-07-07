@@ -310,7 +310,7 @@ TEST_F(UpdateReshapeNamedAttrsTest, update_named_attrs)
     op_node_reshape->set_shape(new_shape);
     passes::update_reshape_attr(op_node_reshape, new_shape);
 
-    auto updated_attrs = op_node_reshape->op_type().named_attrs_;
+    auto updated_attrs = op_node_reshape->op_type().attrs();
     EXPECT_TRUE(updated_attrs.count("shape")) << "Shape attribute not found.";
     auto shape_vector = std::get<std::vector<int>>(updated_attrs["shape"]);
 
@@ -362,7 +362,7 @@ TEST_F(UpdateSelectNamedAttrsTest, update_named_attrs)
 
     passes::update_select_attr(op_node_select, select_dim);
 
-    auto updated_attrs = op_node_select->named_attrs();
+    auto updated_attrs = op_node_select->op_named_attrs();
 
     EXPECT_TRUE(updated_attrs.count("select_dim")) << "select_dim attribute not found.";
     EXPECT_EQ(std::get<int>(updated_attrs["select_dim"]), select_dim) << "select_dim does not match expected value.";
@@ -406,7 +406,7 @@ TEST_F(UpdateConcatNamedAttrsTest, update_named_attrs)
     ASSERT_NE(op_node_concat, nullptr) << "Node is not of type OpNode.";
     int new_dim = 2;
     passes::update_concat_attr(op_node_concat, new_dim);
-    auto updated_attrs = op_node_concat->named_attrs();
+    auto updated_attrs = op_node_concat->op_named_attrs();
     EXPECT_TRUE(updated_attrs.count("dim")) << "Dim attribute not found.";
     auto dim_value = std::get<int>(updated_attrs["dim"]);
     EXPECT_EQ(dim_value, new_dim) << "Dim attribute does not match expected value.";
@@ -442,7 +442,7 @@ TEST_F(UpdateVStackAttrsTest, update_vstack_attr)
 
     passes::update_vstack_attr(op_node_vstack, new_slice_size);
 
-    auto updated_attrs = op_node_vstack->named_attrs();
+    auto updated_attrs = op_node_vstack->op_named_attrs();
 
     EXPECT_TRUE(updated_attrs.count("slice_size")) << "Slice size attribute not found.";
     auto slice_size_value = std::get<int>(updated_attrs["slice_size"]);
@@ -541,7 +541,7 @@ TEST_F(UpdateReduceSumAttrsTest, ReduceSumDim)
 
     passes::update_reduce_attr(reduce_node, reduce_dim, keep_dim);
 
-    auto updated_attrs = reduce_node->named_attrs();
+    auto updated_attrs = reduce_node->op_named_attrs();
 
     ASSERT_TRUE(updated_attrs.count("dim"));
     EXPECT_EQ(std::get<int>(updated_attrs["dim"]), reduce_dim);
@@ -598,7 +598,7 @@ TEST_F(UpdateReduceMaxAttrsTest, ReduceMaxDim)
 
     passes::update_reduce_attr(reduce_node, reduce_dim, keep_dim);
 
-    auto updated_attrs = reduce_node->named_attrs();
+    auto updated_attrs = reduce_node->op_named_attrs();
 
     ASSERT_TRUE(updated_attrs.count("dim"));
     EXPECT_EQ(std::get<int>(updated_attrs["dim"]), reduce_dim);
@@ -648,7 +648,7 @@ TEST_F(UpdateGroupedReduceAvgTest, GroupedReduceAvgDim)
 
     passes::update_grouped_reduce_avg_attr(reduce_node, attr[0]);
 
-    auto updated_attrs = reduce_node->named_attrs();
+    auto updated_attrs = reduce_node->op_named_attrs();
 
     ASSERT_TRUE(updated_attrs.count("reduce_dim"));
     EXPECT_EQ(std::get<int>(updated_attrs["reduce_dim"]), attr[0]);
@@ -699,7 +699,7 @@ TEST_F(EraseInverseOpsSqueezeAndUnsqueeze, erase_inv_ops_sq_unsq)
     graphlib::Node *operand_node = graph->operands(squeeze_node)[0];
 
     // Check that dimension on which we squeeze is 0
-    auto reshape_attrs = squeeze_op->named_attrs();
+    auto reshape_attrs = squeeze_op->op_named_attrs();
     ASSERT_TRUE(reshape_attrs.count("dim"));
 
     int dim = std::get<int>(reshape_attrs["dim"]);

@@ -24,7 +24,7 @@ void to_json(json& j, OpType const& op_type)
     j["op_type"] = {};
     j["op_type"]["type"] = op_type.name();
     j["op_type"]["attrs"] = op_type.legacy_attrs_;
-    j["op_type"]["named_attrs"] = op_type.named_attrs_;
+    j["op_type"]["named_attrs"] = op_type.attrs();
 }
 
 void to_json(json& j, EdgeAttributes const& attrs)

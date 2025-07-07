@@ -33,10 +33,10 @@ static bool involves_w_dim(graphlib::OpNode const *op)
     }
     else if (op->op_name() == "transpose")
     {
-        int _dim0 = op->op_type().get_attr_as<int>("dim0");
+        int _dim0 = op->op_type().attr_as<int>("dim0");
         if (_dim0 > 0)
             _dim0 -= shape.size();
-        int _dim1 = op->op_type().get_attr_as<int>("dim1");
+        int _dim1 = op->op_type().attr_as<int>("dim1");
         if (_dim1 > 0)
             _dim1 -= shape.size();
         if (_dim0 > _dim1)
