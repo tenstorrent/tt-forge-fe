@@ -521,7 +521,7 @@ class MLIRGenerator
 
         // Map forge to MLIR attributes for this operation.
         llvm::SmallVector<mlir::NamedAttribute> mlir_attributes;
-        for (const auto &[name, value] : op_node->op_type().named_attrs_)
+        for (const auto &[name, value] : op_node->op_type().attrs())
         {
             auto [mapped_name, target_type] = attr_mapper_.get_mapped_name_and_type(op_node->op_name(), name);
 
@@ -550,7 +550,7 @@ class MLIRGenerator
 
         // Map forge to MLIR attributes for this operation.
         llvm::SmallVector<mlir::NamedAttribute> mlir_attributes;
-        for (const auto &[name, value] : op_node->op_type().named_attrs_)
+        for (const auto &[name, value] : op_node->op_type().attrs())
         {
             auto [mapped_name, target_type] = attr_mapper_.get_mapped_name_and_type(op_node->op_name(), name);
 

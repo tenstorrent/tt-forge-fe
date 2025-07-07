@@ -397,23 +397,35 @@ struct OpType
 
     ops::OpType type() const { return new_op_.type(); }
     ops::Op const &new_op() const { return new_op_; }
-    Attr const &get_attr(std::string const &name) const { return named_attrs_.at(name); }
-    Attr &get_attr(std::string const &name) { return named_attrs_.at(name); }
+
+    const Attrs &attrs() const { return named_attrs_; }
+    bool has_attr(const std::string &attr_name) const { return named_attrs_.find(attr_name) != named_attrs_.end(); }
+
     template <typename T>
-    T const &get_attr_as(std::string const &name) const
+    T const &attr_as(std::string const &name) const
     {
-        return std::get<T>(get_attr(name));
-    }
-    template <typename T>
-    T &get_attr_as(std::string const &name)
-    {
-        return std::get<T>(get_attr(name));
+        return std::get<T>(named_attrs_.at(name));
     }
 
     void set_attr(std::string const &name, Attr attr)
     {
         named_attrs_[name] = attr;
         new_op_.set_attr(name, std::move(attr));
+    }
+
+    bool remove_attr(const std::string &attr_name)
+    {
+        bool removed = named_attrs_.erase(attr_name) > 0;
+        if (removed)
+            new_op_.remove_attr(attr_name);
+
+        return removed;
+    }
+
+    void clear_attrs()
+    {
+        named_attrs_.clear();
+        new_op_.clear_attrs();
     }
 
     const std::string &name() const { return op_; }
@@ -546,16 +558,14 @@ class OpNode : public TaggedNode
     }
     ops::OpType new_op_type() const { return new_op().type(); }
     OpType const &op_type() const { return op_type_; }
-    OpType const *op_type_ptr() const { return &op_type_; }
     IRLevel get_ir_level() const { return IRLevel::IR_TT_FORGE; }
     const std::string &op_name() const { return op_type_.name(); }
     const std::vector<OpType::Attr> &op_legacy_attrs() const { return op_type_.legacy_attrs_; }
-    const OpType::Attrs &named_attrs() { return op_type_.named_attrs_; }
-    const OpType::Attr &op_attr(std::string const &name) const { return op_type_.get_attr(name); }
+    const OpType::Attrs &op_named_attrs() { return op_type_.named_attrs_; }
     template <typename T>
     const T &op_attr_as(std::string const &name) const
     {
-        return std::get<T>(op_attr(name));
+        return op_type_.attr_as<T>(name);
     }
     void set_op_attr(const std::string &name, OpType::Attr value) { op_type_.set_attr(name, std::move(value)); }
 
