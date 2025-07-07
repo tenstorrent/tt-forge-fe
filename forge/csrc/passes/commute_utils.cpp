@@ -961,12 +961,7 @@ void update_concat_attr(graphlib::OpNode *concatenate, int dim)
 {
     TT_ASSERT(concatenate->op_name() == "concatenate", "update_concat_attr called for a non-concatenate operation");
 
-    std::vector<graphlib::OpType::Attr> attr;
-    attr.push_back(dim);
-
-    graphlib::OpType::Attrs named_attrs = concatenate->op_named_attrs();
     concatenate->set_op_attr("dim", dim);
-
     log_trace(LogGraphCompiler, "Concatenate operation updated with new dim: {}", dim);
 }
 /**
@@ -976,12 +971,7 @@ void update_vstack_attr(graphlib::OpNode *vstack, int slice_size)
 {
     TT_ASSERT(vstack->op_name() == "vstack", "update_vstack_attr called for a non-vstack operation");
 
-    std::vector<graphlib::OpType::Attr> attr;
-    attr.push_back(slice_size);
-
-    graphlib::OpType::Attrs named_attrs = vstack->op_named_attrs();
     vstack->set_op_attr("slice_size", slice_size);
-
     log_trace(LogGraphCompiler, "Vstack operation updated with new slice_size: {}", slice_size);
 }
 /**
