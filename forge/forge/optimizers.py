@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Tenstorrent AI ULC
+# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
 """
@@ -317,9 +317,7 @@ class Adam(Optimizer):
 
         # {mean, variance} get updated in the loopback
         for parameter, opt_inputs in self.parameter_to_opt_inputs.items():
-            torch_lr = torch.full(
-                opt_inputs["lr"].shape.as_list(), self.learning_rate, dtype=opt_inputs["lr"].pt_data_format
-            )
+            torch_lr = torch.full(parameter.shape.as_list(), self.learning_rate, dtype=opt_inputs["lr"].pt_data_format)
             opt_inputs["lr"] = Tensor.create_from_torch(torch_lr)
 
     def generate_op_trace(self, ac, parameter, gradient):
@@ -631,7 +629,7 @@ class LAMB(Optimizer):
         beta1_torch = torch.zeros(param_shape) + self.beta1
         beta1 = ac.tensor(beta1_torch)  # beta1
 
-        mean_1 = ac.op("multiply", (mean, beta1))
+        mean_1 = ac.op("multiply", (beta1, mean))
         mean_2_1 = ac.tensor(1 - beta1_torch)
         mean_2 = ac.op("multiply", (mean_2_1, grad))
         updated_mean = ac.op("add", (mean_1, mean_2))
@@ -1263,7 +1261,6 @@ class RAdam(Optimizer):
         denominator = ac.op("multiply", (rho_inf_minus_4, rho_inf_minus_2))
         denominator = ac.op("multiply", (denominator, rho_t))
 
-        # Add small epsilon to prevent division by zero
         epsilon_tensor = ac.tensor(torch.full(parameter_shape, 1e-8))
         denominator_safe = ac.op("add", (denominator, epsilon_tensor))
 
@@ -1298,104 +1295,83 @@ class RAdam(Optimizer):
         momentum_masked = ac.op("where", (rho_t_gt_5, zero_tensor, momentum_update))
         final_update = ac.op("add", (adaptive_masked, momentum_masked))
 
-        # Apply decoupled weight decay if enabled
         if weight_decay and self.decoupled_weight_decay:
             weight_decay_times_param = ac.op("multiply", (weight_decay, parameter))
             final_update = ac.op("add", (final_update, weight_decay_times_param))
 
-        # Apply learning rate and update parameter
         lr = ac.input("lr", parameter.shape)
         parameter_delta = ac.op("multiply", (final_update, lr))
         updated_parameter = ac.op("subtract", (parameter, parameter_delta))
 
-        # Loopbacks for state variables
         ac.loopback(updated_exp_avg, exp_avg)
         ac.loopback(updated_exp_avg_sq, exp_avg_sq)
         ac.loopback(updated_step, step)
         ac.loopback(updated_beta1_pow, beta1_pow)
         ac.loopback(updated_beta2_pow, beta2_pow)
 
-        param_ndim = len(parameter.shape.as_list())
-        updated_param_ndim = len(updated_parameter.shape.as_list())
-
-        if updated_param_ndim < param_ndim:
-            # Need to unsqueeze to restore dimensions
-            for dim in range(param_ndim - updated_param_ndim):
-                updated_parameter = ac.op("unsqueeze", (updated_parameter,))
-
-        elif updated_param_ndim > param_ndim:
-            # Need to squeeze to restore dimensions
-            for dim in range(updated_param_ndim - param_ndim):
-                updated_parameter = ac.op("squeeze", (updated_parameter,))
-
-        if parameter_shape == [1]:
-            import pdb
-
-            pdb.set_trace()
-            print("Unsqueezing parameter:", parameter_shape)
-            updated_parameter = ac.op("squeeze", (updated_parameter,), (0,), {"dim": 0})
-        # print(parameter_shape)
-
         return updated_parameter
 
     def torch_parameter_update(
         self, *, parameter_name: str, parameter: torch.Tensor, gradient: torch.Tensor
     ) -> torch.Tensor:
+        """
+        PyTorch implementation of RAdam parameter update.
 
-        torch_exp_avg = self.parameter_to_opt_torch_inputs[parameter_name]["torch_exp_avg"]
-        torch_exp_avg_sq = self.parameter_to_opt_torch_inputs[parameter_name]["torch_exp_avg_sq"]
-        torch_step = self.parameter_to_opt_torch_inputs[parameter_name]["torch_step"]
-        torch_beta1_power = self.parameter_to_opt_torch_inputs[parameter_name]["torch_beta1_power"]
-        torch_beta2_power = self.parameter_to_opt_torch_inputs[parameter_name]["torch_beta2_power"]
+        Parameters
+        ----------
+        parameter_name : str
+            Name of the parameter being updated
+        parameter : torch.Tensor
+            Current parameter values
+        gradient : torch.Tensor
+            Gradient tensor for the parameter
 
-        # Apply weight decay to gradient if not decoupled
-        if not self.decoupled_weight_decay and self.weight_decay > 0.0:
+        Returns
+        -------
+        torch.Tensor
+            Updated parameter values
+        """
+        opt_state = self.parameter_to_opt_torch_inputs[parameter_name]
+
+        if self.weight_decay > 0.0 and not self.decoupled_weight_decay:
             gradient = gradient + self.weight_decay * parameter
 
-        # Update step
-        torch_step += 1
-        step = torch_step.item()
+        # exp_avg = beta1 * exp_avg + (1 - beta1) * gradient
+        opt_state["torch_exp_avg"] = self.beta1 * opt_state["torch_exp_avg"] + (1 - self.beta1) * gradient
 
-        # Update beta powers
-        torch_beta1_power *= self.beta1
-        torch_beta2_power *= self.beta2
+        # exp_avg_sq = beta2 * exp_avg_sq + (1 - beta2) * gradient^2
+        opt_state["torch_exp_avg_sq"] = self.beta2 * opt_state["torch_exp_avg_sq"] + (1 - self.beta2) * gradient**2
 
-        # Update biased first moment estimate
-        torch_exp_avg.mul_(self.beta1).add_(gradient, alpha=1 - self.beta1)
+        opt_state["torch_step"] += 1
+        step = opt_state["torch_step"]
 
-        # Update biased second moment estimate
-        torch_exp_avg_sq.mul_(self.beta2).addcmul_(gradient, gradient, value=1 - self.beta2)
+        opt_state["torch_beta1_pow"] *= self.beta1
+        opt_state["torch_beta2_pow"] *= self.beta2
 
-        # Bias correction
-        bias_correction1 = 1 - self.beta1**step
-        bias_correction2 = 1 - self.beta2**step
+        bias_correction1 = 1 - opt_state["torch_beta1_pow"]
+        bias_correction2 = 1 - opt_state["torch_beta2_pow"]
 
-        # Corrected first moment
-        bias_corrected_exp_avg = torch_exp_avg / bias_correction1
+        # Compute rho_t for RAdam rectification
+        # rho_inf = 2 / (1 - beta2) - 1
+        # rho_t = rho_inf - 2 * step * beta2^step / (1 - beta2^step)
+        rho_t = self.rho_inf - 2 * step * opt_state["torch_beta2_pow"] / bias_correction2
 
-        # Compute rho_t
-        rho_t = self.rho_inf - 2 * step * (self.beta2**step) / bias_correction2
+        exp_avg_corrected = opt_state["torch_exp_avg"] / bias_correction1
 
-        if rho_t > 5.0:
-            # Compute rectification term
-            rect_term = (
-                (rho_t - 4) * (rho_t - 2) * self.rho_inf / ((self.rho_inf - 4) * (self.rho_inf - 2) * rho_t)
-            ) ** 0.5
-
-            # Compute adaptive learning rate
-            adaptive_lr = (bias_correction2**0.5) / (torch_exp_avg_sq.sqrt() + self.epsilon)
-
-            # Update with rectified adaptive learning rate
-            update = bias_corrected_exp_avg * adaptive_lr * rect_term
+        # Check if we should use adaptive update (rho_t > 5)
+        if rho_t > 5:
+            rect_numerator = (rho_t - 4) * (rho_t - 2) * self.rho_inf
+            rect_denominator = (self.rho_inf - 4) * (self.rho_inf - 2) * rho_t
+            rect_term = torch.sqrt(rect_numerator / rect_denominator)
+            exp_avg_sq_corrected = opt_state["torch_exp_avg_sq"] / bias_correction2
+            denom = torch.sqrt(exp_avg_sq_corrected) + self.epsilon
+            update = rect_term * exp_avg_corrected / denom
         else:
-            # Update with simple momentum
-            update = bias_corrected_exp_avg
+            update = exp_avg_corrected
 
-        # Apply weight decay if decoupled
-        if self.decoupled_weight_decay and self.weight_decay > 0.0:
+        if self.weight_decay > 0.0 and self.decoupled_weight_decay:
             update = update + self.weight_decay * parameter
 
-        # Update parameter
         updated_parameter = parameter - self.learning_rate * update
 
         return updated_parameter
