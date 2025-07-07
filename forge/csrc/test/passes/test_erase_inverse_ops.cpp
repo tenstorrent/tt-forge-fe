@@ -336,9 +336,13 @@ struct UpdateSelectNamedAttrsTest : testing::Test
         graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE, "UpdateSelectNamedAttrs");
 
         graphlib::Shape initial_shape = graphlib::Shape::create({1, 512, 160});
-        tt::graphlib::InputNode *input_node = create_input(*graph, "input", initial_shape);
+        graphlib::InputNode *input_node = create_input(*graph, "input", initial_shape);
         auto select_node =
             add_node<graphlib::PyOpNode>(*graph, "select", "select", {dim, begin, length, stride}, {input_node});
+        select_node->set_op_attr("select_dim", dim);
+        select_node->set_op_attr("begin", begin);
+        select_node->set_op_attr("length", length);
+        select_node->set_op_attr("stride", stride);
 
         create_output(*graph, "out", select_node);
     }
