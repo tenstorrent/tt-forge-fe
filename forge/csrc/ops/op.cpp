@@ -402,6 +402,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Abs: return abs::eval(*this, tensors);
         case OpType::Constant: return constant::eval(*this, tensors);
         case OpType::Multiply: return multiply::eval(*this, tensors);
+        case OpType::Subtract: return subtract::eval(*this, tensors);
         default: return base_eval(old_op_type, tensors);
     }
 }
@@ -414,6 +415,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Abs: return abs::shape(*this, inputs);
         case OpType::Constant: return constant::shape(*this, inputs);
         case OpType::Multiply: return multiply::shape(*this, inputs);
+        case OpType::Subtract: return subtract::shape(*this, inputs);
         default: return base_shape(old_op_type, inputs);
     }
 }
@@ -431,6 +433,7 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Abs: return abs::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Constant: return constant::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Multiply: return multiply::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Subtract: return subtract::backward(*this, context, operand, inputs, output, gradient);
         default: return base_backward(old_op_type, context, operand, inputs, output, gradient);
     }
 }
@@ -465,6 +468,7 @@ void Op::decompose_initial(
         case OpType::Abs: return;
         case OpType::Constant: return;
         case OpType::Multiply: return;
+        case OpType::Subtract: return;
         default: return base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
     }
 }
@@ -479,6 +483,7 @@ void Op::decompose_post_optimize(
         case OpType::Abs: return;
         case OpType::Constant: return;
         case OpType::Multiply: return;
+        case OpType::Subtract: return;
         default: return base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
     }
 }
@@ -493,6 +498,7 @@ void Op::decompose_post_autograd(
         case OpType::Abs: return;
         case OpType::Constant: return;
         case OpType::Multiply: return multiply::decompose_post_autograd(*this, dc, inputs);
+        case OpType::Subtract: return subtract::decompose_post_autograd(*this, dc, inputs);
         default: return base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
     }
 }
@@ -505,6 +511,7 @@ long Op::initial_flops_estimate(
         case OpType::Abs: return abs::initial_flops_estimate(*this, inputs);
         case OpType::Constant: return 0;
         case OpType::Multiply: return 0;
+        case OpType::Subtract: return 0;
         default: return base_initial_flops_estimate(old_op_type, inputs);
     }
 }
@@ -516,6 +523,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Abs: return false;
         case OpType::Constant: return false;
         case OpType::Multiply: return false;
+        case OpType::Subtract: return false;
         default: return base_is_tm(old_op_type);
     }
 }
@@ -527,6 +535,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Abs: return true;
         case OpType::Constant: return false;
         case OpType::Multiply: return true;
+        case OpType::Subtract: return true;
         default: return base_is_eltwise(old_op_type);
     }
 }
@@ -538,6 +547,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Abs: return true;
         case OpType::Constant: return false;
         case OpType::Multiply: return false;
+        case OpType::Subtract: return false;
         default: return base_is_eltwise_unary(old_op_type);
     }
 }
@@ -549,6 +559,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Abs: return false;
         case OpType::Constant: return false;
         case OpType::Multiply: return true;
+        case OpType::Subtract: return true;
         default: return base_is_eltwise_binary(old_op_type);
     }
 }
@@ -559,6 +570,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Abs: return false;
         case OpType::Constant: return false;
         case OpType::Multiply: return true;
+        case OpType::Subtract: return true;
         default: return base_is_eltwise_nary(old_op_type);
     }
 }
