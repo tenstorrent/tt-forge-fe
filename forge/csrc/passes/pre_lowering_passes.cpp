@@ -90,7 +90,7 @@ bool safe_to_hoist_past(const Graph *graph, const Node *operand)
     if (operand->node_type() != NodeType::kPyOp)
         return false;
 
-    const std::string &op_type = operand->as<graphlib::PyOpNode>()->op_type().op;
+    const std::string &op_type = operand->as<graphlib::PyOpNode>()->op_type().name();
 
     // Any unary op that doesn't change shape, and not transpose (which could keep the same shape)
     if (op_type == "transpose")

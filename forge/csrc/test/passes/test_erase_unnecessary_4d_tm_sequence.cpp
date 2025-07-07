@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 #include "gtest/gtest.h"
+#include "ops/op.hpp"
 #include "passes/erase_unnecessary_4d_tm_sequence.hpp"
 #include "test/graph_api.hpp"
 
@@ -45,8 +46,8 @@ TEST_F(EraseUnnecessary4DSeqTwoOps, two_operands)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            EXPECT_NE(node->as<graphlib::PyOpNode>()->op_type().op, "reshape");
-            EXPECT_NE(node->as<graphlib::PyOpNode>()->op_type().op, "transpose");
+            EXPECT_NE(node->as<graphlib::PyOpNode>()->new_op_type(), ops::OpType::Reshape);
+            EXPECT_NE(node->as<graphlib::PyOpNode>()->new_op_type(), ops::OpType::Transpose);
         }
     }
     EXPECT_EQ(graph->nodes().size(), 5);
@@ -62,8 +63,8 @@ TEST_F(EraseUnnecessary4DSeqThreeOps, three_operands)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            EXPECT_NE(node->as<graphlib::PyOpNode>()->op_type().op, "reshape");
-            EXPECT_NE(node->as<graphlib::PyOpNode>()->op_type().op, "transpose");
+            EXPECT_NE(node->as<graphlib::PyOpNode>()->new_op_type(), ops::OpType::Reshape);
+            EXPECT_NE(node->as<graphlib::PyOpNode>()->new_op_type(), ops::OpType::Transpose);
         }
     }
     EXPECT_EQ(graph->nodes().size(), 6);
@@ -83,8 +84,8 @@ TEST_F(EraseUnnecessary4DSeqTwoOps, na1)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            EXPECT_NE(node->as<graphlib::PyOpNode>()->op_type().op, "select");
-            EXPECT_NE(node->as<graphlib::PyOpNode>()->op_type().op, "interleave");
+            EXPECT_NE(node->as<graphlib::PyOpNode>()->new_op_type(), ops::OpType::Select);
+            EXPECT_NE(node->as<graphlib::PyOpNode>()->new_op_type(), ops::OpType::Interleave);
         }
     }
     EXPECT_EQ(graph->nodes().size(), 6);
@@ -105,8 +106,8 @@ TEST_F(EraseUnnecessary4DSeqTwoOps, na2)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            EXPECT_NE(node->as<graphlib::PyOpNode>()->op_type().op, "select");
-            EXPECT_NE(node->as<graphlib::PyOpNode>()->op_type().op, "interleave");
+            EXPECT_NE(node->as<graphlib::PyOpNode>()->new_op_type(), ops::OpType::Select);
+            EXPECT_NE(node->as<graphlib::PyOpNode>()->new_op_type(), ops::OpType::Interleave);
         }
     }
     EXPECT_EQ(graph->nodes().size(), 7);

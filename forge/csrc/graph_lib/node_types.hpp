@@ -373,25 +373,29 @@ struct OpType
     using Attr = ForgeOpAttr;
     using Attrs = ForgeOpAttrs;
 
-    std::string op;
+    std::string op_;
     std::vector<Attr> attr;  // legacy path
     Attrs named_attrs;       // new path
 
+   private:
     ops::Op new_op_;
 
+   public:
     OpType(std::string const &op, std::vector<Attr> const &attr = {}, Attrs named_attrs = {}) :
-        op(op), attr(attr), named_attrs(std::move(named_attrs)), new_op_(*this)
+        op_(op), attr(attr), named_attrs(std::move(named_attrs)), new_op_(*this)
     {
     }
 
-    bool operator==(const char *name) const { return op == name; }
-    bool operator==(const std::string &name) const { return op == name; }
+    bool operator==(const ops::OpType other_type) const { return type() == other_type; }
+    bool operator!=(const ops::OpType other_type) const { return !(operator==(other_type)); }
+
     bool operator==(const OpType &other) const
     {
-        return op == other.op and attr == other.attr and named_attrs == other.named_attrs;
+        return *this == other.type() and attr == other.attr and named_attrs == other.named_attrs;
     }
-    bool operator!=(const OpType &other) const { return not(*this == other); }
+    bool operator!=(const OpType &other) const { return !(*this == other); }
 
+    ops::OpType type() const { return new_op_.type(); }
     ops::Op const &new_op() const { return new_op_; }
     Attr const &get_attr(std::string const &name) const { return named_attrs.at(name); }
     Attr &get_attr(std::string const &name) { return named_attrs.at(name); }
@@ -412,9 +416,11 @@ struct OpType
         new_op_.set_attr(name, std::move(attr));
     }
 
+    const std::string &name() const { return op_; }
+
     std::string as_string() const
     {
-        std::string ret = op;
+        std::string ret = op_;
         if (attr.size() > 0)
         {
             ret += "(";
@@ -542,7 +548,7 @@ class OpNode : public TaggedNode
     OpType const &op_type() const { return op_type_; }
     OpType const *op_type_ptr() const { return &op_type_; }
     IRLevel get_ir_level() const { return IRLevel::IR_TT_FORGE; }
-    const std::string &op_name() const { return op_type_.op; }
+    const std::string &op_name() const { return op_type_.name(); }
     const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attr; }
     const OpType::Attrs &named_attrs() { return op_type_.named_attrs; }
     const OpType::Attr &op_attr(std::string const &name) const { return op_type_.get_attr(name); }
@@ -585,7 +591,6 @@ class OpNode : public TaggedNode
     bool is_eltwise_binary() const { return op_type_.is_eltwise_binary(); }
     bool is_eltwise_nary() const { return op_type_.is_eltwise_nary(); }
 
-    bool should_pair_with_sparse(const OpNode *sparse_op_node, const Graph *graph) const;
     void set_output_df_from_operands(const Graph *graph);
     void add_golden_transform(OpType const &op_type) { golden_transforms.insert(golden_transforms.begin(), op_type); }
     void set_golden_transforms(std::vector<OpType> const &other) { golden_transforms = other; }
@@ -659,10 +664,6 @@ class EdgeAttributes
 
     EdgeType edge_type() const { return edge_type_; }
     bool has_tms() const { return not tms.empty(); }
-    bool has_tm(std::string const &tm) const
-    {
-        return std::find_if(tms.begin(), tms.end(), [tm](OpType const &op) { return op.op == tm; }) != tms.end();
-    }
 
     bool operator==(EdgeAttributes const &other) const
     {

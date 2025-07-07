@@ -9,6 +9,7 @@
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "passes/commute_utils.hpp"
 #include "passes/passes_utils.hpp"
 #include "utils/logger.hpp"
@@ -71,7 +72,7 @@ static void insert_pad_within_tile(graphlib::Graph *graph, graphlib::Edge edge, 
     auto &tms = graph->get_edge_attributes(edge)->get_tms();
     for (auto &tm : tms)
     {
-        if (tm.op != "broadcast")
+        if (tm.type() != ops::OpType::Broadcast)
         {
             only_bcast = false;
             break;
@@ -267,7 +268,7 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
         // Fixup broadcast
         for (auto &tm : constant_attr->get_tms())
         {
-            if (tm.op == "broadcast")
+            if (tm.type() == ops::OpType::Broadcast)
             {
                 int tm_dim = multiply->shape().negative_index(std::get<int>(tm.attr[0]));
                 if (tm_dim == -2)

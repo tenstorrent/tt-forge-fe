@@ -5,6 +5,7 @@
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "passes/passes_utils.hpp"
 
 namespace tt::passes
@@ -84,12 +85,13 @@ void pad_output_buffer(graphlib::Graph *graph, const DeviceConfig &device_config
         bool padded_ct = false;
 
         // If un-squeeze and matmul are preceding the output, we need to pad the second matmul operand
-        if (graph->node_by_id(edges[0].producer_node_id)->as<graphlib::OpNode>()->op_type().op == "unsqueeze")
+        if (graph->node_by_id(edges[0].producer_node_id)->as<graphlib::OpNode>()->new_op_type() ==
+            ops::OpType::Unsqueeze)
         {
             edges = graph->operand_data_edges(graph->node_by_id(edges[0].producer_node_id));
             TT_ASSERT(edges.size() == 1);
         }
-        if (graph->node_by_id(edges[0].producer_node_id)->as<graphlib::OpNode>()->op_type().op == "matmul")
+        if (graph->node_by_id(edges[0].producer_node_id)->as<graphlib::OpNode>()->new_op_type() == ops::OpType::Matmul)
         {
             graphlib::Node *matmul = graph->node_by_id(edges[0].producer_node_id);
             edges = graph->operand_data_edges(matmul);
@@ -102,7 +104,7 @@ void pad_output_buffer(graphlib::Graph *graph, const DeviceConfig &device_config
                 {
                     padded_inputs.push_back(producer);
                 }
-                else if (producer->as<graphlib::OpNode>()->op_type().op == "transpose")
+                else if (producer->as<graphlib::OpNode>()->new_op_type() == ops::OpType::Transpose)
                 {
                     if (graph->data_operands(producer)[0]->node_type() == graphlib::NodeType::kInput)
                         padded_inputs.push_back(graph->data_operands(producer)[0]);

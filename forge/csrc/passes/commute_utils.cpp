@@ -5,6 +5,7 @@
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "passes/passes_utils.hpp"
 #include "utils/logger.hpp"
 
@@ -104,7 +105,7 @@ std::tuple<bool, int> can_commute_through_dim(
 
 bool match_unsqueeze(graphlib::OpType const &a, graphlib::OpType const &b)
 {
-    bool fns_match = a.op == "unsqueeze" and b.op == "squeeze";
+    bool fns_match = a.type() == ops::OpType::Unsqueeze and b.type() == ops::OpType::Squeeze;
 
     if (not fns_match)
         return false;
@@ -114,7 +115,7 @@ bool match_unsqueeze(graphlib::OpType const &a, graphlib::OpType const &b)
 
 bool match_squeeze(graphlib::OpType const &a, graphlib::OpType const &b)
 {
-    bool fns_match = a.op == "squeeze" and b.op == "unsqueeze";
+    bool fns_match = a.type() == ops::OpType::Unsqueeze and b.type() == ops::OpType::Squeeze;
 
     if (not fns_match)
         return false;
@@ -122,11 +123,11 @@ bool match_squeeze(graphlib::OpType const &a, graphlib::OpType const &b)
     return std::get<int>(a.attr[0]) == std::get<int>(b.attr[0]);
 }
 
-bool match_reshape(graphlib::OpType const &a, graphlib::OpType const &) { return a.op == "reshape"; }
+bool match_reshape(graphlib::OpType const &a, graphlib::OpType const &) { return a.type() == ops::OpType::Reshape; }
 
 bool match_transpose(graphlib::OpType const &a, graphlib::OpType const &b)
 {
-    if (a.op != "transpose")
+    if (a.type() != ops::OpType::Transpose)
         return false;
 
     int a_dim0 = a.get_attr_as<int>("dim0");
@@ -148,7 +149,7 @@ size_t total_broadcast_volume(graphlib::Graph *graph, graphlib::Edge edge)
     size_t volume = 1;
     for (graphlib::OpType &op_type : tms)
     {
-        if (op_type.op == "broadcast")
+        if (op_type.type() == ops::OpType::Broadcast)
         {
             volume *= std::get<int>(op_type.attr[1]);
         }
@@ -403,7 +404,7 @@ bool commute_through_select(
 
     auto concat_golden_transform = *golden_transform;
 
-    if (concat_golden_transform.op == "reshape")
+    if (concat_golden_transform.type() == ops::OpType::Reshape)
         concat_golden_transform.attr[select_dim] = concat_output_len;
     op->add_golden_transform(concat_golden_transform);
     update_select_attr(op, new_dim);
@@ -538,7 +539,7 @@ bool commute_through_concat(
 
     auto concat_golden_transform = *golden_transform;
 
-    if (concat_golden_transform.op == "reshape")
+    if (concat_golden_transform.type() == ops::OpType::Reshape)
         concat_golden_transform.attr[concat_dim >= 0 ? concat_dim : concat_dim + concat_golden_transform.attr.size()] =
             concat_output_len;
     op->add_golden_transform(concat_golden_transform);
@@ -775,7 +776,7 @@ bool commute_through_reduce(
         reduce_shape = graphlib::Shape::create(reduce_vec);
 
         auto reduce_golden_transform = *golden_transform;
-        if (reduce_golden_transform.op == "reshape")
+        if (reduce_golden_transform.type() == ops::OpType::Reshape)
         {
             reduce_golden_transform.attr[op_reduce_dim] = 1;
             reduce_golden_transform.attr[producer_reduce_dim] = 1;
@@ -818,7 +819,7 @@ bool commute_through_reduce(
         op->set_shape(reduce_shape);
 
         auto reduce_golden_transform = *golden_transform;
-        if (reduce_golden_transform.op == "reshape")
+        if (reduce_golden_transform.type() == ops::OpType::Reshape)
             reduce_golden_transform.attr[reduce_dim] = 1;
 
         op->add_golden_transform(reduce_golden_transform);
@@ -1074,7 +1075,7 @@ std::pair<bool, std::pair<std::vector<int>, std::vector<int>>> handle_shape_chan
     bool can_commute = true;
     for (graphlib::OpType &op_type : tms)
     {
-        if (op_type.op == "broadcast")
+        if (op_type.type() == ops::OpType::Broadcast)
         {
             int bcast_dim = std::get<int>(op_type.attr[0]);
             int volume = std::get<int>(op_type.attr[1]);
@@ -1112,7 +1113,7 @@ void add_or_compound_bcast(graphlib::Graph *graph, graphlib::Edge edge, int dim,
     bool compounded_bcast = false;
     for (graphlib::OpType &op_type : tms)
     {
-        if (op_type.op == "broadcast")
+        if (op_type.type() == ops::OpType::Broadcast)
         {
             int existing_dim = std::get<int>(op_type.attr[0]);
 
@@ -1144,7 +1145,7 @@ void restore_bcast_on_condition(
     // auto tms = graph->get_edge_attributes(edge)->get_tms();
     for (graphlib::OpType &op_type : orig_tms)
     {
-        if (op_type.op == "broadcast")
+        if (op_type.type() == ops::OpType::Broadcast)
         {
             int dim = std::get<int>(op_type.attr[0]);
             int volume = std::get<int>(op_type.attr[1]);
@@ -1205,7 +1206,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
     std::vector<int> bcast_dims;
     for (graphlib::OpType &op_type : tms)
     {
-        if (op_type.op == "broadcast")
+        if (op_type.type() == ops::OpType::Broadcast)
         {
             has_bcasts = true;
             num_bcasts++;
@@ -1416,7 +1417,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
 
                 for (auto &t : tms)
                 {
-                    if (t.op == "broadcast")
+                    if (t.type() == ops::OpType::Broadcast)
                     {
                         int dim = std::get<int>(t.attr[0]);
                         if (dim >= 0)
@@ -1444,7 +1445,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
         for (int i = 0; i < (int)tms.size(); ++i)
         {
             graphlib::OpType op_type = tms[i];
-            if (op_type.op == "broadcast")
+            if (op_type.type() == ops::OpType::Broadcast)
             {
                 int dim = std::get<int>(op_type.attr[0]);
                 if (dim > 0)
@@ -1490,7 +1491,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
 
         for (auto &t : tms)
         {
-            if (t.op == "broadcast")
+            if (t.type() == ops::OpType::Broadcast)
             {
                 int dim = std::get<int>(t.attr[0]);
                 if (dim >= 0)

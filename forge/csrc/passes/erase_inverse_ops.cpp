@@ -7,6 +7,7 @@
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "passes/commute_utils.hpp"
 #include "passes/passes_utils.hpp"
 #include "reportify/reportify.hpp"
@@ -88,7 +89,7 @@ bool has_broadcast_on_dim(graphlib::Graph *graph, graphlib::Edge edge, int neede
     auto tms = graph->get_edge_attributes(edge)->get_tms();
     for (graphlib::OpType &op_type : tms)
     {
-        if (op_type.op == "broadcast")
+        if (op_type.type() == ops::OpType::Broadcast)
         {
             int dim = std::get<int>(op_type.attr[0]);
             if (dim == needed_dim)
@@ -185,7 +186,7 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
                 auto [commute_bcasts, clone_bcasts] =
                     handle_shape_change_through_bcast(graph, first, producer_as_op, op, &commute_shape, &clone_shape)
                         .second;
-                if (golden_transform.op == "reshape")
+                if (golden_transform.type() == ops::OpType::Reshape)
                 {
                     for (std::size_t i = 0; i < golden_transform.attr.size(); i++)
                     {
@@ -332,7 +333,7 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
 
                 for (graphlib::OpType &tm : tms)
                 {
-                    if (tm.op == "broadcast")
+                    if (tm.type() == ops::OpType::Broadcast)
                     {
                         int dim = std::get<int>(tm.attr[0]);
                         int volume = std::get<int>(tm.attr[1]);

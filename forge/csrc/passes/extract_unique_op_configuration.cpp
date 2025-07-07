@@ -49,7 +49,7 @@ UniqueOpShapesAttrsType extract_unique_op_configuration(
         // otherwise it will extract all the unique op configurations in the graph
         if (!supported_opnames.empty())
         {
-            if (std::find(supported_opnames.begin(), supported_opnames.end(), current_node_optype.op) !=
+            if (std::find(supported_opnames.begin(), supported_opnames.end(), current_node_optype.name()) !=
                 supported_opnames.end())
                 continue;
         }
@@ -64,9 +64,9 @@ UniqueOpShapesAttrsType extract_unique_op_configuration(
         // If the op is present in the unique_op_shapes_attrs map, then list of operand shapes
         // of the matched op is compared with the current node operand shapes otherwise the
         // current node operand_shapes and attributes(i.e OpTypes) are added to the unique_op_shapes_attrs map.
-        if (unique_op_shapes_attrs.find(current_node_optype.op) != unique_op_shapes_attrs.end())
+        if (unique_op_shapes_attrs.find(current_node_optype.name()) != unique_op_shapes_attrs.end())
         {
-            auto unique_shapes_attrs_list = unique_op_shapes_attrs.at(current_node_optype.op);
+            auto unique_shapes_attrs_list = unique_op_shapes_attrs.at(current_node_optype.name());
             bool operand_shapes_matched = false;
             for (size_t idx = 0; idx < unique_shapes_attrs_list.size(); idx++)
             {
@@ -85,19 +85,19 @@ UniqueOpShapesAttrsType extract_unique_op_configuration(
                     if (std::find(unique_attrs.begin(), unique_attrs.end(), current_node_optype) == unique_attrs.end())
                     {
                         unique_attrs.push_back(current_node_optype);
-                        unique_op_shapes_attrs[current_node_optype.op].at(idx) = {unique_shapes, unique_attrs};
+                        unique_op_shapes_attrs[current_node_optype.name()].at(idx) = {unique_shapes, unique_attrs};
                         break;
                     }
                 }
             }
             if (!operand_shapes_matched)
             {
-                unique_op_shapes_attrs[current_node_optype.op].push_back({operand_shapes, {current_node_optype}});
+                unique_op_shapes_attrs[current_node_optype.name()].push_back({operand_shapes, {current_node_optype}});
             }
         }
         else
         {
-            unique_op_shapes_attrs[current_node_optype.op] = {{operand_shapes, {current_node_optype}}};
+            unique_op_shapes_attrs[current_node_optype.name()] = {{operand_shapes, {current_node_optype}}};
         }
     }
 
