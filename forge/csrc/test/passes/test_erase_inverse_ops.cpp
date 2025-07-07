@@ -277,8 +277,8 @@ TEST_F(CommuteBroadcastThroughTranspose, commute_broadcast_through_transpose)
     EXPECT_EQ(tms[1].type(), ops::OpType::Broadcast);
     // Broadcast along dimension -2 should become broadcast along -3
     // after commuting through transpose.
-    EXPECT_EQ(std::get<int>(tms[1].attr[0]), -3);
-    EXPECT_EQ(std::get<int>(tms[1].attr[1]), 112);
+    EXPECT_EQ(std::get<int>(tms[1].legacy_attrs_[0]), -3);
+    EXPECT_EQ(std::get<int>(tms[1].legacy_attrs_[1]), 112);
 }
 
 struct UpdateReshapeNamedAttrsTest : testing::Test
@@ -310,7 +310,7 @@ TEST_F(UpdateReshapeNamedAttrsTest, update_named_attrs)
     op_node_reshape->set_shape(new_shape);
     passes::update_reshape_attr(op_node_reshape, new_shape);
 
-    auto updated_attrs = op_node_reshape->op_type().named_attrs;
+    auto updated_attrs = op_node_reshape->op_type().named_attrs_;
     EXPECT_TRUE(updated_attrs.count("shape")) << "Shape attribute not found.";
     auto shape_vector = std::get<std::vector<int>>(updated_attrs["shape"]);
 

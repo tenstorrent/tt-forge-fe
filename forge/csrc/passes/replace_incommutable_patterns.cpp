@@ -34,10 +34,10 @@ static bool hoist_bcast_through_path(graphlib::Graph *graph, std::vector<graphli
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
-            int dim = std::get<int>(op_type.attr[0]);
+            int dim = std::get<int>(op_type.legacy_attrs_[0]);
             if (dim == bcast_dim)
             {
-                bcast_volume = std::get<int>(op_type.attr[1]);
+                bcast_volume = std::get<int>(op_type.legacy_attrs_[1]);
 
                 // Just incase, remove both
                 graph->get_edge_attributes(last_user_edge)->remove_broadcast_dim(bcast_dim);
@@ -84,7 +84,7 @@ static bool is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim(
     is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim &= op->op_name() == "reduce_avg";
     if (not is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim)
         return false;
-    int reduce_dim = std::get<int>(op->op_attrs()[0]);
+    int reduce_dim = std::get<int>(op->op_legacy_attrs()[0]);
 
     is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim &= reduce_dim == -2;
     is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim &=
@@ -100,7 +100,7 @@ static bool is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim(
         std::vector<graphlib::OpNode *> next_ops;
         next_ops.push_back(next_op);
         bool contains_y_bcast = false;
-        int next_reduce_dim = std::get<int>(next_op->op_attrs()[0]);
+        int next_reduce_dim = std::get<int>(next_op->op_legacy_attrs()[0]);
 
         // Since this patten specifically picks up a reduce_avg on y dim, we are now looking for the inverse broadcast
         // on the y dim
@@ -116,9 +116,9 @@ static bool is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim(
             {
                 if (op_type.type() == ops::OpType::Broadcast)
                 {
-                    int bcast_dim = std::get<int>(op_type.attr[0]);
-                    contains_y_bcast |=
-                        bcast_dim == reduce_dim and std::get<int>(op_type.attr[1]) == (int)clone_shape[reduce_dim];
+                    int bcast_dim = std::get<int>(op_type.legacy_attrs_[0]);
+                    contains_y_bcast |= bcast_dim == reduce_dim and
+                                        std::get<int>(op_type.legacy_attrs_[1]) == (int)clone_shape[reduce_dim];
                 }
             }
             if (contains_y_bcast)
@@ -150,7 +150,7 @@ static bool is_y_dim_concat_with_changed_x_dim(
     if (op->op_name() != "concatenate")
         return false;
 
-    int concat_dim = std::get<int>(op->op_attrs()[0]);
+    int concat_dim = std::get<int>(op->op_legacy_attrs()[0]);
 
     if (concat_dim != -2)
         return false;
@@ -210,7 +210,7 @@ static bool attempt_replace_downward_pattern(
         {
             name += "_" + std::to_string(outgoing_edge.edge_creation_id);
         }
-        int reduce_dim = std::get<int>(op->op_attrs()[0]);
+        int reduce_dim = std::get<int>(op->op_legacy_attrs()[0]);
 
         std::vector<graphlib::OpType::Attr> grouped_reduce_attrs{reduce_dim, (int)clone_shape[reduce_dim - 1], true};
         op->change_op_type("grouped_reduce_avg");
@@ -221,7 +221,7 @@ static bool attempt_replace_downward_pattern(
         // Update next reduce shape
         auto next_op = dynamic_cast<graphlib::OpNode *>(graph->data_users(op)[0]);
         auto next_reduce_shape = commute_shape;
-        auto next_reduce_dim = std::get<int>(next_op->op_attrs()[0]);
+        auto next_reduce_dim = std::get<int>(next_op->op_legacy_attrs()[0]);
 
         next_reduce_shape[next_reduce_dim] = next_op->shape()[next_reduce_dim];
         next_op->set_shape(next_reduce_shape);
@@ -236,8 +236,8 @@ static bool attempt_replace_downward_pattern(
             {
                 if (op_type.type() == ops::OpType::Broadcast)
                 {
-                    int bcast_dim = std::get<int>(op_type.attr[0]);
-                    int volume = std::get<int>(op_type.attr[1]);
+                    int bcast_dim = std::get<int>(op_type.legacy_attrs_[0]);
+                    int volume = std::get<int>(op_type.legacy_attrs_[1]);
                     if (bcast_dim == reduce_dim)
                     {
                         continue;

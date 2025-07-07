@@ -374,15 +374,15 @@ struct OpType
     using Attrs = ForgeOpAttrs;
 
     std::string op_;
-    std::vector<Attr> attr;  // legacy path
-    Attrs named_attrs;       // new path
+    std::vector<Attr> legacy_attrs_;  // legacy path
+    Attrs named_attrs_;               // new path
 
    private:
     ops::Op new_op_;
 
    public:
     OpType(std::string const &op, std::vector<Attr> const &attr = {}, Attrs named_attrs = {}) :
-        op_(op), attr(attr), named_attrs(std::move(named_attrs)), new_op_(*this)
+        op_(op), legacy_attrs_(attr), named_attrs_(std::move(named_attrs)), new_op_(*this)
     {
     }
 
@@ -391,14 +391,14 @@ struct OpType
 
     bool operator==(const OpType &other) const
     {
-        return *this == other.type() and attr == other.attr and named_attrs == other.named_attrs;
+        return *this == other.type() and legacy_attrs_ == other.legacy_attrs_ and named_attrs_ == other.named_attrs_;
     }
     bool operator!=(const OpType &other) const { return !(*this == other); }
 
     ops::OpType type() const { return new_op_.type(); }
     ops::Op const &new_op() const { return new_op_; }
-    Attr const &get_attr(std::string const &name) const { return named_attrs.at(name); }
-    Attr &get_attr(std::string const &name) { return named_attrs.at(name); }
+    Attr const &get_attr(std::string const &name) const { return named_attrs_.at(name); }
+    Attr &get_attr(std::string const &name) { return named_attrs_.at(name); }
     template <typename T>
     T const &get_attr_as(std::string const &name) const
     {
@@ -412,7 +412,7 @@ struct OpType
 
     void set_attr(std::string const &name, Attr attr)
     {
-        named_attrs[name] = attr;
+        named_attrs_[name] = attr;
         new_op_.set_attr(name, std::move(attr));
     }
 
@@ -421,30 +421,30 @@ struct OpType
     std::string as_string() const
     {
         std::string ret = op_;
-        if (attr.size() > 0)
+        if (legacy_attrs_.size() > 0)
         {
             ret += "(";
-            for (unsigned int i = 0; i < attr.size(); i++)
+            for (unsigned int i = 0; i < legacy_attrs_.size(); i++)
             {
-                if (std::holds_alternative<bool>(attr[i]))
+                if (std::holds_alternative<bool>(legacy_attrs_[i]))
                 {
-                    ret += std::to_string(std::get<bool>(attr[i])) + ",";
+                    ret += std::to_string(std::get<bool>(legacy_attrs_[i])) + ",";
                 }
-                else if (std::holds_alternative<int>(attr[i]))
+                else if (std::holds_alternative<int>(legacy_attrs_[i]))
                 {
-                    ret += std::to_string(std::get<int>(attr[i])) + ",";
+                    ret += std::to_string(std::get<int>(legacy_attrs_[i])) + ",";
                 }
-                else if (std::holds_alternative<float>(attr[i]))
+                else if (std::holds_alternative<float>(legacy_attrs_[i]))
                 {
-                    ret += std::to_string(std::get<float>(attr[i])) + ",";
+                    ret += std::to_string(std::get<float>(legacy_attrs_[i])) + ",";
                 }
-                else if (std::holds_alternative<std::string>(attr[i]))
+                else if (std::holds_alternative<std::string>(legacy_attrs_[i]))
                 {
-                    ret += std::get<std::string>(attr[i]) + ",";
+                    ret += std::get<std::string>(legacy_attrs_[i]) + ",";
                 }
-                else if (std::holds_alternative<std::vector<int>>(attr[i]))
+                else if (std::holds_alternative<std::vector<int>>(legacy_attrs_[i]))
                 {
-                    auto attr_val = std::get<std::vector<int>>(attr[i]);
+                    auto attr_val = std::get<std::vector<int>>(legacy_attrs_[i]);
                     size_t num_items = attr_val.size();
 
                     ret += "[";
@@ -466,13 +466,13 @@ struct OpType
             ret += ")";
         }
 
-        if (named_attrs.size() > 0)
+        if (named_attrs_.size() > 0)
         {
             using tt::operator<<;
             std::stringstream ss;
             bool first = true;
             ss << "{";
-            for (auto const &[name, value] : named_attrs)
+            for (auto const &[name, value] : named_attrs_)
             {
                 if (not first)
                     ss << ", ";
@@ -549,8 +549,8 @@ class OpNode : public TaggedNode
     OpType const *op_type_ptr() const { return &op_type_; }
     IRLevel get_ir_level() const { return IRLevel::IR_TT_FORGE; }
     const std::string &op_name() const { return op_type_.name(); }
-    const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attr; }
-    const OpType::Attrs &named_attrs() { return op_type_.named_attrs; }
+    const std::vector<OpType::Attr> &op_legacy_attrs() const { return op_type_.legacy_attrs_; }
+    const OpType::Attrs &named_attrs() { return op_type_.named_attrs_; }
     const OpType::Attr &op_attr(std::string const &name) const { return op_type_.get_attr(name); }
     template <typename T>
     const T &op_attr_as(std::string const &name) const

@@ -360,13 +360,13 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
             {
                 if (tm.type() == ops::OpType::Broadcast)
                 {
-                    TT_ASSERT(tm.attr.size() <= 3);
+                    TT_ASSERT(tm.legacy_attrs_.size() <= 3);
                     log_debug(
                         tt::LogAutograd,
                         "Edge has broadcast: dim={} size={}",
-                        std::get<int>(tm.attr[0]),
-                        std::get<int>(tm.attr[1]));
-                    int dim = std::get<int>(tm.attr[0]);
+                        std::get<int>(tm.legacy_attrs_[0]),
+                        std::get<int>(tm.legacy_attrs_[1]));
+                    int dim = std::get<int>(tm.legacy_attrs_[0]);
 
                     NodeContext src = last_out;
                     last_out = create_backward_op(

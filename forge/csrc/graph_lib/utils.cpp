@@ -1148,7 +1148,7 @@ void convert_implicit_to_explicit_bcasts(Graph *graph, Edge edge)
         if (op_type.type() == ops::OpType::Broadcast)
         {
             constexpr bool explicit_bcast = true;
-            std::get<bool>(op_type.attr[2]) = explicit_bcast;
+            std::get<bool>(op_type.legacy_attrs_[2]) = explicit_bcast;
         }
     }
 }
@@ -1208,9 +1208,9 @@ bool swap_broadcast_dims(graphlib::Graph *graph, graphlib::Edge edge, int old_di
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
-            int dim = std::get<int>(op_type.attr[0]);
-            int size = std::get<int>(op_type.attr[1]);
-            bool explicit_bcast = std::get<bool>(op_type.attr[2]);
+            int dim = std::get<int>(op_type.legacy_attrs_[0]);
+            int size = std::get<int>(op_type.legacy_attrs_[1]);
+            bool explicit_bcast = std::get<bool>(op_type.legacy_attrs_[2]);
             if (dim == old_dim)
             {
                 graphlib::OpType updated_bcast("broadcast", {new_dim, size, explicit_bcast});
@@ -1310,8 +1310,8 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Edge edge)
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
-            if (std::get<int>(op_type.attr[0]) >= 0)
-                std::get<int>(op_type.attr[0]) += diff;
+            if (std::get<int>(op_type.legacy_attrs_[0]) >= 0)
+                std::get<int>(op_type.legacy_attrs_[0]) += diff;
         }
     }
     graph->get_edge_attributes(edge)->set_tms(tms);
@@ -1846,9 +1846,9 @@ bool is_consteval_capable_input_no_operand_forks(Graph *graph, InputNode *input)
     if (not std::all_of(user_ops.begin(), user_ops.end(), [op_name](OpNode *n) { return n->op_name() == op_name; }))
         return false;
 
-    auto attrs = user_ops[0]->op_attrs();
+    auto attrs = user_ops[0]->op_legacy_attrs();
     for (OpNode *op : user_ops)
-        if (attrs != op->op_attrs())
+        if (attrs != op->op_legacy_attrs())
             return false;
 
     return true;

@@ -808,7 +808,7 @@ static FracturedNodes fracture_tm(
     else if (op->op_name() == "select")
     {
         NDSlice nd_slice = get_node_nd_slice(graph, op, node_to_fractured_nodes, group);
-        int select_dim = std::get<int>(op->op_attrs().at(0));
+        int select_dim = std::get<int>(op->op_legacy_attrs().at(0));
         if (nd_slice.get_factor(select_dim) != 1)
             log_fatal(
                 "Op {}: Cannot fracture along select dimension[{}] factor[{}]",
