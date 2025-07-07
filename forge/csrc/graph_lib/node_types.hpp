@@ -375,14 +375,14 @@ struct OpType
 
     std::string op_;
     std::vector<Attr> attr;  // legacy path
-    Attrs named_attrs_;      // new path
+    Attrs named_attrs;       // new path
 
    private:
     ops::Op new_op_;
 
    public:
     OpType(std::string const &op, std::vector<Attr> const &attr = {}, Attrs named_attrs = {}) :
-        op_(op), attr(attr), named_attrs_(std::move(named_attrs)), new_op_(*this)
+        op_(op), attr(attr), named_attrs(std::move(named_attrs)), new_op_(*this)
     {
     }
 
@@ -391,14 +391,14 @@ struct OpType
 
     bool operator==(const OpType &other) const
     {
-        return *this == other.type() and attr == other.attr and named_attrs_ == other.named_attrs_;
+        return *this == other.type() and attr == other.attr and named_attrs == other.named_attrs;
     }
     bool operator!=(const OpType &other) const { return !(*this == other); }
 
     ops::OpType type() const { return new_op_.type(); }
     ops::Op const &new_op() const { return new_op_; }
-    Attr const &get_attr(std::string const &name) const { return named_attrs_.at(name); }
-    Attr &get_attr(std::string const &name) { return named_attrs_.at(name); }
+    Attr const &get_attr(std::string const &name) const { return named_attrs.at(name); }
+    Attr &get_attr(std::string const &name) { return named_attrs.at(name); }
     template <typename T>
     T const &get_attr_as(std::string const &name) const
     {
@@ -412,7 +412,7 @@ struct OpType
 
     void set_attr(std::string const &name, Attr attr)
     {
-        named_attrs_[name] = attr;
+        named_attrs[name] = attr;
         new_op_.set_attr(name, std::move(attr));
     }
 
@@ -466,13 +466,13 @@ struct OpType
             ret += ")";
         }
 
-        if (named_attrs_.size() > 0)
+        if (named_attrs.size() > 0)
         {
             using tt::operator<<;
             std::stringstream ss;
             bool first = true;
             ss << "{";
-            for (auto const &[name, value] : named_attrs_)
+            for (auto const &[name, value] : named_attrs)
             {
                 if (not first)
                     ss << ", ";
@@ -550,7 +550,7 @@ class OpNode : public TaggedNode
     IRLevel get_ir_level() const { return IRLevel::IR_TT_FORGE; }
     const std::string &op_name() const { return op_type_.name(); }
     const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attr; }
-    const OpType::Attrs &named_attrs() { return op_type_.named_attrs_; }
+    const OpType::Attrs &named_attrs() { return op_type_.named_attrs; }
     const OpType::Attr &op_attr(std::string const &name) const { return op_type_.get_attr(name); }
     template <typename T>
     const T &op_attr_as(std::string const &name) const

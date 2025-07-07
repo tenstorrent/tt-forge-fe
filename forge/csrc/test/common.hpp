@@ -109,7 +109,7 @@ class GraphTest : public ::testing::Test
     OpType* create_op(
         std::string const& name, graphlib::OpType const& op_type, std::vector<graphlib::Node*> const& operands)
     {
-        return tt::add_node<OpType>(*graph, name, op_type.name(), op_type.attr, operands, {}, {}, op_type.named_attrs_);
+        return tt::add_node<OpType>(*graph, name, op_type.name(), op_type.attr, operands, {}, {}, op_type.named_attrs);
     }
 
     OpType* create_op(graphlib::OpType const& op_type, std::vector<graphlib::Node*> const& operands)

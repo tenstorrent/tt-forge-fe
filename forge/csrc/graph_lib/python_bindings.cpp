@@ -294,7 +294,7 @@ void GraphModule(py::module &m_graph)
             py::arg("named_attrs") = tt::graphlib::OpType::Attrs{})
         .def_readonly("op", &tt::graphlib::OpType::op_)
         .def_readonly("attr", &tt::graphlib::OpType::attr)
-        .def_readonly("named_attrs", &tt::graphlib::OpType::named_attrs_)
+        .def_readonly("named_attrs", &tt::graphlib::OpType::named_attrs)
         .def("eval", &tt::graphlib::OpType::eval)
         .def("shape", &tt::graphlib::OpType::shape)
         .def(
