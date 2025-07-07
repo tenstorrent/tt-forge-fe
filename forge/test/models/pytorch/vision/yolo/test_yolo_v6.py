@@ -25,6 +25,9 @@ from test.models.pytorch.vision.yolo.model_utils.yolov6_utils import (
     check_img_size,
     process_image,
 )
+from yolov6.core.inferer import Inferer
+from yolov6.utils.events import load_yaml
+from yolov6.utils.nms import non_max_suppression
 
 # Didn't dealt with yolov6n6,yolov6s6,yolov6m6,yolov6l6 variants because of its higher input size(1280)
 variants = [
@@ -95,7 +98,30 @@ def test_yolo_v6_pytorch(variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model)
+        
+    # Postprocess
+    det = non_max_suppression(co_out[0])
 
-    # STEP 5 : remove downloaded weights
+    # Send a GET request to fetch the YAML file
+    response = requests.get("https://github.com/meituan/YOLOv6/raw/main/data/coco.yaml")
+
+    with open("coco.yaml", "wb") as file:
+        # Write the content to the file
+        file.write(response.content)
+
+    class_names = load_yaml("coco.yaml")["names"]
+
+    if len(det) and len(det[0]):
+        det[0][:, :4] = Inferer.rescale(input_batch.shape[2:], det[0][:, :4], img_src.shape).round()
+        for *xyxy, conf, cls in reversed(det[0]):
+            class_num = int(cls)
+            conf_value = conf.item()
+            coordinates = [int(x.item()) for x in xyxy]
+            label = class_names[class_num]
+            print(f"Coordinates: {coordinates}, Class: {label}, Confidence: {conf_value:.2f}")
+        print("\n")
+
+    # Cleanup
     os.remove(weights)
+    os.remove("coco.yaml")
