@@ -4,6 +4,7 @@ add_library(ops
     op_abs.cpp
     op_constant.cpp
     op_multiply.cpp
+    op_transpose.cpp
     python_bindings.cpp)
 
 target_link_libraries(ops PUBLIC coverage_config)
