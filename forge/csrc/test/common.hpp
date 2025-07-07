@@ -112,6 +112,12 @@ class GraphTest : public ::testing::Test
         return tt::add_node<OpType>(*graph, name, op_type.name(), op_type.attr, operands, {}, {}, op_type.named_attrs);
     }
 
+    OpType* create_op(tt::ops::Op op, std::vector<graphlib::Node*> const& operands)
+    {
+        std::string name = op.as_string() + std::to_string(op_name_id[op.as_string()]++);
+        return tt::add_node<OpType>(*graph, name, op.as_string(), {}, operands, {}, {}, op.attrs());
+    }
+
     OpType* create_op(graphlib::OpType const& op_type, std::vector<graphlib::Node*> const& operands)
     {
         auto name = op_type.name() + std::to_string(op_name_id[op_type.name()]++);
@@ -202,6 +208,12 @@ class GraphTest : public ::testing::Test
     {
         auto name = "output" + std::to_string(output_name_id++);
         return tt::create_output(*graph, name, operand);
+    }
+
+    void set_graph(Graph* new_graph)
+    {
+        TT_ASSERT(new_graph != nullptr, "New graph must not be null");
+        graph = std::unique_ptr<graphlib::Graph>(new_graph);
     }
 
    private:

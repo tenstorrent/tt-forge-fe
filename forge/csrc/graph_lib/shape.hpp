@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
+#include <initializer_list>
 #include <ostream>
 #include <vector>
 
@@ -40,6 +41,7 @@ class Shape
     constexpr static int FORGE_MAX_DIM_COUNT = 5;
 
     Shape() = default;
+    Shape(std::initializer_list<std::uint32_t> dims) : valid_{true}, type_(FREE), dims_(dims) {}
     Shape(bool valid, Shape::Type type, std::vector<std::uint32_t> dims);
 
     static Shape create(std::vector<std::uint32_t> dims);
