@@ -74,7 +74,7 @@ def test_yolo_v10(
 
     module_name = "YOLOv10"
 
-    torch.manual_seed(0)
+    torch.manual_seed(1)
 
     # Create random inputs
     input_sample = [
@@ -116,8 +116,8 @@ def test_yolo_v10(
     settings.enable_program_cache = True
     configure_devices(device_settings=settings)
 
-    # Model YOLOv10 has smaller PCC than 0.99, but still acceptable, so we set it to 0.95.
-    pcc = 0.95
+    # Model YOLOv10 has smaller PCC than 0.99, but still acceptable, so we set it to 0.98.
+    pcc = 0.98
     verify_cfg = VerifyConfig()
     verify_cfg.value_checker = AutomaticValueChecker(pcc=pcc)
 
