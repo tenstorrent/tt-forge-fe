@@ -226,7 +226,6 @@ void GraphModule(py::module &m_graph)
         .def("get_tile_dim", &Shape::get_tile_dim)
         .def("get_tile_height", &Shape::get_tile_height)
         .def("get_tile_width", &Shape::get_tile_width)
-        .def_static("create", &Shape::create, py::arg("values"))
         .def_static("create_forge", py::overload_cast<std::vector<std::uint32_t>, int, int>(&Shape::create_forge))
         .def_static(
             "create_with_type_from_other", Shape::create_with_type_from_other, py::arg("other"), py::arg("values"))
