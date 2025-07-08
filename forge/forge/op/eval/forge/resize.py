@@ -246,11 +246,7 @@ def decompose_upsample_3d(attr, dc, inputs, resize_method):
     #    scale_factor = attr[0] // shape[-3]
     # else:
     w, cin, din, y, x = (shape.v, shape.w, shape.z, shape.r, shape.c)
-    activations = dc.op(
-        "reshape",
-        inputs,
-        (w, 1, cin * din, y * x),
-    )
+    activations = dc.op_with_named_attrs("reshape", inputs, {"shape": (w, 1, cin * din, y * x)})
     activations = dc.op_with_named_attrs("transpose", [activations], {"dim0": -2, "dim1": -1})
     scale_factor_d = attr[0] // shape[-3]
     scale_factor_y = attr[1] // shape[-2]
@@ -275,16 +271,18 @@ def decompose_upsample_3d(attr, dc, inputs, resize_method):
     #    result = dc.op("reshape", [result], (w, y * scale_factor, x * scale_factor, cin))
     #    dc.fuse(result)
     # else:
-    result = dc.op(
+    result = dc.op_with_named_attrs(
         "reshape",
         [result],
-        (
-            w,
-            cin,
-            din * scale_factor_d,
-            y * scale_factor_y,
-            x * scale_factor_x,
-        ),
+        {
+            "shape": (
+                w,
+                cin,
+                din * scale_factor_d,
+                y * scale_factor_y,
+                x * scale_factor_x,
+            )
+        },
     )
 
     dc.fuse(result)

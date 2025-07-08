@@ -244,7 +244,7 @@ def decompose(type, attr, dc, inputs):
                 inp_shape.insert(axis + 1, 1)
             else:
                 inp_shape.insert(axis, 1)
-            new_inp = dc.op_with_named_attrs("reshape", [inp], {"shape": (*inp_shape,)}, (*inp_shape,))
+            new_inp = dc.op_with_named_attrs("reshape", [inp], {"shape": (*inp_shape,)})
             new_inputs.append(new_inp)
 
         output = dc.op_with_named_attrs("concatenate", new_inputs, {"dim": (axis)}, (axis,))
