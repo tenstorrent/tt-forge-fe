@@ -441,6 +441,7 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Abs: return abs::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Add: return add::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Constant: return constant::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Divide: return divide::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Multiply: return multiply::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Transpose: return transpose::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Reshape: return reshape::backward(*this, context, operand, inputs, output, gradient);
@@ -532,6 +533,7 @@ long Op::initial_flops_estimate(
         case OpType::Abs: return abs::initial_flops_estimate(*this, inputs);
         case OpType::Add: return add::initial_flops_estimate(*this, inputs);
         case OpType::Constant: return 0;
+        case OpType::Divide: return 0;
         case OpType::Multiply: return 0;
         case OpType::Transpose: return 0;
         case OpType::Reshape: return 0;

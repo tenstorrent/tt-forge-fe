@@ -6,11 +6,10 @@ import torch
 from torch import nn
 
 import forge
-from forge.verify.verify import verify
+from forge.verify.verify import verify, verify_backward
 from forge.verify.config import VerifyConfig
 from forge.verify import DeprecatedVerifyConfig
-from forge import ForgeModule, Tensor
-import forge.op
+from forge.verify.value_checkers import AutomaticValueChecker
 
 
 @pytest.mark.parametrize(
@@ -387,29 +386,50 @@ def test_multiply(shape):
     "shape",
     [
         # ((1, 32, 32), (1, 32, 32)),  # Same shapes
-        # ((32, 32, 1), (1,)),         # Broadcasting scalar
-        ((32, 32, 1, 1, 1), (32, 32)),
+        ((32, 32, 1), (1,)),  # Broadcasting scalar
+        # ((32, 32, 1, 1, 1), (32, 32)),
         # ((32, 32), (1, 32, 32)),     # Broadcasting different ranks
         # ((1, 1, 32), (1, 32, 1)),    # Broadcasting different dimensions
     ],
 )
 @pytest.mark.push
 def test_divide(shape):
-    class Divide(ForgeModule):
+    class Divide(nn.Module):
         def __init__(self):
-            super().__init__("Divide")
+            super().__init__()
 
         def forward(self, a, b):
-            return forge.op.Divide("divide", a, b)
+            return torch.div(a, b)
 
     shape_a, shape_b = shape
-    torch_inputs = [torch.rand(shape_a), torch.rand(shape_b) + 0.1]  # Add 0.1 to avoid division by zero
-    inputs = [Tensor.create_from_torch(t) for t in torch_inputs]
+    is_training = True
+
+    # Create tensors avoiding division by zero
+    input_a = torch.randn(shape_a, requires_grad=is_training)
+    input_b = torch.randn(shape_b, requires_grad=is_training)
+
+    # Manually set values to avoid zero (keeping as leaf tensor)
+    with torch.no_grad():
+        input_b[input_b.abs() < 0.1] = 1.0
+
+    inputs = [input_a, input_b]
 
     framework_model = Divide()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=is_training)
 
-    verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    grad = torch.rand_like(fw_out[0])
+
+    verify_backward(
+        inputs,
+        grad,
+        fw_out[0],
+        co_out[0],
+        framework_model,
+        compiled_model,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)),
+    )
 
 
 @pytest.mark.push

@@ -5095,7 +5095,7 @@ def run_forge_compile_passes(
             DecomposePower(),
             DecomposeNegative(),
             DecomposeRsqrt(),
-            InvertDivide(),
+            # InvertDivide(),
             ExplicateTranspose(),
             ExplicateHSliceTranspose(),
             DecomposeConv1DToConv2D(),

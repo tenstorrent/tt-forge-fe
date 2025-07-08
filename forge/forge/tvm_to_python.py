@@ -1703,6 +1703,7 @@ tvm_to_forge_op_map = {
     "concatenate": "concatenate",
     "cos": "cos",
     "cumsum": "cumsum",
+    "divide": "divide",
     "embedding": "embedding",
     "equal": "equal",
     "exp": "exp",
@@ -1800,6 +1801,7 @@ forge_op_to_function_name = {
     "conv3d": "forge.op.Conv3d",
     "cos": "forge.op.Cosine",
     "cumsum": "forge.op.CumSum",
+    "divide": "forge.op.Divide",
     "dropout": "forge.op.Identity",  # (Temporary): change when forge supports dropout
     "embedding": "forge.op.Embedding",
     "equal": "forge.op.Equal",
