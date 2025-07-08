@@ -32,7 +32,10 @@ class Wrapper(torch.nn.Module):
 
 
 variants = [
-    pytest.param("state-spaces/mamba-790m-hf"),
+    pytest.param(
+        "state-spaces/mamba-790m-hf",
+        marks=pytest.mark.push,
+    ),
     pytest.param(
         "state-spaces/mamba-2.8b-hf",
         marks=[
@@ -53,6 +56,7 @@ variants = [
     ),
     pytest.param(
         "state-spaces/mamba-370m-hf",
+        marks=pytest.mark.push,
     ),
 ]
 

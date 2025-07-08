@@ -28,7 +28,7 @@ from test.models.pytorch.vision.glpn_kitti.model_utils.utils import (
     [
         pytest.param(
             "vinvino02/glpn-kitti",
-            marks=[pytest.mark.xfail],
+            marks=[pytest.mark.xfail, pytest.mark.push],
         ),
     ],
 )

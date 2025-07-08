@@ -24,7 +24,14 @@ from test.models.pytorch.vision.yolo.model_utils.yolo_utils import (
     load_yolo_model_and_image,
 )
 
-variants = ["yolov10x", "yolov10n"]
+# variants = ["yolov10x", "yolov10n"]
+variants = [
+    pytest.param(
+        "yolov10x",
+        marks=pytest.mark.push,
+    ),
+    pytest.param("yolov10n"),
+]
 
 
 @pytest.mark.nightly

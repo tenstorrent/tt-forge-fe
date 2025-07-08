@@ -5,7 +5,6 @@ import pytest
 import torch
 from loguru import logger
 from PIL import Image
-from third_party.tt_forge_models.tools.utils import get_file
 from transformers import (
     AutoImageProcessor,
     PerceiverForImageClassificationConvProcessing,
@@ -26,6 +25,7 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
+from third_party.tt_forge_models.tools.utils import get_file
 
 from test.models.models_utils import print_cls_results
 
@@ -50,7 +50,7 @@ variants = [
     pytest.param("deepmind/vision-perceiver-conv", id="deepmind/vision-perceiver-conv"),
     pytest.param(
         "deepmind/vision-perceiver-learned",
-        marks=pytest.mark.xfail,
+        marks=[pytest.mark.xfail, pytest.mark.push],
         id="deepmind/vision-perceiver-learned",
     ),
     pytest.param(

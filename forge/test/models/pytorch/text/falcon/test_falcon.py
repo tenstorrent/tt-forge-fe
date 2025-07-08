@@ -61,7 +61,10 @@ def test_falcon(variant):
 
 
 variants = [
-    pytest.param("tiiuae/Falcon3-1B-Base"),
+    pytest.param(
+        "tiiuae/Falcon3-1B-Base",
+        marks=pytest.mark.push,
+    ),
     pytest.param(
         "tiiuae/Falcon3-3B-Base",
         marks=pytest.mark.xfail,

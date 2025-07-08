@@ -43,7 +43,7 @@ import json
 collect_ignore = ["legacy_tests"]
 
 watchdog_timer_default = 1800  # default expiration in seconds (test not in .test_durations)
-watchdog_timer_minimum = 300  # minimum expiration in seconds
+watchdog_timer_minimum = 900  # minimum expiration in seconds
 watchdog_abort_timer = None
 watchdog_test_durations = None
 

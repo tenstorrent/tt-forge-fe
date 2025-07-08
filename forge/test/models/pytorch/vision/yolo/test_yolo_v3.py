@@ -21,6 +21,7 @@ from forge.verify.verify import verify
 from third_party.tt_forge_models.yolov3 import ModelLoader  # isort:skip
 
 
+@pytest.mark.push
 @pytest.mark.nightly
 def test_yolo_v3():
     # Record Forge Property
