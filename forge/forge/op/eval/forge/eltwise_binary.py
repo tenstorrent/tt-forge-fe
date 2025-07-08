@@ -111,37 +111,17 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
 
 
 def decompose(op_type, attr, dc, inputs):
-    if op_type == "divide":
-        recip = dc.op(Reciprocal.create(), [inputs[1]])
-        result = dc.op("multiply", [inputs[0], recip])
-        dc.fuse(result)
-        return
-    # Can be used if backend don't implement maximum op in the future.
-    #
-    # assert len(inputs) == 2, "Eltwise binary should have two inputs"
-    # if op_type == "maximum":
-    #     x = inputs[0]
-    #     y = inputs[1]
-
-    #     a_ge = dc.op("greater_equal", (x, y))
-    #     b_lt = dc.op("less", (x, y))
-    #     a_ge_val = dc.op("multiply", (x, a_ge))
-    #     b_lt_val = dc.op("multiply", (y, b_lt))
-    #     res = dc.op("add", (a_ge_val, b_lt_val))
-
-    #     dc.fuse(res)
-    #     return
-
-    ops0_dims = len(inputs[0].shape)
-    ops1_dims = len(inputs[1].shape)
-    if ops0_dims > ops1_dims and ops0_dims == 5:
-        ops1 = dc.op_with_named_attrs("reshape", [inputs[1]], {"shape": inputs[0].shape})
-        result = dc.op(op_type, [inputs[0], ops1])
-        dc.fuse(result)
-    elif ops1_dims > ops0_dims and ops1_dims == 5:
-        ops0 = dc.op_with_named_attrs("reshape", [inputs[0]], {"shape": inputs[1].shape})
-        result = dc.op(op_type, [ops0, inputs[1]])
-        dc.fuse(result)
+    # ops0_dims = len(inputs[0].shape)
+    # ops1_dims = len(inputs[1].shape)
+    # if ops0_dims > ops1_dims and ops0_dims == 5:
+    #     ops1 = dc.op("reshape", [inputs[1]], list(inputs[0].shape))
+    #     result = dc.op(op_type, [inputs[0], ops1])
+    #     dc.fuse(result)
+    # elif ops1_dims > ops0_dims and ops1_dims == 5:
+    #     ops0 = dc.op("reshape", [inputs[0]], list(inputs[1].shape))
+    #     result = dc.op(op_type, [ops0, inputs[1]])
+    #     dc.fuse(result)
+    pass
 
 
 def decompose_post_autograd(op_type, attr, dc, inputs):

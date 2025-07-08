@@ -9,6 +9,8 @@ import forge
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 from forge.verify import DeprecatedVerifyConfig
+from forge import ForgeModule, Tensor
+import forge.op
 
 
 @pytest.mark.parametrize(
@@ -376,6 +378,35 @@ def test_multiply(shape):
     inputs = [torch.rand(shape), torch.rand(shape)]
 
     framework_model = Multiply()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "shape",
+    [
+        # ((1, 32, 32), (1, 32, 32)),  # Same shapes
+        # ((32, 32, 1), (1,)),         # Broadcasting scalar
+        ((32, 32, 1, 1, 1), (32, 32)),
+        # ((32, 32), (1, 32, 32)),     # Broadcasting different ranks
+        # ((1, 1, 32), (1, 32, 1)),    # Broadcasting different dimensions
+    ],
+)
+@pytest.mark.push
+def test_divide(shape):
+    class Divide(ForgeModule):
+        def __init__(self):
+            super().__init__("Divide")
+
+        def forward(self, a, b):
+            return forge.op.Divide("divide", a, b)
+
+    shape_a, shape_b = shape
+    torch_inputs = [torch.rand(shape_a), torch.rand(shape_b) + 0.1]  # Add 0.1 to avoid division by zero
+    inputs = [Tensor.create_from_torch(t) for t in torch_inputs]
+
+    framework_model = Divide()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model)
