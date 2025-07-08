@@ -103,7 +103,7 @@ tt::graphlib::NodeContext backward(
     if (input_shape == grad_shape)
     {
         // For addition, gradient flows through unchanged (after handling broadcasting)
-        return gradient;
+        return ac.autograd->create_op(ac, graphlib::OpType("nop", {}, {}), {gradient});
     }
 
     // Shapes don't match, we need to reduce along broadcast dimensions
@@ -123,16 +123,16 @@ tt::graphlib::NodeContext backward(
     {
         if (padded_input_dims[i] < grad_dims[i])
         {
-            int dim = static_cast<int>(i);
+            // Use negative dimension indexing
+            int neg_dim = static_cast<int>(i) - static_cast<int>(grad_dims.size());
 
-            result_grad = ac.autograd->create_op(
-                ac,
-                graphlib::OpType("reduce_sum", {dim, true}, {{"dim", std::vector<int>({dim})}, {"keep_dim", true}}),
-                {result_grad});
+            Attrs named_attrs = {{"keep_dim", true}, {"dim_arg", std::vector<int>{neg_dim}}};
+            result_grad =
+                ac.autograd->create_op(ac, graphlib::OpType("reduce_sum", {neg_dim, true}, named_attrs), {result_grad});
         }
     }
 
-    return result_grad;
+    return ac.autograd->create_op(ac, graphlib::OpType("nop", {}, {}), {result_grad});
 }
 
 long initial_flops_estimate(const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
