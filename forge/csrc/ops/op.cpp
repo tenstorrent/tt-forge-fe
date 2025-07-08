@@ -400,6 +400,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
     switch (type_)
     {
         case OpType::Abs: return abs::eval(*this, tensors);
+        case OpType::Add: return add::eval(*this, tensors);
         case OpType::Constant: return constant::eval(*this, tensors);
         case OpType::Multiply: return multiply::eval(*this, tensors);
         case OpType::Transpose: return transpose::eval(*this, tensors);
@@ -413,6 +414,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
     switch (type_)
     {
         case OpType::Abs: return abs::shape(*this, inputs);
+        case OpType::Add: return add::shape(*this, inputs);
         case OpType::Constant: return constant::shape(*this, inputs);
         case OpType::Multiply: return multiply::shape(*this, inputs);
         case OpType::Transpose: return transpose::shape(*this, inputs);
@@ -431,6 +433,7 @@ tt::graphlib::NodeContext Op::backward(
     switch (type_)
     {
         case OpType::Abs: return abs::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Add: return add::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Constant: return constant::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Multiply: return multiply::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Transpose: return transpose::backward(*this, context, operand, inputs, output, gradient);
@@ -466,6 +469,7 @@ void Op::decompose_initial(
     switch (type_)
     {
         case OpType::Abs: return;
+        case OpType::Add: return;
         case OpType::Constant: return;
         case OpType::Multiply: return;
         case OpType::Transpose: return;
@@ -481,6 +485,7 @@ void Op::decompose_post_optimize(
     switch (type_)
     {
         case OpType::Abs: return;
+        case OpType::Add: return;
         case OpType::Constant: return;
         case OpType::Multiply: return;
         case OpType::Transpose: return;
@@ -496,6 +501,7 @@ void Op::decompose_post_autograd(
     switch (type_)
     {
         case OpType::Abs: return;
+        case OpType::Add: return;
         case OpType::Constant: return;
         case OpType::Multiply: return multiply::decompose_post_autograd(*this, dc, inputs);
         case OpType::Transpose: return;
@@ -509,6 +515,7 @@ long Op::initial_flops_estimate(
     switch (type_)
     {
         case OpType::Abs: return abs::initial_flops_estimate(*this, inputs);
+        case OpType::Add: return add::initial_flops_estimate(*this, inputs);
         case OpType::Constant: return 0;
         case OpType::Multiply: return 0;
         case OpType::Transpose: return 0;
@@ -521,6 +528,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
     switch (type_)
     {
         case OpType::Abs: return false;
+        case OpType::Add: return false;
         case OpType::Constant: return false;
         case OpType::Multiply: return false;
         case OpType::Transpose: return true;
@@ -533,6 +541,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
     switch (type_)
     {
         case OpType::Abs: return true;
+        case OpType::Add: return true;
         case OpType::Constant: return false;
         case OpType::Multiply: return true;
         case OpType::Transpose: return false;
@@ -545,6 +554,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
     switch (type_)
     {
         case OpType::Abs: return true;
+        case OpType::Add: return false;
         case OpType::Constant: return false;
         case OpType::Multiply: return false;
         case OpType::Transpose: return false;
@@ -557,6 +567,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
     switch (type_)
     {
         case OpType::Abs: return false;
+        case OpType::Add: return true;
         case OpType::Constant: return false;
         case OpType::Multiply: return true;
         case OpType::Transpose: return false;
@@ -568,6 +579,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
     switch (type_)
     {
         case OpType::Abs: return false;
+        case OpType::Add: return false;
         case OpType::Constant: return false;
         case OpType::Multiply: return true;
         case OpType::Transpose: return false;

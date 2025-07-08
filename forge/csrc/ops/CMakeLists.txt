@@ -2,6 +2,7 @@ add_library(ops
     STATIC
     op.cpp
     op_abs.cpp
+    op_add.cpp
     op_constant.cpp
     op_multiply.cpp
     op_transpose.cpp

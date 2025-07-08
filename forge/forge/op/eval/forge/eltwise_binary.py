@@ -24,7 +24,6 @@ def eval(type, attr, ops):
     t_ops = to_torch_operands(*ops)
 
     f = {
-        "add": lambda i: torch.add(t_ops[0], t_ops[1]),
         "divide": lambda i: torch.divide(t_ops[0], t_ops[1]),
         "subtract": lambda i: torch.subtract(t_ops[0], t_ops[1]),
         "maximum": lambda i: torch.maximum(t_ops[0], t_ops[1]),
@@ -95,20 +94,7 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
     grad_shape = [1] * (longer_dims - len(grad.shape.as_list())) + grad.shape.as_list()
     grad_shape_len = len(grad_shape)
 
-    if op_type == "add":
-        if inputs[operand].shape != grad.shape:
-            for i in range(len(shapes[operand])):
-                if shapes[operand][i] < grad_shape[i]:
-                    # Negative indexing for reduce axis
-                    grad = ac.op(
-                        "reduce_sum",
-                        (grad,),
-                        (i - grad_shape_len,),
-                        {"keep_dim": True, "dim_arg": [i - grad_shape_len]},
-                    )
-        return ac.op(Nop.create(), (grad,))  # pass gradient through
-
-    elif op_type == "subtract":
+    if op_type == "subtract":
         if inputs[operand].shape != grad.shape:
             for i in range(len(shapes[operand])):
                 if shapes[operand][i] < grad.shape[i]:
@@ -221,17 +207,18 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
 
         dc.fuse(result)
         return
-    else:
-        ops0_dims = len(inputs[0].shape)
-        ops1_dims = len(inputs[1].shape)
-        if ops0_dims > ops1_dims and ops0_dims == 5:
-            ops1 = dc.op("reshape", [inputs[1]], list(inputs[0].shape))
-            result = dc.op(op_type, [inputs[0], ops1])
-            dc.fuse(result)
-        elif ops1_dims > ops0_dims and ops1_dims == 5:
-            ops0 = dc.op("reshape", [inputs[0]], list(inputs[1].shape))
-            result = dc.op(op_type, [ops0, inputs[1]])
-            dc.fuse(result)
+    # Temporarily commented out until we migrate ops to cpp (will remove later)
+    # else:
+    # ops0_dims = len(inputs[0].shape)
+    # ops1_dims = len(inputs[1].shape)
+    # if ops0_dims > ops1_dims and ops0_dims == 5:
+    #     ops1 = dc.op("reshape", [inputs[1]], list(inputs[0].shape))
+    #     result = dc.op(op_type, [inputs[0], ops1])
+    #     dc.fuse(result)
+    # elif ops1_dims > ops0_dims and ops1_dims == 5:
+    #     ops0 = dc.op("reshape", [inputs[0]], list(inputs[1].shape))
+    #     result = dc.op(op_type, [ops0, inputs[1]])
+    #     dc.fuse(result)
 
 
 def decompose_post_optimize(op_type, attr, dc, inputs):
