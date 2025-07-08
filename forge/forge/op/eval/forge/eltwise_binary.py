@@ -24,7 +24,6 @@ def eval(type, attr, ops):
     t_ops = to_torch_operands(*ops)
 
     f = {
-        "divide": lambda i: torch.divide(t_ops[0], t_ops[1]),
         "maximum": lambda i: torch.maximum(t_ops[0], t_ops[1]),
         "minimum": lambda i: torch.minimum(t_ops[0], t_ops[1]),
         "heaviside": lambda i: torch.heaviside(t_ops[0], t_ops[1]),
