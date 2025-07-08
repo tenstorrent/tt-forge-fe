@@ -480,6 +480,7 @@ void Op::decompose_initial(
         case OpType::Abs: return;
         case OpType::Add: return;
         case OpType::Constant: return;
+        case OpType::Divide: return;
         case OpType::Multiply: return;
         case OpType::Transpose: return;
         case OpType::Reshape: return reshape::decompose_initial(*this, dc, inputs);
@@ -517,6 +518,7 @@ void Op::decompose_post_autograd(
         case OpType::Abs: return;
         case OpType::Add: return;
         case OpType::Constant: return;
+        case OpType::Divide: return;
         case OpType::Multiply: return multiply::decompose_post_autograd(*this, dc, inputs);
         case OpType::Transpose: return;
         case OpType::Reshape: return reshape::decompose_post_autograd(*this, dc, inputs);
@@ -613,7 +615,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Add: return false;
         case OpType::Constant: return false;
         case OpType::Divide: return false;
-        case OpType::Multiply: return true;
+        case OpType::Multiply: return false;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
         case OpType::Subtract: return true;
