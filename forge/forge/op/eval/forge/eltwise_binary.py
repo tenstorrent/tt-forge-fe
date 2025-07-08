@@ -25,7 +25,6 @@ def eval(type, attr, ops):
 
     f = {
         "divide": lambda i: torch.divide(t_ops[0], t_ops[1]),
-        "subtract": lambda i: torch.subtract(t_ops[0], t_ops[1]),
         "maximum": lambda i: torch.maximum(t_ops[0], t_ops[1]),
         "minimum": lambda i: torch.minimum(t_ops[0], t_ops[1]),
         "heaviside": lambda i: torch.heaviside(t_ops[0], t_ops[1]),
@@ -94,17 +93,7 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
     grad_shape = [1] * (longer_dims - len(grad.shape.as_list())) + grad.shape.as_list()
     grad_shape_len = len(grad_shape)
 
-    if op_type == "subtract":
-        if inputs[operand].shape != grad.shape:
-            for i in range(len(shapes[operand])):
-                if shapes[operand][i] < grad.shape[i]:
-                    grad = ac.op("reduce_sum", (grad,), (i,), {"keep_dim": True, "dim_arg": [i]})
-        if operand == 0:
-            return ac.op(Nop.create(), (grad,))
-        else:
-            return ac.op("multiply", (grad, ac.constant(-1)))
-
-    elif op_type == "maximum":
+    if op_type == "maximum":
         # TODO
         return ac.op(Nop.create(), (grad,))  # pass gradient through
 
@@ -228,7 +217,7 @@ def decompose_post_optimize(op_type, attr, dc, inputs):
 def initial_flops_estimate(type, attr, ops):
     flops = 0
     output_shape = shape(type, attr, ops)[0]
-    if type in ["add", "subtract", "power", "maximum", "minumum"]:
+    if type in ["add", "power", "maximum", "minumum"]:
         flops = np.prod(output_shape)
 
     return flops
