@@ -296,6 +296,13 @@ void GraphModule(py::module &m_graph)
         .def_readonly("named_attrs", &tt::graphlib::OpType::named_attrs_)
         .def("eval", &tt::graphlib::OpType::eval)
         .def("shape", &tt::graphlib::OpType::shape)
+        .def(
+            "__getattr__",
+            [](tt::graphlib::OpType const &op_type, std::string const &name) { return op_type.attrs().at(name); })
+        .def(
+            "__setattr__",
+            [](tt::graphlib::OpType &op_type, std::string const &name, tt::graphlib::OpType::Attr value)
+            { return op_type.set_attr(name, value); })
         .def("__repr__", [](tt::graphlib::OpType const &op_type) { return op_type.as_string(); });
 
     py::enum_<tt::graphlib::UBlockOrder>(m_graph, "UBlockOrder")
