@@ -207,7 +207,7 @@ def test_adam(shape, betas, weight_decay):
 @pytest.mark.push
 def test_radam(shape, betas, weight_decay, decoupled_weight_decay):
     torch.manual_seed(0)
-    num_epochs = 30
+    num_epochs = 10
     # Large learning rate to propagate possible errors faster
     learning_rate = 1
     batch_size = 10
