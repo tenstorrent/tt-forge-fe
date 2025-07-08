@@ -7,6 +7,10 @@ on:
         description: 'Git SHA of commit in tenstorrent/tt-mlir'
         required: false
         type: string
+      run_perf_benchmark:
+        description: 'Run performance benchmark'
+        required: false
+        type: boolean
   pull_request:
     branches: [ "main" ]
 
@@ -61,6 +65,17 @@ jobs:
       run_id: ${{ github.run_id }}
       runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
 
+  perf-benchmark:
+    if: inputs.run_perf_benchmark
+    needs:
+      - docker-build
+      - build
+    uses: ./.github/workflows/perf-benchmark-sub.yml
+    secrets: inherit
+    with:
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      run_id: ${{ needs.build.outputs.run_id }}
+
   check-all-green:
     if: always()
     needs:
@@ -70,9 +85,11 @@ jobs:
       - build-docs
       - build
       - test
+      - perf-benchmark
     runs-on: Ubuntu-latest
     steps:
     - name: Check if the needed jobs succeeded or failed
       uses: re-actors/alls-green@release/v1
       with:
         jobs: ${{ toJSON(needs) }}
+        allowed-skips: perf-benchmark
