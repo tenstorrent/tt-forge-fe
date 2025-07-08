@@ -995,11 +995,8 @@ py::object eval_reinterpret_shape(Graph *graph, Node *node, py::object input_val
         node->shape(),
         runtime_tensor_transform.reinterpreted_shape);
 
-    std::vector<graphlib::OpType::Attr> attr;
-    auto vec = runtime_tensor_transform.reinterpreted_shape.as_vector();
-    for (auto dim : vec) attr.emplace_back((int)dim);
-
-    graphlib::OpType reinterpret_shape("reshape", attr);
+    graphlib::OpType reinterpret_shape(
+        "reshape", {}, {{"shape", runtime_tensor_transform.reinterpreted_shape.as_vector<int>()}});
     return eval_op(reinterpret_shape, {input_value});
 }
 
