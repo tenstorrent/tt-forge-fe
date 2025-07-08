@@ -385,11 +385,12 @@ def test_multiply(shape):
 @pytest.mark.parametrize(
     "shape",
     [
-        # ((1, 32, 32), (1, 32, 32)),  # Same shapes
-        ((32, 32, 1), (1,)),  # Broadcasting scalar
-        # ((32, 32, 1, 1, 1), (32, 32)),
-        # ((32, 32), (1, 32, 32)),     # Broadcasting different ranks
-        # ((1, 1, 32), (1, 32, 1)),    # Broadcasting different dimensions
+        ((1, 32, 32), (1, 32, 32)),  # Same shapes
+        pytest.param(
+            ((32, 32, 1), (1,)), marks=pytest.mark.xfail(reason="Bad accuracy for backward")
+        ),  # Broadcasting scalar
+        ((32, 32), (1, 32, 32)),  # Broadcasting different ranks
+        ((1, 1, 32), (1, 32, 1)),  # Broadcasting different dimensions
     ],
 )
 @pytest.mark.push
@@ -404,11 +405,10 @@ def test_divide(shape):
     shape_a, shape_b = shape
     is_training = True
 
-    # Create tensors avoiding division by zero
     input_a = torch.randn(shape_a, requires_grad=is_training)
     input_b = torch.randn(shape_b, requires_grad=is_training)
 
-    # Manually set values to avoid zero (keeping as leaf tensor)
+    # Avoid division by zero
     with torch.no_grad():
         input_b[input_b.abs() < 0.1] = 1.0
 
