@@ -122,7 +122,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         size = ac.get_shape(inputs[0])[dim]
         broadcast = ac.op("broadcast", (grad,), (dim, size))
         # Doing explicit broadcast here as TTNN not supporting implicit broadcast in multiply
-        consts = ac.tensor(torch.full(broadcast.shape.as_list(), 1 / size))
+        consts = ac.tensor(torch.full(broadcast.shape.as_list(), 1 / size).to(forge_dataformat_to_pytorch_dtype(broadcast.output_df)))
         return ac.op("multiply", (broadcast, consts))
 
     if type == "grouped_reduce_avg":

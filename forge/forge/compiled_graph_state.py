@@ -114,6 +114,7 @@ class CompiledGraphState:
             consteval_trace,
             ordered_constant_node_names,
         )
+        post_const_eval_constants = {key: t.to(torch.bfloat16) for key, t in post_const_eval_constants.items()}
 
         post_const_eval_parameters: Dict[str, torch.Tensor] = get_post_const_eval_tensors(
             graph,

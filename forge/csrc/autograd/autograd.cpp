@@ -644,6 +644,7 @@ NodeContext autograd_engine::create_constant(
     }
     else if (epoch_type == graphlib::NodeEpochType::Optimizer)
     {
+        node->set_output_df(DataFormat::Float16_b);
         node->set_optimizer();
         add_fwd_to_optimizer_edge(current_fwd_op, node, operand_index);
     }
