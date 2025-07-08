@@ -149,6 +149,21 @@ jobs:
           pip install tt_tvm*.whl --force-reinstall
           pip install tt_forge_fe*.whl --force-reinstall
 
+      - name: Collect tests
+        shell: bash
+        run: |
+          pytest --splits ${{ inputs.test_group_cnt }} \
+               --group ${{ matrix.test_group_id }} \
+               --splitting-algorithm least_duration \
+               -m "${{ inputs.test_mark }}" --collect-only 2>&1 | tee collected.log
+
+      - name: Upload Collected Test Log
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: collected-tests-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: collected.log
+
       - name: Run Test
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
