@@ -61,6 +61,7 @@ def eval(type, attr, ops):
     assert (
         len(attr) == 0
         or (type == "clip" and len(attr) == 2)
+        or (type == "erf" and len(attr) == 0)
         or (type == "leaky_relu" and len(attr) == 1)
         or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
@@ -113,6 +114,7 @@ def eval(type, attr, ops):
 
     # relu_threshold = attr[0] if len(attr) > 0 else 0.0
     f = {
+        "erf": lambda i: torch.erf(i[0]),
         "exp": lambda i: torch.exp(i[0]),
         "sqrt": lambda i: torch.sqrt(i[0]),
         # "relu": lambda i: i[0] * (i[0] >= relu_threshold).to(i[0].dtype),

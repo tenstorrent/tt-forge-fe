@@ -1706,6 +1706,7 @@ tvm_to_forge_op_map = {
     "divide": "divide",
     "embedding": "embedding",
     "equal": "equal",
+    "erf": "erf",
     "exp": "exp",
     "gelu": "gelu",
     "greater_equal": "greater_equal",
@@ -1805,6 +1806,7 @@ forge_op_to_function_name = {
     "dropout": "forge.op.Identity",  # (Temporary): change when forge supports dropout
     "embedding": "forge.op.Embedding",
     "equal": "forge.op.Equal",
+    "erf": "forge.op.Erf",
     "exp": "forge.op.Exp",
     "gelu": "forge.op.Gelu",
     "greater_equal": "forge.op.GreaterEqual",
