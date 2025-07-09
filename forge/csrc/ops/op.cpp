@@ -406,6 +406,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Multiply: return multiply::eval(*this, tensors);
         case OpType::Transpose: return transpose::eval(*this, tensors);
         case OpType::Reshape: return reshape::eval(*this, tensors);
+        case OpType::Squeeze: return squeeze::eval(*this, tensors);
         case OpType::Subtract: return subtract::eval(*this, tensors);
         default: return base_eval(old_op_type, tensors);
     }
@@ -423,6 +424,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Multiply: return multiply::shape(*this, inputs);
         case OpType::Transpose: return transpose::shape(*this, inputs);
         case OpType::Reshape: return reshape::shape(*this, inputs);
+        case OpType::Squeeze: return squeeze::shape(*this, inputs);
         case OpType::Subtract: return subtract::shape(*this, inputs);
         default: return base_shape(old_op_type, inputs);
     }
@@ -555,6 +557,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Multiply: return false;
         case OpType::Transpose: return true;
         case OpType::Reshape: return true;
+        case OpType::Squeeze: return true;
         case OpType::Subtract: return false;
         default: return base_is_tm(old_op_type);
     }
@@ -571,6 +574,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Multiply: return true;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
+        case OpType::Squeeze: return false;
         case OpType::Subtract: return true;
         default: return base_is_eltwise(old_op_type);
     }
@@ -587,6 +591,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Multiply: return false;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
+        case OpType::Squeeze: return false;
         case OpType::Subtract: return false;
         default: return base_is_eltwise_unary(old_op_type);
     }
@@ -603,6 +608,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Multiply: return true;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
+        case OpType::Squeeze: return false;
         case OpType::Subtract: return true;
         default: return base_is_eltwise_binary(old_op_type);
     }
@@ -618,7 +624,8 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Multiply: return false;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
-        case OpType::Subtract: return true;
+        case OpType::Squeeze: return false;
+        case OpType::Subtract: return false;
         default: return base_is_eltwise_nary(old_op_type);
     }
 }
