@@ -57,6 +57,10 @@ tt::graphlib::NodeContext backward(
         ac, graphlib::OpType("reshape", {}, {{"shape", inputs[0].shape.as_vector<int>()}}), {gradient});
 }
 
+/**
+ * Replaces `reshape` with `squeeze`/`unsqueeze` where possible.
+ * Otherwise we leave the original `reshape`.
+ */
 void decompose_reshape(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Reshape, "Wrong op type.");
