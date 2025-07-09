@@ -11,6 +11,8 @@
 #include <variant>
 #include <vector>
 
+#include "utils/assert.hpp"
+
 namespace at
 {
 class Tensor;  // Forward declaration of torch tensor.
@@ -194,7 +196,13 @@ class Op
     template <typename T>
     const T &attr_as(std::string const &name) const
     {
-        return std::get<T>(attrs_.at(name));
+        return std::get<T>(attr(name));
+    }
+
+    template <typename T>
+    T &attr_as(std::string const &name)
+    {
+        return std::get<T>(attr(name));
     }
 
     bool has_attr(const std::string &attr_name) const { return attrs_.find(attr_name) != attrs_.end(); }
@@ -205,6 +213,24 @@ class Op
 
     const std::string &as_string() const;
 
+   private:
+    /**
+     * Returns attribute based on provided string. Since map::at throws if element does not exist but without any useful
+     * info, we will assert to get detailed error message.
+     */
+    const Attr &attr(const std::string &name) const
+    {
+        TT_ASSERT(has_attr(name), "Non existing attribute: {}", name);
+        return attrs_.at(name);
+    }
+
+    Attr &attr(const std::string &name)
+    {
+        TT_ASSERT(has_attr(name), "Non existing attribute: {}", name);
+        return attrs_.at(name);
+    }
+
+   public:
     /* ----------------------------------------------------*
      * Calculations segment. All ops must implement these. *
      * ----------------------------------------------------*/
