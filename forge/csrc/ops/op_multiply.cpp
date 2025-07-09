@@ -4,6 +4,7 @@
 
 #include "autograd/autograd.hpp"
 #include "autograd/binding.hpp"
+#include "common_utils.hpp"
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
@@ -32,58 +33,7 @@ at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Multiply, "Wrong op type.");
-    TT_ASSERT(in_shapes.size() == 2, "multiply::shape should have two input shapes.");
-    TT_ASSERT(op.attrs().size() == 0, "multiply::shape should not have any attrs.");
-
-    std::vector<graphlib::DimBroadcast> broadcast;
-    std::vector<std::uint32_t> output_shape;
-
-    std::vector<std::uint32_t> shape0 = in_shapes[0];
-    std::vector<std::uint32_t> shape1 = in_shapes[1];
-
-    // Add leading 1s to the shorter shape
-    while (shape0.size() < shape1.size())
-    {
-        shape0.insert(shape0.begin(), 1);
-    }
-
-    while (shape1.size() < shape0.size())
-    {
-        shape1.insert(shape1.begin(), 1);
-    }
-
-    output_shape.resize(shape0.size());
-
-    for (size_t dim = 0; dim < shape0.size(); dim++)
-    {
-        if (shape0[dim] == shape1[dim])
-        {
-            output_shape[dim] = shape0[dim];
-            continue;
-        }
-
-        if (shape1[dim] == 1)
-        {
-            // Broadcast shape1 to shape0
-            int neg_dim = static_cast<int>(dim) - static_cast<int>(shape1.size());
-            broadcast.push_back(graphlib::DimBroadcast(1, neg_dim, shape0[dim]));
-            output_shape[dim] = shape0[dim];
-        }
-        else
-        {
-            TT_ASSERT(
-                shape0[dim] == 1,
-                "Eltwise binary ops must have the same shape in both inputs, or one operand must be 1 wide to "
-                "broadcast");
-            // Broadcast shape0 to shape1
-            int neg_dim = static_cast<int>(dim) - static_cast<int>(shape0.size());
-            broadcast.push_back(graphlib::DimBroadcast(0, neg_dim, shape1[dim]));
-            output_shape[dim] = shape1[dim];
-        }
-    }
-
-    return std::make_tuple(graphlib::Shape::create(output_shape), broadcast);
+    return common_utils::compute_elementwise_binary_shape(in_shapes);
 }
 
 void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs)

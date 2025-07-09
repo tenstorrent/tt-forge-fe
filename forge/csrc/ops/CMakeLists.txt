@@ -1,6 +1,7 @@
 add_library(ops
     STATIC
     op.cpp
+    common_utils.cpp
     op_abs.cpp
     op_add.cpp
     op_constant.cpp
