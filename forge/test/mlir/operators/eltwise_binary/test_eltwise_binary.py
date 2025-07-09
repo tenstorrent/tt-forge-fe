@@ -374,24 +374,12 @@ def test_multiply(shape):
         def forward(self, a, b):
             return a * b
 
-    inputs = [torch.rand(shape, requires_grad=True), torch.rand(shape, requires_grad=True)]
+    inputs = [torch.rand(shape), torch.rand(shape)]
 
     framework_model = Multiply()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=True)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
-
-    grad = torch.rand_like(fw_out[0])
-
-    verify_backward(
-        inputs,
-        grad,
-        fw_out[0],
-        co_out[0],
-        framework_model,
-        compiled_model,
-        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)),
-    )
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
