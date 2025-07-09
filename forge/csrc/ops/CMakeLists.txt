@@ -10,6 +10,7 @@ add_library(ops
     op_divide.cpp
     op_multiply.cpp
     op_sine.cpp
+    op_squeeze.cpp
     op_transpose.cpp
     op_reshape.cpp
     op_subtract.cpp
