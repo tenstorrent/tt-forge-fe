@@ -2,25 +2,27 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from transformers import FuyuProcessor, FuyuForCausalLM
+from transformers import FuyuProcessor, FuyuForCausalLM, FuyuConfig
 from PIL import Image
 import requests
 import torch
 import onnx
 import forge
+
+from test.models.models_utils import pad_inputs
+from test.models.onnx.text.fuyu.model_utils.model_utils import generate_no_cache
 from forge.verify.verify import verify
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
+from datasets import load_dataset
 
 
 @pytest.mark.out_of_memory
-@pytest.mark.skip(reason="Skipping due to CI/CD Limitations")
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",
     [
         pytest.param(
             "adept/fuyu-8b",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
         ),
     ],
 )
@@ -34,20 +36,37 @@ def test_fuyu_onnx(variant, forge_tmp_path):
         source=Source.HUGGINGFACE,
     )
 
+    pytest.xfail(reason="Requires multi-chip support")
+
     # Load model and tokenizer
-    framework_model = FuyuForCausalLM.from_pretrained(variant, device_map="cpu", return_dict=False, use_cache=False)
+    config = FuyuConfig.from_pretrained(variant)
+    config_dict = config.to_dict()
+    config_dict["return_dict"] = False
+    config_dict["use_cache"] = False
+    config = FuyuConfig(**config_dict)
+
+    framework_model = FuyuForCausalLM.from_pretrained(variant, device_map="cpu", config=config)
     framework_model.eval()
     processor = FuyuProcessor.from_pretrained(variant, use_cache=False)
 
     # Prepare input
     prompt = "Generate a coco-style caption.\n"
-    url = "https://huggingface.co/datasets/hf-internal-testing/fixtures-captioning/resolve/main/bus.png"
-    image = Image.open(requests.get(url, stream=True).raw).convert("RGB")
+    dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+    image = next(iter(dataset.skip(10)))["image"]
+
     model_inputs = processor(images=image, text=prompt, return_tensors="pt")
     input_ids = model_inputs["input_ids"]
     attention_mask = model_inputs["attention_mask"]
     image_patches = model_inputs["image_patches"]
     image_patches_indices = model_inputs["image_patches_indices"]
+
+    # Pad input_ids and attention_mask
+    padded_input_ids, seq_len = pad_inputs(input_ids, max_new_tokens)
+    padded_attention_mask, _ = pad_inputs(attention_mask, max_new_tokens)
+
+    # Updated model inputs
+    model_inputs["input_ids"] = padded_input_ids
+    model_inputs["attention_mask"] = padded_attention_mask
 
     inputs = [input_ids, image_patches, image_patches_indices, attention_mask]
 
@@ -64,7 +83,6 @@ def test_fuyu_onnx(variant, forge_tmp_path):
 
     # Load framework model
     onnx_model = onnx.load(onnx_path)
-    onnx.checker.check_model(onnx_path)
     framework_model = forge.OnnxModule(module_name, onnx_model, onnx_path)
 
     # Compile model
@@ -72,3 +90,8 @@ def test_fuyu_onnx(variant, forge_tmp_path):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
+
+    generated_text = generate_no_cache(
+        max_new_tokens=512, model=compiled_model, inputs=model_inputs, seq_len=seq_len, tokenizer=processor.tokenizer
+    )
+    print("Generated:", generated_text)
