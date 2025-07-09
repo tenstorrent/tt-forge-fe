@@ -4,6 +4,8 @@
 
 #include "common_utils.hpp"
 
+#include "autograd/autograd.hpp"
+#include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
 #include "utils/assert.hpp"
 
@@ -70,6 +72,53 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> compute_element
     }
 
     return std::make_tuple(graphlib::Shape::create(output_shape), broadcast);
+}
+
+tt::graphlib::NodeContext reduce_broadcast_dimensions(
+    tt::autograd::autograd_context &ac,
+    const tt::graphlib::NodeContext &gradient,
+    const tt::graphlib::Shape &input_shape,
+    const tt::graphlib::Shape &grad_shape)
+{
+    // If shapes match, no reduction needed
+    if (input_shape == grad_shape)
+    {
+        return gradient;
+    }
+
+    // Shapes don't match, we need to reduce along broadcast dimensions
+    tt::graphlib::NodeContext result_grad = gradient;
+    auto input_dims = input_shape.as_vector();
+    auto grad_dims = grad_shape.as_vector();
+
+    // Pad shapes with 1s at the beginning to match max rank
+    size_t max_dims = std::max(input_dims.size(), grad_dims.size());
+
+    std::vector<int> padded_input_dims(max_dims, 1);
+    for (size_t i = 0; i < input_dims.size(); i++)
+    {
+        padded_input_dims[max_dims - input_dims.size() + i] = input_dims[i];
+    }
+
+    std::vector<int> padded_grad_dims(max_dims, 1);
+    for (size_t i = 0; i < grad_dims.size(); i++)
+    {
+        padded_grad_dims[max_dims - grad_dims.size() + i] = grad_dims[i];
+    }
+
+    // For each dimension, if input_dim < grad_dim, we need to reduce_sum
+    for (size_t i = 0; i < max_dims; i++)
+    {
+        if (padded_input_dims[i] >= padded_grad_dims[i])
+            continue;
+
+        int dim = static_cast<int>(i);
+        Attrs named_attrs = {{"keep_dim", true}, {"dim_arg", dim}};
+        result_grad =
+            ac.autograd->create_op(ac, graphlib::OpType("reduce_sum", {dim, true}, named_attrs), {result_grad});
+    }
+
+    return result_grad;
 }
 
 }  // namespace common_utils

@@ -91,39 +91,8 @@ tt::graphlib::NodeContext backward(
     if (input_shape == grad_shape)
         return op_grad;
 
-    // Handle broadcasting - need to reduce dimensions where broadcasting occurred
-    std::vector<std::uint32_t> input_dims = input_shape.as_vector();
-    std::vector<std::uint32_t> grad_dims = grad_shape.as_vector();
-
-    // Pad shapes with leading 1s to make dimensions match
-    std::vector<std::uint32_t> other_dims = inputs[1 - operand].shape.as_vector();
-
-    size_t max_dims = std::max(input_dims.size(), std::max(other_dims.size(), grad_dims.size()));
-
-    std::vector<int> padded_input_dims(max_dims, 1);
-    for (size_t i = 0; i < input_dims.size(); i++)
-    {
-        padded_input_dims[max_dims - input_dims.size() + i] = input_dims[i];
-    }
-
-    std::vector<int> padded_grad_dims(max_dims, 1);
-    for (size_t i = 0; i < grad_dims.size(); i++)
-    {
-        padded_grad_dims[max_dims - grad_dims.size() + i] = grad_dims[i];
-    }
-
-    // For each dimension, if input_dim < grad_dim, we need to reduce_sum
-    for (size_t i = 0; i < max_dims; i++)
-    {
-        if (padded_input_dims[i] >= padded_grad_dims[i])
-            continue;
-
-        int dim = static_cast<int>(i);
-        Attrs named_attrs = {{"keep_dim", true}, {"dim_arg", dim}};
-        op_grad = ac.autograd->create_op(ac, graphlib::OpType("reduce_sum", {dim, true}, named_attrs), {op_grad});
-    }
-
-    return op_grad;
+    // Reduce dimensions where broadcasting occurred using reduce_sum
+    return common_utils::reduce_broadcast_dimensions(ac, op_grad, input_shape, grad_shape);
 }
 
 }  // namespace multiply

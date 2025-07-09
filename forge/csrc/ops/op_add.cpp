@@ -55,33 +55,8 @@ tt::graphlib::NodeContext backward(
         return ac.autograd->create_op(ac, graphlib::OpType("nop", {}, {}), {gradient});
     }
 
-    // Shapes don't match, we need to reduce along broadcast dimensions
-    tt::graphlib::NodeContext result_grad = gradient;
-    auto input_dims = input_shape.as_vector();
-    auto grad_dims = grad_shape.as_vector();
-
-    // Pad input shape with 1s at the beginning to match gradient rank
-    std::vector<std::uint32_t> padded_input_dims = input_dims;
-    while (padded_input_dims.size() < grad_dims.size())
-    {
-        padded_input_dims.insert(padded_input_dims.begin(), 1);
-    }
-
-    // Find broadcast dimensions and sum along them, using reduce_sum
-    for (size_t i = 0; i < padded_input_dims.size(); i++)
-    {
-        if (padded_input_dims[i] < grad_dims[i])
-        {
-            // Use negative dimension indexing
-            int neg_dim = static_cast<int>(i) - static_cast<int>(grad_dims.size());
-
-            Attrs named_attrs = {{"keep_dim", true}, {"dim_arg", std::vector<int>{neg_dim}}};
-            result_grad =
-                ac.autograd->create_op(ac, graphlib::OpType("reduce_sum", {neg_dim, true}, named_attrs), {result_grad});
-        }
-    }
-
-    return ac.autograd->create_op(ac, graphlib::OpType("nop", {}, {}), {result_grad});
+    // Shapes don't match, we need to reduce along broadcast dimensions using reduce_sum
+    return common_utils::reduce_broadcast_dimensions(ac, gradient, input_shape, grad_shape);
 }
 
 long initial_flops_estimate(const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)

@@ -7,6 +7,8 @@
 #include <tuple>
 #include <vector>
 
+#include "autograd/autograd.hpp"
+
 namespace tt
 {
 namespace graphlib
@@ -30,6 +32,22 @@ namespace common_utils
  */
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> compute_elementwise_binary_shape(
     const std::vector<std::vector<std::uint32_t>> &in_shapes);
+
+/**
+ * Handle broadcast reduction in backward pass for elementwise binary operations.
+ * This function reduces gradients along dimensions where broadcasting occurred during forward pass.
+ *
+ * @param ac Autograd context for creating operations
+ * @param gradient The incoming gradient
+ * @param input_shape Shape of the input operand we're computing gradient for
+ * @param grad_shape Shape of the incoming gradient
+ * @return NodeContext with properly reduced gradient
+ */
+tt::graphlib::NodeContext reduce_broadcast_dimensions(
+    tt::autograd::autograd_context &ac,
+    const tt::graphlib::NodeContext &gradient,
+    const tt::graphlib::Shape &input_shape,
+    const tt::graphlib::Shape &grad_shape);
 
 }  // namespace common_utils
 }  // namespace ops
