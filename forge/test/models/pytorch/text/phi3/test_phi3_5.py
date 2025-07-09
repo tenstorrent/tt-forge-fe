@@ -43,7 +43,7 @@ def test_phi3_5_causal_lm(variant):
     # Load model and tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     framework_model = download_model(
-        AutoModelForCausalLM.from_pretrained, variant, return_dict=False, trust_remote_code=True, use_cache=False
+        AutoModelForCausalLM.from_pretrained, variant, trust_remote_code=True, use_cache=False
     )
     framework_model.eval()
 
@@ -53,7 +53,7 @@ def test_phi3_5_causal_lm(variant):
         input_prompt,
         return_tensors="pt",
         max_length=256,
-        pad_to_max_length=True,
+        padding="max_length",
         truncation=True,
     )
     inputs = [inputs["input_ids"], inputs["attention_mask"]]

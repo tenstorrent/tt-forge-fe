@@ -11,7 +11,6 @@ def load_model(model_path="openlm-research/open_llama_3b", **kwargs):
     config = LlamaConfig.from_pretrained(model_path)
 
     # Use defaults or values from kwargs
-    config.return_dict = kwargs.get("return_dict", False)
     config.use_cache = kwargs.get("use_cache", False)
     config.output_attentions = kwargs.get("output_attentions", False)
     config.output_hidden_states = kwargs.get("output_hidden_states", False)

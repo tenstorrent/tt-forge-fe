@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoTokenizer
 
 import forge
 from forge.verify.verify import verify
@@ -32,8 +32,6 @@ def test_ministral(variant, forge_tmp_path):
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, return_tensors="pt")
-    torch_model = download_model(AutoModelForCausalLM.from_pretrained, variant, use_cache=False, return_dict=False)
-    torch_model.eval()
 
     # prepare input
     prompt = "What are the benefits of AI in healthcare?"

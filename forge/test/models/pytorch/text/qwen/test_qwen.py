@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-from transformers import Qwen2Config, Qwen2ForCausalLM, Qwen2Tokenizer
+from transformers import Qwen2ForCausalLM, Qwen2Tokenizer
 
 import forge
 from forge.forge_property_utils import (
@@ -13,6 +13,8 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
+
+from test.models.models_utils import TextModelWrapper
 
 
 @pytest.mark.nightly
@@ -35,27 +37,27 @@ def test_qwen1_5_causal_lm(variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Setup model configuration
-    config = Qwen2Config.from_pretrained(variant)
-    config.use_cache = False
-    config.return_dict = False
-
     # Load model and tokenizer with config
-    framework_model = Qwen2ForCausalLM.from_pretrained(variant, config=config)
-    tokenizer = Qwen2Tokenizer.from_pretrained(variant)
-    tokenizer.pad_token, tokenizer.pad_token_id = (tokenizer.eos_token, tokenizer.eos_token_id)
-
+    model = Qwen2ForCausalLM.from_pretrained(variant, use_cache=False)
     # Disable DynamicCache
     # See: https://github.com/tenstorrent/tt-buda/issues/42
-    framework_model._supports_cache_class = False
+    model._supports_cache_class = False
+    framework_model = TextModelWrapper(model=model, text_embedding=model.model.embed_tokens)
+    framework_model.eval()
+    tokenizer = Qwen2Tokenizer.from_pretrained(variant)
+    tokenizer.pad_token, tokenizer.pad_token_id = (tokenizer.eos_token, tokenizer.eos_token_id)
 
     # Example usage
     batch_size = 1
     prompt = ["My name is Jim Keller and"] * batch_size
 
-    inputs = tokenizer(prompt, return_tensors="pt")
+    inputs = tokenizer(prompt, return_tensors="pt", padding=True, truncation=True, max_length=128)
 
-    inputs = [inputs["input_ids"]]
+    # Get input_ids and attention_mask
+    input_ids = inputs["input_ids"]
+    attention_mask = inputs["attention_mask"]
+
+    inputs = [input_ids, attention_mask]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -78,19 +80,15 @@ def test_qwen1_5_chat(variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Setup model configuration
-    config = Qwen2Config.from_pretrained(variant)
-    config.use_cache = False
-    config.return_dict = False
-
     # Load model and tokenizer with config
-    framework_model = Qwen2ForCausalLM.from_pretrained(variant, config=config)
-    tokenizer = Qwen2Tokenizer.from_pretrained(variant)
-    tokenizer.pad_token, tokenizer.pad_token_id = (tokenizer.eos_token, tokenizer.eos_token_id)
-
+    model = Qwen2ForCausalLM.from_pretrained(variant, use_cache=False)
     # Disable DynamicCache
     # See: https://github.com/tenstorrent/tt-buda/issues/42
-    framework_model._supports_cache_class = False
+    model._supports_cache_class = False
+    framework_model = TextModelWrapper(model=model, text_embedding=model.model.embed_tokens)
+    framework_model.eval()
+    tokenizer = Qwen2Tokenizer.from_pretrained(variant)
+    tokenizer.pad_token, tokenizer.pad_token_id = (tokenizer.eos_token, tokenizer.eos_token_id)
 
     batch_size = 1
     # Sample chat messages
