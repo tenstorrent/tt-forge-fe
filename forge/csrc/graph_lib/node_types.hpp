@@ -6,6 +6,7 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <utils/assert.hpp>
 #include <variant>
 #include <vector>
 
@@ -404,7 +405,13 @@ struct OpType
     template <typename T>
     T const &attr_as(std::string const &name) const
     {
-        return std::get<T>(named_attrs_.at(name));
+        return std::get<T>(attr(name));
+    }
+
+    template <typename T>
+    T &attr_as(std::string const &name)
+    {
+        return std::get<T>(attr(name));
     }
 
     void set_attr(std::string const &name, Attr attr)
@@ -523,6 +530,23 @@ struct OpType
     bool is_eltwise_unary() const;
     bool is_eltwise_binary() const;
     bool is_eltwise_nary() const;
+
+   private:
+    /**
+     * Returns attribute based on provided string. Since map::at throws if element does not exist but without any useful
+     * info, we will assert to get detailed error message.
+     */
+    const ForgeOpAttr &attr(const std::string &name) const
+    {
+        TT_ASSERT(has_attr(name), "Non existing attribute: {}", name);
+        return named_attrs_.at(name);
+    }
+
+    ForgeOpAttr &attr(const std::string &name)
+    {
+        TT_ASSERT(has_attr(name), "Non existing attribute: {}", name);
+        return named_attrs_.at(name);
+    }
 };
 
 class OpNode : public TaggedNode
