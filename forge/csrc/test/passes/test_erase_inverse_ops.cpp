@@ -155,10 +155,14 @@ TEST_F(EraseInverseOps, erase_inverse_ops_dual_reduce)
 
     auto post_transpose = graph->get_node_by_name("post_transpose");
     auto smx_1 = add_node<graphlib::PyOpNode>(*graph, "smx_1", "softmax", {-1, false}, {post_transpose});
-    auto reshape_1 = add_node<graphlib::PyOpNode>(*graph, "reshape_1", "reshape", {1, 512, 10, 16}, {smx_1});
+    auto reshape_1 = add_node<graphlib::PyOpNode>(
+        *graph, "reshape_1", graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 512, 10, 16}}}), {smx_1});
+
     auto reduce_1 = add_node<graphlib::PyOpNode>(*graph, "reduce_1", "reduce_sum", {-2, true}, {reshape_1});
     auto reduce_2 = add_node<graphlib::PyOpNode>(*graph, "reduce_2", "reduce_sum", {-1, true}, {reduce_1});
-    auto reshape_2 = add_node<graphlib::PyOpNode>(*graph, "reshape_2", "reshape", {1, 1, 512, 1}, {reduce_2});
+    auto reshape_2 = add_node<graphlib::PyOpNode>(
+        *graph, "reshape_2", graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 1, 512, 1}}}), {reduce_2});
+
     auto smx_2 = add_node<graphlib::PyOpNode>(*graph, "smx_2", "softmax", {-1, false}, {reshape_2});
     graph->remove_node(graph->get_node_by_name("out0"));
     create_output(*graph, "out0", smx_2);
@@ -203,9 +207,12 @@ TEST_F(EraseInverseOps, erase_inverse_ops_dual_reduce)
 TEST_F(EraseInverseOps, replace_x_y_change_concat_pattern)
 {
     auto post_transpose = graph->get_node_by_name("post_transpose");
-    auto reshape_0 = add_node<graphlib::PyOpNode>(*graph, "reshape_0", "reshape", {256, 320}, {post_transpose});
-    auto reshape_1 = add_node<graphlib::PyOpNode>(*graph, "reshape_1", "reshape", {256, 320}, {post_transpose});
-    auto reshape_2 = add_node<graphlib::PyOpNode>(*graph, "reshape_2", "reshape", {256, 320}, {post_transpose});
+    auto reshape_0 = add_node<graphlib::PyOpNode>(
+        *graph, "reshape_0", graphlib::OpType("reshape", {}, {{"shape", std::vector{256, 320}}}), {post_transpose});
+    auto reshape_1 = add_node<graphlib::PyOpNode>(
+        *graph, "reshape_1", graphlib::OpType("reshape", {}, {{"shape", std::vector{256, 320}}}), {post_transpose});
+    auto reshape_2 = add_node<graphlib::PyOpNode>(
+        *graph, "reshape_2", graphlib::OpType("reshape", {}, {{"shape", std::vector{256, 320}}}), {post_transpose});
     auto concat =
         add_node<graphlib::PyOpNode>(*graph, "concat", "concatenate", {-2}, {reshape_0, reshape_1, reshape_2});
 
@@ -292,7 +299,11 @@ struct UpdateReshapeNamedAttrsTest : testing::Test
         graphlib::Shape initial_shape = graphlib::Shape::create({1, 512, 160});
         tt::graphlib::InputNode *input_node = create_input(*graph, "input", initial_shape);
 
-        auto reshape_node = add_node<graphlib::PyOpNode>(*graph, "reshape", "reshape", {1, 1, 512 * 160}, {input_node});
+        auto reshape_node = add_node<graphlib::PyOpNode>(
+            *graph,
+            "reshape",
+            graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 1, 512 * 160}}}),
+            {input_node});
 
         create_output(*graph, "out", reshape_node);
     }
@@ -387,9 +398,23 @@ struct UpdateConcatNamedAttrsTest : testing::Test
         tt::graphlib::InputNode *input_node_1 = create_input(*graph, "input_1", shape_1);
         tt::graphlib::InputNode *input_node_2 = create_input(*graph, "input_2", shape_2);
 
-        reshape_0 = add_node<graphlib::PyOpNode>(*graph, "reshape_0", "reshape", {1, 1, 512 * 160}, {input_node_0});
-        reshape_1 = add_node<graphlib::PyOpNode>(*graph, "reshape_1", "reshape", {1, 1, 512 * 160}, {input_node_1});
-        reshape_2 = add_node<graphlib::PyOpNode>(*graph, "reshape_2", "reshape", {1, 1, 512 * 160}, {input_node_2});
+        reshape_0 = add_node<graphlib::PyOpNode>(
+            *graph,
+            "reshape_0",
+            graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 1, 512 * 160}}}),
+            {input_node_0});
+
+        reshape_1 = add_node<graphlib::PyOpNode>(
+            *graph,
+            "reshape_1",
+            graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 1, 512 * 160}}}),
+            {input_node_1});
+
+        reshape_2 = add_node<graphlib::PyOpNode>(
+            *graph,
+            "reshape_2",
+            graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 1, 512 * 160}}}),
+            {input_node_2});
 
         auto concat_node =
             add_node<graphlib::PyOpNode>(*graph, "concat", "concatenate", {-2}, {reshape_0, reshape_1, reshape_2});
@@ -730,8 +755,11 @@ struct CommuteTransposeThroughReduce : testing::Test
 
         // Add a reshape to increase dimensionality (3D -> 5D)
         // Reshape to [64, 4, 8, 16, 8] (same volume as [64, 32, 128])
-        auto reshape_node =
-            add_node<graphlib::PyOpNode>(*graph, "reshape", "reshape", {64, 4, 8, 16, 8}, {transpose_node});
+        auto reshape_node = add_node<graphlib::PyOpNode>(
+            *graph,
+            "reshape",
+            graphlib::OpType("reshape", {}, {{"shape", std::vector{64, 4, 8, 16, 8}}}),
+            {transpose_node});
 
         // Add a reduce_avg on the last dimension (-1)
         auto reduce_node = add_node<graphlib::PyOpNode>(*graph, "reduce", "reduce_avg", {-1, true}, {reshape_node});
