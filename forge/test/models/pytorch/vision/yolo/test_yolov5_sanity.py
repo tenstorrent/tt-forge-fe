@@ -23,6 +23,16 @@ from test.utils import fetch_model, yolov5_loader
 base_url = "https://github.com/ultralytics/yolov5/releases/download/v7.0"
 
 
+class Wrapper(torch.nn.Module):
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+
+    def forward(self, i1, i2, i3):
+        ip = [i1, i2, i3]
+        return self.model(ip)
+
+
 def generate_model_yoloV5I320_imgcls_torchhub_pytorch(variant, size):
     name = "yolov5" + size
 
@@ -30,7 +40,7 @@ def generate_model_yoloV5I320_imgcls_torchhub_pytorch(variant, size):
 
     input_shape = (1, 3, 320, 320)
     input_tensor = torch.rand(input_shape)
-    return model.to(torch.bfloat16), [input_tensor.to(torch.bfloat16)], {}
+    return model, [input_tensor], {}
 
 
 size = [
@@ -40,7 +50,7 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
-def test_yolov5_320x320(restore_package_versions, size):
+def test_yolov5_s(restore_package_versions, size):
 
     pcc = 0.99
     if size == "l":
@@ -56,12 +66,23 @@ def test_yolov5_320x320(restore_package_versions, size):
         suffix="320x320",
     )
 
-    framework_model, inputs, _ = generate_model_yoloV5I320_imgcls_torchhub_pytorch(
+    framework_model, _, _ = generate_model_yoloV5I320_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
         size=size,
     )
 
+    framework_model = framework_model.model.model.model[24]
+    framework_model = Wrapper(framework_model)
+    framework_model.to(torch.bfloat16)
+
+    inputs = [
+        torch.load("./debug_yolov5_inputs/input_tensor_0.pt").to(torch.bfloat16),
+        torch.load("./debug_yolov5_inputs/input_tensor_1.pt").to(torch.bfloat16),
+        torch.load("./debug_yolov5_inputs/input_tensor_2.pt").to(torch.bfloat16),
+    ]
+
     logger.info("framework_model={}", framework_model)
+    logger.info("inputs={}", inputs)
 
     # Configurations
     compiler_cfg = CompilerConfig()
