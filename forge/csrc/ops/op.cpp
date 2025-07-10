@@ -499,6 +499,7 @@ void Op::decompose_initial(
         case OpType::Sine: return;
         case OpType::Transpose: return;
         case OpType::Reshape: return reshape::decompose_initial(*this, dc, inputs);
+        case OpType::Squeeze: return;
         case OpType::Subtract: return;
         default: return base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
     }
@@ -521,6 +522,7 @@ void Op::decompose_post_optimize(
         case OpType::Sine: return;
         case OpType::Transpose: return;
         case OpType::Reshape: return;
+        case OpType::Squeeze: return;
         case OpType::Subtract: return;
         default: return base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
     }
@@ -543,6 +545,7 @@ void Op::decompose_post_autograd(
         case OpType::Sine: return;
         case OpType::Transpose: return;
         case OpType::Reshape: return reshape::decompose_post_autograd(*this, dc, inputs);
+        case OpType::Squeeze: return;
         case OpType::Subtract: return subtract::decompose_post_autograd(*this, dc, inputs);
         default: return base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
     }
