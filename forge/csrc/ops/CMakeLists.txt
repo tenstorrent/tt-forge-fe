@@ -8,6 +8,7 @@ add_library(ops
     op_constant.cpp
     op_cosine.cpp
     op_divide.cpp
+    op_heaviside.cpp
     op_multiply.cpp
     op_sine.cpp
     op_transpose.cpp

@@ -26,7 +26,6 @@ def eval(type, attr, ops):
     f = {
         "maximum": lambda i: torch.maximum(t_ops[0], t_ops[1]),
         "minimum": lambda i: torch.minimum(t_ops[0], t_ops[1]),
-        "heaviside": lambda i: torch.heaviside(t_ops[0], t_ops[1]),
         "power": lambda i: torch.pow(t_ops[0], t_ops[1]),
         "greater": lambda i: torch.gt(t_ops[0], t_ops[1]).to(t_ops[0].dtype),
         "greater_equal": lambda i: torch.ge(t_ops[0], t_ops[1]).to(t_ops[0].dtype),
@@ -115,18 +114,7 @@ def decompose(op_type, attr, dc, inputs):
 
 def decompose_post_autograd(op_type, attr, dc, inputs):
     assert len(inputs) == 2, "Eltwise binary should have two inputs"
-    if op_type == "heaviside":
-        x = inputs[0]
-        y = inputs[1]
-        shape = x.shape.as_list()
-        zero = dc.tensor(torch.zeros(shape))
-        x_gt = dc.op("greater", (x, zero))
-        x_eq = dc.op("equal", (x, zero))
-        res = dc.op("multiply", (x_eq, y))
-        res = dc.op("add", (res, x_gt))
-        dc.fuse(res)
-        return
-    elif op_type == "maximum" and os.environ.get("FORGE_ENABLE_MAXIMUM_DECOMPOSITION", "0") == "1":
+    if op_type == "maximum" and os.environ.get("FORGE_ENABLE_MAXIMUM_DECOMPOSITION", "0") == "1":
         operand0, operand1 = inputs[0], inputs[1]
         orig_op0_shape = operand0.shape.as_list()
         orig_op1_shape = operand1.shape.as_list()
