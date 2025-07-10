@@ -402,6 +402,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Abs: return abs::eval(*this, tensors);
         case OpType::Add: return add::eval(*this, tensors);
         case OpType::Constant: return constant::eval(*this, tensors);
+        case OpType::Heaviside: return heaviside::eval(*this, tensors);
         case OpType::Multiply: return multiply::eval(*this, tensors);
         case OpType::Transpose: return transpose::eval(*this, tensors);
         case OpType::Reshape: return reshape::eval(*this, tensors);
@@ -418,6 +419,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Abs: return abs::shape(*this, inputs);
         case OpType::Add: return add::shape(*this, inputs);
         case OpType::Constant: return constant::shape(*this, inputs);
+        case OpType::Heaviside: return heaviside::shape(*this, inputs);
         case OpType::Multiply: return multiply::shape(*this, inputs);
         case OpType::Transpose: return transpose::shape(*this, inputs);
         case OpType::Reshape: return reshape::shape(*this, inputs);
@@ -513,6 +515,7 @@ void Op::decompose_post_autograd(
         case OpType::Abs: return;
         case OpType::Add: return;
         case OpType::Constant: return;
+        case OpType::Heaviside: return heaviside::decompose_post_autograd(*this, dc, inputs);
         case OpType::Multiply: return multiply::decompose_post_autograd(*this, dc, inputs);
         case OpType::Transpose: return;
         case OpType::Reshape: return reshape::decompose_post_autograd(*this, dc, inputs);
@@ -559,6 +562,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Abs: return true;
         case OpType::Add: return true;
         case OpType::Constant: return false;
+        case OpType::Heaviside: return true;
         case OpType::Multiply: return true;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
@@ -589,6 +593,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Abs: return false;
         case OpType::Add: return true;
         case OpType::Constant: return false;
+        case OpType::Heaviside: return true;
         case OpType::Multiply: return true;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
