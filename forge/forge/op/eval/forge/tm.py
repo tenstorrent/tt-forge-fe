@@ -283,9 +283,8 @@ def eval(type, attr, ops):
         return act.narrow(dim, start, length)
 
     if type == "unsqueeze":
-        assert len(attr) == 2
+        assert len(attr) == 1
         dim = attr[0]
-        input_ndim = attr[1]
         act = t_ops[0]
         return torch.unsqueeze(act, dim)
 
@@ -548,10 +547,10 @@ def shape(type, attr, ops):
         return tuple(shape), []
 
     if type == "unsqueeze":
-        assert len(attr) == 2
+        assert len(attr) == 1
         shape = list(ops[0])
         dim = attr[0]
-        input_ndim = attr[1]
+        input_ndim = len(shape)
         # Handle negative dimension
         if dim < 0:
             # Adjust dim to be within the correct range
@@ -696,25 +695,13 @@ def backward(type, attr, ac, operand, inputs, output, grad):
             raise NotImplementedError("Unimplemented narrow in forge")
 
     elif type == "unsqueeze":
-        assert len(attr) == 2
+        assert len(attr) == 1
         if len(inputs[0].shape) == len(grad.shape):
             # Dimensionality already matches, no need to squeeze
             return grad
 
         dim = attr[0]
-        input_ndim = attr[1]
         return ac.op("squeeze", (grad,), (dim,), {"dim": dim})
-
-    elif type == "squeeze":
-        assert len(attr) == 1
-        if len(inputs[0].shape) == len(grad.shape):
-            # Dimensionality already matches, no need to unsqueeze
-            return grad
-
-        dim = attr[0]
-        if grad.shape.len() == 4:  # Cannot unsqueeze beyond 4D
-            return ac.op(Nop.create(), (grad,))
-        return ac.op("unsqueeze", (grad,), attributes=(dim, grad.shape.len()), named_attrs={"dim": dim})
 
     elif type == "broadcast":
         assert len(attr) == 3
@@ -784,7 +771,7 @@ def unsqueeze_input_for_reshape_decomp(dc, inp):
     current_shape = inp.shape.as_list()
     while len(current_shape) < 4:
         current_shape.insert(0, 1)
-        inp = dc.op_with_named_attrs("unsqueeze", (inp,), {"dim": 0}, (0, len(inp.shape.as_list())))
+        inp = dc.op_with_named_attrs("unsqueeze", (inp,), {"dim": 0}, (0,))
 
     return inp
 
@@ -1144,10 +1131,7 @@ def decompose_xy_unflatten(inputs, dc, orig_shape, attr):
             "unsqueeze",
             [result],
             {"dim": 0},
-            (
-                0,
-                2,
-            ),
+            (0,),
         )
     _orig_shape = result.shape
     slice_factor = attr[-2] if attr[-1] < TILE_DIM else (math.ceil(attr[-2] / TILE_DIM) * TILE_DIM)
@@ -1249,7 +1233,7 @@ def decompose_post_optimize(type, attr, dc, inputs):
                         result,
                     ],
                     {"dim": 0},
-                    (0, len(result.shape.as_list())),
+                    (0,),
                 )
 
             spm = torch.stack([spm] * result.shape[-3], -3).unsqueeze(0)
