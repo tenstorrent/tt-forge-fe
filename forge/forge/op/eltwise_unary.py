@@ -548,7 +548,7 @@ def Dropout(name: str, operandA: Tensor, p: float = 0.5, training: bool = True, 
         Forge tensor
     """
 
-    return op("dropout", name, operandA, attrs=(p, training, seed)).get_tensor()
+    return op("dropout", name, operandA, p=p, training=training, seed=seed).get_tensor()
 
 
 def Tilize(name: str, operandA: Tensor) -> Tensor:
