@@ -758,7 +758,7 @@ def unsqueeze_input_for_reshape_decomp(dc, inp):
     current_shape = inp.shape.as_list()
     while len(current_shape) < 4:
         current_shape.insert(0, 1)
-        inp = dc.op_with_named_attrs("unsqueeze", (inp,), {"dim": 0}, (0,))
+        inp = dc.op_with_named_attrs("unsqueeze", (inp,), {"dim": 0})
 
     return inp
 
@@ -1118,7 +1118,6 @@ def decompose_xy_unflatten(inputs, dc, orig_shape, attr):
             "unsqueeze",
             [result],
             {"dim": 0},
-            (0,),
         )
     _orig_shape = result.shape
     slice_factor = attr[-2] if attr[-1] < TILE_DIM else (math.ceil(attr[-2] / TILE_DIM) * TILE_DIM)
@@ -1220,7 +1219,6 @@ def decompose_post_optimize(type, attr, dc, inputs):
                         result,
                     ],
                     {"dim": 0},
-                    (0,),
                 )
 
             spm = torch.stack([spm] * result.shape[-3], -3).unsqueeze(0)
