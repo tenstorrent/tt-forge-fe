@@ -64,7 +64,6 @@ def eval(type, attr, ops):
         or (type == "leaky_relu" and len(attr) == 1)
         or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
-        or (type == "dropout" and len(attr) == 3)
         or (type == "tile_broadcast" and len(attr) == 2)
         or (type == "gelu" and len(attr) == 1)
         or (type == "gelu_derivative" and len(attr) == 1)
@@ -78,14 +77,6 @@ def eval(type, attr, ops):
     if original_types[0] != torch.float32:
         if type in ["gelu", "gelu_derivative"]:
             t_ops = tuple(t.type(torch.float32) for t in t_ops)
-
-    if type == "dropout":
-        p, training, seed = attr
-        rng_state = torch.get_rng_state()
-        torch.manual_seed(seed)
-        ret = torch.nn.functional.dropout(t_ops[0], p=p, training=bool(training))
-        torch.set_rng_state(rng_state)
-        return ret
 
     if type == "relu":
 
