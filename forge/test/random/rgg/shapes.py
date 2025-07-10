@@ -96,7 +96,8 @@ class OperatorShapes:
         test_context: RandomizerTestContext = calculation_context.test_context
         rng_shape = test_context.rng_shape
         forward_kwargs = calculation_context.forward_kwargs
-        axis = forward_kwargs["axis"]
+        axis_column = "axis" if "axis" in forward_kwargs else "dim"
+        axis = forward_kwargs[axis_column]
 
         if axis >= len(output_shape) or axis < 0:
             axis %= len(output_shape)
@@ -234,7 +235,8 @@ class AdjustParameters:
 
         input_num = node.input_num
         output_shape = node.output_shape
-        axis = node.forward_kwargs["axis"]
+        axis_column = "axis" if "axis" in node.forward_kwargs else "dim"
+        axis = node.forward_kwargs[axis_column]
 
         if not -len(output_shape) <= axis < len(output_shape):
             axis = None  # must be recalculated
@@ -267,7 +269,7 @@ class AdjustParameters:
                 # Axis 0 is not supported
                 continue
             if input_num_range.operands_min <= mid_size:
-                node.forward_kwargs["axis"] = axis
+                node.forward_kwargs[axis_column] = axis
                 node.input_num = rng_shape.randint(
                     input_num_range.operands_min, min(mid_size, input_num_range.operands_max)
                 )
