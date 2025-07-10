@@ -161,7 +161,7 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
             result = dc.op("reduce_max", [concat_z], (-3,))
 
         while len(result.shape) > max_operand_nd:
-            result = dc.op("squeeze", [result], (0,))
+            result = dc.op_with_named_attrs("squeeze", [result], {"dim": 0}, (0,))
 
         dc.fuse(result)
         return

@@ -688,7 +688,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
             return grad
 
         dim = attr[0]
-        return ac.op("squeeze", (grad,), (dim,), {"dim": dim})
+        return ac.op_with_named_attrs("squeeze", (grad,), {"dim": dim})
 
     elif type == "broadcast":
         assert len(attr) == 3
@@ -730,7 +730,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
         ret = ac.op_with_named_attrs("reshape", (grad,), {"shape": shape})
         ret = ac.op("reduce_sum", (ret,), (dim, True), {"dim_arg": [dim], "keep_dim": True})
-        ret = ac.op("squeeze", (ret,), (dim,), {"dim": dim})
+        ret = ac.op_with_named_attrs("squeeze", (ret,), {"dim": dim})
         return ret
 
     elif type == "index":
