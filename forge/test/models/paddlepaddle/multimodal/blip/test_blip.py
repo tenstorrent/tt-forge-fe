@@ -48,7 +48,6 @@ def test_blip_text(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_blip_vision(variant):
     # Record Forge properties
@@ -79,7 +78,6 @@ def test_blip_vision(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_blip(variant):
     # Record Forge properties
@@ -133,7 +131,8 @@ def test_blip(variant):
         print(f"{t}: similarity = {sim:.4f}")
 
     # Compile model
-    compiled_model = forge.compile(model, inputs, module_name=module_name)
+    framework_model, _ = paddle_trace(model, inputs=inputs)
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, model, compiled_model)
+    verify(inputs, framework_model, compiled_model)
