@@ -218,7 +218,8 @@ def decompose(type, attr, dc, inputs):
             out_scale = dc.op(
                 "broadcast",
                 [out_scale],
-                attrs=(axis - len(out_scale_shape), act.shape[axis]),
+                dim=axis - len(out_scale_shape),
+                size=act.shape[axis],
                 output_df=out_scale.output_df,
             )
             out_scale_shape[axis] = act.shape[axis]
