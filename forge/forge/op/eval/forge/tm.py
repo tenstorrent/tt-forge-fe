@@ -37,9 +37,6 @@ def eval(type, attr, ops):
     t_ops = to_torch_operands(*ops)
     dtype = ops[0].dtype
 
-    if type == "reshape":
-        return t_ops[0].reshape(attr)
-
     if type == "select":
         assert len(attr) == 4, "Select should have 4 attributes"
         dim, begin, length, stride = attr
@@ -343,9 +340,6 @@ def shape(type, attr, ops):
         type == "adv_index" and len(ops) == 2
     ), f"Tensor manipulation ops should have one input, has {len(ops)} input instead"
 
-    if type == "reshape":
-        return attr, []
-
     if type == "index":
         assert len(attr) == 4, "Index should have 4 attributes"
         dim, start, stop, stride = attr
@@ -624,11 +618,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     assert operand == 0, "Invalid operand index"
 
-    if type == "reshape":
-        shape = inputs[0].shape
-        return ac.op(type, (grad,), attributes=(shape), named_attrs={"shape": shape})
-
-    elif type == "conv2d_depthwise_weights":
+    if type == "conv2d_depthwise_weights":
         return ac.op("conv2d_depthwise_weights_bw", (grad,), attributes=attr)
 
     elif type == "conv2d_grouped_weights":
@@ -764,7 +754,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
         shape.insert(dim, repeats)
 
-        ret = ac.op("reshape", (grad,), shape, {"shape": shape})
+        ret = ac.op_with_named_attrs("reshape", (grad,), {"shape": shape})
         ret = ac.op("reduce_sum", (ret,), (dim, True), {"dim_arg": [dim], "keep_dim": True})
         ret = ac.op("squeeze", (ret,), (dim,), {"dim": dim})
         return ret
@@ -853,7 +843,7 @@ def decompose(type, attr, dc, inputs):
             rest_dims_product = math.prod(permuted_shape[1:])
 
             reshape_dims = [in0_shape[dim], rest_dims_product]
-            reshaped = dc.op_with_named_attrs("reshape", [permuted], {"shape": reshape_dims}, reshape_dims)
+            reshaped = dc.op_with_named_attrs("reshape", [permuted], {"shape": reshape_dims})
         else:
             reshaped = permuted
 
@@ -866,7 +856,7 @@ def decompose(type, attr, dc, inputs):
         if len(in0_shape) != 2:
             output_shape = indices_shape + permuted_shape[1:]
 
-            reshaped_output = dc.op_with_named_attrs("reshape", [selected], {"shape": output_shape}, output_shape)
+            reshaped_output = dc.op_with_named_attrs("reshape", [selected], {"shape": output_shape})
         else:
             reshaped_output = selected
 
@@ -896,7 +886,7 @@ def decompose(type, attr, dc, inputs):
 
         # Step 1: Reshape to (N, C, r, r, H, W)
         reshape_dims = (N, C, r, r, H, W)
-        x = dc.op_with_named_attrs("reshape", [result], {"shape": reshape_dims}, reshape_dims)
+        x = dc.op_with_named_attrs("reshape", [result], {"shape": reshape_dims})
 
         # Step 2: Transpose sequence on x
         x = dc.op_with_named_attrs("transpose", [x], {"dim0": 2, "dim1": 4})  # [0,1,4,3,2,5]
@@ -905,38 +895,10 @@ def decompose(type, attr, dc, inputs):
 
         # Step 3: Final reshape to (N, C, H * r, W * r)
         reshape_dims = (N, C, H * r, W * r)
-        x = dc.op_with_named_attrs("reshape", [x], {"shape": reshape_dims}, reshape_dims)
+        x = dc.op_with_named_attrs("reshape", [x], {"shape": reshape_dims})
 
         dc.fuse(x)
 
-    if type == "reshape":
-        assert len(inputs) == 1
-        input_shape = inputs[0].shape.as_list()
-        shape = list(attr)
-
-        if shape == input_shape:
-            # dc.fuse(dc.op("nop", [inputs[0]]))
-            return
-
-        rank = 0
-        while len(shape) < len(input_shape):
-            shape.insert(0, 1)
-            rank -= 1
-        while len(shape) > len(input_shape) and shape[0] == 1:
-            shape = shape[1:]
-            rank += 1
-
-        is_rank_only_reshape = shape == input_shape
-        if is_rank_only_reshape and rank != 0:
-            result = inputs[0]
-            while rank < 0:
-                result = dc.op_with_named_attrs("squeeze", [result], {"dim": 0}, (0,))
-                rank += 1
-            while rank > 0:
-                result = dc.op_with_named_attrs("unsqueeze", [result], {"dim": 0}, (0, len(result.shape.as_list())))
-                rank -= 1
-            dc.fuse(result)
-            return
     if type == "repeat":
         input_shape = inputs[0].shape.as_list()
         target_shape = attr
@@ -947,7 +909,7 @@ def decompose(type, attr, dc, inputs):
             # `ttir.repeat` does not currently support this directly.
             # To handle this, we first reshape the input to ensure both the input and the repeats have the same dimensions
             new_shape = (1,) * (len(target_shape) - len(input_shape)) + tuple(input_shape)
-            result = dc.op("reshape", [result], new_shape)
+            result = dc.op_with_named_attrs("reshape", [result], {"shape": new_shape})
             result = dc.op_with_named_attrs("repeat", [result], {"repeats": target_shape}, target_shape)
             dc.fuse(result)
 
@@ -1578,37 +1540,3 @@ def decompose_post_optimize(type, attr, dc, inputs):
             dc.fuse(result)
 
     return
-
-
-def decompose_post_autograd(type, attr, dc, inputs):
-    if type == "reshape":
-        assert len(inputs) == 1
-        input_shape = inputs[0].shape.as_list()
-        shape = list(attr)
-
-        if shape == input_shape:
-            # dc.fuse(dc.op(Nop.create(), [inputs[0]]))
-            return
-
-        rank = 0
-        while len(shape) < len(input_shape):
-            shape.insert(0, 1)
-            rank -= 1
-        while len(shape) > len(input_shape) and shape[0] == 1:
-            shape = shape[1:]
-            rank += 1
-
-        is_rank_only_reshape = shape == input_shape
-        if is_rank_only_reshape and rank != 0:
-            result = inputs[0]
-            while rank < 0:
-                result = dc.op_with_named_attrs("squeeze", [result], {"dim": 0}, (0,))
-                rank += 1
-            while rank > 0:
-                import pdb
-
-                pdb.set_trace
-                result = dc.op_with_named_attrs("unsqueeze", [result], {"dim": 0}, (0, len(result.shape.as_list())))
-                rank -= 1
-            dc.fuse(result)
-            return

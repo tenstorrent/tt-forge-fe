@@ -405,7 +405,7 @@ bool commute_through_select(
     auto concat_golden_transform = *golden_transform;
 
     if (concat_golden_transform.type() == ops::OpType::Reshape)
-        concat_golden_transform.legacy_attrs_[select_dim] = concat_output_len;
+        concat_golden_transform.get_attr_as<std::vector<int>>("shape")[select_dim] = concat_output_len;
     op->add_golden_transform(concat_golden_transform);
     update_select_attr(op, new_dim);
 
@@ -540,9 +540,11 @@ bool commute_through_concat(
     auto concat_golden_transform = *golden_transform;
 
     if (concat_golden_transform.type() == ops::OpType::Reshape)
-        concat_golden_transform
-            .legacy_attrs_[concat_dim >= 0 ? concat_dim : concat_dim + concat_golden_transform.legacy_attrs_.size()] =
-            concat_output_len;
+    {
+        int idx = concat_dim >= 0 ? concat_dim
+                                  : concat_dim + concat_golden_transform.get_attr_as<std::vector<int>>("shape").size();
+        concat_golden_transform.get_attr_as<std::vector<int>>("shape")[idx] = concat_output_len;
+    }
     op->add_golden_transform(concat_golden_transform);
     std::vector<graphlib::OpType::Attr> concat_attr;
     concat_attr.push_back(new_dim);
@@ -779,8 +781,8 @@ bool commute_through_reduce(
         auto reduce_golden_transform = *golden_transform;
         if (reduce_golden_transform.type() == ops::OpType::Reshape)
         {
-            reduce_golden_transform.legacy_attrs_[op_reduce_dim] = 1;
-            reduce_golden_transform.legacy_attrs_[producer_reduce_dim] = 1;
+            reduce_golden_transform.get_attr_as<std::vector<int>>("shape")[op_reduce_dim] = 1;
+            reduce_golden_transform.get_attr_as<std::vector<int>>("shape")[producer_reduce_dim] = 1;
         }
 
         op->add_golden_transform(reduce_golden_transform);
@@ -821,7 +823,7 @@ bool commute_through_reduce(
 
         auto reduce_golden_transform = *golden_transform;
         if (reduce_golden_transform.type() == ops::OpType::Reshape)
-            reduce_golden_transform.legacy_attrs_[reduce_dim] = 1;
+            reduce_golden_transform.get_attr_as<std::vector<int>>("shape")[reduce_dim] = 1;
 
         op->add_golden_transform(reduce_golden_transform);
 

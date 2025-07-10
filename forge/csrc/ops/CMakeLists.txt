@@ -6,6 +6,7 @@ add_library(ops
     op_constant.cpp
     op_multiply.cpp
     op_transpose.cpp
+    op_reshape.cpp
     op_subtract.cpp
     python_bindings.cpp)
 

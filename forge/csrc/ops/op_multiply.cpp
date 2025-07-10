@@ -101,16 +101,8 @@ void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::ve
 
     if (input0_size > input1_size && input0_size == 5)
     {
-        // Reshape input[1] to match input[0] shape
-        std::vector<std::uint32_t> uint_vec_target = input0_shape.as_vector();
-        std::vector<int> int_vec_target(uint_vec_target.begin(), uint_vec_target.end());
-
-        std::vector<graphlib::OpType::Attr> pos_attrs(int_vec_target.begin(), int_vec_target.end());
-
-        Attrs named_attrs;
-        named_attrs["shape"] = int_vec_target;
-
-        tt::graphlib::NodeContext ops1 = dc.op(graphlib::OpType("reshape", pos_attrs, named_attrs), {inputs[1]});
+        tt::graphlib::NodeContext ops1 =
+            dc.op(graphlib::OpType("reshape", {}, {{"shape", input0_shape.as_vector<int>()}}), {inputs[1]});
 
         tt::graphlib::NodeContext result = dc.op(graphlib::OpType("multiply"), {inputs[0], ops1});
 
@@ -118,16 +110,8 @@ void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::ve
     }
     else if (input1_size > input0_size && input1_size == 5)
     {
-        // Reshape input[0] to match input[1] shape
-        std::vector<std::uint32_t> uint_vec_target = input1_shape.as_vector();
-        std::vector<int> int_vec_target(uint_vec_target.begin(), uint_vec_target.end());
-
-        std::vector<graphlib::OpType::Attr> pos_attrs(int_vec_target.begin(), int_vec_target.end());
-
-        Attrs named_attrs;
-        named_attrs["shape"] = int_vec_target;
-
-        tt::graphlib::NodeContext ops0 = dc.op(graphlib::OpType("reshape", pos_attrs, named_attrs), {inputs[0]});
+        tt::graphlib::NodeContext ops0 =
+            dc.op(graphlib::OpType("reshape", {}, {{"shape", input1_shape.as_vector<int>()}}), {inputs[0]});
 
         tt::graphlib::NodeContext result = dc.op(graphlib::OpType("multiply"), {ops0, inputs[1]});
 

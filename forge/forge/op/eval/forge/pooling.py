@@ -556,19 +556,15 @@ def decompose(type, attr, dc, inputs):
         # If global average
         if y == kH and x == kW and ((stride[0] == kH and stride[1] == kW) or all(pad == 0 for pad in padding)):
             if channel_last:
-                result = dc.op_with_named_attrs(
-                    "reshape", [activations], {"shape": (w, 1, y * x, cin)}, (w, 1, y * x, cin)
-                )
+                result = dc.op_with_named_attrs("reshape", [activations], {"shape": (w, 1, y * x, cin)})
                 result = dc.op_with_named_attrs("reduce_avg", [result], {"dim": [-2], "keep_dim": True}, (-2, True))
-                result = dc.op_with_named_attrs("reshape", [result], {"shape": (w, 1, 1, cin)}, (w, 1, 1, cin))
+                result = dc.op_with_named_attrs("reshape", [result], {"shape": (w, 1, 1, cin)})
             else:
-                result = dc.op_with_named_attrs(
-                    "reshape", [activations], {"shape": (w, 1, cin, y * x)}, (w, 1, cin, y * x)
-                )
+                result = dc.op_with_named_attrs("reshape", [activations], {"shape": (w, 1, cin, y * x)})
                 result = dc.op_with_named_attrs("transpose", [result], {"dim0": 2, "dim1": 3})
                 result = dc.op_with_named_attrs("reduce_avg", [result], {"dim": [-2], "keep_dim": True}, (-2, True))
                 result = dc.op_with_named_attrs("transpose", [result], {"dim0": 2, "dim1": 3})
-                result = dc.op_with_named_attrs("reshape", [result], {"shape": (w, cin, 1, 1)}, (w, cin, 1, 1))
+                result = dc.op_with_named_attrs("reshape", [result], {"shape": (w, cin, 1, 1)})
             dc.fuse(result)
             return
 
@@ -610,14 +606,10 @@ def decompose(type, attr, dc, inputs):
         if not padding == [0, 0, 0, 0] and (ceil_mode == True or count_include_pad == False):
             if channel_last:
                 _, y_out, x_out, _ = (result.shape.w, result.shape.z, result.shape.r, result.shape.c)
-                result = dc.op_with_named_attrs(
-                    "reshape", [result], {"shape": (w, 1, y_out * x_out, cin)}, (w, 1, y_out * x_out, cin)
-                )
+                result = dc.op_with_named_attrs("reshape", [result], {"shape": (w, 1, y_out * x_out, cin)})
             else:
                 _, _, y_out, x_out = (result.shape.w, result.shape.z, result.shape.r, result.shape.c)
-                result = dc.op_with_named_attrs(
-                    "reshape", [result], {"shape": (w, 1, cin, y_out * x_out)}, (w, 1, cin, y_out * x_out)
-                )
+                result = dc.op_with_named_attrs("reshape", [result], {"shape": (w, 1, cin, y_out * x_out)})
                 result = dc.op_with_named_attrs("transpose", [result], {"dim0": 2, "dim1": 3})
 
             # Since count_include_pad=False undoes math in all padded regions, it takes precedence:
@@ -641,14 +633,10 @@ def decompose(type, attr, dc, inputs):
             result = dc.op("matmul", [undo_math_picker_tensor, result])
 
             if channel_last:
-                result = dc.op_with_named_attrs(
-                    "reshape", [result], {"shape": (w, y_out, x_out, cin)}, (w, y_out, x_out, cin)
-                )
+                result = dc.op_with_named_attrs("reshape", [result], {"shape": (w, y_out, x_out, cin)})
             else:
                 result = dc.op_with_named_attrs("transpose", [result], {"dim0": 2, "dim1": 3})
-                result = dc.op_with_named_attrs(
-                    "reshape", [result], {"shape": (w, cin, y_out, x_out)}, (w, cin, y_out, x_out)
-                )
+                result = dc.op_with_named_attrs("reshape", [result], {"shape": (w, cin, y_out, x_out)})
 
         dc.fuse(result)
 

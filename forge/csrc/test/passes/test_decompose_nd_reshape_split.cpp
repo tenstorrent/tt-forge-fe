@@ -31,7 +31,9 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
     auto input_node = create_input(*graph, "input", graphlib::Shape::create({2, 12}));
 
     // Create reshape: (2, 12) -> (2, 2, 6)
-    auto reshape_node = add_node<graphlib::PyOpNode>(*graph, "reshape", "reshape", {2, 2, 6}, {input_node});
+    auto reshape_node = add_node<graphlib::PyOpNode>(
+        *graph, "reshape", graphlib::OpType("reshape", {}, {{"shape", std::vector{2, 2, 6}}}), {input_node});
+
     reshape_node->set_shape(graphlib::Shape::create({2, 2, 6}));
 
     // Create index operations
@@ -42,10 +44,12 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
     index2_node->set_shape(graphlib::Shape::create({2, 1, 6}));
 
     // Create squeeze operations
-    auto squeeze1_node = add_node<graphlib::PyOpNode>(*graph, "squeeze1", "reshape", {2, 6}, {index1_node});
+    auto squeeze1_node = add_node<graphlib::PyOpNode>(
+        *graph, "squeeze1", graphlib::OpType("reshape", {}, {{"shape", std::vector{2, 6}}}), {index1_node});
     squeeze1_node->set_shape(graphlib::Shape::create({2, 6}));
 
-    auto squeeze2_node = add_node<graphlib::PyOpNode>(*graph, "squeeze2", "reshape", {2, 6}, {index2_node});
+    auto squeeze2_node = add_node<graphlib::PyOpNode>(
+        *graph, "squeeze2", graphlib::OpType("reshape", {}, {{"shape", std::vector{2, 6}}}), {index2_node});
     squeeze2_node->set_shape(graphlib::Shape::create({2, 6}));
 
     // Create outputs
@@ -126,7 +130,8 @@ TEST_F(DecomposeNdReshapeSplitTest, invalid_cases_should_be_skipped)
 
     // Rank change > 1 (should be skipped)
     auto input1 = create_input(*graph, "input1", graphlib::Shape::create({2, 12}));
-    auto reshape1 = add_node<graphlib::PyOpNode>(*graph, "reshape1", "reshape", {2, 2, 2, 3}, {input1});
+    auto reshape1 = add_node<graphlib::PyOpNode>(
+        *graph, "reshape1", graphlib::OpType("reshape", {}, {{"shape", std::vector{2, 2, 2, 3}}}), {input1});
     reshape1->set_shape(graphlib::Shape::create({2, 2, 2, 3}));
     create_output(*graph, "out1", reshape1);
 

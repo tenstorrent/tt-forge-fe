@@ -135,11 +135,11 @@ def decompose(op_type, attr, dc, inputs):
     ops0_dims = len(inputs[0].shape)
     ops1_dims = len(inputs[1].shape)
     if ops0_dims > ops1_dims and ops0_dims == 5:
-        ops1 = dc.op("reshape", [inputs[1]], list(inputs[0].shape))
+        ops1 = dc.op_with_named_attrs("reshape", [inputs[1]], {"shape": inputs[0].shape})
         result = dc.op(op_type, [inputs[0], ops1])
         dc.fuse(result)
     elif ops1_dims > ops0_dims and ops1_dims == 5:
-        ops0 = dc.op("reshape", [inputs[0]], list(inputs[1].shape))
+        ops0 = dc.op_with_named_attrs("reshape", [inputs[0]], {"shape": inputs[1].shape})
         result = dc.op(op_type, [ops0, inputs[1]])
         dc.fuse(result)
 
@@ -201,11 +201,11 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
     # ops0_dims = len(inputs[0].shape)
     # ops1_dims = len(inputs[1].shape)
     # if ops0_dims > ops1_dims and ops0_dims == 5:
-    #     ops1 = dc.op("reshape", [inputs[1]], list(inputs[0].shape))
+    #     ops1 = dc.op_with_named_attrs("reshape", [inputs[1]], {"shape": inputs[0].shape})
     #     result = dc.op(op_type, [inputs[0], ops1])
     #     dc.fuse(result)
     # elif ops1_dims > ops0_dims and ops1_dims == 5:
-    #     ops0 = dc.op("reshape", [inputs[0]], list(inputs[1].shape))
+    #     ops0 = dc.op_with_named_attrs("reshape", [inputs[0]], {"shape": inputs[1].shape})
     #     result = dc.op(op_type, [ops0, inputs[1]])
     #     dc.fuse(result)
 

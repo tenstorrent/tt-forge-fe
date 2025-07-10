@@ -81,7 +81,7 @@ def Reshape(name: str, operandA: Tensor, shape: Tuple[int, ...]) -> Tensor:
 
     assert tensor_volume == volume
 
-    return op("reshape", name, operandA, attrs=shape, shape=shape).get_tensor()
+    return op("reshape", name, operandA, shape=shape).get_tensor()
 
 
 def Index(name: str, operandA: Tensor, dim: int, start: int, stop: int = None, stride: int = 1) -> Tensor:
