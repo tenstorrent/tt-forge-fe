@@ -133,3 +133,32 @@ def test_block_diag(input_shapes):
     framework_model = block_diag()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "n, m",
+    [
+        (3, 3),
+        (4, 6),
+        (10, 10),
+        (2, 5),
+        (6, 1),
+    ],
+)
+@pytest.mark.push
+def test_eye(n, m):
+    class EyeModule(nn.Module):
+        def __init__(self, n, m):
+            super().__init__()
+            self.n = n
+            self.m = m
+
+        def forward(self, x):
+            eye_mat = torch.eye(self.n, self.m, dtype=x.dtype, device=x.device)
+            return eye_mat @ x
+
+    input_dim = m if m is not None else n
+    x = torch.randn(input_dim)
+    framework_model = EyeModule(n, m)
+    compiled_model = forge.compile(framework_model, sample_inputs=[x])
+    verify([x], framework_model, compiled_model)
