@@ -35,8 +35,8 @@ static bool is_reshape_transpose(graphlib::Node const *node)
         return false;
 
     auto shape = op->shape();
-    int _dim0 = op->op_type().get_attr_as<int>("dim0");
-    int _dim1 = op->op_type().get_attr_as<int>("dim1");
+    int _dim0 = op->op_type().attr_as<int>("dim0");
+    int _dim1 = op->op_type().attr_as<int>("dim1");
     if (_dim0 > _dim1)
         std::swap(_dim0, _dim1);
 

@@ -82,12 +82,12 @@ std::tuple<bool, int> can_commute_through_dim(
         }
 
         can_reduce = true;
-        int dim0 = initial_op->op_type().get_attr_as<int>("dim0");
+        int dim0 = initial_op->op_type().attr_as<int>("dim0");
         if (dim0 < 0)
         {
             dim0 += initial_op->shape().size();
         }
-        int dim1 = initial_op->op_type().get_attr_as<int>("dim1");
+        int dim1 = initial_op->op_type().attr_as<int>("dim1");
         if (dim1 < 0)
         {
             dim1 += initial_op->shape().size();
@@ -130,13 +130,13 @@ bool match_transpose(graphlib::OpType const &a, graphlib::OpType const &b)
     if (a.type() != ops::OpType::Transpose)
         return false;
 
-    int a_dim0 = a.get_attr_as<int>("dim0");
-    int a_dim1 = a.get_attr_as<int>("dim1");
+    int a_dim0 = a.attr_as<int>("dim0");
+    int a_dim1 = a.attr_as<int>("dim1");
     if (a_dim0 > a_dim1)
         std::swap(a_dim0, a_dim1);
 
-    int b_dim0 = b.get_attr_as<int>("dim0");
-    int b_dim1 = b.get_attr_as<int>("dim1");
+    int b_dim0 = b.attr_as<int>("dim0");
+    int b_dim1 = b.attr_as<int>("dim1");
     if (b_dim0 > b_dim1)
         std::swap(b_dim0, b_dim1);
 
@@ -405,7 +405,7 @@ bool commute_through_select(
     auto concat_golden_transform = *golden_transform;
 
     if (concat_golden_transform.type() == ops::OpType::Reshape)
-        concat_golden_transform.get_attr_as<std::vector<int>>("shape")[select_dim] = concat_output_len;
+        concat_golden_transform.attr_as<std::vector<int>>("shape")[select_dim] = concat_output_len;
     op->add_golden_transform(concat_golden_transform);
     update_select_attr(op, new_dim);
 
@@ -542,8 +542,8 @@ bool commute_through_concat(
     if (concat_golden_transform.type() == ops::OpType::Reshape)
     {
         int idx = concat_dim >= 0 ? concat_dim
-                                  : concat_dim + concat_golden_transform.get_attr_as<std::vector<int>>("shape").size();
-        concat_golden_transform.get_attr_as<std::vector<int>>("shape")[idx] = concat_output_len;
+                                  : concat_dim + concat_golden_transform.attr_as<std::vector<int>>("shape").size();
+        concat_golden_transform.attr_as<std::vector<int>>("shape")[idx] = concat_output_len;
     }
     op->add_golden_transform(concat_golden_transform);
     std::vector<graphlib::OpType::Attr> concat_attr;
@@ -781,8 +781,8 @@ bool commute_through_reduce(
         auto reduce_golden_transform = *golden_transform;
         if (reduce_golden_transform.type() == ops::OpType::Reshape)
         {
-            reduce_golden_transform.get_attr_as<std::vector<int>>("shape")[op_reduce_dim] = 1;
-            reduce_golden_transform.get_attr_as<std::vector<int>>("shape")[producer_reduce_dim] = 1;
+            reduce_golden_transform.attr_as<std::vector<int>>("shape")[op_reduce_dim] = 1;
+            reduce_golden_transform.attr_as<std::vector<int>>("shape")[producer_reduce_dim] = 1;
         }
 
         op->add_golden_transform(reduce_golden_transform);
@@ -823,7 +823,7 @@ bool commute_through_reduce(
 
         auto reduce_golden_transform = *golden_transform;
         if (reduce_golden_transform.type() == ops::OpType::Reshape)
-            reduce_golden_transform.get_attr_as<std::vector<int>>("shape")[reduce_dim] = 1;
+            reduce_golden_transform.attr_as<std::vector<int>>("shape")[reduce_dim] = 1;
 
         op->add_golden_transform(reduce_golden_transform);
 
@@ -951,9 +951,9 @@ void update_select_attr(
         "Updated select operation {}: select_dim = {}, begin = {}, length = {}, stride = {}",
         select_op->name(),
         select_dim,
-        begin.value_or(std::get<int>(select_op->op_attr("begin"))),
-        length.value_or(std::get<int>(select_op->op_attr("length"))),
-        stride.value_or(std::get<int>(select_op->op_attr("stride"))));
+        begin.value_or(select_op->op_attr_as<int>("begin")),
+        length.value_or(select_op->op_attr_as<int>("length")),
+        stride.value_or(select_op->op_attr_as<int>("stride")));
 }
 
 /**
@@ -963,12 +963,7 @@ void update_concat_attr(graphlib::OpNode *concatenate, int dim)
 {
     TT_ASSERT(concatenate->op_name() == "concatenate", "update_concat_attr called for a non-concatenate operation");
 
-    std::vector<graphlib::OpType::Attr> attr;
-    attr.push_back(dim);
-
-    graphlib::OpType::Attrs named_attrs = concatenate->named_attrs();
     concatenate->set_op_attr("dim", dim);
-
     log_trace(LogGraphCompiler, "Concatenate operation updated with new dim: {}", dim);
 }
 /**
@@ -978,12 +973,7 @@ void update_vstack_attr(graphlib::OpNode *vstack, int slice_size)
 {
     TT_ASSERT(vstack->op_name() == "vstack", "update_vstack_attr called for a non-vstack operation");
 
-    std::vector<graphlib::OpType::Attr> attr;
-    attr.push_back(slice_size);
-
-    graphlib::OpType::Attrs named_attrs = vstack->named_attrs();
     vstack->set_op_attr("slice_size", slice_size);
-
     log_trace(LogGraphCompiler, "Vstack operation updated with new slice_size: {}", slice_size);
 }
 /**
@@ -1172,8 +1162,8 @@ int update_bcast_dim_commuted_through_transpose(int dim, graphlib::OpNode *op)
 {
     TT_ASSERT(op->op_name() == "transpose", "Op has to be transpose");
     int updated_bcast_dim = dim;
-    int transpose_dim_0 = std::get<int>(op->op_type().get_attr("dim0"));
-    int transpose_dim_1 = std::get<int>(op->op_type().get_attr("dim1"));
+    int transpose_dim_0 = op->op_type().attr_as<int>("dim0");
+    int transpose_dim_1 = op->op_type().attr_as<int>("dim1");
     if (dim == transpose_dim_0)
         updated_bcast_dim = transpose_dim_1;
     else if (dim == transpose_dim_1)

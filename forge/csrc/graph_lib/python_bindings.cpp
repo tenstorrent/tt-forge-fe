@@ -298,7 +298,7 @@ void GraphModule(py::module &m_graph)
         .def("shape", &tt::graphlib::OpType::shape)
         .def(
             "__getattr__",
-            [](tt::graphlib::OpType const &op_type, std::string const &name) { return op_type.get_attr(name); })
+            [](tt::graphlib::OpType const &op_type, std::string const &name) { return op_type.attrs().at(name); })
         .def(
             "__setattr__",
             [](tt::graphlib::OpType &op_type, std::string const &name, tt::graphlib::OpType::Attr value)

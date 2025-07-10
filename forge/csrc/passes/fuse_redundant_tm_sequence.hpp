@@ -21,7 +21,7 @@ struct OpTypeItem
         op_name(op_type.name()),
         attrs(
             op_type.type() == ops::OpType::Transpose
-                ? std::vector<OpType::Attr>({op_type.get_attr_as<int>("dim0"), op_type.get_attr_as<int>("dim1")})
+                ? std::vector<OpType::Attr>({op_type.attr_as<int>("dim0"), op_type.attr_as<int>("dim1")})
                 : op_type.legacy_attrs_),
         check_attrs(check_attrs)
     {
