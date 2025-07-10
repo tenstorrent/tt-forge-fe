@@ -391,24 +391,6 @@ bool Op::base_is_eltwise_nary(const graphlib::OpType &old_op_type) const
     return is_eltwise_nary(&old_op_type).cast<bool>();
 }
 
-static void convert_broadcast_dims_to_negative(std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> &result)
-{
-    auto &broadcast_dims = std::get<1>(result);
-    const auto &shape = std::get<0>(result);
-    const int shape_size = static_cast<int>(shape.size());
-
-    for (auto &broadcast : broadcast_dims)
-    {
-        int &dim = std::get<1>(broadcast);
-        if (dim >= 0)
-        {
-            // Change to negative indexing so dimensions are not affected by shape unsqueezing
-            // at the beginning of the shape
-            dim -= shape_size;
-        }
-    }
-}
-
 /* ------------------------------*
  * Dispatching based on op type. *
  * ------------------------------*/
@@ -424,10 +406,10 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Cosine: return cosine::eval(*this, tensors);
         case OpType::Divide: return divide::eval(*this, tensors);
         case OpType::Multiply: return multiply::eval(*this, tensors);
-        case OpType::Sine: return sine::eval(*this, tensors);
-        case OpType::Transpose: return transpose::eval(*this, tensors);
         case OpType::Reshape: return reshape::eval(*this, tensors);
+        case OpType::Sine: return sine::eval(*this, tensors);
         case OpType::Subtract: return subtract::eval(*this, tensors);
+        case OpType::Transpose: return transpose::eval(*this, tensors);
         default: return base_eval(old_op_type, tensors);
     }
 }
@@ -435,8 +417,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
     const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
-    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> result;
-
     switch (type_)
     {
         case OpType::Abs: return abs::shape(*this, inputs);
@@ -452,11 +432,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Subtract: return subtract::shape(*this, inputs);
         default: return base_shape(old_op_type, inputs);
     }
-
-    // Ensure all broadcast dimensions use negative indexing for correctness of the dim broadcast
-    convert_broadcast_dims_to_negative(result);
-
-    return result;
 }
 
 tt::graphlib::NodeContext Op::backward(

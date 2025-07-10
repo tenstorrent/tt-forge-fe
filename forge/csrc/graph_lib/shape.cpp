@@ -248,7 +248,7 @@ std::vector<DimBroadcast> Shape::broadcast_dims(const Shape &other) const
                 TT_ASSERT(
                     ((i >= 2) && my_dim == FORGE_TILE_DIM) || ((i < 2) && my_dim == 1),
                     "Invalid broadcast shapes: " + as_string() + " vs " + other.as_string());
-            ret.push_back(std::make_tuple(0, dims_.size() - 1 - i, other_dim));
+            ret.push_back(DimBroadcast(0, dims_.size() - 1 - i, other_dim));
         }
     }
     return ret;

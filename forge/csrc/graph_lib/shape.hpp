@@ -17,7 +17,27 @@ namespace tt
 namespace graphlib
 {
 
-using DimBroadcast = std::tuple<int, int, int>;  // operand, dim, size
+class DimBroadcast
+{
+   private:
+    int operand_;
+    int dim_;
+    int size_;
+
+   public:
+    DimBroadcast(int operand, int dim, int size) : operand_(operand), dim_(dim), size_(size)
+    {
+        TT_ASSERT(
+            dim < 0,
+            "Broadcast dimension {} must be negative. "
+            "Positive indexing causes wrong shape calculation.",
+            dim);
+    }
+
+    int operand() const { return operand_; }
+    int dim() const { return dim_; }
+    int size() const { return size_; }
+};
 
 class Shape
 {

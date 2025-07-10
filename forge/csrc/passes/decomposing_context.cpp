@@ -92,10 +92,10 @@ NodeContext DecomposingContext::op(
         }
         for (graphlib::DimBroadcast broadcast : broadcasts)
         {
-            if (i == std::get<0>(broadcast))
+            if (i == broadcast.operand())
             {
                 std::shared_ptr<graphlib::EdgeAttributes> attr = graph->get_edge_attributes(edge);
-                attr->set_broadcast_dim(std::get<1>(broadcast), std::get<2>(broadcast));
+                attr->set_broadcast_dim(broadcast.dim(), broadcast.size());
             }
         }
     }

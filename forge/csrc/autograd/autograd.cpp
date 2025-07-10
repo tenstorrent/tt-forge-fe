@@ -241,12 +241,12 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
 
             for (DimBroadcast b : brcst)
             {
-                TT_ASSERT(std::get<0>(b) == 0, "Only one operand available");
+                TT_ASSERT(b.operand() == 0, "Only one operand available");
                 // Autograd must use explicit bcasts to support ops like matmuls
                 constexpr bool explicit_bcast = true;
-                int negative_index_bcast_dim = std::get<1>(b) - out_grad->shape().size();
+                int negative_index_bcast_dim = b.dim() - out_grad->shape().size();
                 graph->get_edge_attributes(nop_edge)->set_broadcast_dim(
-                    negative_index_bcast_dim, std::get<2>(b), explicit_bcast);
+                    negative_index_bcast_dim, b.size(), explicit_bcast);
             }
 
             // Remove edge, replace
@@ -594,12 +594,9 @@ NodeContext autograd_engine::create_optimizer_op(
     {
         for (DimBroadcast &b : std::get<1>(shape_data))
         {
-            int operand = std::get<0>(b);
-            if (operand == (int)e.consumer_input_port_id)
+            if (b.operand() == (int)e.consumer_input_port_id)
             {
-                int dim = std::get<1>(b);
-                int size = std::get<2>(b);
-                graph->get_edge_attributes(e)->set_broadcast_dim(dim, size);
+                graph->get_edge_attributes(e)->set_broadcast_dim(b.dim(), b.size());
             }
         }
     }
