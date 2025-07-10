@@ -447,6 +447,7 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Multiply: return multiply::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Transpose: return transpose::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Reshape: return reshape::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Squeeze: return squeeze::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Subtract: return subtract::backward(*this, context, operand, inputs, output, gradient);
         default: return base_backward(old_op_type, context, operand, inputs, output, gradient);
     }

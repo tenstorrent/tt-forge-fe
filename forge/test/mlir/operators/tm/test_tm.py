@@ -8,7 +8,7 @@ from torch import nn
 
 import forge
 from forge.tensor import to_forge_tensors
-from forge.verify.verify import verify
+from forge.verify.verify import verify, verify_backward
 
 # @pytest.mark.xfail(reason="RuntimeError: Input must be UINT32 or BFLOAT16")
 @pytest.mark.parametrize(
@@ -301,12 +301,23 @@ def test_squeeze(input_shape_and_dim):
         def forward(self, a):
             return torch.squeeze(a, dim)
 
-    inputs = [torch.rand(*input_shape)]
+    inputs = [torch.rand(*input_shape, requires_grad=True)]
 
     framework_model = Squeeze()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=True)
 
-    verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    grad = torch.rand_like(fw_out[0])
+
+    verify_backward(
+        inputs,
+        grad,
+        fw_out[0],
+        co_out[0],
+        framework_model,
+        compiled_model,
+    )
 
 
 @pytest.mark.push
