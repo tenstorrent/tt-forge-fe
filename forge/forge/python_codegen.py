@@ -434,7 +434,7 @@ class ForgeWriter(PythonWriter):
                 self.wl("if weight.dtype in incompatible_np_float_types:")
                 self.indent += 1
                 self.wl("dtype = map_tf_dtype_to_pt(weight.dtype)")
-                self.wl("weight = tf.cast(weight.value(), tf.float32)")
+                self.wl("weight = tf.cast(weight, tf.float32)")
                 self.wl("tensor = torch.tensor(weight.numpy(), dtype=dtype)")
                 self.indent -= 1
                 self.wl("else:")
