@@ -19,6 +19,9 @@ on:
           - "3"
           - "4"
           - "8"
+          - "12"
+          - "16"
+          - "20"
       run_ops_sweeps:
         description: 'Run models ops tests'
         required: false
@@ -52,7 +55,7 @@ jobs:
       - name: Set Inputs
         id: set-inputs
         run: |
-          default_test_group_cnt=8
+          default_test_group_cnt=20
           default_run_ops_sweeps=Yes
 
           ros_res=$(if [ -z "${{ inputs.run_ops_sweeps }}" ]; then echo $default_run_ops_sweeps; else echo ${{ inputs.run_ops_sweeps }}; fi)
