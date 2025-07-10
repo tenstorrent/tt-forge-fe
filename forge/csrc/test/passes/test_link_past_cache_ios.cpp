@@ -363,7 +363,12 @@ struct Falcon40bPastCache : testing::Test
         auto hslice_1 = add_node<graphlib::PyOpNode>(*graph, "hslice_1", "hslice", {1}, {matmul_1});
         auto multiply_1 = add_node<graphlib::PyOpNode>(*graph, "multiply_1", "multiply", {}, {hslice_1, cos_0});
         auto add_1 = add_node<graphlib::PyOpNode>(*graph, "add_1", "add", {}, {multiply_1, in_1_2});
-        auto broadcast_1 = add_node<graphlib::PyOpNode>(*graph, "broadcast_1", "broadcast", {-3, 32, 1}, {add_1});
+        auto broadcast_1 = add_node<graphlib::PyOpNode>(
+            *graph,
+            "broadcast_1",
+            graphlib::OpType("broadcast", {}, {{"dim", -3}, {"size", 32}, {"explicit_bcast", true}}),
+            {add_1});
+
         auto output_1 = create_output(*graph, "output_1", broadcast_1);
 
         // path 2

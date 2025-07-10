@@ -78,11 +78,11 @@ static void insert_pad_within_tile(graphlib::Graph *graph, graphlib::Edge edge, 
             break;
         }
 
-        int tm_dim = consumer->shape().negative_index(std::get<int>(tm.legacy_attrs_[0]));
+        int tm_dim = consumer->shape().negative_index(tm.attr_as<int>("dim"));
         if (tm_dim == dim)
         {
-            std::get<int>(tm.legacy_attrs_[0]) = tm_dim;
-            std::get<int>(tm.legacy_attrs_[1]) = size;
+            tm.set_attr("dim", tm_dim);
+            tm.set_attr("size", size);
             return;
         }
     }
@@ -91,7 +91,7 @@ static void insert_pad_within_tile(graphlib::Graph *graph, graphlib::Edge edge, 
     bool implicit_broadcast = producer_dim_size == 1;
     if (implicit_broadcast)
     {
-        tms.push_back(graphlib::OpType("broadcast", {dim, size}, {}));
+        tms.push_back(graphlib::OpType("broadcast", {}, {{"dim", dim}, {"size", size}}));
         return;
     }
 
@@ -270,11 +270,9 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
         {
             if (tm.type() == ops::OpType::Broadcast)
             {
-                int tm_dim = multiply->shape().negative_index(std::get<int>(tm.legacy_attrs_[0]));
+                int tm_dim = multiply->shape().negative_index(tm.attr_as<int>("dim"));
                 if (tm_dim == -2)
-                {
-                    std::get<int>(tm.legacy_attrs_[1]) = matmul_rhs->shape()[-2];
-                }
+                    tm.set_attr("size", static_cast<int>(matmul_rhs->shape()[-2]));
             }
         }
 
