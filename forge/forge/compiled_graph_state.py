@@ -386,8 +386,12 @@ class CompiledModel:
                             grad_tensor = grads[idx].to_torch()
                             if param.shape != grad_tensor.shape:
                                 # Our gradients have additional dimensions which PyTorch not expects (e.g. [1, 1, N, M] -> [N, M])
-                                assert (torch.squeeze(grad_tensor)).shape == param.shape
-                                grad_tensor = torch.squeeze(grad_tensor)
+                                grad_tensor_non_1_shape = [s for s in grad_tensor.shape if s != 1]
+                                param_non_1_shape = [s for s in param.shape if s != 1]
+                                if grad_tensor_non_1_shape != param_non_1_shape:
+                                    raise RuntimeError(f"Incompatible shapes: {grad_tensor.shape=} and {param.shape=}")
+                                grad_tensor = grad_tensor.reshape(param.shape)
+                                assert grad_tensor.shape == param.shape
 
                             if param.grad is not None:
                                 param.grad += grad_tensor
