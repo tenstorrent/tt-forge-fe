@@ -89,7 +89,7 @@ void rotate_params(graphlib::Graph *graph, std::vector<graphlib::Node *> params_
         graph->add_edge(read_edge_left);
         calculate_and_set_node_shape(graph, index_node_left);
 
-        graphlib::OpType concat_op("concatenate", {-2});
+        graphlib::OpType concat_op("concatenate", {}, {{"dim", -2}});
         auto concat_node = graph->add_node(
             graphlib::create_node<graphlib::PyOpNode>(param->name() + "_concat", concat_op), subgraph_index);
         graphlib::Edge concat_edge_a(
