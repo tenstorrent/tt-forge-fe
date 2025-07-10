@@ -134,6 +134,8 @@ class AttributeMapper
         // cumsum
         add_op_mapping("cumsum", "dim", AttributeRemap(std::nullopt, TargetType::I64Attr));
 
+        add_op_mapping("softmax", "dim", AttributeRemap("dimension", TargetType::I32Attr));
+
         // index
         add_op_mapping("index", "dim", AttributeRemap(std::nullopt, TargetType::I32Attr));
         add_op_mapping("index", "start", AttributeRemap("begin", TargetType::I32Attr));

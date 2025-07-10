@@ -23,7 +23,6 @@ at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
     TT_ASSERT(tensors.size() == 1, "Softmax should have one operand.");
 
     int dim = op.attr_as<int>("dim");
-    bool stable = op.attr_as<bool>("stable");
 
     TT_ASSERT(tensors[0].dim() > dim, "Given dimension is out of the shape");
 
