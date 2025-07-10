@@ -253,7 +253,7 @@ class TestCollectionData:
     not_implemented = TestCollection(
         operators=[
             "atan2",  #                 #00                         - NotImplementedError: The following operators are not implemented: ['aten::atan2']
-            "arctan2",  #               #01                         - NotImplementedError: The following operators are not implemented: ['aten::atan2']
+            # "arctan2",  #             #01                         - NotImplementedError: The following operators are not implemented: ['aten::atan2']. # alias
             "bitwise_and",  #           #02                         - RuntimeError: "bitwise_and_cpu" not implemented for 'Float'
             "bitwise_or",  #            #03                         - RuntimeError: "bitwise_or_cpu" not implemented for 'Float'
             "bitwise_xor",  #           #04                         - RuntimeError: "bitwise_xor_cpu" not implemented for 'Float'
