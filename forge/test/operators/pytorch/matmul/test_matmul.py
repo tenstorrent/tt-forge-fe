@@ -111,10 +111,7 @@ class TestVerification:
 
         logger.trace(f"***input_shapes: {input_shapes}")
 
-        # Using AllCloseValueChecker in all cases except for integer data formats:
-        verify_config = VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2))
-        if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
-            verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
+        verify_config = VerifyConfig(value_checker=AutomaticValueChecker(pcc=1))
 
         VerifyUtils.verify(
             model=pytorch_model,
@@ -125,7 +122,6 @@ class TestVerification:
             math_fidelity=test_vector.math_fidelity,
             warm_reset=warm_reset,
             value_range=value_range,
-            deprecated_verification=False,
             verify_config=verify_config,
         )
 

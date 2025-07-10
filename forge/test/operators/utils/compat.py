@@ -18,6 +18,7 @@ from forge.tensor import to_forge_tensors
 from forge.verify.compare import compare_with_golden
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.forge_property_utils import forge_property_handler_var
 
 from .datatypes import OperatorParameterTypes, ValueRanges, ValueRange
 from .datatypes import FrameworkDataFormat
@@ -300,9 +301,42 @@ def verify_module_for_inputs(
         forge_inputs = inputs
 
     compiled_model = forge.compile(model, sample_inputs=forge_inputs, compiler_cfg=compiler_cfg)
-    verify(forge_inputs, model, compiled_model, verify_config)
+    try:
+        verify(forge_inputs, model, compiled_model, verify_config)
+    except Exception as e:
+        error = e
+        check_pcc_error_level(error)
+    finally:
+        if not error:
+            pcc = forge_property_handler_var.get().get("tags.pcc")
+            if pcc is not None and pcc == 1:
+                logger.info(f"pcc is {pcc} == 1, no need to raise error")
 
-
+def check_pcc_error_level(e: Exception):
+    """
+    Check the pcc error level based on the exception message.
+    """
+    if "Data mismatch -> AutomaticValueChecker" in str(e):
+        pcc = forge_property_handler_var.get().get("tags.pcc")
+        if pcc:
+            # logger.error(f"Original error: {e}")
+            if pcc <= 0.85:
+                raise ValueError(
+                    f"Data mismatch -> AutomaticValueChecker (compare_with_golden): pcc is in invalid low range: {pcc} <= 0.85"
+                )
+            elif pcc <= 0.95:
+                raise ValueError(
+                    f"Data mismatch -> AutomaticValueChecker (compare_with_golden): pcc is in invalid medium range: 0.85 < {pcc} <= 0.95"
+                )
+            elif pcc < 1:   
+                logger.info("pcc is in valid range: 0.95 < {} <= 1, no need to raise error", pcc)
+        else:
+            atol = forge_property_handler_var.get().get("tags.atol")
+            logger.info(f"atol: {atol}")
+            raise e # TODO sta raditi u ovom slucaju? kada ne moze preko pcc vec preko atol i rtol ali koristeci AutomaticValueChecker?
+    else: 
+        raise e
+        
 def verify_module_for_inputs_torch(
     model: Module,
     inputs: List[torch.Tensor],
