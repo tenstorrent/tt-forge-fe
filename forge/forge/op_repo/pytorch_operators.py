@@ -90,18 +90,18 @@ _OPERATORS = [
     OperatorDefinition("softmax", "torch.softmax", 1),
     # Unary operators (not implemented)
     OperatorDefinition("acos", "torch.acos", 1),
-    OperatorDefinition("arccos", "torch.acos", 1),
+    # OperatorDefinition("arccos", "torch.arccos", 1),  # alias for acos
     OperatorDefinition("acosh", "torch.acosh", 1),
-    OperatorDefinition("arccosh", "torch.acosh", 1),
+    # OperatorDefinition("arccosh", "torch.arccosh", 1),  # alias for acosh
     OperatorDefinition("angle", "torch.angle", 1),
     OperatorDefinition("asin", "torch.asin", 1),
-    OperatorDefinition("arcsin", "torch.asin", 1),
+    # OperatorDefinition("arcsin", "torch.arcsin", 1),  # alias for asin
     OperatorDefinition("asinh", "torch.asinh", 1),
-    OperatorDefinition("arcsinh", "torch.asinh", 1),
+    # OperatorDefinition("arcsinh", "torch.arcsinh", 1),  # alias for asinh
     OperatorDefinition("atan", "torch.atan", 1),
-    OperatorDefinition("arctan", "torch.atan", 1),
+    # OperatorDefinition("arctan", "torch.arctan", 1),  # alias for atan
     OperatorDefinition("atanh", "torch.atanh", 1),
-    OperatorDefinition("arctanh", "torch.atanh", 1),
+    # OperatorDefinition("arctanh", "torch.arctanh", 1),  # alias for atanh
     OperatorDefinition("bitwise_not", "torch.bitwise_not", 1),
     OperatorDefinition("ceil", "torch.ceil", 1),
     OperatorDefinition("conj_physical", "torch.conj_physical", 1),
@@ -147,7 +147,7 @@ _OPERATORS = [
     OperatorDefinition("minimum", "torch.minimum", 2),
     # Binary operators (not implemented)
     OperatorDefinition("atan2", "torch.atan2", 2),
-    OperatorDefinition("arctan2", "torch.arctan2", 2),
+    # OperatorDefinition("arctan2", "torch.arctan2", 2),  # alias for atan2
     OperatorDefinition("bitwise_and", "torch.bitwise_and", 2),
     OperatorDefinition("bitwise_or", "torch.bitwise_or", 2),
     OperatorDefinition("bitwise_xor", "torch.bitwise_xor", 2),
@@ -166,7 +166,14 @@ _OPERATORS = [
     # Matmul
     OperatorDefinition("matmul", "torch.matmul", 2),
     # Nary operators
-    OperatorDefinition("concatenate", "torch.concatenate", input_num_range=(2, 7)),
+    OperatorDefinition(
+        "concatenate",
+        "torch.concatenate",
+        input_num_range=(2, 7),
+        forward_params=[
+            OperatorParamNumber("dim", int, -10, 10),
+        ],
+    ),
     OperatorDefinition("where", "torch.where", 3),
     # Reduce operators
     OperatorDefinition("max", "torch.max", 1),
