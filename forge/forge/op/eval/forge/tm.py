@@ -288,12 +288,6 @@ def eval(type, attr, ops):
         act = t_ops[0]
         return torch.unsqueeze(act, dim)
 
-    if type == "squeeze":
-        assert len(attr) == 1
-        dim = attr[0]
-        act = t_ops[0]
-        return torch.squeeze(act, dim)
-
     if type == "pixel_shuffle":
         assert len(ops) == 1, "Pixel shuffle should have one operand."
         assert len(attr) == 1, "Pixel shuffle should have one attribute."
@@ -556,13 +550,6 @@ def shape(type, attr, ops):
             # Adjust dim to be within the correct range
             dim += input_ndim + 1
         shape.insert(dim, 1)
-        return tuple(shape), []
-
-    if type == "squeeze":
-        assert len(attr) == 1
-        shape = list(ops[0])
-        dim = attr[0]
-        del shape[dim]
         return tuple(shape), []
 
     if type == "pixel_shuffle":
