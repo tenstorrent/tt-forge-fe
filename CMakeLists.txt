@@ -61,6 +61,9 @@ add_subdirectory(third_party)
 add_subdirectory(forge)
 add_subdirectory(docs)
 
+# Add GoogleTest if unit tests are enabled
+option(TTFORGE_UNITTESTS_ENABLED "Enable unit tests with GoogleTest" ON)
+include(GoogleTest)
 
 set(CMAKE_INSTALL_RPATH "$ORIGIN")
 ### Install _C.so directly into the install directory (not ${CMAKE_INSTALL_PREFIX}/lib/)
