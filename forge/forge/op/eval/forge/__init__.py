@@ -102,6 +102,7 @@ op_to_module_map = {
     "narrow": "tm",
     "pad": Pad,
     "unsqueeze": "tm",
+    "squeeze": "tm",
     "pixel_shuffle": "tm",
     "forge_pad": "tm",
     "forge_unpad": "tm",
