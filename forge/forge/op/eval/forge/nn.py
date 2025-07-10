@@ -36,18 +36,6 @@ def eval(op_type, attr, ops):
 
     """
 
-    if op_type == "softmax":
-
-        assert len(ops) == 1, "Softmax should have one operand."
-        assert len(attr) == 2, "Softmax should have two attributes."
-
-        t_ops = to_torch_operands(*ops)
-        input_ = t_ops[0]
-        dim = attr[0]
-        stable = attr[1]
-        assert input_.dim() > dim, "Given dimension is out of the shape"
-        return F.softmax(input_, dim=dim)
-
     if op_type == "log_softmax":
 
         assert len(ops) == 1, "LogSoftmax should have one operand."
@@ -216,13 +204,6 @@ def shape(op_type, attr, ops):
 
     """
 
-    if op_type == "softmax":
-
-        assert len(ops) == 1, "Softmax should have one operand."
-        assert len(attr) == 2, "Softmax should have two attributes."
-
-        return ops[0], []
-
     if op_type == "log_softmax":
 
         assert len(ops) == 1, "LogSoftmax should have one operand."
@@ -302,15 +283,6 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
 
     """
 
-    if op_type == "softmax":
-
-        assert len(inputs) == 1, "Softmax should have one operand."
-        assert len(attr) == 2, "Softmax should have two attributes."
-
-        dim = attr[0]
-
-        return ac.op("softmax_bw", (inputs[0], output, grad), (dim,))
-
     if op_type == "layernorm":
 
         assert len(inputs) == 3, "Layernorm should have three operands."
@@ -366,7 +338,7 @@ def decompose(op_type, attr, dc, inputs):
         x = inputs[0]
         dim = attr[0]
         stable = attr[1]
-        result = dc.op_with_named_attrs("softmax", (x,), {"dimension": dim}, (dim, stable))
+        result = dc.op_with_named_attrs("softmax", (x,), {"dim": dim, "stable": stable})
         result = dc.op(Log.create(), (result,))
         dc.fuse(result)
         return
@@ -456,9 +428,6 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
         Result of the operation.
 
     """
-
-    if op_type == "softmax":
-        return
 
     if op_type == "softmax_bw":
 
