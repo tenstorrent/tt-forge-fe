@@ -105,7 +105,7 @@ def test_hrnet_osmr_pytorch(variant):
         model=ModelArch.HRNET,
         variant=variant,
         source=Source.OSMR,
-        task=Task.POSE_ESTIMATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     framework_model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
@@ -230,7 +230,7 @@ def test_hrnet_timm_pytorch(variant):
         model=ModelArch.HRNET,
         variant=variant,
         source=Source.TIMM,
-        task=Task.POSE_ESTIMATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     framework_model, inputs, _ = generate_model_hrnet_imgcls_timm_pytorch(

@@ -32,7 +32,7 @@ def test_whisper_large_v3(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.WHISPER,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.AUDIO_ASR,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
     )

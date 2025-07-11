@@ -29,7 +29,7 @@ def test_oft():
         framework=Framework.PYTORCH,
         model=ModelArch.OFT,
         variant="default",
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DET,
         source=Source.GITHUB,
     )
 

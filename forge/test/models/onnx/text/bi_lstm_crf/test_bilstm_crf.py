@@ -21,7 +21,7 @@ def test_birnn_crf(forge_tmp_path):
     module_name = record_model_properties(
         framework=Framework.ONNX,
         model=ModelArch.BIRNNCRF,
-        task=Task.TOKEN_CLASSIFICATION,
+        task=Task.NLP_TOKEN_CLS,
         source=Source.GITHUB,
     )
 

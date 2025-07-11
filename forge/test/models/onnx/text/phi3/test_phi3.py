@@ -31,7 +31,7 @@ def test_phi3_causal_lm_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.PHI3,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_TEXT_GEN,
         source=Source.HUGGINGFACE,
     )
 

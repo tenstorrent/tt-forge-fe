@@ -63,7 +63,7 @@ def test_densenet_121_pytorch(variant):
         model=ModelArch.DENSENET,
         variant=variant,
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # STEP 2: Create Forge module from PyTorch model
@@ -123,7 +123,7 @@ def test_densenet_161_pytorch(variant):
         model=ModelArch.DENSENET,
         variant=variant,
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # STEP 2: Create Forge module from PyTorch model
@@ -167,7 +167,7 @@ def test_densenet_169_pytorch(variant):
         model=ModelArch.DENSENET,
         variant=variant,
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # STEP 2: Create Forge module from PyTorch model
@@ -207,7 +207,7 @@ def test_densenet_201_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.DENSENET,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
         source=Source.TORCHVISION,
     )
 

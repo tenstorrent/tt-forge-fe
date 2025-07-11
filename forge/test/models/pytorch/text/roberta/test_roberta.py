@@ -32,7 +32,7 @@ def test_roberta_masked_lm(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.ROBERTA,
         variant=variant,
-        task=Task.MASKED_LM,
+        task=Task.NLP_MASKED_LM,
         source=Source.HUGGINGFACE,
     )
 
@@ -76,7 +76,7 @@ def test_roberta_sentiment_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.ROBERTA,
         variant=variant,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_TEXT_CLS,
         source=Source.HUGGINGFACE,
     )
 

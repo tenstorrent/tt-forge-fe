@@ -38,7 +38,7 @@ def test_phi3_causal_lm(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.PHI3,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_TEXT_GEN,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
@@ -91,7 +91,7 @@ def test_phi3_token_classification(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.PHI3,
         variant=variant,
-        task=Task.TOKEN_CLASSIFICATION,
+        task=Task.NLP_TOKEN_CLS,
         source=Source.HUGGINGFACE,
     )
 
@@ -127,7 +127,7 @@ def test_phi3_sequence_classification(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.PHI3,
         variant=variant,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_TEXT_CLS,
         source=Source.HUGGINGFACE,
     )
 

@@ -33,7 +33,7 @@ def test_googlenet_pytorch():
         framework=Framework.PYTORCH,
         model=ModelArch.GOOGLENET,
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Create Forge module from PyTorch model
