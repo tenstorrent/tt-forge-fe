@@ -840,6 +840,8 @@ class MLIRGenerator
         lowering_handler_map["fill_cache"] = &MLIRGenerator::emit_mlir_ttforge_non_dps_op<mlir::tt::ttir::FillCacheOp>;
         lowering_handler_map["update_cache"] =
             &MLIRGenerator::emit_mlir_ttforge_non_dps_op<mlir::tt::ttir::UpdateCacheOp>;
+        lowering_handler_map["divide"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::DivOp>;
+        lowering_handler_map["erf"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ErfOp>;
     }
 };
 

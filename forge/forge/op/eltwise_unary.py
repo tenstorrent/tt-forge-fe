@@ -571,3 +571,24 @@ def Tilize(name: str, operandA: Tensor) -> Tensor:
     """
 
     return op("tilizer", name, operandA).get_tensor()
+
+
+def Erf(name: str, operandA: Tensor) -> Tensor:
+    """
+    Error function (erf)
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+        First operand
+
+    Returns
+    -------
+    Tensor
+        Forge tensor
+    """
+
+    return op("erf", name, operandA).get_tensor()
