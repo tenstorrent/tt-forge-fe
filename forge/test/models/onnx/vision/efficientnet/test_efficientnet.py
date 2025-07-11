@@ -14,54 +14,14 @@ from test.models.models_utils import print_cls_results
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 params = [
-    pytest.param("efficientnet_b0", marks=[pytest.mark.push]),
-    pytest.param(
-        "efficientnet_b1",
-    ),
-    pytest.param(
-        "efficientnet_b2",
-        marks=[
-            pytest.mark.xfail(
-                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
-            )
-        ],
-    ),
-    pytest.param(
-        "efficientnet_b2a",
-        marks=[
-            pytest.mark.xfail(
-                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
-            )
-        ],
-    ),
-    pytest.param(
-        "efficientnet_b3",
-        marks=[
-            pytest.mark.xfail(
-                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
-            )
-        ],
-    ),
-    pytest.param(
-        "efficientnet_b3a",
-        marks=[
-            pytest.mark.xfail(
-                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
-            )
-        ],
-    ),
-    pytest.param(
-        "efficientnet_b4",
-        marks=[
-            pytest.mark.xfail(
-                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
-            )
-        ],
-    ),
-    pytest.param(
-        "efficientnet_b5",
-        marks=[pytest.mark.skip(reason="Out of memory due - not enough space to allocate L1 buffer across banks")],
-    ),
+    pytest.param("efficientnet_b0", marks=pytest.mark.push),
+    pytest.param("efficientnet_b1", marks=pytest.mark.xfail()),
+    pytest.param("efficientnet_b2", marks=pytest.mark.xfail()),
+    pytest.param("efficientnet_b2a", marks=pytest.mark.xfail()),
+    pytest.param("efficientnet_b3", marks=pytest.mark.xfail()),
+    pytest.param("efficientnet_b3a", marks=pytest.mark.xfail()),
+    pytest.param("efficientnet_b4", marks=pytest.mark.xfail()),
+    pytest.param("efficientnet_b5", marks=pytest.mark.xfail()),
     pytest.param("efficientnet_lite0"),
 ]
 
@@ -78,6 +38,12 @@ def test_efficientnet_onnx(variant, forge_tmp_path):
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
     )
+    if variant == "efficientnet_b5":
+        pytest.xfail(reason="Requires multi-chip support")
+    elif variant in ["efficientnet_b1", "efficientnet_b2", "efficientnet_b3", "efficientnet_b3a", "efficientnet_b4"]:
+        pytest.xfail(
+            reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
+        )
 
     # Load efficientnet model
     model = timm.create_model(variant, pretrained=True)

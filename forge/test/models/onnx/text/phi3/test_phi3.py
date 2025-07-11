@@ -18,7 +18,7 @@ variants = ["microsoft/phi-3-mini-4k-instruct", "microsoft/Phi-3-mini-128k-instr
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.skip(reason="Transient test - Out of memory due to other tests in CI pipeline")
+@pytest.mark.xfail
 def test_phi3_causal_lm_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
@@ -29,6 +29,7 @@ def test_phi3_causal_lm_onnx(variant, forge_tmp_path):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, return_tensors="pt", trust_remote_code=True)

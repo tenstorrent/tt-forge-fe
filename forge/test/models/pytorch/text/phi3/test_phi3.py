@@ -118,7 +118,7 @@ def test_phi3_token_classification(variant):
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB")
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_sequence_classification(variant):
 
@@ -130,6 +130,7 @@ def test_phi3_sequence_classification(variant):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)

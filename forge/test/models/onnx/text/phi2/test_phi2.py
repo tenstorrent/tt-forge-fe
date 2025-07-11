@@ -18,7 +18,7 @@ variants = ["microsoft/phi-2"]
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.skip(reason="Transient test - Out of memory due to other tests in CI pipeline")
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_clm_onnx(variant, forge_tmp_path):
 
@@ -30,6 +30,7 @@ def test_phi2_clm_onnx(variant, forge_tmp_path):
         source=Source.HUGGINGFACE,
         task=Task.CAUSAL_LM,
     )
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, return_tensors="pt", trust_remote_code=True)

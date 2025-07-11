@@ -21,14 +21,15 @@ from test.models.pytorch.multimodal.deepseek_coder.model_utils.model_utils impor
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["deepseek-coder-1.3b-instruct"])
 def test_deepseek_inference_no_cache(variant):
-    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)")
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH, model=ModelArch.DEEPSEEK, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load Model and Tokenizer
     model_name = f"deepseek-ai/{variant}"
