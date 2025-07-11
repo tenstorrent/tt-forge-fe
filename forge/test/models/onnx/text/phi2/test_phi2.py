@@ -2,16 +2,15 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+import torch
 import onnx
-from transformers import AutoTokenizer
+from transformers import AutoTokenizer, PhiForCausalLM
+
 import forge
 from forge.verify.verify import verify
-
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
-from test.models.models_utils import build_optimum_cli_command
 
-from test.utils import download_model
-import subprocess
+from test.models.models_utils import TextModelWrapper
 
 variants = ["microsoft/phi-2"]
 
@@ -31,8 +30,11 @@ def test_phi2_clm_onnx(variant, forge_tmp_path):
         task=Task.CAUSAL_LM,
     )
 
-    # Load tokenizer
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant, return_tensors="pt", trust_remote_code=True)
+    # Load model and tokenizer from HuggingFace
+    model = PhiForCausalLM.from_pretrained(variant, trust_remote_code=True, use_cache=False)
+    framework_model = TextModelWrapper(model=model, text_embedding=model.model.embed_tokens)
+    framework_model.eval()
+    tokenizer = AutoTokenizer.from_pretrained(variant, trust_remote_code=True)
     tokenizer.add_special_tokens({"pad_token": "[PAD]"})
 
     # prepare input
@@ -40,17 +42,18 @@ def test_phi2_clm_onnx(variant, forge_tmp_path):
     inputs = tokenizer(
         input_prompt,
         return_tensors="pt",
-        max_length=256,
+        max_length=128,
         padding="max_length",
         truncation=True,
     )
     input_ids = inputs["input_ids"]
     attn_mask = inputs["attention_mask"]
 
+    inputs = [input_ids, attn_mask]
+
     # Export model to ONNX
     onnx_path = f"{forge_tmp_path}/model.onnx"
-    command = build_optimum_cli_command(variant, forge_tmp_path)
-    subprocess.run(command, check=True)
+    torch.onnx.export(framework_model, tuple(inputs), onnx_path, opset_version=17)
 
     # Load framework model
     onnx_model = onnx.load(onnx_path)
@@ -60,7 +63,6 @@ def test_phi2_clm_onnx(variant, forge_tmp_path):
     framework_model = forge.OnnxModule(module_name, onnx_model, onnx_path)
 
     # Compile model
-    inputs = [input_ids, attn_mask]
     compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Model Verification

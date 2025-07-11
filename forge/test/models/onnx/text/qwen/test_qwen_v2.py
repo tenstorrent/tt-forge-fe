@@ -2,16 +2,15 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+import torch
+import onnx
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import forge
 from forge.verify.verify import verify
-
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
-from test.models.models_utils import build_optimum_cli_command
-import subprocess
-import onnx
-import torch
+
+from test.models.models_utils import TextModelWrapper
 
 
 @pytest.mark.out_of_memory
@@ -25,11 +24,11 @@ import torch
         ),
         pytest.param(
             "Qwen/Qwen2.5-1.5B",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)"),
         ),
         pytest.param(
             "Qwen/Qwen2.5-3B",
-            marks=pytest.mark.skip(reason="Segmentation Fault"),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)"),
         ),
         pytest.param(
             "Qwen/Qwen2.5-0.5B-Instruct",
@@ -41,7 +40,7 @@ import torch
         ),
         pytest.param(
             "Qwen/Qwen2.5-3B-Instruct",
-            marks=pytest.mark.skip(reason="Segmentation Fault"),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)"),
         ),
     ],
 )
@@ -57,26 +56,27 @@ def test_qwen_clm_onnx(variant, forge_tmp_path):
     )
 
     # Load model and tokenizer
-    framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu", return_dict=False)
+    model = AutoModelForCausalLM.from_pretrained(variant, use_cache=False)
+    framework_model = TextModelWrapper(model=model, text_embedding=model.model.embed_tokens)
     framework_model.eval()
     tokenizer = AutoTokenizer.from_pretrained(variant)
 
-    # Prepare input
     prompt = "Give me a short introduction to large language models."
     messages = [{"role": "user", "content": prompt}]
     text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-    model_inputs = tokenizer([text], return_tensors="pt")
-    input_ids = model_inputs["input_ids"]
-    attention_mask = model_inputs["attention_mask"]
+
+    # Tokenize and generate
+    tokenized_inputs = tokenizer([text], return_tensors="pt", padding=True, truncation=True, max_length=128)
+
+    # Get input_ids and attention_mask
+    input_ids = tokenized_inputs["input_ids"]
+    attention_mask = tokenized_inputs["attention_mask"]
+
     inputs = [input_ids, attention_mask]
 
     # Export model to ONNX
     onnx_path = f"{forge_tmp_path}/model.onnx"
-    if variant not in ["Qwen/Qwen2.5-0.5B", "Qwen/Qwen2.5-0.5B-Instruct"]:
-        command = build_optimum_cli_command(variant, forge_tmp_path)
-        subprocess.run(command, check=True)
-    else:
-        torch.onnx.export(framework_model, (inputs[0], inputs[1]), onnx_path, opset_version=17)
+    torch.onnx.export(framework_model, tuple(inputs), onnx_path, opset_version=17)
 
     # Load framework model
     onnx_model = onnx.load(onnx_path)
