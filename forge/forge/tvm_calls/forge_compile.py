@@ -428,19 +428,14 @@ class ConvertEmulatedDtypes:
             return [obj]
 
     def __enter__(self):
-        # Convert emulated model parameters to fallback
-        self.param_dfs = {}
-        for name, param in self.model.named_parameters():
-            if param.dtype in self.emulated_dfs:
-                self.param_dfs[name] = param.dtype
-                param.data = param.data.to(self.fallback)
 
-        # Convert buffers
-        self.buffer_dfs = {}
-        for name, buf in self.model.named_buffers():
-            if buf.dtype in self.emulated_dfs:
-                self.buffer_dfs[name] = buf.dtype
-                buf.data = buf.data.to(self.fallback)
+        # Determine and store the model's original dtype
+        dtypes = set(p.dtype for p in self.model.parameters())
+        self.original_dtype = next(iter(dtypes)) if dtypes else self.fallback
+
+        # Convert model to fallback if it was in an emulated dtype
+        if self.original_dtype in self.emulated_dfs:
+            self.model.to(self.fallback)
 
         # Convert emulated inputs to fallback
         self.input_dfs = []
@@ -450,15 +445,9 @@ class ConvertEmulatedDtypes:
                 inp.data = inp.data.to(self.fallback)
 
     def __exit__(self, *args):
-        # Convert model parameters back to original dtype
-        for name, param in self.model.named_parameters():
-            if name in self.param_dfs:
-
-                param.data = param.data.to(self.param_dfs[name])
-
-        for name, buf in self.model.named_buffers():
-            if name in self.buffer_dfs:
-                buf.data = buf.data.to(self.buffer_dfs[name])
+        # Restore model dtype if it was changed
+        if self.original_dtype in self.emulated_dfs:
+            self.model.to(self.original_dtype)
 
         # Convert inputs back to original dtype
         for inp, df in zip(self.flatten_object(self.inputs), self.input_dfs):
