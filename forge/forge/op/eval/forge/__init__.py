@@ -4,12 +4,10 @@
 import importlib
 from types import ModuleType
 from functools import lru_cache
-from .transpose import TransposeTM
 from .exp import Exp
 from .cosine import Cosine
 from .ethernet_datacopy import EthernetDatacopy
 from .reciprocal import Reciprocal
-from .abs import Abs
 from .tanh import Tanh
 from .log import Log
 from .nop import Nop
@@ -33,9 +31,9 @@ op_to_module_map = {
     "divide": "eltwise_binary",
     "remainder": "eltwise_binary",
     "subtract": "eltwise_binary",
-    "multiply": "eltwise_binary",
     "maximum": "eltwise_binary",
     "minimum": "eltwise_binary",
+    "multiply": "eltwise_binary",
     "heaviside": "eltwise_binary",
     "power": "eltwise_binary",
     "greater": "eltwise_binary",
@@ -58,7 +56,6 @@ op_to_module_map = {
     "sigmoid": "eltwise_unary",
     "clip": Clip,
     "cosine": Cosine,
-    "abs": Abs,
     "sine": "eltwise_unary",
     "atan": "eltwise_unary",
     "tile_broadcast": "eltwise_unary",
@@ -82,7 +79,7 @@ op_to_module_map = {
     "embedding": "embedding",
     "embedding_bw": "embedding_bw",
     "ethernet_datacopy": EthernetDatacopy,
-    "transpose": TransposeTM,
+    "transpose": "tm",
     "adv_index": "tm",
     "reshape": "tm",
     "index": "tm",
@@ -122,7 +119,6 @@ op_to_module_map = {
     "avg_pool1d": "pooling",
     "avg_pool2d": "pooling",
     "avg_pool3d": "pooling",
-    "constant": "constant",
     "resize1d": "resize",
     "resize2d": "resize",
     "resize3d": "resize",

@@ -8,6 +8,7 @@
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
 #include "lower_to_forge/common.hpp"
+#include "ops/op.hpp"
 #include "passes/amp.hpp"
 #include "utils/logger.hpp"
 
@@ -37,7 +38,7 @@ static void insert_cast_on_const_input_nodes(graphlib::Graph *graph, DataFormat 
         ss << df_override;
         std::string dtype_str = ss.str();
         graphlib::OpType::Attrs named_attr = graphlib::OpType::Attrs{{"dtype", dtype_str}};
-        graphlib::OpType op_type = graphlib::OpType("cast", {}, {}, named_attr);
+        graphlib::OpType op_type = graphlib::OpType("cast", {}, named_attr);
 
         Node *cast_node = graph->add_node(
             graphlib::create_node<graphlib::PyOpNode>("cast_input_" + node->name(), op_type),
@@ -105,7 +106,7 @@ void configure_output_data_formats(graphlib::Graph *graph, std::optional<DataFor
                     consumers.size());
                 // check if consumer is cast node
                 bool consumer_is_cast = consumers[0]->node_type() == graphlib::NodeType::kPyOp &&
-                                        consumers[0]->as<graphlib::PyOpNode>()->op_type().op == "cast";
+                                        consumers[0]->as<graphlib::PyOpNode>()->new_op_type() == ops::OpType::Cast;
                 TT_ASSERT(
                     (consumer_is_cast && consumers[0]->output_df() == default_df_override.value()) || node_is_int,
                     "Non integer constant input node that doesn't have data format same as default_df_override {}, "

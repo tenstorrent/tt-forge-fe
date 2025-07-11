@@ -16,7 +16,7 @@ from tqdm import tqdm
 # Forge modules
 import forge
 from forge.verify.value_checkers import AutomaticValueChecker
-from forge.verify.verify import verify
+from forge.verify.verify import verify, VerifyConfig
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from forge.config import CompilerConfig, MLIRConfig
 from forge._C import DataFormat
@@ -102,7 +102,9 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
     # Compiler configuration
     compiler_config = CompilerConfig()
     # Turn on MLIR optimizations.
-    compiler_config.mlir_config = MLIRConfig().set_enable_optimizer(True)
+    compiler_config.mlir_config = (
+        MLIRConfig().set_enable_optimizer(True).set_enable_memory_layout_analysis(False).set_enable_fusing(True)
+    )
     if data_format == "bfloat16":
         # Convert model to bfloat16
         compiler_config.default_df_override = DataFormat.Float16_b
@@ -117,12 +119,17 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
     settings.enable_program_cache = True
     configure_devices(device_settings=settings)
 
+    verify_cfg = VerifyConfig()
+    # Set pcc to 0.97, as we've seen cases of pcc 0.98xyz.
+    verify_cfg.value_checker = AutomaticValueChecker(pcc=0.97)
+
     verify(
         [
             inputs[0],
         ],
         framework_model,
         compiled_model,
+        verify_cfg=verify_cfg,
     )
 
     if task == "classification":

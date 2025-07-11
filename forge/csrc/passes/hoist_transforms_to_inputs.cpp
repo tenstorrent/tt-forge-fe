@@ -46,10 +46,10 @@ void hoist_transforms_to_inputs(tt::graphlib::Graph *graph)
         runtime_tensor_transform.original_shape = input->shape();
         runtime_tensor_transform.reinterpreted_shape = op_node->shape();
 
-        runtime_tensor_transform.stride_height = std::get<int>(op_type.attr[0]);
-        runtime_tensor_transform.stride_width = std::get<int>(op_type.attr[1]);
-        runtime_tensor_transform.kernel_height = std::get<int>(op_type.attr[2]);
-        runtime_tensor_transform.kernel_width = std::get<int>(op_type.attr[3]);
+        runtime_tensor_transform.stride_height = std::get<int>(op_type.legacy_attrs_[0]);
+        runtime_tensor_transform.stride_width = std::get<int>(op_type.legacy_attrs_[1]);
+        runtime_tensor_transform.kernel_height = std::get<int>(op_type.legacy_attrs_[2]);
+        runtime_tensor_transform.kernel_width = std::get<int>(op_type.legacy_attrs_[3]);
 
         input->set_runtime_tensor_transform(runtime_tensor_transform);
         input->set_shape(runtime_tensor_transform.reinterpreted_shape);

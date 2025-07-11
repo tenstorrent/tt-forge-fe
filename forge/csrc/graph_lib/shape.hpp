@@ -42,7 +42,11 @@ class Shape
     Shape() = default;
     Shape(bool valid, Shape::Type type, std::vector<std::uint32_t> dims);
 
-    static Shape create(std::vector<std::uint32_t> dims);
+    template <class T = std::uint32_t>
+    static Shape create(std::vector<T> dims)
+    {
+        return Shape(true, FREE, std::vector<std::uint32_t>(dims.begin(), dims.end()));
+    }
     static Shape create_forge(
         std::vector<std::uint32_t> dims, int tile_height = FORGE_TILE_DIM, int tile_width = FORGE_TILE_DIM);
     static Shape create_forge(std::uint32_t w, std::uint32_t z, std::uint32_t r, std::uint32_t c);
@@ -68,7 +72,12 @@ class Shape
     bool is_forge() const { return type_ == FORGE; }
     Shape::Type type() const { return type_; }
 
-    std::vector<std::uint32_t> as_vector() const;
+    template <class T = uint32_t>
+    std::vector<T> as_vector() const
+    {
+        return std::vector<T>(dims_.begin(), dims_.end());
+    }
+
     std::tuple<int, int, int, int> as_tuple() const;
     std::string as_string() const;
 

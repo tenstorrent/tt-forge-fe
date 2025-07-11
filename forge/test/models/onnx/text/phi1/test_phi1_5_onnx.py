@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import onnx
-from transformers import AutoTokenizer, PhiForCausalLM
+from transformers import AutoTokenizer
 import forge
 from forge.verify.verify import verify
 
@@ -34,8 +34,6 @@ def test_phi1_5_clm_onnx(variant, forge_tmp_path):
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, return_tensors="pt")
     tokenizer.add_special_tokens({"pad_token": "[PAD]"})
-    torch_model = download_model(PhiForCausalLM.from_pretrained, variant, use_cache=False, return_dict=False)
-    torch_model.eval()
 
     # prepare input
     input_prompt = "Write a detailed analogy between mathematics and a lighthouse."
@@ -43,7 +41,7 @@ def test_phi1_5_clm_onnx(variant, forge_tmp_path):
         input_prompt,
         return_tensors="pt",
         max_length=256,
-        pad_to_max_length=True,
+        padding="max_length",
         truncation=True,
     )
     input_ids = inputs["input_ids"]

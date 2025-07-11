@@ -22,7 +22,7 @@ import sys
 import importlib
 
 from forge.python_codegen import PyTorchWriter, ForgeWriter, PythonWriter, pytorch_df_from_str
-from forge.tvm_unique_op_generation import Operation, NodeType, extract_and_generate_unique_ops_tests
+from forge.tvm_unique_op_generation import Operation, NodeType, extract_and_export_unique_ops_config
 
 
 class ExitTest(Exception):
@@ -2770,14 +2770,7 @@ def compile_tvm_to_python(
 
         modules.append(writer)
 
-        if compiler_cfg.extract_tvm_unique_ops_config or (
-            framework == "pytorch" and compiler_cfg.tvm_generate_unique_ops_tests
-        ):
-
-            if compiler_cfg.extract_tvm_unique_ops_config and compiler_cfg.tvm_generate_unique_ops_tests:
-                raise ValueError(
-                    "Both extract_tvm_unique_ops_config and tvm_generate_unique_ops_tests should not be enabled at the same time."
-                )
+        if compiler_cfg.extract_tvm_unique_ops_config:
 
             # Running the inference to verify the generated forge module which helps
             # to avoid extracting unique ops configuration for not properly traced models
@@ -2791,19 +2784,14 @@ def compile_tvm_to_python(
             framework_mod.cpu_eval_forward(*inputs)
             get_forge_outputs([forge_mod], ["TTDevice"], forge_inputs)
 
-            extract_and_generate_unique_ops_tests(
+            extract_and_export_unique_ops_config(
                 framework_mod,
                 ops,
                 current_module_name,
                 framework,
-                contains_incompatible_np_floats,
                 node_name_to_node_type,
-                params,
-                constants,
-                param_names,
                 param_file_name,
                 compiler_cfg,
-                writer.module_directory,
             )
 
             raise ExitTest("Extract the unique ops configuration and exited the test")

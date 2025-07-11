@@ -26,18 +26,16 @@ from utils import (
 )
 
 
-def generate_and_export_unique_ops_tests(
+def export_unique_ops_config(
     test_directory_or_file_path: str,
     unique_ops_output_directory_path: str,
     marker: str,
-    extract_tvm_unique_ops_config: bool = False,
     timeout: int = 1200,
     tests_to_filter: Optional[List[str]] = None,
 ):
     """
     Collect all the tests that matches with specified marker in the test_directory_or_file_path specified by the user
-    and then generate unique op test for all the collected test and return the list of directory path
-    containing exported models unique op configuration as xlsx file
+    and then export unique ops config for all the collected test.
     """
 
     # Collect all the test that matches with specified marker inside the test_directory_or_file_path specified by the user
@@ -64,7 +62,7 @@ def generate_and_export_unique_ops_tests(
         else:
             framework_and_model_name_to_tests[framework_name] = {model_name: [test]}
 
-    # Generate unique op test for the all collected test and save the models unique ops test information in the unique_ops_output_directory_path
+    # Export unique ops config for the all collected tests in the unique_ops_output_directory_path
     for framework_name, model_name_to_tests in framework_and_model_name_to_tests.items():
         for model_name, tests in model_name_to_tests.items():
             model_output_dir_path = os.path.join(unique_ops_output_directory_path, framework_name, model_name)
@@ -88,8 +86,7 @@ def generate_and_export_unique_ops_tests(
                         timeout=timeout,
                         env=dict(
                             os.environ,
-                            FORGE_TVM_GENERATE_UNIQUE_OPS_TESTS="1" if not extract_tvm_unique_ops_config else "0",
-                            FORGE_EXTRACT_TVM_UNIQUE_OPS_CONFIG="1" if extract_tvm_unique_ops_config else "0",
+                            FORGE_EXTRACT_TVM_UNIQUE_OPS_CONFIG="1",
                             FORGE_DISABLE_REPORTIFY_DUMP="1",
                             FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS="1",
                             FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS_DIR_PATH=model_output_dir_path,
@@ -110,7 +107,7 @@ def generate_and_export_unique_ops_tests(
                         dump_logs(test_log_file_path, error_message)
                     else:
                         dump_logs(test_log_file_path, message)
-                        logger.info(f"Successfully generated and exported unique ops test")
+                        logger.info("Successfully exported unique ops config")
 
                 except subprocess.CalledProcessError as e:
                     error_message = f"Error while running the pytest:\n {e.output}"
@@ -129,9 +126,8 @@ def generate_and_export_unique_ops_tests(
 
 
 def extract_unique_op_tests_from_models(
-    models_unique_ops_config_output_dir_path: List[str],
+    models_unique_ops_config_output_dir_path: str,
     unique_ops_config_file_path: str,
-    use_constant_value: bool = True,
     convert_param_and_const_to_activation: bool = False,
     existing_unique_ops_config: Optional[UniqueOperations] = None,
 ):
@@ -145,9 +141,6 @@ def extract_unique_op_tests_from_models(
     # Dictionary to store all the operations found in model variants
     models_operations = {}
     unique_op_count = 0
-
-    # Dictionary to store constants (name and tensor) used in the model variants
-    models_constants = {}
 
     processed_variants = set()
 
@@ -181,7 +174,6 @@ def extract_unique_op_tests_from_models(
                 "Operand_Types",
                 "Operand_Dtypes",
                 "Args",
-                "Testfile",
             ],
         )
 
@@ -191,15 +183,6 @@ def extract_unique_op_tests_from_models(
         # Read the `.json` file contains model variant metadata information
         with open(model_variant_tvm_generated_unique_op_metadata_file_path, "r") as json_file:
             model_variant_metadata = json.load(json_file)
-
-        if use_constant_value:
-            # Load model variants parameters and buffers as tensors from specified files
-            named_parameters = torch.load(model_variant_metadata["named_params_file_name"])
-            if model_variant_metadata["param_file_name"] is not None:
-                serialized_params = torch.load(model_variant_metadata["param_file_name"])
-                named_parameters.update(serialized_params)
-            named_buffers = torch.load(model_variant_metadata["named_buffers_file_name"])
-            named_parameters.update(named_buffers)
 
         framework = model_variant_metadata["framework"]
         variant_name = model_variant_metadata["module_name"]
@@ -225,8 +208,6 @@ def extract_unique_op_tests_from_models(
             metadata["model_variant_info"] = {}
             metadata["model_variant_info"]["variant_name"] = variant_name
             metadata["model_variant_info"]["framework"] = framework
-            if not pd.isna(row["Testfile"]):
-                metadata["model_variant_info"]["Testfile"] = row["Testfile"]
 
             # Create an Operation object with op name, shape, nodetype, dtype, arguments and operation metadata
             models_operations[unique_op_count] = Operation(
@@ -239,17 +220,9 @@ def extract_unique_op_tests_from_models(
                 metadata=metadata,
             )
 
-            if use_constant_value:
-                # Store tensor which has constant nodetype as operands
-                for operand_type, operand_name in zip(operand_types, operand_names):
-                    if operand_type == NodeType.Constant:
-                        models_constants[operand_name] = named_parameters[operand_name]
-
     # Extract unique operation configuration configuration across all the model variants
     unique_operations = UniqueOperations.create_unique_operations(
         models_operations,
-        models_constants,
-        use_constant_value=use_constant_value,
         convert_param_and_const_to_activation=convert_param_and_const_to_activation,
         existing_unique_operations=existing_unique_ops_config,
     )
@@ -368,9 +341,7 @@ def extract_existing_unique_ops_config(
                 )
 
     # After processing all files, create a UniqueOperations object
-    existing_unique_operations = UniqueOperations.create_unique_operations(
-        models_operations, {}, use_constant_value=False
-    )
+    existing_unique_operations = UniqueOperations.create_unique_operations(models_operations)
 
     # Dump the serialized configuration to the specified file path
     dump_logs(existing_unique_ops_config_file_path, str(existing_unique_operations))

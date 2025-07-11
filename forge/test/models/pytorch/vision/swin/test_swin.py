@@ -28,6 +28,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.swin.model_utils.image_utils import load_image
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
 
@@ -239,9 +240,12 @@ def test_swin_torchvision(variant):
     )
 
     # Model Verification
-    verify(
+    fw_out, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
     )
+
+    # Post processing
+    print_cls_results(fw_out[0], co_out[0])

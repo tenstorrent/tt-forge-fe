@@ -6,7 +6,6 @@ from math import gcd
 import torch
 import forge
 from ..common import to_torch_operands
-from .transpose import TransposeTM
 from .nop import Nop
 from .buffer import Buffer
 from forge.forgeglobal import TILE_DIM, align_up_tile, is_tile_dim_aligned
@@ -245,7 +244,7 @@ def decompose(type, attr, dc, inputs):
                 inp_shape.insert(axis + 1, 1)
             else:
                 inp_shape.insert(axis, 1)
-            new_inp = dc.op_with_named_attrs("reshape", [inp], {"shape": (*inp_shape,)}, (*inp_shape,))
+            new_inp = dc.op_with_named_attrs("reshape", [inp], {"shape": (*inp_shape,)})
             new_inputs.append(new_inp)
 
         output = dc.op_with_named_attrs("concatenate", new_inputs, {"dim": (axis)}, (axis,))

@@ -17,20 +17,9 @@ int Shape::get_tile_height() const { return tt::graphlib::get_row_size_from_tile
 
 int Shape::get_tile_width() const { return tt::graphlib::get_col_size_from_tile_size(tile_dim_); }
 
-Shape::Shape(bool valid, Shape::Type type, std::vector<std::uint32_t> dims)
+Shape::Shape(bool valid, Shape::Type type, std::vector<std::uint32_t> dims) :
+    valid_(valid), type_(type), dims_(std::move(dims))
 {
-    valid_ = valid;
-    type_ = type;
-    dims_ = std::move(dims);
-}
-
-Shape Shape::create(std::vector<std::uint32_t> values)
-{
-    Shape s;
-    s.dims_ = std::move(values);
-    s.valid_ = true;
-    s.type_ = FREE;
-    return s;
 }
 
 Shape Shape::create_forge(std::vector<std::uint32_t> values, int tile_height, int tile_width)
@@ -201,8 +190,6 @@ std::uint32_t Shape::volume() const
     for (auto i : dims_) v *= i;
     return v;
 }
-
-std::vector<std::uint32_t> Shape::as_vector() const { return dims_; }
 
 std::tuple<int, int, int, int> Shape::as_tuple() const
 {

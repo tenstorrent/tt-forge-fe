@@ -8,7 +8,6 @@ from forge.forgeglobal import TILE_DIM
 from forge.tensor import Tensor
 import numpy as np
 import torch
-from .transpose import TransposeTM
 from .reciprocal import Reciprocal
 from .log import Log
 from .nop import Nop
@@ -25,10 +24,7 @@ def eval(type, attr, ops):
     t_ops = to_torch_operands(*ops)
 
     f = {
-        "add": lambda i: torch.add(t_ops[0], t_ops[1]),
         "divide": lambda i: torch.divide(t_ops[0], t_ops[1]),
-        "subtract": lambda i: torch.subtract(t_ops[0], t_ops[1]),
-        "multiply": lambda i: torch.multiply(t_ops[0], t_ops[1]),
         "maximum": lambda i: torch.maximum(t_ops[0], t_ops[1]),
         "minimum": lambda i: torch.minimum(t_ops[0], t_ops[1]),
         "heaviside": lambda i: torch.heaviside(t_ops[0], t_ops[1]),
@@ -97,43 +93,7 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
     grad_shape = [1] * (longer_dims - len(grad.shape.as_list())) + grad.shape.as_list()
     grad_shape_len = len(grad_shape)
 
-    if op_type == "add":
-        if inputs[operand].shape != grad.shape:
-            for i in range(len(shapes[operand])):
-                if shapes[operand][i] < grad_shape[i]:
-                    # Negative indexing for reduce axis
-                    grad = ac.op(
-                        "reduce_sum",
-                        (grad,),
-                        (i - grad_shape_len,),
-                        {"keep_dim": True, "dim_arg": [i - grad_shape_len]},
-                    )
-        return ac.op(Nop.create(), (grad,))  # pass gradient through
-
-    elif op_type == "subtract":
-        if inputs[operand].shape != grad.shape:
-            for i in range(len(shapes[operand])):
-                if shapes[operand][i] < grad.shape[i]:
-                    grad = ac.op("reduce_sum", (grad,), (i,), {"keep_dim": True, "dim_arg": [i]})
-        if operand == 0:
-            return ac.op(Nop.create(), (grad,))
-        else:
-            return ac.op("multiply", (grad, ac.constant(-1)))
-
-    elif op_type == "multiply":
-        op_grad = ac.op("multiply", (grad, inputs[1 - operand]))
-        if inputs[operand].shape != grad.shape:
-            for i in range(len(shapes[operand])):
-                if shapes[operand][i] < grad_shape[i]:
-                    op_grad = ac.op(
-                        "reduce_sum",
-                        (op_grad,),
-                        (i - grad_shape_len,),
-                        {"keep_dim": True, "dim_arg": [i - grad_shape_len]},
-                    )
-        return op_grad
-
-    elif op_type == "maximum":
+    if op_type == "maximum":
         # TODO
         return ac.op(Nop.create(), (grad,))  # pass gradient through
 
@@ -175,11 +135,11 @@ def decompose(op_type, attr, dc, inputs):
     ops0_dims = len(inputs[0].shape)
     ops1_dims = len(inputs[1].shape)
     if ops0_dims > ops1_dims and ops0_dims == 5:
-        ops1 = dc.op("reshape", [inputs[1]], list(inputs[0].shape))
+        ops1 = dc.op_with_named_attrs("reshape", [inputs[1]], {"shape": inputs[0].shape})
         result = dc.op(op_type, [inputs[0], ops1])
         dc.fuse(result)
     elif ops1_dims > ops0_dims and ops1_dims == 5:
-        ops0 = dc.op("reshape", [inputs[0]], list(inputs[1].shape))
+        ops0 = dc.op_with_named_attrs("reshape", [inputs[0]], {"shape": inputs[1].shape})
         result = dc.op(op_type, [ops0, inputs[1]])
         dc.fuse(result)
 
@@ -236,17 +196,18 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
 
         dc.fuse(result)
         return
-    else:
-        ops0_dims = len(inputs[0].shape)
-        ops1_dims = len(inputs[1].shape)
-        if ops0_dims > ops1_dims and ops0_dims == 5:
-            ops1 = dc.op("reshape", [inputs[1]], list(inputs[0].shape))
-            result = dc.op(op_type, [inputs[0], ops1])
-            dc.fuse(result)
-        elif ops1_dims > ops0_dims and ops1_dims == 5:
-            ops0 = dc.op("reshape", [inputs[0]], list(inputs[1].shape))
-            result = dc.op(op_type, [ops0, inputs[1]])
-            dc.fuse(result)
+    # Temporarily commented out until we migrate ops to cpp (will remove later)
+    # else:
+    # ops0_dims = len(inputs[0].shape)
+    # ops1_dims = len(inputs[1].shape)
+    # if ops0_dims > ops1_dims and ops0_dims == 5:
+    #     ops1 = dc.op_with_named_attrs("reshape", [inputs[1]], {"shape": inputs[0].shape})
+    #     result = dc.op(op_type, [inputs[0], ops1])
+    #     dc.fuse(result)
+    # elif ops1_dims > ops0_dims and ops1_dims == 5:
+    #     ops0 = dc.op_with_named_attrs("reshape", [inputs[0]], {"shape": inputs[1].shape})
+    #     result = dc.op(op_type, [ops0, inputs[1]])
+    #     dc.fuse(result)
 
 
 def decompose_post_optimize(op_type, attr, dc, inputs):
@@ -256,7 +217,7 @@ def decompose_post_optimize(op_type, attr, dc, inputs):
 def initial_flops_estimate(type, attr, ops):
     flops = 0
     output_shape = shape(type, attr, ops)[0]
-    if type in ["add", "subtract", "power", "maximum", "minumum", "multiply"]:
+    if type in ["add", "power", "maximum", "minumum"]:
         flops = np.prod(output_shape)
 
     return flops

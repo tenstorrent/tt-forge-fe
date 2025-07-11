@@ -25,7 +25,6 @@ import forge
 from forge.tensor import change_rank
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div, align_up
-from .transpose import TransposeTM
 from .pad import Pad
 from .nop import Nop
 from .buffer import Buffer
@@ -37,14 +36,6 @@ def eval(type, attr, ops):
     ), f"Tensor manipulation ops should have one input {len(ops)} {attr}"
     t_ops = to_torch_operands(*ops)
     dtype = ops[0].dtype
-
-    if type == "transpose":
-        assert len(attr) == 3, "Transpose should have 3 attributes"
-        dim0, dim1, orig_size = attr
-        return torch.transpose(t_ops[0], dim0, dim1)
-
-    if type == "reshape":
-        return t_ops[0].reshape(attr)
 
     if type == "select":
         assert len(attr) == 4, "Select should have 4 attributes"
@@ -349,21 +340,6 @@ def shape(type, attr, ops):
         type == "adv_index" and len(ops) == 2
     ), f"Tensor manipulation ops should have one input, has {len(ops)} input instead"
 
-    if type == "transpose":
-        # Transpose has 3 attrs, [axis_0, axis_1, output Z-dim size]
-        assert len(attr) == 3, f"{len(attr)}"
-        dim0 = attr[0]
-        dim1 = attr[1]
-        shape = list(ops[0])
-        a = shape[dim0]
-        b = shape[dim1]
-        shape[dim0] = b
-        shape[dim1] = a
-        return tuple(shape), []
-
-    if type == "reshape":
-        return attr, []
-
     if type == "index":
         assert len(attr) == 4, "Index should have 4 attributes"
         dim, start, stop, stride = attr
@@ -642,25 +618,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     assert operand == 0, "Invalid operand index"
 
-    if type == "transpose":
-        assert len(attr) == 3
-
-        if (attr[0] == -3 and attr[1] == -4) or (attr[0] == -4 and attr[1] == -3):
-            attr[-1] = -1
-        elif attr[0] == -3 or attr[0] == -4:
-            attr[-1] = grad.shape[attr[1]]
-        elif attr[1] == -3 or attr[1] == -4:
-            attr[-1] = grad.shape[attr[0]]
-        else:
-            attr[-1] = -1
-
-        return ac.op("transpose", (grad,), attr)
-
-    elif type == "reshape":
-        shape = inputs[0].shape
-        return ac.op(type, (grad,), attributes=(shape), named_attrs={"shape": shape})
-
-    elif type == "conv2d_depthwise_weights":
+    if type == "conv2d_depthwise_weights":
         return ac.op("conv2d_depthwise_weights_bw", (grad,), attributes=attr)
 
     elif type == "conv2d_grouped_weights":
@@ -769,18 +727,20 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         if attr[0] == 2 or attr[0] == 3:
             ret = ac.op("reduce_sum", (grad,), (attr[0],), {"keep_dim": True})
         else:
-            ret = ac.op(
-                TransposeTM.create(attr[0], -2),
+            ret = ac.op_with_named_attrs(
+                "transpose",
                 [
                     grad,
                 ],
+                {"dim0": attr[0], "dim1": -2},
             )
             ret = ac.op("reduce_sum", (ret,), (-2,), {"keep_dim": True})
-            ret = ac.op(
-                TransposeTM.create(attr[0], -2),
+            ret = ac.op_with_named_attrs(
+                "transpose",
                 [
                     ret,
                 ],
+                {"dim0": attr[0], "dim1": -2},
             )
         return ret
 
@@ -794,7 +754,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
         shape.insert(dim, repeats)
 
-        ret = ac.op("reshape", (grad,), shape, {"shape": shape})
+        ret = ac.op_with_named_attrs("reshape", (grad,), {"shape": shape})
         ret = ac.op("reduce_sum", (ret,), (dim, True), {"dim_arg": [dim], "keep_dim": True})
         ret = ac.op("squeeze", (ret,), (dim,), {"dim": dim})
         return ret
@@ -865,7 +825,7 @@ def decompose(type, attr, dc, inputs):
         if dim != 0:
             current = inputs[0]
             for i in range(dim, 0, -1):
-                current = dc.op(TransposeTM.create(i, i - 1), [current])
+                current = dc.op_with_named_attrs("transpose", [current], {"dim0": i, "dim1": i - 1})
             permuted = current
         else:
             # No need to transpose if dim is already 0
@@ -883,7 +843,7 @@ def decompose(type, attr, dc, inputs):
             rest_dims_product = math.prod(permuted_shape[1:])
 
             reshape_dims = [in0_shape[dim], rest_dims_product]
-            reshaped = dc.op_with_named_attrs("reshape", [permuted], {"shape": reshape_dims}, reshape_dims)
+            reshaped = dc.op_with_named_attrs("reshape", [permuted], {"shape": reshape_dims})
         else:
             reshaped = permuted
 
@@ -896,7 +856,7 @@ def decompose(type, attr, dc, inputs):
         if len(in0_shape) != 2:
             output_shape = indices_shape + permuted_shape[1:]
 
-            reshaped_output = dc.op_with_named_attrs("reshape", [selected], {"shape": output_shape}, output_shape)
+            reshaped_output = dc.op_with_named_attrs("reshape", [selected], {"shape": output_shape})
         else:
             reshaped_output = selected
 
@@ -905,7 +865,7 @@ def decompose(type, attr, dc, inputs):
             # Move dimension 0 to position 'dim' using transposes
             current = reshaped_output
             for i in range(0, dim):
-                current = dc.op(TransposeTM.create(i, i + 1), [current])
+                current = dc.op_with_named_attrs("transpose", [current], {"dim0": i, "dim1": i + 1})
             result = current
         else:
             # No need to transpose if dim is already 0
@@ -918,16 +878,6 @@ def decompose(type, attr, dc, inputs):
         if attr[1] == 1:
             dc.fuse(dc.op(Nop.create(), [inputs[0]]))
 
-    if type == "transpose":
-        # canonicalize dims to use negative indexing
-        dim0, dim1, orig_size = attr
-        if dim0 >= 0 or dim1 >= 0:
-            if dim0 >= 0:
-                dim0 -= inputs[0].shape.len()
-            if dim1 >= 0:
-                dim1 -= inputs[0].shape.len()
-            dc.fuse(dc.op(TransposeTM.create(dim0, dim1, orig_size)), inputs)
-
     if type == "pixel_shuffle":
         result = inputs[0]  # Shape: (N, C*r*r, H, W)
         N, C_r2, H, W = result.shape
@@ -936,47 +886,19 @@ def decompose(type, attr, dc, inputs):
 
         # Step 1: Reshape to (N, C, r, r, H, W)
         reshape_dims = (N, C, r, r, H, W)
-        x = dc.op_with_named_attrs("reshape", [result], {"shape": reshape_dims}, reshape_dims)
+        x = dc.op_with_named_attrs("reshape", [result], {"shape": reshape_dims})
 
         # Step 2: Transpose sequence on x
-        x = dc.op(TransposeTM.create(2, 4), [x])  # [0,1,4,3,2,5]
-        x = dc.op(TransposeTM.create(3, 4), [x])  # [0,1,4,2,3,5]
-        x = dc.op(TransposeTM.create(4, 5), [x])  # [0,1,4,2,5,3]
+        x = dc.op_with_named_attrs("transpose", [x], {"dim0": 2, "dim1": 4})  # [0,1,4,3,2,5]
+        x = dc.op_with_named_attrs("transpose", [x], {"dim0": 3, "dim1": 4})  # [0,1,4,2,3,5]
+        x = dc.op_with_named_attrs("transpose", [x], {"dim0": 4, "dim1": 5})  # [0,1,4,2,5,3]
 
         # Step 3: Final reshape to (N, C, H * r, W * r)
         reshape_dims = (N, C, H * r, W * r)
-        x = dc.op_with_named_attrs("reshape", [x], {"shape": reshape_dims}, reshape_dims)
+        x = dc.op_with_named_attrs("reshape", [x], {"shape": reshape_dims})
 
         dc.fuse(x)
 
-    if type == "reshape":
-        assert len(inputs) == 1
-        input_shape = inputs[0].shape.as_list()
-        shape = list(attr)
-
-        if shape == input_shape:
-            # dc.fuse(dc.op("nop", [inputs[0]]))
-            return
-
-        rank = 0
-        while len(shape) < len(input_shape):
-            shape.insert(0, 1)
-            rank -= 1
-        while len(shape) > len(input_shape) and shape[0] == 1:
-            shape = shape[1:]
-            rank += 1
-
-        is_rank_only_reshape = shape == input_shape
-        if is_rank_only_reshape and rank != 0:
-            result = inputs[0]
-            while rank < 0:
-                result = dc.op_with_named_attrs("squeeze", [result], {"dim": 0}, (0,))
-                rank += 1
-            while rank > 0:
-                result = dc.op_with_named_attrs("unsqueeze", [result], {"dim": 0}, (0, len(result.shape.as_list())))
-                rank -= 1
-            dc.fuse(result)
-            return
     if type == "repeat":
         input_shape = inputs[0].shape.as_list()
         target_shape = attr
@@ -987,7 +909,7 @@ def decompose(type, attr, dc, inputs):
             # `ttir.repeat` does not currently support this directly.
             # To handle this, we first reshape the input to ensure both the input and the repeats have the same dimensions
             new_shape = (1,) * (len(target_shape) - len(input_shape)) + tuple(input_shape)
-            result = dc.op("reshape", [result], new_shape)
+            result = dc.op_with_named_attrs("reshape", [result], {"shape": new_shape})
             result = dc.op_with_named_attrs("repeat", [result], {"repeats": target_shape}, target_shape)
             dc.fuse(result)
 
@@ -1101,12 +1023,12 @@ def decompose_select(attr, dc, inputs):
 
         is_x_select = dim == -1
         if is_x_select:
-            x = dc.op(TransposeTM.create(-2, -1), [x])
+            x = dc.op_with_named_attrs("transpose", [x], {"dim0": -2, "dim1": -1})
 
         result = dc.op("sparse_matmul", [spm, x])
 
         if is_x_select:
-            result = dc.op(TransposeTM.create(-2, -1), [result])
+            result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
 
         if is_x_select:
             result = dc.op("narrow", [result], (-1, 0, size, result.shape[-1]))
@@ -1331,19 +1253,15 @@ def decompose_post_optimize(type, attr, dc, inputs):
                 )
 
             spm = torch.stack([spm] * result.shape[-3], -3).unsqueeze(0)
-            result = dc.op(
-                TransposeTM.create(-2, -1),
+            result = dc.op_with_named_attrs(
+                "transpose",
                 [
                     result,
                 ],
+                {"dim0": -2, "dim1": -1},
             )
             result = picker_matmul(True, dc, spm, result)
-            result = dc.op(
-                TransposeTM.create(-2, -1),
-                [
-                    result,
-                ],
-            )
+            result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
             result = dc.op(
                 "hslice",
                 [
@@ -1430,19 +1348,9 @@ def decompose_post_optimize(type, attr, dc, inputs):
                 dtype=torch.float32,
             )
             spm = torch.stack([spm] * result.shape[-3], -3).unsqueeze(0)
-            result = dc.op(
-                TransposeTM.create(-2, -1),
-                [
-                    result,
-                ],
-            )
+            result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
             result = picker_matmul(True, dc, spm, result)
-            result = dc.op(
-                TransposeTM.create(-2, -1),
-                [
-                    result,
-                ],
-            )
+            result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
             if input_shape[-2] % TILE_DIM != 0:
                 result = dc.op(
                     "narrow",
@@ -1632,37 +1540,3 @@ def decompose_post_optimize(type, attr, dc, inputs):
             dc.fuse(result)
 
     return
-
-
-def decompose_post_autograd(type, attr, dc, inputs):
-    if type == "reshape":
-        assert len(inputs) == 1
-        input_shape = inputs[0].shape.as_list()
-        shape = list(attr)
-
-        if shape == input_shape:
-            # dc.fuse(dc.op(Nop.create(), [inputs[0]]))
-            return
-
-        rank = 0
-        while len(shape) < len(input_shape):
-            shape.insert(0, 1)
-            rank -= 1
-        while len(shape) > len(input_shape) and shape[0] == 1:
-            shape = shape[1:]
-            rank += 1
-
-        is_rank_only_reshape = shape == input_shape
-        if is_rank_only_reshape and rank != 0:
-            result = inputs[0]
-            while rank < 0:
-                result = dc.op_with_named_attrs("squeeze", [result], {"dim": 0}, (0,))
-                rank += 1
-            while rank > 0:
-                import pdb
-
-                pdb.set_trace
-                result = dc.op_with_named_attrs("unsqueeze", [result], {"dim": 0}, (0, len(result.shape.as_list())))
-                rank -= 1
-            dc.fuse(result)
-            return

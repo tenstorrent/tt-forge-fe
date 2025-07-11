@@ -6,6 +6,7 @@
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/query.hpp"
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "passes/nd_slice.hpp"
 #include "utils/assert.hpp"
 #include "utils/logger.hpp"
@@ -230,7 +231,7 @@ static std::unique_ptr<graphlib::PyOpNode> create_gather(
         (dim == NDSlice::k_dim) ? graphlib::OpType("add", {}, {}) : graphlib::OpType("concatenate", {dim}, {});
 
     graphlib::Shape shape = operand_shape;
-    if (gather_op.op == "concatenate")
+    if (gather_op.type() == ops::OpType::Concatenate)
     {
         shape[dim] *= factor;
     }
@@ -795,8 +796,8 @@ static FracturedNodes fracture_tm(
         auto [nd_slice, fractured_ops] = fracture_op(graph, op, node_to_fractured_nodes, group);
         if (op->op_name() == "transpose")
         {
-            int dim0 = op->op_type().get_attr_as<int>("dim0");
-            int dim1 = op->op_type().get_attr_as<int>("dim1");
+            int dim0 = op->op_type().attr_as<int>("dim0");
+            int dim1 = op->op_type().attr_as<int>("dim1");
             int factor0 = nd_slice.get_factor(dim0);
             int factor1 = nd_slice.get_factor(dim1);
             nd_slice = nd_slice.replace_factor(dim0, factor1);
@@ -807,7 +808,7 @@ static FracturedNodes fracture_tm(
     else if (op->op_name() == "select")
     {
         NDSlice nd_slice = get_node_nd_slice(graph, op, node_to_fractured_nodes, group);
-        int select_dim = std::get<int>(op->op_attrs().at(0));
+        int select_dim = std::get<int>(op->op_legacy_attrs().at(0));
         if (nd_slice.get_factor(select_dim) != 1)
             log_fatal(
                 "Op {}: Cannot fracture along select dimension[{}] factor[{}]",

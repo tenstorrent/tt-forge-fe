@@ -226,7 +226,6 @@ void GraphModule(py::module &m_graph)
         .def("get_tile_dim", &Shape::get_tile_dim)
         .def("get_tile_height", &Shape::get_tile_height)
         .def("get_tile_width", &Shape::get_tile_width)
-        .def_static("create", &Shape::create, py::arg("values"))
         .def_static("create_forge", py::overload_cast<std::vector<std::uint32_t>, int, int>(&Shape::create_forge))
         .def_static(
             "create_with_type_from_other", Shape::create_with_type_from_other, py::arg("other"), py::arg("values"))
@@ -288,22 +287,18 @@ void GraphModule(py::module &m_graph)
             py::init([](std::string const &op,
                         std::vector<tt::graphlib::OpType::Attr> const &attr,
                         tt::graphlib::OpType::Attrs const &named_attrs)
-                     { return graphlib::OpType(op, attr, {}, named_attrs); }),
+                     { return graphlib::OpType(op, attr, named_attrs); }),
             py::arg("op"),
             py::arg("attr") = std::vector<tt::graphlib::OpType::Attr>{},
             py::arg("named_attrs") = tt::graphlib::OpType::Attrs{})
-        .def_readonly("op", &tt::graphlib::OpType::op)
-        .def_readonly("attr", &tt::graphlib::OpType::attr)
-        .def_readonly("named_attrs", &tt::graphlib::OpType::named_attrs)
-        .def_readonly("forge_attrs", &tt::graphlib::OpType::forge_attrs)
+        .def_readonly("op", &tt::graphlib::OpType::op_)
+        .def_readonly("attr", &tt::graphlib::OpType::legacy_attrs_)
+        .def_readonly("named_attrs", &tt::graphlib::OpType::named_attrs_)
         .def("eval", &tt::graphlib::OpType::eval)
         .def("shape", &tt::graphlib::OpType::shape)
-        .def("backward", &tt::graphlib::OpType::backward)
-        .def("decompose", &tt::graphlib::OpType::decompose)
-        .def("initial_flops_estimate", &tt::graphlib::OpType::initial_flops_estimate)
         .def(
             "__getattr__",
-            [](tt::graphlib::OpType const &op_type, std::string const &name) { return op_type.get_attr(name); })
+            [](tt::graphlib::OpType const &op_type, std::string const &name) { return op_type.attrs().at(name); })
         .def(
             "__setattr__",
             [](tt::graphlib::OpType &op_type, std::string const &name, tt::graphlib::OpType::Attr value)
@@ -393,7 +388,7 @@ void GraphModule(py::module &m_graph)
             node->set_shape(Shape::create(shape));
             node->set_output_df(data_format);
             node->as<graphlib::TaggedNode>()->tag("original_op_name", name);
-            node->as<graphlib::TaggedNode>()->tag("original_op_type", op_type.op);
+            node->as<graphlib::TaggedNode>()->tag("original_op_type", op_type.name());
             node->as<graphlib::TaggedNode>()->add_tags(tags);
             return node->id();
         });
@@ -726,7 +721,7 @@ py::object eval_op(graphlib::OpType type, std::vector<py::object> inputs)
 
     log_trace(LogEval, "  eval_op: {}", type);
     py::object common_module = py::module_::import("forge.op.eval");
-    common_module.attr("eval_debug_print")(type.op, inputs, result);
+    common_module.attr("eval_debug_print")(type.name(), inputs, result);
 
     return result;
 }
@@ -743,7 +738,7 @@ py::object eval_golden_transforms(graphlib::Node *node, py::object tensor, bool 
         // Don't eval reshapes on output as its already done by reinterpret shape.
         // Don't eval transpose on output as transposed tensor should be passed to output node.
         //
-        if (!eval_for_output || (op_type.op != "reshape" && op_type.op != "transpose"))
+        if (!eval_for_output || (op_type.type() != ops::OpType::Reshape && op_type.type() != ops::OpType::Transpose))
         {
             tensor = eval_op(op_type, {tensor});
         }
@@ -939,10 +934,6 @@ py::object consteval_input(
             node->node_type());
         graphlib::OpNode *op_node = node->as<graphlib::OpNode>();
 
-        auto type = op_node->op_type();
-        auto relu_match = type.forge_attrs.find("relu");
-        TT_ASSERT(relu_match == type.forge_attrs.end(), "ConstEval doesn't support relu");
-
         std::vector<py::object> inputs = eval_operand_tms(consteval_graph, node, node_outputs);
         output = eval_op(op_node->op_type(), inputs);
 
@@ -1004,11 +995,8 @@ py::object eval_reinterpret_shape(Graph *graph, Node *node, py::object input_val
         node->shape(),
         runtime_tensor_transform.reinterpreted_shape);
 
-    std::vector<graphlib::OpType::Attr> attr;
-    auto vec = runtime_tensor_transform.reinterpreted_shape.as_vector();
-    for (auto dim : vec) attr.emplace_back((int)dim);
-
-    graphlib::OpType reinterpret_shape("reshape", attr);
+    graphlib::OpType reinterpret_shape(
+        "reshape", {}, {{"shape", runtime_tensor_transform.reinterpreted_shape.as_vector<int>()}});
     return eval_op(reinterpret_shape, {input_value});
 }
 

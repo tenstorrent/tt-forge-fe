@@ -52,19 +52,6 @@ using EdgeType = graphlib::EdgeType;
 using NodeId = graphlib::NodeId;
 using PortId = graphlib::PortId;
 
-void lower_reshape(Graph *, graphlib::OpNode *node)
-{
-    graphlib::OpType op_type = node->op_type();
-    TT_ASSERT(op_type.attr.size() == 4);
-    op_type.forge_attrs = {
-        {"w", std::get<int>(op_type.attr[0])},
-        {"z", std::get<int>(op_type.attr[1])},
-        {"r", std::get<int>(op_type.attr[2])},
-        {"c", std::get<int>(op_type.attr[3])},
-    };
-    node->change_op_type(op_type);
-}
-
 // *****************************************************************
 //  ************************** Main APIs **************************
 // *****************************************************************
@@ -84,7 +71,7 @@ run_post_initial_graph_passes(
     passes::explicate_unsqueeze(graph);
     passes::fuse_conv2d_bias(graph);
 
-    auto inserted_node_id_mapping = decompose_tt_forge_graph(graph, "get_f_forge_decompose", compiler_cfg);
+    auto inserted_node_id_mapping = decompose_tt_forge_graph<DecomposeEpoch::Initial>(graph, compiler_cfg);
     auto chip_id_assignments = passes::fracture(graph, fracture_groups);
 
     passes::bypass_nop_tms(graph);
@@ -167,8 +154,7 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> run_post_optimize_dec
     std::shared_ptr<void> compiler_cfg = make_shared_py_object(compiler_cfg_object);
 
     passes::print_graph(graph, "POST_OPTIMIZE");
-    auto inserted_node_id_mapping =
-        decompose_tt_forge_graph(graph, "get_f_forge_decompose_post_optimize", compiler_cfg);
+    auto inserted_node_id_mapping = decompose_tt_forge_graph<DecomposeEpoch::PostOptimize>(graph, compiler_cfg);
 
     return inserted_node_id_mapping;
 }
@@ -181,7 +167,7 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> run_post_autograd_gra
 
     passes::print_graph(graph, "POST_AUTOGRAD");
     lower_bwd_gather_ops(graph);
-    return decompose_tt_forge_graph(graph, "get_f_forge_decompose_post_autograd", compiler_cfg);
+    return decompose_tt_forge_graph<DecomposeEpoch::PostAutograd>(graph, compiler_cfg);
 }
 
 // ********** Run pre-lowering passes **********
@@ -190,21 +176,6 @@ graphlib::Graph *run_pre_lowering_passes(graphlib::Graph *graph, const std::opti
     passes::print_graph(graph, "PRE_MLIR");
     // Recalculate shapes, and figure out implicit broadcasts that are missing
     recalculate_shapes(graph);
-
-    // Fuse bias into matmuls
-    if (env_as<bool>("FORGE_FUSE_MATMUL_BIAS"))
-    {
-        fuse_bias(graph);
-    }
-
-    // Fuse requantize into matmuls
-    fuse_requantize(graph);
-
-    // Fuse gelu into matmuls
-    if (env_as<bool>("FORGE_FUSE_MATMUL_GELU"))
-    {
-        fuse_gelu(graph);
-    }
 
     // Manually convert broadcast ops to tms, so insert tile broadcast ops can work generically
     // Note this is not lowering, these are still forge tms

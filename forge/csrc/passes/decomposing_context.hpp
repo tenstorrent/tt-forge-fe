@@ -13,6 +13,13 @@ namespace tt
 using Graph = graphlib::Graph;
 using NodeContext = graphlib::NodeContext;
 
+enum class DecomposeEpoch : uint8_t
+{
+    Initial,
+    PostOptimize,
+    PostAutograd
+};
+
 class DecomposingContext
 {
     // Graph that's being decomposed
@@ -47,7 +54,7 @@ class DecomposingContext
         bool dont_decompose = false,
         bool optimize_hoist = false,
         DataFormat output_df = DataFormat::Invalid);
-    void fuse(NodeContext operand, graphlib::PortId out_port);
+    void fuse(NodeContext operand, graphlib::PortId out_port = 0);
     NodeContext tensor(std::shared_ptr<void> tensor_handle, graphlib::Shape tensor_shape);
 
     Graph* get_graph() { return graph; }
@@ -63,7 +70,8 @@ class DecomposingContext
     inline std::shared_ptr<void> get_compiler_cfg() { return compiler_cfg; }
 };
 
+template <DecomposeEpoch epoch>
 std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_tt_forge_graph(
-    Graph* graph, const char* dispatcher_name, std::shared_ptr<void> compiler_cfg);
+    Graph* graph, std::shared_ptr<void> compiler_cfg);
 
 }  // namespace tt

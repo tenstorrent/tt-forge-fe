@@ -4,6 +4,7 @@
 #include "graph_lib/edge.hpp"
 #include "graph_lib/node_types.hpp"
 #include "gtest/gtest.h"
+#include "ops/op.hpp"
 #include "passes/commute_utils.hpp"
 #include "passes/erase_inverse_ops.hpp"
 #include "passes/insert_inverse_on_io.hpp"
@@ -29,17 +30,17 @@ struct EraseInverseOps : testing::Test
         auto in0_b = create_input(*graph, "in0_b", graphlib::Shape::create({1, 1, 256, shape[3]}));
         auto matmul0 = add_node<graphlib::PyOpNode>(*graph, "matmul0", "matmul", {}, {in0_a, in0_b});
         auto transpose0 = add_node<graphlib::PyOpNode>(
-            *graph, "transpose0", graphlib::OpType("transpose", {}, {}, {{"dim0", 0}, {"dim1", 1}}), {matmul0});
+            *graph, "transpose0", graphlib::OpType("transpose", {}, {{"dim0", 0}, {"dim1", 1}}), {matmul0});
 
         auto in1_a = create_input(*graph, "in1_a", graphlib::Shape::create({1, 1, shape[2], 128}));
         auto in1_b = create_input(*graph, "in1_b", graphlib::Shape::create({1, 1, 128, shape[3]}));
         auto matmul1 = add_node<graphlib::PyOpNode>(*graph, "matmul1", "matmul", {}, {in1_a, in1_b});
         auto transpose1 = add_node<graphlib::PyOpNode>(
-            *graph, "transpose1", graphlib::OpType("transpose", {}, {}, {{"dim0", 0}, {"dim1", 1}}), {matmul1});
+            *graph, "transpose1", graphlib::OpType("transpose", {}, {{"dim0", 0}, {"dim1", 1}}), {matmul1});
 
         auto add = add_node<graphlib::PyOpNode>(*graph, "add", "add", {}, {transpose0, transpose1});
         auto post_transpose = add_node<graphlib::PyOpNode>(
-            *graph, "post_transpose", graphlib::OpType("transpose", {}, {}, {{"dim0", 0}, {"dim1", 1}}), {add});
+            *graph, "post_transpose", graphlib::OpType("transpose", {}, {{"dim0", 0}, {"dim1", 1}}), {add});
 
         create_output(*graph, "out0", post_transpose);
     }
@@ -54,7 +55,7 @@ TEST_F(EraseInverseOps, erase_transpose)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            EXPECT_NE(node->as<graphlib::PyOpNode>()->op_type().op, "transpose");
+            EXPECT_NE(node->as<graphlib::PyOpNode>()->new_op_type(), ops::OpType::Transpose);
         }
     }
     EXPECT_EQ(graph->nodes().size(), 8);
@@ -89,7 +90,7 @@ TEST_F(EraseInverseOps, erase_transpose_fork)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            if (node->as<graphlib::PyOpNode>()->op_type().op == "transpose")
+            if (node->as<graphlib::PyOpNode>()->new_op_type() == ops::OpType::Transpose)
                 transpose_count++;
         }
     }
@@ -110,7 +111,7 @@ TEST_F(EraseInverseOps, erase_inverse_ops_transpose_fork_join)
     auto post_transpose = graph->get_node_by_name("post_transpose");
     auto unary = add_node<graphlib::PyOpNode>(*graph, "unary", "exp", {}, {post_transpose});
     auto unary_transpose = add_node<graphlib::PyOpNode>(
-        *graph, "unary_transpose", graphlib::OpType("transpose", {}, {}, {{"dim0", 0}, {"dim1", 1}}), {unary});
+        *graph, "unary_transpose", graphlib::OpType("transpose", {}, {{"dim0", 0}, {"dim1", 1}}), {unary});
     auto join = add_node<graphlib::PyOpNode>(*graph, "join", "add", {}, {unary_transpose, buffer2});
 
     graph->remove_node(graph->get_node_by_name("out0"));
@@ -136,7 +137,7 @@ TEST_F(EraseInverseOps, erase_inverse_ops_transpose_fork_join)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            if (node->as<graphlib::PyOpNode>()->op_type().op == "transpose")
+            if (node->as<graphlib::PyOpNode>()->new_op_type() == ops::OpType::Transpose)
                 transpose_count++;
         }
     }
@@ -154,10 +155,14 @@ TEST_F(EraseInverseOps, erase_inverse_ops_dual_reduce)
 
     auto post_transpose = graph->get_node_by_name("post_transpose");
     auto smx_1 = add_node<graphlib::PyOpNode>(*graph, "smx_1", "softmax", {-1, false}, {post_transpose});
-    auto reshape_1 = add_node<graphlib::PyOpNode>(*graph, "reshape_1", "reshape", {1, 512, 10, 16}, {smx_1});
+    auto reshape_1 = add_node<graphlib::PyOpNode>(
+        *graph, "reshape_1", graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 512, 10, 16}}}), {smx_1});
+
     auto reduce_1 = add_node<graphlib::PyOpNode>(*graph, "reduce_1", "reduce_sum", {-2, true}, {reshape_1});
     auto reduce_2 = add_node<graphlib::PyOpNode>(*graph, "reduce_2", "reduce_sum", {-1, true}, {reduce_1});
-    auto reshape_2 = add_node<graphlib::PyOpNode>(*graph, "reshape_2", "reshape", {1, 1, 512, 1}, {reduce_2});
+    auto reshape_2 = add_node<graphlib::PyOpNode>(
+        *graph, "reshape_2", graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 1, 512, 1}}}), {reduce_2});
+
     auto smx_2 = add_node<graphlib::PyOpNode>(*graph, "smx_2", "softmax", {-1, false}, {reshape_2});
     graph->remove_node(graph->get_node_by_name("out0"));
     create_output(*graph, "out0", smx_2);
@@ -184,11 +189,11 @@ TEST_F(EraseInverseOps, erase_inverse_ops_dual_reduce)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            if (node->as<graphlib::PyOpNode>()->op_type().op == "transpose")
+            if (node->as<graphlib::PyOpNode>()->new_op_type() == ops::OpType::Transpose)
                 transpose_count++;
-            else if (node->as<graphlib::PyOpNode>()->op_type().op == "reduce_sum")
+            else if (node->as<graphlib::PyOpNode>()->new_op_type() == ops::OpType::ReduceSum)
                 reduce_count++;
-            else if (node->as<graphlib::PyOpNode>()->op_type().op == "reshape")
+            else if (node->as<graphlib::PyOpNode>()->new_op_type() == ops::OpType::Reshape)
                 reshape_count++;
         }
     }
@@ -202,9 +207,12 @@ TEST_F(EraseInverseOps, erase_inverse_ops_dual_reduce)
 TEST_F(EraseInverseOps, replace_x_y_change_concat_pattern)
 {
     auto post_transpose = graph->get_node_by_name("post_transpose");
-    auto reshape_0 = add_node<graphlib::PyOpNode>(*graph, "reshape_0", "reshape", {256, 320}, {post_transpose});
-    auto reshape_1 = add_node<graphlib::PyOpNode>(*graph, "reshape_1", "reshape", {256, 320}, {post_transpose});
-    auto reshape_2 = add_node<graphlib::PyOpNode>(*graph, "reshape_2", "reshape", {256, 320}, {post_transpose});
+    auto reshape_0 = add_node<graphlib::PyOpNode>(
+        *graph, "reshape_0", graphlib::OpType("reshape", {}, {{"shape", std::vector{256, 320}}}), {post_transpose});
+    auto reshape_1 = add_node<graphlib::PyOpNode>(
+        *graph, "reshape_1", graphlib::OpType("reshape", {}, {{"shape", std::vector{256, 320}}}), {post_transpose});
+    auto reshape_2 = add_node<graphlib::PyOpNode>(
+        *graph, "reshape_2", graphlib::OpType("reshape", {}, {{"shape", std::vector{256, 320}}}), {post_transpose});
     auto concat =
         add_node<graphlib::PyOpNode>(*graph, "concat", "concatenate", {-2}, {reshape_0, reshape_1, reshape_2});
 
@@ -220,7 +228,7 @@ TEST_F(EraseInverseOps, replace_x_y_change_concat_pattern)
     {
         if (node->node_type() == tt::graphlib::kPyOp)
         {
-            if (node->as<graphlib::PyOpNode>()->op_type().op == "reshape")
+            if (node->as<graphlib::PyOpNode>()->new_op_type() == ops::OpType::Reshape)
                 reshape_count++;
         }
     }
@@ -241,7 +249,7 @@ struct CommuteBroadcastThroughTranspose : testing::Test
 
         tt::graphlib::InputNode *in0_a = create_input(*graph, "in0_a", shape, graphlib::InputNodeType::Constant);
         graphlib::PyOpNode *transpose = add_node<graphlib::PyOpNode>(
-            *graph, "transpose", graphlib::OpType("transpose", {}, {}, {{"dim0", -3}, {"dim1", -2}}), {in0_a});
+            *graph, "transpose", graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {in0_a});
 
         // There is only one edge between in0_a and transpose nodes.
         graphlib::Edge edge_with_bcst = graph->get_edges(in0_a, transpose)[0];
@@ -272,12 +280,12 @@ TEST_F(CommuteBroadcastThroughTranspose, commute_broadcast_through_transpose)
     graphlib::Edge edge = graph->get_edges(transpose, multiply)[0];
     std::vector<graphlib::OpType> tms = graph->get_edge_attributes(edge)->get_tms();
     EXPECT_EQ(tms.size(), 2);
-    EXPECT_EQ(tms[0].op, "broadcast");
-    EXPECT_EQ(tms[1].op, "broadcast");
+    EXPECT_EQ(tms[0].type(), ops::OpType::Broadcast);
+    EXPECT_EQ(tms[1].type(), ops::OpType::Broadcast);
     // Broadcast along dimension -2 should become broadcast along -3
     // after commuting through transpose.
-    EXPECT_EQ(std::get<int>(tms[1].attr[0]), -3);
-    EXPECT_EQ(std::get<int>(tms[1].attr[1]), 112);
+    EXPECT_EQ(std::get<int>(tms[1].legacy_attrs_[0]), -3);
+    EXPECT_EQ(std::get<int>(tms[1].legacy_attrs_[1]), 112);
 }
 
 struct UpdateReshapeNamedAttrsTest : testing::Test
@@ -291,7 +299,11 @@ struct UpdateReshapeNamedAttrsTest : testing::Test
         graphlib::Shape initial_shape = graphlib::Shape::create({1, 512, 160});
         tt::graphlib::InputNode *input_node = create_input(*graph, "input", initial_shape);
 
-        auto reshape_node = add_node<graphlib::PyOpNode>(*graph, "reshape", "reshape", {1, 1, 512 * 160}, {input_node});
+        auto reshape_node = add_node<graphlib::PyOpNode>(
+            *graph,
+            "reshape",
+            graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 1, 512 * 160}}}),
+            {input_node});
 
         create_output(*graph, "out", reshape_node);
     }
@@ -309,7 +321,7 @@ TEST_F(UpdateReshapeNamedAttrsTest, update_named_attrs)
     op_node_reshape->set_shape(new_shape);
     passes::update_reshape_attr(op_node_reshape, new_shape);
 
-    auto updated_attrs = op_node_reshape->op_type().named_attrs;
+    auto updated_attrs = op_node_reshape->op_type().attrs();
     EXPECT_TRUE(updated_attrs.count("shape")) << "Shape attribute not found.";
     auto shape_vector = std::get<std::vector<int>>(updated_attrs["shape"]);
 
@@ -336,9 +348,13 @@ struct UpdateSelectNamedAttrsTest : testing::Test
         graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE, "UpdateSelectNamedAttrs");
 
         graphlib::Shape initial_shape = graphlib::Shape::create({1, 512, 160});
-        tt::graphlib::InputNode *input_node = create_input(*graph, "input", initial_shape);
+        graphlib::InputNode *input_node = create_input(*graph, "input", initial_shape);
         auto select_node =
             add_node<graphlib::PyOpNode>(*graph, "select", "select", {dim, begin, length, stride}, {input_node});
+        select_node->set_op_attr("select_dim", dim);
+        select_node->set_op_attr("begin", begin);
+        select_node->set_op_attr("length", length);
+        select_node->set_op_attr("stride", stride);
 
         create_output(*graph, "out", select_node);
     }
@@ -357,7 +373,7 @@ TEST_F(UpdateSelectNamedAttrsTest, update_named_attrs)
 
     passes::update_select_attr(op_node_select, select_dim);
 
-    auto updated_attrs = op_node_select->named_attrs();
+    auto updated_attrs = op_node_select->op_named_attrs();
 
     EXPECT_TRUE(updated_attrs.count("select_dim")) << "select_dim attribute not found.";
     EXPECT_EQ(std::get<int>(updated_attrs["select_dim"]), select_dim) << "select_dim does not match expected value.";
@@ -382,9 +398,23 @@ struct UpdateConcatNamedAttrsTest : testing::Test
         tt::graphlib::InputNode *input_node_1 = create_input(*graph, "input_1", shape_1);
         tt::graphlib::InputNode *input_node_2 = create_input(*graph, "input_2", shape_2);
 
-        reshape_0 = add_node<graphlib::PyOpNode>(*graph, "reshape_0", "reshape", {1, 1, 512 * 160}, {input_node_0});
-        reshape_1 = add_node<graphlib::PyOpNode>(*graph, "reshape_1", "reshape", {1, 1, 512 * 160}, {input_node_1});
-        reshape_2 = add_node<graphlib::PyOpNode>(*graph, "reshape_2", "reshape", {1, 1, 512 * 160}, {input_node_2});
+        reshape_0 = add_node<graphlib::PyOpNode>(
+            *graph,
+            "reshape_0",
+            graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 1, 512 * 160}}}),
+            {input_node_0});
+
+        reshape_1 = add_node<graphlib::PyOpNode>(
+            *graph,
+            "reshape_1",
+            graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 1, 512 * 160}}}),
+            {input_node_1});
+
+        reshape_2 = add_node<graphlib::PyOpNode>(
+            *graph,
+            "reshape_2",
+            graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 1, 512 * 160}}}),
+            {input_node_2});
 
         auto concat_node =
             add_node<graphlib::PyOpNode>(*graph, "concat", "concatenate", {-2}, {reshape_0, reshape_1, reshape_2});
@@ -401,7 +431,7 @@ TEST_F(UpdateConcatNamedAttrsTest, update_named_attrs)
     ASSERT_NE(op_node_concat, nullptr) << "Node is not of type OpNode.";
     int new_dim = 2;
     passes::update_concat_attr(op_node_concat, new_dim);
-    auto updated_attrs = op_node_concat->named_attrs();
+    auto updated_attrs = op_node_concat->op_named_attrs();
     EXPECT_TRUE(updated_attrs.count("dim")) << "Dim attribute not found.";
     auto dim_value = std::get<int>(updated_attrs["dim"]);
     EXPECT_EQ(dim_value, new_dim) << "Dim attribute does not match expected value.";
@@ -437,7 +467,7 @@ TEST_F(UpdateVStackAttrsTest, update_vstack_attr)
 
     passes::update_vstack_attr(op_node_vstack, new_slice_size);
 
-    auto updated_attrs = op_node_vstack->named_attrs();
+    auto updated_attrs = op_node_vstack->op_named_attrs();
 
     EXPECT_TRUE(updated_attrs.count("slice_size")) << "Slice size attribute not found.";
     auto slice_size_value = std::get<int>(updated_attrs["slice_size"]);
@@ -536,7 +566,7 @@ TEST_F(UpdateReduceSumAttrsTest, ReduceSumDim)
 
     passes::update_reduce_attr(reduce_node, reduce_dim, keep_dim);
 
-    auto updated_attrs = reduce_node->named_attrs();
+    auto updated_attrs = reduce_node->op_named_attrs();
 
     ASSERT_TRUE(updated_attrs.count("dim"));
     EXPECT_EQ(std::get<int>(updated_attrs["dim"]), reduce_dim);
@@ -593,7 +623,7 @@ TEST_F(UpdateReduceMaxAttrsTest, ReduceMaxDim)
 
     passes::update_reduce_attr(reduce_node, reduce_dim, keep_dim);
 
-    auto updated_attrs = reduce_node->named_attrs();
+    auto updated_attrs = reduce_node->op_named_attrs();
 
     ASSERT_TRUE(updated_attrs.count("dim"));
     EXPECT_EQ(std::get<int>(updated_attrs["dim"]), reduce_dim);
@@ -643,7 +673,7 @@ TEST_F(UpdateGroupedReduceAvgTest, GroupedReduceAvgDim)
 
     passes::update_grouped_reduce_avg_attr(reduce_node, attr[0]);
 
-    auto updated_attrs = reduce_node->named_attrs();
+    auto updated_attrs = reduce_node->op_named_attrs();
 
     ASSERT_TRUE(updated_attrs.count("reduce_dim"));
     EXPECT_EQ(std::get<int>(updated_attrs["reduce_dim"]), attr[0]);
@@ -694,7 +724,7 @@ TEST_F(EraseInverseOpsSqueezeAndUnsqueeze, erase_inv_ops_sq_unsq)
     graphlib::Node *operand_node = graph->operands(squeeze_node)[0];
 
     // Check that dimension on which we squeeze is 0
-    auto reshape_attrs = squeeze_op->named_attrs();
+    auto reshape_attrs = squeeze_op->op_named_attrs();
     ASSERT_TRUE(reshape_attrs.count("dim"));
 
     int dim = std::get<int>(reshape_attrs["dim"]);
@@ -721,12 +751,15 @@ struct CommuteTransposeThroughReduce : testing::Test
 
         // Add a transpose that swaps the first two dimensions (after which dims are [64, 32, 128])
         auto transpose_node = add_node<graphlib::PyOpNode>(
-            *graph, "transpose", graphlib::OpType("transpose", {}, {}, {{"dim0", 0}, {"dim1", 1}}), {input_node});
+            *graph, "transpose", graphlib::OpType("transpose", {}, {{"dim0", 0}, {"dim1", 1}}), {input_node});
 
         // Add a reshape to increase dimensionality (3D -> 5D)
         // Reshape to [64, 4, 8, 16, 8] (same volume as [64, 32, 128])
-        auto reshape_node =
-            add_node<graphlib::PyOpNode>(*graph, "reshape", "reshape", {64, 4, 8, 16, 8}, {transpose_node});
+        auto reshape_node = add_node<graphlib::PyOpNode>(
+            *graph,
+            "reshape",
+            graphlib::OpType("reshape", {}, {{"shape", std::vector{64, 4, 8, 16, 8}}}),
+            {transpose_node});
 
         // Add a reduce_avg on the last dimension (-1)
         auto reduce_node = add_node<graphlib::PyOpNode>(*graph, "reduce", "reduce_avg", {-1, true}, {reshape_node});

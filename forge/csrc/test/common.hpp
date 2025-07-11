@@ -110,12 +110,12 @@ class GraphTest : public ::testing::Test
         std::string const& name, graphlib::OpType const& op_type, std::vector<graphlib::Node*> const& operands)
     {
         return tt::add_node<OpType>(
-            *graph, name, op_type.op, op_type.attr, operands, {}, op_type.forge_attrs, op_type.named_attrs);
+            *graph, name, op_type.name(), op_type.legacy_attrs_, operands, {}, {}, op_type.attrs());
     }
 
     OpType* create_op(graphlib::OpType const& op_type, std::vector<graphlib::Node*> const& operands)
     {
-        auto name = op_type.op + std::to_string(op_name_id[op_type.op]++);
+        auto name = op_type.name() + std::to_string(op_name_id[op_type.name()]++);
         return create_op(name, op_type, operands);
     }
 
@@ -137,44 +137,6 @@ class GraphTest : public ::testing::Test
     }
 
     template <typename... Attrs>
-    OpType* create_op(
-        std::string const& type,
-        std::vector<graphlib::Node*> const& operands,
-        const tt::ForgeOpAttrs& forge_attrs,
-        Attrs... attrs)
-    {
-        return create_op(graphlib::OpType(type, {attrs...}, forge_attrs), operands);
-    }
-
-    template <typename... Attrs>
-    OpType* create_op(
-        std::string const& name,
-        std::string const& type,
-        std::vector<graphlib::Node*> const& operands,
-        const tt::ForgeOpAttrs& forge_attrs,
-        Attrs... attrs)
-    {
-        return create_op(name, graphlib::OpType(type, {attrs...}, forge_attrs), operands);
-    }
-
-    OpType* create_op(
-        std::string const& type,
-        std::vector<graphlib::Node*> const& operands,
-        const graphlib::OpType::Attrs& named_attrs)
-    {
-        return create_op(graphlib::OpType(type, {}, {}, named_attrs), operands);
-    }
-
-    OpType* create_op(
-        std::string const& name,
-        std::string const& type,
-        std::vector<graphlib::Node*> const& operands,
-        const graphlib::OpType::Attrs& named_attrs)
-    {
-        return create_op(name, graphlib::OpType(type, {}, {}, named_attrs), operands);
-    }
-
-    template <typename... Attrs>
     OpType* create_op(std::string const& type, std::vector<graphlib::Node*> const& operands, Attrs... attrs)
     {
         return create_op(graphlib::OpType(type, {attrs...}), operands);
@@ -185,6 +147,23 @@ class GraphTest : public ::testing::Test
         std::string const& name, std::string const& type, std::vector<graphlib::Node*> const& operands, Attrs... attrs)
     {
         return create_op(name, graphlib::OpType(type, {attrs...}), operands);
+    }
+
+    OpType* create_op(
+        std::string const& type,
+        std::vector<graphlib::Node*> const& operands,
+        const graphlib::OpType::Attrs& named_attrs)
+    {
+        return create_op(graphlib::OpType(type, {}, named_attrs), operands);
+    }
+
+    OpType* create_op(
+        std::string const& name,
+        std::string const& type,
+        std::vector<graphlib::Node*> const& operands,
+        const graphlib::OpType::Attrs& named_attrs)
+    {
+        return create_op(name, graphlib::OpType(type, {}, named_attrs), operands);
     }
 
     graphlib::QueueNode* create_queue(graphlib::Node* operand, bool cross_epoch = false, bool cross_chip = false)

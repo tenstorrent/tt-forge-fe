@@ -5,6 +5,7 @@
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "passes/passes_utils.hpp"
 #include "utils/logger.hpp"
 
@@ -81,12 +82,12 @@ std::tuple<bool, int> can_commute_through_dim(
         }
 
         can_reduce = true;
-        int dim0 = initial_op->op_type().get_attr_as<int>("dim0");
+        int dim0 = initial_op->op_type().attr_as<int>("dim0");
         if (dim0 < 0)
         {
             dim0 += initial_op->shape().size();
         }
-        int dim1 = initial_op->op_type().get_attr_as<int>("dim1");
+        int dim1 = initial_op->op_type().attr_as<int>("dim1");
         if (dim1 < 0)
         {
             dim1 += initial_op->shape().size();
@@ -104,38 +105,38 @@ std::tuple<bool, int> can_commute_through_dim(
 
 bool match_unsqueeze(graphlib::OpType const &a, graphlib::OpType const &b)
 {
-    bool fns_match = a.op == "unsqueeze" and b.op == "squeeze";
+    bool fns_match = a.type() == ops::OpType::Unsqueeze and b.type() == ops::OpType::Squeeze;
 
     if (not fns_match)
         return false;
 
-    return std::get<int>(a.attr[0]) == std::get<int>(b.attr[0]);
+    return std::get<int>(a.legacy_attrs_[0]) == std::get<int>(b.legacy_attrs_[0]);
 }
 
 bool match_squeeze(graphlib::OpType const &a, graphlib::OpType const &b)
 {
-    bool fns_match = a.op == "squeeze" and b.op == "unsqueeze";
+    bool fns_match = a.type() == ops::OpType::Unsqueeze and b.type() == ops::OpType::Squeeze;
 
     if (not fns_match)
         return false;
 
-    return std::get<int>(a.attr[0]) == std::get<int>(b.attr[0]);
+    return std::get<int>(a.legacy_attrs_[0]) == std::get<int>(b.legacy_attrs_[0]);
 }
 
-bool match_reshape(graphlib::OpType const &a, graphlib::OpType const &) { return a.op == "reshape"; }
+bool match_reshape(graphlib::OpType const &a, graphlib::OpType const &) { return a.type() == ops::OpType::Reshape; }
 
 bool match_transpose(graphlib::OpType const &a, graphlib::OpType const &b)
 {
-    if (a.op != "transpose")
+    if (a.type() != ops::OpType::Transpose)
         return false;
 
-    int a_dim0 = a.get_attr_as<int>("dim0");
-    int a_dim1 = a.get_attr_as<int>("dim1");
+    int a_dim0 = a.attr_as<int>("dim0");
+    int a_dim1 = a.attr_as<int>("dim1");
     if (a_dim0 > a_dim1)
         std::swap(a_dim0, a_dim1);
 
-    int b_dim0 = b.get_attr_as<int>("dim0");
-    int b_dim1 = b.get_attr_as<int>("dim1");
+    int b_dim0 = b.attr_as<int>("dim0");
+    int b_dim1 = b.attr_as<int>("dim1");
     if (b_dim0 > b_dim1)
         std::swap(b_dim0, b_dim1);
 
@@ -148,9 +149,9 @@ size_t total_broadcast_volume(graphlib::Graph *graph, graphlib::Edge edge)
     size_t volume = 1;
     for (graphlib::OpType &op_type : tms)
     {
-        if (op_type.op == "broadcast")
+        if (op_type.type() == ops::OpType::Broadcast)
         {
-            volume *= std::get<int>(op_type.attr[1]);
+            volume *= std::get<int>(op_type.legacy_attrs_[1]);
         }
     }
     return volume;
@@ -248,7 +249,7 @@ bool commute_through_select(
     graphlib::OpType *golden_transform,
     bool commute_up)
 {
-    int select_dim = std::get<int>(op->op_attrs()[0]);
+    int select_dim = std::get<int>(op->op_legacy_attrs()[0]);
 
     // Convert to positive indexing
     if (select_dim < 0)
@@ -390,7 +391,7 @@ bool commute_through_select(
     TT_ASSERT(golden_transform, "golden_transform must be set");
 
     // Perform the actual commute
-    auto attr = op->op_attrs();
+    auto attr = op->op_legacy_attrs();
 
     std::get<int>(attr[0]) = new_dim - commute_shape->size();
 
@@ -403,8 +404,8 @@ bool commute_through_select(
 
     auto concat_golden_transform = *golden_transform;
 
-    if (concat_golden_transform.op == "reshape")
-        concat_golden_transform.attr[select_dim] = concat_output_len;
+    if (concat_golden_transform.type() == ops::OpType::Reshape)
+        concat_golden_transform.attr_as<std::vector<int>>("shape")[select_dim] = concat_output_len;
     op->add_golden_transform(concat_golden_transform);
     update_select_attr(op, new_dim);
 
@@ -444,9 +445,9 @@ bool commute_through_concat(
     bool commute_up)
 {
     if (op->op_name() == "concatenate")
-        TT_ASSERT(op->op_attrs().size() == 1);
+        TT_ASSERT(op->op_legacy_attrs().size() == 1);
 
-    int concat_dim = std::get<int>(op->op_attrs()[0]);
+    int concat_dim = std::get<int>(op->op_legacy_attrs()[0]);
     if (concat_dim < 0)
         concat_dim += op->shape().size();
 
@@ -522,7 +523,7 @@ bool commute_through_concat(
     TT_ASSERT(golden_transform, "golden_transform must be set");
 
     // Perform the actual commute
-    auto attr = op->op_attrs();
+    auto attr = op->op_legacy_attrs();
 
     if (new_dim >= 0)
         std::get<int>(attr[0]) = new_dim - commute_shape->size();
@@ -538,15 +539,18 @@ bool commute_through_concat(
 
     auto concat_golden_transform = *golden_transform;
 
-    if (concat_golden_transform.op == "reshape")
-        concat_golden_transform.attr[concat_dim >= 0 ? concat_dim : concat_dim + concat_golden_transform.attr.size()] =
-            concat_output_len;
+    if (concat_golden_transform.type() == ops::OpType::Reshape)
+    {
+        int idx = concat_dim >= 0 ? concat_dim
+                                  : concat_dim + concat_golden_transform.attr_as<std::vector<int>>("shape").size();
+        concat_golden_transform.attr_as<std::vector<int>>("shape")[idx] = concat_output_len;
+    }
     op->add_golden_transform(concat_golden_transform);
     std::vector<graphlib::OpType::Attr> concat_attr;
     concat_attr.push_back(new_dim);
     graphlib::OpType::Attrs named_attrs;
     named_attrs["dim"] = new_dim;
-    op->change_op_type(graphlib::OpType("concatenate", concat_attr, {}, named_attrs));
+    op->change_op_type(graphlib::OpType("concatenate", concat_attr, named_attrs));
 
     *commute_shape = concat_shape;
     *golden_transform = concat_golden_transform;
@@ -584,8 +588,8 @@ bool commute_through_reduce(
     graphlib::OpType *golden_transform,
     bool commute_up)
 {
-    TT_ASSERT(op->op_attrs().size() == 2);
-    int reduce_dim = std::get<int>(op->op_attrs()[0]);
+    TT_ASSERT(op->op_legacy_attrs().size() == 2);
+    int reduce_dim = std::get<int>(op->op_legacy_attrs()[0]);
 
     // Convert to positive indexing
     if (reduce_dim < 0)
@@ -617,7 +621,7 @@ bool commute_through_reduce(
 
         auto compare_shape = check_only ? graph->data_operands(op)[0]->shape() : *clone_shape;
 
-        int next_reduce_dim = std::get<int>(next_op->op_attrs()[0]);
+        int next_reduce_dim = std::get<int>(next_op->op_legacy_attrs()[0]);
         // Convert to positive indexing
         if (next_reduce_dim < 0)
             next_reduce_dim += next_op->shape().size();
@@ -664,8 +668,8 @@ bool commute_through_reduce(
 
         if (prev_op->op_name() == op->op_name())
         {
-            TT_ASSERT(prev_op->op_attrs().size() == 2);
-            int prev_reduce_dim = std::get<int>(prev_op->op_attrs()[0]);
+            TT_ASSERT(prev_op->op_legacy_attrs().size() == 2);
+            int prev_reduce_dim = std::get<int>(prev_op->op_legacy_attrs()[0]);
             // Convert to positive indexing
             if (prev_reduce_dim < 0)
                 prev_reduce_dim += op->shape().size();
@@ -745,8 +749,8 @@ bool commute_through_reduce(
 
     if (producer->op_name() == op->op_name())
     {
-        auto op_attr = op->op_attrs();
-        auto producer_attr = producer->op_attrs();
+        auto op_attr = op->op_legacy_attrs();
+        auto producer_attr = producer->op_legacy_attrs();
 
         int op_reduce_dim = std::get<int>(op_attr[0]);
         bool op_keep_dim;
@@ -775,10 +779,10 @@ bool commute_through_reduce(
         reduce_shape = graphlib::Shape::create(reduce_vec);
 
         auto reduce_golden_transform = *golden_transform;
-        if (reduce_golden_transform.op == "reshape")
+        if (reduce_golden_transform.type() == ops::OpType::Reshape)
         {
-            reduce_golden_transform.attr[op_reduce_dim] = 1;
-            reduce_golden_transform.attr[producer_reduce_dim] = 1;
+            reduce_golden_transform.attr_as<std::vector<int>>("shape")[op_reduce_dim] = 1;
+            reduce_golden_transform.attr_as<std::vector<int>>("shape")[producer_reduce_dim] = 1;
         }
 
         op->add_golden_transform(reduce_golden_transform);
@@ -793,7 +797,7 @@ bool commute_through_reduce(
     }
     else
     {
-        auto attr = op->op_attrs();
+        auto attr = op->op_legacy_attrs();
         int reduce_dim = std::get<int>(attr[0]);
         bool keep_dim;
         if (op->op_name() == "grouped_reduce_avg" || op->op_name() == "reduce_max")
@@ -818,8 +822,8 @@ bool commute_through_reduce(
         op->set_shape(reduce_shape);
 
         auto reduce_golden_transform = *golden_transform;
-        if (reduce_golden_transform.op == "reshape")
-            reduce_golden_transform.attr[reduce_dim] = 1;
+        if (reduce_golden_transform.type() == ops::OpType::Reshape)
+            reduce_golden_transform.attr_as<std::vector<int>>("shape")[reduce_dim] = 1;
 
         op->add_golden_transform(reduce_golden_transform);
 
@@ -928,22 +932,28 @@ void update_select_attr(
     select_op->set_op_attr("select_dim", select_dim);
 
     if (begin.has_value())
+    {
         select_op->set_op_attr("begin", begin.value());
+    }
 
     if (length.has_value())
-        select_op->set_op_attr("lenght", length.value());
+    {
+        select_op->set_op_attr("length", length.value());
+    }
 
     if (stride.has_value())
+    {
         select_op->set_op_attr("stride", stride.value());
+    }
 
     log_trace(
         LogGraphCompiler,
         "Updated select operation {}: select_dim = {}, begin = {}, length = {}, stride = {}",
         select_op->name(),
         select_dim,
-        begin.value_or(std::get<int>(select_op->op_attr("begin"))),
-        length.value_or(std::get<int>(select_op->op_attr("lenght"))),
-        stride.value_or(std::get<int>(select_op->op_attr("stride"))));
+        begin.value_or(select_op->op_attr_as<int>("begin")),
+        length.value_or(select_op->op_attr_as<int>("length")),
+        stride.value_or(select_op->op_attr_as<int>("stride")));
 }
 
 /**
@@ -953,12 +963,7 @@ void update_concat_attr(graphlib::OpNode *concatenate, int dim)
 {
     TT_ASSERT(concatenate->op_name() == "concatenate", "update_concat_attr called for a non-concatenate operation");
 
-    std::vector<graphlib::OpType::Attr> attr;
-    attr.push_back(dim);
-
-    graphlib::OpType::Attrs named_attrs = concatenate->named_attrs();
     concatenate->set_op_attr("dim", dim);
-
     log_trace(LogGraphCompiler, "Concatenate operation updated with new dim: {}", dim);
 }
 /**
@@ -968,12 +973,7 @@ void update_vstack_attr(graphlib::OpNode *vstack, int slice_size)
 {
     TT_ASSERT(vstack->op_name() == "vstack", "update_vstack_attr called for a non-vstack operation");
 
-    std::vector<graphlib::OpType::Attr> attr;
-    attr.push_back(slice_size);
-
-    graphlib::OpType::Attrs named_attrs = vstack->named_attrs();
     vstack->set_op_attr("slice_size", slice_size);
-
     log_trace(LogGraphCompiler, "Vstack operation updated with new slice_size: {}", slice_size);
 }
 /**
@@ -1023,7 +1023,7 @@ void update_conv_attr(graphlib::OpNode *conv, const std::vector<int> &pad_attrs)
 {
     TT_ASSERT(conv->op_name() == "conv2d", "update_conv_attr called for a non-conv operation");
 
-    std::vector<graphlib::OpType::Attr> conv_attrs = conv->op_attrs();
+    std::vector<graphlib::OpType::Attr> conv_attrs = conv->op_legacy_attrs();
 
     int pad_idx_offset = 4;
     for (uint32_t i = 0; i < 4; i++)
@@ -1068,10 +1068,10 @@ std::pair<bool, std::pair<std::vector<int>, std::vector<int>>> handle_shape_chan
     bool can_commute = true;
     for (graphlib::OpType &op_type : tms)
     {
-        if (op_type.op == "broadcast")
+        if (op_type.type() == ops::OpType::Broadcast)
         {
-            int bcast_dim = std::get<int>(op_type.attr[0]);
-            int volume = std::get<int>(op_type.attr[1]);
+            int bcast_dim = std::get<int>(op_type.legacy_attrs_[0]);
+            int volume = std::get<int>(op_type.legacy_attrs_[1]);
             if (bcast_dim < 0)
                 bcast_dim += clone_shape->size();
             auto [can_commute_bcast_through_dim, new_dim] = can_commute_through_dim(initial_op, graph, bcast_dim);
@@ -1106,11 +1106,11 @@ void add_or_compound_bcast(graphlib::Graph *graph, graphlib::Edge edge, int dim,
     bool compounded_bcast = false;
     for (graphlib::OpType &op_type : tms)
     {
-        if (op_type.op == "broadcast")
+        if (op_type.type() == ops::OpType::Broadcast)
         {
-            int existing_dim = std::get<int>(op_type.attr[0]);
+            int existing_dim = std::get<int>(op_type.legacy_attrs_[0]);
 
-            int existing_volume = std::get<int>(op_type.attr[1]);
+            int existing_volume = std::get<int>(op_type.legacy_attrs_[1]);
             if (existing_dim == dim)
             {
                 compounded_bcast = true;
@@ -1118,7 +1118,7 @@ void add_or_compound_bcast(graphlib::Graph *graph, graphlib::Edge edge, int dim,
             }
 
             graph->get_edge_attributes(edge)->set_broadcast_dim(
-                existing_dim, existing_volume, std::get<bool>(op_type.attr[2]));
+                existing_dim, existing_volume, std::get<bool>(op_type.legacy_attrs_[2]));
         }
     }
 
@@ -1138,10 +1138,10 @@ void restore_bcast_on_condition(
     // auto tms = graph->get_edge_attributes(edge)->get_tms();
     for (graphlib::OpType &op_type : orig_tms)
     {
-        if (op_type.op == "broadcast")
+        if (op_type.type() == ops::OpType::Broadcast)
         {
-            int dim = std::get<int>(op_type.attr[0]);
-            int volume = std::get<int>(op_type.attr[1]);
+            int dim = std::get<int>(op_type.legacy_attrs_[0]);
+            int volume = std::get<int>(op_type.legacy_attrs_[1]);
             if (dim < 0)
                 dim += operand_shape.size();
 
@@ -1162,8 +1162,8 @@ int update_bcast_dim_commuted_through_transpose(int dim, graphlib::OpNode *op)
 {
     TT_ASSERT(op->op_name() == "transpose", "Op has to be transpose");
     int updated_bcast_dim = dim;
-    int transpose_dim_0 = std::get<int>(op->op_type().get_attr("dim0"));
-    int transpose_dim_1 = std::get<int>(op->op_type().get_attr("dim1"));
+    int transpose_dim_0 = op->op_type().attr_as<int>("dim0");
+    int transpose_dim_1 = op->op_type().attr_as<int>("dim1");
     if (dim == transpose_dim_0)
         updated_bcast_dim = transpose_dim_1;
     else if (dim == transpose_dim_1)
@@ -1199,13 +1199,13 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
     std::vector<int> bcast_dims;
     for (graphlib::OpType &op_type : tms)
     {
-        if (op_type.op == "broadcast")
+        if (op_type.type() == ops::OpType::Broadcast)
         {
             has_bcasts = true;
             num_bcasts++;
-            int dim = std::get<int>(op_type.attr[0]);
+            int dim = std::get<int>(op_type.legacy_attrs_[0]);
             bcast_dims.push_back(dim);
-            int volume = std::get<int>(op_type.attr[1]);
+            int volume = std::get<int>(op_type.legacy_attrs_[1]);
             if (dim < 0)
             {
                 while (-dim > (int)operand_shape.size())
@@ -1291,14 +1291,14 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
 
             if (is_transpose_reshape)
             {
-                int bcast_dim = std::get<int>(tms[0].attr[0]);
+                int bcast_dim = std::get<int>(tms[0].legacy_attrs_[0]);
                 if (bcast_dim < 0)
                     bcast_dim += operand_shape.size();
                 int bcast_volume = op->shape()[bcast_dim];
 
                 // Set new reshape shape
                 auto new_reshape_shape = op->shape();
-                auto attr = op->op_attrs();
+                auto attr = op->op_legacy_attrs();
                 std::get<int>(attr[bcast_dim]) = 1;
                 new_reshape_shape[bcast_dim] = 1;
                 op->set_shape(new_reshape_shape);
@@ -1328,7 +1328,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
 
                 // Set new reshape shape
                 auto new_reshape_shape = op->shape();
-                auto attr = op->op_attrs();
+                auto attr = op->op_legacy_attrs();
                 std::get<int>(attr[op->shape().size() - 1]) = 1;
                 new_reshape_shape[op->shape().size() - 1] = 1;
                 op->set_shape(new_reshape_shape);
@@ -1354,7 +1354,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
 
                 // Set new reshape shape
                 auto new_reshape_shape = op->shape();
-                auto attr = op->op_attrs();
+                auto attr = op->op_legacy_attrs();
                 std::get<int>(attr[op->shape().size() - 2]) = 1;
                 new_reshape_shape[op->shape().size() - 2] = 1;
                 op->set_shape(new_reshape_shape);
@@ -1381,7 +1381,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
 
                 // Set new reshape shape
                 auto new_reshape_shape = op->shape();
-                auto attr = op->op_attrs();
+                auto attr = op->op_legacy_attrs();
                 std::get<int>(attr[op->shape().size() + bcast_dim]) = 1;
                 new_reshape_shape[op->shape().size() + bcast_dim] = 1;
                 op->set_shape(new_reshape_shape);
@@ -1410,14 +1410,14 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
 
                 for (auto &t : tms)
                 {
-                    if (t.op == "broadcast")
+                    if (t.type() == ops::OpType::Broadcast)
                     {
-                        int dim = std::get<int>(t.attr[0]);
+                        int dim = std::get<int>(t.legacy_attrs_[0]);
                         if (dim >= 0)
                         {
                             dim -= operand_shape.size();
                         }
-                        int volume = std::get<int>(t.attr[1]);
+                        int volume = std::get<int>(t.legacy_attrs_[1]);
                         add_or_compound_bcast(graph, user_edge, dim, volume);
                     }
                 }
@@ -1438,9 +1438,9 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
         for (int i = 0; i < (int)tms.size(); ++i)
         {
             graphlib::OpType op_type = tms[i];
-            if (op_type.op == "broadcast")
+            if (op_type.type() == ops::OpType::Broadcast)
             {
-                int dim = std::get<int>(op_type.attr[0]);
+                int dim = std::get<int>(op_type.legacy_attrs_[0]);
                 if (dim > 0)
                     dim -= operand_shape.size();
 
@@ -1449,7 +1449,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
                 erase_tms.push_back(i);
                 int updated_bcast_dim = update_bcast_dim_commuted_through_transpose(dim, op);
                 updated_shape[updated_bcast_dim] = operand_dim_size;
-                std::get<int>(op_type.attr[0]) = updated_bcast_dim;
+                std::get<int>(op_type.legacy_attrs_[0]) = updated_bcast_dim;
                 for (graphlib::Edge user_edge : graph->user_data_edges(op))
                     graph->get_edge_attributes(user_edge)->prepend_tm(op_type);
             }
@@ -1484,14 +1484,14 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
 
         for (auto &t : tms)
         {
-            if (t.op == "broadcast")
+            if (t.type() == ops::OpType::Broadcast)
             {
-                int dim = std::get<int>(t.attr[0]);
+                int dim = std::get<int>(t.legacy_attrs_[0]);
                 if (dim >= 0)
                 {
                     dim -= operand_shape.size();
                 }
-                int volume = std::get<int>(t.attr[1]);
+                int volume = std::get<int>(t.legacy_attrs_[1]);
                 add_or_compound_bcast(graph, user_edge, dim, volume);
             }
         }

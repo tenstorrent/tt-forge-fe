@@ -150,7 +150,6 @@ class OperandsInfo:
     Args:
         operand_types: List of Operand type(i.e NodeType)
         operand_shapes: List of Operand shape
-                        For constant nodetype, instead of storing shape, will store constant tensor.
         operand_dtypes: List of Operand datatype
 
     Methods:
@@ -200,13 +199,8 @@ class OperandsInfo:
             if type1 != type2:
                 return False
         for shape1, shape2 in zip(self.operand_shapes, other.operand_shapes):
-            # For constant nodetype, will get constant tensor, instead of shape.
-            if isinstance(shape1, torch.Tensor) and isinstance(shape2, torch.Tensor):
-                if not torch.equal(shape1, shape2):
-                    return False
-            else:
-                if shape1 != shape2:
-                    return False
+            if shape1 != shape2:
+                return False
         for dtype1, dtype2 in zip(self.operand_dtypes, other.operand_dtypes):
             if dtype1 != dtype2:
                 return False
@@ -218,10 +212,7 @@ class OperandsInfo:
             for operand_type, operand_shape, operand_dtype in zip(
                 self.operand_types, self.operand_shapes, self.operand_dtypes
             ):
-                if isinstance(operand_shape, torch.Tensor):
-                    operands_info += f"Operand(type={operand_type}, shape=Tensor, dtype={operand_dtype}), "
-                else:
-                    operands_info += f"Operand(type={operand_type}, shape={operand_shape}, dtype={operand_dtype}), "
+                operands_info += f"Operand(type={operand_type}, shape={operand_shape}, dtype={operand_dtype}), "
             operands_info += "]"
             return operands_info
 
@@ -378,9 +369,8 @@ class UniqueOperations(dict):
     def create_unique_operations(
         cls,
         ops: Dict[int, Operation],
-        named_parameters: Dict[str, torch.Tensor],
+        named_parameters: Optional[Dict[str, torch.Tensor]] = None,
         node_name_to_node_type: Optional[Dict[str, NodeType]] = None,
-        use_constant_value: bool = True,
         convert_param_and_const_to_activation: bool = False,
         existing_unique_operations: Optional["UniqueOperations"] = None,
         compiler_cfg: Optional[CompilerConfig] = None,
@@ -392,7 +382,6 @@ class UniqueOperations(dict):
             ops (dict): Dictionary of operation.
             named_parameters (dict): Mapping of node name to model parameters and buffers.
             node_name_to_node_type (dict): Mapping of node names to types.
-            use_constant_value (Bool): If set to true, replace constant node operand shape with constant tensor value from the named_parameter
 
         Returns:
             UniqueOperations: Populated UniqueOperations dictionary.
@@ -442,24 +431,20 @@ class UniqueOperations(dict):
                 and len(operand_shapes) == len(operand_dtypes)
             ), "Operands names, shape, dtypes are not equal"
 
-            # Replace constant node operand shape with constant value for comparing with other constant value.
-            if use_constant_value:
-                operand_shapes = [
-                    named_parameters[operand_name] if operand_type == NodeType.Constant else operand_shape
-                    for operand_type, operand_shape, operand_name in zip(operand_types, operand_shapes, operand_names)
-                ]
+            if named_parameters is not None:
+                new_operand_shapes = []
+                for operand_type, operand_shape, operand_name in zip(operand_types, operand_shapes, operand_names):
+                    if operand_type == NodeType.Constant:
+                        if len(named_parameters[operand_name].shape) == 0:
+                            new_operand_shapes.append((torch.numel(named_parameters[operand_name]),))
+                        else:
+                            new_operand_shapes.append(tuple(named_parameters[operand_name].shape))
+                    else:
+                        new_operand_shapes.append(operand_shape)
+
+                operand_shapes = list(new_operand_shapes)
 
             if lower_df is not None:
-                torch_lower_df = pytorch_df_from_str(lower_df, "", return_as_str=False)
-                if use_constant_value:
-                    operand_shapes = [
-                        operand_shape.to(torch_lower_df)
-                        if operand_type == NodeType.Constant
-                        and torch.is_floating_point(operand_shape)
-                        and operand_shape.dtype != torch_lower_df
-                        else operand_shape
-                        for operand_type, operand_shape in zip(operand_types, operand_shapes)
-                    ]
                 operand_dtypes_copy = list(operand_dtypes)
                 operand_dtypes = [
                     lower_df
@@ -499,24 +484,13 @@ class UniqueOperations(dict):
                     operation_info = {}
                     operation_info["Op"] = forge_op_function_name
                     operation_info["Operand_Names"] = str(operand_names)
-                    #  Replace the constant node operand shape which contains tensor with shape of the tensor
-                    new_operand_shapes = []
-                    for operand_type, operand_shape in zip(operand_types, operand_shapes):
-                        if operand_type == NodeType.Constant:
-                            if len(operand_shape.shape) == 0:
-                                new_operand_shapes.append((torch.numel(operand_shape),))
-                            else:
-                                new_operand_shapes.append(tuple(operand_shape.shape))
-                        else:
-                            new_operand_shapes.append(operand_shape)
-                    operation_info["Operand_Shapes"] = str(new_operand_shapes)
+                    operation_info["Operand_Shapes"] = str(operand_shapes)
                     operation_info["Operand_Types"] = str(
                         [NodeType.to_json(operand_type) for operand_type in operand_types]
                     )
                     operation_info["Operand_Dtypes"] = str(operand_dtypes)
                     operation_info["Args"] = str(args)
                     # Assign empty string since no unique ops test is generated
-                    operation_info["Testfile"] = ""
                     unique_operation_details.append(operation_info)
         return unique_operation_details
 
@@ -532,7 +506,7 @@ class UniqueOperations(dict):
 
 
 def export_unique_op_configuration_info(module_name, unique_operation_data, unique_ops_metadata):
-    headers = ["Op", "Operand_Names", "Operand_Shapes", "Operand_Types", "Operand_Dtypes", "Args", "Testfile"]
+    headers = ["Op", "Operand_Names", "Operand_Shapes", "Operand_Types", "Operand_Dtypes", "Args"]
     rows = []
     for operation_info in unique_operation_data:
         rows.append([operation_info[header] for header in headers])
@@ -574,27 +548,15 @@ def to_pt_parameters(parameters: Dict[str, AnyTensor], framework: str):
     return pt_parameters
 
 
-def extract_and_generate_unique_ops_tests(
+def extract_and_export_unique_ops_config(
     framework_mod,
     ops,
     current_module_name,
     framework,
-    contains_incompatible_np_floats,
     node_name_to_node_type,
-    params,
-    constants,
-    param_names,
     param_file_name,
     compiler_cfg,
-    module_directory,
 ):
-    """
-    Generates test modules for unique operation configurations.
-
-    The function extracts unique operation configurations based on the operation names, operand types, shapes,
-    and datatypes, as well as operation arguments (if any). For operation, a test module
-    file is created, which includes a Forge module for different configurations and associated test cases.
-    """
 
     named_parameters = {}
     if framework in ["pytorch", "paddle"]:
@@ -634,45 +596,8 @@ def extract_and_generate_unique_ops_tests(
     if named_parameters:
         named_parameters = to_pt_parameters(named_parameters, framework)
 
-    # The model's named parameters and named buffers are stored for the following key reasons:
-    #
-    #     1) In the generated unique ops test, the actual parameters and constants are utilized within the forge module subclass,
-    #        which is subsequently loaded by the `process_framework_parameter` method.
-    #
-    #     2) When generating unique ops tests, if all the operands of an operation (op) are parameters or constants,
-    #        rather than generating random tensor shapes and dtypes, actual parameter and constant values
-    #        are loaded to ensure accuracy.
-    #
-    #     3) In the model analysis markdown generation pipeline, when extracting the unique ops configuration from all models,
-    #        the shape of constant node operands is replaced with the actual constant tensor values.
-    #        This is because while many constant node operands share the same shape, their values may differ, and
-    #        retaining these actual values yields more meaningful insights for analysis.
-    #
-    # However, storing the model's parameters and buffers as `.pt` files can lead to disk space issues. To reduce space usage,
-    # the following actions need to be implemented:
-    #
-    #     1) In the generated unique ops tests, if all operands of an operation (op) are parameters or constants,
-    #        generate random tensors based on the shapes and dtypes instead of using the actual parameters/constants.
-    #
-    #     2) Rather than storing all model parameters and buffers, store only the tensors that are required for the generated
-    #        unique ops test forge module(i.e remove unused parameters and constants from the `.pt` files).
-
-    named_params_file_name = None
-    named_buffers_file_name = None
-    if compiler_cfg.tvm_generate_unique_ops_tests:
-        # Store named parameters
-        if named_parameters:
-            named_params_file_name = os.path.join(module_directory, str(current_module_name) + "_named_params.pt")
-            torch.save(named_parameters, named_params_file_name)
-
-        # Store named buffers
-        if named_buffers:
-            named_buffers_file_name = os.path.join(module_directory, str(current_module_name) + "_named_buffers.pt")
-            torch.save(named_buffers, named_buffers_file_name)
-    else:
-        if param_file_name is not None and os.path.exists(param_file_name):
-            os.remove(param_file_name)
-            param_file_name = None
+    if param_file_name is not None and os.path.exists(param_file_name):
+        os.remove(param_file_name)
 
     # Extract unique operations by comparing operands types, shapes and dtypes and arguments if any
     unique_operations = UniqueOperations.create_unique_operations(
@@ -680,304 +605,12 @@ def extract_and_generate_unique_ops_tests(
     )
     logger.info(f"UniqueOperations:\n{unique_operations}")
 
-    def get_param_const(name):
-        for nid, param in params.items():
-            if param[0] == name:
-                return nid, param
-        for nid, const in constants.items():
-            if const[0] == name:
-                return nid, const
-        logger.error(f"There is no paramter/constant with the name {name}")
-
-    if compiler_cfg.tvm_generate_unique_ops_tests:
-
-        unique_operation_details = []
-        for op_idx, forge_op_function_name in enumerate(sorted(unique_operations)):
-
-            # Extract operation name from forge op function name
-            op_name = forge_op_function_name.split(".")[-1].lower()
-
-            module_name = "test_" + op_name
-
-            # Initialize Forge writer and generate header with pytest specific imports
-            writer = ForgeWriter(
-                module_name,
-                framework,
-                module_directory=f"generated_modules/unique_ops/{current_module_name}",
-                contains_incompatible_np_floats=contains_incompatible_np_floats,
-                delete_inputs=False,
-            )
-            writer.write_header(include_pytest_imports=True)
-
-            # Get the unique operands and operation arguments associated the operand names
-            unique_operands_and_opargs_opmetadata = unique_operations[
-                forge_op_function_name
-            ].get_unique_operands_and_opargs_opmetadata()
-
-            pytest_input_shapes_and_dtypes_list = []
-            forge_module_names = []
-            module_idx = 0
-            forge_module_list = []
-            test_count = 0
-            pytest_metadata_list = []
-            for operands_idx, (operands, opargs_opmetadata) in enumerate(unique_operands_and_opargs_opmetadata):
-
-                for args_idx, (args, operation_metadata) in enumerate(opargs_opmetadata.get_op_args_and_metadata()):
-
-                    operand_types = operands.get_operand_types()
-                    operand_shapes = operands.get_operand_shapes()
-                    operand_dtypes = operands.get_operand_dtypes()
-                    operand_names = operation_metadata["operand_names"][0]
-
-                    if compiler_cfg.export_tvm_unique_ops_config_details:
-                        operation_info = {}
-                        operation_info["Op"] = forge_op_function_name
-                        operation_info["Operand_Names"] = str(operand_names)
-                        operation_info["Operand_Shapes"] = str(
-                            [
-                                operand_name if operand_type == NodeType.Constant else operand_shape
-                                for operand_type, operand_shape, operand_name in zip(
-                                    operand_types, operand_shapes, operand_names
-                                )
-                            ]
-                        )
-                        operation_info["Operand_Types"] = str(
-                            [NodeType.to_json(operand_type) for operand_type in operand_types]
-                        )
-                        operation_info["Operand_Dtypes"] = str(operand_dtypes)
-                        operation_info["Args"] = str(args)
-
-                    # Check if all operands types are parameters or constants and change the operand type from
-                    # parameters or constants to activation and pass it as activation to forge module forward function
-                    all_params_const = all(
-                        [
-                            True if (operand_type == NodeType.Parameter or operand_type == NodeType.Constant) else False
-                            for operand_type in operand_types
-                        ]
-                    )
-                    if all_params_const:
-                        operand_types = [NodeType.Activation] * len(operand_types)
-                        operand_shapes = operand_names
-                        operand_names = [op_name + "_input_" + str(idx) for idx in range(len(operand_names))]
-
-                    # Check if an existing Forge module matches the current operation configuration.
-                    # This involves comparing the number of inputs, operand types, activation operand count,
-                    # and arguments. If a match is found, further checks are made to ensure that the parameter
-                    # shapes and data types, or constants, match as well. If a match is found for either parameters
-                    # or constants, the new Forge module creation is skipped. If no match is found, a new Forge module
-                    # will be created for the current operation configuration.
-                    need_to_create_forge_module = True
-                    for forge_mod in forge_module_list:
-                        if (
-                            len(forge_mod["operand_types"]) == len(operand_types)
-                            and forge_mod["operand_types"] == operand_types
-                        ):
-                            if (
-                                forge_mod["number_of_activation"]
-                                == len(
-                                    list(
-                                        filter(lambda operand_type: operand_type == NodeType.Activation, operand_types)
-                                    )
-                                )
-                                and forge_mod["args"] == args
-                            ):
-                                param_shape_dtype_list = [
-                                    (operand_shape, operand_dtype)
-                                    for operand_type, operand_shape, operand_dtype in zip(
-                                        operand_types, operand_shapes, operand_dtypes
-                                    )
-                                    if operand_type == NodeType.Parameter
-                                ]
-
-                                const_list = [
-                                    operand_shape
-                                    for operand_type, operand_shape in zip(operand_types, operand_shapes)
-                                    if operand_type == NodeType.Constant
-                                ]
-
-                                if forge_mod["number_of_parameters"] > 0 and len(param_shape_dtype_list) > 0:
-                                    if len(param_shape_dtype_list) == forge_mod["number_of_parameters"]:
-                                        params_shape_dtype_equal = all(
-                                            [
-                                                True if (shape1 == shape2 and dtype1 == dtype2) else False
-                                                for (shape1, dtype1), (shape2, dtype2) in zip(
-                                                    forge_mod["param_shape_dtype_list"], param_shape_dtype_list
-                                                )
-                                            ]
-                                        )
-                                        if params_shape_dtype_equal:
-                                            need_to_create_forge_module = False
-                                            forge_module_names.append(forge_mod["class_name"])
-                                            break
-                                elif forge_mod["number_of_constants"] > 0 and len(const_list) > 0:
-                                    if len(const_list) == forge_mod["number_of_constants"]:
-                                        const_equal = all(
-                                            [
-                                                True if torch.equal(const1, const2) else False
-                                                for const1, const2 in zip(forge_mod["const_list"], const_list)
-                                            ]
-                                        )
-                                        if const_equal:
-                                            need_to_create_forge_module = False
-                                            forge_module_names.append(forge_mod["class_name"])
-                                            break
-                                else:
-                                    need_to_create_forge_module = False
-                                    forge_module_names.append(forge_mod["class_name"])
-                                    break
-
-                    # If no matching Forge module was found, create a new one for the current operation configuration
-                    if need_to_create_forge_module:
-
-                        # Generate class name and append it forge_module_names list for using it as pytest parameter.
-                        class_name = current_module_name.lower() + op_name + str(module_idx)
-                        class_name = class_name.title().replace("_", "")
-                        forge_module_names.append(class_name)
-
-                        needed_params = {}
-                        needed_consts = {}
-                        params_shape_dtype_list = []
-                        const_list = []
-                        forward_method_inputs = {}
-                        new_operand_names = []
-
-                        # Iterate through operand types and names to classify them as parameters, constants, or activations.
-                        # Collect the necessary parameters and constants, and use them to generate the class definition and
-                        # handle activations for the forward method inputs.
-                        for idx, (operand_type, operand_name) in enumerate(zip(operand_types, operand_names)):
-                            if operand_type == NodeType.Parameter:
-                                nid, param_tuple = get_param_const(operand_name)
-                                needed_params[nid] = param_tuple
-                                params_shape_dtype_list.append([param_tuple[1], param_tuple[3]])
-                                new_operand_names.append(operand_name)
-                            elif operand_type == NodeType.Constant:
-                                nid, const_tuple = get_param_const(operand_name)
-                                needed_consts[nid] = const_tuple
-                                const_list.append(named_parameters[operand_name])
-                                new_operand_names.append(operand_name)
-                            else:
-                                if operand_name not in forward_method_inputs.values():
-                                    forward_method_inputs[idx] = operand_name
-                                else:
-                                    forward_method_inputs[idx] = op_name + "_input_" + str(idx)
-                                    logger.warning(
-                                        f"operand_name {operand_name} is already present in the forward_method_inputs {forward_method_inputs}"
-                                    )
-                                new_operand_names.append(forward_method_inputs[idx])
-
-                        # Generate the class definition with the collected parameters and constants.
-                        writer.write_class_definition(
-                            params=needed_params, constants=needed_consts, class_name=class_name
-                        )
-
-                        # Create a single operation with the function name, output name,
-                        # input operand names, and arguments and use it for generating forward method
-                        single_op = {
-                            args_idx: Operation(
-                                function_name=forge_op_function_name,
-                                output_name=op_name + "_output_1",
-                                input_names=new_operand_names,
-                                args=tuple(args.items()),
-                            )
-                        }
-
-                        forward_method_returns = {args_idx: single_op[args_idx].output_name}
-
-                        # Generate forge module forward function
-                        writer.write_forward(single_op, forward_method_inputs, forward_method_returns)
-
-                        # If there are any parameters or constants, generate the parameter parser function.
-                        if len(needed_params) != 0 or len(needed_consts) != 0:
-                            writer.write_param_parser(
-                                param_names, param_file_name, named_params_file_name, named_buffers_file_name
-                            )
-
-                        module_idx += 1
-                        forge_module_list.append(
-                            {
-                                "class_name": class_name,
-                                "operand_types": operand_types,
-                                "number_of_activation": len(forward_method_inputs),
-                                "number_of_parameters": len(needed_params),
-                                "number_of_constants": len(needed_consts),
-                                "param_shape_dtype_list": params_shape_dtype_list,
-                                "const_list": const_list,
-                                "args": args,
-                            }
-                        )
-
-                    # Collect activation input shapes and dtypes for using it in pytest parameter
-                    pytest_input_shapes_dtypes = []
-                    for operand_type, operand_shape, operand_dtype in zip(
-                        operand_types, operand_shapes, operand_dtypes
-                    ):
-                        if operand_type == NodeType.Activation:
-                            pytest_input_shapes_dtypes.append((operand_shape, operand_dtype))
-                    pytest_input_shapes_and_dtypes_list.append(pytest_input_shapes_dtypes)
-
-                    pytest_metadata = {}
-                    if op_name == "embedding":
-                        # Calculate embedding op indicies tensor maximum value based upon the num_embeddings of the weight tensor.
-                        if all_params_const and isinstance(operand_shapes[1], str):
-                            # If both operands of the embedding op are parameter/constant,
-                            # take the num_embeddings from the  params(i.e Dict[nid, Tuple(name, shape, require_grad, dtype)])
-                            _, param_tuple = get_param_const(operand_shapes[1])
-                            pytest_metadata["max_int"] = int(param_tuple[1][0]) - 1
-                        else:
-                            pytest_metadata["max_int"] = int(operand_shapes[1][0]) - 1
-
-                    if len(pytest_metadata) != 0:
-                        pytest_metadata_list.append(pytest_metadata)
-
-                    if compiler_cfg.export_tvm_unique_ops_config_details:
-                        operation_info["Testfile"] = (
-                            writer.module_directory
-                            + "/"
-                            + writer.filename
-                            + f"::test_module[forge_module_and_shapes_dtypes{test_count}]"
-                        )
-                        unique_operation_details.append(operation_info)
-                        test_count += 1
-
-            # If the parameter/constant is passed as activation, operand shape will be replaced with operand name
-            # because instead of generating tensor from shape, use actual tensor from model parameters/buffers
-            # and so generating function for loading the model parameters/buffers and saving it as named_parameter variable
-            need_model_parameter_function = any(
-                [
-                    True if isinstance(shape, str) else False
-                    for pytest_input_shapes_dtypes in pytest_input_shapes_and_dtypes_list
-                    for shape, _ in pytest_input_shapes_dtypes
-                ]
-            )
-            if need_model_parameter_function:
-                writer.write_model_parameter_function(param_file_name, named_params_file_name, named_buffers_file_name)
-
-            # To avoid recording pcc in record_property pytest fixture and add the pcc to the exclude metadata property list
-            exclude_record_property = []
-            if op_name == "embedding":
-                exclude_record_property.append("max_int")
-
-            # Generate pytest function for the operation with pytest parameter containing list of tuple
-            # and each tuple constaints module name, tuple of operand shape/name and dtype
-            writer.write_pytest_function(
-                forge_module_names=forge_module_names,
-                pytest_input_shapes_and_dtypes_list=pytest_input_shapes_and_dtypes_list,
-                pytest_metadata_list=pytest_metadata_list,
-                exclude_record_property=exclude_record_property,
-            )
-
-            writer.close_file()
-
-    else:
-        unique_operation_details = unique_operations.create_list_of_dict()
+    unique_operation_details = unique_operations.create_list_of_dict()
 
     if compiler_cfg.export_tvm_unique_ops_config_details:
         unique_ops_metadata = {
             "framework": framework,
             "module_name": current_module_name,
-            "param_file_name": param_file_name,
-            "named_params_file_name": named_params_file_name,
-            "named_buffers_file_name": named_buffers_file_name,
         }
         export_unique_op_configuration_info(current_module_name, unique_operation_details, unique_ops_metadata)
 
@@ -1243,7 +876,6 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
             module_metadata=module_metadata,
             pytest_metadata_list=pytest_metadata_list,
             use_ids_function=True,
-            include_random_parameter_constant_gen=True,
             exclude_record_property=exclude_record_property,
             pytest_markers_with_reasons=pytest_markers_with_reasons,
         )

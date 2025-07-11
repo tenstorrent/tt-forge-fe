@@ -6,6 +6,7 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <utils/assert.hpp>
 #include <variant>
 #include <vector>
 
@@ -21,6 +22,9 @@
 namespace tt
 {
 class FusedOp;
+
+enum class DecomposeEpoch : uint8_t;
+class DecomposingContext;
 
 namespace graphlib
 {
@@ -370,78 +374,96 @@ struct OpType
     using Attr = ForgeOpAttr;
     using Attrs = ForgeOpAttrs;
 
-    std::string op;
-    std::vector<Attr> attr;    // legacy path
-    Attrs named_attrs;         // new path
-    ForgeOpAttrs forge_attrs;  // attrs that will lower directly into the netlist
+    std::string op_;
+    std::vector<Attr> legacy_attrs_;  // legacy path
+    Attrs named_attrs_;               // new path
 
+   private:
     ops::Op new_op_;
 
-    OpType(
-        std::string const &op,
-        std::vector<Attr> const &attr = {},
-        ForgeOpAttrs const &forge_attrs = {},
-        Attrs named_attrs = {}) :
-        op(op), attr(attr), named_attrs(std::move(named_attrs)), forge_attrs(forge_attrs), new_op_(*this)
+   public:
+    OpType(std::string const &op, std::vector<Attr> const &attr = {}, Attrs named_attrs = {}) :
+        op_(op), legacy_attrs_(attr), named_attrs_(std::move(named_attrs)), new_op_(*this)
     {
     }
 
-    bool operator==(const char *name) const { return op == name; }
-    bool operator==(const std::string &name) const { return op == name; }
+    bool operator==(const ops::OpType other_type) const { return type() == other_type; }
+    bool operator!=(const ops::OpType other_type) const { return !(operator==(other_type)); }
+
     bool operator==(const OpType &other) const
     {
-        return op == other.op and attr == other.attr and named_attrs == other.named_attrs and
-               forge_attrs == other.forge_attrs;
+        return *this == other.type() and legacy_attrs_ == other.legacy_attrs_ and named_attrs_ == other.named_attrs_;
     }
-    bool operator!=(const OpType &other) const { return not(*this == other); }
+    bool operator!=(const OpType &other) const { return !(*this == other); }
 
+    ops::OpType type() const { return new_op_.type(); }
     ops::Op const &new_op() const { return new_op_; }
-    Attr const &get_attr(std::string const &name) const { return named_attrs.at(name); }
-    Attr &get_attr(std::string const &name) { return named_attrs.at(name); }
+
+    const Attrs &attrs() const { return named_attrs_; }
+    bool has_attr(const std::string &attr_name) const { return named_attrs_.find(attr_name) != named_attrs_.end(); }
+
     template <typename T>
-    T const &get_attr_as(std::string const &name) const
+    T const &attr_as(std::string const &name) const
     {
-        return std::get<T>(get_attr(name));
+        return std::get<T>(attr(name));
     }
+
     template <typename T>
-    T &get_attr_as(std::string const &name)
+    T &attr_as(std::string const &name)
     {
-        return std::get<T>(get_attr(name));
+        return std::get<T>(attr(name));
     }
 
     void set_attr(std::string const &name, Attr attr)
     {
-        named_attrs[name] = attr;
+        named_attrs_[name] = attr;
         new_op_.set_attr(name, std::move(attr));
     }
 
+    bool remove_attr(const std::string &attr_name)
+    {
+        bool removed = named_attrs_.erase(attr_name) > 0;
+        if (removed)
+            new_op_.remove_attr(attr_name);
+
+        return removed;
+    }
+
+    void clear_attrs()
+    {
+        named_attrs_.clear();
+        new_op_.clear_attrs();
+    }
+
+    const std::string &name() const { return op_; }
+
     std::string as_string() const
     {
-        std::string ret = op;
-        if (attr.size() > 0)
+        std::string ret = op_;
+        if (legacy_attrs_.size() > 0)
         {
             ret += "(";
-            for (unsigned int i = 0; i < attr.size(); i++)
+            for (unsigned int i = 0; i < legacy_attrs_.size(); i++)
             {
-                if (std::holds_alternative<bool>(attr[i]))
+                if (std::holds_alternative<bool>(legacy_attrs_[i]))
                 {
-                    ret += std::to_string(std::get<bool>(attr[i])) + ",";
+                    ret += std::to_string(std::get<bool>(legacy_attrs_[i])) + ",";
                 }
-                else if (std::holds_alternative<int>(attr[i]))
+                else if (std::holds_alternative<int>(legacy_attrs_[i]))
                 {
-                    ret += std::to_string(std::get<int>(attr[i])) + ",";
+                    ret += std::to_string(std::get<int>(legacy_attrs_[i])) + ",";
                 }
-                else if (std::holds_alternative<float>(attr[i]))
+                else if (std::holds_alternative<float>(legacy_attrs_[i]))
                 {
-                    ret += std::to_string(std::get<float>(attr[i])) + ",";
+                    ret += std::to_string(std::get<float>(legacy_attrs_[i])) + ",";
                 }
-                else if (std::holds_alternative<std::string>(attr[i]))
+                else if (std::holds_alternative<std::string>(legacy_attrs_[i]))
                 {
-                    ret += std::get<std::string>(attr[i]) + ",";
+                    ret += std::get<std::string>(legacy_attrs_[i]) + ",";
                 }
-                else if (std::holds_alternative<std::vector<int>>(attr[i]))
+                else if (std::holds_alternative<std::vector<int>>(legacy_attrs_[i]))
                 {
-                    auto attr_val = std::get<std::vector<int>>(attr[i]);
+                    auto attr_val = std::get<std::vector<int>>(legacy_attrs_[i]);
                     size_t num_items = attr_val.size();
 
                     ret += "[";
@@ -463,13 +485,13 @@ struct OpType
             ret += ")";
         }
 
-        if (named_attrs.size() > 0)
+        if (named_attrs_.size() > 0)
         {
             using tt::operator<<;
             std::stringstream ss;
             bool first = true;
             ss << "{";
-            for (auto const &[name, value] : named_attrs)
+            for (auto const &[name, value] : named_attrs_)
             {
                 if (not first)
                     ss << ", ";
@@ -498,8 +520,8 @@ struct OpType
         const tt::graphlib::NodeContext &output,
         const tt::graphlib::NodeContext &gradient) const;
 
-    void decompose(
-        const char *dispatch, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
+    template <DecomposeEpoch epoch>
+    void decompose(DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
 
     long initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
@@ -508,6 +530,23 @@ struct OpType
     bool is_eltwise_unary() const;
     bool is_eltwise_binary() const;
     bool is_eltwise_nary() const;
+
+   private:
+    /**
+     * Returns attribute based on provided string. Since map::at throws if element does not exist but without any useful
+     * info, we will assert to get detailed error message.
+     */
+    const ForgeOpAttr &attr(const std::string &name) const
+    {
+        TT_ASSERT(has_attr(name), "Non existing attribute: {}", name);
+        return named_attrs_.at(name);
+    }
+
+    ForgeOpAttr &attr(const std::string &name)
+    {
+        TT_ASSERT(has_attr(name), "Non existing attribute: {}", name);
+        return named_attrs_.at(name);
+    }
 };
 
 class OpNode : public TaggedNode
@@ -539,25 +578,21 @@ class OpNode : public TaggedNode
     }
     void change_op_type(const std::string &new_op_type, std::vector<OpType::Attr> attrs, OpType::Attrs named_attrs)
     {
-        op_type_ = OpType(new_op_type, attrs, {}, named_attrs);
+        op_type_ = OpType(new_op_type, attrs, named_attrs);
     }
     ops::OpType new_op_type() const { return new_op().type(); }
     OpType const &op_type() const { return op_type_; }
-    OpType const *op_type_ptr() const { return &op_type_; }
     IRLevel get_ir_level() const { return IRLevel::IR_TT_FORGE; }
-    const std::string &op_name() const { return op_type_.op; }
-    const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attr; }
-    const OpType::Attrs &named_attrs() { return op_type_.named_attrs; }
-    const OpType::Attr &op_attr(std::string const &name) const { return op_type_.get_attr(name); }
+    const std::string &op_name() const { return op_type_.name(); }
+    const std::vector<OpType::Attr> &op_legacy_attrs() const { return op_type_.legacy_attrs_; }
+    const OpType::Attrs &op_named_attrs() { return op_type_.named_attrs_; }
     template <typename T>
     const T &op_attr_as(std::string const &name) const
     {
-        return std::get<T>(op_attr(name));
+        return op_type_.attr_as<T>(name);
     }
     void set_op_attr(const std::string &name, OpType::Attr value) { op_type_.set_attr(name, std::move(value)); }
 
-    const ForgeOpAttrs &forge_attrs() const { return op_type_.forge_attrs; }
-    void overwrite_forge_attrs(ForgeOpAttrs forge_attrs) { op_type_.forge_attrs = forge_attrs; }
     void set_gradient_op(bool value = true) { gradient_op_ = value; }
     bool is_op_type(std::string const &type) const { return type == op_name(); }
     bool is_gradient_op() const { return gradient_op_; }
@@ -590,7 +625,6 @@ class OpNode : public TaggedNode
     bool is_eltwise_binary() const { return op_type_.is_eltwise_binary(); }
     bool is_eltwise_nary() const { return op_type_.is_eltwise_nary(); }
 
-    bool should_pair_with_sparse(const OpNode *sparse_op_node, const Graph *graph) const;
     void set_output_df_from_operands(const Graph *graph);
     void add_golden_transform(OpType const &op_type) { golden_transforms.insert(golden_transforms.begin(), op_type); }
     void set_golden_transforms(std::vector<OpType> const &other) { golden_transforms = other; }
@@ -664,10 +698,6 @@ class EdgeAttributes
 
     EdgeType edge_type() const { return edge_type_; }
     bool has_tms() const { return not tms.empty(); }
-    bool has_tm(std::string const &tm) const
-    {
-        return std::find_if(tms.begin(), tms.end(), [tm](OpType const &op) { return op.op == tm; }) != tms.end();
-    }
 
     bool operator==(EdgeAttributes const &other) const
     {

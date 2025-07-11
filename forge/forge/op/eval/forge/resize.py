@@ -6,7 +6,6 @@ from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div, clamp
 from forge import Tensor
 from forge.op.resize import INT_TO_RESIZE2d_METHOD
-from .transpose import TransposeTM
 from .nop import Nop
 
 from ..common import to_torch_operands
@@ -247,12 +246,8 @@ def decompose_upsample_3d(attr, dc, inputs, resize_method):
     #    scale_factor = attr[0] // shape[-3]
     # else:
     w, cin, din, y, x = (shape.v, shape.w, shape.z, shape.r, shape.c)
-    activations = dc.op(
-        "reshape",
-        inputs,
-        (w, 1, cin * din, y * x),
-    )
-    activations = dc.op(TransposeTM.create(-2, -1), [activations])
+    activations = dc.op_with_named_attrs("reshape", inputs, {"shape": (w, 1, cin * din, y * x)})
+    activations = dc.op_with_named_attrs("transpose", [activations], {"dim0": -2, "dim1": -1})
     scale_factor_d = attr[0] // shape[-3]
     scale_factor_y = attr[1] // shape[-2]
     scale_factor_x = attr[2] // shape[-1]
@@ -262,7 +257,7 @@ def decompose_upsample_3d(attr, dc, inputs, resize_method):
         dident_yx = create_nearest_neighbor_upsample_picker_matrix(scale_factor, shape, channel_last=channel_last)
         dident_tensor_yx = dc.tensor(dident_yx)
         result = dc.op("sparse_matmul", [dident_tensor_yx, activations])
-        result = dc.op(TransposeTM.create(-2, -1), [result])
+        result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
 
         dident_din = create_nearest_neighbor_upsample_picker_matrix(
             scale_factor, shape, for_din=True, channel_last=channel_last
@@ -276,16 +271,18 @@ def decompose_upsample_3d(attr, dc, inputs, resize_method):
     #    result = dc.op("reshape", [result], (w, y * scale_factor, x * scale_factor, cin))
     #    dc.fuse(result)
     # else:
-    result = dc.op(
+    result = dc.op_with_named_attrs(
         "reshape",
         [result],
-        (
-            w,
-            cin,
-            din * scale_factor_d,
-            y * scale_factor_y,
-            x * scale_factor_x,
-        ),
+        {
+            "shape": (
+                w,
+                cin,
+                din * scale_factor_d,
+                y * scale_factor_y,
+                x * scale_factor_x,
+            )
+        },
     )
 
     dc.fuse(result)
@@ -359,8 +356,8 @@ def decompose(type, attr, dc, inputs):
 
         if not channel_last:
             # Changing  the Layout from NCHW to NHWC as ttir.upsample2d supports only the NHWC layout
-            result = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [result])
-            result = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [result])
+            result = dc.op_with_named_attrs("transpose", [result], {"dim0": -3, "dim1": -2})
+            result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
 
         if upsample:
             scale_factor = sizes[0] // shape[-3] if channel_last else sizes[0] // shape[-2]
@@ -381,8 +378,8 @@ def decompose(type, attr, dc, inputs):
 
         if not channel_last:
             # Changing the Layout back to NCHW from NHWC after ttir.upsample2d operation
-            result = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [result])
-            result = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [result])
+            result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
+            result = dc.op_with_named_attrs("transpose", [result], {"dim0": -3, "dim1": -2})
 
         dc.fuse(result)
 

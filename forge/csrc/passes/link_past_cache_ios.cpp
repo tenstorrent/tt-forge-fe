@@ -5,6 +5,7 @@
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "passes/passes_utils.hpp"
 #include "utils/logger.hpp"
 
@@ -15,9 +16,9 @@ bool shape_compatible(graphlib::OpNode *output_producer, graphlib::Node *input_c
 {
     auto p_shape = output_producer->shape().canonical();
     auto c_shape = input_consumer->shape().canonical();
-    if (output_producer->op_type().op == "concatenate")
+    if (output_producer->new_op_type() == ops::OpType::Concatenate)
     {
-        int dim = std::get<int>(output_producer->op_type().attr[0]);
+        int dim = std::get<int>(output_producer->op_type().legacy_attrs_[0]);
         c_shape[dim] = p_shape[dim];
     }
     return (p_shape == c_shape);
@@ -45,7 +46,7 @@ std::unordered_map<graphlib::Node *, graphlib::Node *> link_cache_outputs_to_par
         // get the parameter, if the producer is a transpose, we need to go one more back
         graphlib::Node *operand = graph->data_operands(producer_mm)[1];
         if (operand->node_type() == graphlib::NodeType::kPyOp and
-            operand->as<graphlib::OpNode>()->op_type().op == "transpose")
+            operand->as<graphlib::OpNode>()->new_op_type() == ops::OpType::Transpose)
         {
             operand = graph->data_operands(operand)[0];
         }
@@ -158,7 +159,7 @@ graphlib::Node *detect_inputs_to_convert(graphlib::Graph *graph, graphlib::Node 
 
     // 2.5 handle the case that output-producer is 'nop' first, since it does not have span tag
     // currently only accept input -> nop -> output pattern for pt1.x
-    if (output_producer->op_type().op == "nop")
+    if (output_producer->new_op_type() == ops::OpType::Nop)
     {
         if (producer_input_nodes.size() == 1 and graph->data_users(producer_input_nodes[0])[0] == output_producer)
         {
@@ -224,8 +225,8 @@ std::map<std::string, std::size_t> convert_inputs_to_params(
             continue;
 
         // handle slice-op in producer chain of concatenate op
-        bool output_all = (producers[0]->as<graphlib::OpNode>()->op_type().op != "nop");
-        bool is_concat = (producers[0]->as<graphlib::OpNode>()->op_type().op == "concatenate");
+        bool output_all = (producers[0]->as<graphlib::OpNode>()->new_op_type() != ops::OpType::Nop);
+        bool is_concat = (producers[0]->as<graphlib::OpNode>()->new_op_type() == ops::OpType::Concatenate);
         int slice_factor = 1;
         std::vector<graphlib::Edge> edges;
         if (is_concat)
@@ -249,7 +250,8 @@ std::map<std::string, std::size_t> convert_inputs_to_params(
                 continue;
 
             // select out the last tile to stream to dram
-            slice_factor = (slice != nullptr) ? std::get<int>(slice->as<graphlib::OpNode>()->op_type().attr[0]) : 1;
+            slice_factor =
+                (slice != nullptr) ? std::get<int>(slice->as<graphlib::OpNode>()->op_type().legacy_attrs_[0]) : 1;
 
             // if we're only producing a single tile, we don't need to select anything
             bool control_edge_needed = false;

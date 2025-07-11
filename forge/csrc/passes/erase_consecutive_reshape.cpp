@@ -7,6 +7,7 @@
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "passes/commute_utils.hpp"
 #include "passes/passes_utils.hpp"
 #include "utils/logger.hpp"
@@ -34,8 +35,8 @@ static bool is_reshape_transpose(graphlib::Node const *node)
         return false;
 
     auto shape = op->shape();
-    int _dim0 = op->op_type().get_attr_as<int>("dim0");
-    int _dim1 = op->op_type().get_attr_as<int>("dim1");
+    int _dim0 = op->op_type().attr_as<int>("dim0");
+    int _dim1 = op->op_type().attr_as<int>("dim1");
     if (_dim0 > _dim1)
         std::swap(_dim0, _dim1);
 
@@ -134,10 +135,10 @@ static void commute_eltwise_ops(graphlib::Graph *graph, std::vector<graphlib::No
 
                 for (graphlib::OpType &op_type : current_edge_tms)
                 {
-                    if (op_type.op == "broadcast")
+                    if (op_type.type() == ops::OpType::Broadcast)
                     {
-                        int bcast_dim = std::get<int>(op_type.attr[0]);
-                        int volume = std::get<int>(op_type.attr[1]);
+                        int bcast_dim = std::get<int>(op_type.legacy_attrs_[0]);
+                        int volume = std::get<int>(op_type.legacy_attrs_[1]);
                         if (bcast_dim < 0)
                             bcast_dim += commute_shape.size();
 

@@ -118,9 +118,10 @@ def test_vovnet_timm(
     compiler_config = CompilerConfig()
     if data_format == "bfloat16":
         compiler_config.default_df_override = DataFormat.Float16_b
-    # @TODO - For now, we are skipping enabling MLIR optimizations, because it is not working with the current version of the model.
     # # Turn on MLIR optimizations.
-    # compiler_config.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
+    compiler_config.mlir_config = (
+        MLIRConfig().set_enable_optimizer(True).set_enable_memory_layout_analysis(False).set_enable_fusing(True)
+    )
 
     # Forge compile framework model
     compiled_model = forge.compile(

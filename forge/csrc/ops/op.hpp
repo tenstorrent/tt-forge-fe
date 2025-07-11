@@ -11,6 +11,8 @@
 #include <variant>
 #include <vector>
 
+#include "utils/assert.hpp"
+
 namespace at
 {
 class Tensor;  // Forward declaration of torch tensor.
@@ -32,6 +34,7 @@ struct autograd_context;
 }
 
 class DecomposingContext;
+enum class DecomposeEpoch : uint8_t;
 
 namespace ops
 {
@@ -187,21 +190,47 @@ class Op
     bool operator!=(const Op &other) const { return !(*this == other); }
 
     OpType type() const { return type_; }
+
     const Attrs &attrs() const { return attrs_; }
 
-    const Attr &attr(std::string const &name) const { return attrs_.at(name); }
     template <typename T>
     const T &attr_as(std::string const &name) const
     {
         return std::get<T>(attr(name));
     }
 
+    template <typename T>
+    T &attr_as(std::string const &name)
+    {
+        return std::get<T>(attr(name));
+    }
+
     bool has_attr(const std::string &attr_name) const { return attrs_.find(attr_name) != attrs_.end(); }
     void set_attrs(Attrs attrs) { attrs_ = std::move(attrs); }
-    void set_attr(std::string const &name, Attr attr) { attrs_[name] = attr; }
+    void set_attr(std::string const &name, Attr attr) { attrs_[name] = std::move(attr); }
+    bool remove_attr(const std::string &attr_name) { return attrs_.erase(attr_name) > 0; }
+    void clear_attrs() { attrs_.clear(); }
 
     const std::string &as_string() const;
 
+   private:
+    /**
+     * Returns attribute based on provided string. Since map::at throws if element does not exist but without any useful
+     * info, we will assert to get detailed error message.
+     */
+    const Attr &attr(const std::string &name) const
+    {
+        TT_ASSERT(has_attr(name), "Non existing attribute: {}", name);
+        return attrs_.at(name);
+    }
+
+    Attr &attr(const std::string &name)
+    {
+        TT_ASSERT(has_attr(name), "Non existing attribute: {}", name);
+        return attrs_.at(name);
+    }
+
+   public:
     /* ----------------------------------------------------*
      * Calculations segment. All ops must implement these. *
      * ----------------------------------------------------*/
@@ -229,9 +258,28 @@ class Op
      * Optional implementations. *
      * --------------------------*/
 
+    /**
+     * Note: We will most likely get rid of distinct implementations for decompose, once we investigate why they even
+     * exist. They are needed for now in order to unblock ops migration from python to cpp.
+     */
+    template <DecomposeEpoch epoch>
     void decompose(
         const graphlib::OpType &old_op_type,
-        const char *dispatch,
+        DecomposingContext &dc,
+        const std::vector<tt::graphlib::NodeContext> &inputs) const;
+
+    void decompose_initial(
+        const graphlib::OpType &old_op_type,
+        DecomposingContext &dc,
+        const std::vector<tt::graphlib::NodeContext> &inputs) const;
+
+    void decompose_post_optimize(
+        const graphlib::OpType &old_op_type,
+        DecomposingContext &dc,
+        const std::vector<tt::graphlib::NodeContext> &inputs) const;
+
+    void decompose_post_autograd(
+        const graphlib::OpType &old_op_type,
         DecomposingContext &dc,
         const std::vector<tt::graphlib::NodeContext> &inputs) const;
 

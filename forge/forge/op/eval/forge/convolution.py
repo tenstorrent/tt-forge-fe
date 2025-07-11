@@ -8,7 +8,6 @@ from forge._C.graph import NodeType
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div, clamp
 from forge import Tensor
-from .transpose import TransposeTM
 
 
 import torch
@@ -128,13 +127,13 @@ class Conv2d(PyOp):
         is_bias_unchanged = bias is None or bias == inputs[2]
 
         if not is_channel_last:
-            activations = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [activations])
-            activations = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [activations])
+            activations = dc.op_with_named_attrs("transpose", [activations], {"dim0": -3, "dim1": -2})
+            activations = dc.op_with_named_attrs("transpose", [activations], {"dim0": -2, "dim1": -1})
 
         # The below condition checks whether the channel is last and the required output channel position (1, 1, 1, C_out) in the bias, as well as the bias type.
         if (bias is not None) and (bias.shape[-1] != weight.shape[-4]) and (not is_channel_last):
-            bias = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [bias])
-            bias = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [bias])
+            bias = dc.op_with_named_attrs("transpose", [bias], {"dim0": -3, "dim1": -2})
+            bias = dc.op_with_named_attrs("transpose", [bias], {"dim0": -2, "dim1": -1})
 
         # Only want to re-create the Conv2d op if something has changed. Otherwise it the compiler will infinitely
         # decompose the same Conv2d over and over.
@@ -154,8 +153,8 @@ class Conv2d(PyOp):
             )
 
             if not is_channel_last:
-                result = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [result])
-                result = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [result])
+                result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
+                result = dc.op_with_named_attrs("transpose", [result], {"dim0": -3, "dim1": -2})
 
             dc.fuse(result)
 
@@ -305,13 +304,13 @@ class Conv2dTranspose(PyOp):
         is_bias_unchanged = bias is None or bias == inputs[2]
 
         if not is_channel_last:
-            activations = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [activations])
-            activations = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [activations])
+            activations = dc.op_with_named_attrs("transpose", [activations], {"dim0": -3, "dim1": -2})
+            activations = dc.op_with_named_attrs("transpose", [activations], {"dim0": -2, "dim1": -1})
 
         # The below condition checks whether the channel is last and the required output channel position (1, 1, 1, C_out) in the bias, as well as the bias type.
         if (bias is not None) and (bias.shape[-1] != weight.shape[-4]) and (not is_channel_last):
-            bias = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [bias])
-            bias = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [bias])
+            bias = dc.op_with_named_attrs("transpose", [bias], {"dim0": -3, "dim1": -2})
+            bias = dc.op_with_named_attrs("transpose", [bias], {"dim0": -2, "dim1": -1})
 
         # Only want to re-create the Conv2dTranspose op if something has changed. Otherwise it the compiler will infinitely
         # decompose the same Conv2dTranspose over and over.
@@ -332,8 +331,8 @@ class Conv2dTranspose(PyOp):
             )
 
             if not is_channel_last:
-                result = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [result])
-                result = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [result])
+                result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
+                result = dc.op_with_named_attrs("transpose", [result], {"dim0": -3, "dim1": -2})
 
             dc.fuse(result)
 

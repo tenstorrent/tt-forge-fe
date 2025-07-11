@@ -106,14 +106,6 @@ class CompilerConfig:
     # If enabled, for given test, it only extracts the unique operation configuration.
     extract_tvm_unique_ops_config: bool = False
 
-    # If enabled, for given test, it extracts the unique operation configuration and generates Forge Modules in form of PyTest for each unique operation configuration within the given module.
-    # Each configuration is based on:
-    # - Operand Type (e.g., Activation, Parameter, Constant)
-    # - Operand Shape
-    # - Operand DataType
-    # - Operation Arguments (if any)
-    tvm_generate_unique_ops_tests: bool = False
-
     # Export the unique operations configurations information to the excel file
     export_tvm_unique_ops_config_details: bool = False
 
@@ -171,9 +163,6 @@ class CompilerConfig:
 
         if "FORGE_DEFAULT_DF" in os.environ:
             self.default_df_override = DataFormat.from_json(os.environ["FORGE_DEFAULT_DF"])
-
-        if "FORGE_TVM_GENERATE_UNIQUE_OPS_TESTS" in os.environ:
-            self.tvm_generate_unique_ops_tests = bool(int(os.environ["FORGE_TVM_GENERATE_UNIQUE_OPS_TESTS"]))
 
         if "FORGE_EXTRACT_TVM_UNIQUE_OPS_CONFIG" in os.environ:
             self.extract_tvm_unique_ops_config = bool(int(os.environ["FORGE_EXTRACT_TVM_UNIQUE_OPS_CONFIG"]))
