@@ -1105,10 +1105,6 @@ py::object eval_concatenate(
 
     Node *node = nodes[output_index];
     log_trace(LogEval, "Eval concatenate {}: {}", node->name(), node->shape());
-    std::vector<graphlib::OpType::Attr> attr;
-
-    attr.emplace_back(runtime_tensor_transform.concat_dim);
-
     std::vector<py::object> concat_inputs;
     // There won't be too many of these, do a nested loop for simplicity
     int conat_group = runtime_tensor_transform.concat_group;
@@ -1136,7 +1132,7 @@ py::object eval_concatenate(
         }
     }
 
-    graphlib::OpType prestride_act("concatenate", attr);
+    graphlib::OpType prestride_act("concatenate", {}, {{"dim", runtime_tensor_transform.concat_dim}});
     return eval_op(prestride_act, concat_inputs);
 }
 

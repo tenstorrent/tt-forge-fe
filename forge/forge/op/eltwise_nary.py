@@ -30,7 +30,7 @@ def Concatenate(name: str, *operands: Tensor, axis: int) -> Tensor:
         Forge tensor
     """
 
-    result: Tensor = op("concatenate", name, *operands, attrs=(axis,), dim=axis).get_tensor()
+    result: Tensor = op("concatenate", name, *operands, dim=axis).get_tensor()
     return result
 
 

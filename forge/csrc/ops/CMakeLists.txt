@@ -4,6 +4,7 @@ add_library(ops
     op_common.cpp
     op_abs.cpp
     op_add.cpp
+    op_concatenate.cpp
     op_constant.cpp
     op_divide.cpp
     op_multiply.cpp
