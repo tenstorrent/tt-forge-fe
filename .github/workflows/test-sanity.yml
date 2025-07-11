@@ -95,6 +95,9 @@ jobs:
           run_id: ${{ inputs.run_id }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Create temporary directory for artifacts
+        run: mkdir -p ${{ runner.temp }}/artifacts/
+
       - name: Find and download forge wheel
         if: ${{ !inputs.run_id }}
         uses: dawidd6/action-download-artifact@v9
@@ -107,6 +110,7 @@ jobs:
           repo: tenstorrent/tt-forge-fe
           check_artifacts: true
           search_artifacts: true
+          path: ${{ runner.temp }}/artifacts/
 
       - name: Install wheel
         shell: bash
@@ -124,6 +128,12 @@ jobs:
           FORGE_DISABLE_REPORTIFY_DUMP: 1
         shell: bash
         run: |
+          # Verify artifact contents
+          if [ ! -f "${{ runner.temp }}/artifacts/tt_tvm*.whl" ] || [ ! -f "${{ runner.temp }}/artifacts/compiler/tt_forge_fe_compiler*.whl" ]; then
+            echo "Error: Expected wheel files not found in artifacts."
+            exit 1
+          fi
+
           source env/activate
           echo "Collecting sanity tests..."
           pytest --splits 1 \
