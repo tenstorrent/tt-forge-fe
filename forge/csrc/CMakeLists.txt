@@ -41,7 +41,6 @@ add_subdirectory(shared_utils)
 add_subdirectory(backend_api)
 add_subdirectory(reportify)
 add_subdirectory(runtime)
-add_subdirectory(tt_torch_device)
 add_subdirectory(test)
 add_subdirectory(verif)
 add_subdirectory(ops)
@@ -80,7 +79,6 @@ target_link_libraries(ttforge_csrc PRIVATE
     shared_utils
     backend_api
     reportify
-    tt_torch_device
     runtime
     runtime_testutils
     ttforge_csrc_objs
