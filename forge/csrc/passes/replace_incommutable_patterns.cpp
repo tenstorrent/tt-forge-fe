@@ -150,7 +150,7 @@ static bool is_y_dim_concat_with_changed_x_dim(
     if (op->op_name() != "concatenate")
         return false;
 
-    int concat_dim = std::get<int>(op->op_legacy_attrs()[0]);
+    int concat_dim = std::get<int>(op->op_named_attrs().at("dim"));
 
     if (concat_dim != -2)
         return false;

@@ -34,7 +34,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
 {
     TT_DBG_ASSERT(op.type() == OpType::Concatenate, "Wrong op type.");
     TT_ASSERT(in_shapes.size() >= 1, "concatenate::shape should have at least one input shapes.");
-    TT_ASSERT(op.attrs().size() == 1, "concatenate::shape should have 1 attr.");
+    TT_ASSERT(op.attrs().size() == 1, "concatenate::shape should have 1 attr");
 
     int dim = op.attr_as<int>("dim");
     if (dim < 0)

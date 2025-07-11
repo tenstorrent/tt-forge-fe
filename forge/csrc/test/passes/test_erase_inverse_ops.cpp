@@ -213,8 +213,8 @@ TEST_F(EraseInverseOps, replace_x_y_change_concat_pattern)
         *graph, "reshape_1", graphlib::OpType("reshape", {}, {{"shape", std::vector{256, 320}}}), {post_transpose});
     auto reshape_2 = add_node<graphlib::PyOpNode>(
         *graph, "reshape_2", graphlib::OpType("reshape", {}, {{"shape", std::vector{256, 320}}}), {post_transpose});
-    auto concat =
-        add_node<graphlib::PyOpNode>(*graph, "concat", "concatenate", {-2}, {reshape_0, reshape_1, reshape_2});
+    auto concat = add_node<graphlib::PyOpNode>(
+        *graph, "concat", graphlib::OpType("concatenate", {}, {{"dim", -2}}), {reshape_0, reshape_1, reshape_2});
 
     graph->remove_node(graph->get_node_by_name("out0"));
     create_output(*graph, "out0", concat);
@@ -416,8 +416,8 @@ struct UpdateConcatNamedAttrsTest : testing::Test
             graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 1, 512 * 160}}}),
             {input_node_2});
 
-        auto concat_node =
-            add_node<graphlib::PyOpNode>(*graph, "concat", "concatenate", {-2}, {reshape_0, reshape_1, reshape_2});
+        auto concat_node = add_node<graphlib::PyOpNode>(
+            *graph, "concat", graphlib::OpType("concatenate", {}, {{"dim", -2}}), {reshape_0, reshape_1, reshape_2});
 
         create_output(*graph, "out", concat_node);
     }
