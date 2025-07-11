@@ -36,7 +36,7 @@ def test_conv_ae_pytorch():
         framework=Framework.PYTORCH,
         model=ModelArch.AUTOENCODER,
         variant="conv",
-        task=Task.IMAGE_ENCODING,
+        task=Task.CV_ITT,
         source=Source.GITHUB,
     )
 
@@ -87,7 +87,7 @@ def test_linear_ae_pytorch():
         framework=Framework.PYTORCH,
         model=ModelArch.AUTOENCODER,
         variant="linear",
-        task=Task.IMAGE_ENCODING,
+        task=Task.CV_ITT,
         source=Source.GITHUB,
     )
 

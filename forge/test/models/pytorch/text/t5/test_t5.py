@@ -56,7 +56,7 @@ def test_t5_generation(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.T5,
         variant=variant,
-        task=Task.TEXT_GENERATION,
+        task=Task.NLP_TEXT_GEN,
         source=Source.HUGGINGFACE,
     )
 

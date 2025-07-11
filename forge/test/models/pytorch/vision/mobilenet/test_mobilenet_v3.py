@@ -47,7 +47,7 @@ def test_mobilenetv3_basic(variant):
         model=ModelArch.MOBILENETV3,
         variant=variant,
         source=Source.TORCH_HUB,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load the model and prepare input data
@@ -115,7 +115,7 @@ def test_mobilenetv3_timm(variant):
         model=ModelArch.MOBILENETV3,
         source=Source.TIMM,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     framework_model, inputs, _ = generate_model_mobilenetV3_imgcls_timm_pytorch(

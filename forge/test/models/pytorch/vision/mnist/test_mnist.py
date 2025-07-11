@@ -30,7 +30,7 @@ def test_mnist():
         framework=Framework.PYTORCH,
         model=ModelArch.MNIST,
         source=Source.GITHUB,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load model and input

@@ -27,7 +27,7 @@ def test_phi2_clm_onnx(variant, forge_tmp_path):
         model=ModelArch.PHI2,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_TEXT_GEN,
     )
 
     # Load model and tokenizer from HuggingFace

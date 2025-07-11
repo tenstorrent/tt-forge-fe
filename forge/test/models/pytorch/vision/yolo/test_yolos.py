@@ -40,7 +40,7 @@ def test_yolos(variant):
         model=ModelArch.YOLOS,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DET,
     )
 
     # Load model and input

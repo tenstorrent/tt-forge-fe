@@ -26,7 +26,7 @@ def test_llama4(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.LLAMA4,
         variant=variant,
-        task=Task.CONDITIONAL_GENERATION,
+        task=Task.MM_IMAGE_TTT,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

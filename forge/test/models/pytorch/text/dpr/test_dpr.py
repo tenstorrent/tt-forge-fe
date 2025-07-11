@@ -42,7 +42,7 @@ def test_dpr_context_encoder_pytorch(variant):
         variant=variant,
         suffix="context_encoder",
         source=Source.HUGGINGFACE,
-        task=Task.QA,
+        task=Task.NLP_QA,
     )
 
     # Load Bert tokenizer and model from HuggingFace
@@ -96,7 +96,7 @@ def test_dpr_question_encoder_pytorch(variant):
         variant=variant,
         suffix="question_encoder",
         source=Source.HUGGINGFACE,
-        task=Task.QA,
+        task=Task.NLP_QA,
     )
 
     # Load Bert tokenizer and model from HuggingFace
@@ -154,7 +154,7 @@ def test_dpr_reader_pytorch(variant):
         variant=variant,
         suffix="reader",
         source=Source.HUGGINGFACE,
-        task=Task.QA,
+        task=Task.NLP_QA,
     )
 
     # Load Bert tokenizer and model from HuggingFace

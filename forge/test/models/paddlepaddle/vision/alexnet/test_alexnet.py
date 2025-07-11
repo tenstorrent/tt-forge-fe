@@ -21,7 +21,7 @@ def test_alexnet():
         framework=Framework.PADDLE,
         model=ModelArch.ALEXNET,
         source=Source.PADDLE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load framework model

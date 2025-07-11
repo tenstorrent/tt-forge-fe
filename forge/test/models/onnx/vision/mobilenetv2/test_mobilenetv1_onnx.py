@@ -32,7 +32,7 @@ def test_mobilenetv1_onnx(forge_tmp_path, variant):
         model=ModelArch.MOBILENETV1,
         variant=variant,
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load the model and prepare input data

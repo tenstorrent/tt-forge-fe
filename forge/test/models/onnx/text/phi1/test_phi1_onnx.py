@@ -28,7 +28,7 @@ def test_phi1_clm_onnx(variant, forge_tmp_path):
         model=ModelArch.PHI1 if variant == "microsoft/phi-1" else ModelArch.PHI1_5,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_TEXT_GEN,
     )
 
     # Load tokenizer and model from HuggingFace

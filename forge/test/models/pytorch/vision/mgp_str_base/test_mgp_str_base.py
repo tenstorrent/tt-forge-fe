@@ -50,7 +50,7 @@ def test_mgp_scene_text_recognition(variant):
         model=ModelArch.MGP,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.SCENE_TEXT_RECOGNITION,
+        task=Task.CV_OBJECT_DET,
     )
 
     # Load model and input

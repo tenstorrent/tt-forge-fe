@@ -28,7 +28,7 @@ def test_ernie_for_sequence_classification(variant):
         framework=Framework.PADDLE,
         model=ModelArch.ERNIE,
         variant=variant[6:],
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_TEXT_CLS,
         source=Source.PADDLENLP,
     )
 
@@ -59,7 +59,7 @@ def test_ernie_maskedlm(variant):
         framework=Framework.PADDLE,
         model=ModelArch.ERNIE,
         variant=variant[6:],
-        task=Task.MASKED_LM,
+        task=Task.NLP_MASKED_LM,
         source=Source.PADDLENLP,
     )
 
@@ -95,7 +95,7 @@ def test_ernie_question_answering(variant):
         framework=Framework.PADDLE,
         model=ModelArch.ERNIE,
         variant=variant[6:],
-        task=Task.QA,
+        task=Task.NLP_QA,
         source=Source.PADDLENLP,
     )
 
