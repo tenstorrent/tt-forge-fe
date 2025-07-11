@@ -282,12 +282,6 @@ def eval(type, attr, ops):
         act = t_ops[0]
         return act.narrow(dim, start, length)
 
-    if type == "unsqueeze":
-        assert len(attr) == 1
-        dim = attr[0]
-        act = t_ops[0]
-        return torch.unsqueeze(act, dim)
-
     if type == "pixel_shuffle":
         assert len(ops) == 1, "Pixel shuffle should have one operand."
         assert len(attr) == 1, "Pixel shuffle should have one attribute."
@@ -540,18 +534,6 @@ def shape(type, attr, ops):
         shape[dim] = length
         return tuple(shape), []
 
-    if type == "unsqueeze":
-        assert len(attr) == 1
-        shape = list(ops[0])
-        dim = attr[0]
-        input_ndim = len(shape)
-        # Handle negative dimension
-        if dim < 0:
-            # Adjust dim to be within the correct range
-            dim += input_ndim + 1
-        shape.insert(dim, 1)
-        return tuple(shape), []
-
     if type == "pixel_shuffle":
         assert len(ops) == 1, "Pixel shuffle should have one operand."
         assert len(attr) == 1, "Pixel shuffle should have one attribute."
@@ -681,15 +663,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         else:
             raise NotImplementedError("Unimplemented narrow in forge")
 
-    elif type == "unsqueeze":
-        assert len(attr) == 1
-        if len(inputs[0].shape) == len(grad.shape):
-            # Dimensionality already matches, no need to squeeze
-            return grad
-
-        dim = attr[0]
-        return ac.op_with_named_attrs("squeeze", (grad,), {"dim": dim})
-
     elif type == "broadcast":
         assert len(attr) == 3
         if attr[0] < 0:
@@ -769,7 +742,7 @@ def squeeze_output_for_reshape_decomp(dc, output, orig_out_shape):
 
     while current_shape_len > len(orig_out_shape):
         current_shape_len -= 1
-        result = dc.op_with_named_attrs("squeeze", [output], {"dim": 0}, (0,))
+        result = dc.op_with_named_attrs("squeeze", [output], {"dim": 0})
 
     return output
 

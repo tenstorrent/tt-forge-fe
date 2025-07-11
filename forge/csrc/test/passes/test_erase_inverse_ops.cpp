@@ -695,7 +695,7 @@ struct EraseInverseOpsSqueezeAndUnsqueeze : testing::Test
         auto weights_node = create_input(*graph, "attention_weights", weights_shape);
 
         auto cast_1_node = add_node<graphlib::PyOpNode>(*graph, "cast", "cast", {"Float32"}, {mask_node});
-        auto unsqueeze_node = add_node<graphlib::PyOpNode>(*graph, "unsqueeze", "unsqueeze", {0, 3}, {weights_node});
+        auto unsqueeze_node = add_node<graphlib::PyOpNode>(*graph, "unsqueeze", "unsqueeze", {0}, {weights_node});
 
         tt::graphlib::InputNode *maximum_input_1 =
             create_input(*graph, "input_1_maximum", graphlib::Shape::create({1}));
