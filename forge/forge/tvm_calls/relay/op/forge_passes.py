@@ -4990,7 +4990,30 @@ class DecomposeDepthToSpace(DFPatternCallback):
         return out
 
 
-class RemoveConcat(DFPatternCallback):
+class RemoveEmptyConcat(DFPatternCallback):
+    """
+    Relay pass to eliminate unnecessary `concatenate` ops involving empty tensors.
+
+    In some models (e.g., Phi-3), rotary embedding logic performs slicing on the last
+    dimension of the query tensor to split it into two parts. If the slicing boundaries
+    are incorrectly defined, this may create an empty tensor (e.g., shape with size 0
+    along the concatenation axis).
+
+    This pass identifies `concatenate` operations between two tensors where one has
+    dimension size 0 along the concatenation axis, and removes the redundant concat
+    by returning the non-empty operand directly.
+
+    This prevents downstream errors like:
+        `AssertionError: start < operandA.shape[dim]`
+
+    which occur due to operations on invalid tensor slices.
+
+    Example:
+        q_rot  = query[..., 0:96]
+        q_pass = query[..., 96:96]  # shape: (1, 32, 256, 0)
+        concat(q_rot, q_pass, axis=-1)  # → Rewritten to just q_rot
+    """
+
     def __init__(self):
         super().__init__(rewrite_once=False, require_type=True)
         self.act1 = wildcard()
@@ -5053,9 +5076,7 @@ def run_pattern_callbacks(
             raise ex
         if run_verify:
             logger.trace(f"Verifying {callback_name}")
-            tvm.relay.op.contrib.forge.forge.verify_tvm_compile(
-                relay_module, params, inputs, target, framework_outputs, callback_name, verify_cfg
-            )
+            verify_tvm_compile(relay_module, params, inputs, target, framework_outputs, callback_name, verify_cfg)
 
     return relay_module
 
@@ -5161,7 +5182,7 @@ def run_forge_compile_passes(
             SimplifyVITOnnxAttention(),
             GQABroadcastReshape(),
             RemoveDenseInputSqueeze(),
-            RemoveConcat(),
+            RemoveEmptyConcat(),
         ],
         params=params,
         inputs=inputs,
