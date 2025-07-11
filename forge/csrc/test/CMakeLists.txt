@@ -1,5 +1,10 @@
-find_package(GTest REQUIRED)
-enable_testing()
+if(TTFORGE_UNITTESTS_ENABLED)
+    # GoogleTest is fetched via FetchContent in cmake/GoogleTest.cmake
+    enable_testing()
+else()
+    message(STATUS "Unit tests are disabled. Enable with -DTTFORGE_UNITTESTS_ENABLED=ON")
+    return()
+endif()
 
 # This will hold list of all executable test names.
 set(TEST_NAMES)
@@ -18,8 +23,8 @@ function (add_unittest TEST_DIR)
     target_link_libraries(
         ${TEST_NAME}
         PRIVATE
-            GTest::GTest
-            GTest::Main
+            gtest
+            gtest_main
             ttforge_csrc
             ${TORCH_LIBRARIES}
             ${TTFORGE_PYTHON_VERSION}
