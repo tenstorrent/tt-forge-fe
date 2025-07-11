@@ -49,6 +49,29 @@ pd_to_pt_type_map = {
 
 
 def map_tf_dtype_to_pt(tf_dtype):
+    if isinstance(tf_dtype, str):
+        if tf_dtype == "float32":
+            tf_dtype = tf.float32
+        elif tf_dtype == "float16":
+            tf_dtype = tf.float16
+        elif tf_dtype == "bfloat16":
+            tf_dtype = tf.bfloat16
+        elif tf_dtype == "int32":
+            tf_dtype = tf.int32
+        elif tf_dtype == "int64":
+            tf_dtype = tf.int64
+        elif tf_dtype == "int16":
+            tf_dtype = tf.int16
+        elif tf_dtype == "int8":
+            tf_dtype = tf.int8
+        elif tf_dtype == "uint8":
+            tf_dtype = tf.uint8
+        elif tf_dtype == "bool":
+            tf_dtype = tf.bool
+        elif tf_dtype == "double" or tf_dtype == "float64":
+            tf_dtype = tf.float64
+        else:
+            raise ValueError(f"Unsupported string dtype: {tf_dtype}")
     pt_type = tf_to_pt_type_map[tf_dtype]
     assert pt_type is not None, f"TensorFlow DType {tf_dtype} has no PyTorch equivalent"
     return pt_type

@@ -15,6 +15,14 @@ import jax
 import jax.numpy as jnp
 import json
 
+# Try to import keras for keras.src.backend.Variable support
+try:
+    import keras
+
+    KERAS_AVAILABLE = True
+except ImportError:
+    KERAS_AVAILABLE = False
+
 from .forgeglobal import TILE_DIM, align_up_tile, round_up_div
 from forge._C import DataFormat
 from forge._C.graph import OpType, RuntimeTensorTransform, RuntimeTensorTransformType, get_constant_input_value
@@ -485,7 +493,14 @@ class TensorFromTrace(Tensor):
         return super().to_framework(framework)
 
 
-FrameworkTensor: TypeAlias = torch.Tensor | tf.Tensor | tf.Variable | paddle.Tensor | jax.Array
+FrameworkTensor: TypeAlias = (
+    torch.Tensor
+    | tf.Tensor
+    | tf.Variable
+    | paddle.Tensor
+    | jax.Array
+    | (keras.src.backend.Variable if KERAS_AVAILABLE else type(None))
+)
 AnyTensor: TypeAlias = FrameworkTensor | Tensor
 
 
@@ -748,6 +763,8 @@ def to_pt_tensors(tensors: Union[AnyTensor, Tuple[AnyTensor, ...], List[AnyTenso
 
 
 def to_pt_tensor(t: AnyTensor) -> torch.Tensor:
+    if isinstance(t, (keras.src.backend.Variable if KERAS_AVAILABLE else type(None))):
+        t = tf.convert_to_tensor(t)
     if isinstance(t, torch.Tensor):
         return t
     elif isinstance(t, (tf.Tensor, tf.Variable)):
