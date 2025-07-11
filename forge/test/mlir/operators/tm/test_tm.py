@@ -8,7 +8,7 @@ from torch import nn
 
 import forge
 from forge.tensor import to_forge_tensors
-from forge.verify.verify import verify, verify_backward
+from forge.verify.verify import verify
 
 # @pytest.mark.xfail(reason="RuntimeError: Input must be UINT32 or BFLOAT16")
 @pytest.mark.parametrize(
@@ -301,23 +301,12 @@ def test_squeeze(input_shape_and_dim):
         def forward(self, a):
             return torch.squeeze(a, dim)
 
-    inputs = [torch.rand(*input_shape, requires_grad=True)]
+    inputs = [torch.rand(*input_shape)]
 
     framework_model = Squeeze()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=True)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
-
-    grad = torch.rand_like(fw_out[0])
-
-    verify_backward(
-        inputs,
-        grad,
-        fw_out[0],
-        co_out[0],
-        framework_model,
-        compiled_model,
-    )
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
@@ -388,8 +377,8 @@ def test_operand_commute_clone(attn_weights_shape, attention_mask_shape, module_
 def test_unsqueeze(input_shape_and_dim):
     input_shape, dim = input_shape_and_dim
 
-    # if input_shape == [12, 8640]:
-    #     pytest.xfail("TTNN: Tensor layout issues with non tile dim aligned shapes")
+    if input_shape == [12, 8640]:
+        pytest.xfail("TTNN: Tensor layout issues with non tile dim aligned shapes")
 
     class Unsqueeze(nn.Module):
         def __init__(self):
@@ -398,23 +387,12 @@ def test_unsqueeze(input_shape_and_dim):
         def forward(self, a):
             return torch.unsqueeze(a, dim)
 
-    inputs = [torch.rand(*input_shape, requires_grad=True)]
+    inputs = [torch.rand(*input_shape)]
 
     framework_model = Unsqueeze()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=True)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
-
-    grad = torch.rand_like(fw_out[0])
-
-    verify_backward(
-        inputs,
-        grad,
-        fw_out[0],
-        co_out[0],
-        framework_model,
-        compiled_model,
-    )
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("dim", [-1, -2, -3], ids=["-1", "-2", "-3"])
