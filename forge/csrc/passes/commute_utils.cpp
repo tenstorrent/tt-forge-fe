@@ -447,7 +447,7 @@ bool commute_through_concat(
     if (op->op_name() == "concatenate")
         TT_ASSERT(op->op_named_attrs().size() == 1);
 
-    int concat_dim = std::get<int>(op->op_named_attrs().at("dim"));
+    int concat_dim = op->op_attr_as<int>("dim");
     if (concat_dim < 0)
         concat_dim += op->shape().size();
 

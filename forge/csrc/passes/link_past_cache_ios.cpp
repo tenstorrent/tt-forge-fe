@@ -18,7 +18,7 @@ bool shape_compatible(graphlib::OpNode *output_producer, graphlib::Node *input_c
     auto c_shape = input_consumer->shape().canonical();
     if (output_producer->new_op_type() == ops::OpType::Concatenate)
     {
-        int dim = std::get<int>(output_producer->op_type().named_attrs_.at("dim"));
+        int dim = output_producer->op_attr_as<int>("dim");
         c_shape[dim] = p_shape[dim];
     }
     return (p_shape == c_shape);
