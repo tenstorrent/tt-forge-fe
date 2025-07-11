@@ -1,68 +1,37 @@
-name: Test - subroutine
+name: Sanity Test - Forge Add
 
 on:
   workflow_call:
     inputs:
-      test_mark:
-        description: 'Test mark to run'
+      run_id:
+        description: 'Run id to download wheels from'
         required: false
-        default: 'push'
-        type: string
-      test_group_cnt:
-        description: 'Test group count'
-        required: false
-        default: "2"
-        type: string
-      test_group_ids:
-        description: 'Test group ids'
-        required: false
-        default: '[1,2]'
         type: string
       docker-image:
-        description: 'Docker image to use for build'
+        description: 'Docker image to use for test'
         required: true
         type: string
       runs-on:
         description: 'Runs on'
         required: false
         type: string
-        default: '[{"runs-on": "n150"}, {"runs-on": "n300"}, {"runs-on": "p150"}]'
-      operators:
-        description: 'Operators to test (comma separated)'
-        required: false
-        type: string
-      filters:
-        description: 'Filters for tests (comma separated)'
-        required: false
-        type: string
-      run_id:
-        description: 'Run id the workflow where to find installation (or else it will search)'
-        required: false
-        type: string
-      allow-fail:
-        description: 'Allow tests to fail (unstable tests)'
-        required: false
-        default: false
-        type: boolean
-      continue-on-crash:
-        description: 'Continue if test crashes, otherwise restart the test'
-        required: false
-        type: boolean
+        default: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
+
+permissions:
+  packages: read
+  actions: read
+  checks: write
 
 jobs:
-  run-tests:
-
+  sanity-forge-test:
     strategy:
       fail-fast: false
       matrix:
         build: ${{ fromJson(inputs.runs-on) }}
-        test_group_id: ${{ fromJSON(inputs.test_group_ids) }}
 
     runs-on:
       - in-service
       - ${{ matrix.build.runs-on }}
-
-    continue-on-error: ${{ inputs.allow-fail }}
 
     container:
       image: ${{ inputs.docker-image }}
@@ -75,15 +44,14 @@ jobs:
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
         - /mnt/dockercache:/mnt/dockercache
 
-    name: "run-tests ${{ inputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+    name: "sanity-forge-test (${{ matrix.build.runs-on }})"
 
     steps:
-
       - name: Fetch job id
         id: fetch-job-id
         uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
         with:
-          job_name: "run-tests ${{ inputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+          job_name: "sanity-forge-test (${{ matrix.build.runs-on }})"
 
       - name: Set reusable strings
         id: strings
@@ -113,8 +81,6 @@ jobs:
         run: |
           git submodule update --init --recursive -f third_party/tt_forge_models
 
-        # Clean everything from submodules (needed to avoid issues
-        # with cmake generated files leftover from previous builds)
       - name: Cleanup submodules
         run: |
           git submodule foreach --recursive git clean -ffdx
@@ -129,11 +95,14 @@ jobs:
           run_id: ${{ inputs.run_id }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Create temporary directory for artifacts
+        run: mkdir -p ${{ runner.temp }}/artifacts/
+
       - name: Find and download forge wheel
         if: ${{ !inputs.run_id }}
         uses: dawidd6/action-download-artifact@v9
         with:
-          github_token: ${{secrets.GITHUB_TOKEN}}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow_conclusion: success
           workflow_search: true
           workflow: on-push.yml
@@ -141,13 +110,14 @@ jobs:
           repo: tenstorrent/tt-forge-fe
           check_artifacts: true
           search_artifacts: true
+          path: ${{ runner.temp }}/artifacts/
 
       - name: Install wheel
         shell: bash
         run: |
           source env/activate
           pip install tt_tvm*.whl --force-reinstall
-          pip install dev/tt_forge_fe_dev*.whl --force-reinstall
+          pip install compiler/tt_forge_fe_compiler*.whl --force-reinstall
 
       - name: Run Test
         env:
@@ -156,27 +126,29 @@ jobs:
           FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
           HF_HUB_DISABLE_PROGRESS_BARS: 1
           FORGE_DISABLE_REPORTIFY_DUMP: 1
-          OPERATORS: ${{ inputs.operators }}
-          FILTERS: ${{ inputs.filters }}
         shell: bash
         run: |
+          # Verify artifact contents
+          if [ ! -f "${{ runner.temp }}/artifacts/tt_tvm*.whl" ] || [ ! -f "${{ runner.temp }}/artifacts/compiler/tt_forge_fe_compiler*.whl" ]; then
+            echo "Error: Expected wheel files not found in artifacts."
+            exit 1
+          fi
+
           source env/activate
-          echo "Collecting tests for group ${{ matrix.test_group_id }} with mark '${{ inputs.test_mark }}'..."
-          pytest --splits ${{ inputs.test_group_cnt }} \
-               --group ${{ matrix.test_group_id }} \
+          echo "Collecting sanity tests..."
+          pytest --splits 1 \
+               --group 1 \
                --splitting-algorithm least_duration \
-               -m "${{ inputs.test_mark }}" --collect-only -q \
+               -m "sanity" --collect-only -q forge/test/test_sanity_forge_add.py \
                 | sed -n '/^Collected tests /,/^collected /p' | sed '/^[Cc]ollected /d' >.pytest_tests_to_run
 
           echo "Collected tests."
-          # enable next line for debugging
-          # cat .pytest_tests_to_run
+          cat .pytest_tests_to_run
 
           set +e
           python .github/workflows/test_runner.py  \
                --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-               --log-memory-usage \
-               $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi)
+               --log-memory-usage
           exit_code=$?
 
           if [ -f "crashed_pytest.log" ]; then
@@ -190,28 +162,28 @@ jobs:
         uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
-          name: test-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+          name: test-log-${{ matrix.build.runs-on }}-sanity-${{ steps.fetch-job-id.outputs.job_id }}
           path: pytest.log
 
       - name: Upload Test Crash Log
         uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
-          name: test-crash-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+          name: test-crash-log-${{ matrix.build.runs-on }}-sanity-${{ steps.fetch-job-id.outputs.job_id }}
           path: crashed_pytest.log
 
       - name: Upload Memory Usage Log
         uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
-          name: memory-usage-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+          name: memory-usage-${{ matrix.build.runs-on }}-sanity-${{ steps.fetch-job-id.outputs.job_id }}
           path: pytest-memory-usage.csv
 
       - name: Upload Test Report
         uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
-          name: test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ steps.fetch-job-id.outputs.job_id }}
+          name: test-reports-sanity-${{ steps.fetch-job-id.outputs.job_id }}
           path: ${{ steps.strings.outputs.test_report_path }}
 
       - name: Show Test Report
@@ -219,7 +191,7 @@ jobs:
         if: success() || failure()
         with:
           report_paths: ${{ steps.strings.outputs.test_report_path }}
-          check_name: TT-Forge-FE Tests
+          check_name: TT-Forge-FE Sanity Tests
           comment: false
           updateComment: false
           detailed_summary: true
@@ -232,3 +204,9 @@ jobs:
           files: ${{ steps.strings.outputs.test_report_path }}
           disable_search: true
           token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Cleanup
+        if: always()
+        shell: bash
+        run: |
+          rm -rf *.whl
