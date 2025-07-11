@@ -17,32 +17,27 @@ import onnx
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize(
     "variant",
     [
         pytest.param(
             "meta-llama/Llama-3.1-8B",
-            marks=pytest.mark.skip(reason="Segmentation fault"),
         ),
         pytest.param(
             "meta-llama/Llama-3.2-1B",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB"),
         ),
         pytest.param(
             "meta-llama/Llama-3.2-3B",
-            marks=pytest.mark.skip(reason="Segmentation fault"),
         ),
         pytest.param(
             "meta-llama/Llama-3.1-8B-Instruct",
-            marks=pytest.mark.skip(reason="Segmentation fault"),
         ),
         pytest.param(
             "meta-llama/Llama-3.2-1B-Instruct",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 30 GB"),
         ),
         pytest.param(
             "meta-llama/Llama-3.2-3B-Instruct",
-            marks=pytest.mark.skip(reason="Segmentation fault"),
         ),
     ],
 )
@@ -56,6 +51,15 @@ def test_llama3_causal_lm_onnx(variant, forge_tmp_path):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
+    if variant in [
+        "meta-llama/Llama-3.1-8B",
+        "meta-llama/Llama-3.2-3B",
+        "meta-llama/Llama-3.1-8B-Instruct",
+        "meta-llama/Llama-3.2-3B-Instruct",
+    ]:
+        pytest.xfail(reason="Segmentation Fault")
+    else:
+        pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

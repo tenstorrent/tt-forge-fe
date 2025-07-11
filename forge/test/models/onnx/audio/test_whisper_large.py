@@ -30,7 +30,7 @@ variants = ["openai/whisper-large-v3"]
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_whisper_large_v3_onnx(variant, tmp_path):
 
@@ -42,6 +42,8 @@ def test_whisper_large_v3_onnx(variant, tmp_path):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
+
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load Model and feature extractor
     model = download_model(WhisperModel.from_pretrained, variant, return_dict=False)

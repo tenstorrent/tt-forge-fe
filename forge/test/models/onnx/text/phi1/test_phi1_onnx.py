@@ -18,7 +18,7 @@ variants = ["microsoft/phi-1"]
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.skip("Insufficient host DRAM to run this model (requires a bit more than 22 GB during compile time)")
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_phi_causal_lm_onnx(variant, forge_tmp_path):
 
@@ -30,6 +30,7 @@ def test_phi_causal_lm_onnx(variant, forge_tmp_path):
         source=Source.HUGGINGFACE,
         task=Task.CAUSAL_LM,
     )
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

@@ -78,7 +78,6 @@ def test_swin_v1_tiny_4_224_hf_pytorch(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.skip_model_analysis
 @pytest.mark.parametrize(
     "variant",
     [
@@ -100,7 +99,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(variant):
         priority=ModelPriority.P1,
     )
 
-    pytest.xfail(reason="Transient failure - Segmentation fault")
+    pytest.xfail(reason="Segmentation fault")
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2Model.from_pretrained(variant)
@@ -115,13 +114,12 @@ def test_swin_v2_tiny_4_256_hf_pytorch(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.skip_model_analysis
+@pytest.mark.xfail
 @pytest.mark.parametrize(
     "variant",
     [
         pytest.param(
             "microsoft/swinv2-tiny-patch4-window8-256",
-            marks=[pytest.mark.skip(reason="Transient failure - Segmentation fault")],
         ),
     ],
 )
@@ -135,6 +133,7 @@ def test_swin_v2_tiny_image_classification(variant):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
+    pytest.xfail(reason="Segmentation Fault")
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2ForImageClassification.from_pretrained(variant)
