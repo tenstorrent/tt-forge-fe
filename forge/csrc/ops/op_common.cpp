@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-#include "common_utils.hpp"
+#include "op_common.hpp"
 
 #include "autograd/autograd.hpp"
 #include "graph_lib/node_types.hpp"
@@ -13,7 +13,7 @@ namespace tt
 {
 namespace ops
 {
-namespace common_utils
+namespace op_common
 {
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> compute_elementwise_binary_shape(
@@ -27,7 +27,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> compute_element
     std::vector<std::uint32_t> shape0 = in_shapes[0];
     std::vector<std::uint32_t> shape1 = in_shapes[1];
 
-    // Pad shorter shape with 1s at the beginning (rules of broadcast)
+    // Add leading 1s to the shorter shape
     while (shape0.size() < shape1.size())
     {
         shape0.insert(shape0.begin(), 1);
@@ -38,36 +38,33 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> compute_element
         shape1.insert(shape1.begin(), 1);
     }
 
-    // Adjust each dimension to match the broadcast rules
+    output_shape.resize(shape0.size());
+
     for (size_t dim = 0; dim < shape0.size(); dim++)
     {
-        if (shape0[dim] != shape1[dim])
+        if (shape0[dim] == shape1[dim])
         {
-            if (shape0[dim] == 1)
-            {
-                // Broadcast first operand
-                int negative_dim = static_cast<int>(dim) - static_cast<int>(shape0.size());
-                broadcast.emplace_back(0, negative_dim, shape1[dim]);
-                output_shape.push_back(shape1[dim]);
-            }
-            else
-            {
-                // shape1[dim] must be 1 for broadcast
-                TT_ASSERT(
-                    shape1[dim] == 1,
-                    "Eltwise binary ops must have the same shape in both inputs, or one operand must be 1 wide to "
-                    "broadcast");
+            output_shape[dim] = shape0[dim];
+            continue;
+        }
 
-                // Broadcast second operand
-                int negative_dim = static_cast<int>(dim) - static_cast<int>(shape1.size());
-                broadcast.emplace_back(1, negative_dim, shape0[dim]);
-                output_shape.push_back(shape0[dim]);
-            }
+        if (shape1[dim] == 1)
+        {
+            // Broadcast shape1 to shape0
+            int neg_dim = static_cast<int>(dim) - static_cast<int>(shape1.size());
+            broadcast.push_back(graphlib::DimBroadcast(1, neg_dim, shape0[dim]));
+            output_shape[dim] = shape0[dim];
         }
         else
         {
-            // Same dimension, no broadcast needed
-            output_shape.push_back(shape0[dim]);
+            TT_ASSERT(
+                shape0[dim] == 1,
+                "Eltwise binary ops must have the same shape in both inputs, or one operand must be 1 wide to "
+                "broadcast");
+            // Broadcast shape0 to shape1
+            int neg_dim = static_cast<int>(dim) - static_cast<int>(shape0.size());
+            broadcast.push_back(graphlib::DimBroadcast(0, neg_dim, shape1[dim]));
+            output_shape[dim] = shape1[dim];
         }
     }
 
@@ -121,6 +118,6 @@ tt::graphlib::NodeContext reduce_broadcast_dimensions(
     return result_grad;
 }
 
-}  // namespace common_utils
+}  // namespace op_common
 }  // namespace ops
 }  // namespace tt

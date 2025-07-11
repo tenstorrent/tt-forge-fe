@@ -19,7 +19,7 @@ using DimBroadcast = std::tuple<int, int, int>;
 
 namespace ops
 {
-namespace common_utils
+namespace op_common
 {
 
 /**
@@ -49,6 +49,6 @@ tt::graphlib::NodeContext reduce_broadcast_dimensions(
     const tt::graphlib::Shape &input_shape,
     const tt::graphlib::Shape &grad_shape);
 
-}  // namespace common_utils
+}  // namespace op_common
 }  // namespace ops
 }  // namespace tt

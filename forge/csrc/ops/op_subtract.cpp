@@ -4,11 +4,11 @@
 
 #include "autograd/autograd.hpp"
 #include "autograd/binding.hpp"
-#include "common_utils.hpp"
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
+#include "op_common.hpp"
 #include "passes/decomposing_context.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
@@ -33,7 +33,11 @@ at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
-    return common_utils::compute_elementwise_binary_shape(in_shapes);
+    TT_DBG_ASSERT(op.type() == OpType::Subtract, "Wrong op type.");
+    TT_ASSERT(in_shapes.size() == 2, "subtract::shape should have two input shapes.");
+    TT_ASSERT(op.attrs().size() == 0, "subtract::shape should not have any attrs.");
+
+    return op_common::compute_elementwise_binary_shape(in_shapes);
 }
 
 void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs)
@@ -107,7 +111,7 @@ tt::graphlib::NodeContext backward(
             ac, graphlib::OpType("multiply"), {gradient, ac.autograd->create_constant(ac, -1.0)});
 
     // Reduce dimensions where broadcasting occurred using reduce_sum
-    return common_utils::reduce_broadcast_dimensions(ac, op_grad, inputs[operand].shape, gradient.shape);
+    return op_common::reduce_broadcast_dimensions(ac, op_grad, inputs[operand].shape, gradient.shape);
 }
 
 }  // namespace subtract

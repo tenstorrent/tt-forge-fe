@@ -3,10 +3,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "autograd/autograd.hpp"
-#include "common_utils.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
+#include "op_common.hpp"
 #include "op_interface.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
@@ -28,7 +28,11 @@ at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
-    return common_utils::compute_elementwise_binary_shape(in_shapes);
+    TT_DBG_ASSERT(op.type() == OpType::Divide, "Wrong op type.");
+    TT_ASSERT(in_shapes.size() == 2, "divide::shape should have two input shapes.");
+    TT_ASSERT(op.attrs().size() == 0, "divide::shape should not have any attrs.");
+
+    return op_common::compute_elementwise_binary_shape(in_shapes);
 }
 
 tt::graphlib::NodeContext backward(
@@ -60,7 +64,7 @@ tt::graphlib::NodeContext backward(
     }
 
     // Reduce dimensions where broadcasting occurred using reduce_sum
-    return common_utils::reduce_broadcast_dimensions(ac, op_grad, inputs[operand].shape, gradient.shape);
+    return op_common::reduce_broadcast_dimensions(ac, op_grad, inputs[operand].shape, gradient.shape);
 }
 
 }  // namespace divide
