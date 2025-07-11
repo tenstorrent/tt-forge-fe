@@ -6,7 +6,7 @@ from loguru import logger
 import argparse
 from utils import create_python_package, run_precommit, remove_directory, filter_unique_operations, check_path
 from unique_ops_utils import (
-    generate_and_export_unique_ops_tests,
+    export_unique_ops_config,
     extract_unique_op_tests_from_models,
     extract_existing_unique_ops_config,
 )
@@ -93,11 +93,10 @@ def main():
         args.models_ops_test_output_directory_path, args.models_ops_test_package_name
     )
 
-    generate_and_export_unique_ops_tests(
+    export_unique_ops_config(
         test_directory_or_file_path=args.test_directory_or_file_path,
         marker=args.marker,
         unique_ops_output_directory_path=args.unique_ops_output_directory_path,
-        extract_tvm_unique_ops_config=True,
         tests_to_filter=args.tests_to_filter,
     )
 
@@ -118,7 +117,6 @@ def main():
     unique_operations_across_all_models_ops_test = extract_unique_op_tests_from_models(
         models_unique_ops_config_output_dir_path=args.unique_ops_output_directory_path,
         unique_ops_config_file_path=unique_ops_config_file_path,
-        use_constant_value=False,
         convert_param_and_const_to_activation=True,
         existing_unique_ops_config=existing_unique_ops_config,
     )
