@@ -36,7 +36,6 @@ namespace py = pybind11;
 #include "reportify/reportify.hpp"
 #include "runtime/python_bindings.hpp"
 #include "shared_utils/sparse_matmul_utils.hpp"
-#include "tt_torch_device/python_bindings.hpp"
 #include "utils/ordered_associative_containers/ordered_map.hpp"
 #include "utils/signal_handlers.hpp"
 #include "verif/python_bindings.hpp"
@@ -140,9 +139,6 @@ PYBIND11_MODULE(_C, m)
 
     py::module_ m_passes = m.def_submodule("passes", "API to Forge Passes");
     PassesModule(m_passes);
-
-    py::module_ m_torch_device = m.def_submodule("torch_device", "TT Torch Device");
-    TorchDeviceModule(m_torch_device);
 
     py::module m_runtime = m.def_submodule("runtime", "Submodule defining runtime functions");
     RuntimeModule(m_runtime);

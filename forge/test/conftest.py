@@ -33,7 +33,6 @@ if os.environ.get("FORGE_ENABLE_EMULATION_DEVICE") == "1":
 import forge
 from forge.config import CompilerConfig
 from forge.verify.config import TestKind
-from forge.torch_compile import reset_state
 from forge.tvm_to_python import ExitTest
 
 import test.utils
@@ -103,7 +102,6 @@ def pytest_sessionstart(session):
     tf.config.threading.set_intra_op_parallelism_threads(num_threads)
     tf.config.threading.set_inter_op_parallelism_threads(num_threads)
     torch._dynamo.reset()
-    reset_state()
     # If specified by env variable, print the environment variables
     # It can be useful in CI jobs to get the state of the enviroment variables before test session starts
     print_env_variables = bool(int(os.environ.get("PYTEST_PRINT_ENV_VARIABLES", "0")))
