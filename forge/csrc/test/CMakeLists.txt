@@ -40,6 +40,7 @@ endfunction()
 add_unittest("passes")
 add_unittest("graph_lib")
 add_unittest("verif")
+add_unittest("ops")
 
 add_custom_target(build_unit_tests
     COMMENT "Building unit tests..."

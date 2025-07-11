@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
+#include <initializer_list>
 #include <ostream>
 #include <vector>
 
@@ -18,6 +19,21 @@ namespace graphlib
 {
 
 using DimBroadcast = std::tuple<int, int, int>;  // operand, dim, size
+
+template <typename Tuple, std::size_t... Is>
+void vec_from_tuple_helper(const Tuple &t, std::vector<std::uint32_t> &vec, std::index_sequence<Is...>)
+{
+    (vec.push_back(std::get<Is>(t)), ...);
+}
+
+template <typename... Args>
+std::vector<std::uint32_t> vec_from_tuple(std::tuple<Args...> &args)
+{
+    std::vector<uint32_t> vec;
+    vec.reserve(sizeof...(Args));
+    vec_from_tuple_helper(args, vec, std::make_index_sequence<sizeof...(Args)>());
+    return vec;
+}
 
 class Shape
 {
@@ -40,6 +56,7 @@ class Shape
     constexpr static int FORGE_MAX_DIM_COUNT = 5;
 
     Shape() = default;
+    Shape(std::initializer_list<std::uint32_t> dims) : valid_{true}, type_(FREE), dims_(dims) {}
     Shape(bool valid, Shape::Type type, std::vector<std::uint32_t> dims);
 
     template <class T = std::uint32_t>
@@ -47,6 +64,13 @@ class Shape
     {
         return Shape(true, FREE, std::vector<std::uint32_t>(dims.begin(), dims.end()));
     }
+
+    template <typename... Args>
+    Shape(std::tuple<Args...> dims) : valid_{true}, type_(FREE), dims_(vec_from_tuple(dims))
+    {
+        TT_ASSERT(dims_.size() > 0, "Shape must have at least one dimension");
+    }
+
     static Shape create_forge(
         std::vector<std::uint32_t> dims, int tile_height = FORGE_TILE_DIM, int tile_width = FORGE_TILE_DIM);
     static Shape create_forge(std::uint32_t w, std::uint32_t z, std::uint32_t r, std::uint32_t c);
