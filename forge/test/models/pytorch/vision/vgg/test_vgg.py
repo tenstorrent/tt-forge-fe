@@ -52,7 +52,7 @@ def test_vgg_osmr_pytorch(variant):
         model=ModelArch.VGG,
         variant=variant,
         source=Source.OSMR,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DET,
     )
 
     framework_model = download_model(ptcv_get_model, variant, pretrained=True).to(torch.bfloat16)
@@ -121,7 +121,7 @@ def test_vgg_19_hf_pytorch():
         model=ModelArch.VGG,
         variant="19",
         source=Source.HUGGINGFACE,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DET,
     )
 
     """
@@ -204,7 +204,7 @@ def test_vgg_bn19_timm_pytorch():
         model=ModelArch.VGG,
         variant="vgg19_bn",
         source=Source.TIMM,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DET,
     )
 
     torch.multiprocessing.set_sharing_strategy("file_system")
@@ -240,7 +240,7 @@ def test_vgg_bn19_torchhub_pytorch():
         model=ModelArch.VGG,
         variant="vgg19_bn",
         source=Source.TORCH_HUB,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DET,
     )
 
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True).to(
@@ -318,7 +318,7 @@ def test_vgg_torchvision(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.VGG,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
         source=Source.TORCHVISION,
     )
 

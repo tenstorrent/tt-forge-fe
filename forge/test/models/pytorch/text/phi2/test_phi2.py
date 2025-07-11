@@ -50,7 +50,7 @@ def test_phi2_clm(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.PHI2,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_TEXT_GEN,
         source=Source.HUGGINGFACE,
         group=group,
         priority=priority,
@@ -109,7 +109,7 @@ def test_phi2_token_classification(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.PHI2,
         variant=variant,
-        task=Task.TOKEN_CLASSIFICATION,
+        task=Task.NLP_TOKEN_CLS,
         source=Source.HUGGINGFACE,
     )
     pytest.xfail(reason="Requires multi-chip support")
@@ -157,7 +157,7 @@ def test_phi2_sequence_classification(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.PHI2,
         variant=variant,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_TEXT_CLS,
         source=Source.HUGGINGFACE,
     )
     if variant == "microsoft/phi-2":

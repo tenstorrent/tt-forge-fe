@@ -49,7 +49,7 @@ def test_mobilenetv2_basic():
         model=ModelArch.MOBILENETV2,
         variant="basic",
         source=Source.TORCH_HUB,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
         group=ModelGroup.RED,
     )
 
@@ -99,7 +99,7 @@ def test_mobilenetv2_96(variant):
         model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
     pytest.xfail(reason="Hitting segmentation fault in MLIR")
 
@@ -143,7 +143,7 @@ def test_mobilenetv2_160(variant):
         model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
     pytest.xfail(reason="Hitting segmentation fault in MLIR")
 
@@ -189,7 +189,7 @@ def test_mobilenetv2_224(variant):
         model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
     pytest.xfail(reason="Hitting segmentation fault in MLIR")
 
@@ -240,7 +240,7 @@ def test_mobilenetv2_timm(variant):
         model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     framework_model, inputs, _ = generate_model_mobilenetV2_imgcls_timm_pytorch(variant)
@@ -301,7 +301,7 @@ def test_mobilenetv2_deeplabv3(variant):
         model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     framework_model, inputs, _ = generate_model_mobilenetV2_semseg_hf_pytorch(variant)
@@ -336,7 +336,7 @@ def test_mobilenetv2_torchvision(variant):
         model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load model and input

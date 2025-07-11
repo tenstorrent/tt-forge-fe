@@ -23,7 +23,7 @@ def test_cogito_generation_onnx(forge_tmp_path, variant):
         framework=Framework.ONNX,
         model=ModelArch.COGITO,
         variant=variant,
-        task=Task.TEXT_GENERATION,
+        task=Task.NLP_TEXT_GEN,
         source=Source.HUGGINGFACE,
     )
     pytest.xfail(reason="Requires multi-chip support")

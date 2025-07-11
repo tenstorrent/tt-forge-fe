@@ -33,7 +33,7 @@ def test_chineseclip_text(variant):
         model=ModelArch.CHINESECLIPTEXT,
         variant=variant,
         source=Source.PADDLENLP,
-        task=Task.TEXT_ENCODING,
+        task=Task.CV_ZS_IMG_CLS,
     )
 
     # Load Model and Tokenizer
@@ -63,7 +63,7 @@ def test_chineseclip_vision(variant):
         model=ModelArch.CHINESECLIPVISION,
         variant=variant,
         source=Source.PADDLENLP,
-        task=Task.IMAGE_ENCODING,
+        task=Task.CV_ITT,
     )
 
     # Load Model and Tokenizer
@@ -97,7 +97,7 @@ def test_chineseclip(variant):
         model=ModelArch.CHINESECLIP,
         variant=variant,
         source=Source.PADDLENLP,
-        task=Task.IMAGE_TEXT_PAIRING,
+        task=Task.MM_IMAGE_TTT,
     )
 
     # Load Model and Tokenizer

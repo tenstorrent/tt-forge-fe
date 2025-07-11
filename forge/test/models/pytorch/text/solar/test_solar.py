@@ -25,7 +25,7 @@ def test_solar(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.SOLAR,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_TEXT_GEN,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

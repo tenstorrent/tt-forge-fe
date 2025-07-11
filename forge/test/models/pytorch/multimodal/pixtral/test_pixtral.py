@@ -25,7 +25,7 @@ def test_pixtral(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.PIXTRAL,
         variant=variant,
-        task=Task.IMAGE_TEXT_PAIRING,
+        task=Task.MM_IMAGE_TTT,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

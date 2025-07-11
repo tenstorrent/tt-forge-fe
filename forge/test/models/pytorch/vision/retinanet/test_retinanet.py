@@ -45,7 +45,7 @@ def test_retinanet(variant):
         model=ModelArch.RETINANET,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DET,
     )
 
     # Prepare model
@@ -110,7 +110,7 @@ def test_retinanet_torchvision(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.RETINANET,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
         source=Source.TORCHVISION,
     )
 

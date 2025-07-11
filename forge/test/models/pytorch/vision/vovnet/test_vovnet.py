@@ -50,7 +50,7 @@ def test_vovnet_osmr_pytorch(variant):
         model=ModelArch.VOVNET,
         variant=variant,
         source=Source.OSMR,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load model
@@ -103,7 +103,7 @@ def test_vovnet_v1_39_stigma_pytorch():
         model=ModelArch.VOVNETV1,
         variant=variant,
         source=Source.TORCH_HUB,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DET,
     )
 
     framework_model, inputs, _ = generate_model_vovnet39_imgcls_stigma_pytorch()
@@ -146,7 +146,7 @@ def test_vovnet_v1_57_stigma_pytorch():
         model=ModelArch.VOVNET,
         variant=variant,
         source=Source.TORCH_HUB,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DET,
     )
 
     framework_model, inputs, _ = generate_model_vovnet57_imgcls_stigma_pytorch()
@@ -202,7 +202,7 @@ def test_vovnet_timm_pytorch(variant):
         model=ModelArch.VOVNET,
         variant=variant,
         source=Source.TORCH_HUB,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DET,
         group=group,
         priority=priority,
     )

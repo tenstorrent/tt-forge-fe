@@ -18,7 +18,7 @@ def test_oft(forge_tmp_path, variant):
         framework=Framework.ONNX,
         model=ModelArch.OFT,
         variant=variant.split("/")[-1],
-        task=Task.CONDITIONAL_GENERATION,
+        task=Task.CV_TTI,
         source=Source.HUGGINGFACE,
     )
 

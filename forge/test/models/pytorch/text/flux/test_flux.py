@@ -25,7 +25,7 @@ def test_flux(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.FLUX,
         variant=variant,
-        task=Task.CONDITIONAL_GENERATION,
+        task=Task.CV_TTI,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

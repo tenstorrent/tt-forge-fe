@@ -26,7 +26,7 @@ from test.models.pytorch.vision.monodle.model_utils.model import CenterNet3D
 def test_monodle_pytorch():
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model=ModelArch.MONODLE, source=Source.TORCHVISION, task=Task.OBJECT_DETECTION
+        framework=Framework.PYTORCH, model=ModelArch.MONODLE, source=Source.TORCHVISION, task=Task.CV_OBJECT_DET
     )
     pytest.xfail(reason="Floating point exception(core dumped)")
 

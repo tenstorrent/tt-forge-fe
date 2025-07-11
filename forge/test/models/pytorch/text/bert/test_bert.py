@@ -39,7 +39,7 @@ def test_bert_masked_lm_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.BERT,
         variant=variant,
-        task=Task.MASKED_LM,
+        task=Task.NLP_MASKED_LM,
         source=Source.HUGGINGFACE,
     )
 
@@ -122,7 +122,7 @@ def test_bert_question_answering_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model=ModelArch.BERT, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH, model=ModelArch.BERT, variant=variant, task=Task.NLP_QA, source=Source.HUGGINGFACE
     )
 
     framework_model, inputs, tokenizer = generate_model_bert_qa_hf_pytorch(variant)
@@ -185,7 +185,7 @@ def test_bert_sequence_classification_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.BERT,
         variant=variant,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_TEXT_CLS,
         source=Source.HUGGINGFACE,
     )
 
@@ -233,7 +233,7 @@ def test_bert_token_classification_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.BERT,
         variant=variant,
-        task=Task.TOKEN_CLASSIFICATION,
+        task=Task.NLP_TOKEN_CLS,
         source=Source.HUGGINGFACE,
     )
 
@@ -268,7 +268,7 @@ def test_bert_sentence_embedding_generation_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.BERT,
         variant=variant,
-        task=Task.SENTENCE_EMBEDDING_GENERATION,
+        task=Task.NLP_SENTENCE_SIM,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

@@ -29,7 +29,7 @@ def test_perceiverio_masked_lm_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.PERCEIVERIO,
         variant=variant,
-        task=Task.MASKED_LM,
+        task=Task.NLP_MASKED_LM,
         source=Source.HUGGINGFACE,
     )
 

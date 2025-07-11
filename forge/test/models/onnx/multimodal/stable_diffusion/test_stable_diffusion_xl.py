@@ -43,7 +43,7 @@ def test_stable_diffusion_generation(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.STABLEDIFFUSION,
         variant=variant,
-        task=Task.CONDITIONAL_GENERATION,
+        task=Task.CV_TTI,
         source=Source.HUGGINGFACE,
     )
 

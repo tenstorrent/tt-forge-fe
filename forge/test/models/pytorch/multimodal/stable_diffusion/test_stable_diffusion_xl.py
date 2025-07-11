@@ -60,7 +60,7 @@ def test_stable_diffusion_generation(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.STABLEDIFFUSION,
         variant=variant,
-        task=Task.CONDITIONAL_GENERATION,
+        task=Task.CV_TTI,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

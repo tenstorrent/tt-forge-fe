@@ -44,7 +44,7 @@ def test_phi3_5_vision(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.PHI35VISION,
         variant=variant,
-        task=Task.MULTIMODAL_TEXT_GENERATION,
+        task=Task.MM_IMAGE_TTT,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

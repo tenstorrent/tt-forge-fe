@@ -36,7 +36,7 @@ def test_resnext_50_torchhub_pytorch(variant):
         model=ModelArch.RESNEXT,
         source=Source.TORCH_HUB,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load the model and prepare input data
@@ -72,7 +72,7 @@ def test_resnext_101_torchhub_pytorch(variant):
         model=ModelArch.RESNEXT,
         source=Source.TORCH_HUB,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load the model and prepare input data
@@ -108,7 +108,7 @@ def test_resnext_101_32x8d_fb_wsl_pytorch(variant):
         model=ModelArch.RESNEXT,
         source=Source.TORCH_HUB,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load the model and prepare input data
@@ -147,7 +147,7 @@ def test_resnext_14_osmr_pytorch(variant):
         model=ModelArch.RESNEXT,
         source=Source.OSMR,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load the model and prepare input data
@@ -185,7 +185,7 @@ def test_resnext_26_osmr_pytorch(variant):
         model=ModelArch.RESNEXT,
         source=Source.OSMR,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # STEP 2: Create Forge module from PyTorch model
@@ -223,7 +223,7 @@ def test_resnext_50_osmr_pytorch(variant):
         model=ModelArch.RESNEXT,
         source=Source.OSMR,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # STEP 2: Create Forge module from PyTorch model
@@ -261,7 +261,7 @@ def test_resnext_101_osmr_pytorch(variant):
         model=ModelArch.RESNEXT,
         source=Source.OSMR,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # STEP 2: Create Forge module from PyTorch model

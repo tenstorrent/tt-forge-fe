@@ -41,7 +41,7 @@ def test_bert_sequence_classification(variant, input):
         framework=Framework.PADDLE,
         model=ModelArch.BERT,
         variant=variant.split("/")[-1] if "/" in variant else variant,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_TEXT_CLS,
         source=Source.PADDLENLP,
     )
 
@@ -69,7 +69,7 @@ def test_bert_maskedlm(variant, input):
         framework=Framework.PADDLE,
         model=ModelArch.BERT,
         variant=variant.split("/")[-1] if "/" in variant else variant,
-        task=Task.MASKED_LM,
+        task=Task.NLP_MASKED_LM,
         source=Source.PADDLENLP,
     )
 
@@ -104,7 +104,7 @@ def test_bert_question_answering(variant, input):
         framework=Framework.PADDLE,
         model=ModelArch.BERT,
         variant=variant.split("/")[-1] if "/" in variant else variant,
-        task=Task.QA,
+        task=Task.NLP_QA,
         source=Source.PADDLENLP,
     )
 

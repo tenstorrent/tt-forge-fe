@@ -54,7 +54,7 @@ def test_sam(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.SAM,
         variant=variant,
-        task=Task.IMAGE_SEGMENTATION,
+        task=Task.CV_IMAGE_SEG,
         source=Source.GITHUB,
         group=group,
         priority=priority,

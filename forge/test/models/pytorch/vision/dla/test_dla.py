@@ -45,7 +45,7 @@ def test_dla_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.DLA,
         variant=variant,
-        task=Task.VISUAL_BACKBONE,
+        task=Task.CV_IMAGE_CLS,
         source=Source.TORCHVISION,
     )
 
@@ -82,7 +82,7 @@ def test_dla_timm(variant):
         model=ModelArch.DLA,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load the model and inputs

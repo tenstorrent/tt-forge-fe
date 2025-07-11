@@ -40,7 +40,7 @@ def test_beit_image_classification(variant):
         model=ModelArch.BEIT,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load model and input

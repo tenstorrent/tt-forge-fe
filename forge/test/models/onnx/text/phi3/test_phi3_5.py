@@ -25,7 +25,7 @@ def test_phi3_5_causal_lm_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.PHI3_5,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_TEXT_GEN,
         source=Source.HUGGINGFACE,
     )
     pytest.xfail(reason="Requires multi-chip support")

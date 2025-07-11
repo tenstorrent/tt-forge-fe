@@ -44,7 +44,7 @@ def test_speecht5_tts(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.SPEECHT5TTS,
         variant=variant,
-        task=Task.TEXT_TO_SPEECH,
+        task=Task.AUDIO_TTS,
         source=Source.HUGGINGFACE,
     )
 

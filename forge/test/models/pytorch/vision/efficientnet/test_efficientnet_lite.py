@@ -41,7 +41,7 @@ def test_efficientnet_lite_timm(variant):
         model=ModelArch.EFFICIENTNETLITE,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load the model and inputs

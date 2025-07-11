@@ -32,7 +32,7 @@ def test_ministral_8b(variant):
         model=ModelArch.MINISTRAL,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_TEXT_GEN,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
     )

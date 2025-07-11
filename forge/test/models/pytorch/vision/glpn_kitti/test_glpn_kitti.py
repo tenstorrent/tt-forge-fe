@@ -40,7 +40,7 @@ def test_glpn_kitti(variant):
         model=ModelArch.GLPNKITTI,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.DEPTH_ESTIMATION,
+        task=Task.CV_DEPTH_EST,
     )
 
     # Load model and input

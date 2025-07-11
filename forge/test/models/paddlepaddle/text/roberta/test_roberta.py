@@ -28,7 +28,7 @@ def test_roberta_sequence_classification(variant):
         framework=Framework.PADDLE,
         model=ModelArch.ROBERTA,
         variant="rbt4-ch",
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_TEXT_CLS,
         source=Source.PADDLENLP,
     )
 
@@ -62,7 +62,7 @@ def test_roberta_causal_lm(variant):
         framework=Framework.PADDLE,
         model=ModelArch.ROBERTA,
         variant="rbt4-ch",
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_FILL_MASK,
         source=Source.PADDLENLP,
     )
 

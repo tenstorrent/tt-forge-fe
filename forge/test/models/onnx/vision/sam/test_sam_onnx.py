@@ -35,7 +35,7 @@ def test_sam_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.SAM,
         variant=variant,
-        task=Task.IMAGE_SEGMENTATION,
+        task=Task.CV_IMAGE_SEG,
         source=Source.GITHUB,
     )
     if variant != "facebook/sam-vit-base":

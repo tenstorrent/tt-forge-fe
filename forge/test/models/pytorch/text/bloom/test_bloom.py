@@ -52,7 +52,7 @@ def test_bloom(variant):
         model=ModelArch.BLOOM,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_TEXT_GEN,
     )
 
     # Load tokenizer and model from HuggingFace

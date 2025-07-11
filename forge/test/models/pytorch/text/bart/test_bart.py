@@ -47,7 +47,7 @@ def test_pt_bart_classifier(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.BART,
         variant=variant,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_TEXT_CLS,
         source=Source.HUGGINGFACE,
     )
 

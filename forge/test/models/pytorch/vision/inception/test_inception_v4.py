@@ -46,7 +46,7 @@ def test_inception_v4_osmr_pytorch():
         model=ModelArch.INCEPTION,
         variant="v4",
         source=Source.OSMR,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     framework_model, inputs = generate_model_inceptionV4_imgcls_osmr_pytorch("inceptionv4")
@@ -97,7 +97,7 @@ def test_inception_v4_timm_pytorch(variant):
         model=ModelArch.INCEPTION,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     framework_model, inputs = generate_model_inceptionV4_imgcls_timm_pytorch(variant)

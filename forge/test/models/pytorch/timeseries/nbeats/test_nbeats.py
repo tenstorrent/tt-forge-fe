@@ -32,7 +32,7 @@ def test_nbeats_with_seasonality_basis(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.NBEATS,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.TAB_TSF,
         source=Source.HUGGINGFACE,
     )
 
@@ -66,7 +66,7 @@ def test_nbeats_with_generic_basis(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.NBEATS,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.TAB_TSF,
         source=Source.HUGGINGFACE,
     )
 
@@ -93,7 +93,7 @@ def test_nbeats_with_trend_basis(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.NBEATS,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.TAB_TSF,
         source=Source.HUGGINGFACE,
     )
 

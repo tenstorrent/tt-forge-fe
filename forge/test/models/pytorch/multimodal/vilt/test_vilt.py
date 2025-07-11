@@ -56,7 +56,7 @@ def generate_model_vilt_question_answering_hf_pytorch(variant):
 
     # Wrapper
     text_vision_embedding_model = ViLtEmbeddingWrapper(model)
-    vilt_model = ViltModelWrapper(model, task=Task.QA.short)
+    vilt_model = ViltModelWrapper(model, task=Task.NLP_QA.short)
 
     embedding_output, attention_mask = text_vision_embedding_model(**encoding)
 
@@ -72,7 +72,7 @@ variants = ["dandelin/vilt-b32-finetuned-vqa"]
 def test_vilt_question_answering_hf_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model=ModelArch.VILT, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH, model=ModelArch.VILT, variant=variant, task=Task.NLP_QA, source=Source.HUGGINGFACE
     )
 
     framework_model, inputs, model = generate_model_vilt_question_answering_hf_pytorch(variant)
@@ -119,7 +119,7 @@ def generate_model_vilt_maskedlm_hf_pytorch(variant):
 
     # Wrapper
     text_vision_embedding_model = ViLtEmbeddingWrapper(model)
-    vilt_model = ViltModelWrapper(model=model, task=Task.MASKED_LM, text_seq_len=encoding["input_ids"].shape[1])
+    vilt_model = ViltModelWrapper(model=model, task=Task.NLP_MASKED_LM, text_seq_len=encoding["input_ids"].shape[1])
 
     embedding_output, attention_mask = text_vision_embedding_model(**encoding)
 
@@ -138,7 +138,7 @@ def test_vilt_maskedlm_hf_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.VILT,
         variant=variant,
-        task=Task.MASKED_LM,
+        task=Task.NLP_MASKED_LM,
         source=Source.HUGGINGFACE,
     )
 

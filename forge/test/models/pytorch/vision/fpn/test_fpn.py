@@ -23,7 +23,7 @@ from test.models.pytorch.vision.fpn.model_utils.model import FPNWrapper
 def test_fpn_pytorch():
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model=ModelArch.FPN, source=Source.TORCHVISION, task=Task.IMAGE_CLASSIFICATION
+        framework=Framework.PYTORCH, model=ModelArch.FPN, source=Source.TORCHVISION, task=Task.CV_IMAGE_CLS
     )
 
     # Load FPN model

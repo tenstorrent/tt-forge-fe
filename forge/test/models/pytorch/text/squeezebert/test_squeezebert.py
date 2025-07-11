@@ -25,7 +25,7 @@ def test_squeezebert_sequence_classification_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.SQUEEZEBERT,
         variant=variant,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_TEXT_CLS,
         source=Source.HUGGINGFACE,
     )
 

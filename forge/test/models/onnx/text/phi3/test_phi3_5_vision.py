@@ -38,7 +38,7 @@ def test_phi3_5_vision(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.PHI35VISION,
         variant=variant,
-        task=Task.MULTIMODAL_TEXT_GENERATION,
+        task=Task.MM_IMAGE_TTT,
         source=Source.HUGGINGFACE,
     )
     pytest.xfail(reason="Segmentation Fault")

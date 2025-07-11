@@ -59,7 +59,7 @@ def test_detr_detection(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.DETR,
         variant=variant,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DET,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
@@ -113,7 +113,7 @@ def test_detr_segmentation(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.DETR,
         variant=variant,
-        task=Task.SEMANTIC_SEGMENTATION,
+        task=Task.CV_IMAGE_SEG,
         source=Source.HUGGINGFACE,
     )
 

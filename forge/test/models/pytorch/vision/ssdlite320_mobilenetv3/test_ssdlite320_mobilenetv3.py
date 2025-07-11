@@ -33,7 +33,7 @@ def test_ssdlite320_mobilenetv3(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.SSDLITE320MOBILENETV3,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
         source=Source.TORCHVISION,
     )
 

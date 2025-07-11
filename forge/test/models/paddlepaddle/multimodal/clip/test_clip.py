@@ -28,7 +28,7 @@ def test_clip_text(variant):
         model=ModelArch.CLIPTEXT,
         variant=variant,
         source=Source.PADDLENLP,
-        task=Task.TEXT_ENCODING,
+        task=Task.CV_ZS_IMG_CLS,
     )
 
     # Load model and processor
@@ -58,7 +58,7 @@ def test_clip_vision(variant):
         model=ModelArch.CLIPVISION,
         variant=variant,
         source=Source.PADDLENLP,
-        task=Task.IMAGE_ENCODING,
+        task=Task.CV_ITT,
     )
 
     # Load model and processor
@@ -89,7 +89,7 @@ def test_clip(variant):
         model=ModelArch.CLIP,
         variant=variant,
         source=Source.PADDLENLP,
-        task=Task.IMAGE_TEXT_PAIRING,
+        task=Task.MM_IMAGE_TTT,
     )
 
     # Load model and processor

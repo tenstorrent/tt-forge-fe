@@ -27,7 +27,7 @@ def test_birnn_crf():
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.BIRNNCRF,
-        task=Task.TOKEN_CLASSIFICATION,
+        task=Task.NLP_TOKEN_CLS,
         source=Source.GITHUB,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

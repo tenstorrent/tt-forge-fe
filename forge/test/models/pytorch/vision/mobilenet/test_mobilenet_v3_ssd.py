@@ -43,7 +43,7 @@ def test_mobilenetv3_ssd(variant):
         model=ModelArch.MOBILENETV3SSD,
         variant=variant,
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load model and input

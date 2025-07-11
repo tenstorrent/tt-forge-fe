@@ -22,7 +22,7 @@ def test_mobilenetv2_basic():
         model=ModelArch.MOBILENETV2,
         variant="basic",
         source=Source.PADDLE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load framework model

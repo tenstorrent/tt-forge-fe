@@ -39,7 +39,7 @@ def test_opt_causal_lm(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.OPT,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_TEXT_GEN,
         source=Source.HUGGINGFACE,
     )
 
@@ -87,7 +87,7 @@ def test_opt_qa(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model=ModelArch.OPT, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH, model=ModelArch.OPT, variant=variant, task=Task.NLP_QA, source=Source.HUGGINGFACE
     )
 
     # Load tokenizer and model from HuggingFace
@@ -139,7 +139,7 @@ def test_opt_sequence_classification(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.OPT,
         variant=variant,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_TEXT_CLS,
         source=Source.HUGGINGFACE,
     )
 

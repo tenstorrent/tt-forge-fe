@@ -36,7 +36,7 @@ def test_gpt2_text_gen(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.GPT,
         variant=variant,
-        task=Task.TEXT_GENERATION,
+        task=Task.NLP_TEXT_GEN,
         source=Source.HUGGINGFACE,
     )
 
@@ -74,7 +74,7 @@ def test_gpt2_sequence_classification(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.GPT,
         variant=variant,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_TEXT_CLS,
         source=Source.HUGGINGFACE,
     )
 

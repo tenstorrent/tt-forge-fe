@@ -41,7 +41,7 @@ from test.models.pytorch.text.fuyu.model_utils.model import (
 def test_fuyu8b(variant):
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model=ModelArch.FUYU, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH, model=ModelArch.FUYU, variant=variant, task=Task.NLP_QA, source=Source.HUGGINGFACE
     )
     pytest.xfail(reason="Requires multi-chip support")
 

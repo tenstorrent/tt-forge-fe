@@ -35,7 +35,7 @@ def test_mobilenetv1_basic():
         model=ModelArch.MOBILENETV1,
         variant="basic",
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load the model and prepare input data
@@ -87,7 +87,7 @@ def test_mobilenetv1_192(variant):
         model=ModelArch.MOBILENETV1,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
     pytest.xfail(reason="Hitting segmentation fault in MLIR")
 
@@ -133,7 +133,7 @@ def test_mobilenetv1_224(variant):
         model=ModelArch.MOBILENETV1,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
     pytest.xfail(reason="Hitting segmentation fault in MLIR")
 
@@ -168,7 +168,7 @@ def test_mobilenet_v1_timm(variant):
         model=ModelArch.MOBILENETV1,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load the model and inputs

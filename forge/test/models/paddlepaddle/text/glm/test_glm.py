@@ -26,7 +26,7 @@ def test_glm(variant):
         model=ModelArch.GLM,
         variant=variant[10:],
         source=Source.PADDLENLP,
-        task=Task.CONDITIONAL_GENERATION,
+        task=Task.NLP_FEAT_EXT,
     )
 
     # Load Model and Tokenizer

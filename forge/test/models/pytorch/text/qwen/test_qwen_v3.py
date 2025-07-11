@@ -40,7 +40,7 @@ def test_qwen3_clm_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.QWENV3,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_TEXT_GEN,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

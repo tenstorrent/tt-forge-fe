@@ -24,7 +24,7 @@ def test_resnet_tensorflow():
         model=ModelArch.RESNET,
         variant="resnet50",
         source=Source.KERAS,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load Resnet50 Model

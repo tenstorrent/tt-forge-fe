@@ -37,7 +37,7 @@ def test_clip_pytorch(variant):
         variant=variant,
         suffix="text",
         source=Source.HUGGINGFACE,
-        task=Task.TEXT_GENERATION,
+        task=Task.NLP_TEXT_GEN,
     )
 
     # Load processor and model from HuggingFace

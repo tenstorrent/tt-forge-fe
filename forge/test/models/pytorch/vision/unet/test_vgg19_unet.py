@@ -30,7 +30,7 @@ def test_vgg19_unet():
         framework=Framework.PYTORCH,
         model=ModelArch.VGG19UNET,
         variant="default",
-        task=Task.SEMANTIC_SEGMENTATION,
+        task=Task.CV_IMAGE_SEG,
         source=Source.GITHUB,
     )
 
@@ -62,7 +62,7 @@ def test_vgg19_unet_brain_tumor_segmentation():
         framework=Framework.PYTORCH,
         model=ModelArch.VGG19UNET,
         variant="default",
-        task=Task.BRAIN_TUMOR_SEGMENTATION,
+        task=Task.CV_IMAGE_SEG,
         source=Source.GITHUB,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

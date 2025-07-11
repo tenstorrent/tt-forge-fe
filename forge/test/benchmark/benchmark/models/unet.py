@@ -123,7 +123,7 @@ def test_unet(
     samples_per_sec = total_samples / total_time
 
     model_name = module_name
-    model_type = Task.IMAGE_SEGMENTATION
+    model_type = Task.CV_IMAGE_SEG
     dataset_name = "Random data"
     num_layers = -1  # Not applicable for UNet
 

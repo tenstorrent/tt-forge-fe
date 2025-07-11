@@ -57,7 +57,7 @@ def test_yolo_v6_pytorch(variant):
         model=ModelArch.YOLOV6,
         variant=variant,
         source=Source.TORCH_HUB,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DET,
     )
 
     # STEP 2 :prepare model
