@@ -3,7 +3,9 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
+#include <initializer_list>
 #include <ostream>
+#include <tuple>
 #include <vector>
 
 #include "lower_to_forge/common.hpp"
@@ -40,6 +42,7 @@ class Shape
     constexpr static int FORGE_MAX_DIM_COUNT = 5;
 
     Shape() = default;
+    Shape(std::initializer_list<std::uint32_t> dims) : valid_{true}, type_(FREE), dims_(dims) {}
     Shape(bool valid, Shape::Type type, std::vector<std::uint32_t> dims);
 
     template <class T = std::uint32_t>
@@ -47,6 +50,7 @@ class Shape
     {
         return Shape(true, FREE, std::vector<std::uint32_t>(dims.begin(), dims.end()));
     }
+
     static Shape create_forge(
         std::vector<std::uint32_t> dims, int tile_height = FORGE_TILE_DIM, int tile_width = FORGE_TILE_DIM);
     static Shape create_forge(std::uint32_t w, std::uint32_t z, std::uint32_t r, std::uint32_t c);
@@ -95,6 +99,8 @@ class Shape
     Shape canonical() const;
     Shape as_rank(std::uint32_t rank) const;
 
+    // Checks whether the current shape can be broadcasted to the other shape.
+    bool can_be_broadcasted_to(const Shape &other) const;
     // Return the list of dims (and amount) that need to be broadcast from current to other
     std::vector<DimBroadcast> broadcast_dims(const Shape &other) const;
 
@@ -115,6 +121,8 @@ class Shape
     NLOHMANN_JSON_SERIALIZE_ENUM(Shape::Type, {{Shape::Type::FREE, "FREE"}, {Shape::Type::FORGE, "FORGE"}});
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Shape, valid_, type_, dims_)
 };
+
+bool can_be_broadcasted(const Shape &a, const Shape &b);
 
 std::ostream &operator<<(std::ostream &out, const Shape &s);
 
