@@ -404,9 +404,9 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Constant: return constant::eval(*this, tensors);
         case OpType::Divide: return divide::eval(*this, tensors);
         case OpType::Multiply: return multiply::eval(*this, tensors);
-        case OpType::Transpose: return transpose::eval(*this, tensors);
         case OpType::Reshape: return reshape::eval(*this, tensors);
         case OpType::Subtract: return subtract::eval(*this, tensors);
+        case OpType::Transpose: return transpose::eval(*this, tensors);
         default: return base_eval(old_op_type, tensors);
     }
 }

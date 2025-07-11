@@ -1412,14 +1412,10 @@ void calculate_and_set_node_shape(Graph *graph, Node *node)
     {
         for (DimBroadcast &b : std::get<1>(shape_data))
         {
-            log_trace(LogGraphCompiler, "  brcst {} {} {}", std::get<0>(b), std::get<1>(b), std::get<2>(b));
-
-            int operand = std::get<0>(b);
-            if (operand == (int)e.consumer_input_port_id)
+            log_trace(LogGraphCompiler, "  brcst {} {} {}", b.operand(), b.dim(), b.size());
+            if (b.operand() == (int)e.consumer_input_port_id)
             {
-                int dim = std::get<1>(b);
-                int size = std::get<2>(b);
-                graph->get_edge_attributes(e)->set_broadcast_dim(dim, size);
+                graph->get_edge_attributes(e)->set_broadcast_dim(b.dim(), b.size());
             }
         }
     }

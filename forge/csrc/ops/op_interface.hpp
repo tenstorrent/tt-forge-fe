@@ -18,7 +18,7 @@ namespace graphlib
 {
 class Shape;
 struct NodeContext;
-using DimBroadcastTrampoline = std::tuple<int, int, int>;
+class DimBroadcast;
 }  // namespace graphlib
 
 namespace autograd
@@ -40,7 +40,7 @@ class Op;
     {                                                                                                 \
     at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors);                            \
                                                                                                       \
-    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(                 \
+    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(                           \
         const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs);                         \
                                                                                                       \
     tt::graphlib::NodeContext backward(                                                               \
