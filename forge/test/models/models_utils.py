@@ -190,6 +190,58 @@ class TextModelWrapper(torch.nn.Module):
         return logits
 
 
+def generate_no_cache_for_encoder_decoder_model(
+    max_new_tokens, model, input_ids, decoder_input_ids, seq_len, tokenizer
+):
+
+    """
+    Generates text from an encoder-decoder model without using KV cache, by iteratively predicting one token at a time using static padded decoder input.
+    The function stops generation if the maximum number of new tokens is reached or an end-of-sequence (EOS) token is encountered.
+
+    Args:
+        max_new_tokens (int): The maximum number of new tokens to generate.
+        model (torch.nn.Module): The encoder-decoder model used for generation.
+        input_ids (torch.Tensor): Input tensor of shape (batch_size, encoder_seq_len),
+                                  representing the encoder inputs.
+        decoder_input_ids (torch.Tensor): Preallocated padded decoder input tensor of shape
+                                          (batch_size, max_seq_len), where tokens are filled
+                                          in-place during generation.
+        seq_len (int): Initial decoder sequence length (typically 1).
+        tokenizer: HuggingFace tokenizer used to decode token IDs into text.
+
+    Returns:
+        str: The generated text string (decoded without special tokens).
+    """
+
+    current_pos = seq_len
+
+    for _ in range(max_new_tokens):
+        logits = model(input_ids, decoder_input_ids)
+
+        # Get only the logits corresponding to the last valid token
+        if isinstance(logits, (list, tuple)):
+            logits = logits[0]
+        elif isinstance(logits, torch.Tensor):
+            pass
+        else:
+            raise TypeError(f"Expected logits to be a list or tuple or torch.Tensor, but got {type(logits)}")
+        next_token_logits = logits[:, current_pos - 1, :]
+        next_token_id = torch.argmax(next_token_logits, dim=-1)
+
+        # Stop if EOS token is encountered
+        if next_token_id.item() == tokenizer.eos_token_id:
+            break
+
+        decoder_input_ids[:, current_pos] = next_token_id
+        current_pos += 1  # Move to next position
+
+    # Decode valid tokens
+    valid_tokens = decoder_input_ids[:, seq_len:current_pos].view(-1).tolist()
+    answer = tokenizer.decode(valid_tokens, skip_special_tokens=True)
+
+    return answer
+
+
 def _prepare_4d_causal_attention_mask_with_cache_position(
     self,
     attention_mask: torch.Tensor,
