@@ -149,9 +149,9 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
 
         max_operand_nd = max(len(op0_shape), len(op1_shape), 3)
         while len(operand0.shape) < max_operand_nd:
-            operand0 = dc.op_with_named_attrs("unsqueeze", [operand0], {"dim": 0}, (0, len(operand0.shape)))
+            operand0 = dc.op_with_named_attrs("unsqueeze", [operand0], {"dim": 0}, (0,))
         while len(operand1.shape) < max_operand_nd:
-            operand1 = dc.op_with_named_attrs("unsqueeze", [operand1], {"dim": 0}, (0, len(operand1.shape)))
+            operand1 = dc.op_with_named_attrs("unsqueeze", [operand1], {"dim": 0}, (0,))
 
         if slice_factor != None:
             concat_z = dc.op("interleave", [operand0, operand1], (-3, 1))
@@ -161,7 +161,7 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
             result = dc.op("reduce_max", [concat_z], (-3,))
 
         while len(result.shape) > max_operand_nd:
-            result = dc.op("squeeze", [result], (0,))
+            result = dc.op_with_named_attrs("squeeze", [result], {"dim": 0})
 
         dc.fuse(result)
         return
