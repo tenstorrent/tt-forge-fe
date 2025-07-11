@@ -5,8 +5,10 @@ add_library(ops
     op_abs.cpp
     op_add.cpp
     op_constant.cpp
+    op_cosine.cpp
     op_divide.cpp
     op_multiply.cpp
+    op_sine.cpp
     op_transpose.cpp
     op_reshape.cpp
     op_subtract.cpp
