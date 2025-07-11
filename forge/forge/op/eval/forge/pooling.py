@@ -721,9 +721,7 @@ def decompose(type, attr, dc, inputs):
 
             depth_avg_pooled = dc.op_with_named_attrs("avg_pool2d", [depth_avg], named_attrs, attr)
 
-            depth_avg_pooled = dc.op_with_named_attrs(
-                "unsqueeze", [depth_avg_pooled], {"dim": 2}, (0, len(depth_avg_pooled.shape))
-            )
+            depth_avg_pooled = dc.op_with_named_attrs("unsqueeze", [depth_avg_pooled], {"dim": 2})
             result = dc.op_with_named_attrs("concatenate", [result, depth_avg_pooled], {"dim": (2)})
 
         dc.fuse(result)
