@@ -49,7 +49,7 @@ def test_gptneo_causal_lm(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.GPTNEO,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_TEXT_GEN,
         source=Source.HUGGINGFACE,
     )
 
@@ -101,7 +101,7 @@ def test_gptneo_sequence_classification(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.GPTNEO,
         variant=variant,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_TEXT_CLS,
         source=Source.HUGGINGFACE,
     )
 

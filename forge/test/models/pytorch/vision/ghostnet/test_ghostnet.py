@@ -41,7 +41,7 @@ def test_ghostnet_timm(variant):
         model=ModelArch.GHOSTNET,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load the model and prepare input data

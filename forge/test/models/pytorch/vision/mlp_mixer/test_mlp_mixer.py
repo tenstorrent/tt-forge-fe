@@ -69,7 +69,7 @@ def test_mlp_mixer_timm_pytorch(variant):
         model=ModelArch.MLPMIXER,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     load_pretrained_weights = True
@@ -132,7 +132,7 @@ def test_mlp_mixer_pytorch():
         framework=Framework.PYTORCH,
         model=ModelArch.MLPMIXER,
         source=Source.GITHUB,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load model and input

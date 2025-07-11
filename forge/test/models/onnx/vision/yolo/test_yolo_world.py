@@ -25,7 +25,7 @@ def test_yolo_world_inference_onnx(tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.YOLOWORLD,
         variant="default",
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DET,
         source=Source.GITHUB,
     )
 

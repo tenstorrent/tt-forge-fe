@@ -57,7 +57,7 @@ def test_unet_osmr_cityscape_pytorch():
         model=ModelArch.UNET,
         variant="cityscape",
         source=Source.OSMR,
-        task=Task.IMAGE_SEGMENTATION,
+        task=Task.CV_IMAGE_SEG,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
     )
@@ -142,7 +142,7 @@ def test_unet_qubvel_pytorch():
         model=ModelArch.UNET,
         variant="qubvel",
         source=Source.TORCH_HUB,
-        task=Task.IMAGE_SEGMENTATION,
+        task=Task.CV_IMAGE_SEG,
     )
 
     framework_model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(None)
@@ -198,7 +198,7 @@ def test_unet_torchhub_pytorch():
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model=ModelArch.UNET, source=Source.TORCH_HUB, task=Task.IMAGE_SEGMENTATION
+        framework=Framework.PYTORCH, model=ModelArch.UNET, source=Source.TORCH_HUB, task=Task.CV_IMAGE_SEG
     )
 
     framework_model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
@@ -229,7 +229,7 @@ def test_unet_carvana():
         framework=Framework.PYTORCH,
         model=ModelArch.UNETCARVANA,
         source=Source.GITHUB,
-        task=Task.IMAGE_SEGMENTATION,
+        task=Task.CV_IMAGE_SEG,
     )
 
     # Load model and input

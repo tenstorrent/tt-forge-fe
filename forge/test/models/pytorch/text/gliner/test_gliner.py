@@ -36,7 +36,7 @@ def test_gliner(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.GLINER,
         variant=variant,
-        task=Task.TOKEN_CLASSIFICATION,
+        task=Task.NLP_TOKEN_CLS,
         source=Source.GITHUB,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

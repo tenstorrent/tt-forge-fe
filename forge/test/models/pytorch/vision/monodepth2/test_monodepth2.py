@@ -48,7 +48,7 @@ def test_monodepth2(variant):
         model=ModelArch.MONODEPTH2,
         variant=variant,
         source=Source.TORCHVISION,
-        task=Task.DEPTH_PREDICTION,
+        task=Task.CV_DEPTH_EST,
     )
 
     # prepare model and input

@@ -22,7 +22,7 @@ def test_trankit():
     record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.TRANKIT,
-        task=Task.SEMANTIC_SEGMENTATION,
+        task=Task.NLP_TOKEN_CLS,
         source=Source.GITHUB,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
