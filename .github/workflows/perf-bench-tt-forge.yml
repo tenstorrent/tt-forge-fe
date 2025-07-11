@@ -15,6 +15,10 @@ on:
         description: 'Branch of tt-forge to run the benchmarks on (empty=main)'
         required: false
         type: string
+      test_filter:
+        description: "Only run tests with name that contains"
+        required: false
+        type: string
 
 permissions:
   packages: write
@@ -56,4 +60,4 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           repository: tenstorrent/tt-forge
           event-type: trigger-workflow
-          client-payload: '{"project": "tt-forge-fe", "run_id": "${{ github.run_id }}", "ref": "${{ steps.set-inputs.outputs.ref }}"}'
+          client-payload: '{"project": "tt-forge-fe", "run_id": "${{ github.run_id }}", "ref": "${{ steps.set-inputs.outputs.ref }}", "test_filter": "${{ inputs.test_filter }}"}'
