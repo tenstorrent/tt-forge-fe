@@ -68,7 +68,7 @@ newgrp docker
 docker run -it --rm \
   --device /dev/tenstorrent \
   -v /dev/hugepages-1G:/dev/hugepages-1G \
-  ghcr.io/tenstorrent/tt-forge/tt-forge-fe-slim:latest
+  ghcr.io/tenstorrent/tt-forge-fe-slim:latest
 ```
 
 >**NOTE:** You cannot isolate devices in containers. You must pass through all devices even if you are only using one. You can do this by passing ```--device /dev/tenstorrent```. Do not try to pass ```--device /dev/tenstorrent/1``` or similar, as this type of device-in-container isolation will result in fatal errors later on during execution.
