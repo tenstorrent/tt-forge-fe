@@ -25,7 +25,6 @@ import cv2
 import pytest
 import requests
 import torch
-from third_party.tt_forge_models.tools.utils import get_file
 from yolox.data.data_augment import preproc as preprocess
 from yolox.exp import get_exp
 
@@ -41,6 +40,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
+from third_party.tt_forge_models.tools.utils import get_file
 
 from test.models.pytorch.vision.yolo.model_utils.yolox_utils import (
     print_detection_results,
@@ -53,7 +53,10 @@ variants = [
     pytest.param("yolox_m"),
     pytest.param("yolox_l"),
     pytest.param("yolox_darknet"),
-    pytest.param("yolox_x"),
+    pytest.param(
+        "yolox_x",
+        marks=pytest.mark.push,
+    ),
 ]
 
 

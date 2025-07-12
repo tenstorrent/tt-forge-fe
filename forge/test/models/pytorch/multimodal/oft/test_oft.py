@@ -21,6 +21,7 @@ from test.models.pytorch.multimodal.oft.model_utils.oft_utils import (
 )
 
 
+@pytest.mark.push
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["runwayml/stable-diffusion-v1-5"])
 @pytest.mark.nightly
