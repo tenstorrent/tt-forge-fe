@@ -405,6 +405,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Cosine: return cosine::eval(*this, tensors);
         case OpType::Divide: return divide::eval(*this, tensors);
         case OpType::Multiply: return multiply::eval(*this, tensors);
+        case OpType::Power: return power::eval(*this, tensors);
         case OpType::Sine: return sine::eval(*this, tensors);
         case OpType::Transpose: return transpose::eval(*this, tensors);
         case OpType::Reshape: return reshape::eval(*this, tensors);
@@ -424,6 +425,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Cosine: return cosine::shape(*this, inputs);
         case OpType::Divide: return divide::shape(*this, inputs);
         case OpType::Multiply: return multiply::shape(*this, inputs);
+        case OpType::Power: return power::shape(*this, inputs);
         case OpType::Sine: return sine::shape(*this, inputs);
         case OpType::Transpose: return transpose::shape(*this, inputs);
         case OpType::Reshape: return reshape::shape(*this, inputs);
@@ -448,6 +450,7 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Cosine: return cosine::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Divide: return divide::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Multiply: return multiply::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Power: return power::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Sine: return sine::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Transpose: return transpose::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Reshape: return reshape::backward(*this, context, operand, inputs, output, gradient);
@@ -489,6 +492,7 @@ void Op::decompose_initial(
         case OpType::Cosine: return;
         case OpType::Divide: return;
         case OpType::Multiply: return;
+        case OpType::Power: return;
         case OpType::Sine: return;
         case OpType::Transpose: return;
         case OpType::Reshape: return reshape::decompose_initial(*this, dc, inputs);
@@ -510,6 +514,7 @@ void Op::decompose_post_optimize(
         case OpType::Cosine: return;
         case OpType::Divide: return;
         case OpType::Multiply: return;
+        case OpType::Power: return;
         case OpType::Sine: return;
         case OpType::Transpose: return;
         case OpType::Reshape: return;
@@ -531,6 +536,7 @@ void Op::decompose_post_autograd(
         case OpType::Cosine: return;
         case OpType::Divide: return;
         case OpType::Multiply: return multiply::decompose_post_autograd(*this, dc, inputs);
+        case OpType::Power: return;
         case OpType::Sine: return;
         case OpType::Transpose: return;
         case OpType::Reshape: return reshape::decompose_post_autograd(*this, dc, inputs);
@@ -550,6 +556,7 @@ long Op::initial_flops_estimate(
         case OpType::Cosine: return cosine::initial_flops_estimate(*this, inputs);
         case OpType::Divide: return 0;
         case OpType::Multiply: return 0;
+        case OpType::Power: return power::initial_flops_estimate(*this, inputs);
         case OpType::Sine: return sine::initial_flops_estimate(*this, inputs);
         case OpType::Transpose: return 0;
         case OpType::Reshape: return 0;
@@ -568,6 +575,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Cosine: return false;
         case OpType::Divide: return false;
         case OpType::Multiply: return false;
+        case OpType::Power: return false;
         case OpType::Sine: return false;
         case OpType::Transpose: return true;
         case OpType::Reshape: return true;
@@ -586,6 +594,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Cosine: return true;
         case OpType::Divide: return true;
         case OpType::Multiply: return true;
+        case OpType::Power: return true;
         case OpType::Sine: return true;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
@@ -604,6 +613,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Cosine: return true;
         case OpType::Divide: return false;
         case OpType::Multiply: return false;
+        case OpType::Power: return false;
         case OpType::Sine: return true;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
@@ -622,6 +632,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Cosine: return false;
         case OpType::Divide: return true;
         case OpType::Multiply: return true;
+        case OpType::Power: return true;
         case OpType::Sine: return false;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
@@ -639,6 +650,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Cosine: return false;
         case OpType::Divide: return false;
         case OpType::Multiply: return false;
+        case OpType::Power: return false;
         case OpType::Sine: return false;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
