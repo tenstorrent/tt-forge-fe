@@ -168,6 +168,8 @@ def main():
                         for test in crashed_tests:
                             # Add each of crashed tests as a <testcase> with a failure
                             classname, testname = test.split("::", 1)
+                            if classname.endswith(".py"):
+                                classname = classname[:-3]
                             classname = classname.replace("/", ".")
 
                             testcase = ET.Element("testcase", name=testname, classname=classname, time="0.001")
