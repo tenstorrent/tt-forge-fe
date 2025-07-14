@@ -405,11 +405,22 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Constant: return constant::eval(*this, tensors);
         case OpType::Cosine: return cosine::eval(*this, tensors);
         case OpType::Divide: return divide::eval(*this, tensors);
+        case OpType::Equal: return equal::eval(*this, tensors);
+        case OpType::Greater: return greater::eval(*this, tensors);
+        case OpType::GreaterEqual: return greater_equal::eval(*this, tensors);
+        case OpType::Heaviside: return heaviside::eval(*this, tensors);
+        case OpType::Less: return less::eval(*this, tensors);
+        case OpType::LessEqual: return less_equal::eval(*this, tensors);
+        case OpType::LogicalAnd: return logical_and::eval(*this, tensors);
+        case OpType::Maximum: return maximum::eval(*this, tensors);
+        case OpType::Minimum: return minimum::eval(*this, tensors);
         case OpType::Multiply: return multiply::eval(*this, tensors);
-        case OpType::Sine: return sine::eval(*this, tensors);
-        case OpType::Transpose: return transpose::eval(*this, tensors);
+        case OpType::NotEqual: return not_equal::eval(*this, tensors);
+        case OpType::Remainder: return remainder::eval(*this, tensors);
         case OpType::Reshape: return reshape::eval(*this, tensors);
+        case OpType::Sine: return sine::eval(*this, tensors);
         case OpType::Subtract: return subtract::eval(*this, tensors);
+        case OpType::Transpose: return transpose::eval(*this, tensors);
         default: return base_eval(old_op_type, tensors);
     }
 }
@@ -425,11 +436,22 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Constant: return constant::shape(*this, inputs);
         case OpType::Cosine: return cosine::shape(*this, inputs);
         case OpType::Divide: return divide::shape(*this, inputs);
+        case OpType::Equal: return equal::shape(*this, inputs);
+        case OpType::Greater: return greater::shape(*this, inputs);
+        case OpType::GreaterEqual: return greater_equal::shape(*this, inputs);
+        case OpType::Heaviside: return heaviside::shape(*this, inputs);
+        case OpType::Less: return less::shape(*this, inputs);
+        case OpType::LessEqual: return less_equal::shape(*this, inputs);
+        case OpType::LogicalAnd: return logical_and::shape(*this, inputs);
+        case OpType::Maximum: return maximum::shape(*this, inputs);
+        case OpType::Minimum: return minimum::shape(*this, inputs);
         case OpType::Multiply: return multiply::shape(*this, inputs);
-        case OpType::Sine: return sine::shape(*this, inputs);
-        case OpType::Transpose: return transpose::shape(*this, inputs);
+        case OpType::NotEqual: return not_equal::shape(*this, inputs);
+        case OpType::Remainder: return remainder::shape(*this, inputs);
         case OpType::Reshape: return reshape::shape(*this, inputs);
+        case OpType::Sine: return sine::shape(*this, inputs);
         case OpType::Subtract: return subtract::shape(*this, inputs);
+        case OpType::Transpose: return transpose::shape(*this, inputs);
         default: return base_shape(old_op_type, inputs);
     }
 }
@@ -450,11 +472,22 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Constant: return constant::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Cosine: return cosine::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Divide: return divide::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Equal: return equal::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Greater: return greater::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::GreaterEqual: return greater_equal::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Heaviside: return heaviside::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Less: return less::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::LessEqual: return less_equal::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::LogicalAnd: return logical_and::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Maximum: return maximum::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Minimum: return minimum::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Multiply: return multiply::backward(*this, context, operand, inputs, output, gradient);
-        case OpType::Sine: return sine::backward(*this, context, operand, inputs, output, gradient);
-        case OpType::Transpose: return transpose::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::NotEqual: return not_equal::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Remainder: return remainder::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Reshape: return reshape::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Sine: return sine::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Subtract: return subtract::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Transpose: return transpose::backward(*this, context, operand, inputs, output, gradient);
         default: return base_backward(old_op_type, context, operand, inputs, output, gradient);
     }
 }
@@ -492,11 +525,22 @@ void Op::decompose_initial(
         case OpType::Constant: return;
         case OpType::Cosine: return;
         case OpType::Divide: return;
+        case OpType::Equal: return;
+        case OpType::Greater: return;
+        case OpType::GreaterEqual: return;
+        case OpType::Heaviside: return;
+        case OpType::Less: return;
+        case OpType::LessEqual: return;
+        case OpType::LogicalAnd: return;
+        case OpType::Maximum: return;
+        case OpType::Minimum: return;
         case OpType::Multiply: return;
-        case OpType::Sine: return;
-        case OpType::Transpose: return;
+        case OpType::NotEqual: return;
+        case OpType::Remainder: return;
         case OpType::Reshape: return reshape::decompose_initial(*this, dc, inputs);
+        case OpType::Sine: return;
         case OpType::Subtract: return;
+        case OpType::Transpose: return;
         default: return base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
     }
 }
@@ -514,11 +558,22 @@ void Op::decompose_post_optimize(
         case OpType::Constant: return;
         case OpType::Cosine: return;
         case OpType::Divide: return;
+        case OpType::Equal: return;
+        case OpType::Greater: return;
+        case OpType::GreaterEqual: return;
+        case OpType::Heaviside: return;
+        case OpType::Less: return;
+        case OpType::LessEqual: return;
+        case OpType::LogicalAnd: return;
+        case OpType::Maximum: return;
+        case OpType::Minimum: return;
         case OpType::Multiply: return;
-        case OpType::Sine: return;
-        case OpType::Transpose: return;
+        case OpType::NotEqual: return;
+        case OpType::Remainder: return;
         case OpType::Reshape: return;
+        case OpType::Sine: return;
         case OpType::Subtract: return;
+        case OpType::Transpose: return;
         default: return base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
     }
 }
@@ -536,11 +591,22 @@ void Op::decompose_post_autograd(
         case OpType::Constant: return;
         case OpType::Cosine: return;
         case OpType::Divide: return;
+        case OpType::Equal: return;
+        case OpType::Greater: return;
+        case OpType::GreaterEqual: return;
+        case OpType::Heaviside: return heaviside::decompose_post_autograd(*this, dc, inputs);
+        case OpType::Less: return;
+        case OpType::LessEqual: return;
+        case OpType::LogicalAnd: return;
+        case OpType::Maximum: return;
+        case OpType::Minimum: return;
         case OpType::Multiply: return multiply::decompose_post_autograd(*this, dc, inputs);
-        case OpType::Sine: return;
-        case OpType::Transpose: return;
+        case OpType::NotEqual: return;
+        case OpType::Remainder: return;
         case OpType::Reshape: return reshape::decompose_post_autograd(*this, dc, inputs);
+        case OpType::Sine: return;
         case OpType::Subtract: return subtract::decompose_post_autograd(*this, dc, inputs);
+        case OpType::Transpose: return;
         default: return base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
     }
 }
@@ -552,15 +618,26 @@ long Op::initial_flops_estimate(
     {
         case OpType::Abs: return abs::initial_flops_estimate(*this, inputs);
         case OpType::Add: return add::initial_flops_estimate(*this, inputs);
+        case OpType::Concatenate: return 0;
         case OpType::Constant: return 0;
         case OpType::Cosine: return cosine::initial_flops_estimate(*this, inputs);
         case OpType::Divide: return 0;
-        case OpType::Concatenate: return 0;
+        case OpType::Equal: return equal::initial_flops_estimate(*this, inputs);
+        case OpType::Greater: return greater::initial_flops_estimate(*this, inputs);
+        case OpType::GreaterEqual: return greater_equal::initial_flops_estimate(*this, inputs);
+        case OpType::Heaviside: return heaviside::initial_flops_estimate(*this, inputs);
+        case OpType::Less: return less::initial_flops_estimate(*this, inputs);
+        case OpType::LessEqual: return less_equal::initial_flops_estimate(*this, inputs);
+        case OpType::LogicalAnd: return logical_and::initial_flops_estimate(*this, inputs);
+        case OpType::Maximum: return maximum::initial_flops_estimate(*this, inputs);
+        case OpType::Minimum: return minimum::initial_flops_estimate(*this, inputs);
         case OpType::Multiply: return 0;
-        case OpType::Sine: return sine::initial_flops_estimate(*this, inputs);
-        case OpType::Transpose: return 0;
+        case OpType::NotEqual: return not_equal::initial_flops_estimate(*this, inputs);
+        case OpType::Remainder: return remainder::initial_flops_estimate(*this, inputs);
         case OpType::Reshape: return 0;
+        case OpType::Sine: return sine::initial_flops_estimate(*this, inputs);
         case OpType::Subtract: return 0;
+        case OpType::Transpose: return 0;
         default: return base_initial_flops_estimate(old_op_type, inputs);
     }
 }
@@ -575,11 +652,22 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Constant: return false;
         case OpType::Cosine: return false;
         case OpType::Divide: return false;
+        case OpType::Equal: return false;
+        case OpType::Greater: return false;
+        case OpType::GreaterEqual: return false;
+        case OpType::Heaviside: return false;
+        case OpType::Less: return false;
+        case OpType::LessEqual: return false;
+        case OpType::LogicalAnd: return false;
+        case OpType::Maximum: return false;
+        case OpType::Minimum: return false;
         case OpType::Multiply: return false;
-        case OpType::Sine: return false;
-        case OpType::Transpose: return true;
+        case OpType::NotEqual: return false;
+        case OpType::Remainder: return false;
         case OpType::Reshape: return true;
+        case OpType::Sine: return false;
         case OpType::Subtract: return false;
+        case OpType::Transpose: return true;
         default: return base_is_tm(old_op_type);
     }
 }
@@ -594,11 +682,22 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Constant: return false;
         case OpType::Cosine: return true;
         case OpType::Divide: return true;
+        case OpType::Equal: return true;
+        case OpType::Greater: return true;
+        case OpType::GreaterEqual: return true;
+        case OpType::Heaviside: return true;
+        case OpType::Less: return true;
+        case OpType::LessEqual: return true;
+        case OpType::LogicalAnd: return true;
+        case OpType::Maximum: return true;
+        case OpType::Minimum: return true;
         case OpType::Multiply: return true;
-        case OpType::Sine: return true;
-        case OpType::Transpose: return false;
+        case OpType::NotEqual: return true;
+        case OpType::Remainder: return true;
         case OpType::Reshape: return false;
+        case OpType::Sine: return true;
         case OpType::Subtract: return true;
+        case OpType::Transpose: return false;
         default: return base_is_eltwise(old_op_type);
     }
 }
@@ -613,11 +712,22 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Constant: return false;
         case OpType::Cosine: return true;
         case OpType::Divide: return false;
+        case OpType::Equal: return false;
+        case OpType::Greater: return false;
+        case OpType::GreaterEqual: return false;
+        case OpType::Heaviside: return false;
+        case OpType::Less: return false;
+        case OpType::LessEqual: return false;
+        case OpType::LogicalAnd: return false;
+        case OpType::Maximum: return false;
+        case OpType::Minimum: return false;
         case OpType::Multiply: return false;
-        case OpType::Sine: return true;
-        case OpType::Transpose: return false;
+        case OpType::NotEqual: return false;
+        case OpType::Remainder: return false;
         case OpType::Reshape: return false;
+        case OpType::Sine: return true;
         case OpType::Subtract: return false;
+        case OpType::Transpose: return false;
         default: return base_is_eltwise_unary(old_op_type);
     }
 }
@@ -632,11 +742,22 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Constant: return false;
         case OpType::Cosine: return false;
         case OpType::Divide: return true;
+        case OpType::Equal: return true;
+        case OpType::Greater: return true;
+        case OpType::GreaterEqual: return true;
+        case OpType::Heaviside: return true;
+        case OpType::Less: return true;
+        case OpType::LessEqual: return true;
+        case OpType::LogicalAnd: return true;
+        case OpType::Maximum: return true;
+        case OpType::Minimum: return true;
         case OpType::Multiply: return true;
-        case OpType::Sine: return false;
-        case OpType::Transpose: return false;
+        case OpType::NotEqual: return true;
+        case OpType::Remainder: return true;
         case OpType::Reshape: return false;
+        case OpType::Sine: return false;
         case OpType::Subtract: return true;
+        case OpType::Transpose: return false;
         default: return base_is_eltwise_binary(old_op_type);
     }
 }
@@ -651,11 +772,22 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Constant: return false;
         case OpType::Cosine: return false;
         case OpType::Divide: return false;
+        case OpType::Equal: return false;
+        case OpType::Greater: return false;
+        case OpType::GreaterEqual: return false;
+        case OpType::Heaviside: return false;
+        case OpType::Less: return false;
+        case OpType::LessEqual: return false;
+        case OpType::LogicalAnd: return false;
+        case OpType::Maximum: return false;
+        case OpType::Minimum: return false;
         case OpType::Multiply: return false;
-        case OpType::Sine: return false;
-        case OpType::Transpose: return false;
+        case OpType::NotEqual: return false;
+        case OpType::Remainder: return false;
         case OpType::Reshape: return false;
+        case OpType::Sine: return false;
         case OpType::Subtract: return true;
+        case OpType::Transpose: return false;
         default: return base_is_eltwise_nary(old_op_type);
     }
 }
