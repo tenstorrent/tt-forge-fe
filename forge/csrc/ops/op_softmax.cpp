@@ -50,7 +50,9 @@ tt::graphlib::NodeContext backward(
     TT_ASSERT(inputs.size() == 1, "Softmax should have one operand.");
 
     return ac.autograd->create_op(
-        ac, graphlib::OpType("softmax_bw", {}, {{"dim", op.attr_as<int>("dim")}}), {inputs[0], output, gradient});
+        ac,
+        graphlib::OpType("softmax_bw", {op.attr_as<int>("dim")}, {{"dim", op.attr_as<int>("dim")}}),
+        {inputs[0], output, gradient});
 }
 
 }  // namespace softmax
