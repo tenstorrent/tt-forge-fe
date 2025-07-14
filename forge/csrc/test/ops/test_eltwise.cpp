@@ -29,15 +29,6 @@ struct SimpleEltwiseBinaryTest : public tt::test::ops::BaseOpTest, testing::With
     SimpleEltwiseBinaryTest() : BaseOpTest(GetParam()) {}
 };
 
-// TEST_P(SimpleEltwiseBinaryTest, test_eltwise_binary_shape)
-// {
-//     graphlib::Graph* graph = get_graph();
-//
-//     EXPECT_EQ(tt::eval_graph_simple(graph).sizes(), (m_in1 + m_in2).sizes());
-// }
-//
-//
-
 test::ops::eval_function_t get_golden_eval_function(const tt::ops::OpType& op_type)
 {
     switch (op_type)
@@ -46,24 +37,92 @@ test::ops::eval_function_t get_golden_eval_function(const tt::ops::OpType& op_ty
             return [](const std::vector<torch::Tensor>& inputs) { return inputs[0] + inputs[1]; };
         case tt::ops::OpType::Multiply:
             return [](const std::vector<torch::Tensor>& inputs) { return inputs[0] * inputs[1]; };
-        // Add more cases for other binary operations as needed
+        case tt::ops::OpType::Divide:
+            return [](const std::vector<torch::Tensor>& inputs) { return inputs[0] / inputs[1]; };
+        case tt::ops::OpType::Subtract:
+            return [](const std::vector<torch::Tensor>& inputs) { return inputs[0] - inputs[1]; };
         default: throw std::runtime_error("Unsupported operation type for golden evaluation");
     }
 }
 
-// TEST_P(SimpleEltwiseBinaryTest, test_eltwise_binary_eval)
-// {
-//     // Evaluate the graph using the golden evaluation function
-//     auto golden_eval = get_golden_eval_function(GetParam().op);
-//     eval_graph(golden_eval);
-// }
-//
-// INSTANTIATE_TEST_SUITE_P(
-//     BinaryOps,
-//     SimpleEltwiseBinaryTest,
-//     testing::Values(
-//         OpTestParam{.op = tt::ops::OpType::Add, .input_shapes = {{1, 1, 2, 2}, {1, 1, 2, 2}}},
-//         OpTestParam{.op = tt::ops::OpType::Multiply, .input_shapes = {{1, 1, 2, 2}, {1, 1, 2, 2}}}));
+TEST_P(SimpleEltwiseBinaryTest, test_eltwise_binary_eval)
+{
+    // Evaluate the graph node by node.
+    eval_graph();
+
+    // Compute golden output.
+    auto input_tensors = get_input_tensors();
+    auto golden_eval = get_golden_eval_function(GetParam().op.type());
+    auto golden_output = golden_eval(input_tensors);
+
+    verify_fwd(golden_eval);
+}
+
+TEST_P(SimpleEltwiseBinaryTest, test_eltwise_binary_decompose)
+{
+    // TODO: decomposing context needs `compiler_cfg`; passing nullptr for now...
+    tt::decompose_tt_forge_graph<DecomposeEpoch::Initial>(get_graph(), std::shared_ptr<void>(nullptr, [](void*) {}));
+
+    // Evaluate the graph node by node.
+    eval_graph();
+
+    // Compute golden output.
+    auto input_tensors = get_input_tensors();
+    auto golden_eval = get_golden_eval_function(GetParam().op.type());
+    auto golden_output = golden_eval(input_tensors);
+
+    verify_fwd(golden_eval);
+}
+
+TEST_P(SimpleEltwiseBinaryTest, test_eltwise_binary_backward)
+{
+    run_autograd();
+
+    // Verify the forward path.
+    eval_graph();
+    auto golden_eval = get_golden_eval_function(GetParam().op.type());
+    auto golden_output = golden_eval(get_input_tensors());
+    verify_fwd(golden_eval);
+
+    eval_graph(tt::graphlib::NodeEpochType::Backward);
+    auto tensors = get_output_tensors_with_grads();
+    {
+        pybind11::gil_scoped_release gil_release;
+        golden_output.backward(generated_grad());
+    }
+
+    verify_bwd();
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    BinaryOpsIndividual,
+    SimpleEltwiseBinaryTest,
+    testing::ConvertGenerator(
+        testing::Combine(
+            testing::Values(
+                tt::ops::OpType::Add, tt::ops::OpType::Multiply, tt::ops::OpType::Divide, tt::ops::OpType::Subtract),
+            testing::Values(
+                VecShapes{{1, 1, 1, 32}, {1, 1, 1, 32}},
+                VecShapes{{1, 1, 32, 1}, {1, 1, 32, 1}},
+                VecShapes{{1, 32, 1, 1}, {1, 32, 1, 1}},
+                VecShapes{{32, 1, 1, 1}, {32, 1, 1, 1}},
+                VecShapes{{1, 2, 3, 4}, {1, 2, 3, 4}},
+                VecShapes{{2, 3, 4}, {2, 3, 4}},
+                VecShapes{{3, 4}, {3, 4}},
+                VecShapes{{4}, {4}},
+                VecShapes{{1}, {1}})),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleEltwiseBinaryTest::ParamType>& info)
+    {
+        // Generate a test name based on the operation type and input shapes.
+        const auto& param = info.param;
+        static size_t id = 0;
+        std::string op_name = param.op.as_string() + std::to_string(id++);
+        return op_name;
+    });
+
+// Note: STANDARD_RANGE_OP_TEST_SET is designed for unary ops and cannot be used for binary ops
+// as it generates only a single shape, but binary ops need two input shapes
 
 }  // namespace tt::test::ops::eltwise_binary
 //
@@ -75,15 +134,6 @@ struct SimpleEltwiseUnary : public tt::test::ops::BaseOpTest, testing::WithParam
    public:
     SimpleEltwiseUnary() : BaseOpTest(GetParam()) {}
 };
-
-// TEST_P(SimpleEltwiseBinaryTest, test_eltwise_binary_shape)
-// {
-//     graphlib::Graph* graph = get_graph();
-//
-//     EXPECT_EQ(tt::eval_graph_simple(graph).sizes(), (m_in1 + m_in2).sizes());
-// }
-//
-//
 
 test::ops::eval_function_t get_golden_eval_function(const tt::ops::OpType& op_type)
 {
@@ -100,15 +150,8 @@ test::ops::eval_function_t get_golden_eval_function(const tt::ops::OpType& op_ty
 
 TEST_P(SimpleEltwiseUnary, test_eltwise_unary_eval)
 {
-    // Evaluate the graph node by node.
-    auto output = eval_graph();
-
-    // Compute golden output.
-    auto input_tensors = get_input_tensors();
     auto golden_eval = get_golden_eval_function(GetParam().op.type());
-    auto golden_output = golden_eval(input_tensors);
-
-    assert_equal(golden_output, output);
+    verify_fwd(golden_eval);
 }
 
 TEST_P(SimpleEltwiseUnary, test_eltwise_unary_decompose)
@@ -116,34 +159,26 @@ TEST_P(SimpleEltwiseUnary, test_eltwise_unary_decompose)
     // TODO: decomposing context needs `compiler_cfg`; passing nullptr for now...
     tt::decompose_tt_forge_graph<DecomposeEpoch::Initial>(get_graph(), std::shared_ptr<void>(nullptr, [](void*) {}));
 
-    // Evaluate the graph node by node.
-    auto output = eval_graph();
-
-    // Compute golden output.
-    auto input_tensors = get_input_tensors();
     auto golden_eval = get_golden_eval_function(GetParam().op.type());
-    auto golden_output = golden_eval(input_tensors);
-
-    assert_equal(golden_output, output);
+    verify_fwd(golden_eval);
 }
 
 TEST_P(SimpleEltwiseUnary, test_eltwise_unary_backward)
 {
     run_autograd();
 
-    // Verify the forward path.
-    auto output = eval_graph();
     auto golden_eval = get_golden_eval_function(GetParam().op.type());
-    auto golden_output = golden_eval(get_input_tensors());
-    assert_equal(golden_output, output);
+    verify_fwd(golden_eval);
 
-    auto bwd_output = eval_graph(tt::graphlib::NodeEpochType::Backward);
+    auto golden_output = get_fwd_output_tensor();
+
+    eval_graph(tt::graphlib::NodeEpochType::Backward);
     {
         pybind11::gil_scoped_release gil_release;
         golden_output.backward(generated_grad());
     }
 
-    assert_equal(get_input_tensors()[0].grad(), bwd_output);
+    verify_bwd();
 }
 
 void test_range()
