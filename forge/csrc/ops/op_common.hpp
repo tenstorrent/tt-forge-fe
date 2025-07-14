@@ -14,7 +14,7 @@ namespace tt
 namespace graphlib
 {
 class Shape;
-using DimBroadcast = std::tuple<int, int, int>;
+class DimBroadcast;
 }  // namespace graphlib
 
 namespace ops
