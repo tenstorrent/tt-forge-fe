@@ -275,6 +275,29 @@ void GraphModule(py::module &m_graph)
         .value("FORGE", Shape::Type::FORGE)
         .export_values();
 
+    py::class_<graphlib::DimBroadcast>(m_graph, "DimBroadcast")
+        .def(py::init<int, int, int>(), py::arg("operand"), py::arg("dim"), py::arg("size"))
+        .def("operand", &graphlib::DimBroadcast::operand)
+        .def("dim", &graphlib::DimBroadcast::dim)
+        .def("size", &graphlib::DimBroadcast::size)
+        .def(
+            "__repr__",
+            [](const graphlib::DimBroadcast &db)
+            {
+                return "DimBroadcast(operand=" + std::to_string(db.operand()) + ", dim=" + std::to_string(db.dim()) +
+                       ", size=" + std::to_string(db.size()) + ")";
+            })
+        .def(py::pickle(
+            [](const graphlib::DimBroadcast &db) {  // __getstate__
+                return py::make_tuple(db.operand(), db.dim(), db.size());
+            },
+            [](py::tuple t) {  // __setstate__
+                if (t.size() != 3)
+                    throw std::runtime_error("graphlib::DimBroadcast: Invalid state!");
+
+                return graphlib::DimBroadcast(t[0].cast<int>(), t[1].cast<int>(), t[2].cast<int>());
+            }));
+
     py::class_<graphlib::NodeContext>(m_graph, "NodeContext")
         .def_readonly("id", &graphlib::NodeContext::id)
         .def_readonly("name", &graphlib::NodeContext::name)

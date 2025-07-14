@@ -4,6 +4,7 @@
 
 
 from forge._C import DataFormat
+from forge._C.graph import DimBroadcast
 import torch
 
 from forge.forgeglobal import TILE_DIM
@@ -120,12 +121,12 @@ def shape(type, attr, ops):
     if len(ops[0]) >= 3:
         if ops[0][-3] != ops[1][-3]:
             if ops[0][-3] == 1:
-                broadcast.append((0, len(ops[0]) - 3, ops[1][-3]))
+                broadcast.append(DimBroadcast(0, len(ops[0]) - 3, ops[1][-3]))
                 output_dim.append(ops[1][-3])
             elif ops[1][-3] == 1:
                 if type != "sparse_matmul":
                     # Sparse matmul can automatically handle broadcast in this case
-                    broadcast.append((1, len(ops[0]) - 3, ops[0][-3]))
+                    broadcast.append(DimBroadcast(1, len(ops[0]) - 3, ops[0][-3]))
                 output_dim.append(ops[0][-3])
             else:
                 assert False, "If Z dimension is not the same for matmul, one of operands must have it be 1."
@@ -135,9 +136,9 @@ def shape(type, attr, ops):
     # Inner dim broadcast
     if ops[0][-1] != ops[1][-2]:
         if ops[0][-1] == 1:
-            broadcast.append((0, len(ops[0]) - 1 - ops0_padding, ops[1][-2]))
+            broadcast.append(DimBroadcast(0, len(ops[0]) - 1 - ops0_padding, ops[1][-2]))
         elif ops[1][-2] == 1:
-            broadcast.append((1, len(ops[0]) - 2 - ops1_padding, ops[0][-1]))
+            broadcast.append(DimBroadcast(1, len(ops[0]) - 2 - ops1_padding, ops[0][-1]))
         else:
             if type == "sparse_matmul":
                 assert ops[0][-1] == ops[1][-2] * ops[1][-3], "Inner dimensions don't match for sparse matmul."
