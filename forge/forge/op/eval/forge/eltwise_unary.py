@@ -63,7 +63,6 @@ def eval(type, attr, ops):
         or (type == "clip" and len(attr) == 2)
         or (type == "erf" and len(attr) == 0)
         or (type == "leaky_relu" and len(attr) == 1)
-        or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
         or (type == "dropout" and len(attr) == 3)
         or (type == "tile_broadcast" and len(attr) == 2)
@@ -88,36 +87,10 @@ def eval(type, attr, ops):
         torch.set_rng_state(rng_state)
         return ret
 
-    if type == "relu":
-
-        def relu(x, threshold):
-            return x * (x >= threshold).to(x.dtype)
-
-        def inv_relu(x, threshold):
-            ir = threshold * (x >= threshold).to(x.dtype) + x * (~(x >= threshold)).to(x.dtype)
-            return relu(ir, 0.0)
-
-        x = t_ops[0]
-        if len(attr) > 0:
-            threshold = attr[0]
-        else:
-            threshold = 0.0
-        if len(attr) > 1:
-            mode = attr[1]
-        else:
-            mode = "min"
-
-        if mode == "min":
-            return relu(x, threshold)
-        else:
-            return inv_relu(x, threshold)
-
-    # relu_threshold = attr[0] if len(attr) > 0 else 0.0
     f = {
         "erf": lambda i: torch.erf(i[0]),
         "exp": lambda i: torch.exp(i[0]),
         "sqrt": lambda i: torch.sqrt(i[0]),
-        # "relu": lambda i: i[0] * (i[0] >= relu_threshold).to(i[0].dtype),
         "leaky_relu": lambda i: torch.nn.functional.leaky_relu(i[0], attr[0]),
         "gelu": lambda i: gelu_forward(i[0], approximate=attr[0]),
         "gelu_derivative": lambda i: gelu_derivative(i[0], approximate=attr[0]),
@@ -154,7 +127,6 @@ def shape(type, attr, ops):
         or (type == "ethernet_datacopy" and (len(attr) == 1 or len(attr) == 2))
         or (type == "clip" and len(attr) == 2)
         or (type == "leaky_relu" and len(attr) == 1)
-        or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
         or (type == "dropout" and len(attr) == 3)
         or (type == "tile_broadcast" and len(attr) == 2)
@@ -182,7 +154,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         len(attr) == 0
         or (type == "clip" and len(attr) == 2)
         or (type == "leaky_relu" and len(attr) == 1)
-        or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
         or (type == "dropout" and len(attr) == 3)
         or (type == "tile_broadcast" and len(attr) == 2)
@@ -214,29 +185,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         rec = ac.op(Reciprocal.create(), (output,))
         mult = ac.op("multiply", (rec, ac.constant(0.5)))
         return ac.op("multiply", (mult, grad))
-
-    if type == "relu":
-        # set theashold
-        threshold = 0.0
-        shape = inputs[0].shape.as_list()
-        if len(attr) > 0:
-            f32_epsilon = 1.19209289551e-07
-            threshold = attr[0] - f32_epsilon
-        threshold_tensor = ac.tensor(torch.zeros(shape) + threshold)
-
-        # handle different modes
-        mode = "min"
-        if len(attr) > 1:
-            mode = attr[1]
-
-        if mode == "min":
-            relud = ac.op("greater_equal", (inputs[0], threshold_tensor))
-        else:
-            l_relud = ac.op("less", (inputs[0], threshold_tensor))
-            g_relud = ac.op("greater_equal", (inputs[0], ac.tensor(torch.zeros(shape))))
-            relud = ac.op("multiply", (l_relud, g_relud))
-
-        return ac.op("multiply", (relud, grad))
 
     if type == "leaky_relu":
         alpha = ac.constant(attr[0])
@@ -352,7 +300,6 @@ def initial_flops_estimate(type, attr, ops):
     sfpu_unary_ops = [
         "exp",
         "sqrt",
-        "relu",
         "leaky_relu",
         "gelu",
         "gelu_derivative",

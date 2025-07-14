@@ -87,13 +87,12 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
         one_torch = torch.tensor([1.0]).reshape([1] * len(in0.shape))
         one = ac.tensor(one_torch)
-        threshold = 1.0
         fast = False
         if fast:
             # This version treats multiple maximal values equally (unlike pytorch)
             mask = ac.op("subtract", [in0, output])  # has 0.0 in max positions and < 0.0 everywhere else
             mask = ac.op("add", [mask, one])  # has 1.0 in max positions and < 1.0 everywhere else
-            mask = ac.op("relu", [mask], (threshold,))  # has 1.0 in max posistions, 0.0 everywhere else
+            mask = ac.op("greater_equal", [mask, one])  # has 1.0 in max positions, 0.0 everywhere else
             return ac.op("multiply", [grad, mask])
         else:
             # This version takes only the first of multiple maximal values (like pytorch)
@@ -105,12 +104,12 @@ def backward(type, attr, ac, operand, inputs, output, grad):
             neg_range = ac.tensor(neg_range_torch)
             mask = ac.op("subtract", [in0, output])  # has 0.0 in max positions and < 0.0 everywhere else
             mask = ac.op("add", [mask, one])  # has 1.0 in max positions and < 1.0 everywhere else
-            mask = ac.op("relu", [mask], (threshold,))  # has 1.0 in max posistions, 0.0 everywhere else
+            mask = ac.op("greater_equal", [mask, one])  # has 1.0 in max positions, 0.0 everywhere else
             mask = ac.op("multiply", [mask, neg_range])  # puts range N...1 in max positions, 0.0 everywhere else
             redc = ac.op("reduce_max", [mask], (dim, stride))  # argmax
             mask = ac.op("subtract", [mask, redc])  # Orig range - argmax, 0.0 in FIRST max position
             mask = ac.op("add", [mask, one])  # has 1.0 is first max position, and < 1.0 everywhere else
-            mask = ac.op("relu", [mask], (threshold,))  # has 1.0 is first max position, and 0.0 everywhere else
+            mask = ac.op("greater_equal", [mask, one])  # has 1.0 is first max position, and 0.0 everywhere else
             return ac.op("multiply", [grad, mask])
 
     if type == "reduce_sum":
