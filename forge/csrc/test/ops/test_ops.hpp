@@ -2,14 +2,19 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+#pragma once
+
 #include <gtest/gtest.h>
+#include <torch/torch.h>
 
 #include <ostream>
+#include <unordered_map>
 #include <utility>
 #include <utils/env.hpp>
 
 #include "autograd/autograd.hpp"
 #include "graph_lib/utils.hpp"
+#include "passes/decomposing_context.hpp"
 #include "test/common.hpp"
 #include "verif/verif_ops.hpp"
 
@@ -80,6 +85,16 @@ class BaseOpTest : public ForgeGraphTest
 
     BaseOpTest(const OpTestParam& param) : BaseOpTest(param.op, param.input_shapes) {}
 
+    void SetUp() override
+    {
+        ForgeGraphTest::SetUp();
+
+        // First forward pass (before any graph modification).
+        // Save the results as golden tensors.
+        auto output_tensors = eval_graph();
+        golden_tensors_ = output_tensors;
+    }
+
     std::vector<OpType*> create_graph() override
     {
         std::vector<graphlib::Node*> inputs;
@@ -127,7 +142,7 @@ class BaseOpTest : public ForgeGraphTest
                 continue;
             }
 
-            // For each input in the backward graph, we need to generate a random tensor.
+            // For each gradient input in the backward graph, we need to generate a random tensor.
             generated_grads_[node->name()] = torch::rand(torch_shape(node->shape()));
         }
 
@@ -138,7 +153,8 @@ class BaseOpTest : public ForgeGraphTest
         }
     }
 
-    void eval_graph(graphlib::NodeEpochType epoch_type = graphlib::NodeEpochType::Forward)
+    std::unordered_map<std::string, torch::Tensor> eval_graph(
+        graphlib::NodeEpochType epoch_type = graphlib::NodeEpochType::Forward)
     {
         graphlib::Graph* graph = get_graph();
 
@@ -183,15 +199,7 @@ class BaseOpTest : public ForgeGraphTest
             }
         }
 
-        // EXPECT_TRUE(
-        //     graph
-        //         ->nodes([epoch_type](Node* n)
-        //                 { return n->get_epoch_type() == epoch_type && n->node_type() == graphlib::NodeType::kOutput;
-        //                 })
-        //         .size() == 1)
-        //     << "Graph should have exactly one output, but found " << graph->get_ordered_output_names().size()
-        //     << " outputs";
-
+        std::unordered_map<std::string, torch::Tensor> output_tensors;
         for (const Node* node : graphlib::topological_sort(*graph))
         {
             // Skip nodes that are not in the specified epoch type.
@@ -230,41 +238,12 @@ class BaseOpTest : public ForgeGraphTest
                 EXPECT_TRUE(intermediate_tensors.find(output->name()) != intermediate_tensors.end())
                     << "Output tensor for node " << output->name() << " not found in intermediate_tensors map";
 
-                output_tensors_[node->name()] = intermediate_tensors.at(output->name());
+                output_tensors[node->name()] = intermediate_tensors.at(output->name());
             }
         }
+
+        return output_tensors;
     }
-
-    torch::Tensor get_fwd_output_tensor()
-    {
-        auto output_nodes = get_graph()->nodes_by_type(graphlib::NodeType::kOutput);
-        for (const auto& output_node : output_nodes)
-        {
-            if (output_node->get_epoch_type() != graphlib::NodeEpochType::Forward)
-            {
-                continue;  // Skip backward output nodes.
-            }
-
-            const auto output_name = output_node->name();
-            EXPECT_TRUE(output_tensors_.find(output_name) != output_tensors_.end())
-                << "Output tensor for node " << output_name << " not found in output_tensors_ map";
-            return output_tensors_.at(output_name);
-        }
-        throw std::runtime_error("No forward output node found in the graph.");
-    }
-
-    /// @brief Evaluates the whole graph and compares the output to a golden evaluation function.
-    /// @param golden_eval A function that takes a vector of input tensors and returns the expected output tensor.
-    /// @return void
-    ///
-    /// This function retrieves the graph, collects input tensors, and evaluates each operation in the graph
-    /// using the `.eval()` mechanism implemented for each operation type.
-    ///
-    /// Compares the evaluated output of the whole graph to the output of the golden evaluation function.
-    ///
-    /// Also verifies that the shapes of each operation in the graph match to the shapes of the tensors calculated
-    /// by the `.eval()` method.
-    void eval_graph_and_compare(eval_function_t golden_eval) { auto input_tensors = get_input_tensors(); }
 
     std::vector<torch::Tensor> get_input_tensors()
     {
@@ -279,43 +258,49 @@ class BaseOpTest : public ForgeGraphTest
         return tensors;
     }
 
-    /// @brief Verifies the forward output of the graph against a golden evaluation function.
-    /// @param golden_eval A function that takes a vector of input tensors and returns the expected output tensor.
+    /// @brief Verifies the forward output of the graph against the golden output (before any graph modifications).
     /// @return void
-    void verify_fwd(std::function<torch::Tensor(const std::vector<torch::Tensor>&)> golden_eval)
+    void verify_fwd()
     {
         // Evaluate the graph node by node.
-        eval_graph();
+        auto output_tensors = eval_graph();
 
         // Compute golden output.
-        auto input_tensors = get_input_tensors();
-        auto golden_output = golden_eval(input_tensors);
-        auto output_nodes = get_graph()->nodes_by_type(graphlib::NodeType::kOutput);
+        EXPECT_EQ(golden_tensors_.size(), output_tensors.size())
+            << "Golden tensors and output tensors should have the same size";
 
-        // Get the fowrard output node and verify that it's equal to the golden output.
-        auto fwd_output_count = std::count_if(
-            output_nodes.begin(),
-            output_nodes.end(),
-            [](const graphlib::Node* node) { return node->get_epoch_type() == graphlib::NodeEpochType::Forward; });
+        for (const auto& [output_name, golden_tensor] : golden_tensors_)
+        {
+            EXPECT_TRUE(output_tensors.find(output_name) != output_tensors.end())
+                << "Output tensor for node " << output_name << " not found in output_tensors_ map";
+            const auto& output_tensor = output_tensors.at(output_name);
 
-        EXPECT_EQ(fwd_output_count, 1) << "Graph should have exactly one forward output, but found " << fwd_output_count
-                                       << " forward outputs";
-
-        auto fwd_output_node = *std::find_if(
-            output_nodes.begin(),
-            output_nodes.end(),
-            [](const graphlib::Node* node) { return node->get_epoch_type() == graphlib::NodeEpochType::Forward; });
-
-        const auto output_name = fwd_output_node->name();
-        EXPECT_TRUE(output_tensors_.find(output_name) != output_tensors_.end())
-            << "Output tensor for node " << output_name << " not found in output_tensors_ map";
-        auto output_tensor = output_tensors_.at(output_name);
-
-        assert_equal(golden_output, output_tensor);
+            // Verify that the golden tensor matches the output tensor.
+            assert_equal(golden_tensor, output_tensor);
+        }
     }
 
-    void verify_bwd()
+    void compare_with_golden(const std::unordered_map<std::string, torch::Tensor>& output_tensors)
     {
+        // Compare the output tensors with the golden tensors.
+        EXPECT_EQ(golden_tensors_.size(), output_tensors.size())
+            << "Golden tensors and output tensors should have the same size";
+
+        for (const auto& [output_name, golden_tensor] : golden_tensors_)
+        {
+            EXPECT_TRUE(output_tensors.find(output_name) != output_tensors.end())
+                << "Output tensor for node " << output_name << " not found in output_tensors_ map";
+            const auto& output_tensor = output_tensors.at(output_name);
+
+            // Verify that the golden tensor matches the output tensor.
+            assert_equal(golden_tensor, output_tensor);
+        }
+    }
+
+    void verify_bwd_gradients(std::unordered_map<std::string, torch::Tensor>& computed_grads)
+    {
+        run_torch_backward();
+
         for (const auto& input_node : get_graph()->ordered_module_inputs())
         {
             EXPECT_TRUE(input_tensors_.find(input_node->name()) != input_tensors_.end())
@@ -335,48 +320,44 @@ class BaseOpTest : public ForgeGraphTest
             EXPECT_TRUE(input_tensors_.find(input_node->name()) != input_tensors_.end())
                 << "Input tensor for node " << input_node->name() << " not found in input_tensors_ map";
             auto input_tensor = input_tensors_.at(input_node->name());
-            EXPECT_TRUE(output_tensors_.find(grad_node->name()) != output_tensors_.end())
+            EXPECT_TRUE(computed_grads.find(grad_node->name()) != computed_grads.end())
                 << "Gradient tensor for node " << grad_node->name() << " not found in output_tensors_ map";
-            auto grad_tensor = output_tensors_.at(grad_node->name());
+            auto grad_tensor = computed_grads.at(grad_node->name());
 
             // Verify that the input tensor's gradient matches our calculated gradient tensor.
             assert_equal(input_tensor.grad(), grad_tensor);
         }
     }
 
-    std::vector<std::pair<torch::Tensor, torch::Tensor>> get_output_tensors_with_grads()
-    {
-        std::vector<std::pair<torch::Tensor, torch::Tensor>> tensors;
-        tensors.reserve(input_tensors_.size());
-        for (const auto& input_node : get_graph()->ordered_module_inputs())
-        {
-            EXPECT_TRUE(input_tensors_.find(input_node->name()) != input_tensors_.end())
-                << "Input tensor for node " << input_node->name() << " not found in input_tensors_ map";
-
-            // Find the input's gradient node.
-            auto grad_edge = get_graph()->edges(
-                input_node,
-                [](const graphlib::Edge& edge)
-                { return edge.edge_type == graphlib::EdgeType::kAutogradInputToGradientOut; });
-            EXPECT_TRUE(grad_edge.size() == 1)
-                << "Input node " << input_node->name() << " should have exactly one gradient edge, but found "
-                << grad_edge.size() << " edges";
-
-            auto grad_node = get_graph()->node_by_id(grad_edge.front().consumer_node_id);
-
-            EXPECT_TRUE(input_tensors_.find(input_node->name()) != input_tensors_.end())
-                << "Input tensor for node " << input_node->name() << " not found in input_tensors_ map";
-            auto input_tensor = input_tensors_.at(input_node->name());
-            EXPECT_TRUE(output_tensors_.find(grad_node->name()) != output_tensors_.end())
-                << "Gradient tensor for node " << grad_node->name() << " not found in output_tensors_ map";
-            auto grad_tensor = output_tensors_.at(grad_node->name());
-
-            tensors.push_back(std::make_pair(input_tensor, grad_tensor));
-        }
-        return tensors;
-    }
-
     torch::Tensor generated_grad() const { return generated_grads_.begin()->second; }
+
+    /// @brief Runs torch backward on the golden output tensors.
+    void run_torch_backward()
+    {
+        // Run torch backward on the golden output tensors.
+        pybind11::gil_scoped_release gil_release;
+        for (const auto& [name, tensor] : golden_tensors_)
+        {
+            EXPECT_TRUE(tensor.requires_grad())
+                << "Golden tensor " << name << " does not require gradient, cannot run backward";
+
+            // Find the gradient tensor (input to bwd) for this output tensor.
+            auto edge = get_graph()->edges(
+                get_graph()->get_node_by_name(name),
+                [](const graphlib::Edge& edge) { return edge.edge_type == graphlib::EdgeType::kAutogradOutputToLoss; });
+            EXPECT_TRUE(edge.size() == 1)
+                << "Golden tensor " << name << " should have exactly one gradient edge, but found " << edge.size()
+                << " edges";
+
+            // The gradient tensor is the input to the backward graph.
+            auto output_node = get_graph()->node_by_id(edge.front().consumer_node_id);
+            auto grad_name = output_node->name();
+
+            EXPECT_TRUE(generated_grads_.find(grad_name) != generated_grads_.end())
+                << "Generated gradient for tensor " << name << " not found in generated_grads_ map";
+            tensor.backward(generated_grads_.at(grad_name));
+        }
+    }
 
    private:
     // Convert our shape into torch shape.
@@ -394,9 +375,48 @@ class BaseOpTest : public ForgeGraphTest
     tt::ops::Op op_;
     std::vector<graphlib::Shape> input_shapes_;
     std::unordered_map<std::string, torch::Tensor> input_tensors_;
-    std::unordered_map<std::string, torch::Tensor> output_tensors_;
     std::unordered_map<std::string, torch::Tensor> generated_grads_;
+    std::unordered_map<std::string, torch::Tensor> golden_tensors_;
 };
+
+struct SimpleOpTest : public BaseOpTest, testing::WithParamInterface<OpTestParam>
+{
+   public:
+    SimpleOpTest() : BaseOpTest(GetParam()) {}
+
+    static std::string get_test_name(const testing::TestParamInfo<SimpleOpTest::ParamType>& info)
+    {
+        const auto& param = info.param;
+        static std::unordered_map<std::string, size_t> op_name_id_map;
+
+        auto op_name = param.op.as_string();
+        return param.op.as_string() + std::to_string(op_name_id_map[op_name]++);
+    }
+};
+
+TEST_P(SimpleOpTest, test_decompose)
+{
+    // TODO: decomposing context needs `compiler_cfg`; passing nullptr for now...
+    tt::decompose_tt_forge_graph<DecomposeEpoch::Initial>(get_graph(), std::shared_ptr<void>(nullptr, [](void*) {}));
+
+    // Evaluate the graph node by node.
+    auto outputs = eval_graph();
+    compare_with_golden(outputs);
+}
+
+// Tests backward implementation for the operation by running the autograd engine on the
+// initial graph and verifying that the evaluation of the backward graph matches the torch `output.backward()` call.
+TEST_P(SimpleOpTest, test_backward)
+{
+    run_autograd();
+
+    // Confirm that the forward pass produced the expected output.
+    auto outputs = eval_graph();
+    compare_with_golden(outputs);
+
+    auto computed_grads = eval_graph(graphlib::NodeEpochType::Backward);
+    verify_bwd_gradients(computed_grads);
+}
 
 template <size_t N>
 auto shape_range(const std::array<uint32_t, N>& start, const std::array<uint32_t, N>& end, uint32_t step = 1)
@@ -444,7 +464,9 @@ auto shape_range(const std::array<uint32_t, N>& start, const std::array<uint32_t
         testing::ConvertGenerator(                                                                                     \
             testing::Combine(                                                                                          \
                 testing::Values(op), shape_range(std::array<uint32_t, 1>{1}, std::array<uint32_t, 1>{5})),             \
-            [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }));              \
+            [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),               \
+        [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info)                                                \
+        { return SimpleOpTest::get_test_name(info); });                                                                \
                                                                                                                        \
     INSTANTIATE_TEST_SUITE_P(                                                                                          \
         op_name##Op2DRange,                                                                                            \
@@ -452,7 +474,9 @@ auto shape_range(const std::array<uint32_t, N>& start, const std::array<uint32_t
         testing::ConvertGenerator(                                                                                     \
             testing::Combine(                                                                                          \
                 testing::Values(op), shape_range(std::array<uint32_t, 2>{1, 1}, std::array<uint32_t, 2>{5, 5})),       \
-            [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }));              \
+            [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),               \
+        [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info)                                                \
+        { return SimpleOpTest::get_test_name(info); });                                                                \
                                                                                                                        \
     INSTANTIATE_TEST_SUITE_P(                                                                                          \
         op_name##Op3DRange,                                                                                            \
@@ -460,7 +484,9 @@ auto shape_range(const std::array<uint32_t, N>& start, const std::array<uint32_t
         testing::ConvertGenerator(                                                                                     \
             testing::Combine(                                                                                          \
                 testing::Values(op), shape_range(std::array<uint32_t, 3>{1, 1, 1}, std::array<uint32_t, 3>{5, 1, 5})), \
-            [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }));              \
+            [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),               \
+        [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info)                                                \
+        { return SimpleOpTest::get_test_name(info); });                                                                \
                                                                                                                        \
     INSTANTIATE_TEST_SUITE_P(                                                                                          \
         op_name##Op4DRange,                                                                                            \
@@ -469,6 +495,8 @@ auto shape_range(const std::array<uint32_t, N>& start, const std::array<uint32_t
             testing::Combine(                                                                                          \
                 testing::Values(op),                                                                                   \
                 shape_range(std::array<uint32_t, 4>{1, 1, 1, 1}, std::array<uint32_t, 4>{5, 1, 1, 5})),                \
-            [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }));
+            [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),               \
+        [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info)                                                \
+        { return SimpleOpTest::get_test_name(info); });
 
 }  // namespace tt::test::ops
