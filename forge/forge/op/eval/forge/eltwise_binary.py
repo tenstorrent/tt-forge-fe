@@ -2,7 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import os
 from typing import List, Tuple
 from forge.forgeglobal import TILE_DIM
 from forge.tensor import Tensor
@@ -24,8 +23,6 @@ def eval(type, attr, ops):
     t_ops = to_torch_operands(*ops)
 
     f = {
-        "maximum": lambda i: torch.maximum(t_ops[0], t_ops[1]),
-        "minimum": lambda i: torch.minimum(t_ops[0], t_ops[1]),
         "heaviside": lambda i: torch.heaviside(t_ops[0], t_ops[1]),
         "power": lambda i: torch.pow(t_ops[0], t_ops[1]),
         "greater": lambda i: torch.gt(t_ops[0], t_ops[1]).to(t_ops[0].dtype),
@@ -92,11 +89,7 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
     grad_shape = [1] * (longer_dims - len(grad.shape.as_list())) + grad.shape.as_list()
     grad_shape_len = len(grad_shape)
 
-    if op_type == "maximum":
-        # TODO
-        return ac.op(Nop.create(), (grad,))  # pass gradient through
-
-    elif op_type == "power":
+    if op_type == "power":
         if operand == 0:  # dx = y * (x^y) * recp(x)
             recip = ac.op(Reciprocal.create(), (inputs[0],))
             partial_grad = ac.op("multiply", (output, recip))
@@ -126,45 +119,7 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
         res = dc.op("add", (res, x_gt))
         dc.fuse(res)
         return
-    elif op_type == "maximum" and os.environ.get("FORGE_ENABLE_MAXIMUM_DECOMPOSITION", "0") == "1":
-        operand0, operand1 = inputs[0], inputs[1]
-        orig_op0_shape = operand0.shape.as_list()
-        orig_op1_shape = operand1.shape.as_list()
-        vslice_op0, vslice_op1 = False, False
-        slice_factor = None
 
-        if len(orig_op1_shape) > 2 and orig_op1_shape[-3] != 1:
-            slice_factor = orig_op1_shape[-3]
-            vslice_op1 = True
-
-        if len(orig_op0_shape) > 2 and orig_op0_shape[-3] != 1:
-            slice_factor = orig_op0_shape[-3]
-            vslice_op0 = True
-
-        if vslice_op0 and vslice_op1:
-            assert orig_op0_shape[-3] == orig_op1_shape[-3]
-
-        op0_shape = operand0.shape.as_list()
-        op1_shape = operand1.shape.as_list()
-
-        max_operand_nd = max(len(op0_shape), len(op1_shape), 3)
-        while len(operand0.shape) < max_operand_nd:
-            operand0 = dc.op_with_named_attrs("unsqueeze", [operand0], {"dim": 0}, (0, len(operand0.shape)))
-        while len(operand1.shape) < max_operand_nd:
-            operand1 = dc.op_with_named_attrs("unsqueeze", [operand1], {"dim": 0}, (0, len(operand1.shape)))
-
-        if slice_factor != None:
-            concat_z = dc.op("interleave", [operand0, operand1], (-3, 1))
-            result = dc.op("reduce_max", [concat_z], (-3, 2))
-        else:
-            concat_z = dc.op_with_named_attrs("concatenate", [operand0, operand1], {"dim": -3})
-            result = dc.op("reduce_max", [concat_z], (-3,))
-
-        while len(result.shape) > max_operand_nd:
-            result = dc.op("squeeze", [result], (0,))
-
-        dc.fuse(result)
-        return
     # Temporarily commented out until we migrate ops to cpp (will remove later)
     # else:
     # ops0_dims = len(inputs[0].shape)
@@ -186,7 +141,7 @@ def decompose_post_optimize(op_type, attr, dc, inputs):
 def initial_flops_estimate(type, attr, ops):
     flops = 0
     output_shape = shape(type, attr, ops)[0]
-    if type in ["add", "power", "maximum", "minumum"]:
+    if type in ["power"]:
         flops = np.prod(output_shape)
 
     return flops
