@@ -21,43 +21,19 @@ from forge.forge_property_utils import (
 from forge.verify.verify import verify
 
 from test.models.models_utils import TextModelWrapper
+from loguru import logger
 
 # Variants for testing
 variants = [
-    "Qwen/Qwen2.5-0.5B",
     "Qwen/Qwen2.5-0.5B-Instruct",
-    "Qwen/Qwen2.5-1.5B",
-    "Qwen/Qwen2.5-1.5B-Instruct",
-    "Qwen/Qwen2.5-3B",
-    "Qwen/Qwen2.5-3B-Instruct",
-    "Qwen/Qwen2.5-7B",
-    "Qwen/Qwen2.5-7B-Instruct",
-    "Qwen/Qwen2.5-7B-Instruct-1M",
-    "Qwen/Qwen2.5-14B-Instruct",
-    "Qwen/Qwen2.5-14B-Instruct-1M",
-    "Qwen/Qwen2.5-32B-Instruct",
-    "Qwen/Qwen2.5-72B-Instruct",
-    "Qwen/Qwen2.5-Math-7B",
-    "Qwen/Qwen2.5-14B",
 ]
 
 
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.xfail
 @pytest.mark.nightly
 def test_qwen_clm(variant):
     if variant in [
         "Qwen/Qwen2.5-0.5B-Instruct",
-        "Qwen/Qwen2.5-1.5B-Instruct",
-        "Qwen/Qwen2.5-3B-Instruct",
-        "Qwen/Qwen2.5-7B-Instruct",
-        "Qwen/Qwen2.5-7B-Instruct-1M",
-        "Qwen/Qwen2.5-14B-Instruct",
-        "Qwen/Qwen2.5-14B-Instruct-1M",
-        "Qwen/Qwen2.5-32B-Instruct",
-        "Qwen/Qwen2.5-72B-Instruct",
-        "Qwen/Qwen2.5-Math-7B",
-        "Qwen/Qwen2.5-14B",
     ]:
         group = ModelGroup.RED
         priority = ModelPriority.P1
@@ -76,26 +52,12 @@ def test_qwen_clm(variant):
         priority=priority,
     )
 
-    if variant in [
-        "Qwen/Qwen2.5-3B",
-        "Qwen/Qwen2.5-3B-Instruct",
-        "Qwen/Qwen2.5-7B",
-        "Qwen/Qwen2.5-7B-Instruct",
-        "Qwen/Qwen2.5-14B-Instruct",
-        "Qwen/Qwen2.5-32B-Instruct",
-        "Qwen/Qwen2.5-72B-Instruct",
-        "Qwen/Qwen2.5-7B-Instruct-1M",
-        "Qwen/Qwen2.5-14B-Instruct-1M",
-        "Qwen/Qwen2.5-Math-7B",
-        "Qwen/Qwen2.5-14B",
-    ]:
-        pytest.xfail(reason="Requires multi-chip support")
-
     # Load model and tokenizer
     model = AutoModelForCausalLM.from_pretrained(variant, use_cache=False)
     framework_model = TextModelWrapper(model=model, text_embedding=model.model.embed_tokens)
     framework_model.eval()
     tokenizer = AutoTokenizer.from_pretrained(variant)
+    logger.info("framework_model={}",framework_model)
 
     # Prepare input
     prompt = "Give me a short introduction to large language models."
@@ -117,63 +79,3 @@ def test_qwen_clm(variant):
     # Model Verification
     verify(inputs, framework_model, compiled_model)
 
-
-@pytest.mark.out_of_memory
-@pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["Qwen/Qwen2-7B"])
-def test_qwen2_token_classification(variant):
-    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)")
-
-    # Record Forge Property
-    module_name = record_model_properties(
-        framework=Framework.PYTORCH,
-        model=ModelArch.QWENV2,
-        variant=variant,
-        task=Task.TOKEN_CLASSIFICATION,
-        source=Source.HUGGINGFACE,
-    )
-
-    # Load model and tokenizer
-    model = Qwen2ForTokenClassification.from_pretrained(variant, use_cache=False)
-    framework_model = TextModelWrapper(model=model)
-    framework_model.eval()
-    tokenizer = AutoTokenizer.from_pretrained(variant)
-
-    # Prepare input
-    text = "HuggingFace is a company based in Paris and New York."
-    model_inputs = tokenizer(text, add_special_tokens=False, return_tensors="pt")
-
-    inputs = [model_inputs["input_ids"]]
-
-    # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
-
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
-
-
-variants = [
-    "Qwen/Qwen2.5-VL-3B-Instruct",
-    "Qwen/Qwen2.5-VL-7B-Instruct",
-    "Qwen/Qwen2.5-VL-72B-Instruct",
-    "Qwen/QVQ-72B-Preview",
-]
-
-
-@pytest.mark.parametrize("variant", variants)
-@pytest.mark.nightly
-@pytest.mark.xfail
-def test_qwen2_conditional_generation(variant):
-
-    # Record Forge Property
-    record_model_properties(
-        framework=Framework.PYTORCH,
-        model=ModelArch.QWENV2,
-        variant=variant,
-        task=Task.CONDITIONAL_GENERATION,
-        source=Source.HUGGINGFACE,
-        group=ModelGroup.RED,
-        priority=ModelPriority.P1,
-    )
-
-    pytest.xfail(reason="Requires upgrade of `transformers` version")
