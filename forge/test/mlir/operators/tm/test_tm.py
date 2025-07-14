@@ -575,16 +575,8 @@ def test_stack(input_shapes, dim):
     [
         pytest.param((1, 2), (10, 1)),
         pytest.param((1, 99), (100, 1)),
-        pytest.param(
-            (1, 100),
-            (50, 2),
-            marks=pytest.mark.xfail(reason="info:Incompatible dimensions 200 and 100"),
-        ),
-        pytest.param(
-            (3,),
-            (4, 2),
-            marks=pytest.mark.xfail(reason="info:Incompatible dimensions 6 and 3"),
-        ),
+        pytest.param((1, 100), (50, 2)),
+        pytest.param((3,), (4, 2)),
         pytest.param((4, 1, 4), (1, 10, 1)),
         pytest.param((2, 2, 1, 2), (1, 1, 4, 1)),
         pytest.param((1, 4, 1, 4, 4), (1, 1, 3, 1, 1)),
