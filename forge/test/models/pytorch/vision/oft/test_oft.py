@@ -20,9 +20,8 @@ from forge.verify.verify import verify
 from third_party.tt_forge_models.oft import ModelLoader  # isort:skip
 
 
-@pytest.mark.skip_model_analysis
 @pytest.mark.nightly
-@pytest.mark.skip(reason="Getting hang at generate_initial_graph pass")
+@pytest.mark.xfail
 def test_oft():
     # Record Forge Property
     module_name = record_model_properties(
@@ -32,6 +31,7 @@ def test_oft():
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
     )
+    pytest.xfail(reason="Getting hang at generate_initial_graph pass")
 
     # Load model and input
     framework_model = ModelLoader.load_model()

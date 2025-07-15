@@ -35,10 +35,7 @@ from test.models.pytorch.text.fuyu.model_utils.model import (
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "adept/fuyu-8b",
-            marks=[pytest.mark.skip(reason="Transient failure - Out of memory due to other tests in CI pipeline")],
-        ),
+        pytest.param("adept/fuyu-8b"),
     ],
 )
 def test_fuyu8b(variant):
@@ -46,6 +43,7 @@ def test_fuyu8b(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH, model=ModelArch.FUYU, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
+    pytest.xfail(reason="Requires multi-chip support")
 
     config = FuyuConfig.from_pretrained(variant)
     config_dict = config.to_dict()

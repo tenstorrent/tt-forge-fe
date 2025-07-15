@@ -15,7 +15,6 @@ from test.models.pytorch.text.deepcogito.model_utils.model import get_input_mode
 
 
 @pytest.mark.out_of_memory
-@pytest.mark.skip(reason="Skipping due to CI/CD Limitations")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["deepcogito/cogito-v1-preview-llama-3B"])
 def test_cogito_generation_onnx(forge_tmp_path, variant):
@@ -27,6 +26,7 @@ def test_cogito_generation_onnx(forge_tmp_path, variant):
         task=Task.TEXT_GENERATION,
         source=Source.HUGGINGFACE,
     )
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and tokenizer
     sample_inputs, framework_model = get_input_model(variant)

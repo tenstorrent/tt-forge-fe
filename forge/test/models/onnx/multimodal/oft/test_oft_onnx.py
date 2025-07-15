@@ -10,8 +10,6 @@ from test.models.onnx.multimodal.oft.model_utils.oft_utils import get_inputs, ge
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 
-@pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Segmentation Fault")
 @pytest.mark.parametrize("variant", ["runwayml/stable-diffusion-v1-5"])
 @pytest.mark.nightly
 def test_oft(forge_tmp_path, variant):
@@ -23,6 +21,8 @@ def test_oft(forge_tmp_path, variant):
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
     )
+
+    pytest.xfail(reason="Segmentation Fault")
 
     # Load model and inputs
     pipe, inputs = get_inputs(model=variant)

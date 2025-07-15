@@ -18,7 +18,6 @@ variants = ["meta-llama/Llama-3.2-11B-Vision-Instruct", "meta-llama/Llama-3.2-90
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_llama_vision_Instruct(variant):
 
     # Record Forge Property

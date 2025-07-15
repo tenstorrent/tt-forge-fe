@@ -52,8 +52,6 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_t5_generation(variant):
-    if variant not in {"t5-small", "google/flan-t5-small", "t5-base", "t5-large"}:
-        pytest.skip(f"Skipping {variant} due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -63,6 +61,8 @@ def test_t5_generation(variant):
         task=Task.TEXT_GENERATION,
         source=Source.HUGGINGFACE,
     )
+    if variant not in ["t5-small", "google/flan-t5-small", "t5-base", "t5-large"]:
+        pytest.xfail(reason="Requires multi-chip support")
 
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large

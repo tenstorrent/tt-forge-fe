@@ -26,11 +26,9 @@ Gemma2DecoderLayer.forward = Gemma2DecoderLayer_patched_forward
     [
         pytest.param(
             "google/gemma-2-2b-it",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
         ),
         pytest.param(
             "google/gemma-2-9b-it",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
         ),
     ],
 )
@@ -40,6 +38,8 @@ def test_gemma_v2_onnx(variant, forge_tmp_path):
     module_name = record_model_properties(
         framework=Framework.ONNX, model=ModelArch.GEMMA, variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
+
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
