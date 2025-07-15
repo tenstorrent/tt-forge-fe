@@ -530,19 +530,19 @@ void GraphModule(py::module &m_graph)
            int out_port_id,
            const graphlib::NodeId end,
            int in_port_id,
-           std::vector<py::tuple> operand_broadcast)
+           std::vector<graphlib::DimBroadcast> operand_broadcast)
         {
             graphlib::Edge edge(
                 start, (graphlib::PortId)out_port_id, end, (graphlib::PortId)in_port_id, graphlib::EdgeType::kData);
             graph->add_edge(edge);
             std::shared_ptr<graphlib::EdgeAttributes> attr = graph->get_edge_attributes(edge);
 
-            for (const py::tuple &broadcast : operand_broadcast)
+            for (const graphlib::DimBroadcast &broadcast : operand_broadcast)
             {
-                if (in_port_id == broadcast[0].cast<int>())
+                if (in_port_id == broadcast.operand())
                 {
-                    int dim = broadcast[1].cast<int>();
-                    int size = broadcast[2].cast<int>();
+                    int dim = broadcast.dim();
+                    int size = broadcast.size();
                     attr->set_broadcast_dim(dim, size);
                 }
             }
