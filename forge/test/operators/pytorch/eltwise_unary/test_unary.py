@@ -340,7 +340,7 @@ TestParamsData.test_plan_implemented = TestPlan(
         ),
         # ValueError: Dtype mismatch: framework_model.dtype=torch.float32, compiled_model.dtype=torch.int32
         TestCollection(
-            operators=["sqrt", "exp", "reciprocal", "rsqrt", "log", "sigmoid", "cos", "sin", "tanh"],
+            operators=["sqrt", "exp", "reciprocal", "rsqrt", "log", "sigmoid", "tanh"],
             input_sources=TestCollectionCommon.single.input_sources,
             input_shapes=TestCollectionCommon.single.input_shapes,
             dev_data_formats=[
