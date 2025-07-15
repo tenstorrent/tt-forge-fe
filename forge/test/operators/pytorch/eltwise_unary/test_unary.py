@@ -217,18 +217,18 @@ class TestCollectionData:
     not_implemented = TestCollection(
         operators=[
             "acos",
-            "arccos",
+            # "arccos",  # alias for acos
             "acosh",
-            "arccosh",
+            # "arccosh",  # alias for acosh
             "angle",
             "asin",
-            "arcsin",
+            # "arcsin",  # alias for asin
             "asinh",
-            "arcsinh",
+            # "arcsinh",  # alias for asinh
             "atan",
-            "arctan",
+            # "arctan",  # alias for atan
             "atanh",
-            "arctanh",
+            # "arctanh",  # alias for atanh
             "bitwise_not",
             "ceil",
             "conj_physical",
@@ -240,7 +240,7 @@ class TestCollectionData:
             "erfinv",
             "exp2",
             "expm1",
-            "fix",
+            # "fix",  # alias for trunc
             "floor",
             "frac",
             "lgamma",
@@ -340,7 +340,7 @@ TestParamsData.test_plan_implemented = TestPlan(
         ),
         # ValueError: Dtype mismatch: framework_model.dtype=torch.float32, compiled_model.dtype=torch.int32
         TestCollection(
-            operators=["sqrt", "exp", "reciprocal", "rsqrt", "log", "sigmoid", "cos", "sin", "tanh"],
+            operators=["sqrt", "exp", "reciprocal", "rsqrt", "log", "sigmoid", "tanh"],
             input_sources=TestCollectionCommon.single.input_sources,
             input_shapes=TestCollectionCommon.single.input_shapes,
             dev_data_formats=[
