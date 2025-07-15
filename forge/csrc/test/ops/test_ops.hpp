@@ -16,7 +16,6 @@
 #include "graph_lib/utils.hpp"
 #include "passes/decomposing_context.hpp"
 #include "test/common.hpp"
-#include "verif/verif_ops.hpp"
 
 namespace tt::test::ops
 {
@@ -416,45 +415,6 @@ TEST_P(SimpleOpTest, test_backward)
 
     auto computed_grads = eval_graph(graphlib::NodeEpochType::Backward);
     verify_bwd_gradients(computed_grads);
-}
-
-template <size_t N>
-auto shape_range(const std::array<uint32_t, N>& start, const std::array<uint32_t, N>& end, uint32_t step = 1)
-{
-    static_assert(N <= 4, "Shape range can only be created for up to 4 dimensions.");
-    if constexpr (N == 1)
-    {
-        return testing::ConvertGenerator(
-            testing::Range(start[0], end[0], step),
-            [](const uint32_t& param) { return std::vector{graphlib::Shape({param})}; });
-    }
-    else if constexpr (N == 2)
-    {
-        return testing::ConvertGenerator(
-            testing::Combine(testing::Range(start[0], end[0], step), testing::Range(start[1], end[1], step)),
-            [](const std::tuple<uint32_t, uint32_t>& params) { return std::vector{graphlib::Shape(params)}; });
-    }
-    else if constexpr (N == 3)
-    {
-        return testing::ConvertGenerator(
-            testing::Combine(
-                testing::Range(start[0], end[0], step),
-                testing::Range(start[1], end[1], step),
-                testing::Range(start[2], end[2], step)),
-            [](const std::tuple<uint32_t, uint32_t, uint32_t>& params)
-            { return std::vector{graphlib::Shape(params)}; });
-    }
-    else
-    {
-        return testing::ConvertGenerator(
-            testing::Combine(
-                testing::Range(start[0], end[0], step),
-                testing::Range(start[1], end[1], step),
-                testing::Range(start[2], end[2], step),
-                testing::Range(start[3], end[3], step)),
-            [](const std::tuple<uint32_t, uint32_t, uint32_t, uint32_t>& params)
-            { return std::vector{graphlib::Shape(params)}; });
-    }
 }
 
 template <size_t N, size_t... Is>
