@@ -1,5 +1,4 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
-
 # SPDX-License-Identifier: Apache-2.0
 import os
 
@@ -125,7 +124,6 @@ def eval(type, attr, ops):
         "tilizer": lambda i: i[0],
         "ethernet_datacopy": lambda i: i[0],
         "buffer": lambda i: i[0],
-        "reciprocal": lambda i: torch.reciprocal(i[0] + 1e-10),  # add epsilon to avoid infinity
         "log": lambda i: torch.log(i[0] + 1e-10),  # add epsilon to avoid nan
         "sigmoid": lambda i: torch.sigmoid(i[0]),
         "clip": lambda i: torch.clip(i[0], min=attr[0], max=attr[1]),
@@ -204,11 +202,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     if type == "exp":
         return ac.op("multiply", (output, grad))
-
-    if type == "reciprocal":  # -1/x^2
-        sq = ac.op("multiply", (output, output))
-        neg = ac.op("multiply", (sq, ac.constant(-1)))
-        return ac.op("multiply", (neg, grad))
 
     if type == "sqrt":  # 0.5 / f(x)
         rec = ac.op(Reciprocal.create(), (output,))
@@ -356,7 +349,6 @@ def initial_flops_estimate(type, attr, ops):
         "leaky_relu",
         "gelu",
         "gelu_derivative",
-        "reciprocal",
         "log",
         "sigmoid",
         "abs",
