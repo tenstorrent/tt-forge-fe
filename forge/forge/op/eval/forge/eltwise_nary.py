@@ -13,6 +13,7 @@ from ..sparse_utils import (
     create_flattened_padding_removal_sparse_picker_matrix,
 )
 from loguru import logger
+from forge._C.graph import DimBroadcast
 
 
 def eval(type, attr, ops):
@@ -100,7 +101,7 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
                         ops[op_index][dim_index] == 1
                     ), f"Eltwise nary ops must have same shape or operand must be 1 wide to broadcast: {ops}"
                     broadcast.append(
-                        (
+                        DimBroadcast(
                             op_index,
                             dim_index - len(output_shape),
                             output_shape[dim_index],
