@@ -24,19 +24,19 @@ import pytest
 class Where0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_constant("where0_const_2", shape=(1, 256, 6, 20), dtype=torch.bfloat16)
 
-    def forward(self, where_input_0, where_input_1, where_input_2):
-        where_output_1 = forge.op.Where("", where_input_0, where_input_1, where_input_2)
+    def forward(self, where_input_0, where_input_1):
+        where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where0_const_2"))
         return where_output_1
 
 
 class Where1(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("where1_const_2", shape=(1, 256, 6, 20), dtype=torch.bfloat16)
 
-    def forward(self, where_input_0, where_input_1):
-        where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where1_const_2"))
+    def forward(self, where_input_0, where_input_1, where_input_2):
+        where_output_1 = forge.op.Where("", where_input_0, where_input_1, where_input_2)
         return where_output_1
 
 
@@ -130,142 +130,6 @@ class Where10(ForgeModule):
         return where_output_1
 
 
-class Where11(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("where11_const_1", shape=(1,), dtype=torch.float32)
-        self.add_constant("where11_const_2", shape=(1,), dtype=torch.float32)
-
-    def forward(self, where_input_0):
-        where_output_1 = forge.op.Where(
-            "", where_input_0, self.get_constant("where11_const_1"), self.get_constant("where11_const_2")
-        )
-        return where_output_1
-
-
-class Where12(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("where12_const_2", shape=(1, 256, 10, 32), dtype=torch.bfloat16)
-
-    def forward(self, where_input_0, where_input_1):
-        where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where12_const_2"))
-        return where_output_1
-
-
-class Where13(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("where13_const_2", shape=(1, 256, 20, 64), dtype=torch.bfloat16)
-
-    def forward(self, where_input_0, where_input_1):
-        where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where13_const_2"))
-        return where_output_1
-
-
-class Where14(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("where14_const_2", shape=(1, 128, 20, 64), dtype=torch.bfloat16)
-
-    def forward(self, where_input_0, where_input_1):
-        where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where14_const_2"))
-        return where_output_1
-
-
-class Where15(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("where15_const_2", shape=(1, 128, 40, 128), dtype=torch.bfloat16)
-
-    def forward(self, where_input_0, where_input_1):
-        where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where15_const_2"))
-        return where_output_1
-
-
-class Where16(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("where16_const_2", shape=(1, 64, 40, 128), dtype=torch.bfloat16)
-
-    def forward(self, where_input_0, where_input_1):
-        where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where16_const_2"))
-        return where_output_1
-
-
-class Where17(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("where17_const_2", shape=(1, 64, 80, 256), dtype=torch.bfloat16)
-
-    def forward(self, where_input_0, where_input_1):
-        where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where17_const_2"))
-        return where_output_1
-
-
-class Where18(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("where18_const_2", shape=(1, 32, 80, 256), dtype=torch.bfloat16)
-
-    def forward(self, where_input_0, where_input_1):
-        where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where18_const_2"))
-        return where_output_1
-
-
-class Where19(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("where19_const_2", shape=(1, 32, 160, 512), dtype=torch.bfloat16)
-
-    def forward(self, where_input_0, where_input_1):
-        where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where19_const_2"))
-        return where_output_1
-
-
-class Where20(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("where20_const_2", shape=(1, 16, 160, 512), dtype=torch.bfloat16)
-
-    def forward(self, where_input_0, where_input_1):
-        where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where20_const_2"))
-        return where_output_1
-
-
-class Where21(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("where21_const_2", shape=(1, 16, 320, 1024), dtype=torch.bfloat16)
-
-    def forward(self, where_input_0, where_input_1):
-        where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where21_const_2"))
-        return where_output_1
-
-
-class Where22(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("where22_const_1", shape=(1,), dtype=torch.float32)
-
-    def forward(self, where_input_0, where_input_2):
-        where_output_1 = forge.op.Where("", where_input_0, self.get_constant("where22_const_1"), where_input_2)
-        return where_output_1
-
-
-class Where23(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("where23_const_1", shape=(1,), dtype=torch.float32)
-        self.add_constant("where23_const_2", shape=(1, 1, 256, 256), dtype=torch.float32)
-
-    def forward(self, where_input_0):
-        where_output_1 = forge.op.Where(
-            "", where_input_0, self.get_constant("where23_const_1"), self.get_constant("where23_const_2")
-        )
-        return where_output_1
-
-
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -275,37 +139,30 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Where0,
-        [((1, 6, 3072), torch.bool), ((1, 6, 3072), torch.float32), ((1, 6, 3072), torch.float32)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"], "pcc": 0.99},
-    ),
-    (
-        Where1,
         [((1, 256, 6, 20), torch.bool), ((1, 256, 6, 20), torch.bfloat16)],
         {
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
-        Where0,
+        Where1,
         [((1, 256, 6, 20), torch.bool), ((1, 256, 6, 20), torch.bfloat16), ((1, 256, 6, 20), torch.bfloat16)],
         {
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
@@ -315,27 +172,25 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
-        Where0,
+        Where1,
         [((1, 256, 12, 40), torch.bool), ((1, 256, 12, 40), torch.bfloat16), ((1, 256, 12, 40), torch.bfloat16)],
         {
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
@@ -345,27 +200,25 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
-        Where0,
+        Where1,
         [((1, 128, 12, 40), torch.bool), ((1, 128, 12, 40), torch.bfloat16), ((1, 128, 12, 40), torch.bfloat16)],
         {
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
@@ -375,27 +228,25 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
-        Where0,
+        Where1,
         [((1, 128, 24, 80), torch.bool), ((1, 128, 24, 80), torch.bfloat16), ((1, 128, 24, 80), torch.bfloat16)],
         {
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
@@ -405,27 +256,25 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
-        Where0,
+        Where1,
         [((1, 64, 24, 80), torch.bool), ((1, 64, 24, 80), torch.bfloat16), ((1, 64, 24, 80), torch.bfloat16)],
         {
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
@@ -435,27 +284,25 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
-        Where0,
+        Where1,
         [((1, 64, 48, 160), torch.bool), ((1, 64, 48, 160), torch.bfloat16), ((1, 64, 48, 160), torch.bfloat16)],
         {
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
@@ -465,27 +312,25 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
-        Where0,
+        Where1,
         [((1, 32, 48, 160), torch.bool), ((1, 32, 48, 160), torch.bfloat16), ((1, 32, 48, 160), torch.bfloat16)],
         {
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
@@ -495,27 +340,25 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
-        Where0,
+        Where1,
         [((1, 32, 96, 320), torch.bool), ((1, 32, 96, 320), torch.bfloat16), ((1, 32, 96, 320), torch.bfloat16)],
         {
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
@@ -525,27 +368,25 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
-        Where0,
+        Where1,
         [((1, 16, 96, 320), torch.bool), ((1, 16, 96, 320), torch.bfloat16), ((1, 16, 96, 320), torch.bfloat16)],
         {
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
@@ -555,394 +396,81 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
-        Where0,
+        Where1,
         [((1, 16, 192, 640), torch.bool), ((1, 16, 192, 640), torch.bfloat16), ((1, 16, 192, 640), torch.bfloat16)],
         {
             "model_names": [
                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
     (
-        Where0,
+        Where1,
         [((1, 32, 480, 640), torch.bool), ((1, 32, 480, 640), torch.bfloat16), ((1, 32, 480, 640), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
-        Where0,
+        Where1,
         [((1, 64, 240, 320), torch.bool), ((1, 64, 240, 320), torch.bfloat16), ((1, 64, 240, 320), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
-        Where0,
+        Where1,
         [((1, 32, 240, 320), torch.bool), ((1, 32, 240, 320), torch.bfloat16), ((1, 32, 240, 320), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
-        Where0,
+        Where1,
         [((1, 128, 120, 160), torch.bool), ((1, 128, 120, 160), torch.bfloat16), ((1, 128, 120, 160), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
-        Where0,
+        Where1,
         [((1, 64, 120, 160), torch.bool), ((1, 64, 120, 160), torch.bfloat16), ((1, 64, 120, 160), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
-        Where0,
+        Where1,
         [((1, 256, 60, 80), torch.bool), ((1, 256, 60, 80), torch.bfloat16), ((1, 256, 60, 80), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
-        Where0,
+        Where1,
         [((1, 128, 60, 80), torch.bool), ((1, 128, 60, 80), torch.bfloat16), ((1, 128, 60, 80), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
-        Where0,
+        Where1,
         [((1, 512, 30, 40), torch.bool), ((1, 512, 30, 40), torch.bfloat16), ((1, 512, 30, 40), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
-        Where0,
+        Where1,
         [((1, 256, 30, 40), torch.bool), ((1, 256, 30, 40), torch.bfloat16), ((1, 256, 30, 40), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
-        Where0,
+        Where1,
         [((1, 1024, 15, 20), torch.bool), ((1, 1024, 15, 20), torch.bfloat16), ((1, 1024, 15, 20), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
-        Where0,
+        Where1,
         [((1, 512, 15, 20), torch.bool), ((1, 512, 15, 20), torch.bfloat16), ((1, 512, 15, 20), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
-    ),
-    (
-        Where11,
-        [((1, 1, 256, 256), torch.bool)],
-        {
-            "model_names": [
-                "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where12,
-        [((1, 256, 10, 32), torch.bool), ((1, 256, 10, 32), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where0,
-        [((1, 256, 10, 32), torch.bool), ((1, 256, 10, 32), torch.bfloat16), ((1, 256, 10, 32), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where13,
-        [((1, 256, 20, 64), torch.bool), ((1, 256, 20, 64), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where0,
-        [((1, 256, 20, 64), torch.bool), ((1, 256, 20, 64), torch.bfloat16), ((1, 256, 20, 64), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where14,
-        [((1, 128, 20, 64), torch.bool), ((1, 128, 20, 64), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where0,
-        [((1, 128, 20, 64), torch.bool), ((1, 128, 20, 64), torch.bfloat16), ((1, 128, 20, 64), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where15,
-        [((1, 128, 40, 128), torch.bool), ((1, 128, 40, 128), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where0,
-        [((1, 128, 40, 128), torch.bool), ((1, 128, 40, 128), torch.bfloat16), ((1, 128, 40, 128), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where16,
-        [((1, 64, 40, 128), torch.bool), ((1, 64, 40, 128), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where0,
-        [((1, 64, 40, 128), torch.bool), ((1, 64, 40, 128), torch.bfloat16), ((1, 64, 40, 128), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where17,
-        [((1, 64, 80, 256), torch.bool), ((1, 64, 80, 256), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where0,
-        [((1, 64, 80, 256), torch.bool), ((1, 64, 80, 256), torch.bfloat16), ((1, 64, 80, 256), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where18,
-        [((1, 32, 80, 256), torch.bool), ((1, 32, 80, 256), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where0,
-        [((1, 32, 80, 256), torch.bool), ((1, 32, 80, 256), torch.bfloat16), ((1, 32, 80, 256), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where19,
-        [((1, 32, 160, 512), torch.bool), ((1, 32, 160, 512), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where0,
-        [((1, 32, 160, 512), torch.bool), ((1, 32, 160, 512), torch.bfloat16), ((1, 32, 160, 512), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where20,
-        [((1, 16, 160, 512), torch.bool), ((1, 16, 160, 512), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where0,
-        [((1, 16, 160, 512), torch.bool), ((1, 16, 160, 512), torch.bfloat16), ((1, 16, 160, 512), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where21,
-        [((1, 16, 320, 1024), torch.bool), ((1, 16, 320, 1024), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where0,
-        [((1, 16, 320, 1024), torch.bool), ((1, 16, 320, 1024), torch.bfloat16), ((1, 16, 320, 1024), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where22,
-        [((1, 1, 6, 6), torch.bool), ((1, 1, 6, 6), torch.float32)],
-        {
-            "model_names": ["onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where11,
-        [((1, 1, 32, 32), torch.bool)],
-        {
-            "model_names": [
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where0,
-        [((1, 6, 2048), torch.bool), ((1, 6, 2048), torch.float32), ((1, 6, 2048), torch.float32)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"], "pcc": 0.99},
-    ),
-    (
-        Where0,
-        [((1, 6, 4096), torch.bool), ((1, 6, 4096), torch.float32), ((1, 6, 4096), torch.float32)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"], "pcc": 0.99},
-    ),
-    (
-        Where0,
-        [((1, 6, 5120), torch.bool), ((1, 6, 5120), torch.float32), ((1, 6, 5120), torch.float32)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"], "pcc": 0.99},
-    ),
-    (
-        Where22,
-        [((1, 1, 256, 256), torch.bool), ((1, 1, 256, 256), torch.float32)],
-        {
-            "model_names": [
-                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
-                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "onnx_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where23,
-        [((1, 1, 256, 256), torch.bool)],
-        {
-            "model_names": [
-                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
-                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "onnx_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
 ]
 
@@ -974,7 +502,6 @@ def test_module(forge_module_and_shapes_dtypes):
     ]
 
     framework_model = forge_module(forge_module.__name__)
-    framework_model.process_framework_parameters()
 
     for name, parameter in framework_model._parameters.items():
         parameter_tensor = Tensor.create_torch_tensor(

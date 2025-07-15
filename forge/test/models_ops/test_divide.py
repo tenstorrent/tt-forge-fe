@@ -21,13 +21,53 @@ from forge.forge_property_utils import (
 import pytest
 
 
-class Sqrt0(ForgeModule):
+class Divide0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
-    def forward(self, sqrt_input_0):
-        sqrt_output_1 = forge.op.Sqrt("", sqrt_input_0)
-        return sqrt_output_1
+    def forward(self, divide_input_0, divide_input_1):
+        divide_output_1 = forge.op.Divide("", divide_input_0, divide_input_1)
+        return divide_output_1
+
+
+class Divide1(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("divide1_const_0", shape=(1,), dtype=torch.float32)
+
+    def forward(self, divide_input_1):
+        divide_output_1 = forge.op.Divide("", self.get_constant("divide1_const_0"), divide_input_1)
+        return divide_output_1
+
+
+class Divide2(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("divide2_const_0", shape=(1,), dtype=torch.bfloat16)
+
+    def forward(self, divide_input_1):
+        divide_output_1 = forge.op.Divide("", self.get_constant("divide2_const_0"), divide_input_1)
+        return divide_output_1
+
+
+class Divide3(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("divide3_const_1", shape=(1,), dtype=torch.bfloat16)
+
+    def forward(self, divide_input_0):
+        divide_output_1 = forge.op.Divide("", divide_input_0, self.get_constant("divide3_const_1"))
+        return divide_output_1
+
+
+class Divide4(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("divide4_const_1", shape=(1,), dtype=torch.float32)
+
+    def forward(self, divide_input_0):
+        divide_output_1 = forge.op.Divide("", divide_input_0, self.get_constant("divide4_const_1"))
+        return divide_output_1
 
 
 def ids_func(param):
@@ -37,9 +77,23 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (Sqrt0, [((1, 11, 1), torch.float32)], {"model_names": ["pd_albert_chinese_tiny_mlm_padlenlp"], "pcc": 0.99}),
     (
-        Sqrt0,
+        Divide0,
+        [((1, 11, 128), torch.float32), ((1, 11, 1), torch.float32)],
+        {"model_names": ["pd_albert_chinese_tiny_mlm_padlenlp"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 12, 11, 11), torch.float32), ((1, 12, 11, 1), torch.float32)],
+        {"model_names": ["pd_albert_chinese_tiny_mlm_padlenlp"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 11, 312), torch.float32), ((1, 11, 1), torch.float32)],
+        {"model_names": ["pd_albert_chinese_tiny_mlm_padlenlp"], "pcc": 0.99},
+    ),
+    (
+        Divide1,
         [((64,), torch.float32)],
         {
             "model_names": [
@@ -52,7 +106,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((256,), torch.float32)],
         {
             "model_names": [
@@ -64,7 +118,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((128,), torch.float32)],
         {
             "model_names": [
@@ -76,7 +130,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((512,), torch.float32)],
         {
             "model_names": [
@@ -88,7 +142,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1024,), torch.float32)],
         {
             "model_names": [
@@ -100,7 +154,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((2048,), torch.float32)],
         {
             "model_names": [
@@ -112,7 +166,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((16,), torch.bfloat16)],
         {
             "model_names": [
@@ -136,7 +190,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((32,), torch.bfloat16)],
         {
             "model_names": [
@@ -183,7 +237,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((64,), torch.bfloat16)],
         {
             "model_names": [
@@ -244,7 +298,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((128,), torch.bfloat16)],
         {
             "model_names": [
@@ -299,7 +353,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((256,), torch.bfloat16)],
         {
             "model_names": [
@@ -356,7 +410,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((512,), torch.bfloat16)],
         {
             "model_names": [
@@ -409,7 +463,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1024,), torch.bfloat16)],
         {
             "model_names": [
@@ -453,7 +507,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((40,), torch.bfloat16)],
         {
             "model_names": [
@@ -470,7 +524,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((24,), torch.bfloat16)],
         {
             "model_names": [
@@ -495,7 +549,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((144,), torch.bfloat16)],
         {
             "model_names": [
@@ -519,7 +573,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((192,), torch.bfloat16)],
         {
             "model_names": [
@@ -550,7 +604,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((48,), torch.bfloat16)],
         {
             "model_names": [
@@ -573,7 +627,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((288,), torch.bfloat16)],
         {
             "model_names": [
@@ -592,7 +646,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((96,), torch.bfloat16)],
         {
             "model_names": [
@@ -619,7 +673,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((576,), torch.bfloat16)],
         {
             "model_names": [
@@ -639,7 +693,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((136,), torch.bfloat16)],
         {
             "model_names": [
@@ -651,7 +705,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((816,), torch.bfloat16)],
         {
             "model_names": [
@@ -663,7 +717,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((232,), torch.bfloat16)],
         {
             "model_names": [
@@ -676,7 +730,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1392,), torch.bfloat16)],
         {
             "model_names": [
@@ -689,7 +743,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((384,), torch.bfloat16)],
         {
             "model_names": [
@@ -715,7 +769,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((2304,), torch.bfloat16)],
         {
             "model_names": [
@@ -728,7 +782,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1536,), torch.bfloat16)],
         {
             "model_names": [
@@ -743,7 +797,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((56,), torch.bfloat16)],
         {
             "model_names": [
@@ -757,7 +811,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((336,), torch.bfloat16)],
         {
             "model_names": [
@@ -771,7 +825,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((112,), torch.bfloat16)],
         {
             "model_names": [
@@ -786,7 +840,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((672,), torch.bfloat16)],
         {
             "model_names": [
@@ -804,7 +858,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((160,), torch.bfloat16)],
         {
             "model_names": [
@@ -830,7 +884,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((960,), torch.bfloat16)],
         {
             "model_names": [
@@ -851,7 +905,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((272,), torch.bfloat16)],
         {
             "model_names": [
@@ -863,7 +917,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1632,), torch.bfloat16)],
         {
             "model_names": [
@@ -876,7 +930,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((448,), torch.bfloat16)],
         {
             "model_names": [
@@ -895,7 +949,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((2688,), torch.bfloat16)],
         {
             "model_names": [
@@ -907,7 +961,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1792,), torch.bfloat16)],
         {
             "model_names": [
@@ -920,7 +974,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((240,), torch.bfloat16)],
         {
             "model_names": [
@@ -938,7 +992,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((72,), torch.bfloat16)],
         {
             "model_names": [
@@ -954,7 +1008,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((432,), torch.bfloat16)],
         {
             "model_names": [
@@ -967,7 +1021,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((864,), torch.bfloat16)],
         {
             "model_names": [
@@ -981,7 +1035,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((200,), torch.bfloat16)],
         {
             "model_names": [
@@ -993,7 +1047,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1200,), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -1002,7 +1056,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((344,), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -1011,7 +1065,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((2064,), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -1020,7 +1074,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((3456,), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -1029,12 +1083,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((30,), torch.bfloat16)],
         {"model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
-        Sqrt0,
+        Divide2,
         [((60,), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_ghostnet_ghostnet_100_in1k_img_cls_timm"],
@@ -1043,7 +1097,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((120,), torch.bfloat16)],
         {
             "model_names": [
@@ -1059,7 +1113,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((2048,), torch.bfloat16)],
         {
             "model_names": [
@@ -1089,12 +1143,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
-        [((1, 4, 1), torch.float32)],
-        {"model_names": ["pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf"], "pcc": 0.99},
-    ),
-    (
-        Sqrt0,
+        Divide2,
         [((528,), torch.bfloat16)],
         {
             "model_names": [
@@ -1106,7 +1155,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1056,), torch.bfloat16)],
         {
             "model_names": [
@@ -1120,7 +1169,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((2904,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
@@ -1129,7 +1178,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((7392,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
@@ -1138,7 +1187,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((224,), torch.bfloat16)],
         {
             "model_names": [
@@ -1160,7 +1209,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((896,), torch.bfloat16)],
         {
             "model_names": [
@@ -1174,7 +1223,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((2016,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_8gf_img_cls_torchvision"],
@@ -1183,7 +1232,87 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
+        [((1, 1, 16384, 256), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "pt_segformer_nvidia_mit_b1_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 2, 4096, 256), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "pt_segformer_nvidia_mit_b1_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 5, 1024, 256), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "pt_segformer_nvidia_mit_b1_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 8, 256, 256), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "pt_segformer_nvidia_mit_b1_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 256, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 512, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide2,
         [((768,), torch.bfloat16)],
         {
             "model_names": [
@@ -1205,7 +1334,32 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
+        [((1, 768, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 1024, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide2,
         [((80,), torch.bfloat16)],
         {
             "model_names": [
@@ -1220,7 +1374,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((728,), torch.bfloat16)],
         {
             "model_names": [
@@ -1233,7 +1387,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((320,), torch.bfloat16)],
         {
             "model_names": [
@@ -1252,7 +1406,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((640,), torch.bfloat16)],
         {
             "model_names": [
@@ -1267,8 +1421,57 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
-        [((1, 9, 1), torch.float32)],
+        Divide3,
+        [((1, 2, 8400), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov8_yolov8x_obj_det_github", "pt_yolov9_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 1, 16384, 256), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide4,
+        [((1, 16384, 256), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide4,
+        [((1, 2, 4096, 256), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide4,
+        [((1, 4096, 512), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide4,
+        [((1, 5, 1024, 256), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide4,
+        [((1, 1024, 1280), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide4,
+        [((1, 8, 256, 256), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide4,
+        [((1, 256, 2048), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 9, 768), torch.float32), ((1, 9, 1), torch.float32)],
         {
             "model_names": [
                 "pd_roberta_rbt4_ch_seq_cls_padlenlp",
@@ -1279,7 +1482,19 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide0,
+        [((1, 12, 9, 9), torch.float32), ((1, 12, 9, 1), torch.float32)],
+        {
+            "model_names": [
+                "pd_roberta_rbt4_ch_seq_cls_padlenlp",
+                "pd_bert_chinese_roberta_base_mlm_padlenlp",
+                "pd_bert_bert_base_uncased_mlm_padlenlp",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide2,
         [((352,), torch.bfloat16)],
         {
             "model_names": [
@@ -1293,7 +1508,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((416,), torch.bfloat16)],
         {
             "model_names": [
@@ -1306,7 +1521,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((480,), torch.bfloat16)],
         {
             "model_names": [
@@ -1322,7 +1537,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((544,), torch.bfloat16)],
         {
             "model_names": [
@@ -1335,7 +1550,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((608,), torch.bfloat16)],
         {
             "model_names": [
@@ -1348,7 +1563,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((704,), torch.bfloat16)],
         {
             "model_names": [
@@ -1361,7 +1576,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((736,), torch.bfloat16)],
         {
             "model_names": [
@@ -1374,7 +1589,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((800,), torch.bfloat16)],
         {
             "model_names": [
@@ -1387,7 +1602,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((832,), torch.bfloat16)],
         {
             "model_names": [
@@ -1400,7 +1615,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((928,), torch.bfloat16)],
         {
             "model_names": [
@@ -1413,7 +1628,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((992,), torch.bfloat16)],
         {
             "model_names": [
@@ -1426,7 +1641,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1344,), torch.bfloat16)],
         {
             "model_names": [
@@ -1439,7 +1654,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((3840,), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b7_img_cls_torchvision"],
@@ -1448,7 +1663,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((2560,), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b7_img_cls_torchvision"],
@@ -1457,7 +1672,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((8,), torch.bfloat16)],
         {
             "model_names": ["pt_ghostnet_ghostnet_100_in1k_img_cls_timm"],
@@ -1466,7 +1681,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((12,), torch.bfloat16)],
         {
             "model_names": ["pt_ghostnet_ghostnet_100_in1k_img_cls_timm"],
@@ -1475,7 +1690,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((36,), torch.bfloat16)],
         {
             "model_names": [
@@ -1487,7 +1702,19 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
+        [((1, 72, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide2,
         [((20,), torch.bfloat16)],
         {
             "model_names": ["pt_ghostnet_ghostnet_100_in1k_img_cls_timm"],
@@ -1496,7 +1723,20 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
+        [((1, 120, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide2,
         [((100,), torch.bfloat16)],
         {
             "model_names": ["pt_ghostnet_ghostnet_100_in1k_img_cls_timm"],
@@ -1505,7 +1745,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((92,), torch.bfloat16)],
         {
             "model_names": ["pt_ghostnet_ghostnet_100_in1k_img_cls_timm"],
@@ -1514,7 +1754,43 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
+        [((1, 480, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 672, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 960, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide2,
         [((18,), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm"],
@@ -1523,7 +1799,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((720,), torch.bfloat16)],
         {
             "model_names": [
@@ -1535,7 +1811,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1280,), torch.bfloat16)],
         {
             "model_names": [
@@ -1550,7 +1826,49 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
+        [((1, 16, 112, 112), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 240, 28, 28), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 240, 14, 14), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 200, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide2,
         [((184,), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm"],
@@ -1558,19 +1876,76 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
         },
     ),
-    (Sqrt0, [((1, 6, 1), torch.float32)], {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99}),
     (
-        Sqrt0,
-        [((1, 35, 1), torch.float32)],
-        {"model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf"], "pcc": 0.99},
+        Divide3,
+        [((1, 184, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
     ),
     (
-        Sqrt0,
-        [((1, 29, 1), torch.float32)],
-        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf", "pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99},
+        Divide3,
+        [((1, 480, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
     ),
     (
-        Sqrt0,
+        Divide3,
+        [((1, 672, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 672, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 960, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 1280, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 3, 192, 640), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide2,
         [((1232,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_facebook_regnet_y_160_img_cls_hf"],
@@ -1579,7 +1954,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((3024,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_facebook_regnet_y_160_img_cls_hf"],
@@ -1588,7 +1963,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((696,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_facebook_regnet_y_320_img_cls_hf"],
@@ -1597,7 +1972,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((3712,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_facebook_regnet_y_320_img_cls_hf"],
@@ -1606,7 +1981,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((2520,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_x_32gf_img_cls_torchvision"],
@@ -1615,7 +1990,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1008,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_x_3_2gf_img_cls_torchvision"],
@@ -1623,22 +1998,28 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
         },
     ),
-    (Sqrt0, [((64, 3, 64, 1), torch.float32)], {"model_names": ["pt_swin_swin_v2_t_img_cls_torchvision"], "pcc": 0.99}),
-    (Sqrt0, [((16, 6, 64, 1), torch.float32)], {"model_names": ["pt_swin_swin_v2_t_img_cls_torchvision"], "pcc": 0.99}),
-    (Sqrt0, [((4, 12, 64, 1), torch.float32)], {"model_names": ["pt_swin_swin_v2_t_img_cls_torchvision"], "pcc": 0.99}),
-    (Sqrt0, [((1, 24, 64, 1), torch.float32)], {"model_names": ["pt_swin_swin_v2_t_img_cls_torchvision"], "pcc": 0.99}),
     (
-        Sqrt0,
-        [((1, 513, 1), torch.float32)],
-        {"model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_t5_small_text_gen_hf"], "pcc": 0.99},
+        Divide0,
+        [((64, 3, 64, 32), torch.float32), ((64, 3, 64, 32), torch.float32)],
+        {"model_names": ["pt_swin_swin_v2_t_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
-        [((1, 61, 1), torch.float32)],
-        {"model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_t5_small_text_gen_hf"], "pcc": 0.99},
+        Divide0,
+        [((16, 6, 64, 32), torch.float32), ((16, 6, 64, 32), torch.float32)],
+        {"model_names": ["pt_swin_swin_v2_t_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide0,
+        [((4, 12, 64, 32), torch.float32), ((4, 12, 64, 32), torch.float32)],
+        {"model_names": ["pt_swin_swin_v2_t_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 24, 64, 32), torch.float32), ((1, 24, 64, 32), torch.float32)],
+        {"model_names": ["pt_swin_swin_v2_t_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Divide2,
         [((176,), torch.bfloat16)],
         {
             "model_names": [
@@ -1650,7 +2031,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((304,), torch.bfloat16)],
         {
             "model_names": [
@@ -1662,7 +2043,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1824,), torch.bfloat16)],
         {
             "model_names": [
@@ -1675,7 +2056,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((3072,), torch.bfloat16)],
         {
             "model_names": [
@@ -1687,7 +2068,16 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
+        [((1, 16, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide2,
         [((88,), torch.bfloat16)],
         {
             "model_names": [
@@ -1699,52 +2089,231 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
+        [((1, 96, 28, 28), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 96, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 96, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 240, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 120, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 144, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 144, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 288, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 288, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 288, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 576, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((1, 576, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 12, 128, 128), torch.float32)],
+        {"model_names": ["pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide3,
+        [((1, 5880, 2), torch.bfloat16)],
+        {"model_names": ["pt_yolo_v6_yolov6l_obj_det_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Divide4,
+        [((1, 197, 768), torch.float32)],
+        {"model_names": ["onnx_deit_facebook_deit_tiny_patch16_224_img_cls_hf"], "pcc": 0.99},
+    ),
+    (Divide4, [((1, 2, 8400), torch.float32)], {"model_names": ["onnx_yolov8_default_obj_det_github"], "pcc": 0.99}),
+    (
+        Divide1,
         [((8,), torch.float32)],
         {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide4,
+        [((1, 8, 16, 50), torch.float32)],
+        {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide1,
         [((40,), torch.float32)],
         {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide1,
         [((16,), torch.float32)],
         {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide1,
         [((48,), torch.float32)],
         {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide4,
+        [((1, 48, 8, 50), torch.float32)],
+        {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide4,
+        [((1, 48, 4, 50), torch.float32)],
+        {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide1,
         [((24,), torch.float32)],
         {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide1,
         [((120,), torch.float32)],
         {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide4,
+        [((1, 120, 4, 50), torch.float32)],
+        {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide4,
+        [((1, 64, 4, 50), torch.float32)],
+        {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide1,
         [((72,), torch.float32)],
         {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide4,
+        [((1, 72, 4, 50), torch.float32)],
+        {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide1,
         [((144,), torch.float32)],
         {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide4,
+        [((1, 144, 4, 50), torch.float32)],
+        {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide4,
+        [((1, 144, 2, 50), torch.float32)],
+        {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide1,
         [((288,), torch.float32)],
         {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide4,
+        [((1, 288, 2, 50), torch.float32)],
+        {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 25, 6625), torch.float32), ((1, 25, 1), torch.float32)],
+        {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide4,
+        [((1, 16, 256, 256), torch.float32)],
+        {"model_names": ["pt_codegen_salesforce_codegen_350m_nl_clm_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide2,
         [((1088,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1753,7 +2322,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1120,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1762,7 +2331,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1152,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1771,7 +2340,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1184,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1780,7 +2349,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1216,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1789,7 +2358,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1248,), torch.bfloat16)],
         {
             "model_names": [
@@ -1801,7 +2370,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1312,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1810,7 +2379,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1376,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1819,7 +2388,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1408,), torch.bfloat16)],
         {
             "model_names": [
@@ -1831,7 +2400,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1440,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1840,7 +2409,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1472,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1849,7 +2418,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1504,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1858,7 +2427,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1568,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1867,7 +2436,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1600,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1876,7 +2445,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1664,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1885,7 +2454,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1696,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1894,7 +2463,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1728,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1903,7 +2472,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1760,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1912,7 +2481,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1856,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1921,7 +2490,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1888,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1930,7 +2499,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((1920,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -1939,7 +2508,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((208,), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -1948,7 +2517,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
         [((2112,), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -1963,7 +2532,7 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes):
 
-    record_forge_op_name("Sqrt")
+    record_forge_op_name("Divide")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
