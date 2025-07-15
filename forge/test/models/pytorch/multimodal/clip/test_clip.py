@@ -15,6 +15,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.models.pytorch.multimodal.clip.model_utils.clip_model import CLIPTextWrapper
 from test.utils import download_model
 
@@ -62,4 +63,7 @@ def test_clip_pytorch(variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Model Postprocessing
+    print_cls_results(fw_out[0], co_out[0])
