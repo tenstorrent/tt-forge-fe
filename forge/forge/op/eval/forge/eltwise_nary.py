@@ -52,11 +52,6 @@ def eval(type, attr, ops):
 
         return res
 
-    elif type == "concatenate":
-        assert len(attr) == 1, "Concatenate should have 1 attr"
-        t_ops = to_torch_operands(*ops)
-        return torch.cat(t_ops, dim=attr[0])
-
     elif type == "where":
         return torch.where(ops[0].type(torch.bool), ops[1], ops[2])
 
@@ -126,16 +121,6 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
 
         return shapes[0], []
 
-    elif type == "concatenate":
-        assert len(attr) == 1, "Concatenate should have 1 attr"
-        axis = attr[0]
-
-        output_shape = list(ops[0])
-        for op in ops[1:]:
-            output_shape[axis] += op[axis]
-
-        return output_shape, []
-
     elif type == "where":
         return get_eltwise_shape_and_broadcast()
 
@@ -176,27 +161,6 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
         shifts = attr[2:]
 
         return ac.op("conv_sum", [grad], [y, x, -shifts[operand * 2], -shifts[operand * 2 + 1]])
-
-    elif op_type == "concatenate":
-        axis = attr[0]
-        dim_offset = grad.shape[axis]
-
-        index_offset = 0
-        for i, input_ in enumerate(inputs):
-            if operand is not i:
-                index_offset += input_.shape[axis]
-                continue
-            return ac.op(
-                "select",
-                (grad,),
-                (axis, index_offset, input_.shape[axis], dim_offset),
-                named_attrs={
-                    "dim": axis,
-                    "begin": index_offset,
-                    "length": input_.shape[axis],
-                    "stride": dim_offset,
-                },
-            )
 
     elif op_type == "interleave":
         axis = attr[0]
@@ -247,12 +211,8 @@ def decompose(type, attr, dc, inputs):
             new_inp = dc.op_with_named_attrs("reshape", [inp], {"shape": (*inp_shape,)})
             new_inputs.append(new_inp)
 
-        output = dc.op_with_named_attrs("concatenate", new_inputs, {"dim": (axis)}, (axis,))
+        output = dc.op_with_named_attrs("concatenate", new_inputs, {"dim": (axis)})
         dc.fuse(output)
-
-    if type == "concatenate":
-        if len(inputs) == 1:
-            dc.fuse(dc.op(Nop.create(), [inputs[0]]))
 
 
 from math import gcd
