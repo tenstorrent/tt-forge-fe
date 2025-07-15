@@ -20,10 +20,6 @@ def test_multiple_inputs():
         def forward(self, a, b, c):
             return a + b + c
 
-    import os
-    import signal
-
-    os.kill(os.getpid(), signal.SIGABRT)
     inputs = [torch.rand(1, 32, 32), torch.rand(1, 32, 32), torch.rand(1, 32, 32)]
 
     framework_model = MultipleInputs()
