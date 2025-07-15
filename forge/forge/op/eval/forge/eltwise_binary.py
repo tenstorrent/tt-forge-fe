@@ -157,7 +157,7 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
             concat_z = dc.op("interleave", [operand0, operand1], (-3, 1))
             result = dc.op("reduce_max", [concat_z], (-3, 2))
         else:
-            concat_z = dc.op("concatenate", [operand0, operand1], (-3,))
+            concat_z = dc.op_with_named_attrs("concatenate", [operand0, operand1], {"dim": -3})
             result = dc.op("reduce_max", [concat_z], (-3,))
 
         while len(result.shape) > max_operand_nd:

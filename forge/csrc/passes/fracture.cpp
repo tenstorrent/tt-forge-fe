@@ -228,7 +228,7 @@ static std::unique_ptr<graphlib::PyOpNode> create_gather(
     std::uint32_t fracture_group_id)
 {
     graphlib::OpType gather_op =
-        (dim == NDSlice::k_dim) ? graphlib::OpType("add", {}, {}) : graphlib::OpType("concatenate", {dim}, {});
+        (dim == NDSlice::k_dim) ? graphlib::OpType("add", {}, {}) : graphlib::OpType("concatenate", {}, {{"dim", dim}});
 
     graphlib::Shape shape = operand_shape;
     if (gather_op.type() == ops::OpType::Concatenate)
