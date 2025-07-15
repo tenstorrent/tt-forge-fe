@@ -94,6 +94,10 @@ jobs:
         run: |
           echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
           echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
+          # Create temporary directory for artifacts
+          TEMP_DIR="${{ runner.temp }}/artifacts"
+          mkdir -p "$TEMP_DIR"
+          echo "artifact-dir=$TEMP_DIR" >> $GITHUB_OUTPUT
 
       - name: Git safe dir
         run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
@@ -122,6 +126,7 @@ jobs:
           name: forge-wheel
           run_id: ${{ inputs.run_id }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ steps.strings.outputs.artifact-dir }}
 
       - name: Find and download forge wheel
         if: ${{ !inputs.run_id }}
@@ -135,11 +140,13 @@ jobs:
           repo: tenstorrent/tt-forge-fe
           check_artifacts: true
           search_artifacts: true
+          path: ${{ steps.strings.outputs.artifact-dir }}
 
       - name: Install wheel
         shell: bash
         run: |
           source env/activate
+          cd ${{ steps.strings.outputs.artifact-dir }}
           pip install tt_tvm*.whl --force-reinstall
           pip install tt_forge_fe*.whl --force-reinstall
 
