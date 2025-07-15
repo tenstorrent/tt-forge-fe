@@ -19,14 +19,7 @@ params = [
     pytest.param("mobilenetv2_050"),
     pytest.param("mobilenetv2_100", marks=[pytest.mark.push]),
     pytest.param("mobilenetv2_110d"),
-    pytest.param(
-        "mobilenetv2_140",
-        marks=[
-            pytest.mark.xfail(
-                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
-            )
-        ],
-    ),
+    pytest.param("mobilenetv2_140"),
 ]
 
 

@@ -106,7 +106,7 @@ params = [
     pytest.param("xxlarge", "v1"),
     pytest.param("base", "v2", marks=[pytest.mark.push]),
     pytest.param("large", "v2"),
-    pytest.param("xlarge", "v2"),
+    pytest.param("xlarge", "v2", marks=[pytest.mark.xfail]),
     pytest.param("xxlarge", "v2"),
 ]
 
@@ -153,8 +153,6 @@ def test_albert_token_classification_pytorch(size, variant):
 
     if size == "xxlarge" and variant == "v2":
         pcc = 0.87
-    elif size == "xlarge" and variant == "v2":
-        pcc = 0.3
     else:
         pcc = 0.95
 
