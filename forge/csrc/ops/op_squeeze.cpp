@@ -63,12 +63,6 @@ tt::graphlib::NodeContext backward(
     TT_ASSERT(inputs.size() == 1, "Squeeze should have single input");
     TT_ASSERT(operand == 0, "Squeeze has only one operand");
 
-    // If dimensionality already matches, no need to unsqueeze
-    if (inputs[0].shape.as_vector().size() == gradient.shape.as_vector().size())
-    {
-        return ac.autograd->create_op(ac, graphlib::OpType("nop", {}, {}), {gradient});
-    }
-
     // Create unsqueeze operation to restore the squeezed dimension
     int dim = op.attr_as<int>("dim");
     return ac.autograd->create_op(ac, graphlib::OpType("unsqueeze", {dim}, {{"dim", dim}}), {gradient});
