@@ -31,51 +31,36 @@ variants = [
     pytest.param(
         "Qwen/Qwen2.5-Coder-1.5B-Instruct",
         marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 23 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
         "Qwen/Qwen2.5-Coder-3B",
         marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 25 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
         "Qwen/Qwen2.5-Coder-3B-Instruct",
         marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
         "Qwen/Qwen2.5-Coder-7B",
         marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
         "Qwen/Qwen2.5-Coder-7B-Instruct",
         marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
         "Qwen/Qwen2.5-Coder-32B-Instruct",
-        marks=[pytest.mark.xfail],
+        marks=[pytest.mark.out_of_memory],
     ),
 ]
 
@@ -102,7 +87,14 @@ def test_qwen_clm(variant):
         priority=priority,
     )
 
-    if variant == "Qwen/Qwen2.5-Coder-32B-Instruct":
+    if variant in [
+        "Qwen/Qwen2.5-Coder-32B-Instruct",
+        "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+        "Qwen/Qwen2.5-Coder-3B",
+        "Qwen/Qwen2.5-Coder-3B-Instruct",
+        "Qwen/Qwen2.5-Coder-7B",
+        "Qwen/Qwen2.5-Coder-7B-Instruct",
+    ]:
         pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and tokenizer

@@ -17,7 +17,6 @@ variants = ["mistralai/Mixtral-8x7B-Instruct-v0.1"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_mixtral_8x7b(variant):
 

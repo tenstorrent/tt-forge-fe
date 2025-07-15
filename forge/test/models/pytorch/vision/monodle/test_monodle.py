@@ -22,12 +22,13 @@ from test.models.pytorch.vision.monodle.model_utils.model import CenterNet3D
 
 
 @pytest.mark.nightly
-@pytest.mark.skip(reason="Floating point exception(core dumped)")
+@pytest.mark.xfail
 def test_monodle_pytorch():
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH, model=ModelArch.MONODLE, source=Source.TORCHVISION, task=Task.OBJECT_DETECTION
     )
+    pytest.xfail(reason="Floating point exception(core dumped)")
 
     # Load data sample
     dataset = load_dataset("imagenet-1k", split="validation", streaming=True)

@@ -15,7 +15,6 @@ from forge.forge_property_utils import Framework, Source, Task, ModelArch, recor
 
 
 @pytest.mark.nightly
-@pytest.mark.skip(reason="Transient failure: Causing seg faults while building Metal kernels")
 def test_mobilenetv1_basic():
     # Record model details
     module_name = record_model_properties(
@@ -25,6 +24,7 @@ def test_mobilenetv1_basic():
         source=Source.PADDLE,
         task=Task.IMAGE_CLASSIFICATION,
     )
+    pytest.xfail(reason="Transient failure: Causing seg faults while building Metal kernels")
 
     # Load framework model
     framework_model = mobilenet_v1(pretrained=True)

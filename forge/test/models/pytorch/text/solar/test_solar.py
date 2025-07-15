@@ -17,7 +17,6 @@ variants = ["upstage/SOLAR-10.7B-Instruct-v1.0"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_solar(variant):
 

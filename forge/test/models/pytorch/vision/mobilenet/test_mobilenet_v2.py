@@ -7,7 +7,6 @@ import timm
 import torch
 from loguru import logger
 from PIL import Image
-from third_party.tt_forge_models.tools.utils import get_file
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from transformers import (
@@ -30,6 +29,7 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
+from third_party.tt_forge_models.tools.utils import get_file
 
 from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.mobilenet.model_utils.utils import (
@@ -92,7 +92,6 @@ def generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["google/mobilenet_v2_0.35_96"])
 def test_mobilenetv2_96(variant):
-    pytest.skip("Hitting segmentation fault in MLIR")
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -102,6 +101,7 @@ def test_mobilenetv2_96(variant):
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
+    pytest.xfail(reason="Hitting segmentation fault in MLIR")
 
     framework_model, inputs, _ = generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant)
 
@@ -136,7 +136,6 @@ def generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["google/mobilenet_v2_0.75_160"])
 def test_mobilenetv2_160(variant):
-    pytest.skip("Hitting segmentation fault in MLIR")
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -146,6 +145,7 @@ def test_mobilenetv2_160(variant):
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
+    pytest.xfail(reason="Hitting segmentation fault in MLIR")
 
     framework_model, inputs, _ = generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant)
 
@@ -182,7 +182,6 @@ def generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["google/mobilenet_v2_1.0_224"])
 def test_mobilenetv2_224(variant):
-    pytest.skip("Hitting segmentation fault in MLIR")
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -192,6 +191,7 @@ def test_mobilenetv2_224(variant):
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
+    pytest.xfail(reason="Hitting segmentation fault in MLIR")
 
     framework_model, inputs, _ = generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant)
 

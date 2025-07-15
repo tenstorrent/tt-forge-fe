@@ -27,7 +27,6 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mistral(variant):
-    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 30 GB)")
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -37,6 +36,8 @@ def test_mistral(variant):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
+
+    pytest.xfail(reason="Requires multi-chip support")
 
     configuration = MistralConfig()
     configuration.sliding_window = None
@@ -70,7 +71,6 @@ variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_mistral_v0_3(variant):
 
@@ -114,7 +114,6 @@ variants = ["mistralai/Mistral-Nemo-Instruct-2407"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_mistral_Nemo(variant):
 
@@ -136,7 +135,6 @@ variants = ["mistralai/Mistral-Small-24B-Instruct-2501"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_mistral_small_24b(variant):
 
@@ -159,7 +157,6 @@ variants = ["mistralai/Mistral-Large-Instruct-2411"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_mistral_large(variant):
 

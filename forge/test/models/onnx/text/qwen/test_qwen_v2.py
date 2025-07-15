@@ -20,27 +20,21 @@ from test.models.models_utils import TextModelWrapper
     [
         pytest.param(
             "Qwen/Qwen2.5-0.5B",
-            marks=pytest.mark.skip("Transient test - Out of memory due to other tests in CI pipeline"),
         ),
         pytest.param(
             "Qwen/Qwen2.5-1.5B",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)"),
         ),
         pytest.param(
             "Qwen/Qwen2.5-3B",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)"),
         ),
         pytest.param(
             "Qwen/Qwen2.5-0.5B-Instruct",
-            marks=pytest.mark.skip("Transient test - Out of memory due to other tests in CI pipeline"),
         ),
         pytest.param(
             "Qwen/Qwen2.5-1.5B-Instruct",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
         ),
         pytest.param(
             "Qwen/Qwen2.5-3B-Instruct",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)"),
         ),
     ],
 )
@@ -54,6 +48,11 @@ def test_qwen_clm_onnx(variant, forge_tmp_path):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
+
+    if variant in ["Qwen/Qwen2.5-3B", "Qwen/Qwen2.5-3B-Instruct"]:
+        pytest.xfail(reason="Segmentation Fault")
+    else:
+        pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and tokenizer
     model = AutoModelForCausalLM.from_pretrained(variant, use_cache=False)

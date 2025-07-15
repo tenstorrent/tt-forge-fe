@@ -27,11 +27,9 @@ from test.models.models_utils import TextModelWrapper
 variants = [
     pytest.param(
         "microsoft/phi-2",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "microsoft/phi-2-pytdml",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB")],
     ),
 ]
 
@@ -58,8 +56,7 @@ def test_phi2_clm(variant):
         priority=priority,
     )
 
-    if variant == "microsoft/phi-2":
-        pytest.xfail(reason="Requires multi-chip support")
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and tokenizer from HuggingFace
     model = PhiForCausalLM.from_pretrained(variant, trust_remote_code=True, use_cache=False)
@@ -95,11 +92,9 @@ def test_phi2_clm(variant):
 variants = [
     pytest.param(
         "microsoft/phi-2",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
     ),
     pytest.param(
         "microsoft/phi-2-pytdml",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
     ),
 ]
 
@@ -117,6 +112,7 @@ def test_phi2_token_classification(variant):
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load tokenizer and model from HuggingFace
     tokenizer = AutoTokenizer.from_pretrained(variant, return_tensors="pt", trust_remote_code=True)
@@ -143,7 +139,6 @@ variants = [
     pytest.param(
         "microsoft/phi-2",
         marks=[
-            pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
             pytest.mark.out_of_memory,
         ],
     ),
@@ -165,6 +160,8 @@ def test_phi2_sequence_classification(variant):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
+    if variant == "microsoft/phi-2":
+        pytest.xfail(reason="Requires multi-chip support")
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
