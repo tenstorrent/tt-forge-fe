@@ -21,13 +21,13 @@ from forge.forge_property_utils import (
 import pytest
 
 
-class Logsoftmax0(ForgeModule):
+class Erf0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
-    def forward(self, logsoftmax_input_0):
-        logsoftmax_output_1 = forge.op.LogSoftmax("", logsoftmax_input_0, dim=1)
-        return logsoftmax_output_1
+    def forward(self, erf_input_0):
+        erf_output_1 = forge.op.Erf("", erf_input_0)
+        return erf_output_1
 
 
 def ids_func(param):
@@ -38,9 +38,29 @@ def ids_func(param):
 
 forge_modules_and_shapes_dtypes_list = [
     (
-        Logsoftmax0,
-        [((1, 10), torch.bfloat16)],
-        {"model_names": ["pt_mnist_base_img_cls_github"], "pcc": 0.99, "args": {"dim": "1"}},
+        Erf0,
+        [((1, 16384, 256), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Erf0,
+        [((1, 4096, 512), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Erf0,
+        [((1, 1024, 1280), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Erf0,
+        [((1, 256, 2048), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Erf0,
+        [((1, 197, 768), torch.float32)],
+        {"model_names": ["onnx_deit_facebook_deit_tiny_patch16_224_img_cls_hf"], "pcc": 0.99},
     ),
 ]
 
@@ -49,7 +69,7 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes):
 
-    record_forge_op_name("LogSoftmax")
+    record_forge_op_name("Erf")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
@@ -72,7 +92,6 @@ def test_module(forge_module_and_shapes_dtypes):
     ]
 
     framework_model = forge_module(forge_module.__name__)
-    framework_model.process_framework_parameters()
 
     for name, parameter in framework_model._parameters.items():
         parameter_tensor = Tensor.create_torch_tensor(
