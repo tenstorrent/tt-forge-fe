@@ -213,6 +213,7 @@ _OPERATORS = [
     ),
     # Activation functions
     OperatorDefinition("layer_norm", "torch.nn.LayerNorm", 1),
+    OperatorDefinition("batch_norm_2d", "torch.nn.BatchNorm2d", 1),
 ]
 
 
