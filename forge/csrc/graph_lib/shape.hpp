@@ -5,6 +5,7 @@
 
 #include <initializer_list>
 #include <ostream>
+#include <tuple>
 #include <vector>
 
 #include "lower_to_forge/common.hpp"
@@ -30,8 +31,9 @@ template <typename... Args>
 std::vector<std::uint32_t> vec_from_tuple(std::tuple<Args...> &args)
 {
     std::vector<uint32_t> vec;
-    vec.reserve(sizeof...(Args));
-    vec_from_tuple_helper(args, vec, std::make_index_sequence<sizeof...(Args)>());
+    constexpr auto size = sizeof...(Args);
+    vec.reserve(size);
+    vec_from_tuple_helper(args, vec, std::make_index_sequence<size>());
     return vec;
 }
 

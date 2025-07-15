@@ -67,6 +67,6 @@ INSTANTIATE_TEST_SUITE_P(
         [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
     [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
 
-STANDARD_RANGE_OP_TEST_SET(Abs, tt::ops::OpType::Abs, SimpleOpTest);
+STANDARD_SWEEP_OP_TEST_SET(UnaryEltwiseOpsSweep, tt::ops::OpType::Abs, SimpleOpTest);
 
 }  // namespace tt::test::ops::eltwise_unary
