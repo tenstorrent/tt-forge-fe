@@ -94,9 +94,9 @@ variants = [
             pytest.mark.out_of_memory,
         ],
     ),
-    pytest.param("meta-llama/Meta-Llama-3.1-70B", marks=pytest.mark.xfail),
-    pytest.param("meta-llama/Meta-Llama-3.1-70B-Instruct", marks=pytest.mark.xfail),
-    pytest.param("meta-llama/Llama-3.3-70B-Instruct", marks=pytest.mark.xfail),
+    pytest.param("meta-llama/Meta-Llama-3.1-70B", marks=[pytest.mark.xfail, pytest.mark.out_of_memory]),
+    pytest.param("meta-llama/Meta-Llama-3.1-70B-Instruct", marks=[pytest.mark.xfail, pytest.mark.out_of_memory]),
+    pytest.param("meta-llama/Llama-3.3-70B-Instruct", marks=[pytest.mark.xfail, pytest.mark.out_of_memory]),
 ]
 
 

@@ -78,6 +78,7 @@ def test_bert_masked_lm_onnx(variant, forge_tmp_path, opset_version):
     print("The predicted token for the [MASK] is: ", tokenizer.decode(predicted_token_id))
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["phiyodr/bert-large-finetuned-squad2"])
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)

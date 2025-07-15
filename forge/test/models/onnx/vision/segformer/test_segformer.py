@@ -15,10 +15,10 @@ from test.utils import download_model
 
 variants_img_classification = [
     pytest.param("nvidia/mit-b0", marks=pytest.mark.push),
-    pytest.param("nvidia/mit-b2", marks=pytest.mark.skip),
-    pytest.param("nvidia/mit-b3", marks=pytest.mark.skip),
-    pytest.param("nvidia/mit-b4", marks=pytest.mark.skip),
-    pytest.param("nvidia/mit-b5", marks=pytest.mark.skip),
+    pytest.param("nvidia/mit-b2", marks=[pytest.mark.skip, pytest.mark.out_of_memory]),
+    pytest.param("nvidia/mit-b3", marks=[pytest.mark.skip, pytest.mark.out_of_memory]),
+    pytest.param("nvidia/mit-b4", marks=[pytest.mark.skip, pytest.mark.out_of_memory]),
+    pytest.param("nvidia/mit-b5", marks=[pytest.mark.skip, pytest.mark.out_of_memory]),
 ]
 
 

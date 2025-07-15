@@ -84,7 +84,7 @@ def test_gemma_2b(variant):
         ),
         pytest.param(
             "google/gemma-2-9b-it",
-            marks=pytest.mark.xfail,
+            marks=[pytest.mark.xfail, pytest.mark.out_of_memory],
         ),
     ],
 )
