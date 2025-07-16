@@ -23,10 +23,9 @@
 #include "utils/raw_ptr.hpp"
 
 // Below are temporary includes. Delete after ops are migrated to cpp.
-#include <torch/extension.h>
-#include <torch/torch.h>
-
 #include "passes/decomposing_context.hpp"
+#include "torch/extension.h"
+#include "torch/torch.h"
 
 using json = nlohmann::json;
 

@@ -210,12 +210,6 @@ class GraphTest : public ::testing::Test
         return tt::create_output(*graph, name, operand);
     }
 
-    void set_graph(Graph* new_graph)
-    {
-        TT_ASSERT(new_graph != nullptr, "New graph must not be null");
-        graph = std::unique_ptr<graphlib::Graph>(new_graph);
-    }
-
    private:
     std::unique_ptr<graphlib::Graph> graph;
     int input_name_id = 0;
