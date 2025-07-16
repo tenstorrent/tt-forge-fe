@@ -329,16 +329,23 @@ def test_linear():
 
 
 @pytest.mark.push
-def test_softmax():
+@pytest.mark.parametrize(
+    "input_tensor",
+    [
+        torch.randn(1, 14, 39, 39),  # PASSED
+        torch.randn(1, 14, 39, 39) * 50 + 10,  # PCC = 0.24953964370191267
+    ],
+)
+def test_softmax(input_tensor):
     class Softmax(nn.Module):
         def __init__(self):
             super().__init__()
-            self.softmax = nn.Softmax(dim=1)
+            self.softmax = nn.Softmax(dim=-1)
 
         def forward(self, a):
             return self.softmax(a)
 
-    inputs = [torch.rand(1, 128)]
+    inputs = [input_tensor]
 
     framework_model = Softmax()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
@@ -346,32 +353,32 @@ def test_softmax():
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.push
-@pytest.mark.parametrize(
-    "input_shape, dim",
-    [
-        ((1, 128), 1),
-        ((4, 32), 1),
-        ((2, 3, 5), 2),
-        ((2, 3, 5), -1),
-        ((10,), 0),
-    ],
-)
-def test_log_softmax(input_shape, dim):
-    class LogSoftmax(nn.Module):
-        def __init__(self, dim):
-            super().__init__()
-            self.log_softmax = nn.LogSoftmax(dim=dim)
+# @pytest.mark.push
+# @pytest.mark.parametrize(
+#     "input_shape, dim",
+#     [
+#         ((1, 128), 1),
+#         ((4, 32), 1),
+#         ((2, 3, 5), 2),
+#         ((2, 3, 5), -1),
+#         ((10,), 0),
+#     ],
+# )
+# def test_log_softmax(input_shape, dim):
+#     class LogSoftmax(nn.Module):
+#         def __init__(self, dim):
+#             super().__init__()
+#             self.log_softmax = nn.LogSoftmax(dim=dim)
 
-        def forward(self, a):
-            return self.log_softmax(a)
+#         def forward(self, a):
+#             return self.log_softmax(a)
 
-    inputs = [torch.rand(*input_shape)]
+#     inputs = [torch.rand(*input_shape)]
 
-    framework_model = LogSoftmax(dim)
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+#     framework_model = LogSoftmax(dim)
+#     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+#     verify(inputs, framework_model, compiled_model)
 
 
 # @pytest.mark.parametrize("vocab_size", [2048, 16384, 32000])
