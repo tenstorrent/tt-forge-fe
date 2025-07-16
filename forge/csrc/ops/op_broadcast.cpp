@@ -95,20 +95,11 @@ tt::graphlib::NodeContext backward(
     TT_ASSERT(operand == 0, "Invalid operand index.");
 
     int dim = op.attr_as<int>("dim");
-    dim = dim < 0 ? inputs[0].shape.size() + dim : dim;
 
-    int delta = 4 - static_cast<int>(inputs[0].shape.size());
-    dim += delta;
-
-    TT_ASSERT(dim >= 0 && dim <= 3, "Invalid broadcast dim after lowering");
-
-    if (dim == 2 || dim == 3)
-        return ac.autograd->create_op(ac, graphlib::OpType("reduce_sum", {}, {{"keep_dim", true}}), {gradient});
-
-    NodeContext ret =
-        ac.autograd->create_op(ac, graphlib::OpType("transpose", {}, {{"dim0", dim}, {"dim1", -2}}), {gradient});
-    ret = ac.autograd->create_op(ac, graphlib::OpType("reduce_sum", {-2}, {{"keep_dim", true}}), {ret});
-    return ac.autograd->create_op(ac, graphlib::OpType("transpose", {}, {{"dim0", dim}, {"dim1", -2}}), {ret});
+    return ac.autograd->create_op(
+        ac,
+        graphlib::OpType("reduce_sum", {dim, true}, {{"dim_arg", std::vector<int>({dim})}, {"keep_dim", true}}),
+        {gradient});
 }
 
 void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
