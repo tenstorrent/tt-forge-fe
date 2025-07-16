@@ -92,20 +92,20 @@ class Optimizer:
         assert self.linked_modules is not None, "Optimizer must be linked to a module before calling step"
         for module in self.linked_modules:
             module.step()
-    
+
     def set_parameters_to_optimize(self, parameters: List[Parameter]):
         # For each Parameter, we register its associated set of optimizer parameters
         base_hyperparameters = self.hyperparameters
         has_parameter_groups = self.parameter_groups is not None
-        
-        for parameter in parameters:    
+
+        for parameter in parameters:
             if not parameter.requires_grad:
                 continue
-            
+
             param_name = parameter.get_name()
             param_shape = parameter.shape.get_pytorch_shape()
             param_dtype = parameter.pt_data_format
-            
+
             if has_parameter_groups and param_name in self.parameter_name_to_group:
                 group_params = self.parameter_name_to_group[param_name]
                 hyperparameters_param = {**base_hyperparameters, **group_params}
@@ -115,7 +115,10 @@ class Optimizer:
             self.parameter_to_opt_inputs[param_name] = self.get_param_dict(
                 param_dtype, param_shape, hyperparameters_param
             )
-            self.parameter_to_opt_torch_inputs[param_name] = {k: v.to_pytorch() for k, v in self.parameter_to_opt_inputs[param_name].items()}
+            self.parameter_to_opt_torch_inputs[param_name] = {
+                k: v.to_pytorch() for k, v in self.parameter_to_opt_inputs[param_name].items()
+            }
+
 
 class SGD(Optimizer):
     """
