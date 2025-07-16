@@ -88,10 +88,16 @@ jobs:
           fetch-depth: 1
       - name: Setup Cppcheck
         run: |
-          echo "set man-db/auto-update false" | sudo debconf-communicate; sudo dpkg-reconfigure man-db
-          TEMP_DEB="$(mktemp)" && \
-          wget -O "$TEMP_DEB" 'https://launchpad.net/ubuntu/+archive/primary/+files/cppcheck_2.17.1-1_amd64.deb' && \
-          sudo dpkg -i "$TEMP_DEB" && \
+          echo "set man-db/auto-update false" | sudo debconf-communicate
+          sudo dpkg-reconfigure man-db || true      
+          TEMP_DEB="$(mktemp)"
+          wget -O "$TEMP_DEB" 'https://launchpad.net/ubuntu/+archive/primary/+files/cppcheck_2.17.1-1_amd64.deb'      
+          # Wait for dpkg lock
+          while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do
+            echo "Waiting for dpkg lock to be released..."
+            sleep 1
+          done      
+          sudo dpkg -i "$TEMP_DEB"
           rm -f "$TEMP_DEB"
       - name: Run Cppcheck with reviewdog
         env:
