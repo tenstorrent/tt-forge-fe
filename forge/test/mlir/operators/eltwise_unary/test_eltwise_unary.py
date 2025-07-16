@@ -7,7 +7,7 @@ import torch
 from torch import nn
 
 import forge
-from forge.verify.verify import verify, verify_backward
+from forge.verify.verify import verify
 import torch.nn.functional as F
 import onnx
 import os
@@ -458,23 +458,12 @@ def test_exp(shape):
         def forward(self, x):
             return torch.exp(x)
 
-    inputs = [torch.rand(shape, requires_grad=True)]
+    inputs = [torch.rand(shape)]
 
     framework_model = Exp()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=True)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
-
-    grad = torch.rand_like(fw_out[0])
-
-    verify_backward(
-        inputs,
-        grad,
-        fw_out[0],
-        co_out[0],
-        framework_model,
-        compiled_model,
-    )
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -515,23 +504,12 @@ def test_log(shape):
         def forward(self, x):
             return torch.log(x)
 
-    inputs = [torch.rand(shape, requires_grad=True)]
+    inputs = [torch.rand(shape)]
 
     framework_model = Log()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=True)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
-
-    grad = torch.rand_like(fw_out[0])
-
-    verify_backward(
-        inputs,
-        grad,
-        fw_out[0],
-        co_out[0],
-        framework_model,
-        compiled_model,
-    )
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(

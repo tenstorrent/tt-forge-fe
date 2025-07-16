@@ -6,8 +6,6 @@
 #include <cstdint>
 #include <tuple>
 #include <vector>
-// #include <numeric>
-// #include <functional>
 
 #include "autograd/autograd.hpp"
 

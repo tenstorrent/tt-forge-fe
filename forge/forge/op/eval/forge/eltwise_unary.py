@@ -114,7 +114,6 @@ def eval(type, attr, ops):
     # relu_threshold = attr[0] if len(attr) > 0 else 0.0
     f = {
         "erf": lambda i: torch.erf(i[0]),
-        "exp": lambda i: torch.exp(i[0]),
         "sqrt": lambda i: torch.sqrt(i[0]),
         # "relu": lambda i: i[0] * (i[0] >= relu_threshold).to(i[0].dtype),
         "leaky_relu": lambda i: torch.nn.functional.leaky_relu(i[0], attr[0]),
@@ -199,9 +198,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     if type == "buffer":
         return ac.op(Buffer.create(), (grad,))
-
-    if type == "exp":
-        return ac.op("multiply", (output, grad))
 
     if type == "reciprocal":  # -1/x^2
         sq = ac.op("multiply", (output, output))
@@ -344,7 +340,6 @@ def decompose(type, attr, dc, inputs):
 def initial_flops_estimate(type, attr, ops):
     flops = 0
     sfpu_unary_ops = [
-        "exp",
         "sqrt",
         "relu",
         "leaky_relu",
