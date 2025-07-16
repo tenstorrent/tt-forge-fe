@@ -26,8 +26,6 @@ from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
 from test.utils import download_model
 
-dataset = load_dataset("huggingface/cats-image")
-image_1 = dataset["test"]["image"][0]
 
 
 variants = [
@@ -66,6 +64,8 @@ def test_vit_classify_224_hf_pytorch(variant):
     )
 
     # prepare input
+    dataset = load_dataset("huggingface/cats-image")
+    image_1 = dataset["test"]["image"][0]
     inputs = [image_processor(image_1, return_tensors="pt").pixel_values.to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
