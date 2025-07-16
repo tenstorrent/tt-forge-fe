@@ -30,8 +30,6 @@ from forge.verify.compare import compare_tensor_to_golden
 from forge.verify.utils import convert_to_supported_pytorch_dtype
 from forge.forge_property_utils import (
     ExecutionStage,
-    ModelGroup,
-    get_model_group,
     record_execution,
     record_verify_config,
     record_consistency_limits,
@@ -372,11 +370,6 @@ def verify(
         tuple: (framework_outputs, compiled_outputs) - outputs from both models
                Returns (None, None) if verification is disabled
     """
-
-    # If model group is RED, turn on verify_emitc_correctness
-    model_group = get_model_group()
-    if model_group and model_group == ModelGroup.RED:
-        verify_cfg.verify_emitc_correctness = True
 
     record_verify_config(verify_cfg)
 
