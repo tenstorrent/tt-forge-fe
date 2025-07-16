@@ -3,16 +3,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <gtest/gtest.h>
-#include <gtest/internal/gtest-param-util.h>
-#include <torch/torch.h>
 
-#include <array>
-#include <initializer_list>
 #include <vector>
 
-#include "graph_lib/python_bindings.hpp"
 #include "graph_lib/shape.hpp"
-#include "gtest/gtest.h"
 #include "ops/op.hpp"
 #include "test/ops/test_ops.hpp"
 

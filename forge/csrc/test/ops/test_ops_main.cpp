@@ -11,6 +11,9 @@
 
 namespace tt::test::ops
 {
+
+// Tests the decomposition of the operation by running the decomposition pass on the initial graph and verifying that
+// the evaluation of the decomposed graph matches the evalution of the initial graph.
 TEST_P(SimpleOpTest, test_decompose)
 {
     // TODO: decomposing context needs `compiler_cfg`; passing nullptr for now...

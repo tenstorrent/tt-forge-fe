@@ -14,7 +14,6 @@
 
 #include "autograd/autograd.hpp"
 #include "graph_lib/utils.hpp"
-#include "passes/decomposing_context.hpp"
 #include "test/common.hpp"
 
 namespace tt::test::ops
@@ -22,6 +21,7 @@ namespace tt::test::ops
 
 using VecShapes = std::vector<graphlib::Shape>;
 
+/// Simple struct to hold Op test parameters.
 struct OpTestParam
 {
     tt::ops::Op op;
@@ -38,14 +38,6 @@ struct OpTestParam
     }
 };
 
-struct EvalResult
-{
-    torch::Tensor golden;
-    torch::Tensor output;
-};
-
-using eval_function_t = std::function<torch::Tensor(const std::vector<torch::Tensor>&)>;
-
 inline std::ostream& operator<<(std::ostream& os, const torch::ArrayRef<long> shape)
 {
     os << "[";
@@ -59,10 +51,10 @@ inline std::ostream& operator<<(std::ostream& os, const torch::ArrayRef<long> sh
     return os;
 }
 
+/// Verify that the shape of the output tensor matches the expected shape.
 inline void verify_shape(
     const graphlib::Graph* graph, const graphlib::PyOpNode* op_node, const torch::ArrayRef<long> expected_shape)
 {
-    // Verify that the shape of the output tensor matches the expected shape.
     auto shape = op_node->shape().as_vector();
     EXPECT_TRUE(std::equal(shape.begin(), shape.end(), expected_shape.begin(), expected_shape.end()))
         << "Shape mismatch for node " << op_node->name() << ": expected " << expected_shape << ", got "
@@ -116,6 +108,7 @@ class BaseOpTest : public ForgeGraphTest
         return {op};
     }
 
+    /// Runs autograd on the graph and generates random tensors for gradient inputs.
     void run_autograd()
     {
         auto graph = get_graph();
@@ -157,6 +150,8 @@ class BaseOpTest : public ForgeGraphTest
         }
     }
 
+    /// Evaluates the graph node by node (for the provided epoch type).
+    /// Returns a map of output tensor names to their corresponding torch::Tensor values.
     std::unordered_map<std::string, torch::Tensor> eval_graph(
         graphlib::NodeEpochType epoch_type = graphlib::NodeEpochType::Forward)
     {
@@ -178,7 +173,8 @@ class BaseOpTest : public ForgeGraphTest
                 else
                 {
                     throw std::runtime_error(
-                        "Input node " + input->name() + " is a constant with multiple values, which is not supported.");
+                        "Input node " + input->name() +
+                        " is a constant with multiple values, which is not supported right now.");
                 }
             }
             else
@@ -249,21 +245,7 @@ class BaseOpTest : public ForgeGraphTest
         return output_tensors;
     }
 
-    std::vector<torch::Tensor> get_input_tensors()
-    {
-        std::vector<torch::Tensor> tensors;
-        tensors.reserve(input_tensors_.size());
-        for (const auto& input_node : get_graph()->ordered_module_inputs())
-        {
-            EXPECT_TRUE(input_tensors_.find(input_node->name()) != input_tensors_.end())
-                << "Input tensor for node " << input_node->name() << " not found in input_tensors_ map";
-            tensors.push_back(input_tensors_.at(input_node->name()));
-        }
-        return tensors;
-    }
-
-    /// @brief Verifies the forward output of the graph against the golden output (before any graph modifications).
-    /// @return void
+    /// Verifies the forward output of the graph against the golden output (before any graph modifications).
     void verify_fwd()
     {
         // Evaluate the graph node by node.
@@ -284,9 +266,9 @@ class BaseOpTest : public ForgeGraphTest
         }
     }
 
+    /// Compares the output tensors from the graph evaluation with the golden tensors.
     void compare_with_golden(const std::unordered_map<std::string, torch::Tensor>& output_tensors)
     {
-        // Compare the output tensors with the golden tensors.
         EXPECT_EQ(golden_tensors_.size(), output_tensors.size())
             << "Golden tensors and output tensors should have the same size";
 
@@ -301,6 +283,7 @@ class BaseOpTest : public ForgeGraphTest
         }
     }
 
+    /// Verifies that the calculated gradients from the backward graph are the same as the gradients computed by torch.
     void verify_bwd_gradients(std::unordered_map<std::string, torch::Tensor>& computed_grads)
     {
         run_torch_backward();
@@ -335,7 +318,7 @@ class BaseOpTest : public ForgeGraphTest
 
     torch::Tensor generated_grad() const { return generated_grads_.begin()->second; }
 
-    /// @brief Runs torch backward on the golden output tensors.
+    /// Runs torch backward on the golden output tensors.
     void run_torch_backward()
     {
         // Run torch backward on the golden output tensors.
@@ -397,25 +380,6 @@ struct SimpleOpTest : public BaseOpTest, testing::WithParamInterface<OpTestParam
         return param.op.as_string() + std::to_string(op_name_id_map[op_name]++);
     }
 };
-
-template <size_t N, size_t... Is>
-inline auto tuple_from_array_helper(const std::array<uint32_t, N>& arr, std::index_sequence<Is...>)
-{
-    return std::make_tuple(static_cast<uint32_t>(arr[Is])...);
-}
-
-template <size_t N>
-inline auto tuple_type_from_array(const std::array<uint32_t, N>& arr)
-{
-    if constexpr (N == 1)
-    {
-        return arr[0];
-    }
-    else
-    {
-        return tuple_from_array_helper(arr, std::make_index_sequence<N>{});
-    }
-}
 
 inline std::vector<graphlib::Shape> shape_range(
     std::vector<uint32_t> min_shape, std::vector<uint32_t> max_shape, size_t idx = 0)
