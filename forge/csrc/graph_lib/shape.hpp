@@ -121,6 +121,8 @@ class Shape
     Shape canonical() const;
     Shape as_rank(std::uint32_t rank) const;
 
+    // Checks whether the current shape can be broadcasted to the other shape.
+    bool can_be_broadcasted_to(const Shape &other) const;
     // Return the list of dims (and amount) that need to be broadcast from current to other
     std::vector<DimBroadcast> broadcast_dims(const Shape &other) const;
 
@@ -141,6 +143,8 @@ class Shape
     NLOHMANN_JSON_SERIALIZE_ENUM(Shape::Type, {{Shape::Type::FREE, "FREE"}, {Shape::Type::FORGE, "FORGE"}});
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Shape, valid_, type_, dims_)
 };
+
+bool can_be_broadcasted(const Shape &a, const Shape &b);
 
 std::ostream &operator<<(std::ostream &out, const Shape &s);
 
