@@ -16,9 +16,8 @@ namespace tt::test::ops
 // the evaluation of the decomposed graph matches the evalution of the initial graph.
 TEST_P(SimpleOpTest, test_decompose)
 {
-    // TODO: decomposing context needs `compiler_cfg`; passing nullptr for now...
-    tt::decompose_tt_forge_graph<DecomposeEpoch::Initial>(get_graph(), std::shared_ptr<void>(nullptr, [](void *) {}));
-
+    // Run the decomposition pass on the initial graph.
+    run_decompose_graph();
     // Evaluate the graph node by node.
     auto outputs = eval_graph();
     compare_with_golden(outputs);
@@ -43,6 +42,12 @@ TEST_P(SimpleOpTest, test_backward)
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
+
+    GraphTestFlags flags = GraphTestFlags::from_cli_args(argc, argv);
+
+    // Set up the test environment with the specified flags.
+    ::testing::AddGlobalTestEnvironment(new GraphTestFlagsEnvironment(flags));
+
     pybind11::scoped_interpreter guard{};
     return RUN_ALL_TESTS();
 }

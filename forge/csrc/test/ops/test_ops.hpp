@@ -14,6 +14,7 @@
 
 #include "autograd/autograd.hpp"
 #include "graph_lib/utils.hpp"
+#include "passes/decomposing_context.hpp"
 #include "test/common.hpp"
 
 namespace tt::test::ops
@@ -143,8 +144,7 @@ class BaseOpTest : public ForgeGraphTest
             generated_grads_[node->name()] = torch::rand(torch_shape(node->shape()));
         }
 
-        bool debug_logs = tt::env_as("UT_DEBUG_LOGS", false);
-        if (debug_logs)
+        if (GraphTestFlagsEnvironment::instance()->enable_reportify)
         {
             graph->dump("post_autograd");
         }
@@ -344,6 +344,13 @@ class BaseOpTest : public ForgeGraphTest
                 << "Generated gradient for tensor " << name << " not found in generated_grads_ map";
             tensor.backward(generated_grads_.at(grad_name));
         }
+    }
+
+    void run_decompose_graph()
+    {
+        // TODO: decomposing context needs `compiler_cfg`; passing nullptr for now...
+        tt::decompose_tt_forge_graph<DecomposeEpoch::Initial>(
+            get_graph(), std::shared_ptr<void>(nullptr, [](void*) {}));
     }
 
    private:
