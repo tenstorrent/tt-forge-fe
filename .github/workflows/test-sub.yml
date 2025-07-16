@@ -149,7 +149,7 @@ jobs:
           pip install tt_tvm*.whl --force-reinstall
           pip install tt_forge_fe*.whl --force-reinstall
 
-      - name: Run Test
+      - name: Collect tests
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_HOME: /mnt/dockercache/huggingface
@@ -170,8 +170,20 @@ jobs:
 
           echo "Collected tests."
           # enable next line for debugging
-          # cat .pytest_tests_to_run
+          cat .pytest_tests_to_run
 
+      - name: Run Pytest
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HOME: /mnt/dockercache/huggingface
+          FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
+          HF_HUB_DISABLE_PROGRESS_BARS: 1
+          FORGE_DISABLE_REPORTIFY_DUMP: 1
+          OPERATORS: ${{ inputs.operators }}
+          FILTERS: ${{ inputs.filters }}
+        shell: bash
+        run: |
+          source env/activate
           set +e
           python .github/workflows/test_runner.py  \
                --junit-xml=${{ steps.strings.outputs.test_report_path }} \
