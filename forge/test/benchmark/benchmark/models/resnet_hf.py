@@ -35,7 +35,8 @@ TASK = [
     "classification",
 ]
 
-EVALUATION_SCORE_TARGET = 75.0 # Target evaluation score for classification tasks, given as a percentage (e.g., 75.0 for 75%)
+# Target evaluation score for classification tasks, given as a percentage (e.g., 75.0 for 75%)
+EVALUATION_SCORE_TARGET = 75.0
 
 # Batch size configurations
 BATCH_SIZE = [
