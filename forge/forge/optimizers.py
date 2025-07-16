@@ -28,6 +28,8 @@ class Optimizer:
     # For each parameter that we are optimizing, we store a dictionary of optimizer parameters for that particular parameter.
     # The derived classes will populate this dictionary with the necessary optimizer parameters.
     parameter_to_opt_inputs: Dict[str, Dict[str, Tensor]] = {}
+    parameter_to_opt_torch_inputs: Dict[str, Dict[str, Tensor]] = {}
+    parameter_name_to_group: Dict[str, Dict[str, Tensor]] = {}
 
     def __init__(self, parameters: Optional[List[Parameter]]):
         """
@@ -90,7 +92,30 @@ class Optimizer:
         assert self.linked_modules is not None, "Optimizer must be linked to a module before calling step"
         for module in self.linked_modules:
             module.step()
+    
+    def set_parameters_to_optimize(self, parameters: List[Parameter]):
+        # For each Parameter, we register its associated set of optimizer parameters
+        base_hyperparameters = self.hyperparameters
+        has_parameter_groups = self.parameter_groups is not None
+        
+        for parameter in parameters:    
+            if not parameter.requires_grad:
+                continue
+            
+            param_name = parameter.get_name()
+            param_shape = parameter.shape.get_pytorch_shape()
+            param_dtype = parameter.pt_data_format
+            
+            if has_parameter_groups and param_name in self.parameter_name_to_group:
+                group_params = self.parameter_name_to_group[param_name]
+                hyperparameters_param = {**base_hyperparameters, **group_params}
+            else:
+                hyperparameters_param = base_hyperparameters
 
+            self.parameter_to_opt_inputs[param_name] = self.get_param_dict(
+                param_dtype, param_shape, hyperparameters_param
+            )
+            self.parameter_to_opt_torch_inputs[param_name] = {k: v.to_pytorch() for k, v in self.parameter_to_opt_inputs[param_name].items()}
 
 class SGD(Optimizer):
     """
@@ -105,28 +130,24 @@ class SGD(Optimizer):
         optimizer_parameter_name -> Tensor dict.
     """
 
-    def __init__(self, learning_rate: float, parameters: Optional[List[Parameter]] = None):
+    def __init__(self, learning_rate: float, parameters: Optional[List[Dict]] = None):
         super().__init__(parameters)
         self.learning_rate: float = learning_rate
         self.parameter_to_opt_inputs: Dict[str, Dict[str, Tensor]] = {}
+        self.parameter_groups = parameters
+        if parameters:
+            for param in parameters:
+                for param_name in param["params"]:
+                    self.parameter_name_to_group[param_name] = param
+        self.hyperparameters = {"lr": learning_rate}
 
-        if parameters is not None:
-            self.set_parameters_to_optimize(parameters)
-
-    def set_parameters_to_optimize(self, parameters: List[Parameter]):
-        # For each Parameter, we register its associated set of optimizer parameters
-        for parameter in parameters:
-            if parameter.requires_grad:
-                self.parameter_to_opt_inputs[parameter.get_name()] = self.get_param_dict(parameter.pt_data_format)
-
-    def get_param_dict(self, dtype: torch.dtype) -> Dict:
+    def get_param_dict(self, dtype: torch.dtype, shape: Tuple[int], hyperparameters: Dict) -> Dict:
         """
         Return a dict of optimizer parameter names to tensor
         """
         # Forge needs a pytorch array for now
         # TODO(jchu): modify these two lines when we deprecate the old path
-        learning_rate_torch = torch.full((1,), self.learning_rate, dtype=dtype)
-
+        learning_rate_torch = torch.full((1,), hyperparameters["lr"], dtype=dtype)
         learning_rate = Tensor.create_from_torch(learning_rate_torch)
         return {"lr": learning_rate}
 
@@ -215,7 +236,7 @@ class Adam(Optimizer):
         epsilon: float = 1e-8,
         weight_decay: float = 0.0,
         bias_correction: bool = True,
-        parameters: Optional[List[Parameter]] = None,
+        parameters: Optional[List[Dict]] = None,
         enable_adam_w: bool = False,
     ):
         super().__init__(parameters)
@@ -228,12 +249,18 @@ class Adam(Optimizer):
         self.torch_optimizer = None
 
         self.learning_rate = learning_rate
-        self.parameter_to_opt_inputs: Dict[str, Dict[str, Tensor]] = {}
-        self.parameter_to_opt_torch_inputs: Dict[str, Dict[str, Tensor]] = {}
         self.enable_adam_w = enable_adam_w
+        self.parameter_groups = parameters
 
         if parameters:
-            self.set_parameters_to_optimize(parameters)
+            for param in parameters:
+                for param_name in param["params"]:
+                    self.parameter_name_to_group[param_name] = param
+        self.hyperparameters = {
+            "lr": learning_rate,
+            "beta1": beta1,
+            "beta2": beta2,
+        }
 
     def get_cpu_param_dict(self, dtype: torch.dtype, shape: Tuple[int]) -> Dict:
         # TODO: shapes are set to the shape of the parameter because of the following issue
@@ -251,14 +278,15 @@ class Adam(Optimizer):
                 "torch_variance": torch.full(shape, 0.0, dtype=dtype),
             }
 
-    def get_param_dict(self, dtype: torch.dtype, shape: Tuple[int]) -> Dict:
+    def get_param_dict(self, dtype: torch.dtype, shape: Tuple[int], hyperparameters: Dict) -> Dict:
         """
         Return a dict of optimizer parameter names to tensor
         """
-        torch_lr = torch.full((1,), self.learning_rate, dtype=dtype)
         if self.bias_correction:
             return {
-                "lr": Tensor.create_from_torch(torch.full(shape, self.learning_rate, dtype=dtype)),
+                "lr": Tensor.create_from_torch(torch.full(shape, hyperparameters["lr"], dtype=dtype)),
+                "beta1": Tensor.create_from_torch(torch.full(shape, hyperparameters["beta1"], dtype=dtype)),
+                "beta2": Tensor.create_from_torch(torch.full(shape, hyperparameters["beta2"], dtype=dtype)),
                 "mean": Tensor.create_from_torch(torch.full(shape, 0.0, dtype=dtype)),
                 "variance": Tensor.create_from_torch(torch.full(shape, 0.0, dtype=dtype)),
                 "beta1_pow": Tensor.create_from_torch(torch.full(shape, 1.0, dtype=dtype)),
@@ -266,30 +294,21 @@ class Adam(Optimizer):
             }
         else:
             return {
-                "lr": Tensor.create_from_torch(torch.full(shape, self.learning_rate, dtype=dtype)),
+                "lr": Tensor.create_from_torch(torch.full(shape, hyperparameters["lr"], dtype=dtype)),
+                "beta1": Tensor.create_from_torch(torch.full(shape, hyperparameters["beta1"], dtype=dtype)),
+                "beta2": Tensor.create_from_torch(torch.full(shape, hyperparameters["beta2"], dtype=dtype)),
                 "mean": Tensor.create_from_torch(torch.full(shape, 0.0, dtype=dtype)),
                 "variance": Tensor.create_from_torch(torch.full(shape, 0.0, dtype=dtype)),
             }
 
     def get_optimizer_state_keys(self) -> List:
         if self.bias_correction:
-            return ["mean", "variance", "beta1_pow", "beta2_pow"]
+            return ["lr", "mean", "variance", "beta1", "beta2", "beta1_pow", "beta2_pow"]
         else:
-            return ["mean", "variance"]
+            return ["lr", "mean", "variance", "beta1", "beta2"]
 
     def get_type(self) -> str:
         return "adam"
-
-    def set_parameters_to_optimize(self, parameters: List[Parameter]):
-        # For each Parameter, we register its associated set of optimizer parameters
-        for parameter in parameters:
-            if parameter.requires_grad:
-                self.parameter_to_opt_inputs[parameter.get_name()] = self.get_param_dict(
-                    parameter.pt_data_format, parameter.shape.get_pytorch_shape()
-                )
-                self.parameter_to_opt_torch_inputs[parameter.get_name()] = self.get_cpu_param_dict(
-                    parameter.pt_data_format, parameter.shape.get_pytorch_shape()
-                )
 
     def set_optimizer_parameters(self, learning_rate: Optional[float] = None) -> None:
         """
@@ -334,16 +353,16 @@ class Adam(Optimizer):
 
         # self.mean = self.beta1 * self.mean + one_minus_beta1 * gradient
         mean = ac.input("mean", parameter.shape, copy_consteval_operations=True)
-        beta1 = ac.tensor(torch.full(parameter_shape, self.beta1))
-        one_minus_beta1 = ac.tensor(torch.full(parameter_shape, 1 - self.beta1))
+        beta1 = ac.input("beta1", parameter.shape, copy_consteval_operations=True)
+        one_minus_beta1 = ac.op("subtract", (ac.tensor(torch.full(parameter_shape, 1.0)), beta1))
         mean_times_beta1 = ac.op("multiply", (mean, beta1))
         gradient_times_one_minus_beta1 = ac.op("multiply", (gradient, one_minus_beta1))
         updated_mean = ac.op("add", (mean_times_beta1, gradient_times_one_minus_beta1))
 
         # self.variance = self.beta2 * self.variance + one_minus_beta2 * gradient**2
         variance = ac.input("variance", parameter.shape, copy_consteval_operations=True)
-        beta2 = ac.tensor(torch.full(parameter_shape, self.beta2))
-        one_minus_beta2 = ac.tensor(torch.full(parameter_shape, 1 - self.beta2))
+        beta2 = ac.input("beta2", parameter.shape, copy_consteval_operations=True)
+        one_minus_beta2 = ac.op("subtract", (ac.tensor(torch.full(parameter_shape, 1.0)), beta2))
         variance_times_beta2 = ac.op("multiply", (variance, beta2))
         gradient_squared = ac.op("multiply", (gradient, gradient))
         gradient_squared_times_one_minus_beta2 = ac.op("multiply", (gradient_squared, one_minus_beta2))

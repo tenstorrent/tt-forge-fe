@@ -103,6 +103,78 @@ def test_sgd(shape):
         golden_optimizer=golden_optimizer,
     )
 
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (128, 10, 20),
+    ],
+)
+@pytest.mark.push
+def test_sgd_with_param_groups(shape):
+    torch.manual_seed(0)
+    num_epochs = 10
+    batch_size = 10
+
+    framework_model = MNISTLinear(input_size=shape[0], hidden_size=shape[1], output_size=shape[2], bias=False)
+    golden_model = MNISTLinear(input_size=shape[0], hidden_size=shape[1], output_size=shape[2], bias=False)
+
+    copy_params(framework_model, golden_model)
+    
+    golden_params = list(golden_model.named_parameters())
+    tt_params = list(framework_model.named_parameters())
+    
+    # Group parameters by layer
+    linear1_golden = [p for name, p in golden_params if "linear_relu_stack.0" in name]
+    linear2_golden = [p for name, p in golden_params if "linear_relu_stack.2" in name]
+    linear3_golden = [p for name, p in golden_params if "linear_relu_stack.4" in name]
+    
+    linear1_tt = [name for name, p in tt_params if "linear_relu_stack.0" in name]
+    linear2_tt = [name for name, p in tt_params if "linear_relu_stack.2" in name]
+    linear3_tt = [name for name, p in tt_params if "linear_relu_stack.4" in name]
+    
+    # Create parameter groups for TT optimizer
+    tt_param_groups = [
+        {'params': linear1_tt, 'lr': 1},
+        {'params': linear2_tt, 'lr': 2},
+        {'params': linear3_tt, 'lr': 3}
+    ]
+    
+    # Create parameter groups for golden optimizer
+    golden_param_groups = [
+        {'params': linear1_golden, 'lr': 1},
+        {'params': linear2_golden, 'lr': 2},
+        {'params': linear3_golden, 'lr': 3}
+    ]
+    
+    # Create optimizers with parameter groups
+    tt_optimizer = forge.optimizers.SGD(
+        learning_rate=1,
+        parameters=tt_param_groups
+    )
+    golden_optimizer = torch.optim.SGD(
+        golden_param_groups,
+        lr=1
+    )
+
+    tt_model = forge.compile(
+        framework_model,
+        sample_inputs=[torch.randn(batch_size, shape[0])],
+        optimizer=tt_optimizer,
+        training=True,
+    )
+
+    loss_fn = nn.MSELoss()
+
+    train_and_compare_optimizers(
+        num_epochs=num_epochs,
+        batch_size=batch_size,
+        shape=shape,
+        loss_fn=loss_fn,
+        tt_model=tt_model,
+        tt_optimizer=tt_optimizer,
+        golden_model=golden_model,
+        golden_optimizer=golden_optimizer,
+    )
 
 @pytest.mark.parametrize(
     "shape",
@@ -162,6 +234,82 @@ def test_adam(shape, betas, weight_decay):
 
     loss_fn = nn.MSELoss()
 
+    train_and_compare_optimizers(
+        num_epochs=num_epochs,
+        batch_size=batch_size,
+        shape=shape,
+        loss_fn=loss_fn,
+        tt_model=tt_model,
+        tt_optimizer=tt_optimizer,
+        golden_model=golden_model,
+        golden_optimizer=golden_optimizer,
+    )
+
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (128, 10, 20),
+    ],
+)
+@pytest.mark.push
+def test_adam_with_param_groups(shape):
+    torch.manual_seed(0)
+    num_epochs = 10
+    batch_size = 10
+    
+    # Create models
+    framework_model = MNISTLinear(input_size=shape[0], hidden_size=shape[1], output_size=shape[2], bias=False)
+    golden_model = MNISTLinear(input_size=shape[0], hidden_size=shape[1], output_size=shape[2], bias=False)
+    
+    copy_params(framework_model, golden_model)
+    
+    golden_params = list(golden_model.named_parameters())
+    tt_params = list(framework_model.named_parameters())
+    
+    # Group parameters by layer
+    linear1_golden = [p for name, p in golden_params if "linear_relu_stack.0" in name]
+    linear2_golden = [p for name, p in golden_params if "linear_relu_stack.2" in name]
+    linear3_golden = [p for name, p in golden_params if "linear_relu_stack.4" in name]
+    
+    linear1_tt = [name for name, p in tt_params if "linear_relu_stack.0" in name]
+    linear2_tt = [name for name, p in tt_params if "linear_relu_stack.2" in name]
+    linear3_tt = [name for name, p in tt_params if "linear_relu_stack.4" in name]
+    
+    # Create parameter groups for TT optimizer
+    tt_param_groups = [
+        {'params': linear1_tt, 'lr': 1},
+        {'params': linear2_tt, 'lr': 2},
+        {'params': linear3_tt, 'lr': 3}
+    ]
+    
+    # Create parameter groups for golden optimizer
+    golden_param_groups = [
+        {'params': linear1_golden, 'lr': 1},
+        {'params': linear2_golden, 'lr': 2},
+        {'params': linear3_golden, 'lr': 3}
+    ]
+    
+    # Create optimizers with parameter groups
+    tt_optimizer = forge.optimizers.Adam(
+        learning_rate=0.005,
+        bias_correction=True,
+        parameters=tt_param_groups
+    )
+    
+    golden_optimizer = torch.optim.Adam(
+        golden_param_groups,
+        lr=0.005,
+    )
+    
+    tt_model = forge.compile(
+        framework_model,
+        sample_inputs=[torch.randn(batch_size, shape[0])],
+        optimizer=tt_optimizer,
+        training=True,
+    )
+    
+    loss_fn = nn.MSELoss()
+    
     train_and_compare_optimizers(
         num_epochs=num_epochs,
         batch_size=batch_size,
