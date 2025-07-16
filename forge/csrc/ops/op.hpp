@@ -25,7 +25,7 @@ namespace graphlib
 struct OpType;
 class Shape;
 struct NodeContext;
-using DimBroadcastTrampoline = std::tuple<int, int, int>;
+class DimBroadcast;
 }  // namespace graphlib
 
 namespace autograd
@@ -237,7 +237,7 @@ class Op
 
     at::Tensor eval(const graphlib::OpType &old_op_type, const std::vector<at::Tensor> &tensors) const;
 
-    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(
+    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
         const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
     tt::graphlib::NodeContext backward(
@@ -293,7 +293,7 @@ class Op
 
     at::Tensor base_eval(const graphlib::OpType &old_op_type, const std::vector<at::Tensor> &tensors) const;
 
-    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> base_shape(
+    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> base_shape(
         const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
     tt::graphlib::NodeContext base_backward(

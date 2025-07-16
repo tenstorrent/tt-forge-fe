@@ -275,6 +275,29 @@ void GraphModule(py::module &m_graph)
         .value("FORGE", Shape::Type::FORGE)
         .export_values();
 
+    py::class_<graphlib::DimBroadcast>(m_graph, "DimBroadcast")
+        .def(py::init<int, int, int>(), py::arg("operand"), py::arg("dim"), py::arg("size"))
+        .def("operand", &graphlib::DimBroadcast::operand)
+        .def("dim", &graphlib::DimBroadcast::dim)
+        .def("size", &graphlib::DimBroadcast::size)
+        .def(
+            "__repr__",
+            [](const graphlib::DimBroadcast &db)
+            {
+                return "DimBroadcast(operand=" + std::to_string(db.operand()) + ", dim=" + std::to_string(db.dim()) +
+                       ", size=" + std::to_string(db.size()) + ")";
+            })
+        .def(py::pickle(
+            [](const graphlib::DimBroadcast &db) {  // __getstate__
+                return py::make_tuple(db.operand(), db.dim(), db.size());
+            },
+            [](py::tuple t) {  // __setstate__
+                if (t.size() != 3)
+                    throw std::runtime_error("graphlib::DimBroadcast: Invalid state!");
+
+                return graphlib::DimBroadcast(t[0].cast<int>(), t[1].cast<int>(), t[2].cast<int>());
+            }));
+
     py::class_<graphlib::NodeContext>(m_graph, "NodeContext")
         .def_readonly("id", &graphlib::NodeContext::id)
         .def_readonly("name", &graphlib::NodeContext::name)
@@ -507,19 +530,19 @@ void GraphModule(py::module &m_graph)
            int out_port_id,
            const graphlib::NodeId end,
            int in_port_id,
-           std::vector<py::tuple> operand_broadcast)
+           std::vector<graphlib::DimBroadcast> operand_broadcast)
         {
             graphlib::Edge edge(
                 start, (graphlib::PortId)out_port_id, end, (graphlib::PortId)in_port_id, graphlib::EdgeType::kData);
             graph->add_edge(edge);
             std::shared_ptr<graphlib::EdgeAttributes> attr = graph->get_edge_attributes(edge);
 
-            for (const py::tuple &broadcast : operand_broadcast)
+            for (const graphlib::DimBroadcast &broadcast : operand_broadcast)
             {
-                if (in_port_id == broadcast[0].cast<int>())
+                if (in_port_id == broadcast.operand())
                 {
-                    int dim = broadcast[1].cast<int>();
-                    int size = broadcast[2].cast<int>();
+                    int dim = broadcast.dim();
+                    int size = broadcast.size();
                     attr->set_broadcast_dim(dim, size);
                 }
             }

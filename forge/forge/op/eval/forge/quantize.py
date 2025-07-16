@@ -1,11 +1,13 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+from forge._C.graph import DimBroadcast
 import torch
 import torch.nn.functional as F
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile
 import numpy as np
+
 from ..common import to_torch_operands
 from forge.tensor import pytorch_dtype_to_forge_dataformat
 from .reciprocal import Reciprocal
@@ -147,12 +149,12 @@ def shape(type, attr, ops):
         assert len(op1) == len(op0), "Scale and input must have same dimension"
         for dim in range(1, len(op0)):
             if op0[dim] != op1[dim]:
-                broadcast.append((1, dim - len(op0), op0[dim]))
+                broadcast.append(DimBroadcast(1, dim - len(op0), op0[dim]))
 
     if type == "forge_requantize" or type == "forge_dequantize":
         for dim in range(1, len(ops[0])):
             if ops[0][dim] != ops[1][dim]:
-                broadcast.append((1, dim - len(ops[0]), ops[0][dim]))
+                broadcast.append(DimBroadcast(1, dim - len(ops[0]), ops[0][dim]))
     return ops[0], broadcast
 
 

@@ -6,6 +6,7 @@ import os
 from typing import List, Tuple
 from forge.forgeglobal import TILE_DIM
 from forge.tensor import Tensor
+from forge._C.graph import DimBroadcast
 import numpy as np
 import torch
 from .reciprocal import Reciprocal
@@ -61,13 +62,13 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
     for dim in range(len(ops[0])):
         if ops[0][dim] != ops[1][dim]:
             if ops[1][dim] == 1:
-                broadcast.append((1, dim - len(ops[1]), ops[0][dim]))  # Convert to negative indexing
+                broadcast.append(DimBroadcast(1, dim - len(ops[1]), ops[0][dim]))  # Convert to negative indexing
                 output_shape.append(ops[0][dim])
             else:
                 assert (
                     ops[0][dim] == 1
                 ), f"Eltwise binary ops must have the same shape in both inputs, or one operand must be 1 wide to broadcast: {ops[0]} vs {ops[1]}"
-                broadcast.append((0, dim - len(ops[0]), ops[1][dim]))  # Convert to negative indexing
+                broadcast.append(DimBroadcast(0, dim - len(ops[0]), ops[1][dim]))  # Convert to negative indexing
                 output_shape.append(ops[1][dim])
         else:
             output_shape.append(ops[0][dim])
