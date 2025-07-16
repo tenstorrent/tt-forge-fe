@@ -14,7 +14,6 @@ from forge.op.eval.common import calculate_tile_size
 from .tanh import Tanh
 from .nop import Nop
 from .buffer import Buffer
-from .exp import Exp
 from .reciprocal import Reciprocal
 
 M_2_SQRTPI = 1.12837916709551257390  # 2/sqrt(pi)
@@ -318,7 +317,7 @@ def decompose(type, attr, dc, inputs):
         minus_one = dc.tensor(torch.ones([1, 1]) * -1)
         plus_one = dc.tensor(torch.ones([1, 1]))
         neg_ = dc.op("multiply", [inp, minus_one])
-        exp_ = dc.op(Exp.create(), [neg_])
+        exp_ = dc.op("exp", [neg_])
         result = dc.op("add", [plus_one, exp_])
         result = dc.op(Reciprocal.create(), [result])
         dc.fuse(result)

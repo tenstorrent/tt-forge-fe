@@ -16,24 +16,22 @@ namespace tt
 {
 namespace ops
 {
-namespace log
+namespace exp
 {
 
 at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Log, "Wrong op type.");
-    TT_ASSERT(tensors.size() == 1, "Log should have one input");
+    TT_DBG_ASSERT(op.type() == OpType::Exp, "Wrong op type.");
+    TT_ASSERT(tensors.size() == 1, "Exp should have one input");
 
-    // Add small epsilon to avoid log(0)
-    at::Tensor input_with_epsilon = tensors[0] + 1e-10;
-    return torch::log(input_with_epsilon);
+    return torch::exp(tensors[0]);
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Log, "Wrong op type.");
-    TT_ASSERT(in_shapes.size() == 1, "Log should have one input");
+    TT_DBG_ASSERT(op.type() == OpType::Exp, "Wrong op type.");
+    TT_ASSERT(in_shapes.size() == 1, "Exp should have one input");
     return std::make_tuple(graphlib::Shape::create(in_shapes[0]), std::vector<graphlib::DimBroadcast>{});
 }
 
@@ -45,22 +43,24 @@ tt::graphlib::NodeContext backward(
     const tt::graphlib::NodeContext &output,
     const tt::graphlib::NodeContext &gradient)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Log, "Wrong op type.");
-    TT_ASSERT(inputs.size() == 1, "Log should have one input");
+    /**
+     * dx = exp(x) * grad
+     */
+
+    TT_DBG_ASSERT(op.type() == OpType::Exp, "Wrong op type.");
+    TT_ASSERT(inputs.size() == 1, "Exp should have one input");
     TT_ASSERT(operand == 0, "Invalid operand index");
 
-    // dx = 1 / x * grad
-    auto recip = ac.autograd->create_op(ac, graphlib::OpType("reciprocal"), {inputs[0]});
-    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {recip, gradient});
+    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {output, gradient});
 }
 
 long initial_flops_estimate(const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Log, "Wrong op type.");
+    TT_DBG_ASSERT(op.type() == OpType::Exp, "Wrong op type.");
 
-    return op_common::initial_flops_estimate_output_dim(log::shape(op, inputs));
+    return op_common::initial_flops_estimate_output_dim(exp::shape(op, inputs));
 }
 
-}  // namespace log
+}  // namespace exp
 }  // namespace ops
 }  // namespace tt

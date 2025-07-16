@@ -458,12 +458,23 @@ def test_exp(shape):
         def forward(self, x):
             return torch.exp(x)
 
-    inputs = [torch.rand(shape)]
+    inputs = [torch.rand(shape, requires_grad=True)]
 
     framework_model = Exp()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=True)
 
-    verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    grad = torch.rand_like(fw_out[0])
+
+    verify_backward(
+        inputs,
+        grad,
+        fw_out[0],
+        co_out[0],
+        framework_model,
+        compiled_model,
+    )
 
 
 @pytest.mark.parametrize(

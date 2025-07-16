@@ -405,6 +405,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Constant: return constant::eval(*this, tensors);
         case OpType::Cosine: return cosine::eval(*this, tensors);
         case OpType::Divide: return divide::eval(*this, tensors);
+        case OpType::Exp: return exp::eval(*this, tensors);
         case OpType::Log: return log::eval(*this, tensors);
         case OpType::Multiply: return multiply::eval(*this, tensors);
         case OpType::Sine: return sine::eval(*this, tensors);
@@ -426,6 +427,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Constant: return constant::shape(*this, inputs);
         case OpType::Cosine: return cosine::shape(*this, inputs);
         case OpType::Divide: return divide::shape(*this, inputs);
+        case OpType::Exp: return exp::shape(*this, inputs);
         case OpType::Log: return log::shape(*this, inputs);
         case OpType::Multiply: return multiply::shape(*this, inputs);
         case OpType::Sine: return sine::shape(*this, inputs);
@@ -452,6 +454,7 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Constant: return constant::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Cosine: return cosine::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Divide: return divide::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Exp: return exp::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Log: return log::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Multiply: return multiply::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Sine: return sine::backward(*this, context, operand, inputs, output, gradient);
@@ -495,6 +498,7 @@ void Op::decompose_initial(
         case OpType::Constant: return;
         case OpType::Cosine: return;
         case OpType::Divide: return;
+        case OpType::Exp: return;
         case OpType::Log: return;
         case OpType::Multiply: return;
         case OpType::Sine: return;
@@ -518,6 +522,7 @@ void Op::decompose_post_optimize(
         case OpType::Constant: return;
         case OpType::Cosine: return;
         case OpType::Divide: return;
+        case OpType::Exp: return;
         case OpType::Log: return;
         case OpType::Multiply: return;
         case OpType::Sine: return;
@@ -541,6 +546,7 @@ void Op::decompose_post_autograd(
         case OpType::Constant: return;
         case OpType::Cosine: return;
         case OpType::Divide: return;
+        case OpType::Exp: return;
         case OpType::Log: return;
         case OpType::Multiply: return multiply::decompose_post_autograd(*this, dc, inputs);
         case OpType::Sine: return;
@@ -561,6 +567,7 @@ long Op::initial_flops_estimate(
         case OpType::Constant: return 0;
         case OpType::Cosine: return cosine::initial_flops_estimate(*this, inputs);
         case OpType::Divide: return 0;
+        case OpType::Exp: return exp::initial_flops_estimate(*this, inputs);
         case OpType::Log: return log::initial_flops_estimate(*this, inputs);
         case OpType::Concatenate: return 0;
         case OpType::Multiply: return 0;
@@ -582,6 +589,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Constant: return false;
         case OpType::Cosine: return false;
         case OpType::Divide: return false;
+        case OpType::Exp: return false;
         case OpType::Log: return false;
         case OpType::Multiply: return false;
         case OpType::Sine: return false;
@@ -602,6 +610,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Constant: return false;
         case OpType::Cosine: return true;
         case OpType::Divide: return true;
+        case OpType::Exp: return true;
         case OpType::Log: return true;
         case OpType::Multiply: return true;
         case OpType::Sine: return true;
@@ -622,6 +631,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Constant: return false;
         case OpType::Cosine: return true;
         case OpType::Divide: return false;
+        case OpType::Exp: return true;
         case OpType::Log: return true;
         case OpType::Multiply: return false;
         case OpType::Sine: return true;
@@ -642,6 +652,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Constant: return false;
         case OpType::Cosine: return false;
         case OpType::Divide: return true;
+        case OpType::Exp: return false;
         case OpType::Log: return false;
         case OpType::Multiply: return true;
         case OpType::Sine: return false;
@@ -662,6 +673,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Constant: return false;
         case OpType::Cosine: return false;
         case OpType::Divide: return false;
+        case OpType::Exp: return false;
         case OpType::Log: return false;
         case OpType::Multiply: return false;
         case OpType::Sine: return false;

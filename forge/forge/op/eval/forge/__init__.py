@@ -4,7 +4,6 @@
 import importlib
 from types import ModuleType
 from functools import lru_cache
-from .exp import Exp
 from .cosine import Cosine
 from .ethernet_datacopy import EthernetDatacopy
 from .reciprocal import Reciprocal
@@ -42,7 +41,7 @@ op_to_module_map = {
     "equal": "eltwise_binary",
     "not_equal": "eltwise_binary",
     "logical_and": "eltwise_binary",
-    "exp": Exp,
+    "exp": "eltwise_unary",
     "reciprocal": Reciprocal,
     "nop": Nop,
     "buffer": Buffer,
