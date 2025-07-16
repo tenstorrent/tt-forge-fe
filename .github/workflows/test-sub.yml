@@ -48,6 +48,10 @@ on:
         description: 'Continue if test crashes, otherwise restart the test'
         required: false
         type: boolean
+      sh-runner:
+        description: 'Run tests using shared runners'
+        required: false
+        type: boolean
 
 jobs:
   run-tests:
@@ -58,14 +62,12 @@ jobs:
         build: ${{ fromJson(inputs.runs-on) }}
         test_group_id: ${{ fromJSON(inputs.test_group_ids) }}
 
-    runs-on:
-      - in-service
-      - ${{ matrix.build.runs-on }}
+    runs-on: ${{ inputs.sh-runner && format('tt-beta-ubuntu-2204-{0}-large-stable', matrix.build.runs-on) || fromJson(format('["{0}", "in-service"]', matrix.build.runs-on)) }}
 
     continue-on-error: ${{ inputs.allow-fail }}
 
     container:
-      image: ${{ inputs.docker-image }}
+      image: ${{ inputs.sh-runner && format('harbor.ci.tenstorrent.net/{0}', inputs.docker-image) || inputs.docker-image }}
       options: --device /dev/tenstorrent/0
       volumes:
         - /dev/hugepages:/dev/hugepages
@@ -75,7 +77,7 @@ jobs:
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
         - /mnt/dockercache:/mnt/dockercache
 
-    name: "run-tests ${{ inputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+    name: "run-tests ${{ inputs.test_mark }} (${{ matrix.build.runs-on }}${{ inputs.sh-runner && '-shared' }}, ${{ matrix.test_group_id }})"
 
     steps:
 
@@ -83,7 +85,7 @@ jobs:
         id: fetch-job-id
         uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
         with:
-          job_name: "run-tests ${{ inputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+          job_name: "run-tests ${{ inputs.test_mark }} (${{ matrix.build.runs-on }}${{ inputs.sh-runner && '-shared' }}, ${{ matrix.test_group_id }})"
 
       - name: Set reusable strings
         id: strings
