@@ -116,7 +116,6 @@ def eval(type, attr, ops):
     f = {
         "erf": lambda i: torch.erf(i[0]),
         "exp": lambda i: torch.exp(i[0]),
-        "sqrt": lambda i: torch.sqrt(i[0]),
         # "relu": lambda i: i[0] * (i[0] >= relu_threshold).to(i[0].dtype),
         "leaky_relu": lambda i: torch.nn.functional.leaky_relu(i[0], attr[0]),
         "gelu": lambda i: gelu_forward(i[0], approximate=attr[0]),
@@ -209,11 +208,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         sq = ac.op("multiply", (output, output))
         neg = ac.op("multiply", (sq, ac.constant(-1)))
         return ac.op("multiply", (neg, grad))
-
-    if type == "sqrt":  # 0.5 / f(x)
-        rec = ac.op(Reciprocal.create(), (output,))
-        mult = ac.op("multiply", (rec, ac.constant(0.5)))
-        return ac.op("multiply", (mult, grad))
 
     if type == "relu":
         # set theashold
