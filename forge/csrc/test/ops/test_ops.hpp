@@ -31,6 +31,11 @@ struct OpTestParam
         op{std::move(std::get<0>(param_tuple))}, input_shapes{std::move(std::get<1>(param_tuple))}
     {
     }
+
+    OpTestParam(tt::ops::Op op, std::vector<graphlib::Shape> input_shapes) :
+        op{std::move(op)}, input_shapes{std::move(input_shapes)}
+    {
+    }
 };
 
 struct EvalResult
@@ -215,7 +220,7 @@ class BaseOpTest : public ForgeGraphTest
                 for (const auto& operand : graph->data_operands(node))
                 {
                     EXPECT_TRUE(intermediate_tensors.find(operand->name()) != intermediate_tensors.end())
-                        << "Input tensor for node " << operand->name() << "not found in intermediate_tensors map";
+                        << "Tensor for node " << operand->name() << "not found in intermediate_tensors map";
                     input_tensors_for_op.push_back(intermediate_tensors.at(operand->name()));
                 }
 
@@ -450,59 +455,112 @@ inline auto shape_range_templ(
     if constexpr (N == 1)
     {
         return testing::ConvertGenerator(
-            testing::Range(start[0], end[0] + 1),
-            [](const uint32_t& param) { return std::vector{graphlib::Shape({param})}; });
+            testing::Range(start[0], end[0] + 1), [](const uint32_t& param) { return graphlib::Shape({param}); });
     }
     else
     {
         using tuple_type = decltype(tuple_type_from_array(start));
         return testing::ConvertGenerator(
             shape_range_helper(start, end, std::make_index_sequence<N>{}),
-            [](const tuple_type& params) { return std::vector{graphlib::Shape({params})}; });
+            [](const tuple_type& params) { return graphlib::Shape(params); });
     }
 }
 
-#define STANDARD_SWEEP_OP_TEST_SET(op_name, op, test_class)                                                            \
-    INSTANTIATE_TEST_SUITE_P(                                                                                          \
-        op_name##Op1DSweep,                                                                                            \
-        test_class,                                                                                                    \
-        testing::ConvertGenerator(                                                                                     \
-            testing::Combine(                                                                                          \
-                testing::Values(op), shape_range_templ(std::array<uint32_t, 1>{1}, std::array<uint32_t, 1>{5})),       \
-            [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),               \
-        [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info)                                                \
-        { return SimpleOpTest::get_test_name(info); });                                                                \
-                                                                                                                       \
-    INSTANTIATE_TEST_SUITE_P(                                                                                          \
-        op_name##Op2DSweep,                                                                                            \
-        test_class,                                                                                                    \
-        testing::ConvertGenerator(                                                                                     \
-            testing::Combine(                                                                                          \
-                testing::Values(op), shape_range_templ(std::array<uint32_t, 2>{1, 1}, std::array<uint32_t, 2>{5, 5})), \
-            [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),               \
-        [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info)                                                \
-        { return SimpleOpTest::get_test_name(info); });                                                                \
-                                                                                                                       \
-    INSTANTIATE_TEST_SUITE_P(                                                                                          \
-        op_name##Op3DSweep,                                                                                            \
-        test_class,                                                                                                    \
-        testing::ConvertGenerator(                                                                                     \
-            testing::Combine(                                                                                          \
-                testing::Values(op),                                                                                   \
-                shape_range_templ(std::array<uint32_t, 3>{1, 1, 1}, std::array<uint32_t, 3>{5, 1, 5})),                \
-            [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),               \
-        [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info)                                                \
-        { return SimpleOpTest::get_test_name(info); });                                                                \
-                                                                                                                       \
-    INSTANTIATE_TEST_SUITE_P(                                                                                          \
-        op_name##Op4DSweep,                                                                                            \
-        test_class,                                                                                                    \
-        testing::ConvertGenerator(                                                                                     \
-            testing::Combine(                                                                                          \
-                testing::Values(op),                                                                                   \
-                shape_range_templ(std::array<uint32_t, 4>{1, 1, 1, 1}, std::array<uint32_t, 4>{5, 1, 1, 5})),          \
-            [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),               \
-        [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info)                                                \
+#define UNARY_ELTWISE_SWEEP_TEST_SET(op_name, op_values, test_class)                                                \
+    INSTANTIATE_TEST_SUITE_P(                                                                                       \
+        op_name##Op1DSweep,                                                                                         \
+        test_class,                                                                                                 \
+        testing::ConvertGenerator(                                                                                  \
+            testing::Combine(op_values, shape_range_templ(std::array<uint32_t, 1>{1}, std::array<uint32_t, 1>{5})), \
+            [](const std::tuple<tt::ops::Op, graphlib::Shape>& params)                                              \
+            { return OpTestParam(std::get<0>(params), {std::get<1>(params)}); }),                                   \
+        [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info)                                             \
+        { return SimpleOpTest::get_test_name(info); });                                                             \
+                                                                                                                    \
+    INSTANTIATE_TEST_SUITE_P(                                                                                       \
+        op_name##Op2DSweep,                                                                                         \
+        test_class,                                                                                                 \
+        testing::ConvertGenerator(                                                                                  \
+            testing::Combine(                                                                                       \
+                op_values, shape_range_templ(std::array<uint32_t, 2>{1, 1}, std::array<uint32_t, 2>{5, 5})),        \
+            [](const std::tuple<tt::ops::Op, graphlib::Shape>& params)                                              \
+            { return OpTestParam(std::get<0>(params), {std::get<1>(params)}); }),                                   \
+        [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info)                                             \
+        { return SimpleOpTest::get_test_name(info); });                                                             \
+                                                                                                                    \
+    INSTANTIATE_TEST_SUITE_P(                                                                                       \
+        op_name##Op3DSweep,                                                                                         \
+        test_class,                                                                                                 \
+        testing::ConvertGenerator(                                                                                  \
+            testing::Combine(                                                                                       \
+                op_values, shape_range_templ(std::array<uint32_t, 3>{1, 1, 1}, std::array<uint32_t, 3>{5, 1, 5})),  \
+            [](const std::tuple<tt::ops::Op, graphlib::Shape>& params)                                              \
+            { return OpTestParam(std::get<0>(params), {std::get<1>(params)}); }),                                   \
+        [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info)                                             \
+        { return SimpleOpTest::get_test_name(info); });                                                             \
+                                                                                                                    \
+    INSTANTIATE_TEST_SUITE_P(                                                                                       \
+        op_name##Op4DSweep,                                                                                         \
+        test_class,                                                                                                 \
+        testing::ConvertGenerator(                                                                                  \
+            testing::Combine(                                                                                       \
+                op_values,                                                                                          \
+                shape_range_templ(std::array<uint32_t, 4>{1, 1, 1, 1}, std::array<uint32_t, 4>{5, 1, 1, 5})),       \
+            [](const std::tuple<tt::ops::Op, graphlib::Shape>& params)                                              \
+            { return OpTestParam(std::get<0>(params), {std::get<1>(params)}); }),                                   \
+        [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info)                                             \
         { return SimpleOpTest::get_test_name(info); });
 
+#define BINARY_ELTWISE_SWEEP_TEST_SET(op_name, op_values, test_class)                                         \
+    INSTANTIATE_TEST_SUITE_P(                                                                                 \
+        op_name##Op1DSweep,                                                                                   \
+        test_class,                                                                                           \
+        testing::ConvertGenerator(                                                                            \
+            testing::Combine(                                                                                 \
+                op_values,                                                                                    \
+                shape_range_templ(std::array<uint32_t, 1>{1}, std::array<uint32_t, 1>{5}),                    \
+                shape_range_templ(std::array<uint32_t, 1>{1}, std::array<uint32_t, 1>{5})),                   \
+            [](const std::tuple<tt::ops::Op, graphlib::Shape, graphlib::Shape>& params)                       \
+            { return OpTestParam(std::get<0>(params), {std::get<1>(params), std::get<2>(params)}); }),        \
+        [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info)                                       \
+        { return SimpleOpTest::get_test_name(info); });                                                       \
+                                                                                                              \
+    INSTANTIATE_TEST_SUITE_P(                                                                                 \
+        op_name##Op2DSweep,                                                                                   \
+        test_class,                                                                                           \
+        testing::ConvertGenerator(                                                                            \
+            testing::Combine(                                                                                 \
+                op_values,                                                                                    \
+                shape_range_templ(std::array<uint32_t, 2>{1, 1}, std::array<uint32_t, 2>{5, 5}),              \
+                shape_range_templ(std::array<uint32_t, 2>{1, 1}, std::array<uint32_t, 2>{5, 5})),             \
+            [](const std::tuple<tt::ops::Op, graphlib::Shape, graphlib::Shape>& params)                       \
+            { return OpTestParam(std::get<0>(params), {std::get<1>(params), std::get<2>(params)}); }),        \
+        [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info)                                       \
+        { return SimpleOpTest::get_test_name(info); });                                                       \
+                                                                                                              \
+    INSTANTIATE_TEST_SUITE_P(                                                                                 \
+        op_name##Op3DSweep,                                                                                   \
+        test_class,                                                                                           \
+        testing::ConvertGenerator(                                                                            \
+            testing::Combine(                                                                                 \
+                op_values,                                                                                    \
+                shape_range_templ(std::array<uint32_t, 3>{1, 1, 1}, std::array<uint32_t, 3>{5, 1, 5}),        \
+                shape_range_templ(std::array<uint32_t, 3>{1, 1, 1}, std::array<uint32_t, 3>{5, 1, 5})),       \
+            [](const std::tuple<tt::ops::Op, graphlib::Shape, graphlib::Shape>& params)                       \
+            { return OpTestParam(std::get<0>(params), {std::get<1>(params), std::get<2>(params)}); }),        \
+        [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info)                                       \
+        { return SimpleOpTest::get_test_name(info); });                                                       \
+                                                                                                              \
+    INSTANTIATE_TEST_SUITE_P(                                                                                 \
+        op_name##Op4DSweep,                                                                                   \
+        test_class,                                                                                           \
+        testing::ConvertGenerator(                                                                            \
+            testing::Combine(                                                                                 \
+                op_values,                                                                                    \
+                shape_range_templ(std::array<uint32_t, 4>{1, 1, 1, 1}, std::array<uint32_t, 4>{5, 1, 1, 5}),  \
+                shape_range_templ(std::array<uint32_t, 4>{1, 1, 1, 1}, std::array<uint32_t, 4>{5, 1, 1, 5})), \
+            [](const std::tuple<tt::ops::Op, graphlib::Shape, graphlib::Shape>& params)                       \
+            { return OpTestParam(std::get<0>(params), {std::get<1>(params), std::get<2>(params)}); }),        \
+        [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info)                                       \
+        { return SimpleOpTest::get_test_name(info); });
 }  // namespace tt::test::ops
