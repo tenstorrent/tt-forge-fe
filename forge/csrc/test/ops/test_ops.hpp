@@ -417,10 +417,10 @@ inline auto tuple_type_from_array(const std::array<uint32_t, N>& arr)
     }
 }
 
-template <size_t N>
-std::vector<graphlib::Shape> shape_range(
-    std::array<uint32_t, N> min_shape, std::array<uint32_t, N> max_shape, size_t idx = 0)
+inline std::vector<graphlib::Shape> shape_range(
+    std::vector<uint32_t> min_shape, std::vector<uint32_t> max_shape, size_t idx = 0)
 {
+    const size_t N = min_shape.size();
     std::vector<graphlib::Shape> shapes;
     for (uint32_t val_dim = min_shape[idx]; val_dim <= max_shape[idx]; ++val_dim)
     {
@@ -432,7 +432,7 @@ std::vector<graphlib::Shape> shape_range(
             continue;
         }
 
-        auto new_shapes = shape_range<N>(min_shape, max_shape, idx + 1);
+        auto new_shapes = shape_range(min_shape, max_shape, idx + 1);
         shapes.reserve(shapes.size() + new_shapes.size());
         shapes.insert(shapes.end(), new_shapes.begin(), new_shapes.end());
     }

@@ -30,13 +30,13 @@ std::vector<std::vector<graphlib::Shape>> generate_input_shapes()
 
     std::vector<graphlib::Shape> shapes;
 
-    auto shapes_range = shape_range(std::array<uint32_t, 1>{1}, std::array<uint32_t, 1>{16});
+    auto shapes_range = shape_range({1}, {16});
     shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
-    shapes_range = shape_range(std::array<uint32_t, 2>{1, 1}, std::array<uint32_t, 2>{16, 16});
+    shapes_range = shape_range({1, 1}, {16, 16});
     shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
-    shapes_range = shape_range(std::array<uint32_t, 3>{1, 1, 1}, std::array<uint32_t, 3>{5, 1, 1});
+    shapes_range = shape_range({1, 1, 1}, {5, 1, 1});
     shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
-    shapes_range = shape_range(std::array<uint32_t, 4>{1, 1, 1, 1}, std::array<uint32_t, 4>{5, 1, 1, 1});
+    shapes_range = shape_range({1, 1, 1, 1}, {5, 1, 1, 1});
     shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
 
     for (size_t i = 0; i < shapes.size(); ++i)
@@ -97,13 +97,13 @@ std::vector<std::vector<graphlib::Shape>> generate_input_shapes()
 
     std::vector<graphlib::Shape> shapes;
 
-    auto shapes_range = shape_range(std::array<uint32_t, 1>{1}, std::array<uint32_t, 1>{16});
+    auto shapes_range = shape_range({1}, {16});
     shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
-    shapes_range = shape_range(std::array<uint32_t, 2>{1, 1}, std::array<uint32_t, 2>{16, 16});
+    shapes_range = shape_range({1, 1}, {16, 16});
     shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
-    shapes_range = shape_range(std::array<uint32_t, 3>{1, 1, 1}, std::array<uint32_t, 3>{5, 1, 1});
+    shapes_range = shape_range({1, 1, 1}, {5, 1, 1});
     shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
-    shapes_range = shape_range(std::array<uint32_t, 4>{1, 1, 1, 1}, std::array<uint32_t, 4>{5, 1, 1, 1});
+    shapes_range = shape_range({1, 1, 1, 1}, {5, 1, 1, 1});
     shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
 
     for (size_t i = 0; i < shapes.size(); ++i)

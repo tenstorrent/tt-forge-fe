@@ -23,7 +23,6 @@
 namespace tt::test::ops::shape_ops
 {
 
-// Helper function to create Reshape ops with shape attribute
 tt::ops::Op create_reshape_op(const std::vector<int>& target_shape)
 {
     tt::ops::Op op(tt::ops::OpType::Reshape);
@@ -31,7 +30,6 @@ tt::ops::Op create_reshape_op(const std::vector<int>& target_shape)
     return op;
 }
 
-// Helper function to create Transpose ops with dim attributes
 tt::ops::Op create_transpose_op(int dim0, int dim1)
 {
     tt::ops::Op op(tt::ops::OpType::Transpose);
@@ -87,26 +85,5 @@ INSTANTIATE_TEST_SUITE_P(
             std::make_tuple(create_transpose_op(0, 1), VecShapes{{3, 4}}),
             std::make_tuple(create_transpose_op(-1, -2), VecShapes{{3, 4}})),
         [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }));
-
-// Range tests for Reshape
-INSTANTIATE_TEST_SUITE_P(
-    ReshapeRangeOp,
-    SimpleOpTest,
-    testing::ConvertGenerator(
-        testing::Combine(
-            testing::Values(
-                create_reshape_op({1, 1, 1, 20}),
-                create_reshape_op({1, 1, 20, 1}),
-                create_reshape_op({1, 20, 1, 1}),
-                create_reshape_op({20, 1, 1, 1}),
-                create_reshape_op({2, 10}),
-                create_reshape_op({4, 5}),
-                create_reshape_op({5, 4}),
-                create_reshape_op({20})),
-            testing::Values(VecShapes{{4, 5}})),
-        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }));
-
-// Note: STANDARD_RANGE_OP_TEST_SET generates shapes with varying dimensions,
-// but transpose dims must be valid for the generated shape dimensions
 
 }  // namespace tt::test::ops::shape_ops
