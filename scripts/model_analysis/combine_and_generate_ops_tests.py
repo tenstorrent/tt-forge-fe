@@ -78,7 +78,6 @@ def main():
     unique_operations_across_all_models_ops_test = extract_unique_op_tests_from_models(
         models_unique_ops_config_output_dir_path=args.extracted_unique_ops_config_directory_path,
         unique_ops_config_file_path=unique_ops_config_file_path,
-        use_constant_value=False,
         convert_param_and_const_to_activation=True,
         existing_unique_ops_config=existing_unique_ops_config,
     )

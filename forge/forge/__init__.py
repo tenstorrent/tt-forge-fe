@@ -68,7 +68,6 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
 from .module import Module, PyTorchModule, ForgeModule, TFGraphDefModule, OnnxModule, JaxModule, TFLiteModule
-from .torch_compile import compile_torch
 from .compiled_graph_state import CompiledGraphState
 from .config import (
     CompilerConfig,
@@ -85,16 +84,9 @@ from ._C import k_dim
 import forge.op as op
 import forge.transformers
 
-from .compile import forge_compile_torch, compile_main as compile
+from .compile import compile_main as compile
 
 # Torch backend registration
 # TODO: move this in a separate file / module.
 from torch._dynamo.backends.registry import _BACKENDS
 from torch._dynamo import register_backend
-
-# register backend with torch:
-# - enables backend to be shown when calling torch._dynamo.list_backends()
-# - enables torch.compile(model, backend="<name_from_list_backends>"), where <name_from_list_backends> is "tt" in this case
-if "tt" in _BACKENDS:
-    del _BACKENDS["tt"]
-register_backend(compile_torch, "tt")

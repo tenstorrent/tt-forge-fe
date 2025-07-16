@@ -79,6 +79,7 @@ class Task(BaseEnum):
     BRAIN_TUMOR_SEGMENTATION = ("brain_tumor_segmentation", "Brain Tumor Segmentation")
     TEXT_TO_VIDEO_GENERATION = ("text_to_video_generation", "Text-to-Video generation")
     SENETNCE_SEGMENTATION = ("sentence_segmentation", "Sentence Segmentation")
+    TIME_SERIES_FORECASTING = ("time_series_forecasting", "Time Series Forecasting")
 
 
 class Source(BaseEnum):
@@ -1049,3 +1050,11 @@ def record_parallelism(parallelism: Parallelism):
         return
 
     fph.add("tags.parallelism", parallelism.value)
+
+
+def get_model_group():
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return None
+
+    return fph.get("tags.group")

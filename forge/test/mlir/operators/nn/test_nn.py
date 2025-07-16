@@ -188,9 +188,7 @@ def test_maxpool2d(input_shape, kernel_size, stride_size, padding, ceil_mode):
     "shape, mode",
     [
         pytest.param((1, 2048, 7, 7), "nearest"),
-        pytest.param(
-            (1, 2048, 7, 7), "bilinear", marks=pytest.mark.xfail(reason="Runtime Error TTNN: info: Unsupported mode ")
-        ),
+        pytest.param((1, 2048, 7, 7), "bilinear"),
     ],
 )
 @pytest.mark.push

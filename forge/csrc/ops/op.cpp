@@ -401,8 +401,12 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
     {
         case OpType::Abs: return abs::eval(*this, tensors);
         case OpType::Add: return add::eval(*this, tensors);
+        case OpType::Concatenate: return concatenate::eval(*this, tensors);
         case OpType::Constant: return constant::eval(*this, tensors);
+        case OpType::Cosine: return cosine::eval(*this, tensors);
+        case OpType::Divide: return divide::eval(*this, tensors);
         case OpType::Multiply: return multiply::eval(*this, tensors);
+        case OpType::Sine: return sine::eval(*this, tensors);
         case OpType::Transpose: return transpose::eval(*this, tensors);
         case OpType::Reshape: return reshape::eval(*this, tensors);
         case OpType::Subtract: return subtract::eval(*this, tensors);
@@ -417,8 +421,12 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
     {
         case OpType::Abs: return abs::shape(*this, inputs);
         case OpType::Add: return add::shape(*this, inputs);
+        case OpType::Concatenate: return concatenate::shape(*this, inputs);
         case OpType::Constant: return constant::shape(*this, inputs);
+        case OpType::Cosine: return cosine::shape(*this, inputs);
+        case OpType::Divide: return divide::shape(*this, inputs);
         case OpType::Multiply: return multiply::shape(*this, inputs);
+        case OpType::Sine: return sine::shape(*this, inputs);
         case OpType::Transpose: return transpose::shape(*this, inputs);
         case OpType::Reshape: return reshape::shape(*this, inputs);
         case OpType::Subtract: return subtract::shape(*this, inputs);
@@ -438,8 +446,12 @@ tt::graphlib::NodeContext Op::backward(
     {
         case OpType::Abs: return abs::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Add: return add::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Concatenate: return concatenate::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Constant: return constant::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Cosine: return cosine::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Divide: return divide::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Multiply: return multiply::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Sine: return sine::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Transpose: return transpose::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Reshape: return reshape::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Subtract: return subtract::backward(*this, context, operand, inputs, output, gradient);
@@ -476,8 +488,12 @@ void Op::decompose_initial(
     {
         case OpType::Abs: return;
         case OpType::Add: return;
+        case OpType::Concatenate: return concatenate::decompose_initial(*this, dc, inputs);
         case OpType::Constant: return;
+        case OpType::Cosine: return;
+        case OpType::Divide: return;
         case OpType::Multiply: return;
+        case OpType::Sine: return;
         case OpType::Transpose: return;
         case OpType::Reshape: return reshape::decompose_initial(*this, dc, inputs);
         case OpType::Subtract: return;
@@ -494,8 +510,12 @@ void Op::decompose_post_optimize(
     {
         case OpType::Abs: return;
         case OpType::Add: return;
+        case OpType::Concatenate: return;
         case OpType::Constant: return;
+        case OpType::Cosine: return;
+        case OpType::Divide: return;
         case OpType::Multiply: return;
+        case OpType::Sine: return;
         case OpType::Transpose: return;
         case OpType::Reshape: return;
         case OpType::Subtract: return;
@@ -512,8 +532,12 @@ void Op::decompose_post_autograd(
     {
         case OpType::Abs: return;
         case OpType::Add: return;
+        case OpType::Concatenate: return;
         case OpType::Constant: return;
+        case OpType::Cosine: return;
+        case OpType::Divide: return;
         case OpType::Multiply: return multiply::decompose_post_autograd(*this, dc, inputs);
+        case OpType::Sine: return;
         case OpType::Transpose: return;
         case OpType::Reshape: return reshape::decompose_post_autograd(*this, dc, inputs);
         case OpType::Subtract: return subtract::decompose_post_autograd(*this, dc, inputs);
@@ -529,7 +553,11 @@ long Op::initial_flops_estimate(
         case OpType::Abs: return abs::initial_flops_estimate(*this, inputs);
         case OpType::Add: return add::initial_flops_estimate(*this, inputs);
         case OpType::Constant: return 0;
+        case OpType::Cosine: return cosine::initial_flops_estimate(*this, inputs);
+        case OpType::Divide: return 0;
+        case OpType::Concatenate: return 0;
         case OpType::Multiply: return 0;
+        case OpType::Sine: return sine::initial_flops_estimate(*this, inputs);
         case OpType::Transpose: return 0;
         case OpType::Reshape: return 0;
         case OpType::Subtract: return 0;
@@ -543,8 +571,12 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return false;
         case OpType::Add: return false;
+        case OpType::Concatenate: return false;
         case OpType::Constant: return false;
+        case OpType::Cosine: return false;
+        case OpType::Divide: return false;
         case OpType::Multiply: return false;
+        case OpType::Sine: return false;
         case OpType::Transpose: return true;
         case OpType::Reshape: return true;
         case OpType::Subtract: return false;
@@ -558,8 +590,12 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return true;
         case OpType::Add: return true;
+        case OpType::Concatenate: return true;
         case OpType::Constant: return false;
+        case OpType::Cosine: return true;
+        case OpType::Divide: return true;
         case OpType::Multiply: return true;
+        case OpType::Sine: return true;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
         case OpType::Subtract: return true;
@@ -573,8 +609,12 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return true;
         case OpType::Add: return false;
+        case OpType::Concatenate: return false;
         case OpType::Constant: return false;
+        case OpType::Cosine: return true;
+        case OpType::Divide: return false;
         case OpType::Multiply: return false;
+        case OpType::Sine: return true;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
         case OpType::Subtract: return false;
@@ -588,22 +628,31 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return false;
         case OpType::Add: return true;
+        case OpType::Concatenate: return false;
         case OpType::Constant: return false;
+        case OpType::Cosine: return false;
+        case OpType::Divide: return true;
         case OpType::Multiply: return true;
+        case OpType::Sine: return false;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
         case OpType::Subtract: return true;
         default: return base_is_eltwise_binary(old_op_type);
     }
 }
+
 bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
 {
     switch (type_)
     {
         case OpType::Abs: return false;
         case OpType::Add: return false;
+        case OpType::Concatenate: return true;
         case OpType::Constant: return false;
-        case OpType::Multiply: return true;
+        case OpType::Cosine: return false;
+        case OpType::Divide: return false;
+        case OpType::Multiply: return false;
+        case OpType::Sine: return false;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
         case OpType::Subtract: return true;

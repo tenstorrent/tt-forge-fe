@@ -873,32 +873,6 @@ class ForgeWriter(PythonWriter):
         else:
             assert False, "TODO: Add other framework param parsers"
 
-    def write_model_parameter_function(self, param_file_name, named_params_file_name, named_buffers_file_name):
-        """
-        Generates a function to load model parameters and buffers from specified files.
-
-        Args:
-            param_file_name (str): The file name for additional serialized model parameters.
-            named_params_file_name (str): The file name containing the named parameters to be loaded.
-            named_buffers_file_name (str): The file name containing the named buffers to be loaded.
-        """
-        if named_params_file_name is None and named_buffers_file_name is None:
-            logger.warning("named_params_file_name and named_params_file_name arguments are None")
-        self.wl("")
-        self.wl("def load_model_params_and_buffers():")
-        self.indent += 1
-        self.wl(f"named_parameters = torch.load('{named_params_file_name}')")
-        if param_file_name is not None:
-            self.wl(f'serialized_params = torch.load("{param_file_name}")')
-            self.wl(f"named_parameters.update(serialized_params)")
-        self.wl(f"named_buffers = torch.load('{named_buffers_file_name}')")
-        self.wl("named_parameters.update(named_buffers)")
-        self.wl("return named_parameters")
-        self.indent -= 1
-        self.wl("")
-        self.wl("named_parameters = load_model_params_and_buffers()")
-        self.wl("")
-
     def write_pytest_function(
         self,
         forge_module_names: List[str],
@@ -907,7 +881,6 @@ class ForgeWriter(PythonWriter):
         module_metadata: Optional[Dict[str, Any]] = None,
         pytest_metadata_list: Optional[List[Dict[str, Any]]] = None,
         use_ids_function: bool = False,
-        include_random_parameter_constant_gen: bool = False,
         exclude_record_property: Optional[List[str]] = None,
         pytest_markers_with_reasons: Optional[List[List[Dict[str, Any]]]] = None,
     ):
@@ -931,7 +904,6 @@ class ForgeWriter(PythonWriter):
             module_metadata (Optional[Dict[str, Any]]): A dictionary containing metadata about the test function. Each key-value pair represents a metadata property name and its corresponding value, which will be recorded using the `record_property` pytest fixtures.
             pytest_metadata_list (Optional[List[Dict[str, Any]]]): A list of dictionaries containing metadata for each pytest parameter.
             use_ids_function(bool): If set, the forge module name and shapes and dtyes will used as id for the pytest parameter.
-            include_random_parameter_constant_gen(bool): If set, it will include the code for generating and assigning of random tensor for forge module parameters and constants
             exclude_record_property(Optional[List[str]]): A list of pytest metadata property which will be excluded in forge_property_recorder fixtures(i.e pcc)
             pytest_markers_with_reasons(Optional[List[List[Dict[str, Any]]]]): A list of pytest markers with reason to add in the tests parameter in the forge_modules_and_shapes_dtypes_list.
         """
@@ -1035,41 +1007,27 @@ class ForgeWriter(PythonWriter):
             and "max_int" not in exclude_record_property
         ):
             self.wl("max_int = 1000")
-        need_model_parameter_function = any(
-            [
-                True if isinstance(shape, str) else False
-                for pytest_input_shapes_and_dtypes in pytest_input_shapes_and_dtypes_list
-                for shape, _ in pytest_input_shapes_and_dtypes
-            ]
+        self.wl(
+            "inputs = [Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int) for operand_shape, operand_dtype in operand_shapes_dtypes]"
         )
-        if need_model_parameter_function:
-            self.wl(
-                "inputs = [Tensor.create_from_torch(named_parameters[operand_shape]) if isinstance(operand_shape, str) else Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int) for operand_shape, operand_dtype in operand_shapes_dtypes]"
-            )
-        else:
-            self.wl(
-                "inputs = [Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int) for operand_shape, operand_dtype in operand_shapes_dtypes]"
-            )
         self.wl("")
         self.wl(f"framework_model = forge_module(forge_module.__name__)")
-        self.wl("framework_model.process_framework_parameters()")
-        if include_random_parameter_constant_gen:
-            self.wl("")
-            self.wl("for name, parameter in framework_model._parameters.items():")
-            self.indent += 1
-            self.wl(
-                "parameter_tensor = Tensor.create_torch_tensor(shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int)"
-            )
-            self.wl("framework_model.set_parameter(name, parameter_tensor)")
-            self.indent -= 1
-            self.wl("")
-            self.wl("for name, constant in framework_model._constants.items():")
-            self.indent += 1
-            self.wl(
-                "constant_tensor = Tensor.create_torch_tensor(shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int)"
-            )
-            self.wl("framework_model.set_constant(name, constant_tensor)")
-            self.indent -= 1
+        self.wl("")
+        self.wl("for name, parameter in framework_model._parameters.items():")
+        self.indent += 1
+        self.wl(
+            "parameter_tensor = Tensor.create_torch_tensor(shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int)"
+        )
+        self.wl("framework_model.set_parameter(name, parameter_tensor)")
+        self.indent -= 1
+        self.wl("")
+        self.wl("for name, constant in framework_model._constants.items():")
+        self.indent += 1
+        self.wl(
+            "constant_tensor = Tensor.create_torch_tensor(shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int)"
+        )
+        self.wl("framework_model.set_constant(name, constant_tensor)")
+        self.indent -= 1
         self.wl("")
         if module_metadata is not None and len(module_metadata) != 0:
             self.wl("record_single_op_operands_info(framework_model, inputs)")
