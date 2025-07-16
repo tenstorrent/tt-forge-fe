@@ -1049,11 +1049,3 @@ def record_parallelism(parallelism: Parallelism):
         return
 
     fph.add("tags.parallelism", parallelism.value)
-
-
-def get_model_group():
-    fph = forge_property_handler_var.get()
-    if fph is None:
-        return None
-
-    return fph.get("tags.group")
