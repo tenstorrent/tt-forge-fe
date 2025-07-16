@@ -126,7 +126,6 @@ def eval(type, attr, ops):
         "ethernet_datacopy": lambda i: i[0],
         "buffer": lambda i: i[0],
         "reciprocal": lambda i: torch.reciprocal(i[0] + 1e-10),  # add epsilon to avoid infinity
-        "log": lambda i: torch.log(i[0] + 1e-10),  # add epsilon to avoid nan
         "sigmoid": lambda i: torch.sigmoid(i[0]),
         "clip": lambda i: torch.clip(i[0], min=attr[0], max=attr[1]),
         "abs": lambda i: torch.abs(i[0]),
@@ -256,10 +255,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         gelud = ac.op("gelu_derivative", (inputs[0],), attr)
         return ac.op("multiply", (gelud, grad))
 
-    if type == "log":
-        recip = ac.op(Reciprocal.create(), (inputs[0],))
-        return ac.op("multiply", (recip, grad))
-
     if type == "sigmoid":
         sigm_ = ac.op("subtract", (ac.constant(1), output))
         dsigm = ac.op("multiply", (output, sigm_))
@@ -357,7 +352,6 @@ def initial_flops_estimate(type, attr, ops):
         "gelu",
         "gelu_derivative",
         "reciprocal",
-        "log",
         "sigmoid",
         "abs",
         "tanh",

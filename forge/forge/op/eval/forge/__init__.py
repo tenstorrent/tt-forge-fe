@@ -9,7 +9,6 @@ from .cosine import Cosine
 from .ethernet_datacopy import EthernetDatacopy
 from .reciprocal import Reciprocal
 from .tanh import Tanh
-from .log import Log
 from .nop import Nop
 from .buffer import Buffer
 from .sqrt import Sqrt
@@ -52,7 +51,7 @@ op_to_module_map = {
     "leaky_relu": "eltwise_unary",
     "gelu": "eltwise_unary",
     "gelu_derivative": "eltwise_unary",
-    "log": Log,
+    "log": "eltwise_unary",
     "sigmoid": "eltwise_unary",
     "clip": Clip,
     "cosine": Cosine,
