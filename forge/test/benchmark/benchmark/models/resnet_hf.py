@@ -184,7 +184,8 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     print("====================================================================")
 
     if task == "classification":
-        if evaluation_score <= EVALUATION_SCORE_TARGET:
+        evaluation_score_norm = evaluation_score / 100.0  # Normalize the evaluation score to be between 0 and 1
+        if evaluation_score_norm <= EVALUATION_SCORE_TARGET:
             raise ValueError(f"Evaluation score {evaluation_score} is less than the target {EVALUATION_SCORE_TARGET}.")
     elif task == "na":
         fw_out = framework_model(inputs[-1])[0]
