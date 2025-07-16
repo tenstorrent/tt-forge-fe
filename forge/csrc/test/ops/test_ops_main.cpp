@@ -37,6 +37,7 @@ TEST_P(SimpleOpTest, test_backward)
     auto computed_grads = eval_graph(graphlib::NodeEpochType::Backward);
     verify_bwd_gradients(computed_grads);
 }
+
 }  // namespace tt::test::ops
 
 int main(int argc, char **argv)
