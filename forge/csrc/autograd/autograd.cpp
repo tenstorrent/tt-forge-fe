@@ -303,6 +303,37 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
                 output_node->set_output_df(node->output_df());
 
                 graph->add_edge(node, output_node, graphlib::EdgeType::kAutogradInputToGradientOut);
+
+                if (output_node->shape().size() != out_grad->shape().size())
+                {
+                    // The gradient has different rank than the output node. We'll need to insert a reshape.
+                    // Techincally, we should insert `squeeze` or `unsqueeze` here, but we should decompose the
+                    // `reshape` op into those two afterward.
+                    TT_ASSERT(
+                        output_node->shape() == out_grad->shape(),
+                        "Output gradient shape {} does not match input node shape {}.",
+                        out_grad->shape().as_string(),
+                        node->shape().as_string());
+
+                    log_debug(
+                        tt::LogAutograd,
+                        "Output gradient shape {} does not match input node shape {}, inserting reshape",
+                        out_grad->shape().as_string(),
+                        node->shape().as_string());
+
+                    auto reshape_node = graph->add_node(
+                        graphlib::create_node<graphlib::PyOpNode>(
+                            "reshape_out_grad_" + node->name(),
+                            OpType("reshape", {}, {{"shape", node->shape().as_vector<int>()}})),
+                        graph->get_subgraph_id_for_node(node->id()));
+                    reshape_node->set_shape(node->shape());
+                    reshape_node->set_output_df(node->output_df());
+                    reshape_node->set_backward();
+
+                    graph->add_edge(out_grad, reshape_node);
+                    out_grad = reshape_node;
+                }
+
                 graph->add_edge(out_grad, output_node);
             }
 
