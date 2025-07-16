@@ -236,7 +236,7 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
                 "step_warm_up_num_iterations": 0,
                 "measurement_name": "evaluation_score",
                 "value": evaluation_score,
-                "target": -1,
+                "target": EVALUATION_SCORE_TARGET,  # This is the target evaluation score.
                 "device_power": -1.0,  # This value is negative, because we don't have a device power value.
                 "device_temperature": -1.0,  # This value is negative, because we don't have a device temperature value.
             },
