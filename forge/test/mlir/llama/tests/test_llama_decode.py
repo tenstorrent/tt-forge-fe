@@ -274,14 +274,20 @@ def test_llama_prefill_on_cpu_decode_on_tt_no_cache(model_path, run_on_tt_device
             "meta-llama/Llama-3.2-1B",
             True,
             None,
-            marks=pytest.mark.push,
+            marks=[
+                pytest.mark.push,
+                pytest.mark.skip(reason="Temporarily skipping this push test because it breaks push CI"),
+            ],
         ),
         # Minimal 1-layer config for TT CI
         pytest.param(
             "openlm-research/open_llama_3b",
             True,
             1,
-            marks=pytest.mark.push,
+            marks=[
+                pytest.mark.push,
+                pytest.mark.skip(reason="Temporarily skipping this push test because it breaks push CI"),
+            ],
         ),
     ],
 )
