@@ -124,7 +124,6 @@ def eval(type, attr, ops):
         "ethernet_datacopy": lambda i: i[0],
         "buffer": lambda i: i[0],
         "reciprocal": lambda i: torch.reciprocal(i[0] + 1e-10),  # add epsilon to avoid infinity
-        "sigmoid": lambda i: torch.sigmoid(i[0]),
         "clip": lambda i: torch.clip(i[0], min=attr[0], max=attr[1]),
         "abs": lambda i: torch.abs(i[0]),
         "atan": lambda i: torch.atan(i[0]),
@@ -250,12 +249,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         gelud = ac.op("gelu_derivative", (inputs[0],), attr)
         return ac.op("multiply", (gelud, grad))
 
-    if type == "sigmoid":
-        sigm_ = ac.op("subtract", (ac.constant(1), output))
-        dsigm = ac.op("multiply", (output, sigm_))
-        res = ac.op("multiply", (dsigm, grad))
-        return res
-
     if type == "tanh":
         tanh_square = ac.op("multiply", (output, output))
         subtract = ac.op("subtract", (ac.constant(1), tanh_square))
@@ -308,17 +301,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
 
 def decompose(type, attr, dc, inputs):
-    if type == "sigmoid" and bool(int(os.environ.get("FORGE_DECOMPOSE_SIGMOID", "0"))):
-        inp = inputs[0]
-        minus_one = dc.tensor(torch.ones([1, 1]) * -1)
-        plus_one = dc.tensor(torch.ones([1, 1]))
-        neg_ = dc.op("multiply", [inp, minus_one])
-        exp_ = dc.op("exp", [neg_])
-        result = dc.op("add", [plus_one, exp_])
-        result = dc.op(Reciprocal.create(), [result])
-        dc.fuse(result)
-
-    elif type == "gelu" and bool(int(os.environ.get("FORGE_DECOMPOSE_GELU", "0"))):
+    if type == "gelu" and bool(int(os.environ.get("FORGE_DECOMPOSE_GELU", "0"))):
         inp_node = inputs[0]
         data_type = forge_dataformat_to_pytorch_dtype(inp_node.output_df)
         one_half = dc.tensor(torch.ones((1), dtype=data_type) * 0.5)
@@ -346,7 +329,6 @@ def initial_flops_estimate(type, attr, ops):
         "gelu",
         "gelu_derivative",
         "reciprocal",
-        "sigmoid",
         "abs",
         "tanh",
         "cumsum",

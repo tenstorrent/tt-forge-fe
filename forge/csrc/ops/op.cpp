@@ -408,6 +408,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Exp: return exp::eval(*this, tensors);
         case OpType::Log: return log::eval(*this, tensors);
         case OpType::Multiply: return multiply::eval(*this, tensors);
+        case OpType::Sigmoid: return sigmoid::eval(*this, tensors);
         case OpType::Sine: return sine::eval(*this, tensors);
         case OpType::Transpose: return transpose::eval(*this, tensors);
         case OpType::Reshape: return reshape::eval(*this, tensors);
@@ -430,6 +431,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Exp: return exp::shape(*this, inputs);
         case OpType::Log: return log::shape(*this, inputs);
         case OpType::Multiply: return multiply::shape(*this, inputs);
+        case OpType::Sigmoid: return sigmoid::shape(*this, inputs);
         case OpType::Sine: return sine::shape(*this, inputs);
         case OpType::Transpose: return transpose::shape(*this, inputs);
         case OpType::Reshape: return reshape::shape(*this, inputs);
@@ -457,6 +459,7 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Exp: return exp::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Log: return log::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Multiply: return multiply::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Sigmoid: return sigmoid::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Sine: return sine::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Transpose: return transpose::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Reshape: return reshape::backward(*this, context, operand, inputs, output, gradient);
@@ -501,6 +504,7 @@ void Op::decompose_initial(
         case OpType::Exp: return;
         case OpType::Log: return;
         case OpType::Multiply: return;
+        case OpType::Sigmoid: return;
         case OpType::Sine: return;
         case OpType::Transpose: return;
         case OpType::Reshape: return reshape::decompose_initial(*this, dc, inputs);
@@ -525,6 +529,7 @@ void Op::decompose_post_optimize(
         case OpType::Exp: return;
         case OpType::Log: return;
         case OpType::Multiply: return;
+        case OpType::Sigmoid: return;
         case OpType::Sine: return;
         case OpType::Transpose: return;
         case OpType::Reshape: return;
@@ -549,6 +554,7 @@ void Op::decompose_post_autograd(
         case OpType::Exp: return;
         case OpType::Log: return;
         case OpType::Multiply: return multiply::decompose_post_autograd(*this, dc, inputs);
+        case OpType::Sigmoid: return;
         case OpType::Sine: return;
         case OpType::Transpose: return;
         case OpType::Reshape: return reshape::decompose_post_autograd(*this, dc, inputs);
@@ -571,6 +577,7 @@ long Op::initial_flops_estimate(
         case OpType::Log: return log::initial_flops_estimate(*this, inputs);
         case OpType::Concatenate: return 0;
         case OpType::Multiply: return 0;
+        case OpType::Sigmoid: return sigmoid::initial_flops_estimate(*this, inputs);
         case OpType::Sine: return sine::initial_flops_estimate(*this, inputs);
         case OpType::Transpose: return 0;
         case OpType::Reshape: return 0;
@@ -592,6 +599,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Exp: return false;
         case OpType::Log: return false;
         case OpType::Multiply: return false;
+        case OpType::Sigmoid: return false;
         case OpType::Sine: return false;
         case OpType::Transpose: return true;
         case OpType::Reshape: return true;
@@ -613,6 +621,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Exp: return true;
         case OpType::Log: return true;
         case OpType::Multiply: return true;
+        case OpType::Sigmoid: return true;
         case OpType::Sine: return true;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
@@ -634,6 +643,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Exp: return true;
         case OpType::Log: return true;
         case OpType::Multiply: return false;
+        case OpType::Sigmoid: return true;
         case OpType::Sine: return true;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
@@ -655,6 +665,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Exp: return false;
         case OpType::Log: return false;
         case OpType::Multiply: return true;
+        case OpType::Sigmoid: return false;
         case OpType::Sine: return false;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
@@ -676,6 +687,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Exp: return false;
         case OpType::Log: return false;
         case OpType::Multiply: return false;
+        case OpType::Sigmoid: return false;
         case OpType::Sine: return false;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
