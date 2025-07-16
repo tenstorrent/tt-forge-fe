@@ -26,19 +26,20 @@ at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
     TT_ASSERT(tensors.size() == 3, "Softmax backward should have three operands.");
     TT_ASSERT(op.attrs().size() == 1, "Softmax backward should have one attribute.");
 
-    at::Tensor input = tensors[0];          // the input of the softmax
+    const at::Tensor &input = tensors[0];   // the input of the softmax
     const at::Tensor &output = tensors[1];  // the output of the softmax function
     const at::Tensor &grad = tensors[2];    // gradient from the previous layer
     int dim = op.attr_as<int>("dim");       // the dimension by which we do softmax
 
     TT_ASSERT(input.dim() > dim && dim >= -output.dim(), "Given dimension is out of the shape.");
 
-    // Use PyTorch's autograd to compute the backward pass
-    input.requires_grad_(true);
-    auto output_computed = torch::softmax(input, dim);
+    // Use pytorch's autograd to compute the backward pass. We should fix this with ops (look at decompose.
+    at::Tensor input_clone = input.clone().detach();
+    input_clone.requires_grad_(true);
+    at::Tensor output_computed = torch::softmax(input_clone, dim);
     output_computed.backward(grad);
 
-    return input.grad();
+    return input_clone.grad();
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
@@ -73,9 +74,8 @@ void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::ve
     auto &grad = inputs[2];            // gradient from the previous layer
     int dim = op.attr_as<int>("dim");  // the dimension by which we do softmax
 
-    TT_ASSERT(
-        output.shape.size() > static_cast<size_t>(dim) && dim >= -static_cast<int>(output.shape.size()),
-        "Given dimension is out of the shape");
+    uint32_t idx = dim >= 0 ? dim : -dim - 1;
+    TT_ASSERT(idx < output.shape.size(), "Given dimension is out of the shape");
 
     // Decompose: result = (grad - torch.sum(grad * output, dim=dim, keepdim=True)) * output
     auto grad_out = dc.op(graphlib::OpType("multiply"), {grad, output});
@@ -85,16 +85,6 @@ void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::ve
     auto gout_sub = dc.op(graphlib::OpType("subtract"), {grad, gout_sum});
     auto result = dc.op(graphlib::OpType("multiply"), {gout_sub, output});
     dc.fuse(result);
-}
-
-long initial_flops_estimate(const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_ASSERT(inputs.size() == 3, "Softmax backward should have three inputs");
-
-    auto shape_tuple = softmax_bw::shape(op, inputs);
-    graphlib::Shape out_shape = std::get<0>(shape_tuple);
-
-    return std::accumulate(out_shape.begin(), out_shape.end(), 1L, std::multiplies<long>());
 }
 
 }  // namespace softmax_bw
