@@ -491,7 +491,7 @@ void Op::decompose_initial(
     {
         case OpType::Abs: return;
         case OpType::Add: return;
-        case OpType::Broadcast: return;
+        case OpType::Broadcast: return broadcast::decompose_initial(*this, dc, inputs);
         case OpType::Concatenate: return concatenate::decompose_initial(*this, dc, inputs);
         case OpType::Constant: return;
         case OpType::Cosine: return;
