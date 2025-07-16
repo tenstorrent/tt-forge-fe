@@ -24,7 +24,7 @@ namespace greater
 at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_ASSERT(tensors.size() == 2, "Greater should have two input tensors.");
-    return torch::gt(tensors[0], tensors[1]);
+    return torch::gt(tensors[0], tensors[1]).to(tensors[0].dtype());
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(

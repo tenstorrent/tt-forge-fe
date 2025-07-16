@@ -24,7 +24,7 @@ namespace less_equal
 at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_ASSERT(tensors.size() == 2, "LessEqual should have two input tensors.");
-    return torch::le(tensors[0], tensors[1]);
+    return torch::le(tensors[0], tensors[1]).to(tensors[0].dtype());
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
