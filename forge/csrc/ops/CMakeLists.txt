@@ -9,10 +9,12 @@ add_library(ops
     op_cosine.cpp
     op_divide.cpp
     op_multiply.cpp
-    op_sine.cpp
-    op_transpose.cpp
     op_reshape.cpp
+    op_sine.cpp
+    op_squeeze.cpp
     op_subtract.cpp
+    op_transpose.cpp
+    op_unsqueeze.cpp
     python_bindings.cpp)
 
 target_link_libraries(ops PUBLIC coverage_config)

@@ -409,7 +409,9 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Sine: return sine::eval(*this, tensors);
         case OpType::Transpose: return transpose::eval(*this, tensors);
         case OpType::Reshape: return reshape::eval(*this, tensors);
+        case OpType::Squeeze: return squeeze::eval(*this, tensors);
         case OpType::Subtract: return subtract::eval(*this, tensors);
+        case OpType::Unsqueeze: return unsqueeze::eval(*this, tensors);
         default: return base_eval(old_op_type, tensors);
     }
 }
@@ -429,7 +431,9 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Sine: return sine::shape(*this, inputs);
         case OpType::Transpose: return transpose::shape(*this, inputs);
         case OpType::Reshape: return reshape::shape(*this, inputs);
+        case OpType::Squeeze: return squeeze::shape(*this, inputs);
         case OpType::Subtract: return subtract::shape(*this, inputs);
+        case OpType::Unsqueeze: return unsqueeze::shape(*this, inputs);
         default: return base_shape(old_op_type, inputs);
     }
 }
@@ -454,7 +458,9 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Sine: return sine::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Transpose: return transpose::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Reshape: return reshape::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Squeeze: return squeeze::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Subtract: return subtract::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Unsqueeze: return unsqueeze::backward(*this, context, operand, inputs, output, gradient);
         default: return base_backward(old_op_type, context, operand, inputs, output, gradient);
     }
 }
@@ -496,7 +502,9 @@ void Op::decompose_initial(
         case OpType::Sine: return;
         case OpType::Transpose: return;
         case OpType::Reshape: return reshape::decompose_initial(*this, dc, inputs);
+        case OpType::Squeeze: return;
         case OpType::Subtract: return;
+        case OpType::Unsqueeze: return;
         default: return base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
     }
 }
@@ -518,7 +526,9 @@ void Op::decompose_post_optimize(
         case OpType::Sine: return;
         case OpType::Transpose: return;
         case OpType::Reshape: return;
+        case OpType::Squeeze: return;
         case OpType::Subtract: return;
+        case OpType::Unsqueeze: return;
         default: return base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
     }
 }
@@ -540,7 +550,9 @@ void Op::decompose_post_autograd(
         case OpType::Sine: return;
         case OpType::Transpose: return;
         case OpType::Reshape: return reshape::decompose_post_autograd(*this, dc, inputs);
+        case OpType::Squeeze: return;
         case OpType::Subtract: return subtract::decompose_post_autograd(*this, dc, inputs);
+        case OpType::Unsqueeze: return;
         default: return base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
     }
 }
@@ -560,7 +572,9 @@ long Op::initial_flops_estimate(
         case OpType::Sine: return sine::initial_flops_estimate(*this, inputs);
         case OpType::Transpose: return 0;
         case OpType::Reshape: return 0;
+        case OpType::Squeeze: return 0;
         case OpType::Subtract: return 0;
+        case OpType::Unsqueeze: return 0;
         default: return base_initial_flops_estimate(old_op_type, inputs);
     }
 }
@@ -579,7 +593,9 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return false;
         case OpType::Transpose: return true;
         case OpType::Reshape: return true;
+        case OpType::Squeeze: return true;
         case OpType::Subtract: return false;
+        case OpType::Unsqueeze: return true;
         default: return base_is_tm(old_op_type);
     }
 }
@@ -598,7 +614,9 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return true;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
+        case OpType::Squeeze: return false;
         case OpType::Subtract: return true;
+        case OpType::Unsqueeze: return false;
         default: return base_is_eltwise(old_op_type);
     }
 }
@@ -617,7 +635,9 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return true;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
+        case OpType::Squeeze: return false;
         case OpType::Subtract: return false;
+        case OpType::Unsqueeze: return false;
         default: return base_is_eltwise_unary(old_op_type);
     }
 }
@@ -636,7 +656,9 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return false;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
+        case OpType::Squeeze: return false;
         case OpType::Subtract: return true;
+        case OpType::Unsqueeze: return false;
         default: return base_is_eltwise_binary(old_op_type);
     }
 }
@@ -655,7 +677,9 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return false;
         case OpType::Transpose: return false;
         case OpType::Reshape: return false;
-        case OpType::Subtract: return true;
+        case OpType::Squeeze: return false;
+        case OpType::Subtract: return false;
+        case OpType::Unsqueeze: return false;
         default: return base_is_eltwise_nary(old_op_type);
     }
 }
