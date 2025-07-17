@@ -95,7 +95,7 @@ def test_conv2d(
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.xfail
+@pytest.mark.push
 def test_dual_conv2d():
 
     tf.random.set_seed(0)
