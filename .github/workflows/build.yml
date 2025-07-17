@@ -115,13 +115,11 @@ jobs:
         create-symlink: true
         key: forge-build-${{ matrix.build.build-type }}
 
-    - name: Build (creates tvm and both variant tt-forge-fe wheels)
+    - name: Build (creates tvm and tt-forge-fe wheels)
       shell: bash
       run: |
         source env/activate
-        # Build both wheel variants (compiler and dev)
-        python3 build_wheels.py
-        # Build TVM wheel
+        python3 setup.py bdist_wheel
         cd third_party/tvm/python
         python3 setup.py bdist_wheel
         cd ../../..
@@ -132,9 +130,7 @@ jobs:
       if: success() || failure()
       with:
         name: forge-wheel
-        path: |
-          dist/**/*.whl
-          dist/*.whl
+        path: dist/*.whl
 
 
   unit-test-build:
@@ -250,8 +246,6 @@ jobs:
           disable_search: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
-
-
   build-conclusion:
     needs: [forge-build, unit-test-build]
     if: always()
@@ -264,13 +258,9 @@ jobs:
         shell: bash
         run: |
           if [ "${{ needs.forge-build.result }}" == "success" ]; then
-            echo "Forge wheels are available and built successfully"
-            echo "- Forge build result: PASSED"
-            echo "- Unit test result: ${{ needs.unit-test-build.result }}"
+            echo "Forge wheel is available"
             echo "run_id=${{ github.run_id }}" >> $GITHUB_OUTPUT
           else
-            echo "Build failed"
-            echo "- Forge build result: ${{ needs.forge-build.result }}"
-            echo "- Unit test result: ${{ needs.unit-test-build.result }}"
+            echo "Forge wheel is NOT available"
             echo "run_id=" >> $GITHUB_OUTPUT
           fi
