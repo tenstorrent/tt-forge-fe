@@ -190,7 +190,7 @@ variants = [
     "swin_b",
     pytest.param("swin_v2_t", marks=[pytest.mark.xfail]),
     pytest.param("swin_v2_s", marks=[pytest.mark.xfail]),
-    pytest.param("swin_v2_b", marks=[pytest.mark.xfail]),
+    pytest.param("swin_v2_b"),
 ]
 
 
