@@ -72,6 +72,8 @@ tt::graphlib::NodeContext backward(
     TT_ASSERT(inputs.size() == 1, "reduce_avg should have single input.");
     TT_ASSERT(operand == 0, "Invalid operand index.");
 
+    // For avg, gradient needs to be broadcast back to original shape
+    // with scale factor 1 / size
     std::vector<int> dims = op.attr_as<std::vector<int>>("dim_arg");
     int dim = dims[0];
     if (dim < 0)
