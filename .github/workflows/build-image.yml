@@ -36,8 +36,9 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
-            submodules: recursive
-            fetch-depth: 0 # Fetch all history and tags
+          repository: 'tenstorrent/tt-forge-fe'
+          submodules: recursive
+          fetch-depth: 0 # Fetch all history and tags
 
       - name: Update submodule if mlir_override is set
         if: ${{ inputs.mlir_override }}
@@ -95,6 +96,6 @@ jobs:
         run: |
           DOCKER_CI_IMAGE=${{ needs.build-image.outputs.docker-image }}
           DOCKER_TAG=$(echo $DOCKER_CI_IMAGE | sed 's/^.*://')
-          IMAGE_NAME=ghcr.io/${{ github.repository }}/tt-forge-fe-ird-ubuntu-22-04
+          IMAGE_NAME=ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ird-ubuntu-22-04
           echo "Setting latest tag on the image $IMAGE_NAME:$DOCKER_TAG"
           skopeo copy "docker://$IMAGE_NAME:$DOCKER_TAG" "docker://$IMAGE_NAME:latest"
