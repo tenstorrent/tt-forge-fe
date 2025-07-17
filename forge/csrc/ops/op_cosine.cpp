@@ -7,6 +7,7 @@
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
 #include "op_interface.hpp"
+#include "ops/op_common.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
 #include "utils/assert.hpp"
@@ -60,10 +61,7 @@ long initial_flops_estimate(const Op &op, const std::vector<std::vector<std::uin
 {
     TT_DBG_ASSERT(op.type() == OpType::Cosine, "Wrong op type.");
 
-    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape_tuple = cosine::shape(op, inputs);
-    graphlib::Shape out_shape = std::get<0>(shape_tuple);
-
-    return std::accumulate(out_shape.begin(), out_shape.end(), 1u, std::multiplies<uint32_t>());
+    return op_common::initial_flops_estimate_output_dim(cosine::shape(op, inputs));
 }
 
 }  // namespace cosine

@@ -6,8 +6,8 @@
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
+#include "op_common.hpp"
 #include "op_interface.hpp"
-#include "ops/op_common.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
 #include "utils/assert.hpp"
@@ -16,21 +16,22 @@ namespace tt
 {
 namespace ops
 {
-namespace sine
+namespace sigmoid
 {
 
 at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Sine, "Wrong op type.");
-    TT_ASSERT(tensors.size() == 1, "sine::eval should have single input tensor.");
-    return torch::sin(tensors[0]);
+    TT_DBG_ASSERT(op.type() == OpType::Sigmoid, "Wrong op type.");
+    TT_ASSERT(tensors.size() == 1, "Sigmoid should have one input");
+
+    return torch::sigmoid(tensors[0]);
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Sine, "Wrong op type.");
-    TT_ASSERT(in_shapes.size() == 1, "sine::shape should have single input shape.");
+    TT_DBG_ASSERT(op.type() == OpType::Sigmoid, "Wrong op type.");
+    TT_ASSERT(in_shapes.size() == 1, "Sigmoid should have one input");
     return std::make_tuple(graphlib::Shape::create(in_shapes[0]), std::vector<graphlib::DimBroadcast>{});
 }
 
@@ -42,26 +43,27 @@ tt::graphlib::NodeContext backward(
     const tt::graphlib::NodeContext &output,
     const tt::graphlib::NodeContext &gradient)
 {
-    /**
-     * Derivative of sin(x) is cos(x)
-     * So backward pass: cos(inputs[0]) * grad
-     */
+    TT_DBG_ASSERT(op.type() == OpType::Sigmoid, "Wrong op type.");
+    TT_ASSERT(inputs.size() == 1, "Sigmoid should have one input");
+    TT_ASSERT(operand == 0, "Invalid operand index");
 
-    TT_DBG_ASSERT(op.type() == OpType::Sine, "Wrong op type.");
-    TT_ASSERT(inputs.size() == 1, "Sine should have single input.");
-    TT_ASSERT(operand == 0, "Invalid operand index.");
+    // dx = sigmoid(x) * (1 - sigmoid(x)) * grad
 
-    graphlib::NodeContext cosine_output = ac.autograd->create_op(ac, graphlib::OpType("cosine"), {inputs[0]});
-    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {cosine_output, gradient});
+    auto one = ac.autograd->create_constant(ac, 1.0);
+
+    auto sigm_ = ac.autograd->create_op(ac, graphlib::OpType("subtract"), {one, output});
+    auto dsigm = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {output, sigm_});
+
+    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {dsigm, gradient});
 }
 
 long initial_flops_estimate(const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Sine, "Wrong op type.");
+    TT_DBG_ASSERT(op.type() == OpType::Sigmoid, "Wrong op type.");
 
-    return op_common::initial_flops_estimate_output_dim(sine::shape(op, inputs));
+    return op_common::initial_flops_estimate_output_dim(sigmoid::shape(op, inputs));
 }
 
-}  // namespace sine
+}  // namespace sigmoid
 }  // namespace ops
 }  // namespace tt

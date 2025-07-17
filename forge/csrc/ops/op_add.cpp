@@ -67,10 +67,7 @@ long initial_flops_estimate(const Op &op, const std::vector<std::vector<std::uin
 {
     TT_ASSERT(inputs.size() == 2, "Add should have two inputs");
 
-    auto shape_tuple = add::shape(op, inputs);
-    graphlib::Shape out_shape = std::get<0>(shape_tuple);
-
-    return std::accumulate(out_shape.begin(), out_shape.end(), 1L, std::multiplies<long>());
+    return op_common::initial_flops_estimate_output_dim(add::shape(op, inputs));
 }
 
 }  // namespace add

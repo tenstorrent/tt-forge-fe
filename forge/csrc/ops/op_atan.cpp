@@ -16,21 +16,21 @@ namespace tt
 {
 namespace ops
 {
-namespace sine
+namespace atan
 {
 
 at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Sine, "Wrong op type.");
-    TT_ASSERT(tensors.size() == 1, "sine::eval should have single input tensor.");
-    return torch::sin(tensors[0]);
+    TT_DBG_ASSERT(op.type() == OpType::Atan, "Wrong op type.");
+    TT_ASSERT(tensors.size() == 1, "Atan should have one input");
+    return torch::atan(tensors[0]);
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Sine, "Wrong op type.");
-    TT_ASSERT(in_shapes.size() == 1, "sine::shape should have single input shape.");
+    TT_DBG_ASSERT(op.type() == OpType::Atan, "Wrong op type.");
+    TT_ASSERT(in_shapes.size() == 1, "Atan should have one input");
     return std::make_tuple(graphlib::Shape::create(in_shapes[0]), std::vector<graphlib::DimBroadcast>{});
 }
 
@@ -43,25 +43,27 @@ tt::graphlib::NodeContext backward(
     const tt::graphlib::NodeContext &gradient)
 {
     /**
-     * Derivative of sin(x) is cos(x)
-     * So backward pass: cos(inputs[0]) * grad
+     * Derivative of atan(x) = 1 / (1 + x^2)
      */
 
-    TT_DBG_ASSERT(op.type() == OpType::Sine, "Wrong op type.");
-    TT_ASSERT(inputs.size() == 1, "Sine should have single input.");
-    TT_ASSERT(operand == 0, "Invalid operand index.");
+    TT_DBG_ASSERT(op.type() == OpType::Atan, "Wrong op type.");
+    TT_ASSERT(inputs.size() == 1, "Atan should have one input");
+    TT_ASSERT(operand == 0, "Invalid operand index");
 
-    graphlib::NodeContext cosine_output = ac.autograd->create_op(ac, graphlib::OpType("cosine"), {inputs[0]});
-    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {cosine_output, gradient});
+    // x^2
+    auto x_squared = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {inputs[0], inputs[0]});
+
+    // 1 + x^2
+    auto one = ac.autograd->create_constant(ac, 1.0);
+    auto one_plus_x_squared = ac.autograd->create_op(ac, graphlib::OpType("add"), {one, x_squared});
+
+    // 1 / (1 + x^2)
+    auto derivative = ac.autograd->create_op(ac, graphlib::OpType("divide"), {one, one_plus_x_squared});
+
+    // derivative * gradient
+    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {derivative, gradient});
 }
 
-long initial_flops_estimate(const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Sine, "Wrong op type.");
-
-    return op_common::initial_flops_estimate_output_dim(sine::shape(op, inputs));
-}
-
-}  // namespace sine
+}  // namespace atan
 }  // namespace ops
 }  // namespace tt

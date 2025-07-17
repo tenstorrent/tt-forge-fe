@@ -4,11 +4,18 @@ add_library(ops
     op_common.cpp
     op_abs.cpp
     op_add.cpp
+    op_atan.cpp
     op_concatenate.cpp
     op_constant.cpp
     op_cosine.cpp
     op_divide.cpp
+    op_exp.cpp
+    op_gelu.cpp
+    op_leaky_relu.cpp
+    op_log.cpp
+    op_logical_not.cpp
     op_multiply.cpp
+    op_sigmoid.cpp
     op_sine.cpp
     op_transpose.cpp
     op_reshape.cpp

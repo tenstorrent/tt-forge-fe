@@ -9,7 +9,6 @@ from forge.tensor import Tensor
 import numpy as np
 import torch
 from .reciprocal import Reciprocal
-from .log import Log
 from .nop import Nop
 
 from ..common import to_torch_operands
@@ -102,7 +101,7 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
             partial_grad = ac.op("multiply", (output, recip))
             pow_grad = ac.op("multiply", (inputs[1], partial_grad))
         if operand == 1:  # dy = (x^y) * ln(x)
-            ln_x = ac.op(Log.create(), [inputs[0]])
+            ln_x = ac.op("log", [inputs[0]])
             pow_grad = ac.op("multiply", (output, ln_x))
         return ac.op("multiply", (pow_grad, grad))
 
