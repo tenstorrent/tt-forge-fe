@@ -45,7 +45,7 @@ variants = [
         "google/flan-t5-base",
         id="google_flan_t5_base",
     ),
-    pytest.param("google/flan-t5-large", id="google_flan_t5_large"),
+    pytest.param("google/flan-t5-large", id="google_flan_t5_large", marks=[pytest.mark.out_of_memory]),
 ]
 
 
