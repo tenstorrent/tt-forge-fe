@@ -70,15 +70,14 @@ def test_segformer_image_classification_onnx(variant, forge_tmp_path):
 variants_semseg = [
     "nvidia/segformer-b0-finetuned-ade-512-512",
     "nvidia/segformer-b1-finetuned-ade-512-512",
-    "nvidia/segformer-b2-finetuned-ade-512-512",
-    "nvidia/segformer-b3-finetuned-ade-512-512",
-    "nvidia/segformer-b4-finetuned-ade-512-512",
+    pytest.param("nvidia/segformer-b2-finetuned-ade-512-512", marks=pytest.mark.xfail),
+    pytest.param("nvidia/segformer-b3-finetuned-ade-512-512", marks=pytest.mark.xfail),
+    pytest.param("nvidia/segformer-b4-finetuned-ade-512-512", marks=pytest.mark.xfail),
 ]
 
 
 @pytest.mark.parametrize("variant", variants_semseg)
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_segformer_semantic_segmentation_onnx(variant, forge_tmp_path):
 
     # Record Forge Property

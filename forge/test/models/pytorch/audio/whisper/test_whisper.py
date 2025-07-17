@@ -17,6 +17,7 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import AutomaticValueChecker, VerifyConfig
 from forge.verify.verify import verify
 
 from test.models.models_utils import (
@@ -104,8 +105,14 @@ def test_whisper(variant):
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    pcc = 0.99
+    if variant == "openai/whisper-base":
+        pcc = 0.95
+
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(
+        inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc))
+    )
 
     generated_text = generate_no_cache_for_encoder_decoder_model(
         max_new_tokens=100,

@@ -122,7 +122,7 @@ def test_yolo_v10(
     start = time.time()
     for _ in range(loop_count):
         co_out = compiled_model(*input_sample)
-    end = time.time()
+  end = time.time()
 
     fw_out = framework_model(*input_sample)
     co_out = [co.to("cpu") for co in co_out]
