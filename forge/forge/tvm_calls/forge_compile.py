@@ -32,7 +32,8 @@ import onnxruntime as ort
 import onnx
 import onnx.numpy_helper
 from tvm.relay.expr import Tuple
-from forge.tvm_calls.relay.op.forge import verify_tvm_compile, flatten_IO, compile_for_forge, partition_for_forge
+from forge.tvm_calls.relay.op.forge import flatten_IO, compile_for_forge, partition_for_forge
+from forge.tvm_calls.relay.op.utils import verify_tvm_compile
 from jax.experimental import jax2tf
 from jax.tools.jax_to_ir import tf_wrap_with_input_names
 from transformers import FlaxPreTrainedModel

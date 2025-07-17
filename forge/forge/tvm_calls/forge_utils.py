@@ -35,7 +35,7 @@ def extract_framework_model_outputs(
 ):
     framework_outputs = []
 
-    if verify_tvm_compile:
+    if not verify_tvm_compile:
         return framework_outputs
 
     if framework == "pytorch" or framework == "paddle":
