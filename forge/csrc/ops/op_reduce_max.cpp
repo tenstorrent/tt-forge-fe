@@ -72,24 +72,21 @@ tt::graphlib::NodeContext backward(
     if (dim < 0)
         dim += inputs[0].shape.size();
 
-    // Create constants
-    auto one = ac.autograd->create_constant(ac, 1.0);
+    // reduce_max: dx = grad * mask
+    // where mask = 1.0 at positions where x was max (x==y), and 0.0 elsewhere
+    NodeContext one = ac.autograd->create_constant(ac, 1.0);
     float threshold = 1.0;
 
-    // Create mask: subtract output from input to get 0.0 in max positions
     graphlib::OpType subtract_op("subtract");
-    auto mask = ac.autograd->create_op(ac, subtract_op, {inputs[0], output});
+    NodeContext mask = ac.autograd->create_op(ac, subtract_op, {inputs[0], output});
 
-    // Add 1.0 to get 1.0 in max positions
     graphlib::OpType add_op("add");
     mask = ac.autograd->create_op(ac, add_op, {mask, one});
 
-    // Apply relu with threshold to get 1.0 in max positions, 0.0 elsewhere
     graphlib::OpType relu_op("relu");
     relu_op.set_attr("threshold", threshold);
     mask = ac.autograd->create_op(ac, relu_op, {mask});
 
-    // Multiply gradient by mask
     graphlib::OpType multiply_op("multiply");
     return ac.autograd->create_op(ac, multiply_op, {gradient, mask});
 }
