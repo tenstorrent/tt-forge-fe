@@ -135,6 +135,7 @@ jobs:
         source env/activate
         pip install tt_tvm*.whl --force-reinstall
         pip install tt_forge*.whl --force-reinstall
+        pip install -r env/dev_requirements.txt
 
     - name: Run Perf Benchmark
       env:

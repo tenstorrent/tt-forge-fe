@@ -28,7 +28,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     REQUIREMENTS_FILE="$CURRENT_SOURCE_DIR/mac_requirements.txt"
 else
     # TODO test on linux
-    REQUIREMENTS_FILE="$CURRENT_SOURCE_DIR/linux_requirements.txt"
+    REQUIREMENTS_FILE="$CURRENT_SOURCE_DIR/dev_requirements.txt"
 fi
 
 $TTFORGE_PYTHON_VERSION -m venv $TTFORGE_VENV_DIR
