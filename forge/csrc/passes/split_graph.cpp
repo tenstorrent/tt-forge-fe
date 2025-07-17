@@ -178,70 +178,63 @@ std::unique_ptr<Graph> extract_forward_graph(
     return fwd_graph;
 }
 
-static bool operand_has_intermediate(graphlib::Node* operand, const Graph* fwd_graph) {
-    for (auto user : fwd_graph->data_users(operand)) {
-        if (user->node_type() == graphlib::NodeType::kOutput) {
-            return true;
-        }
-    }
-    return false;
-}
-
-static bool should_copy_operand(graphlib::Node* operand, const std::unordered_set<std::string>& recompute_ops, const Graph* fwd_graph) {
-    if (recompute_ops.find(operand->name()) != recompute_ops.end()) {
-        return true;
-    }
-    return !operand_has_intermediate(operand, fwd_graph);
-}
-
-static void copy_recompute_node_and_deps(
-    graphlib::Node* fwd_node, 
+static void copy_recompute_operand(
+    graphlib::Node* operand, 
     const Graph* fwd_graph, 
     Graph* bwd_graph, 
-    const std::unordered_set<std::string>& recompute_ops,
-    std::unordered_set<graphlib::NodeId>& copied_nodes)
+    const std::unordered_set<std::string>& recompute_ops)
 {
-    if (!fwd_node || copied_nodes.count(fwd_node->id())) return;
+    if (!operand || bwd_graph->has_node_with_name(operand->name())) return;
 
-    // Handle input nodes
-    if (fwd_node->node_type() == graphlib::NodeType::kInput) {
-        if (!bwd_graph->has_node_with_name(fwd_node->name())) {
-            clone_and_add(fwd_node, bwd_graph);
-        }
-        copied_nodes.insert(fwd_node->id());
+    // Handle input nodes - just copy them
+    if (operand->node_type() == graphlib::NodeType::kInput) {
+        clone_and_add(operand, bwd_graph);
         return;
     }
 
     // Copy dependencies first
-    for (auto operand : fwd_graph->operands(fwd_node)) {
-        if (operand && operand->is_forward() && should_copy_operand(operand, recompute_ops, fwd_graph)) {
-            copy_recompute_node_and_deps(operand, fwd_graph, bwd_graph, recompute_ops, copied_nodes);
+    for (auto dep : fwd_graph->operands(operand)) {
+        if (!dep || !dep->is_forward()) continue;
+        
+        // Copy if it's marked for recompute or has no intermediate
+        bool need_copy = recompute_ops.count(dep->name()) > 0;
+        if (!need_copy) {
+            bool has_intermediate = false;
+            for (auto user : fwd_graph->data_users(dep)) {
+                if (user->node_type() == graphlib::NodeType::kOutput) {
+                    has_intermediate = true;
+                    break;
+                }
+            }
+            need_copy = !has_intermediate;
+        }
+        
+        if (need_copy) {
+            copy_recompute_operand(dep, fwd_graph, bwd_graph, recompute_ops);
         }
     }
 
-    // Copy this node
-    clone_and_add(fwd_node, bwd_graph);
-    copied_nodes.insert(fwd_node->id());
+    // Copy this operand
+    clone_and_add(operand, bwd_graph);
+    
+    // Connect to dependencies
+    auto bwd_operand = bwd_graph->get_node_by_name(operand->name());
+    for (auto dep : fwd_graph->operands(operand)) {
+        if (!dep || !dep->is_forward()) continue;
+        
+        if (bwd_graph->has_node_with_name(dep->name())) {
+            auto bwd_dep = bwd_graph->get_node_by_name(dep->name());
+            bwd_graph->add_edge(bwd_dep, bwd_operand);
+        }
+    }
 }
 
-static void connect_backward_operand(
+static void use_intermediate_or_create(
     graphlib::Node* operand, 
     graphlib::Node* bwd_node, 
     const Graph* fwd_graph, 
     Graph* bwd_graph)
 {
-    // Try existing node first
-    if (bwd_graph->has_node_with_name(operand->name())) {
-        auto bwd_operand = bwd_graph->get_node_by_name(operand->name());
-        if (bwd_operand) {
-            bwd_graph->add_edge(bwd_operand, bwd_node);
-            return;
-        }
-    }
-
-    if (!operand->is_forward()) return;
-
-    // Try intermediate
     auto fwd_operand = fwd_graph->get_node_by_name(operand->name());
     if (!fwd_operand) return;
 
@@ -250,10 +243,8 @@ static void connect_backward_operand(
 
         if (bwd_graph->has_node_with_name(user->name())) {
             auto intermediate = bwd_graph->get_node_by_name(user->name());
-            if (intermediate) {
-                bwd_graph->add_edge(intermediate, bwd_node);
-                return;
-            }
+            bwd_graph->add_edge(intermediate, bwd_node);
+            return;
         }
 
         // Create intermediate input
@@ -271,16 +262,6 @@ static void connect_backward_operand(
     }
 }
 
-static void connect_copied_node(graphlib::Node* fwd_node, const Graph* fwd_graph, Graph* bwd_graph) {
-    auto bwd_node = bwd_graph->get_node_by_name(fwd_node->name());
-    if (!bwd_node) return;
-
-    for (auto operand : fwd_graph->operands(fwd_node)) {
-        if (!operand || !operand->is_forward()) continue;
-        connect_backward_operand(operand, bwd_node, fwd_graph, bwd_graph);
-    }
-}
-
 std::unique_ptr<Graph> extract_backward_graph(
     const Graph *graph, 
     const Graph *fwd_graph, 
@@ -290,7 +271,7 @@ std::unique_ptr<Graph> extract_backward_graph(
     auto bwd_graph = std::make_unique<Graph>(tt::graphlib::IRLevel::IR_TT_FORGE, "backward");
     bwd_graph->set_training(graph->training());
 
-    // Add intermediate inputs
+    // Add intermediate inputs from forward graph
     for (auto intermediate : fwd_graph->ordered_intermediates()) {
         auto input = graphlib::create_node<graphlib::InputNode>(
             intermediate->name(), graphlib::InputNodeType::Activation, false);
@@ -307,29 +288,7 @@ std::unique_ptr<Graph> extract_backward_graph(
         }
     }
 
-    // Copy recompute nodes needed by backward nodes
-    std::unordered_set<graphlib::NodeId> copied_nodes;
-    
-    for (auto node : topo) {
-        if (!node->is_backward()) continue;
-        
-        for (auto operand : graph->operands(node)) {
-            if (operand->is_forward() && recompute_ops.find(operand->name()) != recompute_ops.end()) {
-                auto fwd_node = fwd_graph->get_node_by_name(operand->name());
-                copy_recompute_node_and_deps(fwd_node, fwd_graph, bwd_graph.get(), recompute_ops, copied_nodes);
-            }
-        }
-    }
-    
-    // Connect all copied nodes
-    for (auto node_id : copied_nodes) {
-        auto fwd_node = fwd_graph->node_by_id(node_id);
-        if (fwd_node->node_type() != graphlib::NodeType::kInput) {
-            connect_copied_node(fwd_node, fwd_graph, bwd_graph.get());
-        }
-    }
-
-    // Process backward nodes
+    // Process backward nodes - simple single pass
     for (auto node : topo) {
         if (!node->is_backward()) continue;
 
@@ -355,9 +314,24 @@ std::unique_ptr<Graph> extract_backward_graph(
         auto bwd_node = bwd_graph->get_node_by_name(node->name());
         if (!bwd_node) continue;
 
-        // Connect operands
+        // Handle each operand - simple decision tree
         for (auto operand : graph->data_operands(node)) {
-            connect_backward_operand(operand, bwd_node, fwd_graph, bwd_graph.get());
+            if (bwd_graph->has_node_with_name(operand->name())) {
+                // Easy case - operand already exists
+                auto bwd_operand = bwd_graph->get_node_by_name(operand->name());
+                bwd_graph->add_edge(bwd_operand, bwd_node);
+            } else if (operand->is_forward()) {
+                // Forward operand - check if it needs recompute
+                if (recompute_ops.count(operand->name()) > 0) {
+                    auto fwd_operand = fwd_graph->get_node_by_name(operand->name());
+                    copy_recompute_operand(fwd_operand, fwd_graph, bwd_graph.get(), recompute_ops);
+                    auto bwd_operand = bwd_graph->get_node_by_name(operand->name());
+                    bwd_graph->add_edge(bwd_operand, bwd_node);
+                } else {
+                    // Use intermediate
+                    use_intermediate_or_create(operand, bwd_node, fwd_graph, bwd_graph.get());
+                }
+            }
         }
     }
 
