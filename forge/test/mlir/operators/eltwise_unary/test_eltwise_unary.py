@@ -184,9 +184,6 @@ def test_isnan(shape, dtype):
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.xfail(
-    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - Atan"
-)
 @pytest.mark.parametrize(
     "shape",
     [(888), (1, 7, 256), (3, 128, 128), (1, 10), (2, 2, 2), (5, 5), (1, 3, 224, 224), (8, 16, 32), (1, 3, 2, 544, 544)],
@@ -200,12 +197,23 @@ def test_atan(shape):
         def forward(self, x1):
             return torch.atan(x1)
 
-    inputs = [torch.randn(shape)]
+    inputs = [torch.randn(shape, requires_grad=True)]
 
     framework_model = Atan()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=True)
 
-    verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    grad = torch.rand_like(fw_out[0])
+
+    verify_backward(
+        inputs,
+        grad,
+        fw_out[0],
+        co_out[0],
+        framework_model,
+        compiled_model,
+    )
 
 
 @pytest.mark.parametrize(

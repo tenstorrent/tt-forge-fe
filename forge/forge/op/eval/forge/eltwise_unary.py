@@ -86,7 +86,6 @@ def eval(type, attr, ops):
         "reciprocal": lambda i: torch.reciprocal(i[0] + 1e-10),  # add epsilon to avoid infinity
         "clip": lambda i: torch.clip(i[0], min=attr[0], max=attr[1]),
         "abs": lambda i: torch.abs(i[0]),
-        "atan": lambda i: torch.atan(i[0]),
         "tile_broadcast": lambda i: tile_broadcast(attr, i[0]),
         "tanh": lambda i: torch.tanh(i[0]),
         "cumsum": lambda i: torch.cumsum(i[0], dim=attr[0]),

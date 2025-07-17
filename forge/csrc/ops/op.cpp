@@ -399,6 +399,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
     {
         case OpType::Abs: return abs::eval(*this, tensors);
         case OpType::Add: return add::eval(*this, tensors);
+        case OpType::Atan: return atan::eval(*this, tensors);
         case OpType::Concatenate: return concatenate::eval(*this, tensors);
         case OpType::Constant: return constant::eval(*this, tensors);
         case OpType::Cosine: return cosine::eval(*this, tensors);
@@ -425,6 +426,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
     {
         case OpType::Abs: return abs::shape(*this, inputs);
         case OpType::Add: return add::shape(*this, inputs);
+        case OpType::Atan: return atan::shape(*this, inputs);
         case OpType::Concatenate: return concatenate::shape(*this, inputs);
         case OpType::Constant: return constant::shape(*this, inputs);
         case OpType::Cosine: return cosine::shape(*this, inputs);
@@ -456,6 +458,7 @@ tt::graphlib::NodeContext Op::backward(
     {
         case OpType::Abs: return abs::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Add: return add::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Atan: return atan::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Concatenate: return concatenate::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Constant: return constant::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Cosine: return cosine::backward(*this, context, operand, inputs, output, gradient);
@@ -504,6 +507,7 @@ void Op::decompose_initial(
     {
         case OpType::Abs: return;
         case OpType::Add: return;
+        case OpType::Atan: return;
         case OpType::Concatenate: return concatenate::decompose_initial(*this, dc, inputs);
         case OpType::Constant: return;
         case OpType::Cosine: return;
@@ -532,6 +536,7 @@ void Op::decompose_post_optimize(
     {
         case OpType::Abs: return;
         case OpType::Add: return;
+        case OpType::Atan: return;
         case OpType::Concatenate: return;
         case OpType::Constant: return;
         case OpType::Cosine: return;
@@ -560,6 +565,7 @@ void Op::decompose_post_autograd(
     {
         case OpType::Abs: return;
         case OpType::Add: return;
+        case OpType::Atan: return;
         case OpType::Concatenate: return;
         case OpType::Constant: return;
         case OpType::Cosine: return;
@@ -586,6 +592,7 @@ long Op::initial_flops_estimate(
     {
         case OpType::Abs: return abs::initial_flops_estimate(*this, inputs);
         case OpType::Add: return add::initial_flops_estimate(*this, inputs);
+        case OpType::Atan: return 0;
         case OpType::Constant: return 0;
         case OpType::Cosine: return cosine::initial_flops_estimate(*this, inputs);
         case OpType::Divide: return 0;
@@ -611,6 +618,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return false;
         case OpType::Add: return false;
+        case OpType::Atan: return false;
         case OpType::Concatenate: return false;
         case OpType::Constant: return false;
         case OpType::Cosine: return false;
@@ -636,6 +644,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return true;
         case OpType::Add: return true;
+        case OpType::Atan: return true;
         case OpType::Concatenate: return true;
         case OpType::Constant: return false;
         case OpType::Cosine: return true;
@@ -661,6 +670,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return true;
         case OpType::Add: return false;
+        case OpType::Atan: return true;
         case OpType::Concatenate: return false;
         case OpType::Constant: return false;
         case OpType::Cosine: return true;
@@ -686,6 +696,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return false;
         case OpType::Add: return true;
+        case OpType::Atan: return false;
         case OpType::Concatenate: return false;
         case OpType::Constant: return false;
         case OpType::Cosine: return false;
@@ -711,6 +722,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
     {
         case OpType::Abs: return false;
         case OpType::Add: return false;
+        case OpType::Atan: return false;
         case OpType::Concatenate: return true;
         case OpType::Constant: return false;
         case OpType::Cosine: return false;
