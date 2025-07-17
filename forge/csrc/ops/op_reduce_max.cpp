@@ -101,7 +101,6 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<t
     if (dim < 0)
         dim += inputs[0].shape.size();
 
-    // Check if dimension size is 1 (NOP case)
     if (inputs[0].shape[dim] == 1)
     {
         NodeContext result = dc.op(graphlib::OpType("nop"), {inputs[0]});
