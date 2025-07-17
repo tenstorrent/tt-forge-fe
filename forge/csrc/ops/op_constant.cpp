@@ -19,7 +19,7 @@ namespace ops
 namespace constant
 {
 
-at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Constant, "Wrong op type.");
     TT_ASSERT(tensors.size() == 0, "Constant eval should not have any operands");
@@ -29,7 +29,7 @@ at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
-    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Constant, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 0, "Constant should not have any operands");

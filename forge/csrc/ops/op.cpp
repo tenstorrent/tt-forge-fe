@@ -401,7 +401,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
 {
     switch (type_)  // clang-format off
     {
-        case OpType::Abs: return abs::eval(*this, tensors);
+        case OpType::Abs: return abs::eval(old_op_type, *this, tensors);
         case OpType::AdaptiveMaxPool2d: return base_eval(old_op_type, tensors);
         case OpType::Add: return add::eval(*this, tensors);
         case OpType::AdvIndex: return base_eval(old_op_type, tensors);
@@ -527,7 +527,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
 {
     switch (type_)  // clang-format off
     {
-        case OpType::Abs: return abs::shape(*this, inputs);
+        case OpType::Abs: return abs::shape(old_op_type, *this, inputs);
         case OpType::AdaptiveMaxPool2d: return base_shape(old_op_type, inputs);
         case OpType::Add: return add::shape(*this, inputs);
         case OpType::AdvIndex: return base_shape(old_op_type, inputs);
@@ -658,7 +658,7 @@ tt::graphlib::NodeContext Op::backward(
 {
     switch (type_)  // clang-format off
     {
-        case OpType::Abs: return abs::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Abs: return abs::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::AdaptiveMaxPool2d: return base_backward(old_op_type, context, operand, inputs, output, gradient);
         case OpType::Add: return add::backward(*this, context, operand, inputs, output, gradient);
         case OpType::AdvIndex: return base_backward(old_op_type, context, operand, inputs, output, gradient);
@@ -1188,7 +1188,7 @@ long Op::initial_flops_estimate(
 {
     switch (type_)  // clang-format off
     {
-        case OpType::Abs: return abs::initial_flops_estimate(*this, inputs);
+        case OpType::Abs: return abs::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::AdaptiveMaxPool2d: return base_initial_flops_estimate(old_op_type, inputs);
         case OpType::Add: return add::initial_flops_estimate(*this, inputs);
         case OpType::AdvIndex: return base_initial_flops_estimate(old_op_type, inputs);
