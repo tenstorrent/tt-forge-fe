@@ -405,6 +405,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Divide: return divide::eval(*this, tensors);
         case OpType::Exp: return exp::eval(*this, tensors);
         case OpType::Gelu: return gelu::eval(*this, tensors);
+        case OpType::LeakyRelu: return leaky_relu::eval(*this, tensors);
         case OpType::Log: return log::eval(*this, tensors);
         case OpType::LogicalNot: return logical_not::eval(*this, tensors);
         case OpType::Multiply: return multiply::eval(*this, tensors);
@@ -430,6 +431,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Divide: return divide::shape(*this, inputs);
         case OpType::Exp: return exp::shape(*this, inputs);
         case OpType::Gelu: return gelu::shape(*this, inputs);
+        case OpType::LeakyRelu: return leaky_relu::shape(*this, inputs);
         case OpType::Log: return log::shape(*this, inputs);
         case OpType::LogicalNot: return logical_not::shape(*this, inputs);
         case OpType::Multiply: return multiply::shape(*this, inputs);
@@ -460,6 +462,7 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Divide: return divide::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Exp: return exp::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Gelu: return gelu::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::LeakyRelu: return leaky_relu::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Log: return log::backward(*this, context, operand, inputs, output, gradient);
         case OpType::LogicalNot: return logical_not::backward(*this, context, operand, inputs, output, gradient);
         case OpType::Multiply: return multiply::backward(*this, context, operand, inputs, output, gradient);
@@ -507,6 +510,7 @@ void Op::decompose_initial(
         case OpType::Divide: return;
         case OpType::Exp: return;
         case OpType::Gelu: return;
+        case OpType::LeakyRelu: return;
         case OpType::Log: return;
         case OpType::LogicalNot: return;
         case OpType::Multiply: return;
@@ -534,6 +538,7 @@ void Op::decompose_post_optimize(
         case OpType::Divide: return;
         case OpType::Exp: return;
         case OpType::Gelu: return;
+        case OpType::LeakyRelu: return;
         case OpType::Log: return;
         case OpType::LogicalNot: return;
         case OpType::Multiply: return;
@@ -561,6 +566,7 @@ void Op::decompose_post_autograd(
         case OpType::Divide: return;
         case OpType::Exp: return;
         case OpType::Gelu: return;
+        case OpType::LeakyRelu: return;
         case OpType::Log: return;
         case OpType::LogicalNot: return;
         case OpType::Multiply: return multiply::decompose_post_autograd(*this, dc, inputs);
@@ -585,6 +591,7 @@ long Op::initial_flops_estimate(
         case OpType::Divide: return 0;
         case OpType::Exp: return exp::initial_flops_estimate(*this, inputs);
         case OpType::Gelu: return gelu::initial_flops_estimate(*this, inputs);
+        case OpType::LeakyRelu: return leaky_relu::initial_flops_estimate(*this, inputs);
         case OpType::Log: return log::initial_flops_estimate(*this, inputs);
         case OpType::LogicalNot: return 0;
         case OpType::Concatenate: return 0;
@@ -610,6 +617,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Divide: return false;
         case OpType::Exp: return false;
         case OpType::Gelu: return false;
+        case OpType::LeakyRelu: return false;
         case OpType::Log: return false;
         case OpType::LogicalNot: return false;
         case OpType::Multiply: return false;
@@ -634,6 +642,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Divide: return true;
         case OpType::Exp: return true;
         case OpType::Gelu: return true;
+        case OpType::LeakyRelu: return true;
         case OpType::Log: return true;
         case OpType::LogicalNot: return true;
         case OpType::Multiply: return true;
@@ -658,6 +667,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Divide: return false;
         case OpType::Exp: return true;
         case OpType::Gelu: return true;
+        case OpType::LeakyRelu: return true;
         case OpType::Log: return true;
         case OpType::LogicalNot: return true;
         case OpType::Multiply: return false;
@@ -682,6 +692,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Divide: return true;
         case OpType::Exp: return false;
         case OpType::Gelu: return false;
+        case OpType::LeakyRelu: return false;
         case OpType::Log: return false;
         case OpType::LogicalNot: return false;
         case OpType::Multiply: return true;
@@ -706,6 +717,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Divide: return false;
         case OpType::Exp: return false;
         case OpType::Gelu: return false;
+        case OpType::LeakyRelu: return false;
         case OpType::Log: return false;
         case OpType::LogicalNot: return false;
         case OpType::Multiply: return false;

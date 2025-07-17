@@ -131,13 +131,9 @@ at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Gelu, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "Gelu should have one input");
+    TT_ASSERT(op.attrs().size() == 1, "Gelu should have one attribute");
 
-    // Get the approximation mode from op attributes
-    std::string approximate = "none";
-    if (op.has_attr("approximate"))
-    {
-        approximate = op.attr_as<std::string>("approximate");
-    }
+    std::string approximate = op.attr_as<std::string>("approximate");
 
     return torch::gelu(tensors[0], approximate);
 }
@@ -147,6 +143,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
 {
     TT_DBG_ASSERT(op.type() == OpType::Gelu, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "Gelu should have one input");
+
     return std::make_tuple(graphlib::Shape::create(in_shapes[0]), std::vector<graphlib::DimBroadcast>{});
 }
 
@@ -163,12 +160,9 @@ tt::graphlib::NodeContext backward(
     TT_DBG_ASSERT(op.type() == OpType::Gelu, "Wrong op type.");
     TT_ASSERT(inputs.size() == 1, "Gelu should have one input");
     TT_ASSERT(operand == 0, "Invalid operand index");
+    TT_ASSERT(op.attrs().size() == 1, "Gelu should have one attribute");
 
-    std::string approximate = "none";
-    if (op.has_attr("approximate"))
-    {
-        approximate = op.attr_as<std::string>("approximate");
-    }
+    std::string approximate = op.attr_as<std::string>("approximate");
 
     TT_ASSERT(
         approximate == "none" || approximate == "tanh",

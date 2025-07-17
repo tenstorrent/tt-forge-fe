@@ -31,15 +31,16 @@ def eval(type, attr, ops):
         len(attr) == 0
         or (type == "clip" and len(attr) == 2)
         or (type == "erf" and len(attr) == 0)
-        or (type == "leaky_relu" and len(attr) == 1)
         or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
         or (type == "dropout" and len(attr) == 3)
         or (type == "tile_broadcast" and len(attr) == 2)
         or (type == "pow" and len(attr) == 1)
-    ), "Eltwise unary should have no attributes, execpt for clip, leaky_relu, and cumsum"
+    ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout, tile_broadcast, and pow"
 
     t_ops = to_torch_operands(*ops)
+
+    original_types = [o.dtype for o in t_ops]
 
     if type == "dropout":
         p, training, seed = attr
@@ -78,7 +79,6 @@ def eval(type, attr, ops):
         "erf": lambda i: torch.erf(i[0]),
         "sqrt": lambda i: torch.sqrt(i[0]),
         # "relu": lambda i: i[0] * (i[0] >= relu_threshold).to(i[0].dtype),
-        "leaky_relu": lambda i: torch.nn.functional.leaky_relu(i[0], attr[0]),
         "nop": lambda i: i[0],
         "tilizer": lambda i: i[0],
         "ethernet_datacopy": lambda i: i[0],
@@ -108,13 +108,12 @@ def shape(type, attr, ops):
         len(attr) == 0
         or (type == "ethernet_datacopy" and (len(attr) == 1 or len(attr) == 2))
         or (type == "clip" and len(attr) == 2)
-        or (type == "leaky_relu" and len(attr) == 1)
         or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
         or (type == "dropout" and len(attr) == 3)
         or (type == "tile_broadcast" and len(attr) == 2)
         or (type == "pow" and len(attr) == 1)
-    ), "Eltwise unary should have no attributes, execpt for clip, leaky_relu and cumsum"
+    ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout, tile_broadcast, and pow"
 
     if type == "tile_broadcast":
         assert len(attr) == 2, "Tile broadcast should have two attributes - dim and size"
@@ -134,13 +133,12 @@ def backward(type, attr, ac, operand, inputs, output, grad):
     assert (
         len(attr) == 0
         or (type == "clip" and len(attr) == 2)
-        or (type == "leaky_relu" and len(attr) == 1)
         or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
         or (type == "dropout" and len(attr) == 3)
         or (type == "tile_broadcast" and len(attr) == 2)
         or (type == "pow" and len(attr) == 1)
-    ), "Eltwise unary should have no attributes, execpt for clip, leaky_relu and cumsum"
+    ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout, tile_broadcast, and pow"
 
     if type == "nop":
         return ac.op(Nop.create(), (grad,))
@@ -186,20 +184,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
             relud = ac.op("multiply", (l_relud, g_relud))
 
         return ac.op("multiply", (relud, grad))
-
-    if type == "leaky_relu":
-        alpha = ac.constant(attr[0])
-
-        relu_dx = ac.op("heaviside", (output, ac.constant(0.0)))
-
-        l_relu_dx = ac.op("multiply", (output, ac.constant(-1.0)))
-        l_relu_dx = ac.op("heaviside", (l_relu_dx, ac.constant(0.0)))
-        l_relu_dx = ac.op("multiply", (l_relu_dx, alpha))
-        l_relu_dx = ac.op("add", (relu_dx, l_relu_dx))
-
-        res = ac.op("multiply", (l_relu_dx, grad))
-
-        return res
 
     if type == "tanh":
         tanh_square = ac.op("multiply", (output, output))
@@ -261,7 +245,6 @@ def initial_flops_estimate(type, attr, ops):
     sfpu_unary_ops = [
         "sqrt",
         "relu",
-        "leaky_relu",
         "reciprocal",
         "abs",
         "tanh",

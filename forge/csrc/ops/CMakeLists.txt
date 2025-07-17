@@ -10,6 +10,7 @@ add_library(ops
     op_divide.cpp
     op_exp.cpp
     op_gelu.cpp
+    op_leaky_relu.cpp
     op_log.cpp
     op_logical_not.cpp
     op_multiply.cpp
