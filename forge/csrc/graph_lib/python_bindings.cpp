@@ -226,7 +226,6 @@ void GraphModule(py::module &m_graph)
         .def("get_tile_dim", &Shape::get_tile_dim)
         .def("get_tile_height", &Shape::get_tile_height)
         .def("get_tile_width", &Shape::get_tile_width)
-        .def_static("create", &Shape::create, py::arg("values"))
         .def_static("create_forge", py::overload_cast<std::vector<std::uint32_t>, int, int>(&Shape::create_forge))
         .def_static(
             "create_with_type_from_other", Shape::create_with_type_from_other, py::arg("other"), py::arg("values"))
@@ -299,7 +298,7 @@ void GraphModule(py::module &m_graph)
         .def("shape", &tt::graphlib::OpType::shape)
         .def(
             "__getattr__",
-            [](tt::graphlib::OpType const &op_type, std::string const &name) { return op_type.get_attr(name); })
+            [](tt::graphlib::OpType const &op_type, std::string const &name) { return op_type.attrs().at(name); })
         .def(
             "__setattr__",
             [](tt::graphlib::OpType &op_type, std::string const &name, tt::graphlib::OpType::Attr value)
@@ -996,11 +995,8 @@ py::object eval_reinterpret_shape(Graph *graph, Node *node, py::object input_val
         node->shape(),
         runtime_tensor_transform.reinterpreted_shape);
 
-    std::vector<graphlib::OpType::Attr> attr;
-    auto vec = runtime_tensor_transform.reinterpreted_shape.as_vector();
-    for (auto dim : vec) attr.emplace_back((int)dim);
-
-    graphlib::OpType reinterpret_shape("reshape", attr);
+    graphlib::OpType reinterpret_shape(
+        "reshape", {}, {{"shape", runtime_tensor_transform.reinterpreted_shape.as_vector<int>()}});
     return eval_op(reinterpret_shape, {input_value});
 }
 
@@ -1109,10 +1105,6 @@ py::object eval_concatenate(
 
     Node *node = nodes[output_index];
     log_trace(LogEval, "Eval concatenate {}: {}", node->name(), node->shape());
-    std::vector<graphlib::OpType::Attr> attr;
-
-    attr.emplace_back(runtime_tensor_transform.concat_dim);
-
     std::vector<py::object> concat_inputs;
     // There won't be too many of these, do a nested loop for simplicity
     int conat_group = runtime_tensor_transform.concat_group;
@@ -1140,7 +1132,7 @@ py::object eval_concatenate(
         }
     }
 
-    graphlib::OpType prestride_act("concatenate", attr);
+    graphlib::OpType prestride_act("concatenate", {}, {{"dim", runtime_tensor_transform.concat_dim}});
     return eval_op(prestride_act, concat_inputs);
 }
 

@@ -285,42 +285,6 @@ def create_torch_inputs(
     return inputs
 
 
-def verify_module_for_inputs_deprecated(
-    model: Module,
-    inputs: List[torch.Tensor],
-    compiler_cfg: CompilerConfig,
-    pcc: Optional[float] = None,
-    dev_data_format: forge.DataFormat = None,
-    convert_to_forge: bool = True,  # explicit conversion to forge data format
-):
-
-    fw_out = model(*inputs)
-
-    if convert_to_forge:
-        forge_inputs = TestTensorsUtils.convert_to_forge_tensors(inputs, dev_data_format)
-    else:
-        forge_inputs = inputs
-
-    compiled_model = forge.compile(model, sample_inputs=forge_inputs, compiler_cfg=compiler_cfg)
-    co_out = compiled_model(*forge_inputs)
-
-    # TODO check output data format type
-
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    # It would be good that compare_with_golden_pcc can take pcc as None
-
-    # TODO print pcc value
-    if pcc is not None:
-        assert all(
-            [compare_with_golden(golden=fo, calculated=co, pcc=pcc) for fo, co in zip(fw_out, co_out)]
-        ), "PCC check failed"
-    else:
-        assert all(
-            [compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)]
-        ), "PCC check failed"
-
-
 def verify_module_for_inputs(
     model: Module,
     inputs: List[torch.Tensor],

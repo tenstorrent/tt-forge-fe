@@ -20,11 +20,9 @@ from test.models.pytorch.audio.stereo.model_utils.utils import load_inputs, load
 variants = [
     pytest.param(
         "facebook/musicgen-small",
-        marks=pytest.mark.xfail,
     ),
     pytest.param(
         "facebook/musicgen-medium",
-        marks=pytest.mark.xfail,
     ),
     pytest.param(
         "facebook/musicgen-large",

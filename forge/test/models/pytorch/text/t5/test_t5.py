@@ -15,6 +15,10 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
+from test.models.models_utils import (
+    generate_no_cache_for_encoder_decoder_model,
+    pad_inputs,
+)
 from test.utils import download_model
 
 variants = [
@@ -82,7 +86,8 @@ def test_t5_generation(variant):
     input_ids = inputs.input_ids
     decoder_start_token_tensor = torch.tensor(model.generation_config.decoder_start_token_id, dtype=torch.long)
     decoder_input_ids = torch.ones((1, 1), dtype=torch.long) * decoder_start_token_tensor
-    inputs = [input_ids, decoder_input_ids]
+    padded_decoder_input_ids, seq_len = pad_inputs(decoder_input_ids)
+    inputs = [input_ids, padded_decoder_input_ids]
 
     class Wrapper(torch.nn.Module):
         def __init__(self, model):
@@ -102,33 +107,12 @@ def test_t5_generation(variant):
     # Model Verification
     verify(inputs, framework_model, compiled_model)
 
-    current_decoder_input_ids = decoder_input_ids
-    all_decoded_ids = decoder_input_ids
-
-    # The iteration count in for _ in range(1) is deliberately limited to 1 to prevent shape mismatches.
-    # The model has been compiled specifically for the first decoding step, where decoder_input_ids
-    # has a fixed length of (1,1) (the initial token). However, in generative models like T5, the length of
-    # decoder_input_ids increases with each decoding step as tokens are appended to the sequence.
-    # This dynamic increase in shape is incompatible with the static shape expected by the compiled model,
-    # leading to a runtime error if subsequent iterations are attempted.
-
-    for _ in range(1):
-
-        # Inference
-        outputs = compiled_model(input_ids, current_decoder_input_ids)
-        logits = outputs[0]
-
-        # Get the next token ID (greedy decoding)
-        next_token = torch.argmax(logits[:, -1, :], dim=-1).unsqueeze(-1)
-
-        # Break if EOS token is generated
-        if next_token.item() == model.generation_config.eos_token_id:
-            break
-
-        # Append next token to sequence
-        all_decoded_ids = torch.cat([all_decoded_ids, next_token], dim=-1)
-
-        # Update decoder inputs for the next iteration
-        current_decoder_input_ids = all_decoded_ids
-
-    print("summary : ", tokenizer.decode(all_decoded_ids[0], skip_special_tokens=True))
+    generated_text = generate_no_cache_for_encoder_decoder_model(
+        max_new_tokens=512,
+        model=compiled_model,
+        input_ids=inputs[0],
+        decoder_input_ids=padded_decoder_input_ids,
+        seq_len=seq_len,
+        tokenizer=tokenizer,
+    )
+    print(generated_text)

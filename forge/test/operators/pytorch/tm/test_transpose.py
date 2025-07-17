@@ -158,7 +158,6 @@ class TestVerification:
             math_fidelity=test_vector.math_fidelity,
             warm_reset=warm_reset,
             value_range=value_range,
-            deprecated_verification=False,
             verify_config=verify_config,
         )
 

@@ -54,7 +54,7 @@ class DecomposingContext
         bool dont_decompose = false,
         bool optimize_hoist = false,
         DataFormat output_df = DataFormat::Invalid);
-    void fuse(NodeContext operand, graphlib::PortId out_port);
+    void fuse(NodeContext operand, graphlib::PortId out_port = 0);
     NodeContext tensor(std::shared_ptr<void> tensor_handle, graphlib::Shape tensor_shape);
 
     Graph* get_graph() { return graph; }
