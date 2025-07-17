@@ -586,8 +586,9 @@ bool commute_through_reduce(
     graphlib::OpType *golden_transform,
     bool commute_up)
 {
-    TT_ASSERT(op->op_legacy_attrs().size() == 2);
-    int reduce_dim = std::get<int>(op->op_legacy_attrs()[0]);
+    std::vector<int> dim_arg = op->op_attr_as<std::vector<int>>("dim_arg");
+    TT_ASSERT(dim_arg.size() == 1, "dim_arg must contain exactly one dimension");
+    int reduce_dim = dim_arg[0];
 
     // Convert to positive indexing
     if (reduce_dim < 0)
@@ -619,7 +620,8 @@ bool commute_through_reduce(
 
         auto compare_shape = check_only ? graph->data_operands(op)[0]->shape() : *clone_shape;
 
-        int next_reduce_dim = std::get<int>(next_op->op_legacy_attrs()[0]);
+        std::vector<int> next_dim_arg = next_op->op_attr_as<std::vector<int>>("dim_arg");
+        int next_reduce_dim = next_dim_arg[0];
         // Convert to positive indexing
         if (next_reduce_dim < 0)
             next_reduce_dim += next_op->shape().size();
@@ -666,8 +668,8 @@ bool commute_through_reduce(
 
         if (prev_op->op_name() == op->op_name())
         {
-            TT_ASSERT(prev_op->op_legacy_attrs().size() == 2);
-            int prev_reduce_dim = std::get<int>(prev_op->op_legacy_attrs()[0]);
+            std::vector<int> prev_dim_arg = prev_op->op_attr_as<std::vector<int>>("dim_arg");
+            int prev_reduce_dim = prev_dim_arg[0];
             // Convert to positive indexing
             if (prev_reduce_dim < 0)
                 prev_reduce_dim += op->shape().size();
@@ -750,26 +752,55 @@ bool commute_through_reduce(
         auto op_attr = op->op_legacy_attrs();
         auto producer_attr = producer->op_legacy_attrs();
 
-        int op_reduce_dim = std::get<int>(op_attr[0]);
+        int op_reduce_dim;
         bool op_keep_dim;
-        if (op->op_name() == "grouped_reduce_avg" || op->op_name() == "reduce_max")
+
+        if (op->op_name() == "grouped_reduce_avg")
         {
+            op_reduce_dim = std::get<int>(op_attr[0]);
             op_keep_dim = std::get<bool>(op_attr[2]);
+        }
+        else if (op->op_name() == "reduce_max")
+        {
+            std::vector<int> op_dim_arg = op->op_attr_as<std::vector<int>>("dim_arg");
+            op_reduce_dim = op_dim_arg[0];
+            op_keep_dim = op->op_attr_as<bool>("keep_dim");
         }
         else
         {
-            op_keep_dim = std::get<bool>(op_attr[1]);
+            std::vector<int> op_dim_arg = op->op_attr_as<std::vector<int>>("dim_arg");
+            op_reduce_dim = op_dim_arg[0];
+            op_keep_dim = op->op_attr_as<bool>("keep_dim");
         }
 
         if (op_reduce_dim < 0)
             op_reduce_dim += clone_shape->size();
 
-        int producer_reduce_dim = std::get<int>(producer_attr[0]);
+        int producer_reduce_dim;
+
+        if (producer->op_name() == "grouped_reduce_avg")
+        {
+            producer_reduce_dim = std::get<int>(producer_attr[0]);
+        }
+        else
+        {
+            std::vector<int> producer_dim_arg = producer->op_attr_as<std::vector<int>>("dim_arg");
+            producer_reduce_dim = producer_dim_arg[0];
+        }
         if (producer_reduce_dim < 0)
             producer_reduce_dim += clone_shape->size();
 
         int new_op_dim = std::max(op_reduce_dim, producer_reduce_dim);
-        std::get<int>(op_attr[0]) = new_op_dim - commute_shape->size();
+        int updated_dim = new_op_dim - commute_shape->size();
+
+        if (op->op_name() == "grouped_reduce_avg")
+        {
+            std::get<int>(op_attr[0]) = updated_dim;
+        }
+        else
+        {
+            op->set_op_attr("dim_arg", std::vector<int>{updated_dim});
+        }
 
         auto reduce_shape = *commute_shape;
         auto reduce_vec = reduce_shape.as_vector();
@@ -1000,7 +1031,7 @@ void update_reduce_attr(graphlib::OpNode *reduce, int reduce_dim, bool keep_dim)
         update_grouped_reduce_avg_attr(reduce, reduce_dim);
         return;
     }
-    reduce->set_op_attr("dim_arg", reduce_dim);
+    reduce->set_op_attr("dim_arg", std::vector<int>{reduce_dim});
     reduce->set_op_attr("keep_dim", keep_dim);
     log_trace(LogGraphCompiler, "Reduce operation updated with reduce_dim: {}", reduce_dim);
 }
