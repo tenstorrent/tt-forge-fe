@@ -50,12 +50,13 @@ watchdog_test_durations = None
 @pytest.hookimpl(tryfirst=True)
 def pytest_runtest_setup(item):
     def send_abort_signal():
+        # commenting this out for now, as it is currently not working with pytest
         # Suspend pytest capturing (if active) so that we can actually print out the message.
-        capmanager = item.session.config.pluginmanager.get_plugin("capturemanager")
-        if capmanager and capmanager.is_capturing():
-            capmanager.suspend()
+        # capmanager = item.session.config.pluginmanager.get_plugin("capturemanager")
+        # if capmanager and capmanager.is_capturing():
+        #     capmanager.suspend()
 
-        print("WATCHDOG timeout reached! Killing test process.")
+        # print("WATCHDOG timeout reached! Killing test process.")
         os.kill(os.getpid(), signal.SIGABRT)
 
     def reset_abort_timer(timeout=watchdog_timer_default):
