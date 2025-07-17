@@ -23,7 +23,7 @@ at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::ReduceMax, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "reduce_max should have single input tensor.");
-    TT_ASSERT(op.attrs().size() == 3, "reduce_max should have 3 attrs (dim, stride, keep_dim).");
+    TT_ASSERT(op.attrs().size() == 2, "reduce_max should have 2 attrs (dim_arg, keep_dim).");
 
     std::vector<int> dims = op.attr_as<std::vector<int>>("dim_arg");
     int dim = dims[0];
@@ -37,23 +37,20 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
 {
     TT_DBG_ASSERT(op.type() == OpType::ReduceMax, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "reduce_max should have single input shape.");
-    TT_ASSERT(op.attrs().size() == 3, "reduce_max should have 3 attrs (dim, stride, keep_dim).");
+    TT_ASSERT(op.attrs().size() == 2, "reduce_max should have 2 attrs (dim_arg, keep_dim).");
 
     std::vector<int> dims = op.attr_as<std::vector<int>>("dim_arg");
     int dim = dims[0];
     if (dim < 0)
         dim += in_shapes[0].size();
 
-    int stride = op.attr_as<int>("stride");
     bool keep_dim = op.attr_as<bool>("keep_dim");
-
     std::vector<std::uint32_t> ret = in_shapes[0];
-    ret[dim] = ret[dim] / stride;
 
-    if (!keep_dim)
-    {
+    if (keep_dim)
+        ret[dim] = 1;
+    else
         ret.erase(ret.begin() + dim);
-    }
 
     return std::make_tuple(graphlib::Shape::create(ret), std::vector<graphlib::DimBroadcast>{});
 }
