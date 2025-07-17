@@ -4,6 +4,7 @@
 import subprocess
 import sys
 from pathlib import Path
+import xml.etree.ElementTree as ET
 
 
 def run_pytest(args=None):
@@ -153,6 +154,37 @@ def main():
         with open("crashed_pytest.log", "w") as f:
             for line in crashed_tests:
                 f.write(line)
+
+        # Check if junit XML file exists
+        junit_xml_arg = next((arg for arg in args if arg.startswith("--junit-xml=")), None)
+        if junit_xml_arg:
+            xml_file = junit_xml_arg.split("=")[1]
+            if Path(xml_file).exists():
+                try:
+                    tree = ET.parse(xml_file)
+                    root = tree.getroot()
+                    testsuite = root.find("testsuite")
+                    if testsuite is not None:
+                        for test in crashed_tests:
+                            # Add each of crashed tests as a <testcase> with a failure
+                            classname, testname = test.split("::", 1)
+                            if classname.endswith(".py"):
+                                classname = classname[:-3]
+                            classname = classname.replace("/", ".")
+
+                            testcase = ET.Element("testcase", name=testname, classname=classname, time="0.001")
+                            props = ET.SubElement(testcase, "properties")
+                            ET.SubElement(props, "property", name="owner", value="tt-forge-fe")
+                            failure = ET.SubElement(testcase, "failure", message="[crash] Test crashed")
+                            failure.text = "Test crashed and was not completed"
+                            testsuite.append(testcase)
+
+                        # Write back the modified XML
+                        tree.write(xml_file, encoding="utf-8", xml_declaration=True)
+                    else:
+                        print(f"Could not find <testsuite> element in JUnit XML file {xml_file}.")
+                except Exception as e:
+                    print(f"Failed to read JUnit XML file {xml_file}: {e}")
 
         if not run_crashed_tests:
             # This summary header for pytest.log is requuired for compatibility with Fail Inspector
