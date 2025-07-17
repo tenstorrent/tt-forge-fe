@@ -90,7 +90,6 @@ def eval(type, attr, ops):
         "tile_broadcast": lambda i: tile_broadcast(attr, i[0]),
         "tanh": lambda i: torch.tanh(i[0]),
         "cumsum": lambda i: torch.cumsum(i[0], dim=attr[0]),
-        "logical_not": lambda i: torch.logical_not(i[0]),
         "pow": lambda i: torch.pow(i[0], attr[0]),
     }
 

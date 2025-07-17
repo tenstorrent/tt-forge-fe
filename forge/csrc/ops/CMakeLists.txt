@@ -11,6 +11,7 @@ add_library(ops
     op_exp.cpp
     op_gelu.cpp
     op_log.cpp
+    op_logical_not.cpp
     op_multiply.cpp
     op_sigmoid.cpp
     op_sine.cpp
