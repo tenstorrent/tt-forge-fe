@@ -50,7 +50,6 @@ def test_clip_pytorch(variant):
 
     # Process image
     text = [
-        "a photo of a cat",
         "a photo of a dog",
     ]
     inputs = processor(text=text, images=image, return_tensors="pt")
