@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
-from typing import Optional, List, Dict, Any, Tuple, Union
+from typing import Optional, List, Dict, Any, Tuple, Union, Set
 from dataclasses import dataclass, field
 
 import torch
@@ -144,6 +144,7 @@ class CompileContext:
     forge_module: Optional[ForgeGraphModule] = None
     compiled_binary: Optional[Binary] = None
     attach_to: Optional[CompiledModel] = None
+    recompute_ops: Optional[Set[str]] = None
 
     def optimizer_on_device(self):
         # For now we support only Forge optimizer on device.
@@ -186,6 +187,7 @@ def compile_main(
     attach_to: Optional[CompiledModel] = None,
     compiler_cfg: CompilerConfig = CompilerConfig(),
     verify_cfg: DeprecatedVerifyConfig = DeprecatedVerifyConfig(),
+    recompute_ops: Optional[Set[str]] = None,
 ) -> CompiledModel:
     """
     Main entry point for compiling modules from different frameworks for Tenstorrent devices.
@@ -250,6 +252,7 @@ def compile_main(
         optimizer=optimizer,
         training=training,
         attach_to=attach_to,
+        recompute_ops=recompute_ops,
     )
 
     return forge_compile_from_context(compile_context)
@@ -941,7 +944,8 @@ def split_graph(context: CompileContext) -> CompileDepth:
     record_execution(ExecutionStage.FAILED_FORGE_GRAPH_SPLIT)
 
     assert context.graph is not None
-    context.forge_module = forge._C.split_graph(context.graph)
+    recompute_ops = context.recompute_ops if context.recompute_ops is not None else set()
+    context.forge_module = forge._C.split_graph(context.graph, recompute_ops)
 
     return CompileDepth.RUN_MLIR_COMPILER
 
