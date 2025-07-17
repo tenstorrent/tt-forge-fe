@@ -69,7 +69,7 @@ permissions:
   packages: write
   checks: write
 
-run-name: "Test (Rebuild: ${{ inputs.rebuild }} - Preset: ${{ inputs.preset }} - Mark: ${{ inputs.test_mark }} - ${{ inputs.runs-on }}${{ inputs.sh-runner && '-shared' }} - ${{ inputs.test_group_cnt }} - Ops: ${{ inputs.operators }} - Filters: ${{ inputs.filters }})"
+run-name: "Test (Rebuild: ${{ inputs.rebuild }} - Preset: ${{ inputs.preset }} - Mark: ${{ inputs.test_mark }} - ${{ inputs.sh-runner && format('{0}-shared', inputs.runs-on) || (inputs.runs-on) }} - ${{ inputs.test_group_cnt }} - Ops: ${{ inputs.operators }} - Filters: ${{ inputs.filters }})"
 
 jobs:
 
