@@ -49,7 +49,6 @@ op_to_module_map = {
     "relu": "eltwise_unary",
     "leaky_relu": "eltwise_unary",
     "gelu": "eltwise_unary",
-    "gelu_derivative": "eltwise_unary",
     "log": "eltwise_unary",
     "sigmoid": "eltwise_unary",
     "clip": Clip,

@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
 
 import torch
 import torch.nn.functional
@@ -15,35 +14,6 @@ from .tanh import Tanh
 from .nop import Nop
 from .buffer import Buffer
 from .reciprocal import Reciprocal
-
-M_2_SQRTPI = 1.12837916709551257390  # 2/sqrt(pi)
-M_SQRT2 = 1.41421356237309504880  # sqrt(2)
-M_SQRT1_2 = 0.7071067811865476
-
-# Reference implementation is at pytorch/aten/src/ATen/native/cpu/Activation.cpp
-# https://github.com/pytorch/pytorch/blob/4f8b986e28736b59bc46cd0873a0f36fdaa6f5b8/aten/src/ATen/native/cpu/Activation.cpp
-def gelu_derivative(x, approximate):
-    if approximate == "none":
-        cdf = 0.5 * (1 + torch.erf(x * M_SQRT1_2))
-        pdf = 0.5 * M_SQRT1_2 * M_2_SQRTPI * torch.exp(x * x * -0.5)
-        return cdf + x * pdf
-    elif approximate == "tanh":
-        intermediate_0 = 0.5 * (1 + torch.tanh((M_2_SQRTPI / M_SQRT2) * (x + 0.044715 * torch.pow(x, 3))))
-        intermediate_1 = x * torch.exp(-0.5 * x * x) * (0.5 * M_2_SQRTPI / M_SQRT2)
-        return intermediate_0 + intermediate_1
-    else:
-        raise RuntimeError(f"Gelu does not support {approximate} approximation mode.")
-
-
-def gelu_forward(x, approximate):
-    if approximate == "none":
-        return torch.nn.functional.gelu(x)
-    elif approximate == "tanh":
-        import math
-
-        return 0.5 * x * (1.0 + torch.tanh(math.sqrt(2.0 / math.pi) * (x + 0.044715 * torch.pow(x, 3.0))))
-    else:
-        raise RuntimeError(f"Gelu does not support {approximate} approximation mode.")
 
 
 def tile_broadcast(attr, i):
@@ -66,18 +36,10 @@ def eval(type, attr, ops):
         or (type == "cumsum" and len(attr) == 2)
         or (type == "dropout" and len(attr) == 3)
         or (type == "tile_broadcast" and len(attr) == 2)
-        or (type == "gelu" and len(attr) == 1)
-        or (type == "gelu_derivative" and len(attr) == 1)
         or (type == "pow" and len(attr) == 1)
     ), "Eltwise unary should have no attributes, execpt for clip, leaky_relu, and cumsum"
 
     t_ops = to_torch_operands(*ops)
-
-    # Some ops don't support non-fp32 in pytorch
-    original_types = [o.dtype for o in t_ops]
-    if original_types[0] != torch.float32:
-        if type in ["gelu", "gelu_derivative"]:
-            t_ops = tuple(t.type(torch.float32) for t in t_ops)
 
     if type == "dropout":
         p, training, seed = attr
@@ -117,8 +79,6 @@ def eval(type, attr, ops):
         "sqrt": lambda i: torch.sqrt(i[0]),
         # "relu": lambda i: i[0] * (i[0] >= relu_threshold).to(i[0].dtype),
         "leaky_relu": lambda i: torch.nn.functional.leaky_relu(i[0], attr[0]),
-        "gelu": lambda i: gelu_forward(i[0], approximate=attr[0]),
-        "gelu_derivative": lambda i: gelu_derivative(i[0], approximate=attr[0]),
         "nop": lambda i: i[0],
         "tilizer": lambda i: i[0],
         "ethernet_datacopy": lambda i: i[0],
@@ -154,8 +114,6 @@ def shape(type, attr, ops):
         or (type == "cumsum" and len(attr) == 2)
         or (type == "dropout" and len(attr) == 3)
         or (type == "tile_broadcast" and len(attr) == 2)
-        or (type == "gelu" and len(attr) == 1)
-        or (type == "gelu_derivative" and len(attr) == 1)
         or (type == "pow" and len(attr) == 1)
     ), "Eltwise unary should have no attributes, execpt for clip, leaky_relu and cumsum"
 
@@ -182,7 +140,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         or (type == "cumsum" and len(attr) == 2)
         or (type == "dropout" and len(attr) == 3)
         or (type == "tile_broadcast" and len(attr) == 2)
-        or (type == "gelu" and len(attr) == 1)
         or (type == "pow" and len(attr) == 1)
     ), "Eltwise unary should have no attributes, execpt for clip, leaky_relu and cumsum"
 
@@ -245,10 +202,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
         return res
 
-    if type == "gelu":
-        gelud = ac.op("gelu_derivative", (inputs[0],), attr)
-        return ac.op("multiply", (gelud, grad))
-
     if type == "tanh":
         tanh_square = ac.op("multiply", (output, output))
         subtract = ac.op("subtract", (ac.constant(1), tanh_square))
@@ -301,23 +254,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
 
 def decompose(type, attr, dc, inputs):
-    if type == "gelu" and bool(int(os.environ.get("FORGE_DECOMPOSE_GELU", "0"))):
-        inp_node = inputs[0]
-        data_type = forge_dataformat_to_pytorch_dtype(inp_node.output_df)
-        one_half = dc.tensor(torch.ones((1), dtype=data_type) * 0.5)
-        sqrt_2pi = dc.tensor(torch.ones((1), dtype=data_type) * 0.79788)
-        one = dc.tensor(torch.ones((1), dtype=data_type))
-        const = dc.tensor(torch.ones((1), dtype=data_type) * 0.044715)
-        x_squared = dc.op("multiply", [inp_node, inp_node])
-        x_cubed = dc.op("multiply", [inp_node, x_squared])
-        x_cuber_times_const = dc.op("multiply", [x_cubed, const])
-        plus_x = dc.op("add", [x_cuber_times_const, inp_node])
-        times_sqrt_2pi = dc.op("multiply", [plus_x, sqrt_2pi])
-        tanh = dc.op(Tanh.create(), [times_sqrt_2pi])
-        plus_one = dc.op("add", [tanh, one])
-        times_x = dc.op("multiply", [plus_one, inp_node])
-        result = dc.op("multiply", [times_x, one_half])
-        dc.fuse(result)
+    pass
 
 
 def initial_flops_estimate(type, attr, ops):
@@ -326,8 +263,6 @@ def initial_flops_estimate(type, attr, ops):
         "sqrt",
         "relu",
         "leaky_relu",
-        "gelu",
-        "gelu_derivative",
         "reciprocal",
         "abs",
         "tanh",

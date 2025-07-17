@@ -89,7 +89,6 @@ enum class OpType : uint32_t
     ForgeUnpad,
     Gather,
     Gelu,
-    GeluDerivative,
     Greater,
     GreaterEqual,
     GroupedReduceAvg,

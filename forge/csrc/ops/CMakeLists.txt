@@ -9,6 +9,7 @@ add_library(ops
     op_cosine.cpp
     op_divide.cpp
     op_exp.cpp
+    op_gelu.cpp
     op_log.cpp
     op_multiply.cpp
     op_sigmoid.cpp
