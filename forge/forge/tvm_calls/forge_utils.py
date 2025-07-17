@@ -231,7 +231,7 @@ def construct_tvm_ir(framework: str, model, tvm_mod, params, compiler_cfg: Compi
         for (bad_name, value) in params.items():
             weight_found = False
             for tf_weight in model.weights:
-                if np.array_equal(tf_weight.value().numpy(), value.numpy()) and tf_weight.name not in found_weights:
+                if np.array_equal(tf_weight.numpy(), value.numpy()) and tf_weight.name not in found_weights:
                     param_name_lookup[bad_name] = tf_weight.name
                     weight_found = True
                     found_weights.append(tf_weight.name)
