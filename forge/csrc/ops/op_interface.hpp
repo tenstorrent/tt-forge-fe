@@ -16,7 +16,7 @@ namespace tt
 {
 namespace graphlib
 {
-class OpType;
+struct OpType;
 class Shape;
 struct NodeContext;
 using DimBroadcastTrampoline = std::tuple<int, int, int>;

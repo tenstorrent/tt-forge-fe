@@ -38,6 +38,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
 }
 
 tt::graphlib::NodeContext backward(
+    const graphlib::OpType &old_op_type,
     const Op &op,
     tt::autograd::autograd_context &context,
     int operand,
