@@ -39,111 +39,58 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Log0,
-        [((1, 6, 3072), torch.float32)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"], "pcc": 0.99},
-    ),
-    pytest.param(
-        (
-            Log0,
-            [((1, 32, 480, 640), torch.bfloat16)],
-            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
-    ),
-    pytest.param(
-        (
-            Log0,
-            [((1, 64, 240, 320), torch.bfloat16)],
-            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
-    ),
-    pytest.param(
-        (
-            Log0,
-            [((1, 32, 240, 320), torch.bfloat16)],
-            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
-    ),
-    pytest.param(
-        (
-            Log0,
-            [((1, 128, 120, 160), torch.bfloat16)],
-            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
-    ),
-    pytest.param(
-        (
-            Log0,
-            [((1, 64, 120, 160), torch.bfloat16)],
-            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
-    ),
-    pytest.param(
-        (
-            Log0,
-            [((1, 256, 60, 80), torch.bfloat16)],
-            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
-    ),
-    pytest.param(
-        (
-            Log0,
-            [((1, 128, 60, 80), torch.bfloat16)],
-            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
-    ),
-    pytest.param(
-        (
-            Log0,
-            [((1, 512, 30, 40), torch.bfloat16)],
-            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
-    ),
-    pytest.param(
-        (
-            Log0,
-            [((1, 256, 30, 40), torch.bfloat16)],
-            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
-    ),
-    pytest.param(
-        (
-            Log0,
-            [((1, 1024, 15, 20), torch.bfloat16)],
-            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
-    ),
-    pytest.param(
-        (
-            Log0,
-            [((1, 512, 15, 20), torch.bfloat16)],
-            {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+        [((1, 32, 480, 640), torch.bfloat16)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
         Log0,
-        [((1, 6, 2048), torch.float32)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"], "pcc": 0.99},
+        [((1, 64, 240, 320), torch.bfloat16)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
         Log0,
-        [((1, 6, 4096), torch.float32)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"], "pcc": 0.99},
+        [((1, 32, 240, 320), torch.bfloat16)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
         Log0,
-        [((1, 6, 5120), torch.float32)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"], "pcc": 0.99},
+        [((1, 128, 120, 160), torch.bfloat16)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Log0,
+        [((1, 64, 120, 160), torch.bfloat16)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Log0,
+        [((1, 256, 60, 80), torch.bfloat16)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Log0,
+        [((1, 128, 60, 80), torch.bfloat16)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Log0,
+        [((1, 512, 30, 40), torch.bfloat16)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Log0,
+        [((1, 256, 30, 40), torch.bfloat16)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Log0,
+        [((1, 1024, 15, 20), torch.bfloat16)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Log0,
+        [((1, 512, 15, 20), torch.bfloat16)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
 ]
 
@@ -175,7 +122,6 @@ def test_module(forge_module_and_shapes_dtypes):
     ]
 
     framework_model = forge_module(forge_module.__name__)
-    framework_model.process_framework_parameters()
 
     for name, parameter in framework_model._parameters.items():
         parameter_tensor = Tensor.create_torch_tensor(

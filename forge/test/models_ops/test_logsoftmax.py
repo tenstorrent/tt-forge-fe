@@ -40,7 +40,12 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Logsoftmax0,
         [((1, 10), torch.bfloat16)],
-        {"model_names": ["pt_mnist_base_img_cls_github"], "pcc": 0.99, "args": {"dim": "1"}},
+        {
+            "model_names": ["pt_mnist_base_img_cls_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "1"},
+        },
     ),
 ]
 
@@ -72,7 +77,6 @@ def test_module(forge_module_and_shapes_dtypes):
     ]
 
     framework_model = forge_module(forge_module.__name__)
-    framework_model.process_framework_parameters()
 
     for name, parameter in framework_model._parameters.items():
         parameter_tensor = Tensor.create_torch_tensor(
