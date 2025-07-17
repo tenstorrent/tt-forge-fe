@@ -159,8 +159,10 @@ TEST_F(EraseInverseOps, erase_inverse_ops_dual_reduce)
     auto reshape_1 = add_node<graphlib::PyOpNode>(
         *graph, "reshape_1", graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 512, 10, 16}}}), {smx_1});
 
-    auto reduce_1 = add_node<graphlib::PyOpNode>(*graph, "reduce_1", "reduce_sum", {-2, true}, {reshape_1});
-    auto reduce_2 = add_node<graphlib::PyOpNode>(*graph, "reduce_2", "reduce_sum", {-1, true}, {reduce_1});
+    auto reduce_1 = add_node<graphlib::PyOpNode>(
+        *graph, "reduce_1", graphlib::OpType("reduce_sum", {}, {{"dim", -2}, {"keep_dim", true}}), {reshape_1});
+    auto reduce_2 = add_node<graphlib::PyOpNode>(
+        *graph, "reduce_2", graphlib::OpType("reduce_sum", {}, {{"dim", -1}, {"keep_dim", true}}), {reduce_1});
     auto reshape_2 = add_node<graphlib::PyOpNode>(
         *graph, "reshape_2", graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 1, 512, 1}}}), {reduce_2});
 
@@ -766,7 +768,11 @@ struct CommuteTransposeThroughReduce : testing::Test
             {transpose_node});
 
         // Add a reduce_avg on the last dimension (-1)
-        auto reduce_node = add_node<graphlib::PyOpNode>(*graph, "reduce", "reduce_avg", {-1, true}, {reshape_node});
+        auto reduce_node = add_node<graphlib::PyOpNode>(
+            *graph,
+            "reduce",
+            graphlib::OpType("reduce_avg", {}, {{"dim_arg", -1}, {"keep_dim", true}}),
+            {reshape_node});
 
         create_output(*graph, "out", reduce_node);
     }

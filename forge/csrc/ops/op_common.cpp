@@ -111,8 +111,7 @@ tt::graphlib::NodeContext reduce_broadcast_dimensions(
 
         int dim = static_cast<int>(i);
         Attrs named_attrs = {{"keep_dim", true}, {"dim_arg", dim}};
-        result_grad =
-            ac.autograd->create_op(ac, graphlib::OpType("reduce_sum", {dim, true}, named_attrs), {result_grad});
+        result_grad = ac.autograd->create_op(ac, graphlib::OpType("reduce_sum", {}, named_attrs), {result_grad});
     }
 
     return result_grad;

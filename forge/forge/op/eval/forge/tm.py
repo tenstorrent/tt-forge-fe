@@ -644,7 +644,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         shape.insert(dim, repeats)
 
         ret = ac.op_with_named_attrs("reshape", (grad,), {"shape": shape})
-        ret = ac.op("reduce_sum", (ret,), (dim, True), {"dim_arg": [dim], "keep_dim": True})
+        ret = ac.op_with_named_attrs("reduce_sum", (ret,), {"dim_arg": [dim], "keep_dim": True})
         ret = ac.op_with_named_attrs("squeeze", (ret,), {"dim": dim})
         return ret
 

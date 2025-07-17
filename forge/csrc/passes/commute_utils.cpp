@@ -1000,7 +1000,7 @@ void update_reduce_attr(graphlib::OpNode *reduce, int reduce_dim, bool keep_dim)
         update_grouped_reduce_avg_attr(reduce, reduce_dim);
         return;
     }
-    reduce->set_op_attr("dim", reduce_dim);
+    reduce->set_op_attr("dim_arg", reduce_dim);
     reduce->set_op_attr("keep_dim", keep_dim);
     log_trace(LogGraphCompiler, "Reduce operation updated with reduce_dim: {}", reduce_dim);
 }
