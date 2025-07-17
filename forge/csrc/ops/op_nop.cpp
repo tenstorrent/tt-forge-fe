@@ -23,7 +23,7 @@ namespace nop
 {
 using namespace graphlib;
 
-at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Nop, "Wrong op type.");
 
@@ -33,7 +33,7 @@ at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Nop, "Wrong op type.");
 
@@ -43,6 +43,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
+    const graphlib::OpType &old_op_type,
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -57,28 +58,32 @@ NodeContext backward(
     return {gradient};
 }
 
-void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_initial(
+    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Nop, "Wrong op type.");
 
     // Implementation.
 }
 
-void decompose_post_optimize(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_post_optimize(
+    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Nop, "Wrong op type.");
 
     // Implementation.
 }
 
-void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_post_autograd(
+    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Nop, "Wrong op type.");
 
     // Implementation.
 }
 
-long initial_flops_estimate(const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
+long initial_flops_estimate(
+    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Nop, "Wrong op type.");
 
