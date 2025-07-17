@@ -9,6 +9,7 @@ add_library(ops
     op_cosine.cpp
     op_divide.cpp
     op_multiply.cpp
+    op_power.cpp
     op_sine.cpp
     op_transpose.cpp
     op_reshape.cpp
