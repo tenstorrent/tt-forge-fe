@@ -187,425 +187,254 @@ std::unique_ptr<Graph> extract_backward_graph(
     auto bwd_graph = std::make_unique<Graph>(tt::graphlib::IRLevel::IR_TT_FORGE, "backward");
     bwd_graph->set_training(graph->training());
 
-    // Adding all the intermediate outputs from the forward graph as inputs to the backward graph.
-    auto fwd_intermediate_outputs = fwd_graph->ordered_intermediates();
-    std::vector<graphlib::NodeId> bwd_intermediate_inputs;
-
-    bwd_intermediate_inputs.reserve(fwd_intermediate_outputs.size());
-    for (auto intermediate_output : fwd_intermediate_outputs)
-    {
-        log_debug("Adding intermediate output {} as input to bwd graph", intermediate_output->name());
-        auto intermediate_output_node = graphlib::create_node<graphlib::InputNode>(
-            intermediate_output->name(), graphlib::InputNodeType::Activation, false);
-        intermediate_output_node->set_shape(intermediate_output->shape());
-        intermediate_output_node->set_output_df(intermediate_output->output_df());
-
-        auto added_node = bwd_graph->add_node(std::move(intermediate_output_node), 0 /*subgraph_id=*/);
-        bwd_intermediate_inputs.push_back(added_node->id());
-    }
-
-    // Track input nodes added in the early section to avoid duplicates later
+    std::unordered_map<graphlib::NodeId, graphlib::Node*> fwd_copies_id_map;
     std::unordered_set<std::string> early_added_inputs;
-    
-    // For all inputs/params/consts for the forward graph that have users in the backward graph,
-    // clone them and add them to the backward graph.
-    auto all_inputs =
-        graph->nodes([](const graphlib::Node *node) { return node->node_type() == graphlib::NodeType::kInput; });
-    for (auto input : all_inputs)
-    {
-        if (input->is_forward())
-        {
-            bool has_bwd_user = has_users_in_bwd(graph, input);
 
-            if (has_bwd_user)
-            {
-                // Only add if not already present to avoid duplicates
-                if (!bwd_graph->has_node_with_name(input->name())) {
-                    log_debug("Adding input node {} as input to bwd graph", input->name());
-                    clone_and_add(input, bwd_graph.get());
-                    early_added_inputs.insert(input->name());
-                }
-            }
-        }
+    // Add intermediate inputs from forward graph
+    for (auto intermediate_output : fwd_graph->ordered_intermediates()) {
+        log_debug("Adding intermediate output {} as input to bwd graph", intermediate_output->name());
+        auto intermediate_input_node = graphlib::create_node<graphlib::InputNode>(
+            intermediate_output->name(), graphlib::InputNodeType::Activation, false);
+        intermediate_input_node->set_shape(intermediate_output->shape());
+        intermediate_input_node->set_output_df(intermediate_output->output_df());
+        bwd_graph->add_node(std::move(intermediate_input_node), 0);
     }
 
-    // IMPORTANT: Copy recompute forward nodes BEFORE processing backward nodes
-    // so they're available when backward operations try to connect to them
-    auto fwd_copies_id_map = std::unordered_map<graphlib::NodeId, graphlib::Node*>();
-    
-    // Recursive function to copy forward nodes and their dependencies, but prefer intermediate outputs
-    std::function<void(graphlib::Node*)> copy_forward_node_recursively = [&](graphlib::Node* fwd_node) {
-        // Safety check
-        if (!fwd_node) {
-            return;
-        }
-        
-        // If already copied, skip
-        if (fwd_copies_id_map.find(fwd_node->id()) != fwd_copies_id_map.end()) {
-            return;
-        }
-        
-        // If it's an input node, add it to backward graph if not already there
+    // Add forward inputs that have users in backward graph
+    for (auto input : graph->nodes_by_type(graphlib::NodeType::kInput)) {
+        if (!input->is_forward() || !has_users_in_bwd(graph, input)) continue;
+        if (bwd_graph->has_node_with_name(input->name())) continue;
+
+        log_debug("Adding input node {} as input to bwd graph", input->name());
+        clone_and_add(input, bwd_graph.get());
+        early_added_inputs.insert(input->name());
+    }
+
+    // Copy recompute nodes recursively
+    std::function<void(graphlib::Node*)> copy_forward_node = [&](graphlib::Node* fwd_node) {
+        if (!fwd_node || fwd_copies_id_map.find(fwd_node->id()) != fwd_copies_id_map.end()) return;
+
         if (fwd_node->node_type() == graphlib::NodeType::kInput) {
             if (!bwd_graph->has_node_with_name(fwd_node->name())) {
-                std::cout << "Copying input node " << fwd_node->name() << " to backward graph" << std::endl;
+                log_debug("Copying input node {} to backward graph", fwd_node->name());
                 clone_and_add(fwd_node, bwd_graph.get());
                 early_added_inputs.insert(fwd_node->name());
-            } else {
-                std::cout << "Input node " << fwd_node->name() << " already exists in backward graph" << std::endl;
             }
             auto bwd_copy = bwd_graph->get_node_by_name(fwd_node->name());
-            if (bwd_copy) {
-                fwd_copies_id_map[fwd_node->id()] = bwd_copy;
-            }
+            if (bwd_copy) fwd_copies_id_map[fwd_node->id()] = bwd_copy;
             return;
         }
-        
-        // First, recursively copy all operands, but only if they don't have intermediates
+
+        // Copy operands first if needed
         for (auto operand : fwd_graph->operands(fwd_node)) {
-            if (operand && operand->is_forward()) {
-                // Check if this operand has an intermediate output available
-                bool has_intermediate = false;
-                auto users = fwd_graph->data_users(operand);
-                for (auto user : users) {
+            if (!operand || !operand->is_forward()) continue;
+
+            bool should_copy = recompute_ops.find(operand->name()) != recompute_ops.end();
+            if (!should_copy) {
+                // Check if operand has intermediate output
+                for (auto user : fwd_graph->data_users(operand)) {
                     if (user->node_type() == graphlib::NodeType::kOutput) {
-                        has_intermediate = true;
+                        should_copy = false;
                         break;
                     }
                 }
-                
-                // Only copy if no intermediate is available or if it's marked for recompute
-                if (!has_intermediate || recompute_ops.find(operand->name()) != recompute_ops.end()) {
-                    copy_forward_node_recursively(operand);
-                }
+                if (!should_copy) should_copy = true; // No intermediate, must copy
             }
+
+            if (should_copy) copy_forward_node(operand);
         }
-        
-        // Then copy this node
-        std::cout << "Copying forward node " << fwd_node->name() << " to backward graph" << std::endl;
+
+        // Copy this node
+        log_debug("Copying forward node {} to backward graph", fwd_node->name());
         clone_and_add(fwd_node, bwd_graph.get());
         auto bwd_copy = bwd_graph->get_node_by_name(fwd_node->name());
-        if (bwd_copy) {
-            fwd_copies_id_map[fwd_node->id()] = bwd_copy;
-        }
-        
-        // Connect this node to its operands in the backward graph
+        if (bwd_copy) fwd_copies_id_map[fwd_node->id()] = bwd_copy;
+
+        // Connect operands
         for (auto operand : fwd_graph->operands(fwd_node)) {
-            if (operand && operand->is_forward()) {
-                bool connected = false;
-                
-                // First try to connect to intermediate output if available
-                auto users = fwd_graph->data_users(operand);
-                for (auto user : users) {
-                    if (user->node_type() == graphlib::NodeType::kOutput) {
-                        if (bwd_graph->has_node_with_name(user->name())) {
-                            std::cout << "Connecting intermediate " << user->name() << " to copied forward node " << fwd_node->name() << std::endl;
-                            auto bwd_intermediate = bwd_graph->get_node_by_name(user->name());
-                            auto bwd_node = bwd_graph->get_node_by_name(fwd_node->name());
-                            if (bwd_intermediate && bwd_node) {
-                                bwd_graph->add_edge(bwd_intermediate, bwd_node);
-                                connected = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-                
-                // If no intermediate available, try to connect to copied operand
-                if (!connected && bwd_graph->has_node_with_name(operand->name())) {
-                    std::cout << "Connecting operand " << operand->name() << " to copied forward node " << fwd_node->name() << std::endl;
-                    auto bwd_operand = bwd_graph->get_node_by_name(operand->name());
-                    auto bwd_node = bwd_graph->get_node_by_name(fwd_node->name());
-                    if (bwd_operand && bwd_node) {
-                        bwd_graph->add_edge(bwd_operand, bwd_node);
+            if (!operand || !operand->is_forward()) continue;
+
+            bool connected = false;
+            
+            // Try to connect to intermediate first
+            for (auto user : fwd_graph->data_users(operand)) {
+                if (user->node_type() == graphlib::NodeType::kOutput && 
+                    bwd_graph->has_node_with_name(user->name())) {
+                    auto bwd_intermediate = bwd_graph->get_node_by_name(user->name());
+                    if (bwd_intermediate) {
+                        log_debug("Connecting intermediate {} to copied node {}", user->name(), fwd_node->name());
+                        bwd_graph->add_edge(bwd_intermediate, bwd_copy);
                         connected = true;
+                        break;
                     }
                 }
-                
-                if (!connected) {
-                    std::cout << "WARNING: Could not connect operand " << operand->name() << " to copied forward node " << fwd_node->name() << std::endl;
+            }
+
+            // Otherwise connect to copied operand
+            if (!connected && bwd_graph->has_node_with_name(operand->name())) {
+                auto bwd_operand = bwd_graph->get_node_by_name(operand->name());
+                if (bwd_operand) {
+                    log_debug("Connecting operand {} to copied node {}", operand->name(), fwd_node->name());
+                    bwd_graph->add_edge(bwd_operand, bwd_copy);
+                    connected = true;
                 }
+            }
+
+            if (!connected) {
+                log_debug("WARNING: Could not connect operand {} to copied node {}", operand->name(), fwd_node->name());
             }
         }
     };
-    
-    // Find all forward nodes that need to be copied (recompute operations referenced by backward nodes)
-    // First, collect all backward nodes to avoid iterator invalidation
-    std::vector<graphlib::Node*> backward_nodes;
+
+    // Find and copy all recompute nodes needed by backward nodes
     for (auto node : topo) {
-        if (node->is_backward()) {
-            backward_nodes.push_back(node);
-        }
-    }
-    
-    // Now process the collected backward nodes to find recompute forward nodes
-    // Only copy nodes that are explicitly marked for recompute
-    for (auto node : backward_nodes) {
+        if (!node->is_backward()) continue;
+        
         for (auto operand : graph->operands(node)) {
             if (operand->is_forward() && recompute_ops.find(operand->name()) != recompute_ops.end()) {
                 auto fwd_node = fwd_graph->get_node_by_name(operand->name());
-                copy_forward_node_recursively(fwd_node);
+                copy_forward_node(fwd_node);
             }
         }
     }
 
-    for (auto node : topo)
-    {
-        if (!node->is_backward())
-        {
-            continue;
-        }
-        std::cout << "Processing node: " << node->name() << std::endl;
-        if (node->node_type() == graphlib::NodeType::kQueue)
-        {
+    // Process backward nodes
+    for (auto node : topo) {
+        if (!node->is_backward()) continue;
+
+        if (node->node_type() == graphlib::NodeType::kQueue) {
             auto queue_node = node->as<graphlib::QueueNode>();
+            TT_ASSERT(queue_node->is_grad_accumulator(), "Expected only grad accumulator queue nodes");
 
-            // Previous compiler passes shouldn't have added any other type of queue nodes.
-            TT_ASSERT(queue_node->is_grad_accumulator(), "Expected only grad accumulator queue nodes in the graph");
-
-            // For grad accumulator queue nodes, we need to add an output node to the backward graph.
-            TT_ASSERT(
-                graph->operand_data_edges(queue_node).size() == 1,
-                "Expected only one operand edge for grad accumulator queue node");
             auto operand = graph->data_operands(queue_node)[0];
-
             auto output_node = graphlib::create_node<graphlib::OutputNode>(queue_node->name() + "_grad_accumulator");
             output_node->set_output_type(graphlib::OutputType::Internal);
             output_node->set_shape(queue_node->shape());
             output_node->set_output_df(queue_node->output_df());
-            auto grad_out = bwd_graph->add_node(std::move(output_node), 0 /*subgraph_id=*/);
-
-            // Since we are traversing the graph in topological order, the operand node should already be present in the
-            // backward graph.
-            TT_ASSERT(
-                bwd_graph->has_node_with_name(operand->name()),
-                "Expected operand {} to be present in the backward graph",
-                operand->name());
-
+            
+            auto grad_out = bwd_graph->add_node(std::move(output_node), 0);
             auto cloned_operand = bwd_graph->get_node_by_name(operand->name());
+            TT_ASSERT(cloned_operand, "Expected operand {} to be present in backward graph", operand->name());
+            
             bwd_graph->add_edge(cloned_operand, grad_out, 0, 0, graphlib::EdgeType::kData);
-
             continue;
         }
 
         clone_and_add(node, bwd_graph.get());
+        auto bwd_node = bwd_graph->get_node_by_name(node->name());
+        if (!bwd_node) continue;
 
-        std::cout << "Processing operands for node: " << node->name() << std::endl;
-
-        for (auto operand : graph->data_operands(node))
-        {
-            std::cout << "Operand: " << operand->name() << ";" << std::endl;
-            
-            // Check if we have a copied version of this operand in the backward graph
-            if (bwd_graph->has_node_with_name(operand->name()))
-            {
-                std::cout << "Using copied operand " << operand->name() << " in backward graph" << std::endl;
-                bwd_graph->add_edge(
-                    bwd_graph->get_node_by_name(operand->name()), bwd_graph->get_node_by_name(node->name()));
-                continue;
+        // Connect operands
+        for (auto operand : graph->data_operands(node)) {
+            if (bwd_graph->has_node_with_name(operand->name())) {
+                log_debug("Using existing operand {} in backward graph", operand->name());
+                auto bwd_operand = bwd_graph->get_node_by_name(operand->name());
+                if (bwd_operand) {
+                    bwd_graph->add_edge(bwd_operand, bwd_node);
+                    continue;
+                }
             }
 
-            if (operand->is_forward())
-            {
-                // Check if this operand is marked for recompute
-                bool is_recompute_op = recompute_ops.find(operand->name()) != recompute_ops.end();
-                
-                if (is_recompute_op && bwd_graph->has_node_with_name(operand->name()))
-                {
-                    // Use the copied forward node for recompute operations
-                    std::cout << "Using copied forward node " << operand->name() << " for recompute" << std::endl;
-                    bwd_graph->add_edge(
-                        bwd_graph->get_node_by_name(operand->name()), bwd_graph->get_node_by_name(node->name()));
-                    continue;  // Skip the intermediate output logic
+            if (!operand->is_forward()) continue;
+
+            // Try to use recompute operand if available
+            if (recompute_ops.find(operand->name()) != recompute_ops.end() && 
+                bwd_graph->has_node_with_name(operand->name())) {
+                log_debug("Using recompute operand {} in backward graph", operand->name());
+                auto bwd_operand = bwd_graph->get_node_by_name(operand->name());
+                if (bwd_operand) {
+                    bwd_graph->add_edge(bwd_operand, bwd_node);
+                    continue;
                 }
-                else
-                {
-                    // First try to find intermediate output for this operand
-                    auto fwd_operand = fwd_graph->get_node_by_name(operand->name());
-                    auto users = fwd_graph->data_users(fwd_operand);
-                    
-                    bool found_intermediate = false;
-                    for (auto user : users)
-                    {
-                        if (user->node_type() != graphlib::NodeType::kOutput)  { continue; }
-                        // Find the intermediate output node in the fwd graph
-                        if (bwd_graph->has_node_with_name(user->name()))
-                        {
-                            std::cout << "Using existing intermediate " << user->name() << " for operand " << operand->name() << std::endl;
-                            bwd_graph->add_edge(
-                                bwd_graph->get_node_by_name(user->name()), bwd_graph->get_node_by_name(node->name()));
-                            found_intermediate = true;
-                            break;
-                        }
+            }
 
-                        std::cout << "Creating intermediate input " << user->name() << " for operand " << operand->name() << std::endl;
-                        auto intermediate_input_node = graphlib::create_node<graphlib::InputNode>(
-                            user->name(), graphlib::InputNodeType::Activation, false);
-                        intermediate_input_node->set_shape(user->shape());
-                        intermediate_input_node->set_output_df(user->output_df());
+            // Try to use intermediate
+            auto fwd_operand = fwd_graph->get_node_by_name(operand->name());
+            if (!fwd_operand) continue;
 
-                        bwd_graph->add_node(std::move(intermediate_input_node), 0 /*subgraph_id=*/);
-                        bwd_graph->add_edge(
-                            bwd_graph->get_node_by_name(user->name()), bwd_graph->get_node_by_name(node->name()));
-                        found_intermediate = true;
+            for (auto user : fwd_graph->data_users(fwd_operand)) {
+                if (user->node_type() != graphlib::NodeType::kOutput) continue;
+
+                if (bwd_graph->has_node_with_name(user->name())) {
+                    log_debug("Using intermediate {} for backward operand {}", user->name(), operand->name());
+                    auto bwd_intermediate = bwd_graph->get_node_by_name(user->name());
+                    if (bwd_intermediate) {
+                        bwd_graph->add_edge(bwd_intermediate, bwd_node);
                         break;
-                        
                     }
-                    
-                    if (!found_intermediate) {
-                        // If no intermediate output found, check if we have the operand copied for recompute
-                        if (bwd_graph->has_node_with_name(operand->name())) {
-                            std::cout << "Using copied operand " << operand->name() << " in backward graph" << std::endl;
-                            bwd_graph->add_edge(
-                                bwd_graph->get_node_by_name(operand->name()), bwd_graph->get_node_by_name(node->name()));
-                        } else {
-                            std::cout << "WARNING: No intermediate or copied operand found for forward operand " << operand->name() << std::endl;
-                        }
-                    }
+                }
+
+                // Create intermediate input if needed
+                log_debug("Creating intermediate input {} for operand {}", user->name(), operand->name());
+                auto intermediate_input_node = graphlib::create_node<graphlib::InputNode>(
+                    user->name(), graphlib::InputNodeType::Activation, false);
+                intermediate_input_node->set_shape(user->shape());
+                intermediate_input_node->set_output_df(user->output_df());
+                bwd_graph->add_node(std::move(intermediate_input_node), 0);
+                
+                auto bwd_intermediate = bwd_graph->get_node_by_name(user->name());
+                if (bwd_intermediate) {
+                    bwd_graph->add_edge(bwd_intermediate, bwd_node);
+                    break;
                 }
             }
         }
     }
 
-    std::cout << "Finished processing all nodes in the forward graph" << std::endl;
-
-    // We will construct backward inputs in the following order:
-    // 1. Inputs that are exclusive to the backward graph
-    // 2. Intermediate outputs from the forward graph
-    // 3. Inputs from the forward graph that have users in the backward graph
-
-    std::cout << "Constructing backward inputs" << std::endl;
+    // Register module inputs and outputs
     std::vector<graphlib::NodeId> bwd_module_inputs;
-    for (auto input : graph->ordered_module_inputs())
-    {
-        if (input->is_backward())
-        {
-            bwd_module_inputs.push_back(bwd_graph->get_node_by_name(input->name())->id());
-        }
-    }
-
-    std::cout << "Constructing intermediate outputs from forward graph" << std::endl;
-    for (auto input : fwd_graph->ordered_module_outputs())
-    {
-        if (bwd_graph->has_node_with_name(input->name()))
-        {
-            bwd_module_inputs.push_back(bwd_graph->get_node_by_name(input->name())->id());
-        }
-    }
-
-    std::cout << "Constructing forward inputs that have users in the backward graph" << std::endl;
-
-    for (auto input : graph->ordered_module_inputs())
-    {
-        if (!input->is_forward()) { continue; }
-        std::cout << "Checking forward input " << input->name() << std::endl;
-        if (bwd_graph->has_node_with_name(input->name()))
-        {
-            auto bwd_input = bwd_graph->get_node_by_name(input->name());
-            // Check if this input is already in the inputs list to avoid duplicates
-            bool already_in_inputs = false;
-            for (auto input_id : bwd_module_inputs) {
-                if (input_id == bwd_input->id()) {
-                    already_in_inputs = true;
-                    break;
-                }
-            }
-            
-            if (!already_in_inputs) {
-                std::cout << "Adding forward input " << input->name() << " to backward graph inputs" << std::endl;
-                bwd_module_inputs.push_back(bwd_input->id());
-            } else {
-                std::cout << "Skipping duplicate forward input " << input->name() << std::endl;
-            }
-        } else {
-            std::cout << "Forward input " << input->name() << " not found in backward graph" << std::endl;
-        }
-    }
-    
-    // Add early added inputs to the input list if they aren't already there
-    // Skip parameter nodes to avoid MLIR duplicate declarations
-    for (const auto& input_name : early_added_inputs) {
-        if (bwd_graph->has_node_with_name(input_name)) {
-            auto bwd_input = bwd_graph->get_node_by_name(input_name);
-            
-            // Skip parameter nodes since they get processed separately by MLIR
-            if (bwd_input->node_type() == graphlib::NodeType::kInput && 
-                bwd_input->as<graphlib::InputNode>()->is_parameter()) {
-                std::cout << "Skipping parameter node " << input_name << " from module inputs to avoid MLIR duplicate declaration" << std::endl;
-                continue;
-            }
-            
-            // Check if this input is already in the inputs list to avoid duplicates
-            bool already_in_inputs = false;
-            for (auto input_id : bwd_module_inputs) {
-                if (input_id == bwd_input->id()) {
-                    already_in_inputs = true;
-                    break;
-                }
-            }
-            
-            if (!already_in_inputs) {
-                std::cout << "Adding early added input " << input_name << " to backward graph inputs" << std::endl;
-                bwd_module_inputs.push_back(bwd_input->id());
-            } else {
-                std::cout << "Skipping duplicate early added input " << input_name << std::endl;
-            }
-        }
-    }
-    
-    // Also add any copied forward nodes that are used as inputs but not in the ordered module inputs
-    // But avoid duplicates by checking both ID and name, and also check against early added inputs
-    for (auto& [fwd_id, bwd_node] : fwd_copies_id_map) {
-        if (bwd_node->node_type() == graphlib::NodeType::kInput) {
-            bool already_added = false;
-            
-            // Check if already in the input list
-            for (auto input_id : bwd_module_inputs) {
-                auto existing_input = bwd_graph->node_by_id(input_id);
-                if (input_id == bwd_node->id() || existing_input->name() == bwd_node->name()) {
-                    already_added = true;
-                    break;
-                }
-            }
-            
-            // Check if it was added in the early section
-            if (!already_added && early_added_inputs.find(bwd_node->name()) != early_added_inputs.end()) {
-                already_added = true;
-            }
-            
-            if (!already_added) {
-                std::cout << "Adding copied input node " << bwd_node->name() << " to backward graph inputs" << std::endl;
-                bwd_module_inputs.push_back(bwd_node->id());
-            } else {
-                std::cout << "Skipping duplicate input node " << bwd_node->name() << std::endl;
-            }
-        }
-    }
-
-    std::cout << "Finished constructing backward inputs" << std::endl;
-
-    bwd_graph->register_module_inputs(bwd_module_inputs);
-    
-    // The issue is that parameter nodes that are module inputs get processed twice in MLIR:
-    // once as module inputs and once as parameter nodes. Since we can't change the input type,
-    // the proper solution is to ensure parameter nodes are not added as module inputs.
-    // This is a known issue but for now we'll document it.
-    std::cout << "Note: Parameter nodes that are module inputs may cause MLIR duplicate declarations" << std::endl;
-
     std::vector<graphlib::NodeId> bwd_module_outputs;
-    for (auto output : graph->ordered_module_outputs())
-    {
-        if (output->is_backward())
-        {
+
+    // Register backward-specific inputs
+    for (auto input : graph->ordered_module_inputs()) {
+        if (input->is_backward() && bwd_graph->has_node_with_name(input->name())) {
+            bwd_module_inputs.push_back(bwd_graph->get_node_by_name(input->name())->id());
+        }
+    }
+
+    // Register intermediate outputs from forward graph
+    for (auto input : fwd_graph->ordered_module_outputs()) {
+        if (bwd_graph->has_node_with_name(input->name())) {
+            bwd_module_inputs.push_back(bwd_graph->get_node_by_name(input->name())->id());
+        }
+    }
+
+    // Register forward inputs that have users in backward graph
+    for (auto input : graph->ordered_module_inputs()) {
+        if (!input->is_forward() || !bwd_graph->has_node_with_name(input->name())) continue;
+        
+        auto bwd_input = bwd_graph->get_node_by_name(input->name());
+        
+        // Skip parameter nodes to avoid MLIR duplicate declarations
+        if (bwd_input->node_type() == graphlib::NodeType::kInput && 
+            bwd_input->as<graphlib::InputNode>()->is_parameter()) {
+            continue;
+        }
+        
+        // Check for duplicates
+        bool already_in_inputs = false;
+        for (auto input_id : bwd_module_inputs) {
+            if (input_id == bwd_input->id()) {
+                already_in_inputs = true;
+                break;
+            }
+        }
+        
+        if (!already_in_inputs) {
+            bwd_module_inputs.push_back(bwd_input->id());
+        }
+    }
+
+    // Register backward outputs
+    for (auto output : graph->ordered_module_outputs()) {
+        if (output->is_backward() && bwd_graph->has_node_with_name(output->name())) {
             bwd_module_outputs.push_back(bwd_graph->get_node_by_name(output->name())->id());
         }
     }
 
-    std::cout << "Finished constructing backward outputs" << std::endl;
-
+    bwd_graph->register_module_inputs(bwd_module_inputs);
     bwd_graph->register_module_outputs(bwd_module_outputs);
 
-    std::cout << "Finished constructing backward graph" << std::endl;
     return bwd_graph;
 }
 
