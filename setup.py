@@ -62,9 +62,6 @@ with open("README.md", "r") as f:
 with open("env/core_requirements.txt", "r") as f:
     core_requirements = f.read().splitlines()
 
-with open("env/dev_requirements.txt", "r") as f:
-    dev_requirements = [r for r in f.read().splitlines() if not r.startswith("-r")]
-
 
 def collect_model_requirements(requirements_root: str) -> list[str]:
     """
@@ -155,6 +152,8 @@ def collect_model_requirements(requirements_root: str) -> list[str]:
 model_requirements_root = "forge/test/models"
 model_requirements = collect_model_requirements(model_requirements_root)
 
+requirements = core_requirements + model_requirements
+
 # Compute a dynamic version from git
 short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
 date = (
@@ -164,32 +163,14 @@ date = (
 )
 version = "0.1." + date + "+dev." + short_hash
 
-# Get the variant from environment variable
-variant = os.environ.get("FORGE_VARIANT", "compiler")
-
-# Define package configuration based on variant
-if variant == "compiler":
-    package_name = "tt_forge_fe_compiler"
-    requirements = core_requirements
-    description = "Building tt-forge-fe-compiler (core only)"
-elif variant == "dev":
-    package_name = "tt_forge_fe_dev"
-    requirements = core_requirements + dev_requirements + model_requirements
-    description = "Building tt-forge-fe-dev (core + dev + model requirements)"
-else:
-    # Default to base package
-    package_name = "tt_forge_fe"
-    requirements = core_requirements
-    description = "Building tt-forge-fe (core only)"
-
-print(description)
-print(f"Packaging as: {package_name} - version {version}")
-
 forge_c = TTExtension("forge")
+
+# Find packages as before
 packages = [p for p in find_packages("forge") if not p.startswith("test")]
 
+
 setup(
-    name=package_name,
+    name="tt_forge_fe",
     version=version,
     install_requires=requirements,
     packages=packages,

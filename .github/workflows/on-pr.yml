@@ -21,7 +21,6 @@ concurrency:
 permissions:
   packages: write
   checks: write
-  actions: read
 
 jobs:
   spdx:
@@ -52,18 +51,6 @@ jobs:
     secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      
-  sanity-test:
-    needs:
-      - docker-build
-      - build
-    uses: ./.github/workflows/test-sanity.yml
-    secrets: inherit
-    with:
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      run_id: ${{ github.run_id }}
-      runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
-      
   test:
     needs:
       - docker-build
@@ -97,7 +84,6 @@ jobs:
       - docker-build
       - build-docs
       - build
-      - sanity-test
       - test
       - perf-benchmark
     runs-on: Ubuntu-latest

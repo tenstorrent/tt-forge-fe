@@ -147,7 +147,84 @@ jobs:
         run: |
           source env/activate
           pip install tt_tvm*.whl --force-reinstall
-          pip install dev/tt_forge_fe_dev*.whl --force-reinstall
+          pip install tt_forge_fe*.whl --force-reinstall
+
+      - name: Run Sanity Tests
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HOME: /mnt/dockercache/huggingface
+          FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
+          HF_HUB_DISABLE_PROGRESS_BARS: 1
+          FORGE_DISABLE_REPORTIFY_DUMP: 1
+        shell: bash
+        run: |
+          source env/activate
+          echo "Collecting sanity tests..."
+          pytest --splits 1 \
+               --group 1 \
+               --splitting-algorithm least_duration \
+               -m "sanity" --collect-only -q forge/test/test_sanity.py \
+                | sed -n '/^Collected tests /,/^collected /p' | sed '/^[Cc]ollected /d' >.pytest_sanity_tests_to_run
+
+          echo "Collected sanity tests."
+          cat .pytest_sanity_tests_to_run
+
+          set +e
+          python .github/workflows/test_runner.py  \
+               --junit-xml=${{ steps.strings.outputs.test_report_path }}_sanity \
+               --log-memory-usage \
+               $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi)
+          sanity_exit_code=$?
+
+          if [ -f "crashed_pytest.log" ]; then
+            echo "Creating crash summary for sanity tests..."
+            echo "### Crashed sanity tests:" >>$GITHUB_STEP_SUMMARY
+            cat crashed_pytest.log >>$GITHUB_STEP_SUMMARY
+            mv crashed_pytest.log crashed_pytest_sanity.log
+          fi
+
+          if [ $sanity_exit_code -ne 0 ]; then
+            echo "Sanity tests failed with exit code $sanity_exit_code"
+            exit $sanity_exit_code
+          fi
+
+      - name: Upload Sanity Test Log
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: sanity-test-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: pytest.log
+
+      - name: Upload Sanity Test Crash Log
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: sanity-test-crash-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: crashed_pytest_sanity.log
+
+      - name: Upload Sanity Test Report
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: sanity-test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: ${{ steps.strings.outputs.test_report_path }}_sanity
+
+      - name: Show Sanity Test Report
+        uses: mikepenz/action-junit-report@v5
+        if: success() || failure()
+        with:
+          report_paths: ${{ steps.strings.outputs.test_report_path }}_sanity
+          check_name: TT-Forge-FE Sanity Tests
+          comment: false
+          updateComment: false
+          detailed_summary: true
+          group_suite: true
+
+      - name: Install dev requirements
+        shell: bash
+        run: |
+            source env/activate
+            pip install -r env/dev_requirements.txt
 
       - name: Run Test
         env:
