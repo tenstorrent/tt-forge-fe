@@ -8,9 +8,6 @@ import torch
 import torch.nn as nn
 import torchvision.transforms as transforms
 from PIL import Image
-from surya.detection import DetectionPredictor
-from surya.recognition import RecognitionPredictor
-from third_party.tt_forge_models.tools.utils import get_file
 
 import forge
 from forge.forge_property_utils import (
@@ -23,6 +20,10 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
+
+# from surya.detection import DetectionPredictor
+# from surya.recognition import RecognitionPredictor
+from third_party.tt_forge_models.tools.utils import get_file
 
 IMAGE_URL = "https://raw.githubusercontent.com/VikParuchuri/surya/master/static/images/excerpt_text.png"
 
