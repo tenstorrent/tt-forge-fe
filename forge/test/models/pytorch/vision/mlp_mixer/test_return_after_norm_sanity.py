@@ -25,6 +25,21 @@ from third_party.tt_forge_models.tools.utils import get_file
 from test.models.models_utils import print_cls_results
 from test.utils import download_model
 
+
+class Wrapper(torch.nn.Module):
+    def __init__(self, model):
+        super().__init__()
+        self.stem = model.stem
+        self.b = model.blocks
+        self.n = model.norm
+
+    def forward(self, x):
+        x = self.stem(x)
+        x = self.b(x)
+        x = self.n(x)
+        return x
+
+
 varaints = [
     pytest.param(
         "mixer_b16_224",
@@ -50,6 +65,8 @@ def test_mlp_mixer_timm_pytorch(variant):
         load_pretrained_weights = False
 
     framework_model = download_model(timm.create_model, variant, pretrained=load_pretrained_weights).to(torch.bfloat16)
+    framework_model = Wrapper(framework_model).to(torch.bfloat16)
+
     config = resolve_data_config({}, model=framework_model)
     transform = create_transform(**config)
 
@@ -78,6 +95,8 @@ def test_mlp_mixer_timm_pytorch(variant):
     pixel_values = transform(image).unsqueeze(0)
 
     inputs = [pixel_values.to(torch.bfloat16)]
+
+    logger.info("framework_model={}", framework_model)
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
