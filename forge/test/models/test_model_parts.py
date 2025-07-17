@@ -12,6 +12,7 @@ import math
 import onnx
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.xfail(
     reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen, PCC got=0.4923030518607919"
 )  # https://github.com/tenstorrent/tt-forge-fe/issues/1793
@@ -78,6 +79,7 @@ def test_inplace_updation():
         ),
     ],
 )
+@pytest.mark.skip_model_analysis
 @pytest.mark.push
 def test_clamp(input_shape, clamp_min, clamp_max, dtype):
     class Clamp(nn.Module):
@@ -112,6 +114,7 @@ def test_clamp(input_shape, clamp_min, clamp_max, dtype):
     verify(inputs, model, compiled_model)
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.push
 def test_rotary_pos_emb():
     class RotaryPosEmb(torch.nn.Module):
@@ -145,6 +148,7 @@ def test_rotary_pos_emb():
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.push
 @pytest.mark.parametrize(
     "dim",
