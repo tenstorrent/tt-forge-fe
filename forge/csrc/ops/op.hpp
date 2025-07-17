@@ -286,7 +286,7 @@ class Op
     long initial_flops_estimate(
         const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
-   private:
+   public:
     /* ------------------------------------------------------------*
      * Base - common for all ops that are not yet migrated to cpp. *
      * ------------------------------------------------------------*/
