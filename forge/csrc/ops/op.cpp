@@ -399,7 +399,7 @@ bool Op::base_is_eltwise_nary(const graphlib::OpType &old_op_type) const
 
 at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::Tensor> &tensors) const
 {
-    switch (type_)
+    switch (type_)  // clang-format off
     {
         case OpType::Abs: return abs::eval(*this, tensors);
         case OpType::AdaptiveMaxPool2d: return base_eval(old_op_type, tensors);
@@ -519,13 +519,13 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Vstack: return base_eval(old_op_type, tensors);
         case OpType::Where: return base_eval(old_op_type, tensors);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
-    }
+    }  // clang-format on
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
     const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
-    switch (type_)
+    switch (type_)  // clang-format off
     {
         case OpType::Abs: return abs::shape(*this, inputs);
         case OpType::AdaptiveMaxPool2d: return base_shape(old_op_type, inputs);
@@ -645,7 +645,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Vstack: return base_shape(old_op_type, inputs);
         case OpType::Where: return base_shape(old_op_type, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
-    }
+    }  // clang-format on
 }
 
 tt::graphlib::NodeContext Op::backward(
@@ -1186,7 +1186,7 @@ void Op::decompose_post_autograd(
 long Op::initial_flops_estimate(
     const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
-    switch (type_)
+    switch (type_)  // clang-format off
     {
         case OpType::Abs: return abs::initial_flops_estimate(*this, inputs);
         case OpType::AdaptiveMaxPool2d: return base_initial_flops_estimate(old_op_type, inputs);
@@ -1306,7 +1306,7 @@ long Op::initial_flops_estimate(
         case OpType::Vstack: return base_initial_flops_estimate(old_op_type, inputs);
         case OpType::Where: return base_initial_flops_estimate(old_op_type, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
-    }
+    }  // clang-format on
 }
 
 bool Op::is_tm(const graphlib::OpType &old_op_type) const

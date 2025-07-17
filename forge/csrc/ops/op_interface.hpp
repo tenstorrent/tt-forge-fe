@@ -16,6 +16,7 @@ namespace tt
 {
 namespace graphlib
 {
+class OpType;
 class Shape;
 struct NodeContext;
 using DimBroadcastTrampoline = std::tuple<int, int, int>;
@@ -35,32 +36,43 @@ class Op;
 /**
  * Declaration for ops interface in a separate namespace ns.
  */
-#define DECLARE_OP_INTERFACE(ns)                                                                      \
-    namespace ns                                                                                      \
-    {                                                                                                 \
-    at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors);                            \
-                                                                                                      \
-    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(                 \
-        const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs);                         \
-                                                                                                      \
-    tt::graphlib::NodeContext backward(                                                               \
-        const Op &op,                                                                                 \
-        tt::autograd::autograd_context &context,                                                      \
-        int operand,                                                                                  \
-        const std::vector<tt::graphlib::NodeContext> &inputs,                                         \
-        const tt::graphlib::NodeContext &output,                                                      \
-        const tt::graphlib::NodeContext &gradient);                                                   \
-                                                                                                      \
-    void decompose_initial(                                                                           \
-        const Op &op, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs);  \
-                                                                                                      \
-    void decompose_post_optimize(                                                                     \
-        const Op &op, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs);  \
-                                                                                                      \
-    void decompose_post_autograd(                                                                     \
-        const Op &op, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs);  \
-                                                                                                      \
-    long initial_flops_estimate(const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs); \
+#define DECLARE_OP_INTERFACE(ns)                                                                                       \
+    namespace ns                                                                                                       \
+    {                                                                                                                  \
+    at::Tensor eval(const tt::graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors);    \
+                                                                                                                       \
+    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(                                  \
+        const tt::graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs); \
+                                                                                                                       \
+    tt::graphlib::NodeContext backward(                                                                                \
+        const tt::graphlib::OpType &old_op_type,                                                                       \
+        const Op &op,                                                                                                  \
+        tt::autograd::autograd_context &context,                                                                       \
+        int operand,                                                                                                   \
+        const std::vector<tt::graphlib::NodeContext> &inputs,                                                          \
+        const tt::graphlib::NodeContext &output,                                                                       \
+        const tt::graphlib::NodeContext &gradient);                                                                    \
+                                                                                                                       \
+    void decompose_initial(                                                                                            \
+        const tt::graphlib::OpType &old_op_type,                                                                       \
+        const Op &op,                                                                                                  \
+        DecomposingContext &dc,                                                                                        \
+        const std::vector<tt::graphlib::NodeContext> &inputs);                                                         \
+                                                                                                                       \
+    void decompose_post_optimize(                                                                                      \
+        const tt::graphlib::OpType &old_op_type,                                                                       \
+        const Op &op,                                                                                                  \
+        DecomposingContext &dc,                                                                                        \
+        const std::vector<tt::graphlib::NodeContext> &inputs);                                                         \
+                                                                                                                       \
+    void decompose_post_autograd(                                                                                      \
+        const tt::graphlib::OpType &old_op_type,                                                                       \
+        const Op &op,                                                                                                  \
+        DecomposingContext &dc,                                                                                        \
+        const std::vector<tt::graphlib::NodeContext> &inputs);                                                         \
+                                                                                                                       \
+    long initial_flops_estimate(                                                                                       \
+        const tt::graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs); \
     }
 
 /**
