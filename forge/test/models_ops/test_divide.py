@@ -21,13 +21,53 @@ from forge.forge_property_utils import (
 import pytest
 
 
-class Sqrt0(ForgeModule):
+class Divide0(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("divide0_const_1", shape=(1,), dtype=torch.float32)
+
+    def forward(self, divide_input_0):
+        divide_output_1 = forge.op.Divide("", divide_input_0, self.get_constant("divide0_const_1"))
+        return divide_output_1
+
+
+class Divide1(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("divide1_const_0", shape=(1,), dtype=torch.bfloat16)
+
+    def forward(self, divide_input_1):
+        divide_output_1 = forge.op.Divide("", self.get_constant("divide1_const_0"), divide_input_1)
+        return divide_output_1
+
+
+class Divide2(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
-    def forward(self, sqrt_input_0):
-        sqrt_output_1 = forge.op.Sqrt("", sqrt_input_0)
-        return sqrt_output_1
+    def forward(self, divide_input_0, divide_input_1):
+        divide_output_1 = forge.op.Divide("", divide_input_0, divide_input_1)
+        return divide_output_1
+
+
+class Divide3(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("divide3_const_0", shape=(1,), dtype=torch.float32)
+
+    def forward(self, divide_input_1):
+        divide_output_1 = forge.op.Divide("", self.get_constant("divide3_const_0"), divide_input_1)
+        return divide_output_1
+
+
+class Divide4(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("divide4_const_1", shape=(1,), dtype=torch.bfloat16)
+
+    def forward(self, divide_input_0):
+        divide_output_1 = forge.op.Divide("", divide_input_0, self.get_constant("divide4_const_1"))
+        return divide_output_1
 
 
 def ids_func(param):
@@ -38,64 +78,138 @@ def ids_func(param):
 
 forge_modules_and_shapes_dtypes_list = [
     (
-        Sqrt0,
-        [((1, 44, 1), torch.float32)],
-        {"model_names": ["pt_cogito_deepcogito_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99},
+        Divide0,
+        [((1, 384, 4096), torch.float32)],
+        {"model_names": ["onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
-        [((1, 39, 1), torch.float32)],
+        Divide0,
+        [((1, 1, 16384, 256), torch.float32)],
         {
             "model_names": [
-                "pt_deepseek_deepseek_math_7b_instruct_qa_hf",
-                "pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
         },
     ),
     (
-        Sqrt0,
-        [((1, 522, 1), torch.float32)],
+        Divide0,
+        [((1, 16384, 256), torch.float32)],
         {
             "model_names": [
-                "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf",
-                "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf",
-                "pt_falcon3_tiiuae_falcon3_1b_base_clm_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
         },
     ),
     (
-        Sqrt0,
-        [((1, 128, 1), torch.float32)],
+        Divide0,
+        [((1, 2, 4096, 256), torch.float32)],
         {
             "model_names": [
-                "pt_gemma_google_gemma_2b_text_gen_hf",
-                "pt_llama3_huggyllama_llama_7b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
-                "pt_mistral_mistralai_mistral_7b_v0_1_clm_hf",
-                "onnx_llama3_meta_llama_llama_3_2_1b_clm_hf",
-                "onnx_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
         },
     ),
     (
-        Sqrt0,
-        [((1, 107, 1), torch.float32)],
+        Divide0,
+        [((1, 4096, 512), torch.float32)],
         {
-            "model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf", "pt_gemma_google_gemma_1_1_7b_it_qa_hf"],
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+            ],
             "pcc": 0.99,
         },
     ),
     (
-        Sqrt0,
+        Divide0,
+        [((1, 5, 1024, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 1024, 1280), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 8, 256, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "pt_perceiverio_deepmind_language_perceiver_mlm_hf",
+                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 256, 2048), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 197, 4096), torch.float32)],
+        {"model_names": ["onnx_vit_base_google_vit_large_patch16_224_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide1,
         [((64,), torch.bfloat16)],
         {
             "model_names": [
@@ -238,7 +352,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((256,), torch.bfloat16)],
         {
             "model_names": [
@@ -374,7 +488,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((18,), torch.bfloat16)],
         {
             "model_names": [
@@ -389,7 +503,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((36,), torch.bfloat16)],
         {
             "model_names": [
@@ -406,7 +520,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((72,), torch.bfloat16)],
         {
             "model_names": [
@@ -431,7 +545,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((144,), torch.bfloat16)],
         {
             "model_names": [
@@ -477,7 +591,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1024,), torch.bfloat16)],
         {
             "model_names": [
@@ -561,7 +675,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((128,), torch.bfloat16)],
         {
             "model_names": [
@@ -693,7 +807,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((512,), torch.bfloat16)],
         {
             "model_names": [
@@ -815,7 +929,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((32,), torch.bfloat16)],
         {
             "model_names": [
@@ -926,7 +1040,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((2048,), torch.bfloat16)],
         {
             "model_names": [
@@ -987,7 +1101,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((40,), torch.bfloat16)],
         {
             "model_names": [
@@ -1016,7 +1130,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((80,), torch.bfloat16)],
         {
             "model_names": [
@@ -1047,7 +1161,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((160,), torch.bfloat16)],
         {
             "model_names": [
@@ -1092,7 +1206,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((320,), torch.bfloat16)],
         {
             "model_names": [
@@ -1128,7 +1242,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((44,), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
@@ -1137,7 +1251,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((88,), torch.bfloat16)],
         {
             "model_names": [
@@ -1153,7 +1267,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((176,), torch.bfloat16)],
         {
             "model_names": [
@@ -1167,7 +1281,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((352,), torch.bfloat16)],
         {
             "model_names": [
@@ -1185,7 +1299,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((48,), torch.bfloat16)],
         {
             "model_names": [
@@ -1222,7 +1336,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((96,), torch.bfloat16)],
         {
             "model_names": [
@@ -1271,7 +1385,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((192,), torch.bfloat16)],
         {
             "model_names": [
@@ -1329,7 +1443,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((384,), torch.bfloat16)],
         {
             "model_names": [
@@ -1365,40 +1479,15 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
-        [((1, 4, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_llama3_huggyllama_llama_7b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+        Divide0,
+        [((1, 32, 256, 256), torch.float32)],
+        {"model_names": ["pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
-        [((1, 10, 1), torch.float32)],
+        Divide2,
+        [((1, 8, 768), torch.float32), ((1, 8, 1), torch.float32)],
         {
             "model_names": [
-                "pt_ministral_ministral_ministral_3b_instruct_clm_hf",
-                "pd_bert_bert_base_japanese_mlm_padlenlp",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Sqrt0,
-        [((1, 8, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf",
                 "pd_bert_bert_base_uncased_seq_cls_padlenlp",
                 "pd_chineseclip_text_ofa_sys_chinese_clip_vit_base_patch16_text_enc_padlenlp",
                 "pd_blip_text_salesforce_blip_image_captioning_base_text_enc_padlenlp",
@@ -1407,122 +1496,32 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
-        [((1, 135, 1), torch.float32)],
-        {"model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"], "pcc": 0.99},
-    ),
-    (
-        Sqrt0,
-        [((1, 256, 1), torch.float32)],
+        Divide2,
+        [((1, 12, 8, 8), torch.float32), ((1, 12, 8, 1), torch.float32)],
         {
             "model_names": [
-                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "pd_bert_bert_base_uncased_seq_cls_padlenlp",
+                "pd_chineseclip_text_ofa_sys_chinese_clip_vit_base_patch16_text_enc_padlenlp",
+                "pd_blip_text_salesforce_blip_image_captioning_base_text_enc_padlenlp",
             ],
             "pcc": 0.99,
         },
     ),
     (
-        Sqrt0,
-        [((1, 5, 1), torch.float32)],
+        Divide2,
+        [((1, 11, 768), torch.float32), ((1, 11, 1), torch.float32)],
         {
             "model_names": [
-                "pt_phi3_microsoft_phi_3_mini_128k_instruct_seq_cls_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf",
-                "pt_phi4_microsoft_phi_4_seq_cls_hf",
+                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
+                "pd_roberta_rbt4_ch_clm_padlenlp",
+                "pd_bert_chinese_roberta_base_qa_padlenlp",
             ],
             "pcc": 0.99,
         },
     ),
     (
-        Sqrt0,
-        [((1, 13, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_phi3_microsoft_phi_3_mini_128k_instruct_token_cls_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf",
-                "pt_qwen_v2_qwen_qwen2_7b_token_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Sqrt0,
-        [((1, 12, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_phi4_microsoft_phi_4_token_cls_hf",
-                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
-                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Sqrt0,
-        [((1, 35, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Sqrt0,
-        [((1, 29, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_qwen_v2_qwen_qwen2_5_3b_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_5_7b_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_5_7b_instruct_1m_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf",
-                "pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (Sqrt0, [((1, 38, 1), torch.float32)], {"model_names": ["pt_qwen_v2_qwen_qwen2_5_math_7b_clm_hf"], "pcc": 0.99}),
-    (
-        Sqrt0,
-        [((1, 513, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_t5_google_flan_t5_base_text_gen_hf",
-                "pt_t5_google_flan_t5_large_text_gen_hf",
-                "pt_t5_t5_large_text_gen_hf",
-                "pt_t5_t5_base_text_gen_hf",
-                "pt_t5_t5_small_text_gen_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Sqrt0,
-        [((1, 61, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_t5_google_flan_t5_base_text_gen_hf",
-                "pt_t5_google_flan_t5_large_text_gen_hf",
-                "pt_t5_t5_large_text_gen_hf",
-                "pt_t5_t5_base_text_gen_hf",
-                "pt_t5_google_flan_t5_small_text_gen_hf",
-                "pt_t5_t5_small_text_gen_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Sqrt0,
-        [((1, 11, 1), torch.float32)],
+        Divide2,
+        [((1, 12, 11, 11), torch.float32), ((1, 12, 11, 1), torch.float32)],
         {
             "model_names": [
                 "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
@@ -1534,7 +1533,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((32,), torch.float32)],
         {
             "model_names": ["pd_mobilenetv1_basic_img_cls_paddlemodels", "pd_mobilenetv2_basic_img_cls_paddlemodels"],
@@ -1542,7 +1541,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((64,), torch.float32)],
         {
             "model_names": [
@@ -1564,7 +1563,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((128,), torch.float32)],
         {
             "model_names": [
@@ -1583,7 +1582,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((256,), torch.float32)],
         {
             "model_names": [
@@ -1602,7 +1601,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((512,), torch.float32)],
         {
             "model_names": [
@@ -1621,7 +1620,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1024,), torch.float32)],
         {
             "model_names": [
@@ -1638,7 +1637,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((16,), torch.float32)],
         {
             "model_names": [
@@ -1653,7 +1652,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((96,), torch.float32)],
         {
             "model_names": [
@@ -1667,7 +1666,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((24,), torch.float32)],
         {
             "model_names": [
@@ -1680,7 +1679,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((144,), torch.float32)],
         {
             "model_names": [
@@ -1693,7 +1692,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((192,), torch.float32)],
         {
             "model_names": [
@@ -1707,7 +1706,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((384,), torch.float32)],
         {
             "model_names": [
@@ -1721,7 +1720,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((576,), torch.float32)],
         {
             "model_names": [
@@ -1735,7 +1734,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((160,), torch.float32)],
         {
             "model_names": [
@@ -1748,7 +1747,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((960,), torch.float32)],
         {
             "model_names": [
@@ -1762,7 +1761,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((320,), torch.float32)],
         {
             "model_names": [
@@ -1775,7 +1774,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1280,), torch.float32)],
         {
             "model_names": [
@@ -1786,7 +1785,19 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide0,
+        [((1, 16, 256, 256), torch.float32)],
+        {
+            "model_names": [
+                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide1,
         [((240,), torch.bfloat16)],
         {
             "model_names": [
@@ -1817,7 +1828,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((288,), torch.bfloat16)],
         {
             "model_names": [
@@ -1843,7 +1854,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((336,), torch.bfloat16)],
         {
             "model_names": [
@@ -1863,7 +1874,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((432,), torch.bfloat16)],
         {
             "model_names": [
@@ -1877,7 +1888,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((480,), torch.bfloat16)],
         {
             "model_names": [
@@ -1904,7 +1915,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((528,), torch.bfloat16)],
         {
             "model_names": [
@@ -1918,7 +1929,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((576,), torch.bfloat16)],
         {
             "model_names": [
@@ -1945,7 +1956,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((624,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -1954,7 +1965,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((672,), torch.bfloat16)],
         {
             "model_names": [
@@ -1986,7 +1997,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((720,), torch.bfloat16)],
         {
             "model_names": [
@@ -2001,7 +2012,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((768,), torch.bfloat16)],
         {
             "model_names": [
@@ -2034,7 +2045,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((816,), torch.bfloat16)],
         {
             "model_names": [
@@ -2047,7 +2058,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((864,), torch.bfloat16)],
         {
             "model_names": [
@@ -2063,7 +2074,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((912,), torch.bfloat16)],
         {
             "model_names": [
@@ -2075,7 +2086,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((960,), torch.bfloat16)],
         {
             "model_names": [
@@ -2106,7 +2117,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1008,), torch.bfloat16)],
         {
             "model_names": [
@@ -2118,7 +2129,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1056,), torch.bfloat16)],
         {
             "model_names": [
@@ -2134,7 +2145,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1104,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -2143,7 +2154,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1152,), torch.bfloat16)],
         {
             "model_names": [
@@ -2163,7 +2174,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1200,), torch.bfloat16)],
         {
             "model_names": [
@@ -2175,7 +2186,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1248,), torch.bfloat16)],
         {
             "model_names": [
@@ -2190,7 +2201,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1296,), torch.bfloat16)],
         {
             "model_names": [
@@ -2202,7 +2213,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1344,), torch.bfloat16)],
         {
             "model_names": [
@@ -2217,7 +2228,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1392,), torch.bfloat16)],
         {
             "model_names": [
@@ -2232,7 +2243,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1440,), torch.bfloat16)],
         {
             "model_names": [
@@ -2245,7 +2256,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1488,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -2254,7 +2265,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1536,), torch.bfloat16)],
         {
             "model_names": [
@@ -2274,7 +2285,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1584,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -2283,7 +2294,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1632,), torch.bfloat16)],
         {
             "model_names": [
@@ -2301,7 +2312,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1680,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -2310,7 +2321,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1728,), torch.bfloat16)],
         {
             "model_names": [
@@ -2322,7 +2333,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1776,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -2331,7 +2342,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1824,), torch.bfloat16)],
         {
             "model_names": [
@@ -2345,7 +2356,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1872,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -2354,7 +2365,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1920,), torch.bfloat16)],
         {
             "model_names": [
@@ -2368,7 +2379,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1968,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -2377,7 +2388,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((2016,), torch.bfloat16)],
         {
             "model_names": [
@@ -2390,7 +2401,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((2064,), torch.bfloat16)],
         {
             "model_names": [
@@ -2402,7 +2413,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((2112,), torch.bfloat16)],
         {
             "model_names": [
@@ -2414,7 +2425,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((2160,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -2423,7 +2434,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((2208,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -2432,7 +2443,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((224,), torch.bfloat16)],
         {
             "model_names": [
@@ -2463,7 +2474,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((416,), torch.bfloat16)],
         {
             "model_names": [
@@ -2477,7 +2488,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((448,), torch.bfloat16)],
         {
             "model_names": [
@@ -2503,7 +2514,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((544,), torch.bfloat16)],
         {
             "model_names": [
@@ -2517,7 +2528,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((608,), torch.bfloat16)],
         {
             "model_names": [
@@ -2531,7 +2542,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((640,), torch.bfloat16)],
         {
             "model_names": [
@@ -2549,7 +2560,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((704,), torch.bfloat16)],
         {
             "model_names": [
@@ -2563,7 +2574,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((736,), torch.bfloat16)],
         {
             "model_names": [
@@ -2577,7 +2588,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((800,), torch.bfloat16)],
         {
             "model_names": [
@@ -2591,7 +2602,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((832,), torch.bfloat16)],
         {
             "model_names": [
@@ -2605,7 +2616,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((896,), torch.bfloat16)],
         {
             "model_names": [
@@ -2623,7 +2634,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((928,), torch.bfloat16)],
         {
             "model_names": [
@@ -2637,7 +2648,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((992,), torch.bfloat16)],
         {
             "model_names": [
@@ -2651,7 +2662,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1088,), torch.bfloat16)],
         {
             "model_names": [
@@ -2664,7 +2675,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1120,), torch.bfloat16)],
         {
             "model_names": [
@@ -2676,7 +2687,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1184,), torch.bfloat16)],
         {
             "model_names": [
@@ -2688,7 +2699,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1216,), torch.bfloat16)],
         {
             "model_names": [
@@ -2700,7 +2711,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1280,), torch.bfloat16)],
         {
             "model_names": [
@@ -2730,7 +2741,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1312,), torch.bfloat16)],
         {
             "model_names": [
@@ -2742,7 +2753,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1376,), torch.bfloat16)],
         {
             "model_names": [
@@ -2754,7 +2765,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1408,), torch.bfloat16)],
         {
             "model_names": [
@@ -2767,7 +2778,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1472,), torch.bfloat16)],
         {
             "model_names": [
@@ -2779,7 +2790,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1504,), torch.bfloat16)],
         {
             "model_names": [
@@ -2791,7 +2802,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1568,), torch.bfloat16)],
         {
             "model_names": [
@@ -2803,7 +2814,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1600,), torch.bfloat16)],
         {
             "model_names": [
@@ -2815,7 +2826,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1664,), torch.bfloat16)],
         {
             "model_names": [
@@ -2827,7 +2838,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((16,), torch.bfloat16)],
         {
             "model_names": [
@@ -2879,7 +2890,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((24,), torch.bfloat16)],
         {
             "model_names": [
@@ -2924,7 +2935,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((112,), torch.bfloat16)],
         {
             "model_names": [
@@ -2952,7 +2963,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((56,), torch.bfloat16)],
         {
             "model_names": [
@@ -2970,7 +2981,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((272,), torch.bfloat16)],
         {
             "model_names": [
@@ -2985,7 +2996,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((2688,), torch.bfloat16)],
         {
             "model_names": [
@@ -2998,7 +3009,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1792,), torch.bfloat16)],
         {
             "model_names": [
@@ -3013,7 +3024,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((120,), torch.bfloat16)],
         {
             "model_names": [
@@ -3035,7 +3046,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((208,), torch.bfloat16)],
         {
             "model_names": [
@@ -3049,7 +3060,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((8,), torch.bfloat16)],
         {
             "model_names": [
@@ -3062,7 +3073,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((12,), torch.bfloat16)],
         {
             "model_names": ["pt_ghostnet_ghostnet_100_img_cls_timm", "pt_ghostnet_ghostnet_100_in1k_img_cls_timm"],
@@ -3071,7 +3082,21 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide4,
+        [((1, 72, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide1,
         [((20,), torch.bfloat16)],
         {
             "model_names": ["pt_ghostnet_ghostnet_100_img_cls_timm", "pt_ghostnet_ghostnet_100_in1k_img_cls_timm"],
@@ -3080,7 +3105,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((60,), torch.bfloat16)],
         {
             "model_names": [
@@ -3094,7 +3119,23 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide4,
+        [((1, 120, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide1,
         [((100,), torch.bfloat16)],
         {
             "model_names": ["pt_ghostnet_ghostnet_100_img_cls_timm", "pt_ghostnet_ghostnet_100_in1k_img_cls_timm"],
@@ -3103,7 +3144,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((92,), torch.bfloat16)],
         {
             "model_names": ["pt_ghostnet_ghostnet_100_img_cls_timm", "pt_ghostnet_ghostnet_100_in1k_img_cls_timm"],
@@ -3112,7 +3153,85 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide4,
+        [((1, 480, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 672, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 960, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 1, 19200, 300), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 2, 4800, 300), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 5, 1200, 300), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 8, 300, 300), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide1,
         [((30,), torch.bfloat16)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
@@ -3121,7 +3240,47 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide4,
+        [((1, 16, 112, 112), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 240, 28, 28), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 240, 14, 14), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide1,
         [((200,), torch.bfloat16)],
         {
             "model_names": [
@@ -3134,7 +3293,19 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide4,
+        [((1, 200, 14, 14), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide1,
         [((184,), torch.bfloat16)],
         {
             "model_names": [
@@ -3146,7 +3317,317 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide4,
+        [((1, 184, 14, 14), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 480, 14, 14), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 672, 14, 14), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 672, 7, 7), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 960, 7, 7), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 1280), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 16, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 96, 28, 28), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 96, 14, 14), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 96, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 240, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 120, 14, 14), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 144, 14, 14), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 144, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 288, 14, 14), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 288, 7, 7), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 288, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 576, 7, 7), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 576, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 1024), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 3, 320, 1024), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 3, 192, 640), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 1, 512, 3025), torch.bfloat16)],
+        {
+            "model_names": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 8, 512, 512), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 1, 1, 512), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 1, 512, 50176), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide1,
         [((168,), torch.bfloat16)],
         {
             "model_names": [
@@ -3158,7 +3639,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((2240,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"],
@@ -3167,7 +3648,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((400,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_x_400mf_img_cls_torchvision"],
@@ -3176,7 +3657,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1232,), torch.bfloat16)],
         {
             "model_names": [
@@ -3188,7 +3669,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((3024,), torch.bfloat16)],
         {
             "model_names": [
@@ -3200,7 +3681,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((888,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_1_6gf_img_cls_torchvision"],
@@ -3209,7 +3690,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((232,), torch.bfloat16)],
         {
             "model_names": [
@@ -3223,7 +3704,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((696,), torch.bfloat16)],
         {
             "model_names": [
@@ -3235,7 +3716,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((3712,), torch.bfloat16)],
         {
             "model_names": [
@@ -3247,7 +3728,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((216,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_3_2gf_img_cls_torchvision"],
@@ -3256,7 +3737,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1512,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_3_2gf_img_cls_torchvision"],
@@ -3265,7 +3746,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((104,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -3274,7 +3755,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((440,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -3283,7 +3764,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((784,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_800mf_img_cls_torchvision"],
@@ -3292,24 +3773,148 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
-        [((2, 13, 1), torch.float32)],
+        Divide4,
+        [((1, 1, 16384, 256), torch.bfloat16)],
         {
             "model_names": [
-                "pt_stereo_facebook_musicgen_small_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
-                "pt_stereo_facebook_musicgen_large_music_generation_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "pt_segformer_nvidia_mit_b1_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
         },
     ),
-    (Sqrt0, [((64, 4, 64, 1), torch.float32)], {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99}),
-    (Sqrt0, [((16, 8, 64, 1), torch.float32)], {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99}),
-    (Sqrt0, [((4, 16, 64, 1), torch.float32)], {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99}),
-    (Sqrt0, [((1, 32, 64, 1), torch.float32)], {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99}),
     (
-        Sqrt0,
-        [((64, 3, 64, 1), torch.float32)],
+        Divide4,
+        [((1, 2, 4096, 256), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "pt_segformer_nvidia_mit_b1_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 5, 1024, 256), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "pt_segformer_nvidia_mit_b1_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 8, 256, 256), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "pt_segformer_nvidia_mit_b1_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((64, 3, 49, 49), torch.bfloat16)],
+        {
+            "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((16, 6, 49, 49), torch.bfloat16)],
+        {
+            "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((4, 12, 49, 49), torch.bfloat16)],
+        {
+            "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 24, 49, 49), torch.bfloat16)],
+        {
+            "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide2,
+        [((64, 4, 64, 32), torch.float32), ((64, 4, 64, 32), torch.float32)],
+        {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Divide2,
+        [((16, 8, 64, 32), torch.float32), ((16, 8, 64, 32), torch.float32)],
+        {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Divide2,
+        [((4, 16, 64, 32), torch.float32), ((4, 16, 64, 32), torch.float32)],
+        {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Divide2,
+        [((1, 32, 64, 32), torch.float32), ((1, 32, 64, 32), torch.float32)],
+        {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Divide2,
+        [((64, 3, 64, 32), torch.float32), ((64, 3, 64, 32), torch.float32)],
         {
             "model_names": [
                 "pt_swin_swin_v2_s_img_cls_torchvision",
@@ -3320,8 +3925,8 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
-        [((16, 6, 64, 1), torch.float32)],
+        Divide2,
+        [((16, 6, 64, 32), torch.float32), ((16, 6, 64, 32), torch.float32)],
         {
             "model_names": [
                 "pt_swin_swin_v2_s_img_cls_torchvision",
@@ -3332,8 +3937,8 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
-        [((4, 12, 64, 1), torch.float32)],
+        Divide2,
+        [((4, 12, 64, 32), torch.float32), ((4, 12, 64, 32), torch.float32)],
         {
             "model_names": [
                 "pt_swin_swin_v2_s_img_cls_torchvision",
@@ -3344,8 +3949,8 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
-        [((1, 24, 64, 1), torch.float32)],
+        Divide2,
+        [((1, 24, 64, 32), torch.float32), ((1, 24, 64, 32), torch.float32)],
         {
             "model_names": [
                 "pt_swin_swin_v2_s_img_cls_torchvision",
@@ -3356,7 +3961,64 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide4,
+        [((1, 256, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 512, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 768, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 1024, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide1,
         [((728,), torch.bfloat16)],
         {
             "model_names": [
@@ -3371,22 +4033,93 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
-        [((1, 1, 80, 80), torch.bfloat16)],
+        Divide4,
+        [((1, 2, 8400), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolo_world_default_obj_det_github",
+                "pt_yolov8_yolov8x_obj_det_github",
+                "pt_yolov9_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 5880, 2), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_yolo_v6_yolov6m_obj_det_torchhub",
+                "pt_yolo_v6_yolov6n_obj_det_torchhub",
+                "pt_yolo_v6_yolov6s_obj_det_torchhub",
+                "pt_yolo_v6_yolov6l_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide4,
+        [((1, 4, 40, 40), torch.bfloat16)],
         {"model_names": ["pt_yolo_world_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
-        Sqrt0,
-        [((1, 1, 40, 40), torch.bfloat16)],
+        Divide4,
+        [((1, 2, 80, 80), torch.bfloat16)],
         {"model_names": ["pt_yolo_world_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
-        Sqrt0,
-        [((1, 1, 20, 20), torch.bfloat16)],
+        Divide2,
+        [((1, 512, 80, 80), torch.bfloat16), ((1, 512, 80, 80), torch.bfloat16)],
         {"model_names": ["pt_yolo_world_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
-        Sqrt0,
+        Divide4,
+        [((1, 8, 80, 27), torch.bfloat16)],
+        {"model_names": ["pt_yolo_world_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Divide2,
+        [((1, 512, 40, 40), torch.bfloat16), ((1, 512, 40, 40), torch.bfloat16)],
+        {"model_names": ["pt_yolo_world_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Divide4,
+        [((1, 8, 20, 20), torch.bfloat16)],
+        {"model_names": ["pt_yolo_world_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Divide2,
+        [((1, 512, 20, 20), torch.bfloat16), ((1, 512, 20, 20), torch.bfloat16)],
+        {"model_names": ["pt_yolo_world_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Divide3,
+        [((1, 128, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_llama3_meta_llama_llama_3_2_1b_clm_hf",
+                "onnx_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide2,
+        [((1, 11, 128), torch.float32), ((1, 11, 1), torch.float32)],
+        {"model_names": ["pd_albert_chinese_tiny_mlm_padlenlp"], "pcc": 0.99},
+    ),
+    (
+        Divide2,
+        [((1, 11, 312), torch.float32), ((1, 11, 1), torch.float32)],
+        {"model_names": ["pd_albert_chinese_tiny_mlm_padlenlp"], "pcc": 0.99},
+    ),
+    (
+        Divide3,
         [((2048,), torch.float32)],
         {
             "model_names": [
@@ -3399,7 +4132,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((136,), torch.bfloat16)],
         {
             "model_names": [
@@ -3411,7 +4144,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((2304,), torch.bfloat16)],
         {
             "model_names": [
@@ -3424,7 +4157,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((344,), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -3433,7 +4166,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((3456,), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
@@ -3442,7 +4175,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((2904,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
@@ -3451,7 +4184,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((7392,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
@@ -3460,8 +4193,8 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
-        [((1, 9, 1), torch.float32)],
+        Divide2,
+        [((1, 9, 768), torch.float32), ((1, 9, 1), torch.float32)],
         {
             "model_names": [
                 "pd_roberta_rbt4_ch_seq_cls_padlenlp",
@@ -3476,7 +4209,23 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
+        [((1, 12, 9, 9), torch.float32), ((1, 12, 9, 1), torch.float32)],
+        {
+            "model_names": [
+                "pd_roberta_rbt4_ch_seq_cls_padlenlp",
+                "pd_bert_chinese_roberta_base_mlm_padlenlp",
+                "pd_bert_bert_base_uncased_mlm_padlenlp",
+                "pd_bert_bert_base_uncased_qa_padlenlp",
+                "pd_ernie_1_0_seq_cls_padlenlp",
+                "pd_ernie_1_0_qa_padlenlp",
+                "pd_ernie_1_0_mlm_padlenlp",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide1,
         [((3840,), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b7_img_cls_torchvision"],
@@ -3485,7 +4234,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((2560,), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b7_img_cls_torchvision"],
@@ -3493,9 +4242,17 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
         },
     ),
-    (Sqrt0, [((1, 6, 1), torch.float32)], {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99}),
     (
-        Sqrt0,
+        Divide4,
+        [((1, 1280, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide1,
         [((2520,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_x_32gf_img_cls_torchvision"],
@@ -3504,7 +4261,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((304,), torch.bfloat16)],
         {
             "model_names": [
@@ -3516,7 +4273,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((3072,), torch.bfloat16)],
         {
             "model_names": [
@@ -3528,7 +4285,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide0,
+        [((1, 12, 128, 128), torch.float32)],
+        {"model_names": ["pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 13, 1536), torch.float32)],
+        {"model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide1,
         [((408,), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_x_1_6gf_img_cls_torchvision"],
@@ -3536,9 +4303,8 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
         },
     ),
-    (Sqrt0, [((1, 1, 1), torch.float32)], {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99}),
     (
-        Sqrt0,
+        Divide3,
         [((224,), torch.float32)],
         {
             "model_names": [
@@ -3550,7 +4316,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((288,), torch.float32)],
         {
             "model_names": [
@@ -3565,7 +4331,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((352,), torch.float32)],
         {
             "model_names": [
@@ -3577,7 +4343,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((416,), torch.float32)],
         {
             "model_names": [
@@ -3589,7 +4355,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((448,), torch.float32)],
         {
             "model_names": [
@@ -3601,7 +4367,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((480,), torch.float32)],
         {
             "model_names": [
@@ -3616,7 +4382,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((544,), torch.float32)],
         {
             "model_names": [
@@ -3628,7 +4394,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((608,), torch.float32)],
         {
             "model_names": [
@@ -3640,7 +4406,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((640,), torch.float32)],
         {
             "model_names": [
@@ -3652,7 +4418,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((672,), torch.float32)],
         {
             "model_names": [
@@ -3665,7 +4431,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((704,), torch.float32)],
         {
             "model_names": [
@@ -3677,7 +4443,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((736,), torch.float32)],
         {
             "model_names": [
@@ -3689,7 +4455,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((768,), torch.float32)],
         {
             "model_names": [
@@ -3702,7 +4468,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((800,), torch.float32)],
         {
             "model_names": [
@@ -3714,7 +4480,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((832,), torch.float32)],
         {
             "model_names": [
@@ -3726,7 +4492,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((864,), torch.float32)],
         {
             "model_names": [
@@ -3739,7 +4505,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((896,), torch.float32)],
         {
             "model_names": [
@@ -3751,7 +4517,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((928,), torch.float32)],
         {
             "model_names": [
@@ -3763,7 +4529,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((992,), torch.float32)],
         {
             "model_names": [
@@ -3775,7 +4541,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1056,), torch.float32)],
         {
             "model_names": [
@@ -3786,17 +4552,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1088,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1120,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1152,), torch.float32)],
         {
             "model_names": [
@@ -3807,17 +4573,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1184,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1216,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1248,), torch.float32)],
         {
             "model_names": [
@@ -3828,12 +4594,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1312,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1344,), torch.float32)],
         {
             "model_names": [
@@ -3844,17 +4610,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1376,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1408,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1440,), torch.float32)],
         {
             "model_names": [
@@ -3865,17 +4631,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1472,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1504,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1536,), torch.float32)],
         {
             "model_names": [
@@ -3886,17 +4652,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1568,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1600,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1632,), torch.float32)],
         {
             "model_names": [
@@ -3907,126 +4673,421 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1664,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99},
     ),
-    (Sqrt0, [((240,), torch.float32)], {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99}),
-    (Sqrt0, [((336,), torch.float32)], {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99}),
-    (Sqrt0, [((432,), torch.float32)], {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99}),
-    (Sqrt0, [((528,), torch.float32)], {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99}),
-    (Sqrt0, [((624,), torch.float32)], {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99}),
-    (Sqrt0, [((720,), torch.float32)], {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99}),
-    (Sqrt0, [((816,), torch.float32)], {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99}),
-    (Sqrt0, [((912,), torch.float32)], {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99}),
+    (Divide0, [((1, 128, 3072), torch.float32)], {"model_names": ["onnx_bert_bert_base_uncased_mlm_hf"], "pcc": 0.99}),
+    (Divide0, [((1, 128, 768), torch.float32)], {"model_names": ["onnx_bert_bert_base_uncased_mlm_hf"], "pcc": 0.99}),
     (
-        Sqrt0,
+        Divide0,
+        [((1, 197, 1536), torch.float32)],
+        {"model_names": ["onnx_deit_facebook_deit_small_patch16_224_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide4,
+        [((1, 12, 201, 201), torch.bfloat16)],
+        {
+            "model_names": ["pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+        },
+    ),
+    (
+        Divide3,
+        [((240,), torch.float32)],
+        {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Divide3,
+        [((336,), torch.float32)],
+        {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Divide3,
+        [((432,), torch.float32)],
+        {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Divide3,
+        [((528,), torch.float32)],
+        {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Divide3,
+        [((624,), torch.float32)],
+        {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Divide3,
+        [((720,), torch.float32)],
+        {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Divide3,
+        [((816,), torch.float32)],
+        {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Divide3,
+        [((912,), torch.float32)],
+        {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Divide3,
         [((1008,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1104,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1200,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1296,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1392,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1488,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1584,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1680,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1728,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1776,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1824,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1872,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1920,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((1968,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((2016,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((2064,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((2112,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((2160,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide3,
         [((2208,), torch.float32)],
         {"model_names": ["onnx_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99},
     ),
-    (Sqrt0, [((1, 14, 1), torch.float32)], {"model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"], "pcc": 0.99}),
     (
-        Sqrt0,
-        [((1, 588, 1), torch.float32)],
-        {"model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"], "pcc": 0.99},
+        Divide0,
+        [((1, 16384, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
-        Sqrt0,
-        [((1, 15, 1), torch.float32)],
+        Divide0,
+        [((1, 4096, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 1024, 640), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 256, 1024), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 2, 8400), torch.float32)],
+        {"model_names": ["onnx_yolov10_default_obj_det_github", "onnx_yolov8_default_obj_det_github"], "pcc": 0.99},
+    ),
+    (
+        Divide2,
+        [((1, 14, 768), torch.float32), ((1, 14, 1), torch.float32)],
+        {"model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"], "pcc": 0.99},
+    ),
+    (
+        Divide2,
+        [((1, 12, 14, 14), torch.float32), ((1, 12, 14, 1), torch.float32)],
+        {"model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 16, 224, 224), torch.float32)],
+        {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 32, 224, 224), torch.float32)],
+        {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 48, 112, 112), torch.float32)],
+        {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 96, 56, 56), torch.float32)],
+        {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 192, 28, 28), torch.float32)],
+        {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 384, 14, 14), torch.float32)],
+        {"model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 4096, 384), torch.float32)],
+        {"model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 1024, 768), torch.float32)],
+        {"model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 256, 1536), torch.float32)],
+        {"model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 64, 3072), torch.float32)],
+        {"model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 6, 3072), torch.float32)],
+        {
+            "model_names": ["onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 197, 3072), torch.float32)],
+        {
+            "model_names": [
+                "onnx_deit_facebook_deit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide2,
+        [((1, 15, 768), torch.float32), ((1, 15, 1), torch.float32)],
         {"model_names": ["pd_bert_bert_base_japanese_seq_cls_padlenlp"], "pcc": 0.99},
     ),
     (
-        Sqrt0,
+        Divide2,
+        [((1, 12, 15, 15), torch.float32), ((1, 12, 15, 1), torch.float32)],
+        {"model_names": ["pd_bert_bert_base_japanese_seq_cls_padlenlp"], "pcc": 0.99},
+    ),
+    (
+        Divide2,
+        [((1, 10, 768), torch.float32), ((1, 10, 1), torch.float32)],
+        {"model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"], "pcc": 0.99},
+    ),
+    (
+        Divide2,
+        [((1, 12, 10, 10), torch.float32), ((1, 12, 10, 1), torch.float32)],
+        {"model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 16, 16, 50), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 32, 16, 50), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 64, 16, 50), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 64, 8, 50), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 128, 8, 50), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 128, 8, 25), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 240, 8, 25), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 240, 4, 25), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 480, 4, 25), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 480, 2, 25), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide3,
         [((60,), torch.float32)],
         {
             "model_names": [
@@ -4037,7 +5098,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((120,), torch.float32)],
         {
             "model_names": [
@@ -4050,7 +5111,59 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide2,
+        [((1, 12, 120), torch.float32), ((1, 12, 1), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide2,
+        [((1, 8, 12, 12), torch.float32), ((1, 8, 12, 1), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide2,
+        [((1, 12, 6625), torch.float32), ((1, 12, 1), torch.float32)],
+        {"model_names": ["pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide2,
+        [((1, 12, 97), torch.float32), ((1, 12, 1), torch.float32)],
+        {"model_names": ["pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 8, 256, 2048), torch.float32)],
+        {"model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide0,
+        [((1, 8, 2048, 256), torch.float32)],
+        {"model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide4,
+        [((1, 12, 204, 204), torch.bfloat16)],
+        {"model_names": ["pt_vilt_dandelin_vilt_b32_mlm_mlm_hf"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Divide0,
+        [((1, 197, 768), torch.float32)],
+        {"model_names": ["onnx_deit_facebook_deit_tiny_patch16_224_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Divide3,
         [((8,), torch.float32)],
         {
             "model_names": [
@@ -4061,7 +5174,18 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide0,
+        [((1, 8, 16, 50), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide3,
         [((40,), torch.float32)],
         {
             "model_names": [
@@ -4072,7 +5196,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide3,
         [((48,), torch.float32)],
         {
             "model_names": [
@@ -4083,7 +5207,51 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide0,
+        [((1, 48, 8, 50), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 48, 4, 50), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 120, 4, 50), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 64, 4, 50), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide3,
         [((72,), torch.float32)],
         {
             "model_names": [
@@ -4094,7 +5262,56 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide0,
+        [((1, 72, 4, 50), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 144, 4, 50), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 144, 2, 50), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide0,
+        [((1, 288, 2, 50), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Divide2,
+        [((1, 25, 6625), torch.float32), ((1, 25, 1), torch.float32)],
+        {"model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"], "pcc": 0.99},
+    ),
+    (
+        Divide1,
         [((1696,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -4103,7 +5320,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1760,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -4112,7 +5329,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1856,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -4121,7 +5338,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Sqrt0,
+        Divide1,
         [((1888,), torch.bfloat16)],
         {
             "model_names": ["pt_densenet_densenet201_img_cls_torchvision"],
@@ -4129,12 +5346,13 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
         },
     ),
-    (Sqrt0, [((1, 1, 1, 64), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
-    (Sqrt0, [((1, 1, 1, 256), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
-    (Sqrt0, [((1, 1, 1, 128), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
-    (Sqrt0, [((1, 1, 1, 512), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
-    (Sqrt0, [((1, 1, 1, 1024), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
-    (Sqrt0, [((1, 1, 1, 2048), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
+    (Divide0, [((1, 1, 1, 2048), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
+    (
+        Divide2,
+        [((1, 25, 97), torch.float32), ((1, 25, 1), torch.float32)],
+        {"model_names": ["pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels"], "pcc": 0.99},
+    ),
+    (Divide0, [((1, 64, 334, 334), torch.float32)], {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99}),
 ]
 
 
@@ -4142,7 +5360,7 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes):
 
-    record_forge_op_name("Sqrt")
+    record_forge_op_name("Divide")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
