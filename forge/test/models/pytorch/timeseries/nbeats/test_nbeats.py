@@ -32,8 +32,8 @@ def test_nbeats_with_seasonality_basis(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.NBEATS,
         variant=variant,
-        task=Task.TIME_SERIES_FORECASTING,
-        source=Source.GITHUB,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
     )
 
     x, x_mask = get_electricity_dataset_input()
@@ -66,8 +66,8 @@ def test_nbeats_with_generic_basis(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.NBEATS,
         variant=variant,
-        task=Task.TIME_SERIES_FORECASTING,
-        source=Source.GITHUB,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
     )
 
     x, x_mask = get_electricity_dataset_input()
@@ -93,8 +93,8 @@ def test_nbeats_with_trend_basis(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.NBEATS,
         variant=variant,
-        task=Task.TIME_SERIES_FORECASTING,
-        source=Source.GITHUB,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
     )
 
     x, x_mask = get_electricity_dataset_input()
