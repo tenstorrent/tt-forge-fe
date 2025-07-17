@@ -145,7 +145,6 @@ class NewToOldOpType
         mapping_[OpType::Stack] = "stack";
         mapping_[OpType::Subtract] = "subtract";
         mapping_[OpType::Tanh] = "tanh";
-        mapping_[OpType::TileBroadcast] = "tile_broadcast";
         mapping_[OpType::Tilizer] = "tilizer";
         mapping_[OpType::Transpose] = "transpose";
         mapping_[OpType::Unsqueeze] = "unsqueeze";
@@ -277,7 +276,6 @@ class OldToNewOpType
         mapping_["stack"] = OpType::Stack;
         mapping_["subtract"] = OpType::Subtract;
         mapping_["tanh"] = OpType::Tanh;
-        mapping_["tile_broadcast"] = OpType::TileBroadcast;
         mapping_["tilizer"] = OpType::Tilizer;
         mapping_["transpose"] = OpType::Transpose;
         mapping_["unsqueeze"] = OpType::Unsqueeze;

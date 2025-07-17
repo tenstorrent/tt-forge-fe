@@ -148,7 +148,6 @@ enum class OpType : uint32_t
     Subtract,
     Squeeze,
     Tanh,
-    TileBroadcast,
     Tilizer,
     Transpose,
     Unsqueeze,

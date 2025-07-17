@@ -16,15 +16,6 @@ from .buffer import Buffer
 from .reciprocal import Reciprocal
 
 
-def tile_broadcast(attr, i):
-    dim, size = attr
-    while len(i.shape) <= ((-dim - 1) if dim < 0 else dim):
-        i = i.unsqueeze(0)
-    shape = list(i.shape)
-    shape[dim] = size
-    return torch.broadcast_to(i, shape)
-
-
 def eval(type, attr, ops):
     assert len(ops) == 1, "Eltwise unary should have one input"
     assert (
@@ -34,9 +25,8 @@ def eval(type, attr, ops):
         or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
         or (type == "dropout" and len(attr) == 3)
-        or (type == "tile_broadcast" and len(attr) == 2)
         or (type == "pow" and len(attr) == 1)
-    ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout, tile_broadcast, and pow"
+    ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout and pow"
 
     t_ops = to_torch_operands(*ops)
 
@@ -86,7 +76,6 @@ def eval(type, attr, ops):
         "reciprocal": lambda i: torch.reciprocal(i[0] + 1e-10),  # add epsilon to avoid infinity
         "clip": lambda i: torch.clip(i[0], min=attr[0], max=attr[1]),
         "abs": lambda i: torch.abs(i[0]),
-        "tile_broadcast": lambda i: tile_broadcast(attr, i[0]),
         "tanh": lambda i: torch.tanh(i[0]),
         "cumsum": lambda i: torch.cumsum(i[0], dim=attr[0]),
         "pow": lambda i: torch.pow(i[0], attr[0]),
@@ -110,17 +99,8 @@ def shape(type, attr, ops):
         or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
         or (type == "dropout" and len(attr) == 3)
-        or (type == "tile_broadcast" and len(attr) == 2)
         or (type == "pow" and len(attr) == 1)
-    ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout, tile_broadcast, and pow"
-
-    if type == "tile_broadcast":
-        assert len(attr) == 2, "Tile broadcast should have two attributes - dim and size"
-        dim = attr[0]
-        size = attr[1]
-        shape = len(ops[0].shape)
-        shape[dim] = size
-        return shape, []
+    ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout, and pow"
 
     return ops[0], []
 
@@ -135,17 +115,13 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
         or (type == "dropout" and len(attr) == 3)
-        or (type == "tile_broadcast" and len(attr) == 2)
         or (type == "pow" and len(attr) == 1)
-    ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout, tile_broadcast, and pow"
+    ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout and pow"
 
     if type == "nop":
         return ac.op(Nop.create(), (grad,))
 
     if type == "tilizer":
-        return ac.op(Nop.create(), (grad,))
-
-    if type == "tile_broadcast":  # the full TM broadcast will generate a reduce
         return ac.op(Nop.create(), (grad,))
 
     if type == "buffer":
