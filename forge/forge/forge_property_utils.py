@@ -497,6 +497,7 @@ class Tags:
     execution_stage: str = ""
     pcc: Optional[float] = None
     atol: Optional[float] = None
+    rtol: Optional[float] = None
     op_info: Optional[OpInfo] = None
     inputs: Optional[List[TensorDesc]] = None
     outputs: Optional[List[TensorDesc]] = None
@@ -940,7 +941,7 @@ def record_consistency_limits(
     framework_outputs: Union[Tuple[TorchTensor, ...], List[TorchTensor]], compiled_outputs: List[TorchTensor]
 ):
     """
-    Records consistency limits (PCC and ATOL).
+    Records consistency limits (PCC, ATOL, and RTOL).
 
     Parameters:
         framework_outputs: Tuple or list of torch.Tensor representing the expected (golden) outputs.
@@ -950,11 +951,15 @@ def record_consistency_limits(
     if fph is None:
         return
 
-    pcc, atol = determine_consistency_limits(framework_outputs=framework_outputs, compiled_outputs=compiled_outputs)
+    pcc, atol, rtol = determine_consistency_limits(
+        framework_outputs=framework_outputs, compiled_outputs=compiled_outputs
+    )
     if pcc is not None:
         fph.add("tags.pcc", pcc)
     if atol is not None:
         fph.add("tags.atol", atol)
+    if rtol is not None:
+        fph.add("tags.rtol", rtol)
 
 
 def record_forge_op_name(forge_op_name: str):
