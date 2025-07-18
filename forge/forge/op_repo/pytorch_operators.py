@@ -167,6 +167,7 @@ _OPERATORS = [
     OperatorDefinition("matmul", "torch.matmul", 2),
     # Nary operators
     OperatorDefinition("concatenate", "torch.concatenate", input_num_range=(2, 7)),
+    OperatorDefinition("where", "torch.where", 3),
     # Reduce operators
     OperatorDefinition("max", "torch.max", 1),
     OperatorDefinition("sum", "torch.sum", 1),
