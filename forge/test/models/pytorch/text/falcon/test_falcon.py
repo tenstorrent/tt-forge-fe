@@ -24,7 +24,6 @@ from test.utils import download_model
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["tiiuae/falcon-7b-instruct"])
 def test_falcon(variant):
-    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB)")
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -34,6 +33,8 @@ def test_falcon(variant):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
+
+    pytest.xfail(reason="Requires multi-chip support")
 
     tokenizer = AutoTokenizer.from_pretrained(variant)
     model = FalconForCausalLM.from_pretrained(variant)
@@ -64,20 +65,19 @@ variants = [
     pytest.param("tiiuae/Falcon3-1B-Base"),
     pytest.param(
         "tiiuae/Falcon3-3B-Base",
-        marks=pytest.mark.xfail,
+        marks=pytest.mark.out_of_memory,
     ),
     pytest.param(
         "tiiuae/Falcon3-7B-Base",
-        marks=pytest.mark.xfail,
+        marks=pytest.mark.out_of_memory,
     ),
     pytest.param(
         "tiiuae/Falcon3-10B-Base",
-        marks=pytest.mark.xfail,
+        marks=pytest.mark.out_of_memory,
     ),
     pytest.param(
         "tiiuae/Falcon3-Mamba-7B-Base",
         marks=[
-            pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 36 GB)"),
             pytest.mark.out_of_memory,
         ],
     ),

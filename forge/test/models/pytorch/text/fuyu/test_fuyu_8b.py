@@ -5,7 +5,6 @@ import os
 
 import pytest
 from PIL import Image
-from third_party.tt_forge_models.tools.utils import get_file
 from transformers import (
     AutoTokenizer,
     FuyuConfig,
@@ -23,6 +22,7 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
+from third_party.tt_forge_models.tools.utils import get_file
 
 from test.models.pytorch.text.fuyu.model_utils.model import (
     FuyuModelWrapper,
@@ -35,10 +35,7 @@ from test.models.pytorch.text.fuyu.model_utils.model import (
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "adept/fuyu-8b",
-            marks=[pytest.mark.skip(reason="Transient failure - Out of memory due to other tests in CI pipeline")],
-        ),
+        pytest.param("adept/fuyu-8b"),
     ],
 )
 def test_fuyu8b(variant):
@@ -46,6 +43,7 @@ def test_fuyu8b(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH, model=ModelArch.FUYU, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
+    pytest.xfail(reason="Requires multi-chip support")
 
     config = FuyuConfig.from_pretrained(variant)
     config_dict = config.to_dict()

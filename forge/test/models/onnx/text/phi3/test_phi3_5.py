@@ -17,7 +17,6 @@ variants = ["microsoft/Phi-3.5-mini-instruct"]
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.skip("Transient test - Out of memory due to other tests in CI pipeline")
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_5_causal_lm_onnx(variant, forge_tmp_path):
 
@@ -29,6 +28,7 @@ def test_phi3_5_causal_lm_onnx(variant, forge_tmp_path):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

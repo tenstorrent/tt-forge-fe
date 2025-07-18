@@ -20,13 +20,9 @@ import torch
     [
         pytest.param(
             "google/gemma-1.1-2b-it",
-            marks=pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model; Flakey test, not hitting host OOM on every run"
-            ),
         ),
         pytest.param(
             "google/gemma-1.1-7b-it",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
         ),
     ],
 )
@@ -36,6 +32,8 @@ def test_gemma_v1_onnx(variant, forge_tmp_path):
     module_name = record_model_properties(
         framework=Framework.ONNX, model=ModelArch.GEMMA, variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
+
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and tokenizer from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

@@ -80,7 +80,6 @@ def generate_model_mobilenetv1_imgcls_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["google/mobilenet_v1_0.75_192"])
 def test_mobilenetv1_192(variant):
-    pytest.skip("Hitting segmentation fault in MLIR")
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -90,6 +89,7 @@ def test_mobilenetv1_192(variant):
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
+    pytest.xfail(reason="Hitting segmentation fault in MLIR")
 
     framework_model, inputs, _ = generate_model_mobilenetv1_imgcls_hf_pytorch(variant)
 
@@ -126,7 +126,6 @@ def generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["google/mobilenet_v1_1.0_224"])
 def test_mobilenetv1_224(variant):
-    pytest.skip("Hitting segmentation fault in MLIR")
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -136,6 +135,7 @@ def test_mobilenetv1_224(variant):
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
+    pytest.xfail(reason="Hitting segmentation fault in MLIR")
 
     framework_model, inputs, _ = generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant)
 

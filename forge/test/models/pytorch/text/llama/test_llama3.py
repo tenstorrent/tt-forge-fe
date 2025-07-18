@@ -29,41 +29,30 @@ variants = [
     pytest.param(
         "meta-llama/Meta-Llama-3-8B",
         marks=[
-            pytest.mark.skip(
-                "Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
         "meta-llama/Meta-Llama-3-8B-Instruct",
         marks=[
-            pytest.mark.skip(
-                "Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
         "meta-llama/Llama-3.1-8B",
         marks=[
-            pytest.mark.skip(
-                "Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
         "meta-llama/Llama-3.1-8B-Instruct",
         marks=[
-            pytest.mark.xfail,
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
         "meta-llama/Meta-Llama-3.1-8B-Instruct",
         marks=[
-            pytest.mark.xfail,
             pytest.mark.out_of_memory,
         ],
     ),
@@ -72,31 +61,24 @@ variants = [
     pytest.param(
         "meta-llama/Llama-3.2-3B",
         marks=[
-            pytest.mark.skip(
-                "Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
         "meta-llama/Llama-3.2-3B-Instruct",
         marks=[
-            pytest.mark.xfail,
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
         "huggyllama/llama-7b",
         marks=[
-            pytest.mark.skip(
-                "Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
-    pytest.param("meta-llama/Meta-Llama-3.1-70B", marks=pytest.mark.xfail),
-    pytest.param("meta-llama/Meta-Llama-3.1-70B-Instruct", marks=pytest.mark.xfail),
-    pytest.param("meta-llama/Llama-3.3-70B-Instruct", marks=pytest.mark.xfail),
+    pytest.param("meta-llama/Meta-Llama-3.1-70B", marks=pytest.mark.out_of_memory),
+    pytest.param("meta-llama/Meta-Llama-3.1-70B-Instruct", marks=pytest.mark.out_of_memory),
+    pytest.param("meta-llama/Llama-3.3-70B-Instruct", marks=pytest.mark.out_of_memory),
 ]
 
 
@@ -129,13 +111,9 @@ def test_llama3_causal_lm(variant):
         priority=priority,
     )
 
-    if variant in [
-        "meta-llama/Llama-3.1-8B-Instruct",
-        "meta-llama/Meta-Llama-3.1-8B-Instruct",
-        "meta-llama/Llama-3.2-3B-Instruct",
-        "meta-llama/Meta-Llama-3.1-70B",
-        "meta-llama/Meta-Llama-3.1-70B-Instruct",
-        "meta-llama/Llama-3.3-70B-Instruct",
+    if variant not in [
+        "meta-llama/Llama-3.2-1B",
+        "meta-llama/Llama-3.2-1B-Instruct",
     ]:
         pytest.xfail(reason="Requires multi-chip support")
 
@@ -176,36 +154,24 @@ variants = [
     pytest.param(
         "meta-llama/Meta-Llama-3-8B",
         marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
         "meta-llama/Meta-Llama-3-8B-Instruct",
         marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
         "meta-llama/Llama-3.1-8B",
         marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
         "meta-llama/Llama-3.1-8B-Instruct",
         marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
@@ -214,27 +180,18 @@ variants = [
     pytest.param(
         "meta-llama/Llama-3.2-3B",
         marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 25 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
         "meta-llama/Llama-3.2-3B-Instruct",
         marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
         "huggyllama/llama-7b",
         marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
@@ -253,6 +210,12 @@ def test_llama3_sequence_classification(variant):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
+
+    if variant not in [
+        "meta-llama/Llama-3.2-1B",
+        "meta-llama/Llama-3.2-1B-Instruct",
+    ]:
+        pytest.xfail(reason="Requires multi-chip support")
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

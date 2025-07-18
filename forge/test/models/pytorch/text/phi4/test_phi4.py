@@ -30,7 +30,6 @@ variants = ["microsoft/phi-4"]
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.xfail
 def test_phi_4_causal_lm_pytorch(variant):
 
     # Record Forge Property
@@ -72,10 +71,9 @@ def test_phi_4_causal_lm_pytorch(variant):
     verify(sample_inputs, framework_model, compiled_model)
 
 
-@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.skip(reason="Skipped due to kill at consteval compilation stage")
+@pytest.mark.xfail
 def test_phi_4_token_classification_pytorch(variant):
 
     # Record Forge Property
@@ -86,6 +84,7 @@ def test_phi_4_token_classification_pytorch(variant):
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
+    pytest.xfail(reason="Test is killed at consteval compilation stage")
 
     # Load tokenizer and model from HuggingFace
     model = download_model(AutoModelForTokenClassification.from_pretrained, variant, use_cache=False)
@@ -105,10 +104,9 @@ def test_phi_4_token_classification_pytorch(variant):
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.out_of_memory
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.skip(reason="Skipped due to kill at consteval compilation stage")
 def test_phi_4_sequence_classification_pytorch(variant):
 
     # Record Forge Property
@@ -119,6 +117,7 @@ def test_phi_4_sequence_classification_pytorch(variant):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
+    pytest.xfail(reason="Test is killed at consteval compilation stage")
 
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

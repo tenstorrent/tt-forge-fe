@@ -24,7 +24,6 @@ from test.models.pytorch.text.gemma.model_utils.model_utils import (
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize(
     "variant",
     [

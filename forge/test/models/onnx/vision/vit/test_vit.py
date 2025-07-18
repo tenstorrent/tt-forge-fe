@@ -16,7 +16,6 @@ variants = [
     pytest.param(
         "google/vit-large-patch16-224",
         marks=[
-            pytest.mark.skip(reason="Transient failure - Out of memory due to other tests in CI pipeline"),
             pytest.mark.out_of_memory,
         ],
     ),
@@ -35,6 +34,8 @@ def test_vit_classify_224(variant, forge_tmp_path):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
+    if variant == "google/vit-large-patch16-224":
+        pytest.xfail(reason="Requires multi-chip support")
 
     # Load torch model and processor
     torch_model = ViTForImageClassification.from_pretrained(variant)

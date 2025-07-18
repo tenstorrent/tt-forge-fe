@@ -22,7 +22,6 @@ variants = ["ministral/Ministral-3b-instruct"]
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-@pytest.mark.xfail
 def test_ministral_3b(variant):
 
     # Record Forge Property
