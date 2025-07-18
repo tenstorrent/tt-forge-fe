@@ -5,6 +5,7 @@
 # Built-in modules
 import pytest
 import time
+import os
 import socket
 import json
 from datetime import datetime
@@ -113,8 +114,11 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
 
     # Turn on MLIR optimizations.
     compiler_cfg.mlir_config = (
-        MLIRConfig().set_enable_optimizer(True).set_enable_fusing(True).set_enable_memory_layout_analysis(False)
+        MLIRConfig().set_enable_optimizer(True).set_enable_fusing(True).set_enable_memory_layout_analysis(True)
     )
+
+    # TODO: Remove this line when the issue with reinitialization is resolved.
+    os.environ["TT_METAL_FORCE_REINIT"] = "1"
 
     # Enable Forge FE optimizations
     compiler_cfg.enable_optimization_passes = True
