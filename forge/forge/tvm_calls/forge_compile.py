@@ -1259,13 +1259,14 @@ def format_tvm_graph_weights(inputs, module, compiler_cfg, framework=None):
         weights = {
             weight.name: (
                 torch.Tensor(
-                    tf.cast(weight, tf.float32).numpy() if tf.as_dtype(weight.dtype).is_floating else weight.numpy()
+                    (
+                        tf.cast(weight.value(), tf.float32) if weight.value().dtype.is_floating else weight.value()
+                    ).numpy()
                 ),
                 weight.name in trainable_weight_names,
             )
             for weight in module.weights
         }
-
         if not (len(inputs) > 0 and isinstance(inputs[0], torch.Tensor)):
             inputs = to_pt_tensors(inputs)  # Maybe we can switch all tensors to numpy?
     elif framework == "tf_graphdef":
