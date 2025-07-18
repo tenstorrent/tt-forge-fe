@@ -81,8 +81,8 @@ def test_unet(
         raise ValueError(f"Unsupported UNet variant: {variant}")
 
     compiler_config = CompilerConfig()
-    compiler_config.enable_optimization_passes = True
-    compiler_config.mlir_config = MLIRConfig().set_enable_optimizer(True).set_enable_memory_layout_analysis(False)
+    #compiler_config.enable_optimization_passes = True
+    #compiler_config.mlir_config = MLIRConfig().set_enable_optimizer(True).set_enable_memory_layout_analysis(False)
 
     if data_format == "bfloat16":
         input_sample = [input.to(torch.bfloat16) for input in input_sample]
