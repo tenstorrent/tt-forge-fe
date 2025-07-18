@@ -22,7 +22,7 @@ from forge._C import DataFormat
 
 from forge.config import CompilerConfig
 from forge.verify.config import VerifyConfig
-from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
+from forge.verify.value_checkers import AutomaticValueChecker
 
 from test.operators.utils import (
     TensorUtils,
@@ -165,9 +165,7 @@ class TestVerification:
         input_shapes = tuple([test_vector.input_shape for _ in range(number_of_operands)])
         logger.trace(f"***input_shapes: {input_shapes}")
 
-        # We don't test int data type as there is no sense for conv2d operator
-        # Using AllCloseValueChecker
-        verify_config = VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2))
+        verify_config = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99, rtol=1e-2, atol=1e-2))
 
         VerifyUtils.verify(
             model=pytorch_model,
