@@ -1,5 +1,4 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
-
 # SPDX-License-Identifier: Apache-2.0
 import os
 
@@ -15,7 +14,6 @@ from .tanh import Tanh
 from .nop import Nop
 from .buffer import Buffer
 from .exp import Exp
-from .reciprocal import Reciprocal
 
 M_2_SQRTPI = 1.12837916709551257390  # 2/sqrt(pi)
 M_SQRT2 = 1.41421356237309504880  # sqrt(2)
@@ -125,7 +123,6 @@ def eval(type, attr, ops):
         "tilizer": lambda i: i[0],
         "ethernet_datacopy": lambda i: i[0],
         "buffer": lambda i: i[0],
-        "reciprocal": lambda i: torch.reciprocal(i[0] + 1e-10),  # add epsilon to avoid infinity
         "log": lambda i: torch.log(i[0] + 1e-10),  # add epsilon to avoid nan
         "sigmoid": lambda i: torch.sigmoid(i[0]),
         "clip": lambda i: torch.clip(i[0], min=attr[0], max=attr[1]),
@@ -205,13 +202,8 @@ def backward(type, attr, ac, operand, inputs, output, grad):
     if type == "exp":
         return ac.op("multiply", (output, grad))
 
-    if type == "reciprocal":  # -1/x^2
-        sq = ac.op("multiply", (output, output))
-        neg = ac.op("multiply", (sq, ac.constant(-1)))
-        return ac.op("multiply", (neg, grad))
-
     if type == "sqrt":  # 0.5 / f(x)
-        rec = ac.op(Reciprocal.create(), (output,))
+        rec = ac.op("reciprocal", (output,))
         mult = ac.op("multiply", (rec, ac.constant(0.5)))
         return ac.op("multiply", (mult, grad))
 
@@ -257,7 +249,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         return ac.op("multiply", (gelud, grad))
 
     if type == "log":
-        recip = ac.op(Reciprocal.create(), (inputs[0],))
+        recip = ac.op("reciprocal", (inputs[0],))
         return ac.op("multiply", (recip, grad))
 
     if type == "sigmoid":
@@ -302,7 +294,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
     elif type == "pow":
         exponent_value = attr[0]
         shape = list(inputs[0].shape.as_list())
-        recip = ac.op(Reciprocal.create(), (inputs[0],))
+        recip = ac.op("reciprocal", (inputs[0],))
         partial_grad = ac.op("multiply", (output, recip))
         pow_grad = ac.op("multiply", (ac.tensor(torch.zeros(shape) + exponent_value), partial_grad))
         return ac.op("multiply", (pow_grad, grad))
@@ -325,7 +317,7 @@ def decompose(type, attr, dc, inputs):
         neg_ = dc.op("multiply", [inp, minus_one])
         exp_ = dc.op(Exp.create(), [neg_])
         result = dc.op("add", [plus_one, exp_])
-        result = dc.op(Reciprocal.create(), [result])
+        result = dc.op("reciprocal", [result])
         dc.fuse(result)
 
     elif type == "gelu" and bool(int(os.environ.get("FORGE_DECOMPOSE_GELU", "0"))):
@@ -356,7 +348,6 @@ def initial_flops_estimate(type, attr, ops):
         "leaky_relu",
         "gelu",
         "gelu_derivative",
-        "reciprocal",
         "log",
         "sigmoid",
         "abs",

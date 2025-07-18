@@ -11,6 +11,7 @@ add_library(ops
     op_multiply.cpp
     op_sine.cpp
     op_transpose.cpp
+    op_reciprocal.cpp
     op_reshape.cpp
     op_subtract.cpp
     python_bindings.cpp)

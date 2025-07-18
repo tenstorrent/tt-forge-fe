@@ -7,7 +7,6 @@ from functools import lru_cache
 from .exp import Exp
 from .cosine import Cosine
 from .ethernet_datacopy import EthernetDatacopy
-from .reciprocal import Reciprocal
 from .tanh import Tanh
 from .log import Log
 from .nop import Nop
@@ -44,7 +43,7 @@ op_to_module_map = {
     "not_equal": "eltwise_binary",
     "logical_and": "eltwise_binary",
     "exp": Exp,
-    "reciprocal": Reciprocal,
+    "reciprocal": "eltwise_unary",
     "nop": Nop,
     "buffer": Buffer,
     "sqrt": Sqrt,
