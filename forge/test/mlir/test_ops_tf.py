@@ -95,7 +95,7 @@ def test_conv2d(
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.xfail
+@pytest.mark.push
 def test_dual_conv2d():
 
     tf.random.set_seed(0)
@@ -116,7 +116,6 @@ def test_dual_conv2d():
     inputs = [tf.random.uniform((1, 128, 128, 3))]
 
     framework_model = DualConv2d()
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model)
