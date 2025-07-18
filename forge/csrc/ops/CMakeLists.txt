@@ -12,6 +12,8 @@ add_library(ops
     op_sine.cpp
     op_transpose.cpp
     op_reshape.cpp
+    op_softmax.cpp
+    op_softmax_bw.cpp
     op_subtract.cpp
     python_bindings.cpp)
 

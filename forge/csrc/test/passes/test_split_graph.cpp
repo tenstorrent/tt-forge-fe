@@ -4,6 +4,7 @@
 
 #include "autograd/autograd.hpp"
 #include "forge_graph_module.hpp"
+#include "graph_lib/node_types.hpp"
 #include "passes/split_graph.hpp"
 #include "test/common.hpp"
 
@@ -41,7 +42,7 @@ struct SplitGraphTest : public ForgeGraphTest, public testing::WithParamInterfac
 
         auto add2 = create_op("add", {l2, bias_l2});
 
-        auto softmax = create_op("softmax", {add2}, 1, true);
+        auto softmax = create_op(graphlib::OpType("softmax", {}, {{"dim", 1}, {"stable", true}}), {add2});
 
         return {softmax};
     }

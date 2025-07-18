@@ -46,7 +46,7 @@ def Softmax(name: str, operandA: Tensor, *, dim: int, stable: bool = True) -> Te
     Tensor
         Forge tensor
     """
-    return op("softmax", name, operandA, attrs=(dim, stable), dimension=dim).get_tensor()
+    return op("softmax", name, operandA, dim=dim, stable=stable).get_tensor()
 
 
 def LogSoftmax(name: str, operandA: Tensor, *, dim: int, stable: bool = True) -> Tensor:
