@@ -536,7 +536,7 @@ void Op::decompose_post_autograd(
         case OpType::Constant: return;
         case OpType::Cosine: return;
         case OpType::Divide: return;
-        case OpType::Multiply: return multiply::decompose_post_autograd(*this, dc, inputs);
+        case OpType::Multiply: return;
         case OpType::Sine: return;
         case OpType::Transpose: return;
         case OpType::Reshape: return reshape::decompose_post_autograd(*this, dc, inputs);
