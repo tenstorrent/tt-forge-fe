@@ -108,6 +108,11 @@ def test_yolo_v9(
         framework_model, sample_inputs=input_sample, module_name=module_name, compiler_cfg=compiler_config
     )
 
+    # Enable program cache on all devices
+    settings = DeviceSettings()
+    settings.enable_program_cache = True
+    configure_devices(device_settings=settings)
+
     # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
     verify(input_sample, framework_model, compiled_model)

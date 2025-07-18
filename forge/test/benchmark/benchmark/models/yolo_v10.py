@@ -95,10 +95,12 @@ def test_yolo_v10(
         framework_model = framework_model.to(torch.bfloat16)
 
     # Compiler configuration
-    compiler_config = CompilerConfig(enable_optimization_passes=True)
-    # @TODO - For now, we are skipping enabling MLIR optimizations, because it is not working with the current version of the model.
+    compiler_config = CompilerConfig()
     # Turn on MLIR optimizations.
-    # compiler_config.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
+    compiler_config.mlir_config = (
+        MLIRConfig().set_enable_fusing(True).set_enable_optimizer(True).set_enable_memory_layout_analysis(False)
+    )
+
     if data_format == "bfloat16":
         # Convert model to bfloat16
         compiler_config.default_df_override = DataFormat.Float16_b

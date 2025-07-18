@@ -96,7 +96,7 @@ def test_vit_base(training, batch_size, input_size, channel_size, loop_count, va
 
     if data_format == "bfloat16":
         # Convert input to bfloat16
-        input_sample = [input.to(torch.bfloat16) for input in input_sample]
+        inputs = [input.to(torch.bfloat16) for input in inputs]
 
     # Load the model from Hugging Face
     framework_model = download_model(ViTForImageClassification.from_pretrained, variant, return_dict=False)
