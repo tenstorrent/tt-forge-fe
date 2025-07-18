@@ -349,7 +349,7 @@ class TFModule(Module):
     def get_parameters(self) -> List[Parameter]:
         params = []
         vars_as_pt = to_pt_tensors(self.module.trainable_variables)
-        names = [var.name for var in self.module.trainable_variables]
+        names = [var.path for var in self.module.trainable_variables]
         for param, name in zip(vars_as_pt, names):
             forge_param = Parameter(param, requires_grad=True, name=name)
             params.append(forge_param)
