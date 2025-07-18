@@ -450,6 +450,27 @@ class ConvertEmulatedDtypes:
             if inp.dtype in self.emulated_dfs:
                 inp.data = inp.data.to(self.fallback)
 
+        # Conver tensor attributes that are not buffers nor parameters
+        self.attr_dfs = {}  # To track tensor attributes for restoration later
+        if isinstance(self.model, torch.nn.Module):
+            for mod_name, mod in self.model.named_modules():  # Recursively walk submodules
+                param_keys = set(dict(mod.named_parameters(recurse=False)).keys())  # current module's params
+                buffer_keys = set(dict(mod.named_buffers(recurse=False)).keys())  # current module's buffers
+
+                for attr in dir(mod):  # inspect each attribute
+                    if attr.startswith("_") or attr in param_keys or attr in buffer_keys:
+                        continue  # skip private/internal or known param/buffer
+
+                    try:
+                        val = getattr(mod, attr)
+                    except Exception:
+                        continue  # skip broken properties
+
+                    if isinstance(val, torch.Tensor) and val.dtype in self.emulated_dfs:
+                        key = f"{mod_name}.{attr}" if mod_name else attr
+                        self.attr_dfs[key] = (mod, attr, val.dtype)  # store module, attr name, and dtype
+                        setattr(mod, attr, val.to(self.fallback))  # overwrite with fallback dtype
+
     def __exit__(self, *args):
         # Convert model parameters back to original dtype
         for name, param in self.model.named_parameters():
@@ -464,6 +485,15 @@ class ConvertEmulatedDtypes:
         # Convert inputs back to original dtype
         for inp, df in zip(self.flatten_object(self.inputs), self.input_dfs):
             inp.data = inp.data.to(df)
+
+        # Restore all extra tensor attributes
+        for key, (mod, attr, orig_dtype) in self.attr_dfs.items():
+            try:
+                val = getattr(mod, attr)
+                if isinstance(val, torch.Tensor):
+                    setattr(mod, attr, val.to(orig_dtype))  # revert to original dtype
+            except Exception as e:
+                logger.warning(f"Failed to restore attribute '{attr}' on module '{mod}': {e}")
 
 
 def compile_pytorch_for_forge(torchmod, *inputs, graph_name, compiler_cfg, verify_cfg=None, input_names=[]):
