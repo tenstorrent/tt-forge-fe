@@ -77,7 +77,7 @@ class OperatorLists:
         "buffer",
         "pow",
         "logical_not",  # bug
-        "logical_and",  # bug
+        "logical_and",  # RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph
         "dropout",  # pcc?
         # Binary operators
         "less_equal",
@@ -94,6 +94,7 @@ class OperatorLists:
         "cumsum",  # bug
         "argmax",  # shape calc is wrong
         "tilizer",  # bug
+        "log",  # pcc, probably due to negative values, ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model=tensor([],
         # Binary operators
         "divide",  # bug
         # Nary operators
@@ -113,6 +114,7 @@ class OperatorLists:
         "asinh",
         # "arcsinh",  # alias for asinh
         "atan",
+        "atan2",
         # "arctan",  # alias for atan
         "atanh",
         # "arctanh",  # alias for atanh
@@ -140,6 +142,7 @@ class OperatorLists:
         "positive",
         "rad2deg",
         "round",
+        "rsqrt",
         "sign",
         "sgn",
         "signbit",
@@ -154,6 +157,19 @@ class OperatorLists:
         "bitwise_xor",
         "bitwise_left_shift",
         "bitwise_right_shift",
+        "floor_divide",
+        "nextafter",
+        "fmin",
+        "fmax",
+        "fmod",
+        "logaddexp",
+        "logaddexp2",
+        "le",
+        "lt",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
+        "ge",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
+        "gt",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
+        "ne",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
+        "eq",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
         # Nary operators
         "concatenate",
         "embedding",
@@ -162,6 +178,10 @@ class OperatorLists:
         "reshape",
         "transpose",
         "repeat_interleave",
+        # Reduce operators
+        "mean",
+        "max",
+        "sum",
         # Activation functions
         "softmax",
         "layer_norm",
@@ -171,6 +191,7 @@ class OperatorLists:
 
     UNSTABLE_PYTORCH = (
         # Unary operators
+        "exp",  # pcc?
         # "relu",
         "sqrt",  # skip because it's failing for negative values
         # "reciprocal",
@@ -185,11 +206,13 @@ class OperatorLists:
         "pow",
         "clamp",
         # "log",
-        # "log1p",
+        "log",  # pcc, probably due to negative values, ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model=tensor([]
+        "log1p",  # pcc, probably due to negative values
         # "gelu",
         # "leaky_relu",
         "bitwise_not",
         # Binary operators
+        "remainder",  # ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model=tensor([e-01, 1.3192e-01, -9.0571e-01, ..., -4.5159e-01
         # Nary operators
         # Other
         # "linear",
