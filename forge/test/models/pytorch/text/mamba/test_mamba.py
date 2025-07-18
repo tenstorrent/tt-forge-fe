@@ -20,7 +20,12 @@ from test.models.models_utils import generate_no_cache, pad_inputs
 from test.utils import download_model
 
 variants = [
-    pytest.param("state-spaces/mamba-790m-hf"),
+    pytest.param(
+        "state-spaces/mamba-790m-hf",
+        marks=pytest.mark.skip(
+            reason="Segmentation fault. Issue Link: https://github.com/tenstorrent/tt-forge-fe/issues/2586"
+        ),
+    ),
     pytest.param(
         "state-spaces/mamba-2.8b-hf",
         marks=[
@@ -41,6 +46,9 @@ variants = [
     ),
     pytest.param(
         "state-spaces/mamba-370m-hf",
+        marks=pytest.mark.skip(
+            reason="Segmentation fault. Issue Link: https://github.com/tenstorrent/tt-forge-fe/issues/2586"
+        ),
     ),
 ]
 

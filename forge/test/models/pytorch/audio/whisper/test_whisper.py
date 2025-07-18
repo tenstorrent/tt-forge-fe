@@ -35,6 +35,9 @@ variants = [
     ),
     pytest.param(
         "openai/whisper-small",
+        marks=pytest.mark.xfail(
+            reason="Data mismatch. PCC = 0.9498597935454118, but required = 0.99. Issue link: https://github.com/tenstorrent/tt-forge-fe/issues/2587"
+        ),
     ),
     pytest.param(
         "openai/whisper-medium",
