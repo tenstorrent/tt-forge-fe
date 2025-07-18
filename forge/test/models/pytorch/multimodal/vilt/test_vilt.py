@@ -31,10 +31,13 @@ from test.models.pytorch.multimodal.vilt.model_utils.model import (
 )
 from test.utils import download_model
 
-input_image = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
-image = Image.open(str(input_image))
 text1 = "How many cats are there?"
 text2 = "a bunch of cats laying on a [MASK]."
+
+
+def get_image():
+    input_image = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
+    return Image.open(str(input_image))
 
 
 def generate_model_vilt_question_answering_hf_pytorch(variant):
@@ -49,7 +52,7 @@ def generate_model_vilt_question_answering_hf_pytorch(variant):
     model = download_model(ViltForQuestionAnswering.from_pretrained, variant, config=config)
     model.eval()
 
-    encoding = processor(image, text1, return_tensors="pt")
+    encoding = processor(get_image(), text1, return_tensors="pt")
 
     # Wrapper
     text_vision_embedding_model = ViLtEmbeddingWrapper(model)
@@ -112,7 +115,7 @@ def generate_model_vilt_maskedlm_hf_pytorch(variant):
     model.eval()
 
     # prepare inputs
-    encoding = processor(image, text2, return_tensors="pt")
+    encoding = processor(get_image(), text2, return_tensors="pt")
 
     # Wrapper
     text_vision_embedding_model = ViLtEmbeddingWrapper(model)

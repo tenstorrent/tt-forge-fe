@@ -139,6 +139,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       allow-fail: true
+      sh-runner: true
 
   test_sweeps:
     if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
@@ -156,6 +157,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       allow-fail: true
+      sh-runner: true
 
   fail-notify:
     if: always()
