@@ -83,7 +83,7 @@ void decompose_reshape(const Op &op, DecomposingContext &dc, const std::vector<N
 
     NodeContext result = inputs[0];  // clang-format off
     for (; rank < 0; ++rank) result = dc.op(graphlib::OpType("squeeze",   {0},                           {{"dim", 0}}), {std::move(result)});
-    for (; rank > 0; --rank) result = dc.op(graphlib::OpType("unsqueeze", {0, int(result.shape.size())}, {{"dim", 0}}), {result});  // clang-format on
+    for (; rank > 0; --rank) result = dc.op(graphlib::OpType("unsqueeze", {0, int(result.shape.size())}, {{"dim", 0}, {"orig_shape_len", int(result.shape.size())}}), {result});  // clang-format on
 
     dc.fuse(result);
 }

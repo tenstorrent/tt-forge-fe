@@ -119,7 +119,7 @@ def Pow(name: str, operandA: Tensor, exponent: Union[int, float]) -> Tensor:
         Forge tensor
     """
 
-    return op("pow", name, operandA, attrs=(exponent,)).get_tensor()
+    return op("pow", name, operandA, attrs=(exponent,), exponent=exponent).get_tensor()
 
 
 def Identity(name: str, operandA: Tensor, unsqueeze: str = None, unsqueeze_dim: int = None) -> Tensor:
@@ -242,7 +242,7 @@ def Relu(name: str, operandA: Tensor, threshold=0.0, mode="min") -> Tensor:
     if threshold == 0.0 and mode == "min":
         return op("relu", name, operandA).get_tensor()  # avoid threshold < 0.0 error due to FP arithmetics
     else:
-        return op("relu", name, operandA, attrs=(threshold, mode)).get_tensor()
+        return op("relu", name, operandA, attrs=(threshold, mode), threshold=threshold, mode=mode).get_tensor()
 
 
 def LeakyRelu(name: str, operandA: Tensor, alpha: int) -> Tensor:
@@ -293,7 +293,7 @@ def Gelu(name: str, operandA: Tensor, approximate="none") -> Tensor:
         Forge tensor
     """
 
-    return op("gelu", name, operandA, attrs=(approximate,)).get_tensor()
+    return op("gelu", name, operandA, attrs=(approximate,), approximate=approximate).get_tensor()
 
 
 def Sigmoid(name: str, operandA: Tensor) -> Tensor:
@@ -548,7 +548,7 @@ def Dropout(name: str, operandA: Tensor, p: float = 0.5, training: bool = True, 
         Forge tensor
     """
 
-    return op("dropout", name, operandA, attrs=(p, training, seed)).get_tensor()
+    return op("dropout", name, operandA, attrs=(p, training, seed), p=p, training=training, seed=seed).get_tensor()
 
 
 def Tilize(name: str, operandA: Tensor) -> Tensor:

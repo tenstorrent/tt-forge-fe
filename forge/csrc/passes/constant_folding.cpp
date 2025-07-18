@@ -91,7 +91,7 @@ static void insert_pad_within_tile(graphlib::Graph *graph, graphlib::Edge edge, 
     bool implicit_broadcast = producer_dim_size == 1;
     if (implicit_broadcast)
     {
-        tms.push_back(graphlib::OpType("broadcast", {dim, size}, {}));
+        tms.push_back(graphlib::OpType("broadcast", {dim, size}, {{"dim", dim}, {"size", size}}));
         return;
     }
 
@@ -104,7 +104,10 @@ static void insert_pad_within_tile(graphlib::Graph *graph, graphlib::Edge edge, 
                 consumer->clone("pad_tile_" + producer->name() + "_" + std::to_string(edge.edge_creation_id)),
                 graph->get_subgraph_id_for_node(producer->id()))
             ->as<graphlib::OpNode>();
-    pad_tile->change_op_type(graphlib::OpType("pad_tile", {dim, (int)producer->shape()[dim]}));
+    pad_tile->change_op_type(graphlib::OpType(
+        "pad_tile",
+        {dim, (int)producer->shape()[dim]},
+        {{"dim", dim}, {"original_length", (int)producer->shape()[dim]}}));
     auto [incoming_edge, outgoing_edge] = graphlib::insert_node_on_edge(graph, edge, pad_tile);
     if (only_bcast)
     {

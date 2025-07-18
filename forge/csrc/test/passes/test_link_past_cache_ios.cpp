@@ -38,7 +38,8 @@ struct WhisperPastCacheBase : testing::Test
         auto transpose_1 = add_node<graphlib::PyOpNode>(
             *graph, "transpose_1", graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {weight});
         auto matmul_1 = add_node<graphlib::PyOpNode>(*graph, "matmul_1", "matmul", {}, {in_1, transpose_1});
-        auto hslice_1 = add_node<graphlib::PyOpNode>(*graph, "hslice_1", "hslice", {12}, {matmul_1});
+        auto hslice_1 = add_node<graphlib::PyOpNode>(
+            *graph, "hslice_1", graphlib::OpType("hslice", {12}, {{"slice_factor", 12}}), {matmul_1});
         auto concat_1 = add_node<graphlib::PyOpNode>(
             *graph, "concat_1", graphlib::OpType("concatenate", {}, {{"dim", -2}}), {pkv_input_1, hslice_1});
         auto output_1 = create_output(*graph, "output_1", concat_1);
@@ -46,7 +47,8 @@ struct WhisperPastCacheBase : testing::Test
         auto transpose_2 = add_node<graphlib::PyOpNode>(
             *graph, "transpose_2", graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {weight});
         auto matmul_2 = add_node<graphlib::PyOpNode>(*graph, "matmul_2", "matmul", {}, {in_2, transpose_2});
-        auto hslice_2 = add_node<graphlib::PyOpNode>(*graph, "hslice_2", "hslice", {12}, {matmul_2});
+        auto hslice_2 = add_node<graphlib::PyOpNode>(
+            *graph, "hslice_2", graphlib::OpType("hslice", {12}, {{"slice_factor", 12}}), {matmul_2});
         auto concat_2 = add_node<graphlib::PyOpNode>(
             *graph, "concat_2", graphlib::OpType("concatenate", {}, {{"dim", -2}}), {pkv_input_2, hslice_2});
         auto output_2 = create_output(*graph, "output_2", concat_2);
@@ -136,7 +138,8 @@ struct WhisperPastCacheSubGraph : testing::Test
             *graph, "transpose_1", graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {weight}, {}, 0);
         auto matmul_1 =
             add_node<graphlib::PyOpNode>(*graph, "matmul_1", "matmul", {}, {reshape_1, transpose_1}, {}, {}, {}, 0);
-        auto hslice_1 = add_node<graphlib::PyOpNode>(*graph, "hslice_1", "hslice", {6}, {matmul_1}, {}, {}, {}, 0);
+        auto hslice_1 = add_node<graphlib::PyOpNode>(
+            *graph, "hslice_1", graphlib::OpType("hslice", {6}, {{"slice_factor", 6}}), {matmul_1}, {}, 0);
         auto output_1_1 = create_output(*graph, "output_1_1", hslice_1, 0);
         auto reshape_1_ = add_node<graphlib::PyOpNode>(
             *graph,
@@ -235,7 +238,8 @@ struct T5PastCacheRotate : testing::Test
         auto transpose_1 = add_node<graphlib::PyOpNode>(
             *graph, "transpose_1", graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {weight});
         auto matmul_1 = add_node<graphlib::PyOpNode>(*graph, "matmul_1", "matmul", {}, {in_1, transpose_1});
-        auto hslice_1 = add_node<graphlib::PyOpNode>(*graph, "hslice_1", "hslice", {8}, {matmul_1});
+        auto hslice_1 = add_node<graphlib::PyOpNode>(
+            *graph, "hslice_1", graphlib::OpType("hslice", {8}, {{"slice_factor", 8}}), {matmul_1});
         auto concat_1 = add_node<graphlib::PyOpNode>(
             *graph, "concat_1", graphlib::OpType("concatenate", {}, {{"dim", -2}}), {pkv_input_1, hslice_1});
         auto output_1 = create_output(*graph, "output_1", concat_1);
@@ -244,7 +248,8 @@ struct T5PastCacheRotate : testing::Test
         auto transpose_2 = add_node<graphlib::PyOpNode>(
             *graph, "transpose_2", graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {weight});
         auto matmul_2 = add_node<graphlib::PyOpNode>(*graph, "matmul_2", "matmul", {}, {in_2, transpose_2});
-        auto hslice_2 = add_node<graphlib::PyOpNode>(*graph, "hslice_2", "hslice", {8}, {matmul_2});
+        auto hslice_2 = add_node<graphlib::PyOpNode>(
+            *graph, "hslice_2", graphlib::OpType("hslice", {8}, {{"slice_factor", 8}}), {matmul_2});
         auto concat_2 = add_node<graphlib::PyOpNode>(
             *graph, "concat_2", graphlib::OpType("concatenate", {}, {{"dim", -2}}), {pkv_input_2, hslice_2});
         auto output_2 = create_output(*graph, "output_2", concat_2);
@@ -364,10 +369,15 @@ struct Falcon40bPastCache : testing::Test
         auto transpose_1 = add_node<graphlib::PyOpNode>(
             *graph, "transpose_1", graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {weight});
         auto matmul_1 = add_node<graphlib::PyOpNode>(*graph, "matmul_1", "matmul", {}, {in_1_1, transpose_1});
-        auto hslice_1 = add_node<graphlib::PyOpNode>(*graph, "hslice_1", "hslice", {1}, {matmul_1});
+        auto hslice_1 = add_node<graphlib::PyOpNode>(
+            *graph, "hslice_1", graphlib::OpType("hslice", {1}, {{"slice_factor", 1}}), {matmul_1});
         auto multiply_1 = add_node<graphlib::PyOpNode>(*graph, "multiply_1", "multiply", {}, {hslice_1, cos_0});
         auto add_1 = add_node<graphlib::PyOpNode>(*graph, "add_1", "add", {}, {multiply_1, in_1_2});
-        auto broadcast_1 = add_node<graphlib::PyOpNode>(*graph, "broadcast_1", "broadcast", {-3, 32, 1}, {add_1});
+        auto broadcast_1 = add_node<graphlib::PyOpNode>(
+            *graph,
+            "broadcast_1",
+            graphlib::OpType("broadcast", {-3, 32, 1}, {{"dim", -3}, {"size", 32}, {"explicit_bcast", true}}),
+            {add_1});
         auto output_1 = create_output(*graph, "output_1", broadcast_1);
 
         // path 2
@@ -485,8 +495,16 @@ struct Fuyu8bPastCache : testing::Test
             *graph, "reshape_2", graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 416, 64, 64}}}), {matmul_2});
         auto transpose_2 = add_node<graphlib::PyOpNode>(
             *graph, "transpose_2", graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {reshape_2});
-        auto index_2_1 = add_node<graphlib::PyOpNode>(*graph, "index_2_1", "index", {-1, 0, 32, 64}, {transpose_2});
-        auto index_2_2 = add_node<graphlib::PyOpNode>(*graph, "index_2_2", "index", {-1, 32, 64, 64}, {transpose_2});
+        auto index_2_1 = add_node<graphlib::PyOpNode>(
+            *graph,
+            "index_2_1",
+            graphlib::OpType("index", {-1, 0, 32, 64}, {{"dim", -1}, {"begin", 0}, {"length", 32}, {"stride", 64}}),
+            {transpose_2});
+        auto index_2_2 = add_node<graphlib::PyOpNode>(
+            *graph,
+            "index_2_2",
+            graphlib::OpType("index", {-1, 32, 64, 64}, {{"dim", -1}, {"begin", 32}, {"length", 64}, {"stride", 64}}),
+            {transpose_2});
         auto add_2 = add_node<graphlib::PyOpNode>(*graph, "add_2", "add", {}, {in_add, index_2_2});
         auto concat_2 = add_node<graphlib::PyOpNode>(
             *graph, "concat_2", graphlib::OpType("concatenate", {}, {{"dim", -1}}), {index_2_1, add_2});

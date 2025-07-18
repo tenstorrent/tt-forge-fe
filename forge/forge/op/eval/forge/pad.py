@@ -244,7 +244,7 @@ def extract_and_mirror(dc, input, dim_axis, start, stop):
     # Mirror patch
     indices = torch.arange(stop - start - 1, -1, -1)
     indices_tensor = dc.tensor(indices)
-    patch_mirrored = dc.op("adv_index", [patch, indices_tensor], (dim_axis,))
+    patch_mirrored = dc.op_with_named_attrs("adv_index", [patch, indices_tensor], {"dim": dim_axis}, (dim_axis,))
 
     return patch_mirrored
 

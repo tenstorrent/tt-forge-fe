@@ -686,7 +686,12 @@ def decompose(type, attr, dc, inputs):
 
             d_start = i * sD
 
-            depth_slice = dc.op("index", [activations], (2, d_start, d_start + kD, activations.shape[2]))
+            depth_slice = dc.op_with_named_attrs(
+                "index",
+                [activations],
+                {"dim": 2, "start": d_start, "stop": d_start + kD, "stride": activations.shape[2]},
+                attrs=(2, d_start, d_start + kD, activations.shape[2]),
+            )
             depth_avg = dc.op_with_named_attrs("reduce_avg", [depth_slice], {"dim": [2], "keep_dim": True}, (2, True))
 
             named_attrs = {
@@ -722,7 +727,10 @@ def decompose(type, attr, dc, inputs):
             depth_avg_pooled = dc.op_with_named_attrs("avg_pool2d", [depth_avg], named_attrs, attr)
 
             depth_avg_pooled = dc.op_with_named_attrs(
-                "unsqueeze", [depth_avg_pooled], {"dim": 2}, (0, len(depth_avg_pooled.shape))
+                "unsqueeze",
+                [depth_avg_pooled],
+                {"dim": 2, "orig_shape_len": len(depth_avg_pooled.shape)},
+                (0, len(depth_avg_pooled.shape)),
             )
             result = dc.op_with_named_attrs("concatenate", [result, depth_avg_pooled], {"dim": (2)})
 

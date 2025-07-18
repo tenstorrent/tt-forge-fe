@@ -122,7 +122,9 @@ class Conv2d(PyOp):
 
         if bias is not None and len(bias.shape) < len(activations.shape):
             while len(bias.shape) < len(activations.shape):
-                bias = dc.op_with_named_attrs("unsqueeze", [bias], {"dim": 0}, (0, len(bias.shape)))
+                bias = dc.op_with_named_attrs(
+                    "unsqueeze", [bias], {"dim": 0, "orig_shape_len": len(bias.shape)}, (0, len(bias.shape))
+                )
 
         is_bias_unchanged = bias is None or bias == inputs[2]
 

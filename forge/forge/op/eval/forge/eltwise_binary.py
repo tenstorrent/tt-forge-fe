@@ -155,13 +155,20 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
 
         if slice_factor != None:
             concat_z = dc.op("interleave", [operand0, operand1], (-3, 1))
-            result = dc.op("reduce_max", [concat_z], (-3, 2))
+            result = dc.op_with_named_attrs(
+                "reduce_max", [concat_z], {"dim_arg": -3, "stride": 2, "keep_dim": True}, (-3, 2, True)
+            )
         else:
             concat_z = dc.op_with_named_attrs("concatenate", [operand0, operand1], {"dim": -3})
-            result = dc.op("reduce_max", [concat_z], (-3,))
+            result = dc.op_with_named_attrs(
+                "reduce_max",
+                [concat_z],
+                {"dim_arg": -3, "stride": concat_z.shape[-3], "keep_dim": True},
+                (-3, concat_z.shape[-3], True),
+            )
 
         while len(result.shape) > max_operand_nd:
-            result = dc.op("squeeze", [result], (0,))
+            result = dc.op_with_named_attrs("squeeze", [result], {"dim": 0}, (0,))
 
         dc.fuse(result)
         return

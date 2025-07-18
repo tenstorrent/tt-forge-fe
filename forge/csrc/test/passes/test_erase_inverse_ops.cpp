@@ -154,16 +154,20 @@ TEST_F(EraseInverseOps, erase_inverse_ops_dual_reduce)
     // auto buffer2 = add_node<graphlib::PyOpNode>(*graph, "buffer2", "nop", {}, {buffer1});
 
     auto post_transpose = graph->get_node_by_name("post_transpose");
-    auto smx_1 = add_node<graphlib::PyOpNode>(*graph, "smx_1", "softmax", {-1, false}, {post_transpose});
+    auto smx_1 = add_node<graphlib::PyOpNode>(
+        *graph, "smx_1", graphlib::OpType("softmax", {-1, false}, {{"dim", -1}, {"stable", false}}), {post_transpose});
     auto reshape_1 = add_node<graphlib::PyOpNode>(
         *graph, "reshape_1", graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 512, 10, 16}}}), {smx_1});
 
-    auto reduce_1 = add_node<graphlib::PyOpNode>(*graph, "reduce_1", "reduce_sum", {-2, true}, {reshape_1});
-    auto reduce_2 = add_node<graphlib::PyOpNode>(*graph, "reduce_2", "reduce_sum", {-1, true}, {reduce_1});
+    auto reduce_1 = add_node<graphlib::PyOpNode>(
+        *graph, "reduce_1", graphlib::OpType("reduce_sum", {-2, true}, {{"dim", -2}, {"keepdim", true}}), {reshape_1});
+    auto reduce_2 = add_node<graphlib::PyOpNode>(
+        *graph, "reduce_2", graphlib::OpType("reduce_sum", {-1, true}, {{"dim", -1}, {"keepdim", true}}), {reduce_1});
     auto reshape_2 = add_node<graphlib::PyOpNode>(
         *graph, "reshape_2", graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 1, 512, 1}}}), {reduce_2});
 
-    auto smx_2 = add_node<graphlib::PyOpNode>(*graph, "smx_2", "softmax", {-1, false}, {reshape_2});
+    auto smx_2 = add_node<graphlib::PyOpNode>(
+        *graph, "smx_2", graphlib::OpType("softmax", {-1, false}, {{"dim", -1}, {"stable", false}}), {reshape_2});
     graph->remove_node(graph->get_node_by_name("out0"));
     create_output(*graph, "out0", smx_2);
 
@@ -349,8 +353,14 @@ struct UpdateSelectNamedAttrsTest : testing::Test
 
         graphlib::Shape initial_shape = graphlib::Shape::create({1, 512, 160});
         graphlib::InputNode *input_node = create_input(*graph, "input", initial_shape);
-        auto select_node =
-            add_node<graphlib::PyOpNode>(*graph, "select", "select", {dim, begin, length, stride}, {input_node});
+        auto select_node = add_node<graphlib::PyOpNode>(
+            *graph,
+            "select",
+            graphlib::OpType(
+                "select",
+                {dim, begin, length, stride},
+                {{"dim", dim}, {"begin", begin}, {"length", length}, {"stride", stride}}),
+            {input_node});
         select_node->set_op_attr("select_dim", dim);
         select_node->set_op_attr("begin", begin);
         select_node->set_op_attr("length", length);
@@ -450,7 +460,8 @@ struct UpdateVStackAttrsTest : testing::Test
 
         auto input_node_0 = create_input(*graph, "input_0", shape_0);
 
-        vstack_node = add_node<graphlib::PyOpNode>(*graph, "vstack", "vstack", {16}, {input_node_0});
+        vstack_node = add_node<graphlib::PyOpNode>(
+            *graph, "vstack", graphlib::OpType("vstack", {16}, {{"num_stacks", 16}}), {input_node_0});
 
         create_output(*graph, "out", vstack_node);
     }
@@ -694,8 +705,13 @@ struct EraseInverseOpsSqueezeAndUnsqueeze : testing::Test
         auto mask_node = create_input(*graph, "attention_mask", mask_shape);
         auto weights_node = create_input(*graph, "attention_weights", weights_shape);
 
-        auto cast_1_node = add_node<graphlib::PyOpNode>(*graph, "cast", "cast", {"Float32"}, {mask_node});
-        auto unsqueeze_node = add_node<graphlib::PyOpNode>(*graph, "unsqueeze", "unsqueeze", {0, 3}, {weights_node});
+        auto cast_1_node = add_node<graphlib::PyOpNode>(
+            *graph, "cast", graphlib::OpType("cast", {"Float32"}, {{"dtype", "Float32"}}), {mask_node});
+        auto unsqueeze_node = add_node<graphlib::PyOpNode>(
+            *graph,
+            "unsqueeze",
+            graphlib::OpType("unsqueeze", {0, 3}, {{"dim", 0}, {"orig_shape_len", 3}}),
+            {weights_node});
 
         tt::graphlib::InputNode *maximum_input_1 =
             create_input(*graph, "input_1_maximum", graphlib::Shape::create({1}));
@@ -704,7 +720,8 @@ struct EraseInverseOpsSqueezeAndUnsqueeze : testing::Test
         auto maximum_node =
             add_node<graphlib::PyOpNode>(*graph, "maximum", "maximum", {}, {maximum_input_1, add_1_node});
 
-        squeeze_node = add_node<graphlib::PyOpNode>(*graph, "squeeze", "squeeze", {0}, {maximum_node});
+        squeeze_node = add_node<graphlib::PyOpNode>(
+            *graph, "squeeze", graphlib::OpType("squeeze", {0}, {{"dim", 0}}), {maximum_node});
 
         create_output(*graph, "out", squeeze_node);
     }
@@ -762,7 +779,11 @@ struct CommuteTransposeThroughReduce : testing::Test
             {transpose_node});
 
         // Add a reduce_avg on the last dimension (-1)
-        auto reduce_node = add_node<graphlib::PyOpNode>(*graph, "reduce", "reduce_avg", {-1, true}, {reshape_node});
+        auto reduce_node = add_node<graphlib::PyOpNode>(
+            *graph,
+            "reduce",
+            graphlib::OpType("reduce_avg", {-1, true}, {{"dim", -1}, {"keepdim", true}}),
+            {reshape_node});
 
         create_output(*graph, "out", reduce_node);
     }

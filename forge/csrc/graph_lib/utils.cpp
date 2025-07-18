@@ -1213,7 +1213,10 @@ bool swap_broadcast_dims(graphlib::Graph *graph, graphlib::Edge edge, int old_di
             bool explicit_bcast = std::get<bool>(op_type.legacy_attrs_[2]);
             if (dim == old_dim)
             {
-                graphlib::OpType updated_bcast("broadcast", {new_dim, size, explicit_bcast});
+                graphlib::OpType updated_bcast(
+                    "broadcast",
+                    {new_dim, size, explicit_bcast},
+                    {{"dim", new_dim}, {"size", size}, {"explicit_bcast", explicit_bcast}});
                 new_tms.push_back(updated_bcast);
                 swapped = true;
             }
@@ -1718,7 +1721,8 @@ void ConstEvalGraph::pad_output_to_forge_dims(std::string const &name_prefix)
     {
         if (shape[dim] % graphlib::Shape::FORGE_TILE_DIM != 0)
         {
-            graphlib::OpType pad_tile("pad_tile", {dim, (int)shape[dim]});
+            graphlib::OpType pad_tile(
+                "pad_tile", {dim, (int)shape[dim]}, {{"dim", dim}, {"original_length", (int)shape[dim]}});
             auto consteval_pad_tile = graphlib::create_node<graphlib::PyOpNode>(
                 name_prefix + "_pad_tile_" + ((dim == -1) ? "c_" : "r_") + output->name(), pad_tile);
             shape[dim] = align_up_tile(shape[dim]);

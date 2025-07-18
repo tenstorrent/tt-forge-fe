@@ -37,10 +37,18 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
     reshape_node->set_shape(graphlib::Shape::create({2, 2, 6}));
 
     // Create index operations
-    auto index1_node = add_node<graphlib::PyOpNode>(*graph, "index1", "index", {1, 0, 1, 1}, {reshape_node});
+    auto index1_node = add_node<graphlib::PyOpNode>(
+        *graph,
+        "index1",
+        graphlib::OpType("index", {1, 0, 1, 1}, {{"dim", 1}, {"begin", 0}, {"length", 1}, {"stride", 1}}),
+        {reshape_node});
     index1_node->set_shape(graphlib::Shape::create({2, 1, 6}));
 
-    auto index2_node = add_node<graphlib::PyOpNode>(*graph, "index2", "index", {1, 1, 2, 1}, {reshape_node});
+    auto index2_node = add_node<graphlib::PyOpNode>(
+        *graph,
+        "index2",
+        graphlib::OpType("index", {1, 1, 2, 1}, {{"dim", 1}, {"begin", 1}, {"length", 2}, {"stride", 1}}),
+        {reshape_node});
     index2_node->set_shape(graphlib::Shape::create({2, 1, 6}));
 
     // Create squeeze operations

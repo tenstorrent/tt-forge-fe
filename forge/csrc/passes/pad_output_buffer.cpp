@@ -23,7 +23,10 @@ void insert_forge_pad(
     graphlib::Node *node = graph->node_by_id(edge.consumer_node_id);
 
     // Construct forge_pad node and insert in graph
-    graphlib::OpType forge_pad_op_type("forge_pad", {rt_pad_amount, ct_pad_amount, 0});
+    graphlib::OpType forge_pad_op_type(
+        "forge_pad",
+        {rt_pad_amount, ct_pad_amount, 0},
+        {{"rt_pad_amount", rt_pad_amount}, {"ct_pad_amount", ct_pad_amount}, {"pad_value", 0}});
     auto forge_pad_ref_node = graph->add_node(
         graphlib::create_node<graphlib::PyOpNode>(node->name() + "_pad", forge_pad_op_type),
         graph->get_subgraph_id_for_node(node->id()));

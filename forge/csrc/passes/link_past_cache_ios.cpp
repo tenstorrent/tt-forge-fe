@@ -73,7 +73,8 @@ void rotate_params(graphlib::Graph *graph, std::vector<graphlib::Node *> params_
     {
         graphlib::Shape shape = param->shape();
         int end = shape[-2];
-        graphlib::OpType index_op_right("index", {-2, 32, end, 1});
+        graphlib::OpType index_op_right(
+            "index", {-2, 32, end, 1}, {{"dim", -2}, {"begin", 32}, {"length", end}, {"stride", 1}});
         auto index_node_right = graph->add_node(
             graphlib::create_node<graphlib::PyOpNode>(param->name() + "_index_right", index_op_right), subgraph_index);
         graphlib::Edge read_edge_right(
@@ -81,7 +82,8 @@ void rotate_params(graphlib::Graph *graph, std::vector<graphlib::Node *> params_
         graph->add_edge(read_edge_right);
         calculate_and_set_node_shape(graph, index_node_right);
 
-        graphlib::OpType index_op_left("index", {-2, 0, 32, 1});
+        graphlib::OpType index_op_left(
+            "index", {-2, 0, 32, 1}, {{"dim", -2}, {"begin", 0}, {"length", 32}, {"stride", 1}});
         auto index_node_left = graph->add_node(
             graphlib::create_node<graphlib::PyOpNode>(param->name() + "_index_left", index_op_left), subgraph_index);
         graphlib::Edge read_edge_left(
@@ -272,7 +274,8 @@ std::map<std::string, std::size_t> convert_inputs_to_params(
             {
                 graphlib::Shape concat_shape = producers[0]->shape();
                 int end = concat_shape[-2];
-                graphlib::OpType index_op("index", {-2, -32, end, 1});
+                graphlib::OpType index_op(
+                    "index", {-2, -32, end, 1}, {{"dim", -2}, {"begin", -32}, {"length", end}, {"stride", 1}});
                 auto index_node = graph->add_node(
                     graphlib::create_node<graphlib::PyOpNode>(producers[0]->name() + "_index", index_op),
                     graph->get_subgraph_id_for_node(producers[0]->id()));
@@ -287,7 +290,7 @@ std::map<std::string, std::size_t> convert_inputs_to_params(
             // Add control-edge and hstack op if needed
             if (slice_factor > 1)
             {
-                graphlib::OpType stack_op("hstack", {slice_factor});
+                graphlib::OpType stack_op("hstack", {slice_factor}, {{"slice_factor", slice_factor}});
                 auto stack_node = graph->add_node(
                     graphlib::create_node<graphlib::PyOpNode>(output_node->name() + "_stack", stack_op),
                     graph->get_subgraph_id_for_node(output_node->id()));
@@ -438,7 +441,7 @@ std::map<std::string, std::size_t> convert_inputs_to_params(
 
         if (is_concat and slice_factor > 1)
         {
-            graphlib::OpType slice_op("hslice", {slice_factor});
+            graphlib::OpType slice_op("hslice", {slice_factor}, {{"slice_factor", slice_factor}});
             auto slice_node = graph->add_node(
                 graphlib::create_node<graphlib::PyOpNode>(input_node->name() + "_slice", slice_op),
                 graph->get_subgraph_id_for_node(input_node->id()));
@@ -477,7 +480,7 @@ std::map<std::string, std::size_t> convert_inputs_to_params(
         int stack_factor = output_node->shape().canonical()[-3] / input_param->shape().canonical()[-3];
         if (stack_factor > 1)
         {
-            graphlib::OpType stack_op("hstack", {stack_factor});
+            graphlib::OpType stack_op("hstack", {stack_factor}, {{"slice_factor", stack_factor}});
             auto stack_node = graph->add_node(
                 graphlib::create_node<graphlib::PyOpNode>(output_node->name() + "_stack", stack_op),
                 graph->get_subgraph_id_for_node(output_node->id()));
