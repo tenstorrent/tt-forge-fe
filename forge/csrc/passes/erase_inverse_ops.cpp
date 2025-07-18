@@ -91,7 +91,7 @@ bool has_broadcast_on_dim(graphlib::Graph *graph, graphlib::Edge edge, int neede
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
-            int dim = std::get<int>(op_type.legacy_attrs_[0]);
+            int dim = op_type.attr_as<int>("dim");
             if (dim == needed_dim)
             {
                 return true;
@@ -338,8 +338,8 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
                 {
                     if (tm.type() == ops::OpType::Broadcast)
                     {
-                        int dim = std::get<int>(tm.legacy_attrs_[0]);
-                        int volume = std::get<int>(tm.legacy_attrs_[1]);
+                        int dim = tm.attr_as<int>("dim");
+                        int volume = tm.attr_as<int>("size");
                         op_shape[dim] *= volume;
                     }
                 }

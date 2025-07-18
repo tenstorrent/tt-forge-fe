@@ -137,8 +137,8 @@ static void commute_eltwise_ops(graphlib::Graph *graph, std::vector<graphlib::No
                 {
                     if (op_type.type() == ops::OpType::Broadcast)
                     {
-                        int bcast_dim = std::get<int>(op_type.legacy_attrs_[0]);
-                        int volume = std::get<int>(op_type.legacy_attrs_[1]);
+                        int bcast_dim = op_type.attr_as<int>("dim");
+                        int volume = op_type.attr_as<int>("size");
                         if (bcast_dim < 0)
                             bcast_dim += commute_shape.size();
 
