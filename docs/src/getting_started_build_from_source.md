@@ -118,7 +118,7 @@ This section goes over additional required dependencies. You may wish to check i
 sudo apt install -y \
     g++ \
     libstdc++-12-dev \
-    libmock-dev \
+    libgmock-dev \
     libnuma-dev \
     libhwloc-dev \
     doxygen \

@@ -32,4 +32,4 @@ def test_llama4(variant):
         priority=ModelPriority.P1,
     )
 
-    pytest.xfail(reason="Requires upgrade of `transformers` version")
+    pytest.xfail(reason="Requires multi-chip support")
