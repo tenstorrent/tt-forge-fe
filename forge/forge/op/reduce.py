@@ -93,7 +93,15 @@ def GroupedReduceAvg(name: str, operandA: Tensor, dim: int, groups: int, keep_di
     """
 
     assert (dim >= -4) and (dim <= 3)
-    return op("grouped_reduce_avg", name, operandA, attrs=(dim, groups, keep_dims)).get_tensor()
+    return op(
+        "grouped_reduce_avg",
+        name,
+        operandA,
+        attrs=(dim, groups, keep_dims),
+        dim=dim,
+        groups=groups,
+        keep_dims=keep_dims,
+    ).get_tensor()
 
 
 def ReduceMax(name: str, operandA: Tensor, dim: int, keep_dim: bool = True) -> Tensor:

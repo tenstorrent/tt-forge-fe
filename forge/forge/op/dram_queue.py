@@ -29,4 +29,4 @@ def DRAMQueue(name: str, operandA: Tensor, *, num_entries: int) -> Tensor:
         Forge tensor
     """
 
-    return op("dram_queue", name, operandA, attrs=(num_entries,)).get_tensor()
+    return op("dram_queue", name, operandA, attrs=(num_entries,), num_entries=num_entries).get_tensor()

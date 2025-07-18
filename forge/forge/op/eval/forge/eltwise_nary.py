@@ -166,7 +166,12 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
         x = attr[1]
         shifts = attr[2:]
 
-        return ac.op("conv_sum", [grad], [y, x, -shifts[operand * 2], -shifts[operand * 2 + 1]])
+        return ac.op_with_named_attrs(
+            "conv_sum",
+            [grad],
+            {"y": y, "x": x, "shift_y": -shifts[operand * 2], "shift_x": -shifts[operand * 2 + 1]},
+            [y, x, -shifts[operand * 2], -shifts[operand * 2 + 1]],
+        )
 
     elif op_type == "interleave":
         axis = attr[0]
@@ -176,12 +181,21 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
         num_operands = len(inputs)
         result = grad
         if grad.shape[-1] % TILE_DIM != 0:
-            result = ac.op("pad_tile", (result,), (-1, grad.shape[-1]))
+            result = ac.op_with_named_attrs(
+                "pad_tile", (result,), {"dim": -1, "original_length": grad.shape[-1]}, (-1, grad.shape[-1])
+            )
         if grad.shape[-2] % TILE_DIM != 0:
-            result = ac.op("pad_tile", (result,), (-2, grad.shape[-2]))
+            result = ac.op_with_named_attrs(
+                "pad_tile", (result,), {"dim": -2, "original_length": grad.shape[-2]}, (-2, grad.shape[-2])
+            )
         result = ac.op("hstack", (result,), (num_operands,))
         if grad.shape[-2] % TILE_DIM != 0:
-            result = ac.op("narrow", (result,), (-2, 0, grad.shape[-2], result.shape[-2]))
+            result = ac.op_with_named_attrs(
+                "narrow",
+                (result,),
+                {"dim": -2, "start": 0, "length": grad.shape[-2], "original_length": result.shape[-2]},
+                (-2, 0, grad.shape[-2], result.shape[-2]),
+            )
         result = ac.op(
             "select",
             (result,),
@@ -193,7 +207,12 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
             ),
         )
         if grad.shape[-1] % TILE_DIM != 0:
-            result = ac.op("narrow", (result,), (-1, 0, grad.shape[-1], result.shape[-1]))
+            result = ac.op_with_named_attrs(
+                "narrow",
+                (result,),
+                {"dim": -1, "start": 0, "length": grad.shape[-1], "original_length": result.shape[-1]},
+                (-1, 0, grad.shape[-1], result.shape[-1]),
+            )
         return result
 
     assert False, f"{op_type} not defined in eltwise_nary"

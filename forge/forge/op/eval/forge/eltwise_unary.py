@@ -171,7 +171,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         return res
 
     if type == "dropout":
-        return ac.op("dropout", (grad,), attr)
+        return ac.op_with_named_attrs("dropout", (grad,), {"p": attr[0], "training": attr[1], "seed": attr[2]}, attr)
 
     if type == "clip":
         x = inputs[0]

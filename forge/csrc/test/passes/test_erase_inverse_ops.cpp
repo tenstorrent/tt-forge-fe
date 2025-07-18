@@ -359,8 +359,14 @@ struct UpdateSelectNamedAttrsTest : testing::Test
 
         graphlib::Shape initial_shape = graphlib::Shape::create({1, 512, 160});
         graphlib::InputNode *input_node = create_input(*graph, "input", initial_shape);
-        auto select_node =
-            add_node<graphlib::PyOpNode>(*graph, "select", "select", {dim, begin, length, stride}, {input_node});
+        auto select_node = add_node<graphlib::PyOpNode>(
+            *graph,
+            "select",
+            graphlib::OpType(
+                "select",
+                {dim, begin, length, stride},
+                {{"dim", dim}, {"begin", begin}, {"length", length}, {"stride", stride}}),
+            {input_node});
         select_node->set_op_attr("select_dim", dim);
         select_node->set_op_attr("begin", begin);
         select_node->set_op_attr("length", length);
@@ -460,7 +466,8 @@ struct UpdateVStackAttrsTest : testing::Test
 
         auto input_node_0 = create_input(*graph, "input_0", shape_0);
 
-        vstack_node = add_node<graphlib::PyOpNode>(*graph, "vstack", "vstack", {16}, {input_node_0});
+        vstack_node = add_node<graphlib::PyOpNode>(
+            *graph, "vstack", graphlib::OpType("vstack", {16}, {{"num_stacks", 16}}), {input_node_0});
 
         create_output(*graph, "out", vstack_node);
     }
@@ -688,7 +695,8 @@ struct EraseInverseOpsSqueezeAndUnsqueeze : testing::Test
         auto mask_node = create_input(*graph, "attention_mask", mask_shape);
         auto weights_node = create_input(*graph, "attention_weights", weights_shape);
 
-        auto cast_1_node = add_node<graphlib::PyOpNode>(*graph, "cast", "cast", {"Float32"}, {mask_node});
+        auto cast_1_node = add_node<graphlib::PyOpNode>(
+            *graph, "cast", graphlib::OpType("cast", {"Float32"}, {{"dtype", "Float32"}}), {mask_node});
         auto unsqueeze_node = add_node<graphlib::PyOpNode>(
             *graph, "unsqueeze", graphlib::OpType("unsqueeze", {0}, {{"dim", 0}}), {weights_node});
 
