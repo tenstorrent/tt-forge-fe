@@ -8,7 +8,18 @@ add_library(ops
     op_constant.cpp
     op_cosine.cpp
     op_divide.cpp
+    op_equal.cpp
+    op_greater.cpp
+    op_greater_equal.cpp
+    op_heaviside.cpp
+    op_less.cpp
+    op_less_equal.cpp
+    op_logical_and.cpp
+    op_maximum.cpp
+    op_minimum.cpp
     op_multiply.cpp
+    op_not_equal.cpp
+    op_remainder.cpp
     op_sine.cpp
     op_transpose.cpp
     op_reshape.cpp
