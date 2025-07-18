@@ -61,6 +61,6 @@ RUN set -eux; \
     apt-get install -f -y "$TMP_DIR/ompi.deb" && \
     rm -rf "$TMP_DIR"
 
-# Install python packages
+# Install basic python packages (cmake and pytest are needed for the build)
 RUN pip install cmake \
     pytest
