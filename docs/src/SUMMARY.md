@@ -10,6 +10,7 @@
 # Project Setup
 - [Testing](./test.md)
     - [Pytest](./pytest.md)
+    - [Performance Benchmark](./perf.md)
 - [Tools](./tools.md)
 
 # Dev Notes

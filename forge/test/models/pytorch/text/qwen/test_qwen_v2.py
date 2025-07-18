@@ -176,4 +176,4 @@ def test_qwen2_conditional_generation(variant):
         priority=ModelPriority.P1,
     )
 
-    pytest.xfail(reason="Requires upgrade of `transformers` version")
+    pytest.xfail(reason="Requires multi-chip support")
