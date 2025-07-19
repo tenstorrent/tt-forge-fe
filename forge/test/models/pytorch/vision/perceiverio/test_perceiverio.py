@@ -70,7 +70,7 @@ def test_perceiverio_for_image_classification_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.PERCEIVERIO,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
         source=Source.HUGGINGFACE,
     )
 

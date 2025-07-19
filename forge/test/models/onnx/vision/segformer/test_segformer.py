@@ -31,7 +31,7 @@ def test_segformer_image_classification_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.SEGFORMER,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
         source=Source.HUGGINGFACE,
     )
 
@@ -85,7 +85,7 @@ def test_segformer_semantic_segmentation_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.SEGFORMER,
         variant=variant,
-        task=Task.SEMANTIC_SEGMENTATION,
+        task=Task.CV_IMAGE_SEG,
         source=Source.HUGGINGFACE,
     )
 

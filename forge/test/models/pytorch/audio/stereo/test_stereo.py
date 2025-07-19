@@ -45,7 +45,7 @@ def test_stereo(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.STEREO,
         variant=variant,
-        task=Task.MUSIC_GENERATION,
+        task=Task.AUDIO_TTA,
         source=Source.HUGGINGFACE,
     )
 

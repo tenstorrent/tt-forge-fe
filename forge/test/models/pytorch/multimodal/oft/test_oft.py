@@ -30,7 +30,7 @@ def test_oft(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.OFT,
         variant=variant.split("/")[-1],
-        task=Task.CONDITIONAL_GENERATION,
+        task=Task.CV_TTI,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

@@ -62,7 +62,7 @@ def test_mamba(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.MAMBA,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_TEXT_GEN,
         source=Source.HUGGINGFACE,
     )
 

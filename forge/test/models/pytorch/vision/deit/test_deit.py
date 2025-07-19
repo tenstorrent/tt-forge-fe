@@ -54,7 +54,7 @@ def test_deit_imgcls_hf_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.DEIT,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
         source=Source.HUGGINGFACE,
     )
 

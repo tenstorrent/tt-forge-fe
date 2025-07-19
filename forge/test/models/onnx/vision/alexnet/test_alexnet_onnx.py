@@ -26,7 +26,7 @@ def test_alexnet_onnx(forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.ALEXNET,
         source=Source.TORCH_HUB,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load model
