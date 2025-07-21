@@ -36,7 +36,7 @@ class Optimizer:
         """
         self.dynamic_params = parameters is None
 
-    def get_param_dict(self) -> Dict:
+    def get_param_dict(self, dtype: torch.dtype, shape: Tuple[int]) -> Dict:
         """
         Return a dict of parameter node names and values to push to the device
         """
@@ -117,9 +117,11 @@ class SGD(Optimizer):
         # For each Parameter, we register its associated set of optimizer parameters
         for parameter in parameters:
             if parameter.requires_grad:
-                self.parameter_to_opt_inputs[parameter.get_name()] = self.get_param_dict(parameter.pt_data_format)
+                self.parameter_to_opt_inputs[parameter.get_name()] = self.get_param_dict(
+                    parameter.pt_data_format, shape=parameter.shape.get_pytorch_shape()
+                )
 
-    def get_param_dict(self, dtype: torch.dtype) -> Dict:
+    def get_param_dict(self, dtype: torch.dtype, shape: Tuple[int]) -> Dict:
         """
         Return a dict of optimizer parameter names to tensor
         """
