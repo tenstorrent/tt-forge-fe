@@ -876,8 +876,8 @@ void Op::decompose_initial(
         case OpType::Select: return select::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Sigmoid: return sigmoid::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Sine: return;
-        case OpType::Softmax: return softmax::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::SoftmaxBw: return softmax_bw::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Softmax: return;
+        case OpType::SoftmaxBw: return;
         case OpType::SparseMatmul: return sparse_matmul::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Sqrt: return sqrt::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Squeeze: return squeeze::decompose_initial(old_op_type, *this, dc, inputs);
@@ -1004,8 +1004,8 @@ void Op::decompose_post_optimize(
         case OpType::Select: return select::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Sigmoid: return sigmoid::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Sine: return;
-        case OpType::Softmax: return softmax::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::SoftmaxBw: return softmax_bw::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Softmax: return;
+        case OpType::SoftmaxBw: return;
         case OpType::SparseMatmul: return sparse_matmul::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Sqrt: return sqrt::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Squeeze: return squeeze::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -1132,7 +1132,7 @@ void Op::decompose_post_autograd(
         case OpType::Select: return select::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Sigmoid: return sigmoid::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Sine: return;
-        case OpType::Softmax: return softmax::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Softmax: return;
         case OpType::SoftmaxBw: return softmax_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::SparseMatmul: return sparse_matmul::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Sqrt: return sqrt::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1258,8 +1258,8 @@ long Op::initial_flops_estimate(
         case OpType::Select: return select::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Sigmoid: return sigmoid::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Sine: return sine::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Softmax: return softmax::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::SoftmaxBw: return softmax_bw::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Softmax: return 0;
+        case OpType::SoftmaxBw: return 0;
         case OpType::SparseMatmul: return sparse_matmul::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Sqrt: return sqrt::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Squeeze: return squeeze::initial_flops_estimate(old_op_type, *this, inputs);
