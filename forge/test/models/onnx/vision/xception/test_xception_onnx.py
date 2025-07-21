@@ -21,9 +21,6 @@ import onnx
 variants = ["xception65", "xception71.tf_in1k"]
 
 
-@pytest.mark.xfail(
-    reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
-)
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_xception_onnx(variant, forge_tmp_path):

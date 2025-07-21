@@ -27,14 +27,7 @@ variants = [
     "hrnet_w18_small_v2",
     "hrnetv2_w18",
     "hrnetv2_w30",
-    pytest.param(
-        "hrnetv2_w44",
-        marks=[
-            pytest.mark.xfail(
-                reason="[RuntimeError][Conv2d] bias_ntiles == weight_matrix_width_ntile Issue Link: https://github.com/tenstorrent/tt-mlir/issues/3949"
-            )
-        ],
-    ),
+    "hrnetv2_w44",
     "hrnetv2_w48",
     "hrnetv2_w64",
 ]

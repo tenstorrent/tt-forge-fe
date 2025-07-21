@@ -38,7 +38,6 @@
 #include "compile_so.hpp"
 #include "mlir/Target/Cpp/CppEmitter.h"
 #include "tt/runtime/types.h"
-#include "tt_torch_device/tt_device.hpp"
 #include "ttmlir/Dialect/TTCore/IR/TTCore.h"
 #include "ttmlir/Dialect/TTIR/IR/TTIR.h"
 #include "ttmlir/Dialect/TTNN/IR/TTNN.h"

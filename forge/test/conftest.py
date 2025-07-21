@@ -33,7 +33,6 @@ if os.environ.get("FORGE_ENABLE_EMULATION_DEVICE") == "1":
 import forge
 from forge.config import CompilerConfig
 from forge.verify.config import TestKind
-from forge.torch_compile import reset_state
 from forge.tvm_to_python import ExitTest
 
 import test.utils
@@ -51,12 +50,13 @@ watchdog_test_durations = None
 @pytest.hookimpl(tryfirst=True)
 def pytest_runtest_setup(item):
     def send_abort_signal():
+        # commenting this out for now, as it is currently not working with pytest
         # Suspend pytest capturing (if active) so that we can actually print out the message.
-        capmanager = item.session.config.pluginmanager.get_plugin("capturemanager")
-        if capmanager and capmanager.is_capturing():
-            capmanager.suspend()
+        # capmanager = item.session.config.pluginmanager.get_plugin("capturemanager")
+        # if capmanager and capmanager.is_capturing():
+        #     capmanager.suspend()
 
-        print("WATCHDOG timeout reached! Killing test process.")
+        # print("WATCHDOG timeout reached! Killing test process.")
         os.kill(os.getpid(), signal.SIGABRT)
 
     def reset_abort_timer(timeout=watchdog_timer_default):
@@ -103,7 +103,6 @@ def pytest_sessionstart(session):
     tf.config.threading.set_intra_op_parallelism_threads(num_threads)
     tf.config.threading.set_inter_op_parallelism_threads(num_threads)
     torch._dynamo.reset()
-    reset_state()
     # If specified by env variable, print the environment variables
     # It can be useful in CI jobs to get the state of the enviroment variables before test session starts
     print_env_variables = bool(int(os.environ.get("PYTEST_PRINT_ENV_VARIABLES", "0")))

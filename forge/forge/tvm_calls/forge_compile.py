@@ -32,7 +32,8 @@ import onnxruntime as ort
 import onnx
 import onnx.numpy_helper
 from tvm.relay.expr import Tuple
-from forge.tvm_calls.relay.op.forge import verify_tvm_compile, flatten_IO, compile_for_forge, partition_for_forge
+from forge.tvm_calls.relay.op.forge import flatten_IO, compile_for_forge, partition_for_forge
+from forge.tvm_calls.relay.op.utils import verify_tvm_compile
 from jax.experimental import jax2tf
 from jax.tools.jax_to_ir import tf_wrap_with_input_names
 from transformers import FlaxPreTrainedModel
@@ -449,6 +450,27 @@ class ConvertEmulatedDtypes:
             if inp.dtype in self.emulated_dfs:
                 inp.data = inp.data.to(self.fallback)
 
+        # Conver tensor attributes that are not buffers nor parameters
+        self.attr_dfs = {}  # To track tensor attributes for restoration later
+        if isinstance(self.model, torch.nn.Module):
+            for mod_name, mod in self.model.named_modules():  # Recursively walk submodules
+                param_keys = set(dict(mod.named_parameters(recurse=False)).keys())  # current module's params
+                buffer_keys = set(dict(mod.named_buffers(recurse=False)).keys())  # current module's buffers
+
+                for attr in dir(mod):  # inspect each attribute
+                    if attr.startswith("_") or attr in param_keys or attr in buffer_keys:
+                        continue  # skip private/internal or known param/buffer
+
+                    try:
+                        val = getattr(mod, attr)
+                    except Exception:
+                        continue  # skip broken properties
+
+                    if isinstance(val, torch.Tensor) and val.dtype in self.emulated_dfs:
+                        key = f"{mod_name}.{attr}" if mod_name else attr
+                        self.attr_dfs[key] = (mod, attr, val.dtype)  # store module, attr name, and dtype
+                        setattr(mod, attr, val.to(self.fallback))  # overwrite with fallback dtype
+
     def __exit__(self, *args):
         # Convert model parameters back to original dtype
         for name, param in self.model.named_parameters():
@@ -463,6 +485,15 @@ class ConvertEmulatedDtypes:
         # Convert inputs back to original dtype
         for inp, df in zip(self.flatten_object(self.inputs), self.input_dfs):
             inp.data = inp.data.to(df)
+
+        # Restore all extra tensor attributes
+        for key, (mod, attr, orig_dtype) in self.attr_dfs.items():
+            try:
+                val = getattr(mod, attr)
+                if isinstance(val, torch.Tensor):
+                    setattr(mod, attr, val.to(orig_dtype))  # revert to original dtype
+            except Exception as e:
+                logger.warning(f"Failed to restore attribute '{attr}' on module '{mod}': {e}")
 
 
 def compile_pytorch_for_forge(torchmod, *inputs, graph_name, compiler_cfg, verify_cfg=None, input_names=[]):
@@ -1258,14 +1289,13 @@ def format_tvm_graph_weights(inputs, module, compiler_cfg, framework=None):
         weights = {
             weight.name: (
                 torch.Tensor(
-                    (
-                        tf.cast(weight.value(), tf.float32) if weight.value().dtype.is_floating else weight.value()
-                    ).numpy()
+                    tf.cast(weight, tf.float32).numpy() if tf.as_dtype(weight.dtype).is_floating else weight.numpy()
                 ),
                 weight.name in trainable_weight_names,
             )
             for weight in module.weights
         }
+
         if not (len(inputs) > 0 and isinstance(inputs[0], torch.Tensor)):
             inputs = to_pt_tensors(inputs)  # Maybe we can switch all tensors to numpy?
     elif framework == "tf_graphdef":

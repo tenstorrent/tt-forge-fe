@@ -412,50 +412,6 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
     return compiled_module
 
 
-def forge_compile_torch(
-    module_name: str, module: torch.fx.GraphModule, graph: Graph, *inputs: Union[Tensor, List[Any], Dict[str, Any]]
-):
-    """
-    Entry point for forge compile for torch 2.0 api.
-
-    Parameters
-    ---------
-    module_name: str
-        Name of the module
-
-    module: torch.fx.GraphModule
-        Torch FX Module to compile
-
-    graph: Graph
-        Initial graph to compile (unlike other paths, the torch 2.0 path should already have an initial graph at this point)
-
-    inputs:
-        Sample inputs for the module
-
-    Returns
-    -------
-    CompileResults
-    """
-
-    inputs = list(inputs)
-
-    compiler_cfg = CompilerConfig()
-    compiler_cfg.apply_env_config_overrides()
-
-    compile_context: CompileContext = CompileContext(
-        modules=[module],
-        graph_name=module_name,
-        inputs=inputs,
-        compiler_cfg=compiler_cfg,
-        verify_cfg=DeprecatedVerifyConfig.disabled(),
-        microbatch_size=1,
-        microbatch_count=1,
-        graph=graph,
-    )
-
-    return forge_compile_from_context(compile_context)
-
-
 def forge_compile(
     graph_name: str,
     *inputs: Union[Tensor, List[Any], Dict[str, Any]],

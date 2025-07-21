@@ -45,8 +45,13 @@ jobs:
           git log -1
           # Fetch commit history between $COMMIT_SHA and LATEST_SHA
           echo "### List of tt-mlir commits since previous uplift:" > ${{ runner.temp }}/commit_list.txt
-          git log --oneline $CURRENT_COMMIT_SHA..$LATEST_SHA >>${{ runner.temp }}/commit_list.txt
-          cat ${{ runner.temp }}/commit_list.txt
+          git log --oneline $CURRENT_COMMIT_SHA..$LATEST_SHA >>${{ runner.temp }}/commit_list_orig.txt
+          cat ${{ runner.temp }}/commit_list_orig.txt
+          while IFS= read -r line; do
+            sha=$(echo "$line" | awk '{print $1}')
+            rest=$(echo "$line" | cut -d' ' -f2-)
+            echo "[${sha}](https://github.com/tenstorrent/tt-mlir/commit/${sha}) ${rest}" >> ${{ runner.temp }}/commit_list.txt
+          done < ${{ runner.temp }}/commit_list_orig.txt
           cd ../..
 
       - name: Create Pull Request

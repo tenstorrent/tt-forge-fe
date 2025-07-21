@@ -264,9 +264,9 @@ def concat_patches(dc, first_patch, center, second_patch, dim_axis):
             "concatenate", [first_patch, center, second_patch], {"dim": dim_axis}, (dim_axis,)
         )
     elif first_patch:
-        return dc.op_with_named_attrs("concatenate", [first_patch, center], {"dim": dim_axis}, (dim_axis,))
+        return dc.op_with_named_attrs("concatenate", [first_patch, center], {"dim": dim_axis})
     elif second_patch:
-        return dc.op_with_named_attrs("concatenate", [center, second_patch], {"dim": dim_axis}, (dim_axis,))
+        return dc.op_with_named_attrs("concatenate", [center, second_patch], {"dim": dim_axis})
     else:
         return center
 

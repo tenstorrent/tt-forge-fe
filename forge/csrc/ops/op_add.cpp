@@ -8,6 +8,7 @@
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
+#include "op_common.hpp"
 #include "op_interface.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
@@ -31,59 +32,11 @@ at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
-    TT_ASSERT(in_shapes.size() == 2, "OpAdd::shape should have two input shapes.");
+    TT_DBG_ASSERT(op.type() == OpType::Add, "Wrong op type.");
+    TT_ASSERT(in_shapes.size() == 2, "add::shape should have two input shapes.");
+    TT_ASSERT(op.attrs().size() == 0, "add::shape should not have any attrs.");
 
-    std::vector<graphlib::DimBroadcast> broadcast;
-    std::vector<std::uint32_t> output_shape;
-
-    std::vector<std::uint32_t> shape0 = in_shapes[0];
-    std::vector<std::uint32_t> shape1 = in_shapes[1];
-
-    // Pad shorter shape with 1s at the beginning (rules of broadcast)
-    while (shape0.size() < shape1.size())
-    {
-        shape0.insert(shape0.begin(), 1);
-    }
-
-    while (shape1.size() < shape0.size())
-    {
-        shape1.insert(shape1.begin(), 1);
-    }
-
-    // Adjust each dimension to match the broadcast rules
-    for (size_t dim = 0; dim < shape0.size(); dim++)
-    {
-        if (shape0[dim] != shape1[dim])
-        {
-            if (shape0[dim] == 1)
-            {
-                // Broadcast first operand
-                int negative_dim = static_cast<int>(dim) - static_cast<int>(shape0.size());
-                broadcast.emplace_back(0, negative_dim, shape1[dim]);
-                output_shape.push_back(shape1[dim]);
-            }
-            else
-            {
-                // shape1[dim] must be 1 for broadcast
-                TT_ASSERT(
-                    shape1[dim] == 1,
-                    "Eltwise binary ops must have the same shape in both inputs, or one operand must be 1 wide to "
-                    "broadcast");
-
-                // Broadcast second operand
-                int negative_dim = static_cast<int>(dim) - static_cast<int>(shape1.size());
-                broadcast.emplace_back(1, negative_dim, shape0[dim]);
-                output_shape.push_back(shape0[dim]);
-            }
-        }
-        else
-        {
-            // Same dimension, no broadcast needed
-            output_shape.push_back(shape0[dim]);
-        }
-    }
-
-    return std::make_tuple(graphlib::Shape::create(output_shape), broadcast);
+    return op_common::compute_elementwise_binary_shape(in_shapes);
 }
 
 tt::graphlib::NodeContext backward(
@@ -106,33 +59,8 @@ tt::graphlib::NodeContext backward(
         return ac.autograd->create_op(ac, graphlib::OpType("nop", {}, {}), {gradient});
     }
 
-    // Shapes don't match, we need to reduce along broadcast dimensions
-    tt::graphlib::NodeContext result_grad = gradient;
-    auto input_dims = input_shape.as_vector();
-    auto grad_dims = grad_shape.as_vector();
-
-    // Pad input shape with 1s at the beginning to match gradient rank
-    std::vector<std::uint32_t> padded_input_dims = input_dims;
-    while (padded_input_dims.size() < grad_dims.size())
-    {
-        padded_input_dims.insert(padded_input_dims.begin(), 1);
-    }
-
-    // Find broadcast dimensions and sum along them, using reduce_sum
-    for (size_t i = 0; i < padded_input_dims.size(); i++)
-    {
-        if (padded_input_dims[i] < grad_dims[i])
-        {
-            // Use negative dimension indexing
-            int neg_dim = static_cast<int>(i) - static_cast<int>(grad_dims.size());
-
-            Attrs named_attrs = {{"keep_dim", true}, {"dim_arg", std::vector<int>{neg_dim}}};
-            result_grad =
-                ac.autograd->create_op(ac, graphlib::OpType("reduce_sum", {neg_dim, true}, named_attrs), {result_grad});
-        }
-    }
-
-    return ac.autograd->create_op(ac, graphlib::OpType("nop", {}, {}), {result_grad});
+    // Shapes don't match, we need to reduce along broadcast dimensions using reduce_sum
+    return op_common::reduce_broadcast_dimensions(ac, gradient, input_shape, grad_shape);
 }
 
 long initial_flops_estimate(const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)

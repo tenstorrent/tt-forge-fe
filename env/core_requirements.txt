@@ -3,13 +3,13 @@ setuptools>=61
 pybind11==2.6.2
 numpy==1.26.4
 loguru==0.5.3
-flatbuffers==23.5.26
+flatbuffers==24.3.25
 
 #framework requirements - core ML frameworks
 onnx>=1.15.0
 onnxruntime>=1.16.3
 tf2onnx==1.15.1
-tensorflow==2.15
+tensorflow==22.19.0
 tf2onnx==1.15.1
 transformers==4.52.4
 tflite==2.10.0
@@ -23,6 +23,6 @@ paddlenlp==2.8.1
 aistudio-sdk==0.2.6
 
 # JAX stack — note version constraints from chex
-jax==0.4.30
+jax==0.6.1
 chex==0.1.6
-flax==0.9.0  # Needs compatibility with jax
+flax==0.10.6

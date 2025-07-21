@@ -644,7 +644,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
                     grad_return = ac.tensor(torch.zeros(zero_pre_pad_shape))
                 else:
                     zero_slice = ac.tensor(torch.zeros(zero_pre_pad_shape))
-                    grad_return = ac.op("concatenate", (grad_return, zero_slice), (dim,))
+                    grad_return = ac.op_with_named_attrs("concatenate", (grad_return, zero_slice), {"dim": dim})
             if offset + begin >= orig_size:
                 break
 
@@ -658,7 +658,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
             if grad_return is None:
                 grad_return = grad_slice
             else:
-                grad_return = ac.op("concatenate", (grad_return, grad_slice), (dim,))
+                grad_return = ac.op_with_named_attrs("concatenate", (grad_return, grad_slice), {"dim": dim})
             grad_offset += length
             if offset + begin + length >= orig_size:
                 break
@@ -669,7 +669,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
                 zero_post_pad_shape = inputs[0].shape.as_list()
                 zero_post_pad_shape[dim] = zero_padding_length
                 zero_slice = ac.tensor(torch.zeros(zero_post_pad_shape))
-                grad_return = ac.op("concatenate", (grad_return, zero_slice), (dim,))
+                grad_return = ac.op_with_named_attrs("concatenate", (grad_return, zero_slice), {"dim": dim})
         return grad_return
 
     elif type == "pad_tile":

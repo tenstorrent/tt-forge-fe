@@ -5,6 +5,7 @@
 # Built-in modules
 import pytest
 import time
+import os
 import socket
 import json
 from datetime import datetime
@@ -35,7 +36,8 @@ TASK = [
     "classification",
 ]
 
-EVALUATION_SCORE_TARGET = 0.75
+# Target evaluation score for classification tasks, given as a percentage (e.g., 75.0 for 75%)
+EVALUATION_SCORE_TARGET = 75.0
 
 # Batch size configurations
 BATCH_SIZE = [
@@ -112,8 +114,11 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
 
     # Turn on MLIR optimizations.
     compiler_cfg.mlir_config = (
-        MLIRConfig().set_enable_optimizer(True).set_enable_fusing(True).set_enable_memory_layout_analysis(False)
+        MLIRConfig().set_enable_optimizer(True).set_enable_fusing(True).set_enable_memory_layout_analysis(True)
     )
+
+    # TODO: Remove this line when the issue with reinitialization is resolved.
+    os.environ["TT_METAL_FORCE_REINIT"] = "1"
 
     # Enable Forge FE optimizations
     compiler_cfg.enable_optimization_passes = True
@@ -236,7 +241,7 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
                 "step_warm_up_num_iterations": 0,
                 "measurement_name": "evaluation_score",
                 "value": evaluation_score,
-                "target": -1,
+                "target": EVALUATION_SCORE_TARGET,  # This is the target evaluation score.
                 "device_power": -1.0,  # This value is negative, because we don't have a device power value.
                 "device_temperature": -1.0,  # This value is negative, because we don't have a device temperature value.
             },

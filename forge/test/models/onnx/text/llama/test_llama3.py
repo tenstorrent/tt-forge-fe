@@ -3,16 +3,16 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-from transformers import AutoTokenizer
+import torch
+import onnx
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import forge
 from forge.verify.verify import verify
-
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
-from test.models.models_utils import build_optimum_cli_command
+
 from test.utils import download_model
-import subprocess
-import onnx
+from test.models.models_utils import TextModelWrapper
 
 
 @pytest.mark.out_of_memory
@@ -22,19 +22,19 @@ import onnx
     [
         pytest.param(
             "meta-llama/Llama-3.1-8B",
-            marks=pytest.mark.skip(reason="Segmentation fault"),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
         ),
         pytest.param(
             "meta-llama/Llama-3.2-1B",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB"),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
         ),
         pytest.param(
             "meta-llama/Llama-3.2-3B",
-            marks=pytest.mark.skip(reason="Segmentation fault"),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
         ),
         pytest.param(
             "meta-llama/Llama-3.1-8B-Instruct",
-            marks=pytest.mark.skip(reason="Segmentation fault"),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
         ),
         pytest.param(
             "meta-llama/Llama-3.2-1B-Instruct",
@@ -42,7 +42,7 @@ import onnx
         ),
         pytest.param(
             "meta-llama/Llama-3.2-3B-Instruct",
-            marks=pytest.mark.skip(reason="Segmentation fault"),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
         ),
     ],
 )
@@ -60,6 +60,9 @@ def test_llama3_causal_lm_onnx(variant, forge_tmp_path):
     # Load model and tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.pad_token = tokenizer.eos_token
+    model = download_model(AutoModelForCausalLM.from_pretrained, variant, use_cache=False)
+    framework_model = TextModelWrapper(model=model, text_embedding=model.model.embed_tokens)
+    framework_model.eval()
 
     # Prepare input
     input_prompt = "Hey how are you doing today?"
@@ -77,8 +80,7 @@ def test_llama3_causal_lm_onnx(variant, forge_tmp_path):
 
     # Export model to ONNX
     onnx_path = f"{forge_tmp_path}/model.onnx"
-    command = build_optimum_cli_command(variant, forge_tmp_path)
-    subprocess.run(command, check=True)
+    torch.onnx.export(framework_model, tuple(inputs), onnx_path, opset_version=17)
 
     # Load framework model
     onnx_model = onnx.load(onnx_path)
