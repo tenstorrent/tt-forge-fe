@@ -394,37 +394,25 @@ def decompose(op_type, attr, dc, inputs):
         neg_mean = dc.op("multiply", (neg_one, running_mean), ())
         weighted_mean = dc.op("multiply", (weighted, neg_mean), ())
         weighted_bias = dc.op("add", (weighted_mean, bias), ())
-        weighted_bias = dc.op(
+        weighted_bias = dc.op_with_named_attrs(
             "unsqueeze",
             [weighted_bias],
-            (
-                1,
-                len(weighted_bias.shape),
-            ),
+            {"dim": 1},
         )
-        weighted_bias = dc.op(
+        weighted_bias = dc.op_with_named_attrs(
             "unsqueeze",
             [weighted_bias],
-            (
-                1,
-                len(weighted_bias.shape),
-            ),
+            {"dim": 1},
         )
-        weighted_var = dc.op(
+        weighted_var = dc.op_with_named_attrs(
             "unsqueeze",
             [weighted],
-            (
-                1,
-                len(weighted.shape),
-            ),
+            {"dim": 1},
         )
-        weighted_var = dc.op(
+        weighted_var = dc.op_with_named_attrs(
             "unsqueeze",
             [weighted_var],
-            (
-                1,
-                len(weighted_var.shape),
-            ),
+            {"dim": 1},
         )
         scaled = dc.op("multiply", (input_, weighted_var), ())
         biased = dc.op("add", (scaled, weighted_bias), ())
