@@ -27,7 +27,7 @@ add_library(ops
     op_conv_2d_prestride_weights.cpp
     op_conv_2d_transpose.cpp
     op_conv_3d.cpp
-    op_conv_Sum.cpp
+    op_conv_sum.cpp
     op_cosine.cpp
     op_cumulative_sum.cpp
     op_dequantize.cpp
