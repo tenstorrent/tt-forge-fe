@@ -407,31 +407,34 @@ def compute_required_tolerances(golden, calculated):
 
 def determine_consistency_limits(
     framework_outputs: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]], compiled_outputs: List[torch.Tensor]
-) -> Tuple[Optional[float], Optional[float]]:
+) -> Tuple[Optional[float], Optional[float], Optional[float]]:
     """
     Determine the consistency limits between golden (framework) and compiled outputs by computing:
       - The minimum Pearson correlation coefficient (PCC) among non-scalar tensors (lower consistency limit).
       - The maximum absolute tolerance (ATOL) across all outputs (upper deviation limit).
+      - The maximum relative tolerance (RTOL) across all outputs (upper deviation limit).
 
     Parameters:
         framework_outputs: Tuple or list of torch.Tensor representing the expected (golden) outputs.
         compiled_outputs: List of torch.Tensor representing the computed outputs.
 
     Returns:
-        A tuple (min_pcc, max_atol) where:
+        A tuple (min_pcc, max_atol, max_rtol) where:
           - min_pcc is the minimum PCC computed over non-scalar tensors (the lower consistency limit).
             If only scalar outputs are present, this is set to None.
           - max_atol is the maximum absolute tolerance computed over all outputs (the upper deviation limit).
+          - max_rtol is the maximum relative tolerance computed over all outputs (the upper deviation limit).
         If the number of framework and compiled outputs do not match, returns (None, None).
     """
     if len(framework_outputs) != len(compiled_outputs):
         logger.error(
             f"Input count mismatch: framework_outputs={len(framework_outputs)}, compiled_outputs={len(compiled_outputs)}"
         )
-        return None, None
+        return None, None, None
 
     pcc_values = []
     atol_values = []
+    rtol_values = []
 
     for idx, (fw_out, co_out) in enumerate(zip(framework_outputs, compiled_outputs), start=1):
         # For non-scalar tensors, ensure the shapes match
@@ -448,8 +451,11 @@ def determine_consistency_limits(
             pcc_values.append(pcc)
             atol = calculate_atol(fw_out, co_out)
             atol_values.append(atol)
+            rtol = calculate_rtol(fw_out, co_out)
+            rtol_values.append(rtol)
 
     min_pcc = min(pcc_values) if pcc_values else None
     max_atol = max(atol_values) if atol_values else None
+    max_rtol = max(rtol_values) if rtol_values else None
 
-    return min_pcc, max_atol
+    return min_pcc, max_atol, max_rtol
