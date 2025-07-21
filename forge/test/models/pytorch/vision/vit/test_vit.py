@@ -26,10 +26,6 @@ from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
 from test.utils import download_model
 
-dataset = load_dataset("huggingface/cats-image")
-image_1 = dataset["test"]["image"][0]
-
-
 variants = [
     pytest.param("google/vit-base-patch16-224", marks=pytest.mark.push),
     "google/vit-large-patch16-224",
@@ -58,6 +54,9 @@ def test_vit_classify_224_hf_pytorch(variant):
         group=group,
         priority=priority,
     )
+
+    dataset = load_dataset("huggingface/cats-image")
+    image_1 = dataset["test"]["image"][0]
 
     # Load processor and model
     image_processor = download_model(AutoImageProcessor.from_pretrained, variant)
