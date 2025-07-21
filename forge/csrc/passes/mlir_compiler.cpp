@@ -207,6 +207,7 @@ void to_json(::nlohmann::json& j, const MLIRConfig& p)
         {"enable_optimizer", p.enable_optimizer},
         {"enable_memory_layout_analysis", p.enable_memory_layout_analysis},
         {"enable_fusing", p.enable_fusing},
+        {"enable_fusing_conv2d_with_multiply_pattern", p.enable_fusing_conv2d_with_multiply_pattern},
         {"custom_config", p.custom_config}};
 }
 
@@ -216,6 +217,7 @@ void from_json(const ::nlohmann::json& j, MLIRConfig& p)
     j.at("enable_optimizer").get_to(p.enable_optimizer);
     j.at("enable_memory_layout_analysis").get_to(p.enable_memory_layout_analysis);
     j.at("enable_fusing").get_to(p.enable_fusing);
+    j.at("enable_fusing_conv2d_with_multiply_pattern").get_to(p.enable_fusing_conv2d_with_multiply_pattern);
     j.at("custom_config").get_to(p.custom_config);
 }
 

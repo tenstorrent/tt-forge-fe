@@ -196,6 +196,11 @@ PYBIND11_MODULE(_C, m)
             [](tt::passes::MLIRConfig &self, bool enable) { return self.set_enable_fusing(enable); },
             py::arg("enable"))
         .def(
+            "set_enable_fusing_conv2d_with_multiply_pattern",
+            [](tt::passes::MLIRConfig &self, bool enable)
+            { return self.set_fusing_conv2d_with_multiply_pattern(enable); },
+            py::arg("enable"))
+        .def(
             "set_custom_config",
             [](tt::passes::MLIRConfig &self, const std::string &config) { return self.set_custom_config(config); },
             py::arg("config"))
