@@ -45,9 +45,6 @@ variants = [
     pytest.param(
         "openai/whisper-large",
         marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 21 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
@@ -66,6 +63,8 @@ def test_whisper(variant):
         task=Task.SPEECH_RECOGNITION,
         source=Source.HUGGINGFACE,
     )
+    if variant == "openai/whisper-large":
+        pytest.xfail(reason="Requires multi-chip support")
 
     # Load model (with tokenizer and feature extractor)
     processor = download_model(AutoProcessor.from_pretrained, variant)

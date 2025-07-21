@@ -31,9 +31,6 @@ variants = [
     pytest.param(
         "EleutherAI/gpt-neo-2.7B",
         marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
@@ -52,6 +49,8 @@ def test_gptneo_causal_lm(variant):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
+    if variant == "EleutherAI/gpt-neo-2.7B":
+        pytest.xfail(reason="Requires multi-chip support")
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -83,9 +82,6 @@ variants = [
     pytest.param(
         "EleutherAI/gpt-neo-2.7B",
         marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
@@ -104,6 +100,8 @@ def test_gptneo_sequence_classification(variant):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
+    if variant == "EleutherAI/gpt-neo-2.7B":
+        pytest.xfail(reason="Requires multi-chip support")
 
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

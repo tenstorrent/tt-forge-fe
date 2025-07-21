@@ -15,9 +15,7 @@ from forge.forge_property_utils import Framework, ModelArch, Source, Task, recor
 variants = ["urchade/gliner_multi-v2.1"]
 
 
-@pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.skip(reason="Segmentation Fault")
 @pytest.mark.parametrize("variant", variants)
 def test_gliner_onnx(variant, forge_tmp_path):
 
@@ -29,6 +27,8 @@ def test_gliner_onnx(variant, forge_tmp_path):
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.GITHUB,
     )
+
+    pytest.xfail(reason="Segmentation Fault")
 
     # Load model
     framework_model = GLiNER.from_pretrained(variant)

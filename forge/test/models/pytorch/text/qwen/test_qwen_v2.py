@@ -122,7 +122,6 @@ def test_qwen_clm(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["Qwen/Qwen2-7B"])
 def test_qwen2_token_classification(variant):
-    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)")
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -132,6 +131,7 @@ def test_qwen2_token_classification(variant):
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and tokenizer
     model = Qwen2ForTokenClassification.from_pretrained(variant, use_cache=False)

@@ -30,11 +30,11 @@ from test.models.pytorch.vision.sam.model_utils.model import (
     [
         pytest.param(
             "facebook/sam-vit-huge",
-            marks=[pytest.mark.skip(reason="Skipping due to CI/CD Limitations"), pytest.mark.skip_model_analysis],
+            marks=[pytest.mark.skip_model_analysis],
         ),
         pytest.param(
             "facebook/sam-vit-large",
-            marks=[pytest.mark.skip(reason="Skipping due to CI/CD Limitations"), pytest.mark.skip_model_analysis],
+            marks=[pytest.mark.skip_model_analysis],
         ),
         pytest.param("facebook/sam-vit-base", marks=pytest.mark.xfail()),
     ],
@@ -59,6 +59,8 @@ def test_sam(variant):
         group=group,
         priority=priority,
     )
+    if variant != "acebook/sam-vit-base":
+        pytest.xfail(reason="Requires multi-chip support")
 
     # Load  model and input
     framework_model, sample_inputs = get_model_inputs(variant)

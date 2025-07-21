@@ -18,7 +18,6 @@ variants = ["deepseek-ai/DeepSeek-V3", "deepseek-ai/DeepSeek-R1"]
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_deepseek(variant):
 
     # Record Forge Property
