@@ -18,7 +18,7 @@ namespace ops
 namespace concatenate
 {
 
-at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Concatenate, "Wrong op type.");
     TT_ASSERT(tensors.size() >= 1, "concatenate::eval should have at least one input tensors.");
@@ -30,7 +30,7 @@ at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
-    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Concatenate, "Wrong op type.");
     TT_ASSERT(in_shapes.size() >= 1, "concatenate::shape should have at least one input shapes.");
@@ -74,6 +74,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
 }
 
 tt::graphlib::NodeContext backward(
+    const graphlib::OpType &old_op_type,
     const Op &op,
     tt::autograd::autograd_context &ac,
     int operand,
@@ -106,7 +107,11 @@ tt::graphlib::NodeContext backward(
     return ac.autograd->create_op(ac, index_op, {gradient});
 }
 
-void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs)
+void decompose_initial(
+    const graphlib::OpType &old_op_type,
+    const Op &op,
+    DecomposingContext &dc,
+    const std::vector<tt::graphlib::NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Concatenate, "Wrong op type.");
 
