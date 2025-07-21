@@ -282,19 +282,6 @@ def eval(type, attr, ops):
         act = t_ops[0]
         return act.narrow(dim, start, length)
 
-    if type == "unsqueeze":
-        assert len(attr) == 2
-        dim = attr[0]
-        input_ndim = attr[1]
-        act = t_ops[0]
-        return torch.unsqueeze(act, dim)
-
-    if type == "squeeze":
-        assert len(attr) == 1
-        dim = attr[0]
-        act = t_ops[0]
-        return torch.squeeze(act, dim)
-
     if type == "pixel_shuffle":
         assert len(ops) == 1, "Pixel shuffle should have one operand."
         assert len(attr) == 1, "Pixel shuffle should have one attribute."
@@ -547,25 +534,6 @@ def shape(type, attr, ops):
         shape[dim] = length
         return tuple(shape), []
 
-    if type == "unsqueeze":
-        assert len(attr) == 2
-        shape = list(ops[0])
-        dim = attr[0]
-        input_ndim = attr[1]
-        # Handle negative dimension
-        if dim < 0:
-            # Adjust dim to be within the correct range
-            dim += input_ndim + 1
-        shape.insert(dim, 1)
-        return tuple(shape), []
-
-    if type == "squeeze":
-        assert len(attr) == 1
-        shape = list(ops[0])
-        dim = attr[0]
-        del shape[dim]
-        return tuple(shape), []
-
     if type == "pixel_shuffle":
         assert len(ops) == 1, "Pixel shuffle should have one operand."
         assert len(attr) == 1, "Pixel shuffle should have one attribute."
@@ -695,27 +663,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         else:
             raise NotImplementedError("Unimplemented narrow in forge")
 
-    elif type == "unsqueeze":
-        assert len(attr) == 2
-        if len(inputs[0].shape) == len(grad.shape):
-            # Dimensionality already matches, no need to squeeze
-            return grad
-
-        dim = attr[0]
-        input_ndim = attr[1]
-        return ac.op("squeeze", (grad,), (dim,), {"dim": dim})
-
-    elif type == "squeeze":
-        assert len(attr) == 1
-        if len(inputs[0].shape) == len(grad.shape):
-            # Dimensionality already matches, no need to unsqueeze
-            return grad
-
-        dim = attr[0]
-        if grad.shape.len() == 4:  # Cannot unsqueeze beyond 4D
-            return ac.op(Nop.create(), (grad,))
-        return ac.op("unsqueeze", (grad,), attributes=(dim, grad.shape.len()), named_attrs={"dim": dim})
-
     elif type == "broadcast":
         assert len(attr) == 3
         if attr[0] < 0:
@@ -756,7 +703,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
         ret = ac.op_with_named_attrs("reshape", (grad,), {"shape": shape})
         ret = ac.op("reduce_sum", (ret,), (dim, True), {"dim_arg": [dim], "keep_dim": True})
-        ret = ac.op("squeeze", (ret,), (dim,), {"dim": dim})
+        ret = ac.op_with_named_attrs("squeeze", (ret,), {"dim": dim})
         return ret
 
     elif type == "index":
@@ -784,7 +731,7 @@ def unsqueeze_input_for_reshape_decomp(dc, inp):
     current_shape = inp.shape.as_list()
     while len(current_shape) < 4:
         current_shape.insert(0, 1)
-        inp = dc.op_with_named_attrs("unsqueeze", (inp,), {"dim": 0}, (0, len(inp.shape.as_list())))
+        inp = dc.op_with_named_attrs("unsqueeze", (inp,), {"dim": 0})
 
     return inp
 
@@ -795,7 +742,7 @@ def squeeze_output_for_reshape_decomp(dc, output, orig_out_shape):
 
     while current_shape_len > len(orig_out_shape):
         current_shape_len -= 1
-        result = dc.op_with_named_attrs("squeeze", [output], {"dim": 0}, (0,))
+        result = dc.op_with_named_attrs("squeeze", [output], {"dim": 0})
 
     return output
 
@@ -1144,10 +1091,6 @@ def decompose_xy_unflatten(inputs, dc, orig_shape, attr):
             "unsqueeze",
             [result],
             {"dim": 0},
-            (
-                0,
-                2,
-            ),
         )
     _orig_shape = result.shape
     slice_factor = attr[-2] if attr[-1] < TILE_DIM else (math.ceil(attr[-2] / TILE_DIM) * TILE_DIM)
@@ -1249,7 +1192,6 @@ def decompose_post_optimize(type, attr, dc, inputs):
                         result,
                     ],
                     {"dim": 0},
-                    (0, len(result.shape.as_list())),
                 )
 
             spm = torch.stack([spm] * result.shape[-3], -3).unsqueeze(0)
