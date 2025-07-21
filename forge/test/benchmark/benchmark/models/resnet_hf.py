@@ -118,7 +118,7 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     )
 
     # TODO: Remove this line when the issue with reinitialization is resolved.
-    os.environ["TT_METAL_FORCE_REINIT"] = "1"
+    # os.environ["TT_METAL_FORCE_REINIT"] = "1"
 
     # Enable Forge FE optimizations
     compiler_cfg.enable_optimization_passes = True
