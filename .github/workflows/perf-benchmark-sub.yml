@@ -34,7 +34,7 @@ jobs:
           # { runs-on: "n150", name: "unet",                     dir: "UNet",                         ts: 'na',             bs: 1,   lp: 32, df: 'bfloat16', }
         ]
     runs-on:
-      - ${{ matrix.build.runs-on }}-perf
+      - ${{ matrix.build.runs-on }}
       - in-service
 
     container:
