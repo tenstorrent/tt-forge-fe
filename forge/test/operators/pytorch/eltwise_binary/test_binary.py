@@ -276,8 +276,8 @@ class TestCollectionData:
         operators=[
             "atan2",
             "arctan2",
-            "floor_divide",
-            "fmod",
+            # "floor_divide",   # Not supported after 04-07-2025
+            # "fmod",           # Not supported after 04-07-2025
             "eq",
             "ne",
             "le",
