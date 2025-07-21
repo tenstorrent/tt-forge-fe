@@ -47,7 +47,6 @@ op_to_module_map = {
     "reciprocal": Reciprocal,
     "nop": Nop,
     "buffer": Buffer,
-    "sqrt": Sqrt,
     "relu": "eltwise_unary",
     "leaky_relu": "eltwise_unary",
     "gelu": "eltwise_unary",
