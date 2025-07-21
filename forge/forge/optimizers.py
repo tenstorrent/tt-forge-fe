@@ -57,7 +57,7 @@ class Optimizer:
 
         return opt_params
 
-    def generate_op_trace(self, parameter, gradient):
+    def generate_op_trace(self, ac, parameter, gradient):
         """
         Define the graph of ops involved in the optimizer eval.
         """
