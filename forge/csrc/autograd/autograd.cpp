@@ -3,10 +3,15 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "autograd/autograd.hpp"
 
+#include <ATen/core/ATen_fwd.h>
+#include <pybind11/pybind11.h>
+#include <torch/extension.h>
+
 #include "autograd/binding.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
 #include "ops/op.hpp"
+#include "python_bindings_common.hpp"
 #include "utils/logger.hpp"
 
 using NodeType = tt::graphlib::NodeType;
@@ -666,6 +671,49 @@ NodeContext autograd_engine::create_constant(
 
     py::object py_tensor = borrow_shared_py_object(tensor);
     DataFormat output_df = graphlib::infer_data_format_from_py_tensor(py_tensor);
+    node->set_output_df(output_df);
+
+    if (epoch_type == graphlib::NodeEpochType::Backward)
+    {
+        node->set_backward();
+        add_fwd_to_bwd_map(current_fwd_op, node, operand_index);
+    }
+    else if (epoch_type == graphlib::NodeEpochType::Optimizer)
+    {
+        node->set_optimizer();
+        add_fwd_to_optimizer_edge(current_fwd_op, node, operand_index);
+    }
+
+    return NodeContext(node);
+}
+
+NodeContext autograd_engine::create_constant(
+    Node *current_fwd_op,
+    int operand_index,
+    const at::Tensor &tensor,
+    int created_op_index,
+    graphlib::NodeEpochType epoch_type)
+{
+    // Convert at::Tensor to Python object for storage
+    py::object py_tensor = py::cast(tensor);
+    std::shared_ptr<void> tensor_ptr = make_shared_py_object(py_tensor);
+
+    // Create shape from tensor dimensions
+    at::IntArrayRef tensor_shape = tensor.sizes();
+    std::vector<int64_t> shape_vec(tensor_shape.begin(), tensor_shape.end());
+
+    graphlib::Shape shape = graphlib::Shape::create(shape_vec);
+
+    // Create the constant node directly
+    auto node = graph->add_node(
+        graphlib::create_node<graphlib::ConstantInputNode>(
+            "input_constant_" + current_fwd_op->name() + "_" + std::to_string(created_op_index), tensor_ptr, shape),
+        graph->get_subgraph_id_for_node(current_fwd_op->id()));
+
+    node->set_shape(shape);
+
+    // Infer data format from the tensor directly using C++ mapping
+    DataFormat output_df = graphlib::scalar_type_to_data_format(tensor.scalar_type());
     node->set_output_df(output_df);
 
     if (epoch_type == graphlib::NodeEpochType::Backward)

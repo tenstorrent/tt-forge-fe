@@ -10,6 +10,7 @@
 #include "graph_lib/graph.hpp"
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
+#include "torch/torch.h"
 
 namespace py = pybind11;
 
@@ -108,6 +109,14 @@ class autograd_engine
         int created_op_index,
         graphlib::NodeEpochType epoch_type);
 
+    // Create constant from at::Tensor by converting to Python object and using Python path
+    NodeContext create_constant(
+        Node *current_fwd_op,
+        int operand_index,
+        const at::Tensor &tensor,
+        int created_op_index,
+        graphlib::NodeEpochType epoch_type);
+
     NodeContext create_input(
         Node *current_fwd_op,
         int operand_index,
@@ -166,6 +175,13 @@ NodeContext autograd_engine::create_constant(struct tt::autograd::autograd_conte
 {
     return self.autograd->create_constant<T>(
         self.current_fwd_op, self.operand, value, self.created_op_index++, self.epoch_type);
+}
+
+template <>
+inline NodeContext autograd_engine::create_constant(struct tt::autograd::autograd_context &self, at::Tensor tensor)
+{
+    return self.autograd->create_constant(
+        self.current_fwd_op, self.operand, tensor, self.created_op_index++, self.epoch_type);
 }
 
 }  // namespace autograd

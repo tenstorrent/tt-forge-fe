@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "utils.hpp"
 
+#include <torch/torch.h>
+
 #include <functional>
 #include <map>
 #include <queue>
@@ -652,6 +654,32 @@ DataFormat infer_data_format_from_py_tensor(const py::object &py_tensor)
     {
         throw std::runtime_error(
             "Encountered Python error while dtype to DataFormat mapping: " + std::string(e.what()));
+    }
+}
+
+DataFormat scalar_type_to_data_format(at::ScalarType scalar_type)
+{
+    // C++ equivalent of pytorch_dtype_to_forge_dataformat in forge/forge/tensor.py
+    switch (scalar_type)
+    {
+        case at::ScalarType::Float: return DataFormat::Float32;
+        case at::ScalarType::Half: return DataFormat::Float16;
+        case at::ScalarType::BFloat16: return DataFormat::Float16_b;
+        case at::ScalarType::Byte:  // uint8
+            log_warning("Parameter is uint8. Setting to Int32, since uint8 is not supported.");
+            return DataFormat::Int32;
+        case at::ScalarType::Char:  // int8
+            log_warning("Parameter is int8. Setting to Int32, since int8 is not supported.");
+            return DataFormat::Int32;
+        case at::ScalarType::Bool:
+            log_warning("Parameter is bool. Setting to Int32, since bool is not supported.");
+            return DataFormat::Int32;
+        case at::ScalarType::Int:  // int32
+            return DataFormat::Int32;
+        case at::ScalarType::Long:  // int64
+            log_warning("Parameter is int64. Setting to int32, since int64 is not supported.");
+            return DataFormat::Int32;
+        default: throw std::runtime_error("Unsupported torch ScalarType: " + std::string(c10::toString(scalar_type)));
     }
 }
 
