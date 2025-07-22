@@ -56,8 +56,8 @@ tt::graphlib::NodeContext backward(
 
     auto constant_half = ac.autograd->create_constant(ac, 0.5f);
     auto reciprocal = ac.autograd->create_op(ac, graphlib::OpType("reciprocal"), {output});
-    auto mult = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {constant_half, reciprocal});
-    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {gradient, mult});
+    auto mult = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {reciprocal, constant_half});
+    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {mult, gradient});
 }
 
 }  // namespace sqrt
