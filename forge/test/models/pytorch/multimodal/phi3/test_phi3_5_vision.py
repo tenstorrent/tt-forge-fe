@@ -36,7 +36,6 @@ variants = ["microsoft/Phi-3.5-vision-instruct"]
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_5_vision(variant):
 

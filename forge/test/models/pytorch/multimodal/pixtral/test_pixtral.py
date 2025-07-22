@@ -17,7 +17,6 @@ variants = ["mistralai/Pixtral-12B-2409", "mistralai/Pixtral-Large-Instruct-2411
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_pixtral(variant):
 

@@ -21,10 +21,7 @@ params = [
     pytest.param("efficientnet_b3"),
     pytest.param("efficientnet_b3a"),
     pytest.param("efficientnet_b4"),
-    pytest.param(
-        "efficientnet_b5",
-        marks=[pytest.mark.skip(reason="Out of memory due - not enough space to allocate L1 buffer across banks")],
-    ),
+    pytest.param("efficientnet_b5"),
     pytest.param("efficientnet_lite0"),
 ]
 
@@ -41,6 +38,8 @@ def test_efficientnet_onnx(variant, forge_tmp_path):
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
     )
+    if variant == "efficientnet_b5":
+        pytest.xfail(reason="Requires multi-chip support")
 
     # Load efficientnet model
     model = timm.create_model(variant, pretrained=True)

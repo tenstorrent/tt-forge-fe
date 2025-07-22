@@ -18,11 +18,11 @@ from test.models.pytorch.vision.sam.model_utils.model import get_model_inputs
     [
         pytest.param(
             "facebook/sam-vit-huge",
-            marks=[pytest.mark.skip(reason="Skipping due to CI/CD Limitations"), pytest.mark.out_of_memory],
+            marks=[pytest.mark.out_of_memory],
         ),
         pytest.param(
             "facebook/sam-vit-large",
-            marks=[pytest.mark.skip(reason="Skipping due to CI/CD Limitations"), pytest.mark.out_of_memory],
+            marks=[pytest.mark.out_of_memory],
         ),
         pytest.param("facebook/sam-vit-base", marks=pytest.mark.xfail()),
     ],
@@ -38,6 +38,8 @@ def test_sam_onnx(variant, forge_tmp_path):
         task=Task.IMAGE_SEGMENTATION,
         source=Source.GITHUB,
     )
+    if variant != "facebook/sam-vit-base":
+        pytest.xfail(reason="Requires multi-chip support")
 
     # Load  model and input
     framework_model, sample_inputs = get_model_inputs(variant)

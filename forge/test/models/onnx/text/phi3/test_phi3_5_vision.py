@@ -29,7 +29,7 @@ variants = ["microsoft/Phi-3.5-vision-instruct"]
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.skip("Segmentation Fault")
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_5_vision(variant, forge_tmp_path):
 
@@ -41,6 +41,7 @@ def test_phi3_5_vision(variant, forge_tmp_path):
         task=Task.MULTIMODAL_TEXT_GENERATION,
         source=Source.HUGGINGFACE,
     )
+    pytest.xfail(reason="Segmentation Fault")
 
     # Load model and processor
     model = download_model(

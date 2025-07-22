@@ -65,6 +65,11 @@ std::string config_to_pipeline_options(const std::optional<MLIRConfig> &mlir_con
         {
             options << " enable-fusing-pass=" << *mlir_config->enable_fusing;
         }
+        if (mlir_config->enable_fusing_conv2d_with_multiply_pattern.has_value())
+        {
+            options << " enable-fusing-conv2d-with-multiply-pattern="
+                    << *mlir_config->enable_fusing_conv2d_with_multiply_pattern;
+        }
 
         // Add custom configuration options.
         options << " " << mlir_config->custom_config;

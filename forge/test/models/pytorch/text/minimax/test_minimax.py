@@ -18,7 +18,6 @@ variants = ["MiniMaxAI/MiniMax-Text-01"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_minimax_text(variant):
 
@@ -40,7 +39,6 @@ variants = ["MiniMaxAI/MiniMax-VL-01"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_minimax_vl(variant):
 

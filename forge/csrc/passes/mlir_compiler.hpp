@@ -30,6 +30,7 @@ struct MLIRConfig
     std::optional<bool> enable_optimizer = std::nullopt;
     std::optional<bool> enable_memory_layout_analysis = std::nullopt;
     std::optional<bool> enable_fusing = std::nullopt;
+    std::optional<bool> enable_fusing_conv2d_with_multiply_pattern = std::nullopt;
 
     // Custom configuration string for the MLIR compiler.
     std::string custom_config = "";
@@ -55,6 +56,12 @@ struct MLIRConfig
     MLIRConfig& set_enable_fusing(bool enable)
     {
         enable_fusing = enable;
+        return *this;
+    }
+
+    MLIRConfig& set_fusing_conv2d_with_multiply_pattern(bool enable)
+    {
+        enable_fusing_conv2d_with_multiply_pattern = enable;
         return *this;
     }
 

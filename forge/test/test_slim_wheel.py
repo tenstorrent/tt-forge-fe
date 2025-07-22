@@ -5,7 +5,6 @@
 import jax
 import flax.linen as nn
 import onnx
-import paddle
 import torch
 import tensorflow as tf
 import pytest
@@ -39,33 +38,6 @@ def test_eltwise_add(shape, dtype):
 
     compiled_model = forge.compile(model, sample_inputs=inputs)
     verify(inputs, model, compiled_model)
-
-
-@pytest.mark.slim_wheel
-def test_eltwise_add_paddle():
-    class AddModel(paddle.nn.Layer):
-        def forward(self, x, y):
-            return x + y
-
-    # Load framework model
-    framework_model = AddModel()
-
-    # Compile model
-    input1 = paddle.rand([1, 3, 224, 224])
-    input2 = paddle.rand([1, 3, 224, 224])
-    input_sample = [input1, input2]
-
-    compiled_model = forge.compile(
-        framework_model,
-        sample_inputs=input_sample,
-    )
-
-    # Verify data on sample input
-    verify(
-        input_sample,
-        framework_model,
-        compiled_model,
-    )
 
 
 @pytest.mark.slim_wheel

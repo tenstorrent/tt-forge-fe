@@ -3,16 +3,122 @@ add_library(ops
     op.cpp
     op_common.cpp
     op_abs.cpp
+    op_adaptive_max_pool_2d.cpp
     op_add.cpp
+    op_adv_index.cpp
+    op_argmax.cpp
+    op_atan.cpp
+    op_avg_pool_1d.cpp
+    op_avg_pool_2d.cpp
+    op_avg_pool_3d.cpp
+    op_batchnorm.cpp
+    op_broadcast.cpp
+    op_buffer.cpp
+    op_cast.cpp
+    op_clip.cpp
     op_concatenate.cpp
     op_constant.cpp
+    op_conv_2d.cpp
+    op_conv_2d_depthwise_weights.cpp
+    op_conv_2d_depthwise_weights_bw.cpp
+    op_conv_2d_grouped_weights.cpp
+    op_conv_2d_grouped_weights_bw.cpp
+    op_conv_2d_prestride_act.cpp
+    op_conv_2d_prestride_weights.cpp
+    op_conv_2d_transpose.cpp
+    op_conv_3d.cpp
+    op_conv_sum.cpp
     op_cosine.cpp
+    op_cumulative_sum.cpp
+    op_dequantize.cpp
+    op_depthwise.cpp
     op_divide.cpp
+    op_dram_queue.cpp
+    op_downsample_2d.cpp
+    op_dropout.cpp
+    op_embedding.cpp
+    op_embedding_bw.cpp
+    op_equal.cpp
+    op_erf.cpp
+    op_ethernet_data_copy.cpp
+    op_exp.cpp
+    op_fill_cache.cpp
+    op_forge_dequantize.cpp
+    op_forge_pad.cpp
+    op_forge_quantize.cpp
+    op_forge_requantize.cpp
+    op_forge_unpad.cpp
+    op_gather.cpp
+    op_gelu.cpp
+    op_gelu_derivative.cpp
+    op_greater.cpp
+    op_greater_equal.cpp
+    op_grouped_reduce_avg.cpp
+    op_heaviside.cpp
+    op_hslice.cpp
+    op_hstack.cpp
+    op_index.cpp
+    op_index_copy.cpp
+    op_interleave.cpp
+    op_layernorm.cpp
+    op_layernorm_bw.cpp
+    op_leaky_relu.cpp
+    op_less.cpp
+    op_less_equal.cpp
+    op_log.cpp
+    op_log_softmax.cpp
+    op_logical_and.cpp
+    op_logical_not.cpp
+    op_mask.cpp
+    op_matmul.cpp
+    op_max_pool_1d.cpp
+    op_max_pool_2d.cpp
+    op_max_pool_3d.cpp
+    op_maximum.cpp
+    op_minimum.cpp
     op_multiply.cpp
-    op_sine.cpp
-    op_transpose.cpp
+    op_nop.cpp
+    op_not_equal.cpp
+    op_narrow.cpp
+    op_pad.cpp
+    op_pad_tile.cpp
+    op_pixel_shuffle.cpp
+    op_pow.cpp
+    op_power.cpp
+    op_quantize.cpp
+    op_reciprocal.cpp
+    op_reduce_avg.cpp
+    op_reduce_max.cpp
+    op_reduce_sum.cpp
+    op_relu.cpp
+    op_remainder.cpp
+    op_repeat.cpp
+    op_repeat_interleave.cpp
+    op_requantize.cpp
     op_reshape.cpp
+    op_resize_1d.cpp
+    op_resize_2d.cpp
+    op_resize_3d.cpp
+    op_select.cpp
+    op_sigmoid.cpp
+    op_sine.cpp
+    op_softmax.cpp
+    op_softmax_bw.cpp
+    op_sparse_matmul.cpp
+    op_sqrt.cpp
+    op_stack.cpp
     op_subtract.cpp
+    op_squeeze.cpp
+    op_tanh.cpp
+    op_tile_broadcast.cpp
+    op_tilizer.cpp
+    op_transpose.cpp
+    op_unsqueeze.cpp
+    op_update_cache.cpp
+    op_upsample_2d.cpp
+    op_vslice.cpp
+    op_vstack.cpp
+    op_where.cpp
     python_bindings.cpp)
 
 target_link_libraries(ops PUBLIC coverage_config)

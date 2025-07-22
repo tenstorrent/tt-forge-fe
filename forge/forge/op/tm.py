@@ -461,7 +461,7 @@ def Unsqueeze(name: str, operandA: Tensor, dim: int) -> Tensor:
         Forge tensor
     """
 
-    return op("unsqueeze", name, operandA, attrs=(dim, len(operandA.shape)), dim=dim).get_tensor()
+    return op("unsqueeze", name, operandA, attrs=(dim,), dim=dim).get_tensor()
 
 
 def Squeeze(name: str, operandA: Tensor, dim: int) -> Tensor:

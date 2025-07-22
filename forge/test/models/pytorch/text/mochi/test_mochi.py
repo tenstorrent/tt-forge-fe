@@ -18,7 +18,6 @@ variants = ["genmo/mochi-1-preview"]
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_mochi(variant):
 
     # Record Forge Property

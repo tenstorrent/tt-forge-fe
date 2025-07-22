@@ -30,7 +30,6 @@ variants = ["microsoft/phi-3-mini-4k-instruct", "microsoft/phi-3-mini-128k-instr
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.xfail
 def test_phi3_causal_lm(variant):
 
     # Record Forge Property
@@ -81,10 +80,6 @@ def test_phi3_causal_lm(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_token_classification(variant):
-    if variant == "microsoft/phi-3-mini-4k-instruct":
-        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 29 GB)")
-    elif variant == "microsoft/phi-3-mini-128k-instruct":
-        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -94,6 +89,8 @@ def test_phi3_token_classification(variant):
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
+
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load tokenizer and model from HuggingFace
     tokenizer = AutoTokenizer.from_pretrained(variant, trust_remote_code=True)
@@ -118,7 +115,6 @@ def test_phi3_token_classification(variant):
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB")
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_sequence_classification(variant):
 
@@ -130,6 +126,7 @@ def test_phi3_sequence_classification(variant):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)

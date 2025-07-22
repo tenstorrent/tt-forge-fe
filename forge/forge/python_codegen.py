@@ -426,7 +426,7 @@ class ForgeWriter(PythonWriter):
 
             self.wl("for weight in weights:")
             self.indent += 1
-            self.wl("name = weight.name")
+            self.wl("name = weight.path")
             if self.contains_incompatible_np_floats:
                 self.wl(
                     "# Some floating-point weights in the model havea a dtype that is incompatible with the .numpy() call."

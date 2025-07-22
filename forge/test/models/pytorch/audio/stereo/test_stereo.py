@@ -27,9 +27,6 @@ variants = [
     pytest.param(
         "facebook/musicgen-large",
         marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 23 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
@@ -48,6 +45,8 @@ def test_stereo(variant):
         task=Task.MUSIC_GENERATION,
         source=Source.HUGGINGFACE,
     )
+    if variant == "facebook/musicgen-large":
+        pytest.xfail(reason="Requires multi-chip support")
 
     framework_model, processor = load_model(variant)
 
