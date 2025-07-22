@@ -364,17 +364,6 @@ def shape(type, attr, ops):
         orig_shape[dim] = orig_size
         return tuple(orig_shape), []
 
-    if type == "hslice":
-        assert len(attr) == 1, "HSlice should have one attribute, the slice size"
-        slice_size = attr[0]
-        shape = list(ops[0])
-        assert shape[-1] % slice_size == 0
-        while len(shape) < 4:
-            shape = [1] + shape
-        shape[-1] //= slice_size
-        shape[-3] *= slice_size
-        return tuple(shape), []
-
     if type == "hstack":
         assert len(ops[0]) >= 3, "HStack should at least have 3 dims"
         assert len(attr) == 1, "hstack should have one attribute, equal to number of stacks of Z dim to create"
@@ -1159,97 +1148,6 @@ def decompose_post_optimize(type, attr, dc, inputs):
     # TODO: remove once backend support is available
     if type == "select":
         decompose_select(attr, dc, inputs)
-
-    elif type == "hslice":
-        input_shape = inputs[0].shape.as_list()
-        post_dim = input_shape[-1] // attr[0]
-        result = inputs[0]
-        if post_dim % TILE_DIM != 0:
-            if input_shape[-2] % TILE_DIM != 0:
-                result = dc.op(
-                    "pad_tile",
-                    [
-                        result,
-                    ],
-                    (-2, input_shape[-2]),
-                )
-            cols = []
-            pad_post_dim = align_up_tile(post_dim)
-            pad_input_dim = pad_post_dim * attr[0]
-            for i in range(attr[0]):
-                cols.extend(torch.arange(i * pad_post_dim, i * pad_post_dim + post_dim).tolist())
-            spm = torch.sparse_coo_tensor(
-                [cols, torch.arange(input_shape[-1]).tolist()],
-                torch.ones(input_shape[-1]),
-                (pad_input_dim, input_shape[-1]),
-                dtype=torch.float32,
-            )
-
-            while len(result.shape) < 3:
-                result = dc.op_with_named_attrs(
-                    "unsqueeze",
-                    [
-                        result,
-                    ],
-                    {"dim": 0},
-                )
-
-            spm = torch.stack([spm] * result.shape[-3], -3).unsqueeze(0)
-            result = dc.op_with_named_attrs(
-                "transpose",
-                [
-                    result,
-                ],
-                {"dim0": -2, "dim1": -1},
-            )
-            result = picker_matmul(True, dc, spm, result)
-            result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
-            result = dc.op(
-                "hslice",
-                [
-                    result,
-                ],
-                attr,
-            )
-            result = dc.op(
-                "narrow",
-                [
-                    result,
-                ],
-                (-1, 0, post_dim, result.shape[-1]),
-            )
-            if input_shape[-2] % TILE_DIM != 0:
-                result = dc.op(
-                    "narrow",
-                    [
-                        result,
-                    ],
-                    (-2, 0, input_shape[-2], result.shape[-2]),
-                )
-            dc.fuse(result)
-        elif input_shape[-2] % TILE_DIM != 0:
-            result = dc.op(
-                "pad_tile",
-                [
-                    result,
-                ],
-                (-2, input_shape[-2]),
-            )
-            result = dc.op(
-                "hslice",
-                [
-                    result,
-                ],
-                attr,
-            )
-            result = dc.op(
-                "narrow",
-                [
-                    result,
-                ],
-                (-2, 0, input_shape[-2], result.shape[-2]),
-            )
-            dc.fuse(result)
 
     elif type == "hstack":
         input_shape = inputs[0].shape.as_list()

@@ -94,7 +94,6 @@ enum class OpType : uint32_t
     GreaterEqual,
     GroupedReduceAvg,
     Heaviside,
-    Hslice,
     Hstack,
     Index,
     IndexCopy,

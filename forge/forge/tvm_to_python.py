@@ -1094,15 +1094,6 @@ def populate_vslice_args(graph, nid, compiler_cfg):
     return args
 
 
-def populate_hslice_args(graph, nid, compiler_cfg):
-    slices = graph["nodes"][nid]["forge_shape"][-3]
-
-    args = [
-        ("slices", f"{slices}"),
-    ]
-    return args
-
-
 def populate_hstack_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
 
@@ -1751,7 +1742,6 @@ tvm_to_forge_op_map = {
     "forge.forge_conv2d_with_bias": "conv2d",
     "forge.concatenate": "concatenate",
     "forge.dropout": "dropout",
-    "forge.hslice": "hslice",
     "forge.hstack": "hstack",
     "forge.matmul": "matmul",
     "forge.vslice": "vslice",
@@ -1811,7 +1801,6 @@ forge_op_to_function_name = {
     "gelu": "forge.op.Gelu",
     "greater_equal": "forge.op.GreaterEqual",
     "greater": "forge.op.Greater",
-    "hslice": "forge.op.HSlice",
     "hstack": "forge.op.HStack",
     "identity": "forge.op.Identity",
     "index_copy": "forge.op.IndexCopy",
@@ -1885,7 +1874,6 @@ forge_ops_needing_arguments = {
     "conv3d": populate_conv3d_args,
     "cumsum": populate_cumsum_args,
     "gelu": populate_gelu_args,
-    "hslice": populate_hslice_args,
     "hstack": populate_hstack_args,
     "index_copy": populate_index_copy_args,
     "index": populate_index_args,

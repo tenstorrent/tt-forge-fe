@@ -954,39 +954,6 @@ def vslice(t: torch.Tensor, split_factor: int, pack=False):
     return ret
 
 
-def hslice(t: torch.Tensor, split_factor: int, pack=False):
-    assert t.is_sparse, "this works only for sparse tensors"
-    assert len(t.shape) == 2
-
-    if not t.is_coalesced():
-        t = t.coalesce()
-
-    np.empty((split_factor, 3))
-    ret = [[[] for _ in range(3)] for __ in range(split_factor)]
-    assert t.shape[1] % split_factor == 0, "invalid hslice split factor"
-    slice_width = t.shape[1] // split_factor
-
-    rows, cols = t.indices().tolist()
-    vals = t.values().tolist()
-    for idx in range(len(rows)):
-        slice_idx = cols[idx] // slice_width
-        ret[slice_idx][0].append(rows[idx])
-        ret[slice_idx][1].append(cols[idx] % slice_width)
-        ret[slice_idx][2].append(vals[idx])
-
-    ret = [
-        torch.sparse_coo_tensor(
-            indices=[r[0], r[1]], values=r[2], size=(t.shape[0], t.shape[1] // split_factor), dtype=t.dtype
-        )
-        for r in ret
-    ]
-
-    if pack:
-        ret = torch.stack(ret, dim=0)
-
-    return ret
-
-
 def hstack(t: torch.Tensor, stack_factor: int):
     assert t.is_sparse, "this works only for sparse tensors"
     assert len(t.shape) == 4

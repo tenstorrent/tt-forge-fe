@@ -93,7 +93,6 @@ class NewToOldOpType
         mapping_[OpType::GreaterEqual] = "greater_equal";
         mapping_[OpType::GroupedReduceAvg] = "grouped_reduce_avg";
         mapping_[OpType::Heaviside] = "heaviside";
-        mapping_[OpType::Hslice] = "hslice";
         mapping_[OpType::Hstack] = "hstack";
         mapping_[OpType::Index] = "index";
         mapping_[OpType::IndexCopy] = "index_copy";
@@ -226,7 +225,6 @@ class OldToNewOpType
         mapping_["greater_equal"] = OpType::GreaterEqual;
         mapping_["grouped_reduce_avg"] = OpType::GroupedReduceAvg;
         mapping_["heaviside"] = OpType::Heaviside;
-        mapping_["hslice"] = OpType::Hslice;
         mapping_["hstack"] = OpType::Hstack;
         mapping_["index"] = OpType::Index;
         mapping_["index_copy"] = OpType::IndexCopy;
@@ -424,7 +422,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::GreaterEqual: return greater_equal::eval(old_op_type, *this, tensors);
         case OpType::GroupedReduceAvg: return grouped_reduce_avg::eval(old_op_type, *this, tensors);
         case OpType::Heaviside: return heaviside::eval(old_op_type, *this, tensors);
-        case OpType::Hslice: return hslice::eval(old_op_type, *this, tensors);
         case OpType::Hstack: return hstack::eval(old_op_type, *this, tensors);
         case OpType::Index: return index::eval(old_op_type, *this, tensors);
         case OpType::IndexCopy: return index_copy::eval(old_op_type, *this, tensors);
@@ -550,7 +547,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::GreaterEqual: return greater_equal::shape(old_op_type, *this, inputs);
         case OpType::GroupedReduceAvg: return grouped_reduce_avg::shape(old_op_type, *this, inputs);
         case OpType::Heaviside: return heaviside::shape(old_op_type, *this, inputs);
-        case OpType::Hslice: return hslice::shape(old_op_type, *this, inputs);
         case OpType::Hstack: return hstack::shape(old_op_type, *this, inputs);
         case OpType::Index: return index::shape(old_op_type, *this, inputs);
         case OpType::IndexCopy: return index_copy::shape(old_op_type, *this, inputs);
@@ -681,7 +677,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::GreaterEqual: return greater_equal::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::GroupedReduceAvg: return grouped_reduce_avg::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Heaviside: return heaviside::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Hslice: return hslice::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Hstack: return hstack::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Index: return index::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::IndexCopy: return index_copy::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -829,7 +824,6 @@ void Op::decompose_initial(
         case OpType::GreaterEqual: return greater_equal::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::GroupedReduceAvg: return grouped_reduce_avg::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Heaviside: return heaviside::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Hslice: return hslice::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Hstack: return hstack::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Index: return index::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::IndexCopy: return index_copy::decompose_initial(old_op_type, *this, dc, inputs);
@@ -957,7 +951,6 @@ void Op::decompose_post_optimize(
         case OpType::GreaterEqual: return greater_equal::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::GroupedReduceAvg: return grouped_reduce_avg::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Heaviside: return heaviside::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Hslice: return hslice::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Hstack: return hstack::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Index: return index::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::IndexCopy: return index_copy::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -1085,7 +1078,6 @@ void Op::decompose_post_autograd(
         case OpType::GreaterEqual: return greater_equal::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::GroupedReduceAvg: return grouped_reduce_avg::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Heaviside: return heaviside::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Hslice: return hslice::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Hstack: return hstack::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Index: return index::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::IndexCopy: return index_copy::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1211,7 +1203,6 @@ long Op::initial_flops_estimate(
         case OpType::GreaterEqual: return greater_equal::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::GroupedReduceAvg: return grouped_reduce_avg::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Heaviside: return heaviside::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Hslice: return hslice::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Hstack: return hstack::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Index: return index::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::IndexCopy: return index_copy::initial_flops_estimate(old_op_type, *this, inputs);

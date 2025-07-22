@@ -55,7 +55,6 @@ add_library(ops
     op_greater_equal.cpp
     op_grouped_reduce_avg.cpp
     op_heaviside.cpp
-    op_hslice.cpp
     op_hstack.cpp
     op_index.cpp
     op_index_copy.cpp

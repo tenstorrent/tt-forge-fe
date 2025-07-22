@@ -85,7 +85,6 @@ op_to_module_map = {
     "index": "tm",
     "select": "tm",
     "gather": "tm",
-    "hslice": "tm",
     "hstack": "tm",
     "vslice": "tm",
     "vstack": "tm",
