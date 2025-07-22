@@ -1,5 +1,4 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
-
 # SPDX-License-Identifier: Apache-2.0
 
 import torch
@@ -13,7 +12,6 @@ from forge.op.eval.common import calculate_tile_size
 from .tanh import Tanh
 from .nop import Nop
 from .buffer import Buffer
-from .reciprocal import Reciprocal
 
 
 def eval(type, attr, ops):
@@ -72,7 +70,6 @@ def eval(type, attr, ops):
         "tilizer": lambda i: i[0],
         "ethernet_datacopy": lambda i: i[0],
         "buffer": lambda i: i[0],
-        "reciprocal": lambda i: torch.reciprocal(i[0] + 1e-10),  # add epsilon to avoid infinity
         "clip": lambda i: torch.clip(i[0], min=attr[0], max=attr[1]),
         "abs": lambda i: torch.abs(i[0]),
         "tanh": lambda i: torch.tanh(i[0]),
@@ -125,11 +122,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     if type == "buffer":
         return ac.op(Buffer.create(), (grad,))
-
-    if type == "reciprocal":  # -1/x^2
-        sq = ac.op("multiply", (output, output))
-        neg = ac.op("multiply", (sq, ac.constant(-1)))
-        return ac.op("multiply", (neg, grad))
 
     if type == "relu":
         # set theashold
@@ -190,7 +182,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
     elif type == "pow":
         exponent_value = attr[0]
         shape = list(inputs[0].shape.as_list())
-        recip = ac.op(Reciprocal.create(), (inputs[0],))
+        recip = ac.op("reciprocal", (inputs[0],))
         partial_grad = ac.op("multiply", (output, recip))
         pow_grad = ac.op("multiply", (ac.tensor(torch.zeros(shape) + exponent_value), partial_grad))
         return ac.op("multiply", (pow_grad, grad))
@@ -214,7 +206,6 @@ def initial_flops_estimate(type, attr, ops):
     sfpu_unary_ops = [
         "sqrt",
         "relu",
-        "reciprocal",
         "abs",
         "tanh",
         "cumsum",

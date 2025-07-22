@@ -843,7 +843,7 @@ void Op::decompose_initial(
         case OpType::Pow: return pow::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Power: return;
         case OpType::Quantize: return quantize::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Reciprocal: return reciprocal::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Reciprocal: return;
         case OpType::ReduceAvg: return reduce_avg::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::ReduceMax: return reduce_max::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::ReduceSum: return reduce_sum::decompose_initial(old_op_type, *this, dc, inputs);
@@ -968,7 +968,7 @@ void Op::decompose_post_optimize(
         case OpType::Pow: return pow::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Power: return;
         case OpType::Quantize: return quantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Reciprocal: return reciprocal::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Reciprocal: return;
         case OpType::ReduceAvg: return;
         case OpType::ReduceMax: return;
         case OpType::ReduceSum: return;
@@ -1093,7 +1093,7 @@ void Op::decompose_post_autograd(
         case OpType::Pow: return pow::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Power: return;
         case OpType::Quantize: return quantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Reciprocal: return reciprocal::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Reciprocal: return;
         case OpType::ReduceAvg: return;
         case OpType::ReduceMax: return;
         case OpType::ReduceSum: return;
@@ -1216,7 +1216,7 @@ long Op::initial_flops_estimate(
         case OpType::Pow: return pow::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Power: return 0;
         case OpType::Quantize: return quantize::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Reciprocal: return reciprocal::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Reciprocal: return 0;
         case OpType::ReduceAvg: return 0;
         case OpType::ReduceMax: return 0;
         case OpType::ReduceSum: return 0;
