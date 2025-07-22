@@ -36,18 +36,6 @@ def eval(op_type, attr, ops):
 
     """
 
-    if op_type == "softmax":
-
-        assert len(ops) == 1, "Softmax should have one operand."
-        assert len(attr) == 2, "Softmax should have two attributes."
-
-        t_ops = to_torch_operands(*ops)
-        input_ = t_ops[0]
-        dim = attr[0]
-        stable = attr[1]
-        assert input_.dim() > dim, "Given dimension is out of the shape"
-        return F.softmax(input_, dim=dim)
-
     if op_type == "log_softmax":
 
         assert len(ops) == 1, "LogSoftmax should have one operand."
@@ -62,32 +50,6 @@ def eval(op_type, attr, ops):
         result = F.log_softmax(input_, dim=dim)
 
         return result
-
-    if op_type == "softmax_bw":
-
-        assert len(ops) == 3, "Softmax backward should have three operands."
-        assert len(attr) == 1, "Softmax backward should have one attribute."
-
-        t_ops = to_torch_operands(*ops)
-
-        input_ = t_ops[0]  # the input of the softmax
-        output = t_ops[1]  # the output of the softmax function
-        grad = t_ops[2]  # gradient from the previous layer
-        dim = attr[0]  # the dimension by which we do softmax
-
-        assert input_.dim() > dim and dim >= -output.dim(), "Given dimesnion is out of the shape"
-
-        # assert output.dim() > dim and dim >= -output.dim(), "Given dimension is out of the shape"
-
-        # result = (grad - torch.sum(grad * output, dim=dim, keepdim=True)) * output
-        # return result
-
-        input__ = input_.clone().detach()
-        input__.requires_grad = True
-        output = F.softmax(input__, dim=dim)
-        output.backward(gradient=grad)
-
-        return input__.grad
 
     if op_type == "layernorm":
 
@@ -216,24 +178,10 @@ def shape(op_type, attr, ops):
 
     """
 
-    if op_type == "softmax":
-
-        assert len(ops) == 1, "Softmax should have one operand."
-        assert len(attr) == 2, "Softmax should have two attributes."
-
-        return ops[0], []
-
     if op_type == "log_softmax":
 
         assert len(ops) == 1, "LogSoftmax should have one operand."
         assert len(attr) == 2, "LogSoftmax should have two attributes."
-
-        return ops[0], []
-
-    if op_type == "softmax_bw":
-
-        assert len(ops) == 3, "Softmax should have three operands."
-        assert len(attr) == 1, "Softmax backward should have one attribute."
 
         return ops[0], []
 
@@ -302,15 +250,6 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
 
     """
 
-    if op_type == "softmax":
-
-        assert len(inputs) == 1, "Softmax should have one operand."
-        assert len(attr) == 2, "Softmax should have two attributes."
-
-        dim = attr[0]
-
-        return ac.op("softmax_bw", (inputs[0], output, grad), (dim,))
-
     if op_type == "layernorm":
 
         assert len(inputs) == 3, "Layernorm should have three operands."
@@ -366,7 +305,7 @@ def decompose(op_type, attr, dc, inputs):
         x = inputs[0]
         dim = attr[0]
         stable = attr[1]
-        result = dc.op_with_named_attrs("softmax", (x,), {"dimension": dim}, (dim, stable))
+        result = dc.op_with_named_attrs("softmax", (x,), {"dim": dim, "stable": stable})
         result = dc.op(Log.create(), (result,))
         dc.fuse(result)
         return
@@ -444,28 +383,6 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
         Result of the operation.
 
     """
-
-    if op_type == "softmax":
-        return
-
-    if op_type == "softmax_bw":
-
-        assert len(inputs) == 3, "Softmax backward should have three operands."
-        assert len(attr) == 1, "Softmax backward should have one attribute."
-
-        output = inputs[1]  # the output of the softmax function
-        grad = inputs[2]  # gradient from the previous layer
-        dim = attr[0]  # the dimension by which we do softmax
-        out_shape = output.shape.as_list()
-
-        assert len(out_shape) > dim and dim >= -len(out_shape), "Given dimension is out of the shape"
-
-        grad_out = dc.op("multiply", (grad, output), ())
-        gout_sum = dc.op_with_named_attrs("reduce_sum", (grad_out,), {"dim_arg": [dim], "keep_dim": True}, (dim, True))
-        gout_sub = dc.op("subtract", (grad, gout_sum), ())
-        result = dc.op("multiply", (gout_sub, output), ())
-        dc.fuse(result)
-        return
 
     if op_type == "layernorm":
 

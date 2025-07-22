@@ -154,7 +154,8 @@ TEST_F(EraseInverseOps, erase_inverse_ops_dual_reduce)
     // auto buffer2 = add_node<graphlib::PyOpNode>(*graph, "buffer2", "nop", {}, {buffer1});
 
     auto post_transpose = graph->get_node_by_name("post_transpose");
-    auto smx_1 = add_node<graphlib::PyOpNode>(*graph, "smx_1", "softmax", {-1, false}, {post_transpose});
+    auto smx_1 = add_node<graphlib::PyOpNode>(
+        *graph, "smx_1", graphlib::OpType("softmax", {}, {{"dim", -1}, {"stable", false}}), {post_transpose});
     auto reshape_1 = add_node<graphlib::PyOpNode>(
         *graph, "reshape_1", graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 512, 10, 16}}}), {smx_1});
 
@@ -163,7 +164,8 @@ TEST_F(EraseInverseOps, erase_inverse_ops_dual_reduce)
     auto reshape_2 = add_node<graphlib::PyOpNode>(
         *graph, "reshape_2", graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 1, 512, 1}}}), {reduce_2});
 
-    auto smx_2 = add_node<graphlib::PyOpNode>(*graph, "smx_2", "softmax", {-1, false}, {reshape_2});
+    auto smx_2 = add_node<graphlib::PyOpNode>(
+        *graph, "smx_2", graphlib::OpType("softmax", {}, {{"dim", -1}, {"stable", false}}), {reshape_2});
     graph->remove_node(graph->get_node_by_name("out0"));
     create_output(*graph, "out0", smx_2);
 
