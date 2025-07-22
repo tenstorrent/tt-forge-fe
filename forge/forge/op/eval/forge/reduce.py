@@ -74,8 +74,8 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     assert len(inputs) == 1, "Reduce should have one input"
     assert (
-        len(attr) == 2 or len(attr) == 3 and type == "reduce_max" or len(attr) == 3 and type == "grouped_reduce_avg"
-    ), "Reduce should have dim and keepdim parameter, and optional stride attr OR mandatory groups attr for grouped reduce."
+        len(attr) == 3 and type == "grouped_reduce_avg"
+    ), "grouped_reduce_avg should have dim, groups, and keepdim parameters."
 
     if type == "reduce_max":
         in0 = inputs[0]
@@ -173,8 +173,8 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 def decompose(type, attr, dc, inputs):
     assert len(inputs) == 1, "Reduce should have one input"
     assert (
-        len(attr) == 2 or len(attr) == 3 and type == "reduce_max" or len(attr) == 3 and type == "grouped_reduce_avg"
-    ), "Reduce should have dim and keepdim parameter, and optional stride attr OR mandatory groups attr for grouped reduce."
+        len(attr) == 3 and type == "grouped_reduce_avg"
+    ), "grouped_reduce_avg should have dim, groups, and keepdim parameters."
 
     if isinstance(attr[0], list):
         x = inputs[0]
@@ -188,17 +188,3 @@ def decompose(type, attr, dc, inputs):
         # This is a NOP
         result = dc.op(Nop.create(), inputs, ())
         dc.fuse(result)
-
-
-def decompose_post_autograd(op_type, attr, dc, inputs):
-    pass
-
-
-def initial_flops_estimate(type, attr, ops):
-    flops = 0
-    reduce_ops = ["reduce_max", "reduce_sum", "reduce_avg"]
-    output_shape = shape(type, attr, ops)[0]
-    if type in reduce_ops:
-        flops = int(np.prod(output_shape))
-
-    return flops
