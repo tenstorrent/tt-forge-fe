@@ -43,6 +43,7 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
+@pytest.mark.xfail(reason="Issue Link: https://github.com/tenstorrent/tt-forge-fe/issues/2631")
 def test_yolov5_320x320(restore_package_versions, size):
 
     pcc = 0.99
@@ -98,12 +99,13 @@ size = [
     pytest.param("s", id="yolov5s"),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),
-    pytest.param("x", id="yolov5x", marks=[pytest.mark.xfail]),
+    pytest.param("x", id="yolov5x"),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
+@pytest.mark.xfail(reason="Issue Link: https://github.com/tenstorrent/tt-forge-fe/issues/2631")
 def test_yolov5_640x640(restore_package_versions, size):
 
     # Record Forge Property
@@ -155,6 +157,7 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
+@pytest.mark.xfail(reason="Issue Link: https://github.com/tenstorrent/tt-forge-fe/issues/2631")
 def test_yolov5_480x480(restore_package_versions, size):
 
     # Record Forge Property
@@ -190,7 +193,7 @@ def test_yolov5_480x480(restore_package_versions, size):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["yolov5s"])
-@pytest.mark.xfail
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2631")
 def test_yolov5_1280x1280(restore_package_versions, variant):
 
     # Record Forge Property
