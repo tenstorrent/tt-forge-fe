@@ -82,9 +82,6 @@ def test_einsum(einsum_pattern, shape_1, shape_2):
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.xfail(
-    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - Atan"
-)
 @pytest.mark.parametrize(
     "shape",
     [

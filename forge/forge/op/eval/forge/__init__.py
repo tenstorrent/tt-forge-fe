@@ -4,12 +4,10 @@
 import importlib
 from types import ModuleType
 from functools import lru_cache
-from .exp import Exp
 from .cosine import Cosine
 from .ethernet_datacopy import EthernetDatacopy
 from .reciprocal import Reciprocal
 from .tanh import Tanh
-from .log import Log
 from .nop import Nop
 from .buffer import Buffer
 from .tilizer import Tilizer
@@ -42,7 +40,7 @@ op_to_module_map = {
     "equal": "eltwise_binary",
     "not_equal": "eltwise_binary",
     "logical_and": "eltwise_binary",
-    "exp": Exp,
+    "exp": "eltwise_unary",
     "reciprocal": Reciprocal,
     "nop": Nop,
     "buffer": Buffer,
@@ -50,14 +48,12 @@ op_to_module_map = {
     "relu": "eltwise_unary",
     "leaky_relu": "eltwise_unary",
     "gelu": "eltwise_unary",
-    "gelu_derivative": "eltwise_unary",
-    "log": Log,
+    "log": "eltwise_unary",
     "sigmoid": "eltwise_unary",
     "clip": Clip,
     "cosine": Cosine,
     "sine": "eltwise_unary",
     "atan": "eltwise_unary",
-    "tile_broadcast": "eltwise_unary",
     "tanh": Tanh,
     "cumsum": CumulativeSum,
     "argmax": Argmax,

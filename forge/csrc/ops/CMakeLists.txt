@@ -50,7 +50,6 @@ add_library(ops
     op_forge_unpad.cpp
     op_gather.cpp
     op_gelu.cpp
-    op_gelu_derivative.cpp
     op_greater.cpp
     op_greater_equal.cpp
     op_grouped_reduce_avg.cpp
@@ -110,7 +109,6 @@ add_library(ops
     op_subtract.cpp
     op_squeeze.cpp
     op_tanh.cpp
-    op_tile_broadcast.cpp
     op_tilizer.cpp
     op_transpose.cpp
     op_unsqueeze.cpp

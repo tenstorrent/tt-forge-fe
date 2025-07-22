@@ -117,6 +117,12 @@ tt::graphlib::NodeContext reduce_broadcast_dimensions(
     return result_grad;
 }
 
+long initial_flops_estimate_output_dim(std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape_tuple)
+{
+    graphlib::Shape out_shape = std::get<0>(shape_tuple);
+    return std::accumulate(out_shape.begin(), out_shape.end(), 1L, std::multiplies<int64_t>());
+}
+
 }  // namespace op_common
 }  // namespace ops
 }  // namespace tt

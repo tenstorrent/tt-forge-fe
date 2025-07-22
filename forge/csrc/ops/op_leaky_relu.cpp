@@ -2,14 +2,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-#include <vector>
-
 #include "autograd/autograd.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
 #include "op_interface.hpp"
-#include "passes/decomposing_context.hpp"
+#include "ops/op_common.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
 #include "utils/assert.hpp"
@@ -20,60 +18,56 @@ namespace ops
 {
 namespace leaky_relu
 {
-using namespace graphlib;
 
 at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::LeakyRelu, "Wrong op type.");
-    return op.base_eval(old_op_type, tensors);
+    TT_ASSERT(tensors.size() == 1, "LeakyRelu should have one input");
+    TT_ASSERT(op.attrs().size() == 1, "LeakyRelu should have one attribute");
+
+    float negative_slope = op.attr_as<float>("parameter");
+
+    return torch::nn::functional::leaky_relu(
+        tensors[0], torch::nn::functional::LeakyReLUFuncOptions().negative_slope(negative_slope));
 }
 
-std::tuple<Shape, std::vector<DimBroadcast>> shape(
+std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::LeakyRelu, "Wrong op type.");
-    return op.base_shape(old_op_type, in_shapes);
+    TT_ASSERT(in_shapes.size() == 1, "LeakyRelu should have one input");
+
+    return std::make_tuple(graphlib::Shape::create(in_shapes[0]), std::vector<graphlib::DimBroadcast>{});
 }
 
-NodeContext backward(
+tt::graphlib::NodeContext backward(
     const graphlib::OpType &old_op_type,
     const Op &op,
-    autograd::autograd_context &ac,
+    tt::autograd::autograd_context &ac,
     int operand,
-    const std::vector<NodeContext> &inputs,
-    const NodeContext &output,
-    const NodeContext &gradient)
+    const std::vector<tt::graphlib::NodeContext> &inputs,
+    const tt::graphlib::NodeContext &output,
+    const tt::graphlib::NodeContext &gradient)
 {
     TT_DBG_ASSERT(op.type() == OpType::LeakyRelu, "Wrong op type.");
-    return op.base_backward(old_op_type, ac, operand, inputs, output, gradient);
-}
+    TT_ASSERT(inputs.size() == 1, "LeakyRelu should have one input");
+    TT_ASSERT(operand == 0, "Invalid operand index");
+    TT_ASSERT(op.attrs().size() == 1, "LeakyRelu should have one attribute");
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::LeakyRelu, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
-}
+    float negative_slope = op.attr_as<float>("parameter");
 
-void decompose_post_optimize(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::LeakyRelu, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
-}
+    auto alpha = ac.autograd->create_constant(ac, negative_slope);
+    auto zero = ac.autograd->create_constant(ac, 0.0);
+    auto neg_one = ac.autograd->create_constant(ac, -1.0);
 
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::LeakyRelu, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
-}
+    auto relu_dx = ac.autograd->create_op(ac, graphlib::OpType("heaviside"), {output, zero});
 
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::LeakyRelu, "Wrong op type.");
-    return op.base_initial_flops_estimate(old_op_type, inputs);
+    auto l_relu_dx = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {output, neg_one});
+    l_relu_dx = ac.autograd->create_op(ac, graphlib::OpType("heaviside"), {l_relu_dx, zero});
+    l_relu_dx = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {l_relu_dx, alpha});
+    l_relu_dx = ac.autograd->create_op(ac, graphlib::OpType("add"), {relu_dx, l_relu_dx});
+
+    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {l_relu_dx, gradient});
 }
 
 }  // namespace leaky_relu

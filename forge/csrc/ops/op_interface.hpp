@@ -103,7 +103,7 @@ DECLARE_OP_INTERFACE(conv_2d_prestride_act);
 DECLARE_OP_INTERFACE(conv_2d_prestride_weights);
 DECLARE_OP_INTERFACE(conv_2d_transpose);
 DECLARE_OP_INTERFACE(conv_3d);
-DECLARE_OP_INTERFACE(conv_Sum);
+DECLARE_OP_INTERFACE(conv_sum);
 DECLARE_OP_INTERFACE(cosine);
 DECLARE_OP_INTERFACE(cumulative_sum);
 DECLARE_OP_INTERFACE(dequantize);

@@ -4,8 +4,8 @@
 from typing import List, Tuple
 from math import gcd
 import torch
-import forge
 from ..common import to_torch_operands
+from forge.forgeglobal import TILE_DIM, align_up_tile
 from .nop import Nop
 from .buffer import Buffer
 from forge.forgeglobal import TILE_DIM, align_up_tile, is_tile_dim_aligned

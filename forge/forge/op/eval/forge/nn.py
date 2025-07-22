@@ -9,9 +9,7 @@ import torch.nn.functional as F
 
 from ..common import to_torch_operands
 from . import reduce
-from .exp import Exp
 from .reciprocal import Reciprocal
-from .log import Log
 
 
 def eval(op_type, attr, ops):
@@ -305,7 +303,7 @@ def decompose(op_type, attr, dc, inputs):
         dim = attr[0]
         stable = attr[1]
         result = dc.op_with_named_attrs("softmax", (x,), {"dim": dim, "stable": stable})
-        result = dc.op(Log.create(), (result,))
+        result = dc.op("log", (result,))
         dc.fuse(result)
         return
 
