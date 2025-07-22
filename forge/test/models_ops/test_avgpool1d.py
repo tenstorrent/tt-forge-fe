@@ -29,23 +29,6 @@ class Avgpool1D0(ForgeModule):
         avgpool1d_output_1 = forge.op.AvgPool1d(
             "",
             avgpool1d_input_0,
-            kernel_size=[64],
-            stride=[64],
-            padding=[0, 0],
-            ceil_mode=False,
-            count_include_pad=True,
-        )
-        return avgpool1d_output_1
-
-
-class Avgpool1D1(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, avgpool1d_input_0):
-        avgpool1d_output_1 = forge.op.AvgPool1d(
-            "",
-            avgpool1d_input_0,
             kernel_size=[49],
             stride=[49],
             padding=[0, 0],
@@ -65,24 +48,6 @@ forge_modules_and_shapes_dtypes_list = [
     pytest.param(
         (
             Avgpool1D0,
-            [((1, 768, 64), torch.float32)],
-            {
-                "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "kernel_size": "[64]",
-                    "stride": "[64]",
-                    "padding": "[0, 0]",
-                    "ceil_mode": "False",
-                    "count_include_pad": "True",
-                },
-            },
-        ),
-        marks=[pytest.mark.skip(reason="Segmentation fault at run_mlir_compiler stage")],
-    ),
-    pytest.param(
-        (
-            Avgpool1D1,
             [((1, 768, 49), torch.bfloat16)],
             {
                 "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -97,8 +62,8 @@ forge_modules_and_shapes_dtypes_list = [
                 },
             },
         ),
-        marks=[pytest.mark.skip(reason="Segmentation fault at run_mlir_compiler stage")],
-    ),
+        marks=[pytest.mark.skip(reason="Segmentation fault at run_mlir_compiler compilation stage")],
+    )
 ]
 
 
@@ -129,7 +94,6 @@ def test_module(forge_module_and_shapes_dtypes):
     ]
 
     framework_model = forge_module(forge_module.__name__)
-    framework_model.process_framework_parameters()
 
     for name, parameter in framework_model._parameters.items():
         parameter_tensor = Tensor.create_torch_tensor(
