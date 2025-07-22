@@ -1,13 +1,20 @@
 # SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
+import math
+from forge.verify.value_checkers import AutomaticValueChecker
 import pytest
+from test.operators.utils.compat import create_torch_inputs, verify_module_for_inputs
+from test.operators.utils.datatypes import ValueRanges
+from test.operators.utils.utils import TensorUtils
 import torch
 from torch import nn
 import torch.nn.functional as F
 
 import forge
-from forge.verify.verify import verify
+from forge.verify.verify import verify, VerifyConfig
+from forge.config import CompilerConfig
+from forge._C import DataFormat
 
 
 @pytest.mark.parametrize(
@@ -871,3 +878,484 @@ def test_resize1d(data, output_size, align_corners, forge_tmp_path):
     compiled_model = forge.compile(framework_model, sample_inputs=[x])
 
     verify([x], framework_model, compiled_model)
+
+
+# CONV2D TESTS THAT ARE TESTING PARAMETER 'GROUPS' AND ARE FAILING DUE TO VERY LOW PCC
+### run all `pytest -svv -rap 'tt-forge-fe/forge/test/mlir/operators/nn/test_nn.py::test_conv2d_with_groups_pcc_bug'` ####
+## pcc                      test_id
+## 0.07952396257192296      conv2d-FROM_ANOTHER_OP-{'in_channels': 10, 'out_channels': 10, 'kernel_size': (59, 1), 'stride': 1, 'padding': 0, 'dilation': 1, 'groups': 10, 'bias': False, 'padding_mode': 'zeros', 'dtype': None}-(1, 10, 10000, 1)-None-None
+## 0.001865032085400018     conv2d-FROM_ANOTHER_OP-{'in_channels': 10, 'out_channels': 10, 'kernel_size': (74, 1), 'stride': 1, 'padding': 0, 'dilation': 1, 'groups': 10, 'bias': False, 'padding_mode': 'zeros', 'dtype': None}-(10, 10, 10000, 1)-None-None
+## 0.07952396257192296      conv2d-FROM_HOST-{'in_channels': 10, 'out_channels': 10, 'kernel_size': (59, 1), 'stride': 1, 'padding': 0, 'dilation': 1, 'groups': 10, 'bias': False, 'padding_mode': 'zeros', 'dtype': None}-(1, 10, 10000, 1)-None-None
+## 0.001865032085400018     conv2d-FROM_HOST-{'in_channels': 10, 'out_channels': 10, 'kernel_size': (74, 1), 'stride': 1, 'padding': 0, 'dilation': 1, 'groups': 10, 'bias': False, 'padding_mode': 'zeros', 'dtype': None}-(10, 10, 10000, 1)-None-None
+## 0.22350189053030375      conv2d-CONST_EVAL_PASS-{'in_channels': 10, 'out_channels': 10, 'kernel_size': (59, 1), 'stride': 1, 'padding': 0, 'dilation': 1, 'groups': 10, 'bias': False, 'padding_mode': 'zeros', 'dtype': None}-(1, 10, 10000, 1)-None-None
+## 0.01408952601681219      conv2d-CONST_EVAL_PASS-{'in_channels': 10, 'out_channels': 10, 'kernel_size': (74, 1), 'stride': 1, 'padding': 0, 'dilation': 1, 'groups': 10, 'bias': False, 'padding_mode': 'zeros', 'dtype': None}-(10, 10, 10000, 1)-None-None
+@pytest.mark.parametrize(
+    "shape",
+    [
+        pytest.param((1, 10, 10000, 1), id="(1, 10, 10000, 1)"),
+        pytest.param((10, 10, 10000, 1), id="(10, 10, 10000, 1)"),
+    ],
+)
+@pytest.mark.parametrize("model_type", ["ModelFromAnotherOp", "ModelDirect", "ModelConstEvalPass"])
+def test_conv2d_with_groups_pcc_bug(shape, model_type):
+
+    value_range = ValueRanges.SMALL  # [-1, 1]
+
+    class ModelFromAnotherOp(torch.nn.Module):
+        def __init__(self, kernel_size):
+            super().__init__()
+
+            self.ct1 = nn.Conv2d(
+                in_channels=10,
+                out_channels=10,
+                kernel_size=kernel_size,  # (59, 1) or (74, 1)
+                stride=1,
+                padding=0,
+                dilation=1,
+                groups=10,
+                bias=False,
+                padding_mode="zeros",
+            )
+
+        def forward(self, x: torch.Tensor):
+            # we use Add operator to create one operands which is input for the Conv2d operator
+            add = torch.add(x, x)
+            output = self.ct1(add)
+            return output
+
+    class ModelDirect(torch.nn.Module):
+        def __init__(self, kernel_size):
+            super().__init__()
+
+            self.ct1 = nn.Conv2d(
+                in_channels=10,
+                out_channels=10,
+                kernel_size=kernel_size,  # (59, 1) or (74, 1)
+                stride=1,
+                padding=0,
+                dilation=1,
+                groups=10,
+                bias=False,
+                padding_mode="zeros",
+            )
+
+        def forward(self, x: torch.Tensor):
+            output = self.ct1(x)
+            return output
+
+    class ModelConstEvalPass(torch.nn.Module):
+        def __init__(self, kernel_size):
+            super().__init__()
+
+            self.ct1 = nn.Conv2d(
+                in_channels=10,
+                out_channels=10,
+                kernel_size=kernel_size,  # (59, 1) or (74, 1)
+                stride=1,
+                padding=0,
+                dilation=1,
+                groups=10,
+                bias=False,
+                padding_mode="zeros",
+            )
+
+            self.constant = TensorUtils.create_torch_constant(
+                input_shape=shape,  # (1, 10, 10000, 1) or (10, 10, 10000, 1)
+                dev_data_format=None,  # torch.float32
+                value_range=value_range,  # [-1, 1],
+                random_seed=math.prod(shape),
+            )
+            self.register_buffer("constant1", self.constant)
+
+        def forward(self, x: torch.Tensor):
+            v1 = self.ct1(self.constant)
+            # v2 = torch.add(x, x)
+            v2 = self.ct1(x)
+            # add consume inputs
+            add = torch.add(v1, v2)
+            return add
+
+    # prepare model
+    framework_model = (
+        eval(model_type)(kernel_size=(59, 1)) if shape == (1, 10, 10000, 1) else eval(model_type)(kernel_size=(74, 1))
+    )
+
+    # prepare inputs
+    inputs = create_torch_inputs(
+        input_shapes=[
+            shape,
+        ],  # [(1, 10, 10000, 1),] or [(10, 10, 10000, 1),]
+        dev_data_format=None,  # torch.float32
+        value_range=value_range,  # [-1, 1]
+    )
+
+    verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99, rtol=1e-2, atol=1e-2))
+
+    # this 2 lines will be executed in method `verify_module_for_inputs`, need to be like this because of pcc error level handling logic that is writthen in `verify_module_for_inputs`
+    ## compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    ## verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+    verify_module_for_inputs(
+        model=framework_model,
+        inputs=inputs,
+        compiler_cfg=CompilerConfig(),
+        verify_config=verify_cfg,
+        convert_to_forge=False,
+    )
+
+
+# CONV_TRANSPOSE_2D TESTS THAT ARE FAILING WITH VERY LOW PCC (< 0.3)
+#### run all `pytest -svv -rap 'forge/test/mlir/operators/nn/test_nn.py::test_conv_transpose_2d_very_low_pcc'` ####
+## pcc                      test_id
+## 0.09155917045687005      conv_transpose_2d-FROM_ANOTHER_OP-{'in_channels': 11, 'out_channels': 20, 'kernel_size': (9, 1), 'stride': 1, 'padding': 3, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': None}-(1, 11, 45, 17)-None-None
+## 0.14953435114189847      conv_transpose_2d-FROM_ANOTHER_OP-{'in_channels': 1, 'out_channels': 6, 'kernel_size': (1, 19), 'stride': 1, 'padding': 4, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': None}-(1, 1, 10, 1000)-None-None
+## -0.0033743405959039676   conv_transpose_2d-FROM_ANOTHER_OP-{'in_channels': 11, 'out_channels': 4, 'kernel_size': (3, 12), 'stride': 1, 'padding': 4, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': None}-(1, 11, 17, 41)-None-None
+## 0.04786266869402479      conv_transpose_2d-FROM_ANOTHER_OP-{'in_channels': 13, 'out_channels': 23, 'kernel_size': (29, 1), 'stride': 1, 'padding': 1, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': None}-(1, 13, 89, 3)-None-None
+## 0.08011824914232067      conv_transpose_2d-FROM_ANOTHER_OP-{'in_channels': 13, 'out_channels': 10, 'kernel_size': (6, 1), 'stride': 1, 'padding': 1, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': None}-(14, 13, 89, 3)-None-None
+
+## 0.17676410160903602      conv_transpose_2d-FROM_HOST-{'in_channels': 11, 'out_channels': 20, 'kernel_size': (9, 1), 'stride': 1, 'padding': 3, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': None}-(1, 11, 45, 17)-None-None
+## 0.29356062226092733      conv_transpose_2d-FROM_HOST-{'in_channels': 1, 'out_channels': 6, 'kernel_size': (1, 19), 'stride': 1, 'padding': 4, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': None}-(1, 1, 10, 1000)-None-None
+## 0.03652692248373232      conv_transpose_2d-FROM_HOST-{'in_channels': 11, 'out_channels': 4, 'kernel_size': (3, 12), 'stride': 1, 'padding': 4, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': None}-(1, 11, 17, 41)-None-None
+## 0.10376938499808648      conv_transpose_2d-FROM_HOST-{'in_channels': 13, 'out_channels': 23, 'kernel_size': (29, 1), 'stride': 1, 'padding': 1, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': None}-(1, 13, 89, 3)-None-None
+## 0.16019342651211996      conv_transpose_2d-FROM_HOST-{'in_channels': 13, 'out_channels': 10, 'kernel_size': (6, 1), 'stride': 1, 'padding': 1, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': None}-(14, 13, 89, 3)-None-None
+@pytest.mark.parametrize(
+    "in_channels, out_channels, kernel_size, stride, padding, output_padding, groups, bias, dilation, input_shape,",
+    [
+        pytest.param(
+            11,
+            20,
+            (9, 1),
+            1,
+            3,
+            0,
+            1,
+            True,
+            1,
+            (1, 11, 45, 17),
+            id="{'in_channels': 11, 'out_channels': 20, 'kernel_size': (9, 1), 'stride': 1, 'padding': 3, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1}-(1, 11, 45, 17)",
+        ),
+        pytest.param(
+            1,
+            6,
+            (1, 19),
+            1,
+            4,
+            0,
+            1,
+            True,
+            1,
+            (1, 1, 10, 1000),
+            id="{'in_channels': 1, 'out_channels': 6, 'kernel_size': (1, 19), 'stride': 1, 'padding': 4, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1}-(1, 1, 10, 1000)",
+        ),
+        pytest.param(
+            11,
+            4,
+            (3, 12),
+            1,
+            4,
+            0,
+            1,
+            True,
+            1,
+            (1, 11, 17, 41),
+            id="{'in_channels': 11, 'out_channels': 4, 'kernel_size': (3, 12), 'stride': 1, 'padding': 4, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1}-(1, 11, 17, 41)",
+        ),
+        pytest.param(
+            13,
+            23,
+            (29, 1),
+            1,
+            1,
+            0,
+            1,
+            True,
+            1,
+            (1, 13, 89, 3),
+            id="{'in_channels': 13, 'out_channels': 23, 'kernel_size': (29, 1), 'stride': 1, 'padding': 1, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1}-(1, 13, 89, 3)",
+        ),
+        pytest.param(
+            13,
+            10,
+            (6, 1),
+            1,
+            1,
+            0,
+            1,
+            True,
+            1,
+            (14, 13, 89, 3),
+            id="{'in_channels': 13, 'out_channels': 10, 'kernel_size': (6, 1), 'stride': 1, 'padding': 1, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1}-(14, 13, 89, 3)",
+        ),
+    ],
+)
+@pytest.mark.parametrize("model_type", ["ModelFromAnotherOp", "ModelDirect"])
+def test_conv_transpose_2d_very_low_pcc(
+    in_channels,
+    out_channels,
+    kernel_size,
+    stride,
+    padding,
+    output_padding,
+    groups,
+    bias,
+    dilation,
+    input_shape,
+    model_type,
+):
+    value_range = ValueRanges.SMALL  # [-1, 1]
+
+    class ModelFromAnotherOp(torch.nn.Module):
+        def __init__(
+            self, in_channels, out_channels, kernel_size, stride, padding, output_padding, groups, bias, dilation
+        ):
+            super().__init__()
+
+            self.ct1 = nn.ConvTranspose2d(
+                in_channels=in_channels,
+                out_channels=out_channels,
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                output_padding=output_padding,
+                groups=groups,
+                bias=bias,
+                dilation=dilation,
+            )
+
+        def forward(self, x: torch.Tensor):
+            # we use Add operator to create one operands which is input for the ConvTranspose2d operator
+            add = torch.add(x, x)
+            output = self.ct1(add)
+            return output
+
+    class ModelDirect(torch.nn.Module):
+        def __init__(
+            self, in_channels, out_channels, kernel_size, stride, padding, output_padding, groups, bias, dilation
+        ):
+            super().__init__()
+            self.ct1 = nn.ConvTranspose2d(
+                in_channels=in_channels,
+                out_channels=out_channels,
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                output_padding=output_padding,
+                groups=groups,
+                bias=bias,
+                dilation=dilation,
+            )
+
+        def forward(self, x: torch.Tensor):
+            output = self.ct1(x)
+            return output
+
+    # prepare model
+    framework_model = eval(model_type)(
+        in_channels=in_channels,
+        out_channels=out_channels,
+        kernel_size=kernel_size,
+        stride=stride,
+        padding=padding,
+        output_padding=output_padding,
+        groups=groups,
+        bias=bias,
+        dilation=dilation,
+    )
+
+    # prepare inputs
+    inputs = create_torch_inputs(
+        input_shapes=[
+            input_shape,
+        ],
+        dev_data_format=None,  # torch.float32
+        value_range=value_range,  # [-1, 1]
+    )
+
+    verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99, rtol=1e-2, atol=1e-2))
+
+    # this 2 lines will be executed in method `verify_module_for_inputs`, need to be like this because of pcc error level handling logic that is writthen in `verify_module_for_inputs`
+    ## compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    ## verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+    verify_module_for_inputs(
+        model=framework_model,
+        inputs=inputs,
+        compiler_cfg=CompilerConfig(),
+        verify_config=verify_cfg,
+        convert_to_forge=False,
+    )
+
+
+# CONV_TRANSPOSE_2D TESTS THAT ARE FAILING WITH LOW PCC (~0.7)
+#### run all `pytest -svv -rap 'forge/test/mlir/operators/nn/test_nn.py::test_conv_transpose_2d_low_pcc'` ####
+## pcc                  test_id
+## 0.736095037069272    conv_transpose_2d-CONST_EVAL_PASS-{'in_channels': 11, 'out_channels': 20, 'kernel_size': (9, 1), 'stride': 1, 'padding': 3, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': None}-(1, 11, 45, 17)-None-None
+## 0.7647944811111435   conv_transpose_2d-CONST_EVAL_PASS-{'in_channels': 1, 'out_channels': 6, 'kernel_size': (1, 19), 'stride': 1, 'padding': 4, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': None}-(1, 1, 10, 1000)-None-None
+## 0.7279430275007324   conv_transpose_2d-CONST_EVAL_PASS-{'in_channels': 11, 'out_channels': 4, 'kernel_size': (3, 12), 'stride': 1, 'padding': 4, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': None}-(1, 11, 17, 41)-None-None
+## 0.7220935770935009   conv_transpose_2d-CONST_EVAL_PASS-{'in_channels': 13, 'out_channels': 23, 'kernel_size': (29, 1), 'stride': 1, 'padding': 1, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': None}-(1, 13, 89, 3)-None-None
+## 0.7296721196641667   conv_transpose_2d-CONST_EVAL_PASS-{'in_channels': 13, 'out_channels': 10, 'kernel_size': (6, 1), 'stride': 1, 'padding': 1, 'output_padding': 0, 'groups': 1, 'bias': True, 'dilation': 1, 'dtype': None}-(14, 13, 89, 3)-None-None
+
+## 0.7177517414979923   conv_transpose_2d-CONST_EVAL_PASS-{'in_channels': 11, 'out_channels': 20, 'kernel_size': (9, 1), 'stride': 1, 'padding': 3, 'output_padding': 0, 'groups': 1, 'bias': False, 'dilation': 1, 'dtype': None}-(1, 11, 45, 17)-None-None
+## 0.7111839145427608   conv_transpose_2d-CONST_EVAL_PASS-{'in_channels': 1, 'out_channels': 6, 'kernel_size': (1, 19), 'stride': 1, 'padding': 4, 'output_padding': 0, 'groups': 1, 'bias': False, 'dilation': 1, 'dtype': None}-(1, 1, 10, 1000)-None-None
+## 0.7278532400534036   conv_transpose_2d-CONST_EVAL_PASS-{'in_channels': 11, 'out_channels': 4, 'kernel_size': (3, 12), 'stride': 1, 'padding': 4, 'output_padding': 0, 'groups': 1, 'bias': False, 'dilation': 1, 'dtype': None}-(1, 11, 17, 41)-None-None
+## 0.7149119717581426   conv_transpose_2d-CONST_EVAL_PASS-{'in_channels': 13, 'out_channels': 23, 'kernel_size': (29, 1), 'stride': 1, 'padding': 1, 'output_padding': 0, 'groups': 1, 'bias': False, 'dilation': 1, 'dtype': None}-(1, 13, 89, 3)-None-None
+## 0.7120212018844485   conv_transpose_2d-CONST_EVAL_PASS-{'in_channels': 13, 'out_channels': 10, 'kernel_size': (6, 1), 'stride': 1, 'padding': 1, 'output_padding': 0, 'groups': 1, 'bias': False, 'dilation': 1, 'dtype': None}-(14, 13, 89, 3)-None-None
+@pytest.mark.parametrize(
+    "in_channels, out_channels, kernel_size, stride, padding, output_padding, groups, dilation, input_shape",
+    [
+        pytest.param(
+            11,
+            20,
+            (9, 1),
+            1,
+            3,
+            0,
+            1,
+            1,
+            (1, 11, 45, 17),
+            id="{'in_channels': 11, 'out_channels': 20, 'kernel_size': (9, 1), 'stride': 1, 'padding': 3, 'output_padding': 0, 'groups': 1, 'dilation': 1}-(1, 11, 45, 17)",
+        ),
+        pytest.param(
+            1,
+            6,
+            (1, 19),
+            1,
+            4,
+            0,
+            1,
+            1,
+            (1, 1, 10, 1000),
+            id="{'in_channels': 1, 'out_channels': 6, 'kernel_size': (1, 19), 'stride': 1, 'padding': 4, 'output_padding': 0, 'groups': 1, 'dilation': 1}-(1, 1, 10, 1000)",
+        ),
+        pytest.param(
+            11,
+            4,
+            (3, 12),
+            1,
+            4,
+            0,
+            1,
+            1,
+            (1, 11, 17, 41),
+            id="{'in_channels': 11, 'out_channels': 4, 'kernel_size': (3, 12), 'stride': 1, 'padding': 4, 'output_padding': 0, 'groups': 1, 'dilation': 1}-(1, 11, 17, 41)",
+        ),
+        pytest.param(
+            13,
+            23,
+            (29, 1),
+            1,
+            1,
+            0,
+            1,
+            1,
+            (1, 13, 89, 3),
+            id="{'in_channels': 13, 'out_channels': 23, 'kernel_size': (29, 1), 'stride': 1, 'padding': 1, 'output_padding': 0, 'groups': 1, 'dilation': 1}-(1, 13, 89, 3)",
+        ),
+        pytest.param(
+            13,
+            10,
+            (6, 1),
+            1,
+            1,
+            0,
+            1,
+            1,
+            (14, 13, 89, 3),
+            id="{'in_channels': 13, 'out_channels': 10, 'kernel_size': (6, 1), 'stride': 1, 'padding': 1, 'output_padding': 0, 'groups': 1, 'dilation': 1}-(14, 13, 89, 3)",
+        ),
+    ],
+)
+@pytest.mark.parametrize("bias", [pytest.param("True", id="bias: True"), pytest.param("False", id="bias: False")])
+@pytest.mark.parametrize("model_type", ["ModelConstEvalPass"])
+def test_conv_transpose_2d_low_pcc(
+    in_channels,
+    out_channels,
+    kernel_size,
+    stride,
+    padding,
+    output_padding,
+    groups,
+    dilation,
+    input_shape,
+    bias,
+    model_type,
+):
+
+    value_range = ValueRanges.SMALL  # [-1, 1]
+
+    class ModelConstEvalPass(torch.nn.Module):
+        def __init__(
+            self,
+            input_shape,
+            in_channels,
+            out_channels,
+            kernel_size,
+            stride,
+            padding,
+            output_padding,
+            groups,
+            bias,
+            dilation,
+        ):
+            super().__init__()
+            self.constant = TensorUtils.create_torch_constant(
+                input_shape=input_shape,
+                dev_data_format=None,  # torch.float32
+                value_range=value_range,  # [-1, 1],
+                random_seed=math.prod(input_shape),
+            )
+            self.register_buffer("constant1", self.constant)
+
+            self.ct1 = nn.ConvTranspose2d(
+                in_channels=in_channels,
+                out_channels=out_channels,
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                output_padding=output_padding,
+                groups=groups,
+                bias=bias,
+                dilation=dilation,
+            )
+
+        def forward(self, x: torch.Tensor):
+            v1 = self.ct1(self.constant)
+            # v2 = torch.add(x, x)
+            v2 = self.ct1(x)
+            # add consume inputs
+            add = torch.add(v1, v2)
+            return add
+
+    # prepare model
+    framework_model = eval(model_type)(
+        input_shape=input_shape,
+        in_channels=in_channels,
+        out_channels=out_channels,
+        kernel_size=kernel_size,
+        stride=stride,
+        padding=padding,
+        output_padding=output_padding,
+        groups=groups,
+        bias=bias,
+        dilation=dilation,
+    )
+
+    # prepare inputs
+    inputs = create_torch_inputs(
+        input_shapes=[
+            input_shape,
+        ],
+        dev_data_format=None,  # torch.float32
+        value_range=value_range,  # [-1, 1]
+    )
+
+    verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99, rtol=1e-2, atol=1e-2))
+
+    # this 2 lines will be executed in method `verify_module_for_inputs`, need to be like this because of pcc error level handling logic that is writthen in `verify_module_for_inputs`
+    ## compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    ## verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+    verify_module_for_inputs(
+        model=framework_model,
+        inputs=inputs,
+        compiler_cfg=CompilerConfig(),
+        verify_config=verify_cfg,
+        convert_to_forge=False,
+    )
