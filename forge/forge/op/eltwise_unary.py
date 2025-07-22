@@ -221,7 +221,7 @@ def Sqrt(name: str, operandA: Tensor) -> Tensor:
     return op("sqrt", name, operandA).get_tensor()
 
 
-def Relu(name: str, operandA: Tensor, threshold=0.0, mode="min") -> Tensor:
+def Relu(name: str, operandA: Tensor) -> Tensor:
 
     """
     ReLU
@@ -239,10 +239,8 @@ def Relu(name: str, operandA: Tensor, threshold=0.0, mode="min") -> Tensor:
     Tensor
         Forge tensor
     """
-    if threshold == 0.0 and mode == "min":
-        return op("relu", name, operandA).get_tensor()  # avoid threshold < 0.0 error due to FP arithmetics
-    else:
-        return op("relu", name, operandA, attrs=(threshold, mode), threshold=threshold, mode=mode).get_tensor()
+
+    return op("relu", name, operandA).get_tensor()
 
 
 def LeakyRelu(name: str, operandA: Tensor, alpha: float) -> Tensor:
