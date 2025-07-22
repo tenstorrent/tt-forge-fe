@@ -698,13 +698,10 @@ NodeContext autograd_engine::create_constant(
     py::object py_tensor = py::cast(tensor);
     std::shared_ptr<void> tensor_ptr = make_shared_py_object(py_tensor);
 
-    // Create shape from tensor dimensions
     at::IntArrayRef tensor_shape = tensor.sizes();
     std::vector<int64_t> shape_vec(tensor_shape.begin(), tensor_shape.end());
-
     graphlib::Shape shape = graphlib::Shape::create(shape_vec);
 
-    // Create the constant node directly
     auto node = graph->add_node(
         graphlib::create_node<graphlib::ConstantInputNode>(
             "input_constant_" + current_fwd_op->name() + "_" + std::to_string(created_op_index), tensor_ptr, shape),
@@ -712,7 +709,6 @@ NodeContext autograd_engine::create_constant(
 
     node->set_shape(shape);
 
-    // Infer data format from the tensor directly using C++ mapping
     DataFormat output_df = graphlib::scalar_type_to_data_format(tensor.scalar_type());
     node->set_output_df(output_df);
 
