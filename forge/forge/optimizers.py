@@ -38,7 +38,7 @@ class Optimizer:
         """
         self.dynamic_params = parameters is None
 
-    def get_param_dict(self) -> Dict:
+    def get_param_dict(self, *args, **kwargs) -> Dict:
         """
         Return a dict of parameter node names and values to push to the device
         """
