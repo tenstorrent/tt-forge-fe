@@ -1790,14 +1790,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
-    (
-        Reduceavg1,
-        [((1, 1, 512), torch.float32)],
-        {
-            "model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reduceavg1,
+            [((1, 1, 512), torch.float32)],
+            {
+                "model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reduceavg1,

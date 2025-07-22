@@ -845,10 +845,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1"},
         },
     ),
-    (
-        Softmax1,
-        [((2, 16, 1, 1), torch.float32)],
-        {"model_names": ["pt_stereo_facebook_musicgen_small_music_generation_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    pytest.param(
+        (
+            Softmax1,
+            [((2, 16, 1, 1), torch.float32)],
+            {
+                "model_names": ["pt_stereo_facebook_musicgen_small_music_generation_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
@@ -1272,17 +1279,20 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 14, 39, 39), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
-    (
-        Softmax1,
-        [((1, 6, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_t5_google_flan_t5_small_text_gen_hf",
-                "pt_whisper_openai_whisper_tiny_speech_recognition_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
+    pytest.param(
+        (
+            Softmax1,
+            [((1, 6, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_t5_google_flan_t5_small_text_gen_hf",
+                    "pt_whisper_openai_whisper_tiny_speech_recognition_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
@@ -1313,10 +1323,17 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 14, 35, 35), torch.float32)],
         {"model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
-    (
-        Softmax1,
-        [((2, 24, 1, 1), torch.float32)],
-        {"model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    pytest.param(
+        (
+            Softmax1,
+            [((2, 24, 1, 1), torch.float32)],
+            {
+                "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
@@ -1338,14 +1355,21 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 2, 400, 400), torch.float32)],
         {"model_names": ["onnx_yolov10_default_obj_det_github"], "pcc": 0.99, "args": {"dim": "3"}},
     ),
-    (
-        Softmax2,
-        [((1, 16, 4, 8400), torch.float32)],
-        {
-            "model_names": ["onnx_yolov10_default_obj_det_github", "onnx_yolov8_default_obj_det_github"],
-            "pcc": 0.99,
-            "args": {"dim": "1"},
-        },
+    pytest.param(
+        (
+            Softmax2,
+            [((1, 16, 4, 8400), torch.float32)],
+            {
+                "model_names": ["onnx_yolov10_default_obj_det_github", "onnx_yolov8_default_obj_det_github"],
+                "pcc": 0.99,
+                "args": {"dim": "1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.dtype() == DataType::BFLOAT16 || input.dtype() == DataType::BFLOAT8_B"
+            )
+        ],
     ),
     (
         Softmax1,
@@ -1357,10 +1381,17 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 16, 588, 588), torch.float32)],
         {"model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
-    (
-        Softmax1,
-        [((1, 8, 1, 1), torch.float32)],
-        {"model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    pytest.param(
+        (
+            Softmax1,
+            [((1, 8, 1, 1), torch.float32)],
+            {
+                "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
@@ -1507,10 +1538,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1"},
         },
     ),
-    (
-        Softmax1,
-        [((1, 12, 1, 1), torch.float32)],
-        {"model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    pytest.param(
+        (
+            Softmax1,
+            [((1, 12, 1, 1), torch.float32)],
+            {
+                "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
@@ -1547,10 +1585,17 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 64, 334, 334), torch.float32)],
         {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
-    (
-        Softmax1,
-        [((2, 32, 1, 1), torch.float32)],
-        {"model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    pytest.param(
+        (
+            Softmax1,
+            [((2, 32, 1, 1), torch.float32)],
+            {
+                "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,

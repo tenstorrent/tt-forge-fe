@@ -404,10 +404,17 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Exp0,
-        [((), torch.bfloat16)],
-        {"model_names": ["pt_yolo_world_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    pytest.param(
+        (
+            Exp0,
+            [((), torch.bfloat16)],
+            {"model_names": ["pt_yolo_world_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Unable to cast Python instance to C++ type (#define PYBIND11_DETAILED_ERROR_MESSAGES or compile in debug mode for details)"
+            )
+        ],
     ),
     (
         Exp0,

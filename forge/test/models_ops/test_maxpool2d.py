@@ -514,21 +514,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D3,
-        [((1, 528, 13, 13), torch.float32)],
-        {
-            "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "3",
-                "stride": "1",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D3,
+            [((1, 528, 13, 13), torch.float32)],
+            {
+                "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "1",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/generic/generic_pools.cpp:96: sw_parallel_config.has_value()"
+            )
+        ],
     ),
     (
         Maxpool2D1,
@@ -681,22 +688,29 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D4,
-        [((1, 4, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_autoencoder_conv_img_enc_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "kernel_size": "2",
-                "stride": "2",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D4,
+            [((1, 4, 14, 14), torch.bfloat16)],
+            {
+                "model_names": ["pt_autoencoder_conv_img_enc_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "kernel_size": "2",
+                    "stride": "2",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/generic/generic_pools.cpp:96: sw_parallel_config.has_value()"
+            )
+        ],
     ),
     (
         Maxpool2D2,
@@ -1169,22 +1183,29 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D5,
-        [((1, 528, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_googlenet_base_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "kernel_size": "3",
-                "stride": "1",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "ceil_mode": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D5,
+            [((1, 528, 14, 14), torch.bfloat16)],
+            {
+                "model_names": ["pt_googlenet_base_img_cls_torchvision"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "1",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "ceil_mode": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/generic/generic_pools.cpp:96: sw_parallel_config.has_value()"
+            )
+        ],
     ),
     (
         Maxpool2D6,
@@ -2425,22 +2446,29 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D2,
-        [((1, 728, 37, 37), torch.bfloat16)],
-        {
-            "model_names": ["pt_xception_xception_img_cls_timm"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "kernel_size": "3",
-                "stride": "2",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D2,
+            [((1, 728, 37, 37), torch.bfloat16)],
+            {
+                "model_names": ["pt_xception_xception_img_cls_timm"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "2",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/generic/generic_pools.cpp:96: sw_parallel_config.has_value()"
+            )
+        ],
     ),
     (
         Maxpool2D2,

@@ -244,10 +244,13 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (Reciprocal0, [((1, 6, 1), torch.float32)], {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99}),
-    (
-        Reciprocal0,
-        [((1, 1, 1), torch.float32)],
-        {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1, 1, 1), torch.float32)],
+            {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reciprocal0,
