@@ -1327,7 +1327,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::GreaterEqual: return false;
         case OpType::GroupedReduceAvg: return false;
         case OpType::Heaviside: return false;
-        case OpType::Hslice: return true;
         case OpType::Hstack: return true;
         case OpType::Index: return true;
         case OpType::IndexCopy: return false;
@@ -1452,7 +1451,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::GreaterEqual: return true;
         case OpType::GroupedReduceAvg: return false;
         case OpType::Heaviside: return true;
-        case OpType::Hslice: return false;
         case OpType::Hstack: return false;
         case OpType::Index: return false;
         case OpType::IndexCopy: return true;
@@ -1577,7 +1575,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::GreaterEqual: return false;
         case OpType::GroupedReduceAvg: return false;
         case OpType::Heaviside: return false;
-        case OpType::Hslice: return false;
         case OpType::Hstack: return false;
         case OpType::Index: return false;
         case OpType::IndexCopy: return false;
@@ -1702,7 +1699,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::GreaterEqual: return true;
         case OpType::GroupedReduceAvg: return false;
         case OpType::Heaviside: return true;
-        case OpType::Hslice: return false;
         case OpType::Hstack: return false;
         case OpType::Index: return false;
         case OpType::IndexCopy: return false;
@@ -1827,7 +1823,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::GreaterEqual: return false;
         case OpType::GroupedReduceAvg: return false;
         case OpType::Heaviside: return false;
-        case OpType::Hslice: return false;
         case OpType::Hstack: return false;
         case OpType::Index: return false;
         case OpType::IndexCopy: return true;
