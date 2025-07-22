@@ -2,6 +2,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+#include <ATen/core/TensorBody.h>
+
+#include <cstdint>
+
 #include "autograd/autograd.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
@@ -72,22 +76,52 @@ tt::graphlib::NodeContext backward(
     if (dim < 0)
         dim += inputs[0].shape.size();
 
-    // reduce_max: dx = grad * mask
-    // where mask = 1.0 at positions where x was max (x==y), and 0.0 elsewhere
+    // This version takes only the first of multiple maximal values (like pytorch)
     NodeContext one = ac.autograd->create_constant(ac, 1.0);
-    float threshold = 1.0;
 
+    // Create negative range tensor: -(torch.arange(in0.shape[dim]) - in0.shape[dim]).float()
+    // Example: [3, 2, 1] for dim = 2 and dim_size = 3
+    std::uint32_t dim_size = inputs[0].shape[dim];
+    at::Tensor neg_range_values = dim_size - torch::arange(dim_size, torch::kFloat32);
+
+    // Create shape for neg_range: [1] * len(in0.shape) with shape[dim] = dim_size
+    // Example: [1, 1, 3] for dim = 2 and dim_size = 3
+    std::vector<int64_t> shape(inputs[0].shape.size(), 1);
+    shape[dim] = dim_size;
+    neg_range_values = neg_range_values.reshape(shape);
+
+    NodeContext neg_range = ac.autograd->create_constant(ac, neg_range_values);
+
+    // mask = subtract(in0, output) - has 0.0 in max positions and < 0.0 everywhere else
     graphlib::OpType subtract_op("subtract");
     NodeContext mask = ac.autograd->create_op(ac, subtract_op, {inputs[0], output});
 
+    // mask = add(mask, one) - has 1.0 in max positions and < 1.0 everywhere else
     graphlib::OpType add_op("add");
     mask = ac.autograd->create_op(ac, add_op, {mask, one});
 
-    graphlib::OpType relu_op("relu");
-    relu_op.set_attr("threshold", threshold);
-    mask = ac.autograd->create_op(ac, relu_op, {mask});
+    // mask = greater_equal (mask, one) - has 1.0 in max positions, 0.0 everywhere else
+    graphlib::OpType greater_equal_op("greater_equal");
+    mask = ac.autograd->create_op(ac, greater_equal_op, {mask, one});
 
+    // mask = multiply(mask, neg_range) - puts range N...1 in max positions, 0.0 everywhere else
+    // Example: [1, 1, 0, 1] -> [4, 3, 0, 1]
     graphlib::OpType multiply_op("multiply");
+    mask = ac.autograd->create_op(ac, multiply_op, {mask, neg_range});
+
+    // redc = reduce_max(mask) - argmax
+    graphlib::OpType reduce_max_op("reduce_max", {}, {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}});
+    NodeContext redc = ac.autograd->create_op(ac, reduce_max_op, {mask});
+
+    // mask = subtract(mask, redc) - Orig range - argmax, 0.0 in FIRST max position
+    mask = ac.autograd->create_op(ac, subtract_op, {mask, redc});
+
+    // mask = add(mask, one) - has 1.0 in first max position, and < 1.0 everywhere else
+    mask = ac.autograd->create_op(ac, add_op, {mask, one});
+
+    // mask = greater_equal (mask, one) - has 1.0 in first max position, and 0.0 everywhere else
+    mask = ac.autograd->create_op(ac, greater_equal_op, {mask, one});
+
     return ac.autograd->create_op(ac, multiply_op, {gradient, mask});
 }
 
