@@ -154,13 +154,9 @@ void AutogradModule(py::module &m_autograd)
             [](tt::autograd::autograd_context &self, py::object tensor, DataFormat df = DataFormat::Invalid)
             {
                 // HACK: df is ignored, placed for compatibility with DecomposingContext
+                at::Tensor torch_tensor = py::cast<at::Tensor>(tensor);
                 return self.autograd->create_constant(
-                    self.current_fwd_op,
-                    self.operand,
-                    make_shared_py_object(tensor),
-                    graphlib::Shape::create(tensor.attr("shape").cast<std::vector<std::uint32_t>>()),
-                    self.created_op_index++,
-                    self.epoch_type);
+                    self.current_fwd_op, self.operand, torch_tensor, self.created_op_index++, self.epoch_type);
             },
             py::arg("tensor"),
             py::arg("df") = DataFormat::Invalid)

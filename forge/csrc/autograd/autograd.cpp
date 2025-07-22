@@ -655,41 +655,6 @@ static void tag_disable_consteval(bool disable_consteval, Node *node)
 NodeContext autograd_engine::create_constant(
     Node *current_fwd_op,
     int operand_index,
-    std::shared_ptr<void> tensor,
-    const graphlib::Shape &shape,
-    int created_op_index,
-    graphlib::NodeEpochType epoch_type)
-{
-    TT_ASSERT(tensor, "Trying to create constant tensor node with null tensor");
-
-    auto node = graph->add_node(
-        graphlib::create_node<graphlib::ConstantInputNode>(
-            "input_constant_" + current_fwd_op->name() + "_" + std::to_string(created_op_index), tensor, shape),
-        graph->get_subgraph_id_for_node(current_fwd_op->id()));
-
-    node->set_shape(shape);
-
-    py::object py_tensor = borrow_shared_py_object(tensor);
-    DataFormat output_df = graphlib::infer_data_format_from_py_tensor(py_tensor);
-    node->set_output_df(output_df);
-
-    if (epoch_type == graphlib::NodeEpochType::Backward)
-    {
-        node->set_backward();
-        add_fwd_to_bwd_map(current_fwd_op, node, operand_index);
-    }
-    else if (epoch_type == graphlib::NodeEpochType::Optimizer)
-    {
-        node->set_optimizer();
-        add_fwd_to_optimizer_edge(current_fwd_op, node, operand_index);
-    }
-
-    return NodeContext(node);
-}
-
-NodeContext autograd_engine::create_constant(
-    Node *current_fwd_op,
-    int operand_index,
     const at::Tensor &tensor,
     int created_op_index,
     graphlib::NodeEpochType epoch_type)

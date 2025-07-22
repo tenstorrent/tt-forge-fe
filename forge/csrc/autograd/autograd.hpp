@@ -104,14 +104,6 @@ class autograd_engine
     NodeContext create_constant(
         Node *current_fwd_op,
         int operand_index,
-        std::shared_ptr<void> tensor,
-        const graphlib::Shape &shape,
-        int created_op_index,
-        graphlib::NodeEpochType epoch_type);
-
-    NodeContext create_constant(
-        Node *current_fwd_op,
-        int operand_index,
         const at::Tensor &tensor,
         int created_op_index,
         graphlib::NodeEpochType epoch_type);
