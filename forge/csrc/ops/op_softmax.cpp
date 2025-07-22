@@ -34,7 +34,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Softmax, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "Softmax should have one operand.");
@@ -42,10 +42,10 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     return std::make_tuple(Shape::create(in_shapes[0]), std::vector<DimBroadcast>{});
 }
 
-tt::graphlib::NodeContext backward(
+NodeContext backward(
     const graphlib::OpType &old_op_type,
     const Op &op,
-    tt::autograd::autograd_context &ac,
+    autograd::autograd_context &ac,
     int operand,
     const std::vector<NodeContext> &inputs,
     const NodeContext &output,
