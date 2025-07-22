@@ -109,7 +109,6 @@ class autograd_engine
         int created_op_index,
         graphlib::NodeEpochType epoch_type);
 
-    // Create constant from at::Tensor by converting to Python object and using Python path
     NodeContext create_constant(
         Node *current_fwd_op,
         int operand_index,
