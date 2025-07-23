@@ -12,6 +12,9 @@ on:
         required: true
         type: string
 
+env:
+  DOCKER_CACHE_ROOT: /mnt/dockercache
+
 jobs:
   run-perf-benchmarks:
     strategy:
