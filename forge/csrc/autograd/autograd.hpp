@@ -101,7 +101,7 @@ class autograd_engine
         return NodeContext(node);
     }
 
-    NodeContext create_constant(
+    NodeContext create_constant_tensor(
         Node *current_fwd_op,
         int operand_index,
         const at::Tensor &tensor,
@@ -166,13 +166,6 @@ NodeContext autograd_engine::create_constant(struct tt::autograd::autograd_conte
 {
     return self.autograd->create_constant<T>(
         self.current_fwd_op, self.operand, value, self.created_op_index++, self.epoch_type);
-}
-
-template <>
-inline NodeContext autograd_engine::create_constant(struct tt::autograd::autograd_context &self, at::Tensor tensor)
-{
-    return self.autograd->create_constant(
-        self.current_fwd_op, self.operand, tensor, self.created_op_index++, self.epoch_type);
 }
 
 }  // namespace autograd

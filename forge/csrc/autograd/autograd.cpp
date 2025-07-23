@@ -652,7 +652,7 @@ static void tag_disable_consteval(bool disable_consteval, Node *node)
     }
 }
 
-NodeContext autograd_engine::create_constant(
+NodeContext autograd_engine::create_constant_tensor(
     Node *current_fwd_op,
     int operand_index,
     const at::Tensor &tensor,
