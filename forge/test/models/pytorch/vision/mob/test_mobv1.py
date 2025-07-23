@@ -25,11 +25,11 @@ from test.models.pytorch.vision.mobilenet.model_utils.utils import (
 from test.models.pytorch.vision.vision_utils.utils import load_timm_model_and_input
 from test.utils import download_model
 
+
 variants = ["mobilenetv1_100.ra4_e3600_r224_in1k"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_mobilenet_v1_timm(variant):
 
