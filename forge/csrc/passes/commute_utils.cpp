@@ -760,12 +760,6 @@ bool commute_through_reduce(
             op_reduce_dim = std::get<int>(op_attr[0]);
             op_keep_dim = std::get<bool>(op_attr[2]);
         }
-        else if (op->op_name() == "reduce_max")
-        {
-            std::vector<int> op_dim_arg = op->op_attr_as<std::vector<int>>("dim_arg");
-            op_reduce_dim = op_dim_arg[0];
-            op_keep_dim = op->op_attr_as<bool>("keep_dim");
-        }
         else
         {
             std::vector<int> op_dim_arg = op->op_attr_as<std::vector<int>>("dim_arg");

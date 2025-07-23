@@ -48,6 +48,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     int dim = dims[0];
     if (dim < 0)
         dim += in_shapes[0].size();
+    TT_ASSERT(dim < static_cast<int>(in_shapes[0].size()), "reduce_avg should have valid dim.");
 
     bool keep_dim = op.attr_as<bool>("keep_dim");
     std::vector<std::uint32_t> ret = in_shapes[0];
@@ -82,16 +83,12 @@ tt::graphlib::NodeContext backward(
 
     std::uint32_t size = inputs[0].shape[dim];
 
-    graphlib::OpType broadcast_op("broadcast");
-    broadcast_op.set_attr("dim", dim);
-    broadcast_op.set_attr("size", static_cast<int>(size));
-
-    NodeContext broadcast = ac.autograd->create_op(ac, broadcast_op, {gradient});
+    NodeContext broadcast = ac.autograd->create_op(
+        ac, graphlib::OpType("broadcast", {}, {{"dim", dim}, {"size", static_cast<int>(size)}}), {gradient});
 
     NodeContext consts = ac.autograd->create_constant(ac, 1.0 / size);
 
-    graphlib::OpType multiply_op("multiply");
-    return ac.autograd->create_op(ac, multiply_op, {broadcast, consts});
+    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {broadcast, consts});
 }
 
 void decompose_initial(
@@ -113,17 +110,6 @@ void decompose_initial(
         NodeContext result = dc.op(graphlib::OpType("nop"), {inputs[0]});
         dc.fuse(result);
     }
-}
-
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::ReduceAvg, "Wrong op type.");
-
-    auto shape_tuple = reduce_avg::shape(old_op_type, op, inputs);
-    graphlib::Shape out_shape = std::get<0>(shape_tuple);
-
-    return std::accumulate(out_shape.begin(), out_shape.end(), 1u, std::multiplies<uint32_t>());
 }
 
 }  // namespace reduce_avg

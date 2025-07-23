@@ -147,17 +147,6 @@ void decompose_initial(
     }
 }
 
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::ReduceMax, "Wrong op type.");
-
-    auto shape_tuple = reduce_max::shape(old_op_type, op, inputs);
-    graphlib::Shape out_shape = std::get<0>(shape_tuple);
-
-    return std::accumulate(out_shape.begin(), out_shape.end(), 1u, std::multiplies<uint32_t>());
-}
-
 }  // namespace reduce_max
 }  // namespace ops
 }  // namespace tt
