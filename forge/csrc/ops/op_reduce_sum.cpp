@@ -19,7 +19,7 @@ namespace ops
 namespace reduce_sum
 {
 
-at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::ReduceSum, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "reduce_sum should have single input tensor.");
@@ -33,7 +33,7 @@ at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
-    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::ReduceSum, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "reduce_sum should have single input shape.");
@@ -56,6 +56,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
 }
 
 tt::graphlib::NodeContext backward(
+    const graphlib::OpType &old_op_type,
     const Op &op,
     tt::autograd::autograd_context &ac,
     int operand,
@@ -73,7 +74,11 @@ tt::graphlib::NodeContext backward(
     return ac.autograd->create_op(ac, nop_op, {gradient});
 }
 
-void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs)
+void decompose_initial(
+    const graphlib::OpType &old_op_type,
+    const Op &op,
+    DecomposingContext &dc,
+    const std::vector<tt::graphlib::NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::ReduceSum, "Wrong op type.");
     TT_ASSERT(inputs.size() == 1, "reduce_sum should have single input.");
@@ -90,11 +95,12 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<t
     }
 }
 
-long initial_flops_estimate(const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
+long initial_flops_estimate(
+    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::ReduceSum, "Wrong op type.");
 
-    auto shape_tuple = reduce_sum::shape(op, inputs);
+    auto shape_tuple = reduce_sum::shape(old_op_type, op, inputs);
     graphlib::Shape out_shape = std::get<0>(shape_tuple);
 
     return std::accumulate(out_shape.begin(), out_shape.end(), 1u, std::multiplies<uint32_t>());
