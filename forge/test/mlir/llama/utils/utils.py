@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import torch
 from transformers import LlamaConfig, LlamaForCausalLM, AutoTokenizer
+from transformers.models.llama.modeling_llama import LlamaAttention
 from peft import LoraConfig, get_peft_model
 
 
@@ -35,3 +36,17 @@ def load_model(model_path="openlm-research/open_llama_3b", **kwargs):
     tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=use_fast)
 
     return framework_model, tokenizer
+
+
+def load_attention(model_path="openlm-research/open_llama_3b", **kwargs):
+    # Load config from pretrained model
+    config = LlamaConfig.from_pretrained(model_path)
+    # Override optional kwargs
+    config.return_dict = kwargs.get("return_dict", False)
+    config.output_attentions = kwargs.get("output_attentions", False)
+    config.output_hidden_states = kwargs.get("output_hidden_states", False)
+    if "num_hidden_layers" in kwargs and kwargs["num_hidden_layers"] is not None:
+        config.num_hidden_layers = kwargs["num_hidden_layers"]
+    # Create a single LlamaAttention layer with the config
+    attention_layer = LlamaAttention(config, layer_idx=0)
+    return attention_layer, config
