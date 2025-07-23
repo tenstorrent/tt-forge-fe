@@ -11,6 +11,11 @@
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
 
+namespace at
+{
+class Tensor;
+}
+
 namespace py = pybind11;
 
 namespace tt
@@ -100,13 +105,14 @@ class autograd_engine
         return NodeContext(node);
     }
 
-    NodeContext create_constant(
+    NodeContext create_constant_tensor(
         Node *current_fwd_op,
         int operand_index,
-        std::shared_ptr<void> tensor,
-        const graphlib::Shape &shape,
+        const at::Tensor &tensor,
         int created_op_index,
         graphlib::NodeEpochType epoch_type);
+
+    NodeContext create_constant_tensor(struct autograd_context &self, const at::Tensor &tensor);
 
     NodeContext create_input(
         Node *current_fwd_op,
