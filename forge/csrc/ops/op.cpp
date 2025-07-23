@@ -1243,9 +1243,9 @@ long Op::initial_flops_estimate(
         case OpType::Power: return power::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Quantize: return quantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Reciprocal: return reciprocal::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::ReduceAvg: return reduce_avg::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::ReduceMax: return reduce_max::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::ReduceSum: return reduce_sum::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::ReduceAvg: return 0;
+        case OpType::ReduceMax: return 0;
+        case OpType::ReduceSum: return 0;
         case OpType::Relu: return relu::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Remainder: return remainder::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Repeat: return repeat::initial_flops_estimate(old_op_type, *this, inputs);
