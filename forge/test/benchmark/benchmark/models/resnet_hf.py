@@ -128,6 +128,8 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     compiler_cfg.enable_optimization_passes = True
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs[0], compiler_cfg=compiler_cfg)
+    file_path = "resnet_hf.cpp"
+    compiled_model.export_to_cpp(file_path)
 
     # Enable program cache on all devices
     settings = DeviceSettings()
