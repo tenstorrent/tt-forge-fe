@@ -21,6 +21,8 @@ from test.random.rgg import Algorithms
 from test.random.rgg import RandomizerConfig
 from test.random.rgg import process_test
 
+from test.operators.utils.features import TestSweepsFeatures
+
 import os
 import random
 import textwrap
@@ -87,6 +89,9 @@ class OperatorLists:
         # Other
     )
 
+    UNSUPPORTED_FORGE = (
+    )
+
     UNSTABLE_FORGE = (
         # Unary operators
         "exp",  # pcc?
@@ -99,6 +104,28 @@ class OperatorLists:
         # Nary operators
         "where",  # pcc?
         # Other
+    )
+
+    IMPLEMENTED_FORGE = (
+        Frameworks.FORGE.value.operator_list - NOT_IMPLEMENTED_FORGE - UNSUPPORTED_FORGE - UNSTABLE_FORGE
+    ).operators
+
+    FORK_JOINS_FORGE = (
+        "relu",
+        "tanh",
+        "add",
+        "matmul",
+    )
+
+    NARY_FORGE = (
+        # "relu",
+        "tanh",
+        "add",
+        "matmul",  # Skip matmul to increase chance for stack operator
+        "interleave",
+        # "where",  # pcc?
+        "concatenate",
+        "stack",
     )
 
     NOT_IMPLEMENTED_PYTORCH = (
@@ -154,6 +181,9 @@ class OperatorLists:
         "bitwise_xor",
         "bitwise_left_shift",
         "bitwise_right_shift",
+    )
+
+    UNSUPPORTED_PYTORCH = (
         # Nary operators
         "concatenate",
         "embedding",
@@ -196,18 +226,31 @@ class OperatorLists:
         "conv2d",  # skip until calc_input_shapes is properly implemented
     )
 
+    IMPLEMENTED_PYTORCH = (
+        Frameworks.PYTORCH.value.operator_list - NOT_IMPLEMENTED_PYTORCH - UNSUPPORTED_PYTORCH - UNSTABLE_PYTORCH
+    ).operators
+
 
 class FrameworkBuilder:
     """Adjust repositories to test healthy operators"""
 
     @classmethod
-    def healty_forge(cls):
-        SKIP_OPERATORS = ()
-        SKIP_OPERATORS += OperatorLists.NOT_IMPLEMENTED_FORGE
-        SKIP_OPERATORS += OperatorLists.UNSTABLE_FORGE
+    def copy_framework(
+        cls, framework: Framework, framework_name: str = None, allow_operators: Tuple[str] = None
+    ) -> Framework:
+        framework = FrameworkTestUtils.copy_framework(framework, framework_name)
+        if allow_operators is not None:
+            FrameworkTestUtils.allow_operators(framework, allow_operators)
+        cls.adapt_operators(framework)
+        return framework
 
-        framework = FrameworkTestUtils.copy_framework(Frameworks.FORGE.value, "Healthy Forge", SKIP_OPERATORS)
+    @classmethod
+    def adapt_operators(cls, framework: Framework) -> Framework:
+        if framework == Frameworks.FORGE.value:
+            cls.adapt_forge_operators(framework)
 
+    @classmethod
+    def adapt_forge_operators(cls, framework: Framework) -> Framework:
         pow_operator = FrameworkTestUtils.copy_operator(framework, "pow")
         if pow_operator:
             pow_operator.forward_params = [
@@ -217,79 +260,75 @@ class FrameworkBuilder:
                 OperatorParamNumber("exponent", int, 0, 4),  # pcc for higher numbers fails
             ]
 
+    @classmethod
+    def healthy_forge(cls):
+        framework = cls.copy_framework(Frameworks.FORGE.value, "Healthy Forge", OperatorLists.IMPLEMENTED_FORGE)
         return framework
 
     @classmethod
     def unstable_forge(cls):
-        framework = FrameworkTestUtils.copy_framework(Frameworks.FORGE.value, "Unstable Forge")
-        FrameworkTestUtils.allow_operators(framework, OperatorLists.UNSTABLE_FORGE)
+        framework = cls.copy_framework(Frameworks.FORGE.value, "Unstable Forge", OperatorLists.UNSTABLE_FORGE)
+        return framework
+
+    @classmethod
+    def unsupported_forge(cls):
+        framework = cls.copy_framework(Frameworks.FORGE.value, "Unsupported Forge", OperatorLists.UNSUPPORTED_FORGE)
         return framework
 
     @classmethod
     def not_implemented_forge(cls):
-        framework = FrameworkTestUtils.copy_framework(Frameworks.FORGE.value, "Not implemented Forge")
-        FrameworkTestUtils.allow_operators(framework, OperatorLists.NOT_IMPLEMENTED_FORGE)
+        framework = cls.copy_framework(
+            Frameworks.FORGE.value, "Not implemented Forge", OperatorLists.NOT_IMPLEMENTED_FORGE
+        )
         return framework
 
     @classmethod
-    def healty_pytorch(cls):
-        SKIP_OPERATORS = ()
-        SKIP_OPERATORS += OperatorLists.NOT_IMPLEMENTED_PYTORCH
-        SKIP_OPERATORS += OperatorLists.UNSTABLE_PYTORCH
-
-        framework = FrameworkTestUtils.copy_framework(Frameworks.PYTORCH.value, "Healthy PyTorch", SKIP_OPERATORS)
-
+    def healthy_pytorch(cls):
+        framework = cls.copy_framework(Frameworks.PYTORCH.value, "Healthy PyTorch", OperatorLists.IMPLEMENTED_PYTORCH)
         return framework
 
     @classmethod
     def unstable_pytorch(cls):
-        framework = FrameworkTestUtils.copy_framework(Frameworks.PYTORCH.value, "Unstable PyTorch")
-        FrameworkTestUtils.allow_operators(framework, OperatorLists.UNSTABLE_PYTORCH)
+        framework = cls.copy_framework(Frameworks.PYTORCH.value, "Unstable PyTorch", OperatorLists.UNSTABLE_PYTORCH)
+        return framework
+
+    @classmethod
+    def unsupported_pytorch(cls):
+        framework = cls.copy_framework(
+            Frameworks.PYTORCH.value, "Unsupported PyTorch", OperatorLists.UNSUPPORTED_PYTORCH
+        )
         return framework
 
     @classmethod
     def not_implemented_pytorch(cls):
-        framework = FrameworkTestUtils.copy_framework(Frameworks.PYTORCH.value, "Not implemented PyTorch")
-        FrameworkTestUtils.allow_operators(framework, OperatorLists.NOT_IMPLEMENTED_PYTORCH)
-        return framework
-
-    @staticmethod
-    def forge_fork_joins():
-        SKIP_OPERATORS = ()
-
-        framework = FrameworkTestUtils.copy_framework(Frameworks.FORGE.value, "Forge fork joins", SKIP_OPERATORS)
-
-        ALLOW_OPERATORS = (
-            "relu",
-            "tanh",
-            "add",
-            "matmul",
+        framework = cls.copy_framework(
+            Frameworks.PYTORCH.value, "Not implemented PyTorch", OperatorLists.NOT_IMPLEMENTED_PYTORCH
         )
-
-        FrameworkTestUtils.allow_operators(framework, ALLOW_OPERATORS)
-
         return framework
 
-    @staticmethod
-    def forge_nary():
-        SKIP_OPERATORS = ()
-
-        framework = FrameworkTestUtils.copy_framework(Frameworks.FORGE.value, "Forge nary", SKIP_OPERATORS)
-
-        ALLOW_OPERATORS = (
-            # "relu",
-            "tanh",
-            "add",
-            "matmul",  # Skip matmul to increase chance for stack operator
-            "interleave",
-            # "where",  # pcc?
-            "concatenate",
-            "stack",
-        )
-
-        FrameworkTestUtils.allow_operators(framework, ALLOW_OPERATORS)
-
+    @classmethod
+    def forge_fork_joins(cls):
+        framework = cls.copy_framework(Frameworks.FORGE.value, "Forge fork joins", OperatorLists.FORK_JOINS_FORGE)
         return framework
+
+    @classmethod
+    def forge_nary(cls):
+        framework = cls.copy_framework(Frameworks.FORGE.value, "Forge nary", OperatorLists.NARY_FORGE)
+        return framework
+
+
+class FrameworksData:
+
+    HEALTHY_FORGE = FrameworkBuilder.healthy_forge()
+    UNSTABLE_FORGE = FrameworkBuilder.unstable_forge()
+    UNSUPPORTED_FORGE = FrameworkBuilder.unsupported_forge()
+    NOT_IMPLEMENTED_FORGE = FrameworkBuilder.not_implemented_forge()
+    HEALTHY_PYTORCH = FrameworkBuilder.healthy_pytorch()
+    UNSTABLE_PYTORCH = FrameworkBuilder.unstable_pytorch()
+    UNSUPPORTED_PYTORCH = FrameworkBuilder.unsupported_pytorch()
+    NOT_IMPLEMENTED_PYTORCH = FrameworkBuilder.not_implemented_pytorch()
+    FORGE_FORK_JOINS = FrameworkBuilder.forge_fork_joins()
+    FORGE_NARY = FrameworkBuilder.forge_nary()
 
 
 class RandomizerConfigBuilder:
@@ -370,66 +409,99 @@ class RGGTestConfiguration:
     algorithm: Algorithm
     config_name: str
     randomizer_config: RandomizerConfig
+    skip_forge_verification: bool = TestSweepsFeatures.params.skip_forge_verification
 
     def get_id(self):
-        return f"{self.framework.template_name}_{self.algorithm.name}_{self.config_name}"
+        return f"{self.framework.template_name}_{self.algorithm.name}_{self.config_name}_{self.skip_forge_verification}"
 
 
 class RGGConfiguraionProvider:
+
+    default_skip_forge_verification = TestSweepsFeatures.params.skip_forge_verification
+
     def __init__(self):
         self.run_params = RGGRunParams.from_env()
         logger.debug(f"run_params = {self.run_params}")
 
-        self.all_tests = [
-            RGGTestConfiguration(
-                framework=FrameworkBuilder.healty_forge(),
+        self.all_tests = list(self.yield_tests())
+
+    def yield_tests(self) -> Generator[RGGTestConfiguration, None, None]:
+
+        yield RGGTestConfiguration(
+            framework=FrameworksData.HEALTHY_FORGE,
+            algorithm=Algorithms.RANDOM.value,
+            config_name="Default",
+            randomizer_config=RandomizerConfigBuilder.default(),
+        )
+        yield RGGTestConfiguration(
+            framework=FrameworksData.UNSTABLE_FORGE,
+            algorithm=Algorithms.RANDOM.value,
+            config_name="Unstable",
+            randomizer_config=RandomizerConfigBuilder.default(),
+        )
+        yield RGGTestConfiguration(
+            framework=FrameworksData.UNSUPPORTED_FORGE,
+            algorithm=Algorithms.RANDOM.value,
+            config_name="Unsupported",
+            randomizer_config=RandomizerConfigBuilder.default(),
+        )
+        yield RGGTestConfiguration(
+            framework=FrameworksData.NOT_IMPLEMENTED_FORGE,
+            algorithm=Algorithms.RANDOM.value,
+            config_name="Not implemented",
+            randomizer_config=RandomizerConfigBuilder.default(),
+        )
+
+        if self.default_skip_forge_verification:
+            pytorch_skip_forge_verification = [self.default_skip_forge_verification]
+        else:
+            pytorch_skip_forge_verification = [False, True]
+
+        for skip_forge_verification in pytorch_skip_forge_verification:
+            yield RGGTestConfiguration(
+                framework=FrameworksData.HEALTHY_PYTORCH,
                 algorithm=Algorithms.RANDOM.value,
                 config_name="Default",
                 randomizer_config=RandomizerConfigBuilder.default(),
-            ),
-            RGGTestConfiguration(
-                framework=FrameworkBuilder.unstable_forge(),
+                skip_forge_verification=skip_forge_verification,
+            )
+        for skip_forge_verification in pytorch_skip_forge_verification:
+            yield RGGTestConfiguration(
+                framework=FrameworksData.UNSTABLE_PYTORCH,
                 algorithm=Algorithms.RANDOM.value,
                 config_name="Unstable",
                 randomizer_config=RandomizerConfigBuilder.default(),
-            ),
-            RGGTestConfiguration(
-                framework=FrameworkBuilder.not_implemented_forge(),
+                skip_forge_verification=skip_forge_verification,
+            )
+        for skip_forge_verification in pytorch_skip_forge_verification:
+            yield RGGTestConfiguration(
+                framework=FrameworksData.UNSUPPORTED_PYTORCH,
+                algorithm=Algorithms.RANDOM.value,
+                config_name="Unsupported",
+                randomizer_config=RandomizerConfigBuilder.default(),
+                skip_forge_verification=skip_forge_verification,
+            )
+        for skip_forge_verification in pytorch_skip_forge_verification:
+            yield RGGTestConfiguration(
+                framework=FrameworksData.NOT_IMPLEMENTED_PYTORCH,
                 algorithm=Algorithms.RANDOM.value,
                 config_name="Not implemented",
                 randomizer_config=RandomizerConfigBuilder.default(),
-            ),
-            RGGTestConfiguration(
-                framework=FrameworkBuilder.healty_pytorch(),
-                algorithm=Algorithms.RANDOM.value,
-                config_name="Default",
-                randomizer_config=RandomizerConfigBuilder.default(),
-            ),
-            RGGTestConfiguration(
-                framework=FrameworkBuilder.unstable_pytorch(),
-                algorithm=Algorithms.RANDOM.value,
-                config_name="Unstable",
-                randomizer_config=RandomizerConfigBuilder.default(),
-            ),
-            RGGTestConfiguration(
-                framework=FrameworkBuilder.not_implemented_pytorch(),
-                algorithm=Algorithms.RANDOM.value,
-                config_name="Not implemented",
-                randomizer_config=RandomizerConfigBuilder.default(),
-            ),
-            RGGTestConfiguration(
-                framework=FrameworkBuilder.forge_fork_joins(),
-                algorithm=Algorithms.RANDOM.value,
-                config_name="Fork Joins",
-                randomizer_config=RandomizerConfigBuilder.forge_fork_joins(),
-            ),
-            RGGTestConfiguration(
-                framework=FrameworkBuilder.forge_nary(),
-                algorithm=Algorithms.RANDOM.value,
-                config_name="Nary",
-                randomizer_config=RandomizerConfigBuilder.forge_nary(),
-            ),
-        ]
+                skip_forge_verification=skip_forge_verification,
+            )
+
+        yield RGGTestConfiguration(
+            framework=FrameworksData.FORGE_FORK_JOINS,
+            algorithm=Algorithms.RANDOM.value,
+            config_name="Fork Joins",
+            randomizer_config=RandomizerConfigBuilder.forge_fork_joins(),
+        )
+        yield RGGTestConfiguration(
+            framework=FrameworksData.FORGE_NARY,
+            algorithm=Algorithms.RANDOM.value,
+            config_name="Nary",
+            randomizer_config=RandomizerConfigBuilder.forge_nary(),
+        )
 
     def get_tests(self) -> Generator[Tuple[Framework, str, RandomizerConfig], None, None]:
         if self.run_params.frameworks:
@@ -453,7 +525,12 @@ class RGGConfiguraionProvider:
             if not (config_names is None or test.config_name.lower() in config_names):
                 continue
             yield pytest.param(
-                test.framework, test.algorithm, test.config_name, test.randomizer_config, id=test.get_id()
+                test.framework,
+                test.algorithm,
+                test.config_name,
+                test.randomizer_config,
+                test.skip_forge_verification,
+                id=test.get_id(),
             )
 
     def get_random_seeds(self) -> List[Tuple[int, int]]:
@@ -483,7 +560,9 @@ configuration_provider = RGGConfiguraionProvider()
 
 
 @pytest.mark.parametrize("test_index, random_seed", configuration_provider.get_random_seeds())
-@pytest.mark.parametrize("framework, algorithm, config_name, randomizer_config", configuration_provider.get_tests())
+@pytest.mark.parametrize(
+    "framework, algorithm, config_name, randomizer_config, skip_forge_verification", configuration_provider.get_tests()
+)
 def test_graphs(
     test_index: int,
     random_seed: int,
@@ -492,8 +571,10 @@ def test_graphs(
     algorithm: Algorithm,
     config_name: str,
     randomizer_config: RandomizerConfig,
+    skip_forge_verification: bool,
     record_property: Callable[[str, Any], None],
 ):
+    TestSweepsFeatures.params.skip_forge_verification = skip_forge_verification
     process_test(
         test_name=config_name,
         test_index=test_index,
