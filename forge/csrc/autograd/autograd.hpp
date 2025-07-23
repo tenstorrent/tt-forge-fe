@@ -10,7 +10,11 @@
 #include "graph_lib/graph.hpp"
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
-#include "torch/torch.h"
+
+namespace at
+{
+class Tensor;
+}
 
 namespace py = pybind11;
 

@@ -9,6 +9,7 @@
 #include "graph_lib/node_types.hpp"
 #include "lower_to_forge/common.hpp"
 #include "python_bindings_common.hpp"
+#include "torch/torch.h"
 
 namespace tt
 {
