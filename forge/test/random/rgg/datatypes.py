@@ -5,7 +5,7 @@
 # Generic test model randomizer
 
 
-from typing import Dict, List, Type, Optional, Final, Any, Callable
+from typing import Dict, List, Union, Type, Optional, Final, Any, Callable
 from dataclasses import dataclass, field
 import random
 import torch
@@ -18,6 +18,8 @@ from forge.op_repo import OperatorRepository
 from forge.op_repo import ShapeCalculationContext
 
 from test.operators.utils.compat import TestDevice
+
+from loguru import logger
 
 
 @dataclass
@@ -116,12 +118,78 @@ class ExecutionContext:
 
 
 @dataclass
+class OperatorList:
+    framework_name: str
+    operators: List[str]
+
+    def __add__(self, other: Union["OperatorList", List[str]]) -> "OperatorList":
+        if isinstance(other, OperatorList):
+            other_operators = other.operators
+        else:
+            other_operators = other
+        return OperatorList(self.framework_name, self.operators + other_operators)
+
+    def __sub__(self, other: Union["OperatorList", List[str]]) -> "OperatorList":
+        operators = self.operators
+        if isinstance(other, OperatorList):
+            skip_operators = other.operators
+        else:
+            skip_operators = other
+
+        initial_operator_count = len(operators)
+        if len(skip_operators) == 0:
+            # Nothing to skip, avoid logging
+            return self
+        logger.trace(
+            f"Skipping {len(skip_operators)} operators for framework {self.framework_name}: {[op for op in skip_operators]}"
+        )
+        for skip_op in skip_operators:
+            if skip_op not in operators:
+                logger.warning(f"Operator {skip_op} not found in framework {self.framework_name}, can't skip it")
+                for op in operators:
+                    logger.warning(f"Available operator: {op}")
+        operators = [op for op in operators if op not in skip_operators]
+        logger.debug(
+            f"Skipped num of operators for framework {self.framework_name}: {initial_operator_count} -> {len(operators)}"
+        )
+        assert (
+            len(operators) + len(skip_operators) == initial_operator_count
+        ), f"Operators count should match after skipping operators {len(operators)} + {len(skip_operators)} == {initial_operator_count}"
+        return OperatorList(self.framework_name, operators)
+
+    def __mul__(self, other: Union["OperatorList", List[str]]) -> "OperatorList":
+        operators = self.operators
+        if isinstance(other, OperatorList):
+            allow_operators = other.operators
+        else:
+            allow_operators = other
+
+        initial_operator_count = len(operators)
+        logger.trace(
+            f"Allowing {len(allow_operators)} operators for framework {self.framework_name}: {[op for op in allow_operators]}"
+        )
+        skip_operators = [op for op in operators if op not in allow_operators]
+        operators = (self - skip_operators).operators
+        logger.debug(
+            f"Allowed num of operators for framework {self.framework_name}: {initial_operator_count} -> {len(operators)}"
+        )
+        assert len(allow_operators) == len(
+            operators
+        ), f"Operators count should match after allowing operators {len(operators)} == {len(allow_operators)}"
+        return OperatorList(self.framework_name, operators)
+
+
+@dataclass
 class Framework:
 
     template_name: str
     framework_name: str
     ModelBuilderType: Type["ModelBuilder"]
     operator_repository: OperatorRepository
+
+    @property
+    def operator_list(self) -> OperatorList:
+        return OperatorList(self.framework_name, [op.name for op in self.operator_repository.operators])
 
 
 @dataclass
