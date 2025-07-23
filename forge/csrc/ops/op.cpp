@@ -934,7 +934,7 @@ void Op::decompose_post_optimize(
         case OpType::Narrow: return narrow::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Nop: return;
         case OpType::NotEqual: return;
-        case OpType::Pad: return pad::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Pad: return;
         case OpType::PadTile: return pad_tile::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Pow: return pow::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -1055,7 +1055,7 @@ void Op::decompose_post_autograd(
         case OpType::Narrow: return narrow::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Nop: return;
         case OpType::NotEqual: return;
-        case OpType::Pad: return pad::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Pad: return;
         case OpType::PadTile: return pad_tile::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Pow: return pow::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1174,7 +1174,7 @@ long Op::initial_flops_estimate(
         case OpType::Narrow: return narrow::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Nop: return 0;
         case OpType::NotEqual: return 0;
-        case OpType::Pad: return pad::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Pad: return 0;
         case OpType::PadTile: return pad_tile::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Pow: return pow::initial_flops_estimate(old_op_type, *this, inputs);

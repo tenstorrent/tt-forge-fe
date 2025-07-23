@@ -604,11 +604,10 @@ def backward(type, attr, ac, operand, inputs, output, grad):
                     (grad,),
                     {
                         "padding": [start, original_length - length - start],
-                        "mode": 0,
-                        "value": 0,
+                        "mode": 0,  # constant mode
+                        "value": 0.0,
                         "channel_last": False,
                     },
-                    (start, original_length - length - start, 0, False),
                 )
             elif dim == -2:
                 return ac.op_with_named_attrs(
@@ -616,11 +615,10 @@ def backward(type, attr, ac, operand, inputs, output, grad):
                     (grad,),
                     {
                         "padding": [0, 0, start, original_length - length - start],
-                        "mode": 0,
-                        "value": 0,
+                        "mode": 0,  # constant mode
+                        "value": 0.0,
                         "channel_last": False,
                     },
-                    (0, 0, start, original_length - length - start, 0, False),
                 )
             raise ArgumentError("Only dim == 2 and dim == 3 are supported.")
         else:
