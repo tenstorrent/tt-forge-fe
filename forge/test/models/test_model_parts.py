@@ -10,6 +10,7 @@ import forge
 from forge.verify.verify import verify
 import math
 import onnx
+from transformers.models.opt.modeling_opt import OPTLearnedPositionalEmbedding
 
 
 @pytest.mark.skip_model_analysis
@@ -176,3 +177,51 @@ def test_remove_concat_pass(dim):
 
     compiled_model = forge.compile(model, sample_inputs=inputs)
     verify(inputs, model, compiled_model)
+
+
+def test_opt_pos_embedding():
+
+    framework_model = OPTLearnedPositionalEmbedding(2050, 2048)
+    framework_model.eval()
+
+    attention_mask = torch.ones((1, 10)).long()
+    attention_mask[:, 5:] = 0
+
+    inputs = [attention_mask]
+
+    outputs = framework_model(*inputs)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        framework_model,
+        inputs,
+    )
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
+
+
+def test_add_embedding():
+    class AddEmbeddingModel(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.embedding_op = torch.nn.Embedding(2050, 2048)
+            self.offset = 2
+
+        def forward(self, indices):
+            return self.embedding_op(indices + self.offset)
+
+    framework_model = AddEmbeddingModel()
+    framework_model.eval()
+
+    indices = torch.arange(10).view((1, 10)).long()
+    indices[:, 5:] = -1
+
+    inputs = [indices]
+
+    compiled_model = forge.compile(
+        framework_model,
+        inputs,
+    )
+
+    verify(inputs, framework_model, compiled_model)
