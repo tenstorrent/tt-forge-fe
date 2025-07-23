@@ -2,11 +2,6 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-#include <ATen/core/TensorBody.h>
-#include <c10/util/ArrayRef.h>
-
-#include <cstdint>
-
 #include "autograd/autograd.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
