@@ -88,7 +88,8 @@ def test_yolo_v4(
         input_sample = [input.to(torch.bfloat16) for input in input_sample]
 
     # Load YOLO model
-    framework_model = ModelLoader.load_model()
+    loader = ModelLoader()
+    framework_model = loader.load_model()
     framework_model = Yolov4Wrapper(framework_model)
 
     if data_format == "bfloat16":
