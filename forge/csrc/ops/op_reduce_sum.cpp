@@ -43,6 +43,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     int dim = dims[0];
     if (dim < 0)
         dim += in_shapes[0].size();
+    TT_ASSERT(dim < static_cast<int>(in_shapes[0].size()), "reduce_sum should have valid dim.");
 
     bool keep_dim = op.attr_as<bool>("keep_dim");
     std::vector<std::uint32_t> ret = in_shapes[0];
@@ -70,8 +71,7 @@ tt::graphlib::NodeContext backward(
 
     // For sum, gradient just needs to be broadcast back to original shape
     // The broadcast will be implicitly figured out during shape calculations
-    graphlib::OpType nop_op("nop");
-    return ac.autograd->create_op(ac, nop_op, {gradient});
+    return ac.autograd->create_op(ac, graphlib::OpType("nop"), {gradient});
 }
 
 void decompose_initial(

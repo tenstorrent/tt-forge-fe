@@ -47,6 +47,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     int dim = dims[0];
     if (dim < 0)
         dim += in_shapes[0].size();
+    TT_ASSERT(dim < static_cast<int>(in_shapes[0].size()), "reduce_max should have valid dim.");
 
     bool keep_dim = op.attr_as<bool>("keep_dim");
     std::vector<std::uint32_t> ret = in_shapes[0];
@@ -94,36 +95,32 @@ tt::graphlib::NodeContext backward(
     NodeContext neg_range = ac.autograd->create_constant_tensor(ac, neg_range_values);
 
     // mask = subtract(in0, output) - has 0.0 in max positions and < 0.0 everywhere else
-    graphlib::OpType subtract_op("subtract");
-    NodeContext mask = ac.autograd->create_op(ac, subtract_op, {inputs[0], output});
+    NodeContext mask = ac.autograd->create_op(ac, graphlib::OpType("subtract"), {inputs[0], output});
 
     // mask = add(mask, one) - has 1.0 in max positions and < 1.0 everywhere else
-    graphlib::OpType add_op("add");
-    mask = ac.autograd->create_op(ac, add_op, {mask, one});
+    mask = ac.autograd->create_op(ac, graphlib::OpType("add"), {mask, one});
 
     // mask = greater_equal (mask, one) - has 1.0 in max positions, 0.0 everywhere else
-    graphlib::OpType greater_equal_op("greater_equal");
-    mask = ac.autograd->create_op(ac, greater_equal_op, {mask, one});
+    mask = ac.autograd->create_op(ac, graphlib::OpType("greater_equal"), {mask, one});
 
     // mask = multiply(mask, neg_range) - puts range N...1 in max positions, 0.0 everywhere else
     // Example: [1, 1, 0, 1] -> [4, 3, 0, 1]
-    graphlib::OpType multiply_op("multiply");
-    mask = ac.autograd->create_op(ac, multiply_op, {mask, neg_range});
+    mask = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {mask, neg_range});
 
     // redc = reduce_max(mask) - argmax
-    graphlib::OpType reduce_max_op("reduce_max", {}, {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}});
-    NodeContext redc = ac.autograd->create_op(ac, reduce_max_op, {mask});
+    NodeContext redc = ac.autograd->create_op(
+        ac, graphlib::OpType("reduce_max", {}, {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {mask});
 
     // mask = subtract(mask, redc) - Orig range - argmax, 0.0 in FIRST max position
-    mask = ac.autograd->create_op(ac, subtract_op, {mask, redc});
+    mask = ac.autograd->create_op(ac, graphlib::OpType("subtract"), {mask, redc});
 
     // mask = add(mask, one) - has 1.0 in first max position, and < 1.0 everywhere else
-    mask = ac.autograd->create_op(ac, add_op, {mask, one});
+    mask = ac.autograd->create_op(ac, graphlib::OpType("add"), {mask, one});
 
     // mask = greater_equal (mask, one) - has 1.0 in first max position, and 0.0 everywhere else
-    mask = ac.autograd->create_op(ac, greater_equal_op, {mask, one});
+    mask = ac.autograd->create_op(ac, graphlib::OpType("greater_equal"), {mask, one});
 
-    return ac.autograd->create_op(ac, multiply_op, {gradient, mask});
+    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {gradient, mask});
 }
 
 void decompose_initial(
