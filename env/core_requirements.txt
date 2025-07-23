@@ -1,4 +1,5 @@
 #core requirements - only essentials for compiler e2e
+Cython
 pybind11==2.6.2
 numpy==1.26.4
 loguru==0.5.3
@@ -10,6 +11,7 @@ tf2onnx==1.15.1
 tensorflow==2.19.0
 tflite==2.10.0
 torch @ https://download.pytorch.org/whl/cpu/torch-2.7.0%2Bcpu-cp310-cp310-manylinux_2_28_x86_64.whl ; python_version == "3.10"
+transformers==4.52.4 #needed for unit tests
 
 # Paddle stack
 paddlepaddle==2.6.2

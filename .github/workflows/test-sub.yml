@@ -122,6 +122,9 @@ jobs:
           git submodule foreach --recursive git clean -ffdx
           git submodule foreach --recursive git reset --hard
 
+      - name: Create temporary directory for artifacts
+        run: mkdir -p ${{ runner.temp }}/artifacts/
+
       - name: Download wheel
         if: ${{ inputs.run_id }}
         continue-on-error: true
@@ -130,6 +133,7 @@ jobs:
           name: forge-wheel
           run_id: ${{ inputs.run_id }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/artifacts/
 
       - name: Find and download forge wheel
         if: ${{ !inputs.run_id }}
@@ -143,6 +147,7 @@ jobs:
           repo: tenstorrent/tt-forge-fe
           check_artifacts: true
           search_artifacts: true
+          path: ${{ runner.temp }}/artifacts/
 
       - name: Install wheel
         shell: bash
