@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "utils.hpp"
 
+#include <ATen/core/TensorBody.h>
+#include <c10/core/ScalarType.h>
 #include <torch/torch.h>
 
 #include <functional>
@@ -657,9 +659,10 @@ DataFormat infer_data_format_from_py_tensor(const py::object &py_tensor)
     }
 }
 
-DataFormat scalar_type_to_data_format(at::ScalarType scalar_type)
+DataFormat scalar_type_to_data_format(const at::Tensor &tensor)
 {
     // C++ equivalent of pytorch_dtype_to_forge_dataformat in forge/forge/tensor.py
+    at::ScalarType scalar_type = tensor.scalar_type();
     switch (scalar_type)
     {
         case at::ScalarType::Float: return DataFormat::Float32;

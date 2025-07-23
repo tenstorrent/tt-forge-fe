@@ -18,13 +18,9 @@
 #include "graph_lib/defines.hpp"
 
 // Forward declarations
-namespace c10
-{
-enum class ScalarType : int8_t;
-}
 namespace at
 {
-using ScalarType = c10::ScalarType;
+class Tensor;
 }
 namespace py = pybind11;
 
@@ -86,7 +82,7 @@ std::vector<Node *> get_nodes_with_data_outdegree_zero(Graph *graph);
 DataFormat infer_data_format_from_py_tensor(const py::object &py_tensor);
 
 // Convert at::ScalarType to DataFormat directly (C++ equivalent of pytorch_dtype_to_forge_dataformat)
-DataFormat scalar_type_to_data_format(at::ScalarType scalar_type);
+DataFormat scalar_type_to_data_format(const at::Tensor &tensor);
 
 // Insert new node on the given edge. Node attributes will be picked up from consumer node.
 // Returns new edges to and from the new node.

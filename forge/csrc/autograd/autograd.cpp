@@ -674,7 +674,7 @@ NodeContext autograd_engine::create_constant_tensor(
 
     node->set_shape(shape);
 
-    DataFormat output_df = graphlib::scalar_type_to_data_format(tensor.scalar_type());
+    DataFormat output_df = graphlib::scalar_type_to_data_format(tensor);
     node->set_output_df(output_df);
 
     if (epoch_type == graphlib::NodeEpochType::Backward)
