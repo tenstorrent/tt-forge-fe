@@ -879,8 +879,8 @@ void Op::decompose_initial(
         case OpType::Softmax: return softmax::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::SoftmaxBw: return softmax_bw::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::SparseMatmul: return sparse_matmul::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Squeeze: return;
         case OpType::Sqrt: return;
+        case OpType::Squeeze: return;
         case OpType::Stack: return stack::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Subtract: return;
         case OpType::Tanh: return tanh::decompose_initial(old_op_type, *this, dc, inputs);

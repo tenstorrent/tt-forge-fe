@@ -40,10 +40,10 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     return {Shape::create(in_shapes[0]), {}};
 }
 
-tt::graphlib::NodeContext backward(
+NodeContext backward(
     const graphlib::OpType &old_op_type,
     const Op &op,
-    tt::autograd::autograd_context &ac,
+    autograd::autograd_context &ac,
     int operand,
     const std::vector<NodeContext> &inputs,
     const NodeContext &output,
