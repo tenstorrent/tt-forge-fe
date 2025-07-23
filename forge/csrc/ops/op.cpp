@@ -879,7 +879,7 @@ void Op::decompose_initial(
         case OpType::Softmax: return;
         case OpType::SoftmaxBw: return;
         case OpType::SparseMatmul: return sparse_matmul::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Sqrt: return sqrt::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Sqrt: return;
         case OpType::Squeeze: return;
         case OpType::Stack: return stack::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Subtract: return;
@@ -1007,7 +1007,7 @@ void Op::decompose_post_optimize(
         case OpType::Softmax: return;
         case OpType::SoftmaxBw: return;
         case OpType::SparseMatmul: return sparse_matmul::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Sqrt: return sqrt::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Sqrt: return;
         case OpType::Squeeze: return;
         case OpType::Stack: return stack::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Subtract: return;
@@ -1135,7 +1135,7 @@ void Op::decompose_post_autograd(
         case OpType::Softmax: return;
         case OpType::SoftmaxBw: return softmax_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::SparseMatmul: return sparse_matmul::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Sqrt: return sqrt::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Sqrt: return;
         case OpType::Squeeze: return;
         case OpType::Stack: return stack::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Subtract: return subtract::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1261,7 +1261,7 @@ long Op::initial_flops_estimate(
         case OpType::Softmax: return 0;
         case OpType::SoftmaxBw: return 0;
         case OpType::SparseMatmul: return sparse_matmul::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Sqrt: return sqrt::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Sqrt: return 0;
         case OpType::Squeeze: return 0;
         case OpType::Stack: return stack::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Subtract: return 0;

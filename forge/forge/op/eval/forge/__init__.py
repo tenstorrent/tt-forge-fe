@@ -12,7 +12,6 @@ from .tanh import Tanh
 from .log import Log
 from .nop import Nop
 from .buffer import Buffer
-from .sqrt import Sqrt
 from .tilizer import Tilizer
 from .clip import Clip
 from .cumulativesum import CumulativeSum
@@ -47,7 +46,7 @@ op_to_module_map = {
     "reciprocal": Reciprocal,
     "nop": Nop,
     "buffer": Buffer,
-    "sqrt": Sqrt,
+    "sqrt": "eltwise_unary",
     "relu": "eltwise_unary",
     "leaky_relu": "eltwise_unary",
     "gelu": "eltwise_unary",
