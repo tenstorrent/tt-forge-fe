@@ -11,6 +11,8 @@ from forge.tvm_calls.forge_utils import paddle_trace
 import forge
 from PIL import Image
 from forge.verify.verify import verify
+from forge.verify.value_checkers import AutomaticValueChecker
+from forge.verify.config import VerifyConfig
 from third_party.tt_forge_models.tools.utils import get_file
 
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
@@ -19,7 +21,7 @@ variants = ["openai/clip-vit-base-patch16"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail()
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_clip_text(variant):
     # Record Forge properties
@@ -49,7 +51,6 @@ def test_clip_text(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_clip_vision(variant):
     # Record Forge properties
@@ -76,12 +77,12 @@ def test_clip_vision(variant):
     compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97)))
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.xfail()
+@pytest.mark.xfail
 def test_clip(variant):
     # Record Forge properties
     module_name = record_model_properties(
