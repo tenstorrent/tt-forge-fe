@@ -1146,10 +1146,7 @@ void convert_implicit_to_explicit_bcasts(Graph *graph, Edge edge)
     for (OpType &op_type : graph->get_edge_attributes(edge)->get_tms())
     {
         if (op_type.type() == ops::OpType::Broadcast)
-        {
-            constexpr bool explicit_bcast = true;
-            std::get<bool>(op_type.legacy_attrs_[2]) = explicit_bcast;
-        }
+            op_type.set_attr("explicit_bcast", true);
     }
 }
 
@@ -1208,13 +1205,13 @@ bool swap_broadcast_dims(graphlib::Graph *graph, graphlib::Edge edge, int old_di
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
-            int dim = std::get<int>(op_type.legacy_attrs_[0]);
-            int size = std::get<int>(op_type.legacy_attrs_[1]);
-            bool explicit_bcast = std::get<bool>(op_type.legacy_attrs_[2]);
+            int dim = op_type.attr_as<int>("dim");
+            int size = op_type.attr_as<int>("size");
+            bool explicit_bcast = op_type.attr_as<bool>("explicit_bcast");
             if (dim == old_dim)
             {
-                graphlib::OpType updated_bcast("broadcast", {new_dim, size, explicit_bcast});
-                new_tms.push_back(updated_bcast);
+                new_tms.push_back(graphlib::OpType(
+                    "broadcast", {}, {{"dim", new_dim}, {"size", size}, {"explicit_bcast", explicit_bcast}}));
                 swapped = true;
             }
             else
@@ -1310,8 +1307,11 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Edge edge)
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
-            if (std::get<int>(op_type.legacy_attrs_[0]) >= 0)
-                std::get<int>(op_type.legacy_attrs_[0]) += diff;
+            int dim = op_type.attr_as<int>("dim");
+            if (dim >= 0)
+            {
+                op_type.set_attr("dim", dim + diff);
+            }
         }
     }
     graph->get_edge_attributes(edge)->set_tms(tms);

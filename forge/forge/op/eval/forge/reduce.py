@@ -119,7 +119,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
     if type == "reduce_avg":
         dim = attr[0]
         size = ac.get_shape(inputs[0])[dim]
-        broadcast = ac.op("broadcast", (grad,), (dim, size))
+        broadcast = ac.op_with_named_attrs("broadcast", (grad,), {"dim": dim, "size": size})
         # Doing explicit broadcast here as TTNN not supporting implicit broadcast in multiply
         consts = ac.tensor(torch.full(broadcast.shape.as_list(), 1 / size))
         return ac.op("multiply", (broadcast, consts))
