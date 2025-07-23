@@ -903,8 +903,6 @@ class LARS(Optimizer):
         if len(weight_norm_shape) > 1:
             weight_norm = ac.op_with_named_attrs("reduce_sum", (weight_norm,), {"dim_arg": [-2]})
         weight_norm = ac.op_with_named_attrs("reduce_sum", (weight_norm,), {"dim_arg": [-1]})
-        # importing locally to avoid circular dependency from Dataformats
-        from forge.op.eval.forge.sqrt import Sqrt
 
         weight_norm = ac.op("sqrt", (weight_norm,))
 
