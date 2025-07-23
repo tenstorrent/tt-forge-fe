@@ -315,11 +315,13 @@ def verify_module_for_inputs_torch(
 def verify_torch(
     inputs: List[torch.Tensor],
     framework_model: torch.nn.Module,
-    verify_cfg: VerifyConfig = VerifyConfig(),
+    verify_cfg: VerifyConfig = None,
 ):
     """
     Verify the pytorch model with the given inputs
     """
+    if verify_cfg is None:
+        verify_cfg = VerifyConfig()
     if not verify_cfg.enabled:
         logger.warning("Verification is disabled")
         return
