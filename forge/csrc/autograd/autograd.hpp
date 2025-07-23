@@ -112,6 +112,8 @@ class autograd_engine
         int created_op_index,
         graphlib::NodeEpochType epoch_type);
 
+    NodeContext create_constant_tensor(struct autograd_context &self, const at::Tensor &tensor);
+
     NodeContext create_input(
         Node *current_fwd_op,
         int operand_index,

@@ -156,8 +156,7 @@ void AutogradModule(py::module &m_autograd)
             {
                 // HACK: df is ignored, placed for compatibility with DecomposingContext
                 at::Tensor torch_tensor = py::cast<at::Tensor>(tensor);
-                return self.autograd->create_constant_tensor(
-                    self.current_fwd_op, self.operand, torch_tensor, self.created_op_index++, self.epoch_type);
+                return self.autograd->create_constant_tensor(self, torch_tensor);
             },
             py::arg("tensor"),
             py::arg("df") = DataFormat::Invalid)

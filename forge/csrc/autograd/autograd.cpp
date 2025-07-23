@@ -544,6 +544,11 @@ NodeContext autograd_engine::create_op(
     throw std::runtime_error("Expected autograd_context.epoch_type to be Backward or Optimizer");
 }
 
+NodeContext autograd_engine::create_constant_tensor(struct autograd_context &self, const at::Tensor &tensor)
+{
+    return create_constant_tensor(self.current_fwd_op, self.operand, tensor, self.created_op_index++, self.epoch_type);
+}
+
 // Create a backward op for the given fwd op's operand
 NodeContext autograd_engine::create_backward_op(
     const graphlib::OpType &type,
