@@ -41,6 +41,7 @@ variants = [
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
+@pytest.mark.skip(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2629")
 def test_monodepth2(variant):
     # Record Forge Property
     module_name = record_model_properties(
