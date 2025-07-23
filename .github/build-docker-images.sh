@@ -10,6 +10,7 @@ BASE_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-base-ubuntu-22-04
 CI_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-ci-ubuntu-22-04
 BASE_IRD_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-base-ird-ubuntu-22-04
 IRD_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-ird-ubuntu-22-04
+SLIM_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-slimci-ubuntu-22-04
 
 # Compute the hash of the Dockerfile
 DOCKER_TAG=$(./.github/get-docker-tag.sh)
@@ -40,6 +41,7 @@ build_and_push $BASE_IMAGE_NAME .github/Dockerfile.base
 build_and_push $BASE_IRD_IMAGE_NAME .github/Dockerfile.ird base
 build_and_push $CI_IMAGE_NAME .github/Dockerfile.ci
 build_and_push $IRD_IMAGE_NAME .github/Dockerfile.ird ci
+build_and_push $SLIM_IMAGE_NAME .github/Dockerfile.slimci
 
 echo "All images built and pushed successfully"
 echo "CI_IMAGE_NAME:"

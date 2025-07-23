@@ -44,3 +44,9 @@ COPY --from=ci-build $TTFORGE_TOOLCHAIN_DIR $TTFORGE_TOOLCHAIN_DIR
 
 RUN du -h --max-depth=2 $TTMLIR_TOOLCHAIN_DIR
 RUN du -h --max-depth=2 $TTFORGE_TOOLCHAIN_DIR
+
+# Install all dev/test requirements (fat image)
+COPY env/dev_requirements.txt /tmp/dev_requirements.txt
+COPY env/core_requirements.txt /tmp/core_requirements.txt
+RUN pip install --ignore-installed -r /tmp/dev_requirements.txt
+RUN pip install --ignore-installed -r /tmp/core_requirements.txt

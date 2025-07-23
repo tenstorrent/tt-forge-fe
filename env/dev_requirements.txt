@@ -2,10 +2,7 @@
 scipy>=1.8.0
 pandas==1.5.3
 decorator==5.1.1
-openpyxl==3.1.5
 GitPython==3.1.44
-pyinstrument>=4.1.1
-dataclasses-json==0.5.7
 safetensors==0.6.0.dev0
 flatbuffers==24.3.25
 torchvision @ https://download.pytorch.org/whl/cpu/torchvision-0.22.0%2Bcpu-cp310-cp310-manylinux_2_28_x86_64.whl ; python_version == "3.10"
@@ -16,7 +13,6 @@ chex==0.1.6
 
 
 # Testing framework
-pytest==6.2.4
 pytest-timeout==2.0.1
 pytest-xdist==2.5.0
 pytest-split

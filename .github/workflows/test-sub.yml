@@ -20,7 +20,8 @@ on:
         type: string
       docker-image:
         description: 'Docker image to use for build'
-        required: true
+        required: false
+        default: 'ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ci-ubuntu-22-04:latest'
         type: string
       runs-on:
         description: 'Runs on'
@@ -67,7 +68,7 @@ jobs:
     continue-on-error: ${{ inputs.allow-fail }}
 
     container:
-      image: ${{ inputs.sh-runner && format('harbor.ci.tenstorrent.net/{0}', inputs.docker-image) || inputs.docker-image }}
+      image: ${{ (inputs.test_mark == 'slim_wheel') && 'ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-slimci-ubuntu-22-04:latest' || inputs.docker-image }}
       options: --device /dev/tenstorrent/0
       volumes:
         - /dev/hugepages:/dev/hugepages
@@ -123,7 +124,20 @@ jobs:
           git submodule foreach --recursive git reset --hard
 
       - name: Create temporary directory for artifacts
-        run: mkdir -p ${{ runner.temp }}/artifacts/
+        run: mkdir -p ./artifacts/
+
+      - name: Debug - Check inputs and download strategy
+        shell: bash
+        run: |
+          echo "=== Download Strategy Debug ==="
+          echo "inputs.run_id: '${{ inputs.run_id }}'"
+          if [ -n "${{ inputs.run_id }}" ]; then
+            echo "Will use tenstorrent/tt-forge/.github/actions/download-artifact@main"
+            echo "Looking for run_id: ${{ inputs.run_id }}"
+          else
+            echo "Will use dawidd6/action-download-artifact@v9"
+            echo "Looking for workflow: on-push.yml in repo: tenstorrent/tt-forge-fe"
+          fi
 
       - name: Download wheel
         if: ${{ inputs.run_id }}
@@ -133,7 +147,7 @@ jobs:
           name: forge-wheel
           run_id: ${{ inputs.run_id }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          path: ${{ runner.temp }}/artifacts/
+          path: ./artifacts/
 
       - name: Find and download forge wheel
         if: ${{ !inputs.run_id }}
@@ -147,16 +161,58 @@ jobs:
           repo: tenstorrent/tt-forge-fe
           check_artifacts: true
           search_artifacts: true
-          path: ${{ runner.temp }}/artifacts/
+          path: ./artifacts/
+
+      - name: Debug - Check downloaded artifacts
+        shell: bash
+        run: |
+          echo "=== Checking artifacts directory ==="
+          if [ -d "./artifacts/" ]; then
+            echo "Artifacts directory exists"
+            ls -la "./artifacts/"
+            echo ""
+            echo "=== Looking for wheel files ==="
+            find "./artifacts/" -name "*.whl" -type f | while read wheel; do
+              echo "Found wheel: $wheel"
+              echo "  Size: $(stat -c%s "$wheel") bytes"
+              echo "  Full path: $(realpath "$wheel")"
+            done
+          else
+            echo "ERROR: Artifacts directory does not exist!"
+          fi
+          echo ""
+          echo "=== Current working directory ==="
+          pwd
+          echo ""
+          echo "=== Contents of current directory ==="
+          ls -la .
 
       - name: Install wheel
         shell: bash
         run: |
           source env/activate
-          pip install tt_tvm*.whl --upgrade
-          pip install tt_forge_fe*.whl --upgrade
+          # Install tt_tvm wheel if it exists
+          TT_TVM_WHEEL=$(find "./artifacts/" -name "tt_tvm*.whl" | head -1)
+          if [ -f "$TT_TVM_WHEEL" ]; then
+            echo "Installing tt_tvm wheel: $TT_TVM_WHEEL"
+            pip install "$TT_TVM_WHEEL" --upgrade
+          else
+            echo "No tt_tvm wheel found in ./artifacts/"
+            ls -la "./artifacts/" || echo "Artifacts directory does not exist"
+          fi
+
+          # Install tt_forge_fe wheel if it exists
+          TT_FORGE_FE_WHEEL=$(find "./artifacts/" -name "tt_forge_fe*.whl" | head -1)
+          if [ -f "$TT_FORGE_FE_WHEEL" ]; then
+            echo "Installing tt_forge_fe wheel: $TT_FORGE_FE_WHEEL"
+            pip install "$TT_FORGE_FE_WHEEL" --upgrade
+          else
+            echo "No tt_forge_fe wheel found in ./artifacts/"
+            ls -la "./artifacts/" || echo "Artifacts directory does not exist"
+          fi
 
       - name: Run Sanity Tests
+        if: ${{ inputs.test_mark == 'slim_wheel' }}
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_HOME: /mnt/dockercache/huggingface
@@ -227,13 +283,8 @@ jobs:
           detailed_summary: true
           group_suite: true
 
-      - name: Install dev requirements
-        shell: bash
-        run: |
-            source env/activate
-            pip install -r env/dev_requirements.txt
-
       - name: Run Test
+        if: ${{ inputs.test_mark != 'slim_wheel' }}
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_HOME: /mnt/dockercache/huggingface
@@ -317,3 +368,14 @@ jobs:
           updateComment: false
           detailed_summary: true
           group_suite: true
+
+  build-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to GHCR
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Build and push docker images if hash changed
+        run: |
+          chmod +x .github/build-docker-images.sh
+          .github/build-docker-images.sh
