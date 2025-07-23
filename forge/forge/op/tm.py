@@ -362,7 +362,7 @@ def Broadcast(name: str, operandA: Tensor, dim: int, shape: int) -> Tensor:
         Forge tensor
     """
 
-    return op("broadcast", name, operandA, attrs=(dim, shape, True)).get_tensor()
+    return op("broadcast", name, operandA, dim=dim, size=shape).get_tensor()
 
 
 def Repeat(name: str, operandA: Tensor, repeats: List[int]) -> Tensor:

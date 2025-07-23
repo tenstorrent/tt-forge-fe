@@ -286,8 +286,8 @@ TEST_F(CommuteBroadcastThroughTranspose, commute_broadcast_through_transpose)
     EXPECT_EQ(tms[1].type(), ops::OpType::Broadcast);
     // Broadcast along dimension -2 should become broadcast along -3
     // after commuting through transpose.
-    EXPECT_EQ(std::get<int>(tms[1].legacy_attrs_[0]), -3);
-    EXPECT_EQ(std::get<int>(tms[1].legacy_attrs_[1]), 112);
+    EXPECT_EQ(tms[1].attr_as<int>("dim"), -3);
+    EXPECT_EQ(tms[1].attr_as<int>("size"), 112);
 }
 
 struct UpdateReshapeNamedAttrsTest : testing::Test

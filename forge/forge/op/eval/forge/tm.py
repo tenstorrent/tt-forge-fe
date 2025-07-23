@@ -107,20 +107,6 @@ def eval(type, attr, ops):
 
         return ret
 
-    if type == "broadcast":
-        assert len(attr) <= 3, "Broadcast should have two attributes - dim and size"
-        explicit_bcast = len(attr) == 3 and bool(attr[2])
-
-        tensor = t_ops[0]
-        dim = attr[0]
-        size = attr[1]
-        while len(tensor.shape) <= ((-dim - 1) if dim < 0 else dim):
-            tensor = tensor.unsqueeze(0)
-        target_shape = list(tensor.shape)
-        assert dim < len(target_shape), f"Trying to broadcast on dim that doesn't exist: {dim} on {target_shape}"
-        target_shape[dim] = size
-        return torch.broadcast_to(tensor, target_shape)
-
     if type == "repeat":
         sizes = attr
         return t_ops[0].repeat(*sizes)
@@ -409,22 +395,6 @@ def shape(type, attr, ops):
         shape[-3] //= slice_size
         return tuple(shape), []
 
-    if type == "broadcast":
-        assert len(attr) <= 3, "Broadcast should have two attributes - dim and size"
-        dim = attr[0]
-        size = attr[1]
-        target_shape = list(ops[0])
-
-        if dim < 0:
-            while abs(dim) > len(target_shape):
-                target_shape = [1] + target_shape
-        else:
-            while dim >= len(target_shape):
-                target_shape = [1] + target_shape
-
-        target_shape[dim] = size
-        return tuple(target_shape), []
-
     if type == "repeat":
         sizes = attr
         if len(ops[0]) < len(sizes):
@@ -663,34 +633,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         else:
             raise NotImplementedError("Unimplemented narrow in forge")
 
-    elif type == "broadcast":
-        assert len(attr) == 3
-        if attr[0] < 0:
-            attr[0] += inputs[0].shape.len()
-        delta = 4 - inputs[0].shape.len()
-        attr[0] += delta
-        assert attr[0] >= 0 and attr[0] <= 3, f"Invalid broadcast dim after lowering: {attr[0]}"
-
-        if attr[0] == 2 or attr[0] == 3:
-            ret = ac.op("reduce_sum", (grad,), (attr[0],), {"keep_dim": True})
-        else:
-            ret = ac.op_with_named_attrs(
-                "transpose",
-                [
-                    grad,
-                ],
-                {"dim0": attr[0], "dim1": -2},
-            )
-            ret = ac.op("reduce_sum", (ret,), (-2,), {"keep_dim": True})
-            ret = ac.op_with_named_attrs(
-                "transpose",
-                [
-                    ret,
-                ],
-                {"dim0": attr[0], "dim1": -2},
-            )
-        return ret
-
     elif type == "repeat_interleave":
         assert len(attr) == 2, "repeat_interleave should have two attributes - repeats and dim"
         repeats = attr[0]
@@ -820,10 +762,6 @@ def decompose(type, attr, dc, inputs):
 
         dc.fuse(result)
         return
-
-    if type == "broadcast":
-        if attr[1] == 1:
-            dc.fuse(dc.op(Nop.create(), [inputs[0]]))
 
     if type == "pixel_shuffle":
         result = inputs[0]  # Shape: (N, C*r*r, H, W)

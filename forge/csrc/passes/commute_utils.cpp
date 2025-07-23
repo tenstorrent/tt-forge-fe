@@ -151,7 +151,7 @@ size_t total_broadcast_volume(graphlib::Graph *graph, graphlib::Edge edge)
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
-            volume *= std::get<int>(op_type.legacy_attrs_[1]);
+            volume *= op_type.attr_as<int>("size");
         }
     }
     return volume;
@@ -1068,8 +1068,8 @@ std::pair<bool, std::pair<std::vector<int>, std::vector<int>>> handle_shape_chan
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
-            int bcast_dim = std::get<int>(op_type.legacy_attrs_[0]);
-            int volume = std::get<int>(op_type.legacy_attrs_[1]);
+            int bcast_dim = op_type.attr_as<int>("dim");
+            int volume = op_type.attr_as<int>("size");
             if (bcast_dim < 0)
                 bcast_dim += clone_shape->size();
             auto [can_commute_bcast_through_dim, new_dim] = can_commute_through_dim(initial_op, graph, bcast_dim);
@@ -1106,9 +1106,9 @@ void add_or_compound_bcast(graphlib::Graph *graph, graphlib::Edge edge, int dim,
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
-            int existing_dim = std::get<int>(op_type.legacy_attrs_[0]);
+            int existing_dim = op_type.attr_as<int>("dim");
 
-            int existing_volume = std::get<int>(op_type.legacy_attrs_[1]);
+            int existing_volume = op_type.attr_as<int>("size");
             if (existing_dim == dim)
             {
                 compounded_bcast = true;
@@ -1116,7 +1116,7 @@ void add_or_compound_bcast(graphlib::Graph *graph, graphlib::Edge edge, int dim,
             }
 
             graph->get_edge_attributes(edge)->set_broadcast_dim(
-                existing_dim, existing_volume, std::get<bool>(op_type.legacy_attrs_[2]));
+                existing_dim, existing_volume, op_type.attr_as<bool>("explicit_bcast"));
         }
     }
 
@@ -1138,8 +1138,8 @@ void restore_bcast_on_condition(
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
-            int dim = std::get<int>(op_type.legacy_attrs_[0]);
-            int volume = std::get<int>(op_type.legacy_attrs_[1]);
+            int dim = op_type.attr_as<int>("dim");
+            int volume = op_type.attr_as<int>("size");
             if (dim < 0)
                 dim += operand_shape.size();
 
@@ -1201,9 +1201,9 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
         {
             has_bcasts = true;
             num_bcasts++;
-            int dim = std::get<int>(op_type.legacy_attrs_[0]);
+            int dim = op_type.attr_as<int>("dim");
             bcast_dims.push_back(dim);
-            int volume = std::get<int>(op_type.legacy_attrs_[1]);
+            int volume = op_type.attr_as<int>("size");
             if (dim < 0)
             {
                 while (-dim > (int)operand_shape.size())
@@ -1289,7 +1289,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
 
             if (is_transpose_reshape)
             {
-                int bcast_dim = std::get<int>(tms[0].legacy_attrs_[0]);
+                int bcast_dim = tms[0].attr_as<int>("dim");
                 if (bcast_dim < 0)
                     bcast_dim += operand_shape.size();
                 int bcast_volume = op->shape()[bcast_dim];
@@ -1410,12 +1410,12 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
                 {
                     if (t.type() == ops::OpType::Broadcast)
                     {
-                        int dim = std::get<int>(t.legacy_attrs_[0]);
+                        int dim = t.attr_as<int>("dim");
                         if (dim >= 0)
                         {
                             dim -= operand_shape.size();
                         }
-                        int volume = std::get<int>(t.legacy_attrs_[1]);
+                        int volume = t.attr_as<int>("size");
                         add_or_compound_bcast(graph, user_edge, dim, volume);
                     }
                 }
@@ -1438,7 +1438,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
             graphlib::OpType op_type = tms[i];
             if (op_type.type() == ops::OpType::Broadcast)
             {
-                int dim = std::get<int>(op_type.legacy_attrs_[0]);
+                int dim = op_type.attr_as<int>("dim");
                 if (dim > 0)
                     dim -= operand_shape.size();
 
@@ -1447,7 +1447,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
                 erase_tms.push_back(i);
                 int updated_bcast_dim = update_bcast_dim_commuted_through_transpose(dim, op);
                 updated_shape[updated_bcast_dim] = operand_dim_size;
-                std::get<int>(op_type.legacy_attrs_[0]) = updated_bcast_dim;
+                op_type.set_attr("dim", updated_bcast_dim);
                 for (graphlib::Edge user_edge : graph->user_data_edges(op))
                     graph->get_edge_attributes(user_edge)->prepend_tm(op_type);
             }
@@ -1484,12 +1484,12 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
         {
             if (t.type() == ops::OpType::Broadcast)
             {
-                int dim = std::get<int>(t.legacy_attrs_[0]);
+                int dim = t.attr_as<int>("dim");
                 if (dim >= 0)
                 {
                     dim -= operand_shape.size();
                 }
-                int volume = std::get<int>(t.legacy_attrs_[1]);
+                int volume = t.attr_as<int>("size");
                 add_or_compound_bcast(graph, user_edge, dim, volume);
             }
         }
