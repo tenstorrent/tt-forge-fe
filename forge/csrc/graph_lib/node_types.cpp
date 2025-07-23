@@ -468,7 +468,12 @@ const TagHints &TaggedNode::get_tags() const { return this->hints; }
  * migrated from python to cpp.
  */
 
-at::Tensor OpType::eval(const std::vector<at::Tensor> &tensors) const { return new_op_.eval(*this, tensors); }
+at::Tensor OpType::eval_with_prepare_inputs(const std::vector<at::Tensor> &tensors) const
+{
+    // Promote floating point tensors to common dtype for all operands
+    auto promoted_tensors = promote_floating_dtypes(tensors);
+    return new_op_.eval(*this, promoted_tensors);
+}
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> OpType::shape(
     const std::vector<std::vector<std::uint32_t>> &inputs) const

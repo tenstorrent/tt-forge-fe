@@ -509,7 +509,7 @@ struct OpType
      * migrated from python to cpp.
      */
 
-    at::Tensor eval(const std::vector<at::Tensor> &tensors) const;
+    at::Tensor eval_with_prepare_inputs(const std::vector<at::Tensor> &tensors) const;
     std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
         const std::vector<std::vector<std::uint32_t>> &inputs) const;
 

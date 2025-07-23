@@ -84,6 +84,9 @@ DataFormat infer_data_format_from_py_tensor(const py::object &py_tensor);
 // Convert at::ScalarType to DataFormat directly (C++ equivalent of pytorch_dtype_to_forge_dataformat)
 DataFormat scalar_type_to_data_format(const at::Tensor &tensor);
 
+// Helper function to promote floating point tensors to common dtype
+std::vector<at::Tensor> promote_floating_dtypes(const std::vector<at::Tensor> &tensors);
+
 // Insert new node on the given edge. Node attributes will be picked up from consumer node.
 // Returns new edges to and from the new node.
 std::pair<Edge, Edge> insert_node_on_edge(
