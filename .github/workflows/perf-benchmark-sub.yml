@@ -141,6 +141,7 @@ jobs:
         HF_TOKEN: ${{ secrets.HF_TOKEN }}
         HF_HOME: /mnt/dockercache/huggingface
         HF_HUB_DISABLE_PROGRESS_BARS: 1
+        DOCKER_CACHE_ROOT: /mnt/dockercache
       shell: bash
       run: |
         source env/activate
