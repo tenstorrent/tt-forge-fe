@@ -81,7 +81,8 @@ NodeContext backward(
     TT_ASSERT(operand == 0, "Invalid operand index");
 
     // adv_index backward is not implemented in Python either
-    throw std::runtime_error("Backward pass for adv_index is not implemented");
+    TT_THROW("Backward pass for adv_index is not implemented");
+    unreachable();
 }
 
 void decompose_initial(
