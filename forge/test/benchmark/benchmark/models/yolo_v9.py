@@ -94,7 +94,7 @@ def test_yolo_v9(
         framework_model = framework_model.to(torch.bfloat16)
 
     # Compiler configuration
-    compiler_config = CompilerConfig(enable_optimization_passes=True)
+    compiler_config = CompilerConfig()
     # Turn on MLIR optimizations.
     compiler_config.mlir_config = (
         MLIRConfig().set_enable_optimizer(True).set_enable_memory_layout_analysis(False).set_enable_fusing(True)
@@ -107,6 +107,11 @@ def test_yolo_v9(
     compiled_model = forge.compile(
         framework_model, sample_inputs=input_sample, module_name=module_name, compiler_cfg=compiler_config
     )
+
+    # Enable program cache on all devices
+    settings = DeviceSettings()
+    settings.enable_program_cache = True
+    configure_devices(device_settings=settings)
 
     # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
