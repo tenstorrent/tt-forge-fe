@@ -61,7 +61,7 @@ jobs:
           python-version: '3.10' # Specify the Python version you want to use
       - name: Install dependencies
         shell: bash
-        run: pip install flake8 flake8-sarif
+        run: pip install flake8 flake8-sarif flake8-bugbear
       - name: Run Flake8
         shell: bash
         run: |
