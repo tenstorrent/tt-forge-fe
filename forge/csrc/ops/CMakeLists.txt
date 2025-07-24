@@ -122,5 +122,8 @@ add_library(ops
     python_bindings.cpp)
 
 target_link_libraries(ops PUBLIC coverage_config)
-
 target_compile_options(ops PRIVATE ${STATIC_LIB_FLAGS} ${TTFORGE_CSRC_CFLAGS})
+
+# Enable precompiled headers and unity build for faster compilation.
+target_precompile_headers(ops PRIVATE ops_pch.hpp)
+set_target_properties(ops PROPERTIES UNITY_BUILD ON)
