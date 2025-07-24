@@ -88,7 +88,6 @@ class NewToOldOpType
         mapping_[OpType::ForgeUnpad] = "forge_unpad";
         mapping_[OpType::Gather] = "gather";
         mapping_[OpType::Gelu] = "gelu";
-        mapping_[OpType::GeluDerivative] = "gelu_derivative";
         mapping_[OpType::Greater] = "greater";
         mapping_[OpType::GreaterEqual] = "greater_equal";
         mapping_[OpType::GroupedReduceAvg] = "grouped_reduce_avg";
@@ -148,7 +147,6 @@ class NewToOldOpType
         mapping_[OpType::Stack] = "stack";
         mapping_[OpType::Subtract] = "subtract";
         mapping_[OpType::Tanh] = "tanh";
-        mapping_[OpType::TileBroadcast] = "tile_broadcast";
         mapping_[OpType::Tilizer] = "tilizer";
         mapping_[OpType::Transpose] = "transpose";
         mapping_[OpType::Unsqueeze] = "unsqueeze";
@@ -221,7 +219,6 @@ class OldToNewOpType
         mapping_["forge_unpad"] = OpType::ForgeUnpad;
         mapping_["gather"] = OpType::Gather;
         mapping_["gelu"] = OpType::Gelu;
-        mapping_["gelu_derivative"] = OpType::GeluDerivative;
         mapping_["greater"] = OpType::Greater;
         mapping_["greater_equal"] = OpType::GreaterEqual;
         mapping_["grouped_reduce_avg"] = OpType::GroupedReduceAvg;
@@ -281,7 +278,6 @@ class OldToNewOpType
         mapping_["stack"] = OpType::Stack;
         mapping_["subtract"] = OpType::Subtract;
         mapping_["tanh"] = OpType::Tanh;
-        mapping_["tile_broadcast"] = OpType::TileBroadcast;
         mapping_["tilizer"] = OpType::Tilizer;
         mapping_["transpose"] = OpType::Transpose;
         mapping_["unsqueeze"] = OpType::Unsqueeze;
@@ -396,7 +392,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Conv2dPrestrideWeights: return conv_2d_prestride_weights::eval(old_op_type, *this, tensors);
         case OpType::Conv2dTranspose: return conv_2d_transpose::eval(old_op_type, *this, tensors);
         case OpType::Conv3d: return conv_3d::eval(old_op_type, *this, tensors);
-        case OpType::ConvSum: return conv_Sum::eval(old_op_type, *this, tensors);
+        case OpType::ConvSum: return conv_sum::eval(old_op_type, *this, tensors);
         case OpType::Cosine: return cosine::eval(old_op_type, *this, tensors);
         case OpType::CumulativeSum: return cumulative_sum::eval(old_op_type, *this, tensors);
         case OpType::Depthwise: return depthwise::eval(old_op_type, *this, tensors);
@@ -419,7 +415,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::ForgeUnpad: return forge_unpad::eval(old_op_type, *this, tensors);
         case OpType::Gather: return gather::eval(old_op_type, *this, tensors);
         case OpType::Gelu: return gelu::eval(old_op_type, *this, tensors);
-        case OpType::GeluDerivative: return gelu_derivative::eval(old_op_type, *this, tensors);
         case OpType::Greater: return greater::eval(old_op_type, *this, tensors);
         case OpType::GreaterEqual: return greater_equal::eval(old_op_type, *this, tensors);
         case OpType::GroupedReduceAvg: return grouped_reduce_avg::eval(old_op_type, *this, tensors);
@@ -479,7 +474,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Stack: return stack::eval(old_op_type, *this, tensors);
         case OpType::Subtract: return subtract::eval(old_op_type, *this, tensors);
         case OpType::Tanh: return tanh::eval(old_op_type, *this, tensors);
-        case OpType::TileBroadcast: return tile_broadcast::eval(old_op_type, *this, tensors);
         case OpType::Tilizer: return tilizer::eval(old_op_type, *this, tensors);
         case OpType::Transpose: return transpose::eval(old_op_type, *this, tensors);
         case OpType::Unsqueeze: return unsqueeze::eval(old_op_type, *this, tensors);
@@ -522,7 +516,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Conv2dPrestrideWeights: return conv_2d_prestride_weights::shape(old_op_type, *this, inputs);
         case OpType::Conv2dTranspose: return conv_2d_transpose::shape(old_op_type, *this, inputs);
         case OpType::Conv3d: return conv_3d::shape(old_op_type, *this, inputs);
-        case OpType::ConvSum: return conv_Sum::shape(old_op_type, *this, inputs);
+        case OpType::ConvSum: return conv_sum::shape(old_op_type, *this, inputs);
         case OpType::Cosine: return cosine::shape(old_op_type, *this, inputs);
         case OpType::CumulativeSum: return cumulative_sum::shape(old_op_type, *this, inputs);
         case OpType::Depthwise: return depthwise::shape(old_op_type, *this, inputs);
@@ -545,7 +539,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::ForgeUnpad: return forge_unpad::shape(old_op_type, *this, inputs);
         case OpType::Gather: return gather::shape(old_op_type, *this, inputs);
         case OpType::Gelu: return gelu::shape(old_op_type, *this, inputs);
-        case OpType::GeluDerivative: return gelu_derivative::shape(old_op_type, *this, inputs);
         case OpType::Greater: return greater::shape(old_op_type, *this, inputs);
         case OpType::GreaterEqual: return greater_equal::shape(old_op_type, *this, inputs);
         case OpType::GroupedReduceAvg: return grouped_reduce_avg::shape(old_op_type, *this, inputs);
@@ -605,7 +598,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Stack: return stack::shape(old_op_type, *this, inputs);
         case OpType::Subtract: return subtract::shape(old_op_type, *this, inputs);
         case OpType::Tanh: return tanh::shape(old_op_type, *this, inputs);
-        case OpType::TileBroadcast: return tile_broadcast::shape(old_op_type, *this, inputs);
         case OpType::Tilizer: return tilizer::shape(old_op_type, *this, inputs);
         case OpType::Transpose: return transpose::shape(old_op_type, *this, inputs);
         case OpType::Unsqueeze: return unsqueeze::shape(old_op_type, *this, inputs);
@@ -653,7 +645,7 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Conv2dPrestrideWeights: return conv_2d_prestride_weights::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Conv2dTranspose: return conv_2d_transpose::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Conv3d: return conv_3d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::ConvSum: return conv_Sum::backward(old_op_type, *this, context, operand, inputs, output, gradient);
+        case OpType::ConvSum: return conv_sum::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Cosine: return cosine::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::CumulativeSum: return cumulative_sum::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Depthwise: return depthwise::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -676,7 +668,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::ForgeUnpad: return forge_unpad::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Gather: return gather::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Gelu: return gelu::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::GeluDerivative: return gelu_derivative::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Greater: return greater::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::GreaterEqual: return greater_equal::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::GroupedReduceAvg: return grouped_reduce_avg::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -736,7 +727,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Stack: return stack::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Subtract: return subtract::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Tanh: return tanh::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::TileBroadcast: return tile_broadcast::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Tilizer: return tilizer::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Transpose: return transpose::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Unsqueeze: return unsqueeze::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -781,7 +771,7 @@ void Op::decompose_initial(
         case OpType::Add: return;
         case OpType::AdvIndex: return adv_index::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Argmax: return argmax::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Atan: return atan::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Atan: return;
         case OpType::AvgPool1d: return avg_pool_1d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::AvgPool2d: return avg_pool_2d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::AvgPool3d: return avg_pool_3d::decompose_initial(old_op_type, *this, dc, inputs);
@@ -801,7 +791,7 @@ void Op::decompose_initial(
         case OpType::Conv2dPrestrideWeights: return conv_2d_prestride_weights::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Conv2dTranspose: return conv_2d_transpose::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Conv3d: return conv_3d::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::ConvSum: return conv_Sum::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::ConvSum: return conv_sum::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Cosine: return;
         case OpType::CumulativeSum: return cumulative_sum::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Depthwise: return depthwise::decompose_initial(old_op_type, *this, dc, inputs);
@@ -815,7 +805,7 @@ void Op::decompose_initial(
         case OpType::Equal: return equal::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Erf: return erf::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::EthernetDatacopy: return ethernet_data_copy::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Exp: return exp::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Exp: return;
         case OpType::FillCache: return fill_cache::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::ForgeDequantize: return forge_dequantize::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::ForgePad: return forge_pad::decompose_initial(old_op_type, *this, dc, inputs);
@@ -823,8 +813,7 @@ void Op::decompose_initial(
         case OpType::ForgeRequantize: return forge_requantize::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::ForgeUnpad: return forge_unpad::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Gather: return gather::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Gelu: return gelu::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::GeluDerivative: return gelu_derivative::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Gelu: return;
         case OpType::Greater: return greater::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::GreaterEqual: return greater_equal::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::GroupedReduceAvg: return grouped_reduce_avg::decompose_initial(old_op_type, *this, dc, inputs);
@@ -836,13 +825,13 @@ void Op::decompose_initial(
         case OpType::Interleave: return interleave::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Layernorm: return layernorm::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::LayernormBw: return layernorm_bw::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::LeakyRelu: return leaky_relu::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::LeakyRelu: return;
         case OpType::Less: return less::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::LessEqual: return less_equal::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Log: return log::decompose_initial(old_op_type, *this, dc, inputs);
+    case OpType::Log: return;
         case OpType::LogSoftmax: return log_softmax::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::LogicalAnd: return logical_and::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::LogicalNot: return logical_not::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::LogicalNot: return;
         case OpType::Mask: return mask::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Matmul: return matmul::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::MaxPool1d: return max_pool_1d::decompose_initial(old_op_type, *this, dc, inputs);
@@ -874,7 +863,7 @@ void Op::decompose_initial(
         case OpType::Resize2d: return resize_2d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Resize3d: return resize_3d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Select: return select::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Sigmoid: return sigmoid::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Sigmoid: return;
         case OpType::Sine: return;
         case OpType::Softmax: return;
         case OpType::SoftmaxBw: return;
@@ -884,7 +873,6 @@ void Op::decompose_initial(
         case OpType::Stack: return stack::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Subtract: return;
         case OpType::Tanh: return tanh::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::TileBroadcast: return tile_broadcast::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Tilizer: return tilizer::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
@@ -909,7 +897,7 @@ void Op::decompose_post_optimize(
         case OpType::Add: return;
         case OpType::AdvIndex: return adv_index::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Argmax: return argmax::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Atan: return atan::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Atan: return;
         case OpType::AvgPool1d: return avg_pool_1d::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::AvgPool2d: return avg_pool_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::AvgPool3d: return avg_pool_3d::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -929,7 +917,7 @@ void Op::decompose_post_optimize(
         case OpType::Conv2dPrestrideWeights: return conv_2d_prestride_weights::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Conv2dTranspose: return conv_2d_transpose::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Conv3d: return conv_3d::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::ConvSum: return conv_Sum::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::ConvSum: return conv_sum::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Cosine: return;
         case OpType::CumulativeSum: return cumulative_sum::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Depthwise: return depthwise::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -943,7 +931,7 @@ void Op::decompose_post_optimize(
         case OpType::Equal: return equal::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Erf: return erf::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::EthernetDatacopy: return ethernet_data_copy::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Exp: return exp::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Exp: return;
         case OpType::FillCache: return fill_cache::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::ForgeDequantize: return forge_dequantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::ForgePad: return forge_pad::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -951,8 +939,7 @@ void Op::decompose_post_optimize(
         case OpType::ForgeRequantize: return forge_requantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::ForgeUnpad: return forge_unpad::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Gather: return gather::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Gelu: return gelu::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::GeluDerivative: return gelu_derivative::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Gelu: return;
         case OpType::Greater: return greater::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::GreaterEqual: return greater_equal::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::GroupedReduceAvg: return grouped_reduce_avg::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -964,13 +951,13 @@ void Op::decompose_post_optimize(
         case OpType::Interleave: return interleave::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Layernorm: return layernorm::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::LayernormBw: return layernorm_bw::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::LeakyRelu: return leaky_relu::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::LeakyRelu: return;
         case OpType::Less: return less::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::LessEqual: return less_equal::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Log: return log::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Log: return;
         case OpType::LogSoftmax: return log_softmax::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::LogicalAnd: return logical_and::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::LogicalNot: return logical_not::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::LogicalNot: return;
         case OpType::Mask: return mask::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Matmul: return matmul::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::MaxPool1d: return max_pool_1d::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -1002,7 +989,7 @@ void Op::decompose_post_optimize(
         case OpType::Resize2d: return resize_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Resize3d: return resize_3d::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Select: return select::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Sigmoid: return sigmoid::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Sigmoid: return;
         case OpType::Sine: return;
         case OpType::Softmax: return;
         case OpType::SoftmaxBw: return;
@@ -1012,7 +999,6 @@ void Op::decompose_post_optimize(
         case OpType::Stack: return stack::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Subtract: return;
         case OpType::Tanh: return tanh::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::TileBroadcast: return tile_broadcast::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Tilizer: return tilizer::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
@@ -1037,7 +1023,7 @@ void Op::decompose_post_autograd(
         case OpType::Add: return;
         case OpType::AdvIndex: return adv_index::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Argmax: return argmax::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Atan: return atan::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Atan: return;
         case OpType::AvgPool1d: return avg_pool_1d::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::AvgPool2d: return avg_pool_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::AvgPool3d: return avg_pool_3d::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1057,7 +1043,7 @@ void Op::decompose_post_autograd(
         case OpType::Conv2dPrestrideWeights: return conv_2d_prestride_weights::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Conv2dTranspose: return conv_2d_transpose::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Conv3d: return conv_3d::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::ConvSum: return conv_Sum::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::ConvSum: return conv_sum::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Cosine: return;
         case OpType::CumulativeSum: return cumulative_sum::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Depthwise: return depthwise::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1071,7 +1057,7 @@ void Op::decompose_post_autograd(
         case OpType::Equal: return equal::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Erf: return erf::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::EthernetDatacopy: return ethernet_data_copy::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Exp: return exp::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Exp: return;
         case OpType::FillCache: return fill_cache::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::ForgeDequantize: return forge_dequantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::ForgePad: return forge_pad::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1079,8 +1065,7 @@ void Op::decompose_post_autograd(
         case OpType::ForgeRequantize: return forge_requantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::ForgeUnpad: return forge_unpad::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Gather: return gather::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Gelu: return gelu::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::GeluDerivative: return gelu_derivative::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Gelu: return;
         case OpType::Greater: return greater::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::GreaterEqual: return greater_equal::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::GroupedReduceAvg: return grouped_reduce_avg::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1092,13 +1077,13 @@ void Op::decompose_post_autograd(
         case OpType::Interleave: return interleave::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Layernorm: return layernorm::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::LayernormBw: return layernorm_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::LeakyRelu: return leaky_relu::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::LeakyRelu: return;
         case OpType::Less: return less::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::LessEqual: return less_equal::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Log: return log::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Log: return;
         case OpType::LogSoftmax: return log_softmax::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::LogicalAnd: return logical_and::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::LogicalNot: return logical_not::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::LogicalNot: return;
         case OpType::Mask: return mask::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Matmul: return matmul::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::MaxPool1d: return max_pool_1d::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1130,7 +1115,7 @@ void Op::decompose_post_autograd(
         case OpType::Resize2d: return resize_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Resize3d: return resize_3d::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Select: return select::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Sigmoid: return sigmoid::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Sigmoid: return;
         case OpType::Sine: return;
         case OpType::Softmax: return;
         case OpType::SoftmaxBw: return softmax_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1140,7 +1125,6 @@ void Op::decompose_post_autograd(
         case OpType::Stack: return stack::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Subtract: return subtract::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Tanh: return tanh::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::TileBroadcast: return tile_broadcast::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Tilizer: return tilizer::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
@@ -1158,12 +1142,12 @@ long Op::initial_flops_estimate(
 {
     switch (type_)  // clang-format off
     {
-        case OpType::Abs: return abs::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Abs: return 0;
         case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Add: return add::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Add: return 0;
         case OpType::AdvIndex: return adv_index::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Argmax: return argmax::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Atan: return atan::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Atan: return 0;
         case OpType::AvgPool1d: return avg_pool_1d::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::AvgPool2d: return avg_pool_2d::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::AvgPool3d: return avg_pool_3d::initial_flops_estimate(old_op_type, *this, inputs);
@@ -1183,8 +1167,8 @@ long Op::initial_flops_estimate(
         case OpType::Conv2dPrestrideWeights: return conv_2d_prestride_weights::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Conv2dTranspose: return conv_2d_transpose::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Conv3d: return conv_3d::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::ConvSum: return conv_Sum::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Cosine: return cosine::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::ConvSum: return conv_sum::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Cosine: return 0;
         case OpType::CumulativeSum: return cumulative_sum::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Depthwise: return depthwise::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Dequantize: return dequantize::initial_flops_estimate(old_op_type, *this, inputs);
@@ -1197,7 +1181,7 @@ long Op::initial_flops_estimate(
         case OpType::Equal: return equal::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Erf: return erf::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::EthernetDatacopy: return ethernet_data_copy::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Exp: return exp::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Exp: return 0;
         case OpType::FillCache: return fill_cache::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::ForgeDequantize: return forge_dequantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::ForgePad: return forge_pad::initial_flops_estimate(old_op_type, *this, inputs);
@@ -1205,8 +1189,7 @@ long Op::initial_flops_estimate(
         case OpType::ForgeRequantize: return forge_requantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::ForgeUnpad: return forge_unpad::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Gather: return gather::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Gelu: return gelu::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::GeluDerivative: return gelu_derivative::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Gelu: return 0;
         case OpType::Greater: return greater::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::GreaterEqual: return greater_equal::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::GroupedReduceAvg: return grouped_reduce_avg::initial_flops_estimate(old_op_type, *this, inputs);
@@ -1218,13 +1201,13 @@ long Op::initial_flops_estimate(
         case OpType::Interleave: return interleave::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Layernorm: return layernorm::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::LayernormBw: return layernorm_bw::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::LeakyRelu: return leaky_relu::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::LeakyRelu: return 0;
         case OpType::Less: return less::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::LessEqual: return less_equal::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Log: return log::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Log: return 0;
         case OpType::LogSoftmax: return log_softmax::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::LogicalAnd: return logical_and::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::LogicalNot: return logical_not::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::LogicalNot: return 0;
         case OpType::Mask: return mask::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Matmul: return matmul::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::MaxPool1d: return max_pool_1d::initial_flops_estimate(old_op_type, *this, inputs);
@@ -1256,8 +1239,8 @@ long Op::initial_flops_estimate(
         case OpType::Resize2d: return resize_2d::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Resize3d: return resize_3d::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Select: return select::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Sigmoid: return sigmoid::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Sine: return sine::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Sigmoid: return 0;
+        case OpType::Sine: return 0;
         case OpType::Softmax: return 0;
         case OpType::SoftmaxBw: return 0;
         case OpType::SparseMatmul: return sparse_matmul::initial_flops_estimate(old_op_type, *this, inputs);
@@ -1266,7 +1249,6 @@ long Op::initial_flops_estimate(
         case OpType::Stack: return stack::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Subtract: return 0;
         case OpType::Tanh: return tanh::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::TileBroadcast: return tile_broadcast::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Tilizer: return tilizer::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Transpose: return 0;
         case OpType::Unsqueeze: return 0;
@@ -1331,7 +1313,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::ForgeUnpad: return true;
         case OpType::Gather: return true;
         case OpType::Gelu: return false;
-        case OpType::GeluDerivative: return false;
         case OpType::Greater: return false;
         case OpType::GreaterEqual: return false;
         case OpType::GroupedReduceAvg: return false;
@@ -1391,7 +1372,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Stack: return false;
         case OpType::Subtract: return false;
         case OpType::Tanh: return false;
-        case OpType::TileBroadcast: return false;
         case OpType::Tilizer: return false;
         case OpType::Transpose: return true;
         case OpType::Unsqueeze: return true;
@@ -1456,7 +1436,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::ForgeUnpad: return false;
         case OpType::Gather: return false;
         case OpType::Gelu: return true;
-        case OpType::GeluDerivative: return true;
         case OpType::Greater: return true;
         case OpType::GreaterEqual: return true;
         case OpType::GroupedReduceAvg: return false;
@@ -1516,7 +1495,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Stack: return true;
         case OpType::Subtract: return true;
         case OpType::Tanh: return true;
-        case OpType::TileBroadcast: return true;
         case OpType::Tilizer: return true;
         case OpType::Transpose: return false;
         case OpType::Unsqueeze: return false;
@@ -1581,7 +1559,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::ForgeUnpad: return false;
         case OpType::Gather: return false;
         case OpType::Gelu: return true;
-        case OpType::GeluDerivative: return true;
         case OpType::Greater: return false;
         case OpType::GreaterEqual: return false;
         case OpType::GroupedReduceAvg: return false;
@@ -1641,7 +1618,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Stack: return false;
         case OpType::Subtract: return false;
         case OpType::Tanh: return true;
-        case OpType::TileBroadcast: return true;
         case OpType::Tilizer: return true;
         case OpType::Transpose: return false;
         case OpType::Unsqueeze: return false;
@@ -1706,7 +1682,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::ForgeUnpad: return false;
         case OpType::Gather: return false;
         case OpType::Gelu: return false;
-        case OpType::GeluDerivative: return false;
         case OpType::Greater: return true;
         case OpType::GreaterEqual: return true;
         case OpType::GroupedReduceAvg: return false;
@@ -1766,7 +1741,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Stack: return false;
         case OpType::Subtract: return true;
         case OpType::Tanh: return false;
-        case OpType::TileBroadcast: return false;
         case OpType::Tilizer: return false;
         case OpType::Transpose: return false;
         case OpType::Unsqueeze: return false;
@@ -1831,7 +1805,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::ForgeUnpad: return false;
         case OpType::Gather: return false;
         case OpType::Gelu: return false;
-        case OpType::GeluDerivative: return false;
         case OpType::Greater: return false;
         case OpType::GreaterEqual: return false;
         case OpType::GroupedReduceAvg: return false;
@@ -1891,7 +1864,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Stack: return true;
         case OpType::Subtract: return true;
         case OpType::Tanh: return false;
-        case OpType::TileBroadcast: return false;
         case OpType::Tilizer: return false;
         case OpType::Transpose: return false;
         case OpType::Unsqueeze: return false;

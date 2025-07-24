@@ -64,17 +64,6 @@ tt::graphlib::NodeContext backward(
     return op_common::reduce_broadcast_dimensions(ac, gradient, input_shape, grad_shape);
 }
 
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_ASSERT(inputs.size() == 2, "Add should have two inputs");
-
-    auto shape_tuple = add::shape(old_op_type, op, inputs);
-    graphlib::Shape out_shape = std::get<0>(shape_tuple);
-
-    return std::accumulate(out_shape.begin(), out_shape.end(), 1L, std::multiplies<long>());
-}
-
 }  // namespace add
 }  // namespace ops
 }  // namespace tt

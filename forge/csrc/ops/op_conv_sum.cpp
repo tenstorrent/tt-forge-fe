@@ -18,7 +18,7 @@ namespace tt
 {
 namespace ops
 {
-namespace conv_Sum
+namespace conv_sum
 {
 using namespace graphlib;
 
@@ -76,6 +76,6 @@ long initial_flops_estimate(
     return op.base_initial_flops_estimate(old_op_type, inputs);
 }
 
-}  // namespace conv_Sum
+}  // namespace conv_sum
 }  // namespace ops
 }  // namespace tt

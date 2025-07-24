@@ -245,7 +245,7 @@ def Relu(name: str, operandA: Tensor, threshold=0.0, mode="min") -> Tensor:
         return op("relu", name, operandA, attrs=(threshold, mode)).get_tensor()
 
 
-def LeakyRelu(name: str, operandA: Tensor, alpha: int) -> Tensor:
+def LeakyRelu(name: str, operandA: Tensor, alpha: float) -> Tensor:
 
     """
     Leaky ReLU
@@ -258,7 +258,7 @@ def LeakyRelu(name: str, operandA: Tensor, alpha: int) -> Tensor:
     operandA: Tensor
         First operand
 
-    alpha: int
+    alpha: float
         Controls the angle of the negative slope
 
     Returns
@@ -293,7 +293,7 @@ def Gelu(name: str, operandA: Tensor, approximate="none") -> Tensor:
         Forge tensor
     """
 
-    return op("gelu", name, operandA, attrs=(approximate,)).get_tensor()
+    return op("gelu", name, operandA, attrs=(approximate,), approximate=approximate).get_tensor()
 
 
 def Sigmoid(name: str, operandA: Tensor) -> Tensor:
