@@ -14,6 +14,7 @@ from transformers import Cache
 from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_mask
 from third_party.tt_forge_models.tools.utils import get_file
 from datasets import load_dataset
+from torch import Tensor
 
 # Mean Pooling - Take attention mask into account for correct averaging
 def mean_pooling(model_output, attention_mask):
@@ -366,3 +367,17 @@ def preprocess_inputs():
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
     return [input_batch]
+
+
+def get_detailed_instruct(task_description: str, query: str) -> str:
+    return f"Instruct: {task_description}\nQuery:{query}"
+
+
+def last_token_pool(last_hidden_states: Tensor, attention_mask: Tensor) -> Tensor:
+    left_padding = attention_mask[:, -1].sum() == attention_mask.shape[0]
+    if left_padding:
+        return last_hidden_states[:, -1]
+    else:
+        sequence_lengths = attention_mask.sum(dim=1) - 1
+        batch_size = last_hidden_states.shape[0]
+        return last_hidden_states[torch.arange(batch_size, device=last_hidden_states.device), sequence_lengths]
