@@ -59,5 +59,10 @@ int main(int argc, char **argv)
     ::testing::AddGlobalTestEnvironment(new GraphTestFlagsEnvironment(flags));
 
     pybind11::scoped_interpreter guard{};
+
+    // Import torch module - needed in cases where we interact with torch python but before the
+    // forge module is imported.
+    pybind11::module::import("torch");
+
     return RUN_ALL_TESTS();
 }
