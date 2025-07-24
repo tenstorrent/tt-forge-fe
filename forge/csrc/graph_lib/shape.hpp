@@ -5,7 +5,6 @@
 
 #include <initializer_list>
 #include <ostream>
-#include <tuple>
 #include <vector>
 
 #include "lower_to_forge/common.hpp"
