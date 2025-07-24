@@ -53,6 +53,16 @@ jobs:
 
     name: "run-perf-benchmarks ${{matrix.build.name }} (${{ matrix.build.runs-on }}, ${{ matrix.build.bs }}, ${{ matrix.build.lp }})"
     steps:
+    - name: Check docker cache
+      run: |
+        echo "DOCKER_CACHE_ROOT: $DOCKER_CACHE_ROOT"
+        if [ -d /mnt/dockercache ]; then
+          echo "Docker cache found!"
+          ls -laR /mnt/dockercache
+        else
+          echo "Docker cache not found..."
+        fi
+        exit 1
 
     - name: Fetch job id
       id: fetch-job-id
