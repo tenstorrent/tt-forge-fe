@@ -290,18 +290,24 @@ def _prepare_4d_causal_attention_mask_with_cache_position(
 def Gemma2DecoderLayer_patched_forward(
     self,
     hidden_states: torch.Tensor,
+    position_embeddings: Tuple[torch.Tensor, torch.Tensor],
     attention_mask: Optional[torch.Tensor] = None,
     position_ids: Optional[torch.LongTensor] = None,
     past_key_value: Optional[Cache] = None,
     output_attentions: Optional[bool] = False,
     use_cache: Optional[bool] = False,
     cache_position: Optional[torch.LongTensor] = None,
+    **kwargs,
 ) -> Tuple[torch.FloatTensor, Optional[Tuple[torch.FloatTensor, torch.FloatTensor]]]:
     if self.is_sliding and attention_mask is not None:  # efficient SDPA and no padding
-        # Flash-attn is a 2D tensor
+        # In prefill, we may be larger than sliding window
+        effective_seq_len = max(cache_position.shape[0], self.sliding_window)
+        # For FA2, the mask is 2D and is of shape [bs, processed_tokens] (not [bs, max_cache_len]),
+        # thus we must slice from the right (at most `effective_seq_len` elements)
         if self.config._attn_implementation == "flash_attention_2":
-            if past_key_value is not None:  # when decoding
-                attention_mask = attention_mask[:, -self.sliding_window :]
+            attention_mask = attention_mask[:, -effective_seq_len:]
+        # Otherwise, the mask is 4D of shape [bs, 1, query_len, max_cache_len] thus we must slice
+        # from the left, with an offset if we are beyond the sliding window
         else:
             # min_dtype = torch.finfo(hidden_states.dtype).min
 
@@ -312,22 +318,31 @@ def Gemma2DecoderLayer_patched_forward(
                 torch.ones_like(attention_mask, dtype=torch.bool), diagonal=-self.sliding_window
             )
             attention_mask = torch.where(sliding_window_mask, min_dtype, attention_mask)
-            if attention_mask.shape[-1] <= 1:  # when decoding
-                attention_mask = attention_mask[:, :, :, -self.sliding_window :]
+            # In case we are beyond the sliding window, we need to correctly offset the mask slicing
+            offset = cache_position[-1] - effective_seq_len + 1
+            # Should only be used when beyond the sliding window (i.e. offset > 0)
+            offset = torch.clamp(offset, min=0)
+            # equivalent to: `attention_mask = attention_mask[:, :, :, offset : offset + effective_seq_len]`,
+            # but without data-dependent slicing (i.e. torch.compile friendly)
+            mask_indexes = torch.arange(min(effective_seq_len, attention_mask.shape[-1]), device=attention_mask.device)
+            mask_indexes += offset
+            attention_mask = attention_mask[:, :, :, mask_indexes]
 
     residual = hidden_states
 
     hidden_states = self.input_layernorm(hidden_states)
 
     # Self Attention
-    hidden_states, self_attn_weights, present_key_value = self.self_attn(
+    hidden_states, self_attn_weights = self.self_attn(
         hidden_states=hidden_states,
+        position_embeddings=position_embeddings,
         attention_mask=attention_mask,
         position_ids=position_ids,
         past_key_value=past_key_value,
         output_attentions=output_attentions,
         use_cache=use_cache,
         cache_position=cache_position,
+        **kwargs,
     )
     hidden_states = self.post_attention_layernorm(hidden_states)
     hidden_states = residual + hidden_states
@@ -342,9 +357,6 @@ def Gemma2DecoderLayer_patched_forward(
 
     if output_attentions:
         outputs += (self_attn_weights,)
-
-    if use_cache:
-        outputs += (present_key_value,)
 
     return outputs
 
