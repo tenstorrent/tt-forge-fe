@@ -1123,7 +1123,7 @@ void Op::decompose_post_autograd(
         case OpType::Sqrt: return;
         case OpType::Squeeze: return;
         case OpType::Stack: return stack::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Subtract: return subtract::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Subtract: return;
         case OpType::Tanh: return tanh::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Tilizer: return tilizer::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Transpose: return;
