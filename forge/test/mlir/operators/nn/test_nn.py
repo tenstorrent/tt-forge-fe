@@ -871,3 +871,31 @@ def test_resize1d(data, output_size, align_corners, forge_tmp_path):
     compiled_model = forge.compile(framework_model, sample_inputs=[x])
 
     verify([x], framework_model, compiled_model)
+
+
+@pytest.mark.push
+def test_scaled_dot_product_attention():
+    class ScaledDotProductAttentionModel(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, query_states, key_states, value_states):
+            return torch.nn.functional.scaled_dot_product_attention(
+                query=query_states, key=key_states, value=value_states, scale=2.0, enable_gqa=True
+            )
+
+    framework_model = ScaledDotProductAttentionModel()
+    framework_model.eval()
+
+    query_states = torch.rand([1, 12, 256, 64])
+    key_states = torch.rand([1, 12, 256, 64])
+    value_states = torch.rand([1, 12, 256, 64])
+
+    inputs = [query_states, key_states, value_states]
+
+    compiled_model = forge.compile(
+        framework_model,
+        inputs,
+    )
+
+    verify(inputs, framework_model, compiled_model)
