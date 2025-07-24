@@ -39,7 +39,7 @@ def test_dla_onnx(variant, tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.DLA,
         variant=variant,
-        task=Task.VISUAL_BACKBONE,
+        task=Task.CV_IMAGE_CLS,
         source=Source.TORCHVISION,
     )
 

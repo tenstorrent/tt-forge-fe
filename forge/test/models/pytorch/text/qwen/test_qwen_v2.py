@@ -70,7 +70,7 @@ def test_qwen_clm(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.QWENV2,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_TEXT_GEN,
         source=Source.HUGGINGFACE,
         group=group,
         priority=priority,
@@ -128,7 +128,7 @@ def test_qwen2_token_classification(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.QWENV2,
         variant=variant,
-        task=Task.TOKEN_CLASSIFICATION,
+        task=Task.NLP_TOKEN_CLS,
         source=Source.HUGGINGFACE,
     )
     pytest.xfail(reason="Requires multi-chip support")
@@ -170,7 +170,7 @@ def test_qwen2_conditional_generation(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.QWENV2,
         variant=variant,
-        task=Task.CONDITIONAL_GENERATION,
+        task=Task.MM_IMAGE_TTT,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

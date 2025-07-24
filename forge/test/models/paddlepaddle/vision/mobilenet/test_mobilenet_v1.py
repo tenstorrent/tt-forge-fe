@@ -22,7 +22,7 @@ def test_mobilenetv1_basic():
         model=ModelArch.MOBILENETV1,
         variant="basic",
         source=Source.PADDLE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
     pytest.xfail(reason="Transient failure: Causing seg faults while building Metal kernels")
 

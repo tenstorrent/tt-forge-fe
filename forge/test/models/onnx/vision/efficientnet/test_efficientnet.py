@@ -36,7 +36,7 @@ def test_efficientnet_onnx(variant, forge_tmp_path):
         model=ModelArch.EFFICIENTNET,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
     if variant == "efficientnet_b5":
         pytest.xfail(reason="Requires multi-chip support")

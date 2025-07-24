@@ -22,7 +22,7 @@ def test_gaussian_splatting():
     record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.GAUSSIAN_SPLATTING,
-        task=Task.NOVEL_VIEW_SYNTHESIS,
+        task=Task.CV_IT3D,
         source=Source.GITHUB,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

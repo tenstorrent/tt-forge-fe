@@ -53,7 +53,7 @@ def test_whisper_large_v3_speech_translation(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.WHISPER,
         variant=variant,
-        task=Task.SPEECH_TRANSLATE,
+        task=Task.NLP_TRANSLATION,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
     )

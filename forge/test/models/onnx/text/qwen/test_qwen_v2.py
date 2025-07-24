@@ -45,7 +45,7 @@ def test_qwen_clm_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.QWENV2,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_TEXT_GEN,
         source=Source.HUGGINGFACE,
     )
 

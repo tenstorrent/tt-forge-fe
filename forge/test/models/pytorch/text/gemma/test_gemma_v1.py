@@ -42,7 +42,7 @@ def test_gemma_pytorch_v1(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.GEMMA,
         variant=variant,
-        task=Task.QA,
+        task=Task.NLP_QA,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

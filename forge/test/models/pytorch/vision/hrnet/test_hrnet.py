@@ -105,7 +105,7 @@ def test_hrnet_osmr_pytorch(variant):
         model=ModelArch.HRNET,
         variant=variant,
         source=Source.OSMR,
-        task=Task.POSE_ESTIMATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     framework_model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
@@ -224,7 +224,7 @@ def test_hrnet_timm_pytorch(variant):
         model=ModelArch.HRNET,
         variant=variant,
         source=Source.TIMM,
-        task=Task.POSE_ESTIMATION,
+        task=Task.CV_IMAGE_CLS,
     )
     if variant in ["hrnet_w32", "hrnet_w40", "hrnet_w44", "hrnet_w48", "hrnet_w64", "hrnet_w18.ms_aug_in1k"]:
         pytest.xfail(reason="Requires multi-chip support")

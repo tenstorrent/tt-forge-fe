@@ -24,7 +24,7 @@ def test_gliner_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.GLINER,
         variant=variant,
-        task=Task.TOKEN_CLASSIFICATION,
+        task=Task.NLP_TOKEN_CLS,
         source=Source.GITHUB,
     )
 

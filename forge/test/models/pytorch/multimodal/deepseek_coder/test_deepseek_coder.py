@@ -27,7 +27,11 @@ def test_deepseek_inference_no_cache(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model=ModelArch.DEEPSEEK, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model=ModelArch.DEEPSEEK,
+        variant=variant,
+        task=Task.NLP_QA,
+        source=Source.HUGGINGFACE,
     )
     pytest.xfail(reason="Requires multi-chip support")
 

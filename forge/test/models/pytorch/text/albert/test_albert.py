@@ -50,7 +50,7 @@ def test_albert_masked_lm_pytorch(size, variant):
         framework=Framework.PYTORCH,
         model=ModelArch.ALBERT,
         variant=f"{size}_{variant}",
-        task=Task.MASKED_LM,
+        task=Task.NLP_MASKED_LM,
         source=Source.HUGGINGFACE,
     )
 
@@ -120,7 +120,7 @@ def test_albert_token_classification_pytorch(size, variant):
         framework=Framework.PYTORCH,
         model=ModelArch.ALBERT,
         variant=f"{size}_{variant}",
-        task=Task.TOKEN_CLASSIFICATION,
+        task=Task.NLP_TOKEN_CLS,
         source=Source.HUGGINGFACE,
     )
 
@@ -182,7 +182,7 @@ def test_albert_question_answering_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.ALBERT,
         variant=variant,
-        task=Task.QA,
+        task=Task.NLP_QA,
         source=Source.HUGGINGFACE,
     )
 
@@ -224,7 +224,7 @@ def test_albert_sequence_classification_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.ALBERT,
         variant=variant,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_TEXT_CLS,
         source=Source.HUGGINGFACE,
     )
 

@@ -33,7 +33,7 @@ def test_mobilenetv3_basic(variant, forge_tmp_path):
         model=ModelArch.MOBILENETV3,
         variant=variant,
         source=Source.TORCH_HUB,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load the model and prepare input data

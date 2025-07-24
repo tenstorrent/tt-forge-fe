@@ -56,7 +56,7 @@ def test_mamba(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.MAMBA,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_TEXT_GEN,
         source=Source.HUGGINGFACE,
     )
     if variant in ["state-spaces/mamba-2.8b-hf", "state-spaces/mamba-1.4b-hf"]:

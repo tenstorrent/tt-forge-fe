@@ -24,7 +24,7 @@ def test_llama(variant):
         model=ModelArch.LLAMA,
         variant=variant[9:],
         source=Source.PADDLENLP,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_TEXT_GEN,
     )
     pytest.xfail(reason="Requires multi-chip support")
 

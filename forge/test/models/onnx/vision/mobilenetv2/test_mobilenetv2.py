@@ -33,7 +33,7 @@ def test_mobilenetv2_onnx(variant, forge_tmp_path):
         model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load mobilenetv2 model

@@ -32,7 +32,7 @@ def test_alexnet_torchhub():
         framework=Framework.PYTORCH,
         model=ModelArch.ALEXNET,
         source=Source.TORCH_HUB,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLS,
     )
 
     # Load model
@@ -86,7 +86,7 @@ def test_alexnet_osmr():
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model=ModelArch.ALEXNET, source=Source.OSMR, task=Task.IMAGE_CLASSIFICATION
+        framework=Framework.PYTORCH, model=ModelArch.ALEXNET, source=Source.OSMR, task=Task.CV_IMAGE_CLS
     )
 
     # Load model

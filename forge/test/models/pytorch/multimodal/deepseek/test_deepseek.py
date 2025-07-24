@@ -25,7 +25,7 @@ def test_deepseek(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.DEEPSEEK,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_TEXT_GEN,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

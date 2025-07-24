@@ -25,7 +25,7 @@ def test_mochi(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.MOCHIV1,
         variant=variant,
-        task=Task.TEXT_TO_VIDEO_GENERATION,
+        task=Task.CV_TTV,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

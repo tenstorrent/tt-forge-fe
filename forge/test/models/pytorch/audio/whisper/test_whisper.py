@@ -60,7 +60,7 @@ def test_whisper(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.WHISPER,
         variant=variant,
-        task=Task.SPEECH_RECOGNITION,
+        task=Task.AUDIO_ASR,
         source=Source.HUGGINGFACE,
     )
     if variant == "openai/whisper-large":
