@@ -6,6 +6,7 @@
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "utils/logger.hpp"
 
 namespace tt::passes
@@ -14,24 +15,24 @@ namespace tt::passes
 static bool is_reshape(graphlib::Node const *node)
 {
     graphlib::OpNode const *op = dynamic_cast<graphlib::OpNode const *>(node);
-    return op and op->op_name() == "reshape";
+    return op and op->new_op_type() == ops::OpType::Reshape;
 }
 
 static bool is_transpose(graphlib::Node const *node)
 {
     graphlib::OpNode const *op = dynamic_cast<graphlib::OpNode const *>(node);
-    return op and op->op_name() == "transpose";
+    return op and op->new_op_type() == ops::OpType::Transpose;
 }
 
 static bool involves_w_dim(graphlib::OpNode const *op)
 {
     auto shape = op->shape().as_vector();
-    if (op->op_name() == "reshape")
+    if (op->new_op_type() == ops::OpType::Reshape)
     {
         int w_dim = shape.size() - 4;
         return shape.size() >= 4 and shape[w_dim] > 1;
     }
-    else if (op->op_name() == "transpose")
+    else if (op->new_op_type() == ops::OpType::Transpose)
     {
         int _dim0 = op->op_type().attr_as<int>("dim0");
         if (_dim0 > 0)
@@ -49,7 +50,7 @@ static bool involves_w_dim(graphlib::OpNode const *op)
 
 static bool output_shape_matches(graphlib::OpNode const *op, graphlib::Shape const &first_input_shape)
 {
-    if (op->op_name() != "reshape")
+    if (op->new_op_type() != ops::OpType::Reshape)
         return false;
 
     auto input_shape_v = first_input_shape.as_vector();

@@ -716,7 +716,7 @@ TEST_F(EraseInverseOpsSqueezeAndUnsqueeze, erase_inv_ops_sq_unsq)
     std::vector<Node *> nodes = graphlib::topological_sort(*graph);
     Node *squeeze_node = nodes[4];
     graphlib::OpNode *squeeze_op = nodes[4]->as<graphlib::PyOpNode>();
-    ASSERT_EQ(squeeze_op->op_name(), "squeeze");
+    ASSERT_EQ(squeeze_op->new_op_type(), ops::OpType::Squeeze);
     graphlib::Node *operand_node = graph->operands(squeeze_node)[0];
 
     // Check that dimension on which we squeeze is 0

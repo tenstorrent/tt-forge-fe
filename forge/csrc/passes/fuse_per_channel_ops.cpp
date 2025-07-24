@@ -34,10 +34,10 @@ static bool can_fuse_select_concat(
     {
         auto firstOp = map.begin()->second.back().first;
         auto compare_op = i.second.back().first;
-        if (firstOp->op_name() != "select")
+        if (firstOp->new_op_type() != ops::OpType::Select)
             return false;
 
-        bool same_op = firstOp->op_name() == compare_op->op_name();
+        bool same_op = firstOp->new_op_type() == compare_op->new_op_type();
         bool same_dim =
             (std::get<int>(firstOp->op_legacy_attrs()[0]) == std::get<int>(compare_op->op_legacy_attrs()[0])) and
             (std::get<int>(firstOp->op_legacy_attrs()[0]) == concat_dim);
@@ -118,7 +118,7 @@ static bool find_path_from_concat_to_select(
                 break;
             }
 
-            if (current_op->op_name() == "select")
+            if (current_op->new_op_type() == ops::OpType::Select)
             {
                 // Found producer select, add to map and break
                 ops_to_fuse[i].push_back(std::make_pair(current_op, nullptr));
@@ -126,8 +126,8 @@ static bool find_path_from_concat_to_select(
             }
             else if (
                 is_elementwise_binary(current_op, graph) and
-                (current_op->op_name() == "add" or current_op->op_name() == "multiply" or
-                 current_op->op_name() == "subtract"))
+                (current_op->new_op_type() == ops::OpType::Add or current_op->new_op_type() == ops::OpType::Multiply or
+                 current_op->new_op_type() == ops::OpType::Subtract))
             {
                 // Found elementwise binary, add to map and continue
                 // Currently only support fusion with add/mul/sub
@@ -217,7 +217,7 @@ static bool create_merge_groups(
                 auto reference_op = merge_groups[j][0].first;
                 auto reference_inp = merge_groups[j][0].second;
 
-                if (reference_op->op_name() == op->op_name() and
+                if (reference_op->new_op_type() == op->new_op_type() and
                     ((reference_inp == nullptr and inp == nullptr) or inp->shape() == reference_inp->shape()))
                 {
                     // Found merge group
@@ -300,7 +300,7 @@ static bool fuse_per_channel_concat(graphlib::Graph *graph, graphlib::OpNode *co
     {
         int layer_id = iter.first;
         auto ops = iter.second;
-        if (ops[0].first->op_name() == "select")
+        if (ops[0].first->new_op_type() == ops::OpType::Select)
         {
             for (auto &[op, inp] : ops)
             {
@@ -354,9 +354,10 @@ static bool fuse_per_channel_concat(graphlib::Graph *graph, graphlib::OpNode *co
 
                     auto first_op_in_group = ops[0].first;
                     float const_value;
-                    if (first_op_in_group->op_name() == "add" or first_op_in_group->op_name() == "subtract")
+                    if (first_op_in_group->new_op_type() == ops::OpType::Add or
+                        first_op_in_group->new_op_type() == ops::OpType::Subtract)
                         const_value = 0.0;
-                    else if (first_op_in_group->op_name() == "multiply")
+                    else if (first_op_in_group->new_op_type() == ops::OpType::Multiply)
                         const_value = 1.0;
                     else
                         throw std::runtime_error("Unsupported eltwise fusion: " + ops[0].first->op_name());
@@ -432,7 +433,7 @@ void fuse_per_channel_ops(graphlib::Graph *graph)
         for (auto *node : graphlib::topological_sort(*graph))
         {
             graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(node);
-            if (not op or op->op_name() != "concatenate")
+            if (not op or op->new_op_type() != ops::OpType::Concatenate)
                 continue;
 
             if (fuse_per_channel_concat(graph, op))

@@ -122,7 +122,7 @@ static void insert_pad_within_tile(graphlib::Graph *graph, graphlib::Edge edge, 
 
 static bool try_hoist_above_narrow(graphlib::Graph *graph, graphlib::OpNode *narrow, graphlib::OpNode *consumer)
 {
-    if (narrow->op_name() != "narrow")
+    if (narrow->new_op_type() != ops::OpType::Narrow)
         return false;
 
     if (graph->user_data_edges(narrow).size() > 1)
@@ -206,7 +206,7 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
     //  - op is eltwise multiply
     //  - 1 argument is a 1 dimensional constant tensor
     //  - 1 argument is a matmul with RHS parameters
-    if (multiply->op_name() != "multiply")
+    if (multiply->new_op_type() != ops::OpType::Multiply)
         return false;
 
     std::vector<graphlib::Node *> matmuls = find_operands_commute_through(
@@ -215,7 +215,7 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
         [](graphlib::Node *commutable)
         {
             graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(commutable);
-            return op and (op->is_op_type("add") or op->is_op_type("nop"));
+            return op and (op->new_op_type() == ops::OpType::Add or op->new_op_type() == ops::OpType::Nop);
         },
         [](graphlib::Node *matmul)
         {
@@ -308,10 +308,10 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
 
 static bool try_fold_constant_associative(graphlib::Graph *graph, graphlib::OpNode *a, graphlib::OpNode *b)
 {
-    if (a->op_name() != b->op_name())
+    if (a->new_op_type() != b->new_op_type())
         return false;
 
-    if (a->op_name() != "multiply" and a->op_name() != "add")
+    if (a->new_op_type() != ops::OpType::Multiply and a->new_op_type() != ops::OpType::Add)
         return false;
 
     graphlib::InputNode *a_constant = get_constant_input(graph, a);
