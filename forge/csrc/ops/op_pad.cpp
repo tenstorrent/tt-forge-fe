@@ -112,50 +112,71 @@ NodeContext backward(
     TT_ASSERT(operand == 0, "Pad should have exactly 1 operand");
     TT_ASSERT(op.attrs().size() == 4, "Pad should have 4 attributes: padding, mode, value, channel_last");
 
-    // // Extract attributes
-    // auto padding = std::get<std::vector<int>>(op.attrs()[0]);
-    // auto channel_last = std::get<bool>(op.attrs()[3]);
+    // Extract attributes using the correct pattern
+    auto padding = op.attr_as<std::vector<int>>("padding");
+    auto channel_last = op.attr_as<bool>("channel_last");
 
-    // // Backward pass for pad is to remove the padding (narrow operation)
-    // TT_ASSERT(padding.size() == 2 || padding.size() == 4, "Not supported padding type");
+    // Backward pass for pad is to remove the padding (narrow operation)
+    TT_ASSERT(padding.size() == 2 || padding.size() == 4, "Not supported padding type");
 
-    // int height_dim, width_dim;
-    // if (channel_last) {
-    //     height_dim = -3;  // channel_last: height is at -3
-    //     width_dim = -2;   // channel_last: width is at -2
-    // } else {
-    //     height_dim = -2;  // channel_first: height is at -2
-    //     width_dim = -1;   // channel_first: width is at -1
-    // }
+    int height_dim, width_dim;
+    if (channel_last)
+    {
+        height_dim = -3;  // channel_last: height is at -3
+        width_dim = -2;   // channel_last: width is at -2
+    }
+    else
+    {
+        height_dim = -2;  // channel_first: height is at -2
+        width_dim = -1;   // channel_first: width is at -1
+    }
 
-    // int original_height = gradient.shape[height_dim];
-    // int original_width = gradient.shape[width_dim];
+    int original_height = gradient.shape[height_dim];
+    int original_width = gradient.shape[width_dim];
 
-    // NodeContext grad = gradient;
+    NodeContext grad = gradient;
 
-    // if (padding.size() == 4) {
-    //     int pad_left = padding[0];
-    //     int pad_right = padding[1];
-    //     int pad_top = padding[2];
-    //     int pad_bottom = padding[3];
+    if (padding.size() == 4)
+    {
+        int pad_left = padding[0];
+        int pad_right = padding[1];
+        int pad_top = padding[2];
+        int pad_bottom = padding[3];
 
-    //     // Remove height padding first
-    //     grad = ac.op("narrow", {grad}, {height_dim, pad_top, original_height - pad_top - pad_bottom,
-    //     original_height});
+        // Remove height padding first using autograd create_op
+        graphlib::OpType narrow_height_op(
+            "narrow", {height_dim, pad_top, original_height - pad_top - pad_bottom, original_height});
+        narrow_height_op.set_attr("dim", height_dim);
+        narrow_height_op.set_attr("start", pad_top);
+        narrow_height_op.set_attr("length", original_height - pad_top - pad_bottom);
+        narrow_height_op.set_attr("original_length", original_height);
+        grad = ac.autograd->create_op(ac, narrow_height_op, {grad});
 
-    //     // Then remove width padding
-    //     grad = ac.op("narrow", {grad}, {width_dim, pad_left, original_width - pad_left - pad_right, original_width});
-    // } else {
-    //     int pad_left = padding[0];
-    //     int pad_right = padding[1];
+        // Then remove width padding
+        graphlib::OpType narrow_width_op(
+            "narrow", {width_dim, pad_left, original_width - pad_left - pad_right, original_width});
+        narrow_width_op.set_attr("dim", width_dim);
+        narrow_width_op.set_attr("start", pad_left);
+        narrow_width_op.set_attr("length", original_width - pad_left - pad_right);
+        narrow_width_op.set_attr("original_length", original_width);
+        grad = ac.autograd->create_op(ac, narrow_width_op, {grad});
+    }
+    else
+    {
+        int pad_left = padding[0];
+        int pad_right = padding[1];
 
-    //     // Remove width padding only
-    //     grad = ac.op("narrow", {grad}, {width_dim, pad_left, original_width - pad_left - pad_right, original_width});
-    // }
+        // Remove width padding only
+        graphlib::OpType narrow_width_op(
+            "narrow", {width_dim, pad_left, original_width - pad_left - pad_right, original_width});
+        narrow_width_op.set_attr("dim", width_dim);
+        narrow_width_op.set_attr("start", pad_left);
+        narrow_width_op.set_attr("length", original_width - pad_left - pad_right);
+        narrow_width_op.set_attr("original_length", original_width);
+        grad = ac.autograd->create_op(ac, narrow_width_op, {grad});
+    }
 
-    // return grad;
-
-    return op.base_backward(old_op_type, ac, operand, inputs, output, gradient);
+    return grad;
 }
 
 void decompose_initial(
