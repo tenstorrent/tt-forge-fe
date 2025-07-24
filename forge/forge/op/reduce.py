@@ -30,7 +30,7 @@ def ReduceSum(name: str, operandA: Tensor, dim: int, keep_dim: bool = True) -> T
     # if dim < 0:
     #     dim += 4
 
-    return op("reduce_sum", name, operandA, attrs=(dim, keep_dim), dim_arg=[dim], keep_dim=keep_dim).get_tensor()
+    return op("reduce_sum", name, operandA, dim_arg=[dim], keep_dim=keep_dim).get_tensor()
 
 
 def ReduceAvg(name: str, operandA: Tensor, dim: int, keep_dim: bool = True) -> Tensor:
@@ -58,7 +58,7 @@ def ReduceAvg(name: str, operandA: Tensor, dim: int, keep_dim: bool = True) -> T
     # if dim < 0:
     #     dim += 4
 
-    return op("reduce_avg", name, operandA, attrs=(dim, keep_dim), dim=[dim], keep_dim=keep_dim).get_tensor()
+    return op("reduce_avg", name, operandA, dim_arg=[dim], keep_dim=keep_dim).get_tensor()
 
 
 def GroupedReduceAvg(name: str, operandA: Tensor, dim: int, groups: int, keep_dims: bool = False) -> Tensor:
@@ -96,7 +96,7 @@ def GroupedReduceAvg(name: str, operandA: Tensor, dim: int, groups: int, keep_di
     return op("grouped_reduce_avg", name, operandA, attrs=(dim, groups, keep_dims)).get_tensor()
 
 
-def ReduceMax(name: str, operandA: Tensor, dim: int, stride: int = -1, keep_dim: bool = True) -> Tensor:
+def ReduceMax(name: str, operandA: Tensor, dim: int, keep_dim: bool = True) -> Tensor:
     """
     Reduce by taking maximum along the given dimension
 
@@ -116,12 +116,6 @@ def ReduceMax(name: str, operandA: Tensor, dim: int, stride: int = -1, keep_dim:
     Tensor
         Forge tensor
     """
-    if stride == -1:
-        stride = int(operandA.shape[dim])
     assert (dim >= -4) and (dim <= 3)
-    # if dim < 0:
-    #     dim += 4
 
-    return op(
-        "reduce_max", name, operandA, attrs=(dim, stride, keep_dim), dim_arg=[dim], keep_dim=keep_dim
-    ).get_tensor()
+    return op("reduce_max", name, operandA, dim_arg=[dim], keep_dim=keep_dim).get_tensor()

@@ -989,9 +989,9 @@ void Op::decompose_post_optimize(
         case OpType::Power: return power::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Quantize: return quantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Reciprocal: return reciprocal::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::ReduceAvg: return reduce_avg::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::ReduceMax: return reduce_max::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::ReduceSum: return reduce_sum::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::ReduceAvg: return;
+        case OpType::ReduceMax: return;
+        case OpType::ReduceSum: return;
         case OpType::Relu: return relu::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Remainder: return remainder::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Repeat: return repeat::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -1117,9 +1117,9 @@ void Op::decompose_post_autograd(
         case OpType::Power: return power::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Quantize: return quantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Reciprocal: return reciprocal::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::ReduceAvg: return reduce_avg::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::ReduceMax: return reduce_max::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::ReduceSum: return reduce_sum::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::ReduceAvg: return;
+        case OpType::ReduceMax: return;
+        case OpType::ReduceSum: return;
         case OpType::Relu: return relu::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Remainder: return remainder::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Repeat: return repeat::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1243,9 +1243,9 @@ long Op::initial_flops_estimate(
         case OpType::Power: return power::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Quantize: return quantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Reciprocal: return reciprocal::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::ReduceAvg: return reduce_avg::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::ReduceMax: return reduce_max::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::ReduceSum: return reduce_sum::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::ReduceAvg: return 0;
+        case OpType::ReduceMax: return 0;
+        case OpType::ReduceSum: return 0;
         case OpType::Relu: return relu::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Remainder: return remainder::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Repeat: return repeat::initial_flops_estimate(old_op_type, *this, inputs);

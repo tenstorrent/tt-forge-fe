@@ -657,8 +657,8 @@ class LAMB(Optimizer):
         phi_norm = ac.op("multiply", (parameter, parameter))
         phi_norm_shape = phi_norm.shape.as_list()
         if len(phi_norm_shape) > 1:
-            phi_norm = ac.op("reduce_sum", (phi_norm,), (-2,))
-        phi_norm = ac.op("reduce_sum", (phi_norm,), (-1,))
+            phi_norm = ac.op_with_named_attrs("reduce_sum", (phi_norm,), {"dim_arg": [-2]})
+        phi_norm = ac.op_with_named_attrs("reduce_sum", (phi_norm,), {"dim_arg": [-1]})
 
         phi_norm = ac.op("sqrt", (phi_norm,))
 
@@ -679,8 +679,8 @@ class LAMB(Optimizer):
         r_t_norm = ac.op("multiply", (r_t, r_t))
         r_t_norm_shape = r_t_norm.shape.as_list()
         if len(r_t_norm_shape) > 1:
-            r_t_norm = ac.op("reduce_sum", (r_t_norm,), (-2,))
-        r_t_norm = ac.op("reduce_sum", (r_t_norm,), (-1,))
+            r_t_norm = ac.op_with_named_attrs("reduce_sum", (r_t_norm,), {"dim_arg": [-2]})
+        r_t_norm = ac.op_with_named_attrs("reduce_sum", (r_t_norm,), {"dim_arg": [-1]})
         r_t_norm = ac.op("sqrt", (r_t_norm,))
 
         #
@@ -901,16 +901,16 @@ class LARS(Optimizer):
         weight_norm = ac.op("multiply", (parameter, parameter))
         weight_norm_shape = weight_norm.shape.as_list()
         if len(weight_norm_shape) > 1:
-            weight_norm = ac.op("reduce_sum", (weight_norm,), (-2,))
-        weight_norm = ac.op("reduce_sum", (weight_norm,), (-1,))
+            weight_norm = ac.op_with_named_attrs("reduce_sum", (weight_norm,), {"dim_arg": [-2]})
+        weight_norm = ac.op_with_named_attrs("reduce_sum", (weight_norm,), {"dim_arg": [-1]})
 
         weight_norm = ac.op("sqrt", (weight_norm,))
 
         grad_norm = ac.op("multiply", (grad, grad))
         grad_norm_shape = grad_norm.shape.as_list()
         if len(grad_norm_shape) > 1:
-            grad_norm = ac.op("reduce_sum", (grad_norm,), (-2,))
-        grad_norm = ac.op("reduce_sum", (grad_norm,), (-1,))
+            grad_norm = ac.op_with_named_attrs("reduce_sum", (grad_norm,), {"dim_arg": [-2]})
+        grad_norm = ac.op_with_named_attrs("reduce_sum", (grad_norm,), {"dim_arg": [-1]})
         grad_norm = ac.op("sqrt", (grad_norm,))
 
         #

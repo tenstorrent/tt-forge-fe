@@ -84,7 +84,8 @@ static bool is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim(
     is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim &= op->op_name() == "reduce_avg";
     if (not is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim)
         return false;
-    int reduce_dim = std::get<int>(op->op_legacy_attrs()[0]);
+    std::vector<int> dim_arg = op->op_attr_as<std::vector<int>>("dim_arg");
+    int reduce_dim = dim_arg[0];
 
     is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim &= reduce_dim == -2;
     is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim &=
@@ -100,7 +101,8 @@ static bool is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim(
         std::vector<graphlib::OpNode *> next_ops;
         next_ops.push_back(next_op);
         bool contains_y_bcast = false;
-        int next_reduce_dim = std::get<int>(next_op->op_legacy_attrs()[0]);
+        std::vector<int> next_dim_arg = next_op->op_attr_as<std::vector<int>>("dim_arg");
+        int next_reduce_dim = next_dim_arg[0];
 
         // Since this patten specifically picks up a reduce_avg on y dim, we are now looking for the inverse broadcast
         // on the y dim
@@ -210,7 +212,8 @@ static bool attempt_replace_downward_pattern(
         {
             name += "_" + std::to_string(outgoing_edge.edge_creation_id);
         }
-        int reduce_dim = std::get<int>(op->op_legacy_attrs()[0]);
+        std::vector<int> dim_arg = op->op_attr_as<std::vector<int>>("dim_arg");
+        int reduce_dim = dim_arg[0];
 
         std::vector<graphlib::OpType::Attr> grouped_reduce_attrs{reduce_dim, (int)clone_shape[reduce_dim - 1], true};
         op->change_op_type("grouped_reduce_avg");
@@ -221,7 +224,8 @@ static bool attempt_replace_downward_pattern(
         // Update next reduce shape
         auto next_op = dynamic_cast<graphlib::OpNode *>(graph->data_users(op)[0]);
         auto next_reduce_shape = commute_shape;
-        auto next_reduce_dim = std::get<int>(next_op->op_legacy_attrs()[0]);
+        std::vector<int> next_dim_arg = next_op->op_attr_as<std::vector<int>>("dim_arg");
+        auto next_reduce_dim = next_dim_arg[0];
 
         next_reduce_shape[next_reduce_dim] = next_op->shape()[next_reduce_dim];
         next_op->set_shape(next_reduce_shape);

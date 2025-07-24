@@ -6,6 +6,7 @@
 // Standard headers
 #include <cstddef>
 #include <cstdint>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -142,9 +143,6 @@ class AttributeMapper
         add_op_mapping("index", "start", AttributeRemap("begin", TargetType::I32Attr));
         add_op_mapping("index", "stop", AttributeRemap("end", TargetType::I32Attr));
         add_op_mapping("index", "stride", AttributeRemap("step", TargetType::I32Attr));
-
-        // reduce_avg
-        add_op_mapping("reduce_avg", "dim", AttributeRemap("dim_arg"));
 
         // repeat_interleave
         add_op_mapping("repeat_interleave", "repeats", AttributeRemap(std::nullopt, TargetType::UI32Attr));
