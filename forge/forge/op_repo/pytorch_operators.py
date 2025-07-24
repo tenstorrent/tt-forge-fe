@@ -27,6 +27,7 @@ _OPERATORS = [
             OperatorParamNumber("out_features", int, 10, 50),
         ],
     ),
+    # Convolution functions
     OperatorDefinition(
         "conv2d",
         "torch.nn.Conv2d",
@@ -90,18 +91,12 @@ _OPERATORS = [
     OperatorDefinition("softmax", "torch.softmax", 1),
     # Unary operators (not implemented)
     OperatorDefinition("acos", "torch.acos", 1),
-    OperatorDefinition("arccos", "torch.acos", 1),
     OperatorDefinition("acosh", "torch.acosh", 1),
-    OperatorDefinition("arccosh", "torch.acosh", 1),
     OperatorDefinition("angle", "torch.angle", 1),
     OperatorDefinition("asin", "torch.asin", 1),
-    OperatorDefinition("arcsin", "torch.asin", 1),
     OperatorDefinition("asinh", "torch.asinh", 1),
-    OperatorDefinition("arcsinh", "torch.asinh", 1),
     OperatorDefinition("atan", "torch.atan", 1),
-    OperatorDefinition("arctan", "torch.atan", 1),
     OperatorDefinition("atanh", "torch.atanh", 1),
-    OperatorDefinition("arctanh", "torch.atanh", 1),
     OperatorDefinition("bitwise_not", "torch.bitwise_not", 1),
     OperatorDefinition("ceil", "torch.ceil", 1),
     OperatorDefinition("conj_physical", "torch.conj_physical", 1),
@@ -113,7 +108,6 @@ _OPERATORS = [
     OperatorDefinition("erfinv", "torch.erfinv", 1),
     OperatorDefinition("exp2", "torch.exp2", 1),
     OperatorDefinition("expm1", "torch.expm1", 1),
-    OperatorDefinition("fix", "torch.fix", 1),
     OperatorDefinition("floor", "torch.floor", 1),
     OperatorDefinition("frac", "torch.frac", 1),
     OperatorDefinition("lgamma", "torch.lgamma", 1),
@@ -147,7 +141,6 @@ _OPERATORS = [
     OperatorDefinition("minimum", "torch.minimum", 2),
     # Binary operators (not implemented)
     OperatorDefinition("atan2", "torch.atan2", 2),
-    OperatorDefinition("arctan2", "torch.arctan2", 2),
     OperatorDefinition("bitwise_and", "torch.bitwise_and", 2),
     OperatorDefinition("bitwise_or", "torch.bitwise_or", 2),
     OperatorDefinition("bitwise_xor", "torch.bitwise_xor", 2),
@@ -178,6 +171,7 @@ _OPERATORS = [
     OperatorDefinition("squeeze", "torch.squeeze", 1),
     OperatorDefinition("unsqueeze", "torch.unsqueeze", 1),
     OperatorDefinition("transpose", "torch.transpose", 1),
+    # Activation functions
     OperatorDefinition("layer_norm", "torch.nn.LayerNorm", 1),
 ]
 
