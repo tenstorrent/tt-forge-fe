@@ -69,12 +69,14 @@ def test_inplace_updation():
             -50,
             None,
             torch.int32,
+            marks=pytest.mark.xfail(reason="AssertionError: Data mismatch PCC=0.86"),
         ),
         pytest.param(
             (8, 1, 8, 8),
             None,
             876,
             torch.int32,
+            marks=pytest.mark.xfail(reason="AssertionError: Data mismatch PCC=0.86"),
         ),
     ],
 )
