@@ -100,14 +100,3 @@ def test_resnet_hf():
     AutomaticValueChecker(pcc=0.94).check(fw_out=fw_out, co_out=co_out)
 
     return {}
-
-
-def resnet_hf_benchmark(config: dict):
-    """
-    Run the resnet benchmark.
-    This function is a placeholder for the actual benchmark implementation.
-    """
-    if config["training"]:
-        pytest.skip("Training is not supported")
-
-    result = test_resnet_hf()
