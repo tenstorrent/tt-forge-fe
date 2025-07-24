@@ -75,11 +75,11 @@ class OperatorLists:
 
     NOT_IMPLEMENTED_FORGE = (
         # Unary operators
-        "atan",
-        "buffer",
+        # "atan",  # Forge passing
+        # "buffer",  # Removed from Forge API
         "pow",
-        "logical_not",  # bug
-        "logical_and",  # bug
+        # "logical_not",  # bug
+        "logical_and",  # RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph
         "dropout",  # pcc?
         # Binary operators
         "less_equal",
@@ -90,19 +90,35 @@ class OperatorLists:
     )
 
     UNSUPPORTED_FORGE = (
+        # Unary operators
+        "logical_not",  # Unsupported output boolean type RuntimeError: "GeluKernelImpl" not implemented for 'Bool
+        "heaviside",  # Not working in graphs
+        "argmax",  # shape calc is wrong
+        # TM operators
+        "unsqueeze",
+        "squeeze",
+        "reshape",
+        "transpose",
+        "repeat_interleave",
+        # Activation functions
+        "layer_norm",
+        # Nary operators
+        "where",  # unsupported input type
+        # Convolution functions
+        "conv2d",
+        "conv_transpose_2d",
     )
 
     UNSTABLE_FORGE = (
         # Unary operators
-        "exp",  # pcc?
+        # "exp",  # pcc?
         "sqrt",  # skip because it's failing for negative values
-        "cumsum",  # bug
-        "argmax",  # shape calc is wrong
-        "tilizer",  # bug
+        # "cumsum",  # bug, pass at least some tests
+        "log",  # pcc, probably due to negative values, ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model=tensor([],
         # Binary operators
-        "divide",  # bug
+        # "divide",  # bug, pass at least some tests
+        "remainder",  # ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden): pcc is in invalid low range: 0.5723857151205286 <= 0.85
         # Nary operators
-        "where",  # pcc?
         # Other
     )
 
@@ -131,31 +147,24 @@ class OperatorLists:
     NOT_IMPLEMENTED_PYTORCH = (
         # Unary operators
         "acos",
-        # "arccos",  # alias for acos
         "acosh",
-        # "arccosh",  # alias for acosh
         "angle",
         "asin",
-        # "arcsin",  # alias for asin
         "asinh",
-        # "arcsinh",  # alias for asinh
         "atan",
-        # "arctan",  # alias for atan
         "atanh",
-        # "arctanh",  # alias for atanh
         # "bitwise_not",
         "ceil",
         "conj_physical",
         "cosh",
         "deg2rad",
         "digamma",
-        "erf",
+        # "erf",  # Pytorch passing, Forge passing
         "erfc",
         "erfinv",
         "exp2",
         "expm1",
-        "fix",
-        "floor",
+        # "floor",  # Pytorch passing, Forge passing
         "frac",
         "lgamma",
         "log10",
@@ -163,10 +172,11 @@ class OperatorLists:
         "logit",
         "i0",
         "isnan",
-        "nan_to_num",
+        # "nan_to_num",  # Pytorch passing, Forge passing
         "positive",
         "rad2deg",
         "round",
+        "rsqrt",
         "sign",
         "sgn",
         "signbit",
@@ -175,32 +185,57 @@ class OperatorLists:
         "tan",
         # "tanh",
         "trunc",
+        "heaviside",
+        # Binary operators
+        "atan2",
+        "floor_divide",
+        "nextafter",
+        "fmin",
+        "fmax",
+        "fmod",
+        "logaddexp",
+        "logaddexp2",
+        "le",
+        "lt",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
+        "ge",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
+        "gt",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
+        "ne",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
+        "eq",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
+    )
+
+    UNSUPPORTED_PYTORCH = (
+        # Unary operators
+        "bitwise_not",
         # Binary operators
         "bitwise_and",
         "bitwise_or",
         "bitwise_xor",
         "bitwise_left_shift",
         "bitwise_right_shift",
-    )
-
-    UNSUPPORTED_PYTORCH = (
         # Nary operators
         "concatenate",
         "embedding",
+        "where",
         # TM operators
         "unsqueeze",
         "reshape",
         "transpose",
         "repeat_interleave",
+        # Reduce operators
+        "mean",
+        "max",
+        "sum",
         # Activation functions
         "softmax",
         "layer_norm",
         # Convolution functions
+        # "conv2d",
         "conv_transpose_2d",
     )
 
     UNSTABLE_PYTORCH = (
         # Unary operators
+        "exp",  # data mismatch inf, ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model=tensor([e+00, 0.0000e+00, inf, ..., 0.0000e+00
         # "relu",
         "sqrt",  # skip because it's failing for negative values
         # "reciprocal",
@@ -212,17 +247,20 @@ class OperatorLists:
         # "rsqrt",
         # "sin",
         # "square",
-        "pow",
+        # "pow",  # pcc?
         "clamp",
         # "log",
-        # "log1p",
+        "log",  # pcc, probably due to negative values, ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model=tensor([]
+        "log1p",  # pcc, probably due to negative values
         # "gelu",
         # "leaky_relu",
-        "bitwise_not",
+        "logical_not",
         # Binary operators
+        "remainder",  # ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model=tensor([e-01, 1.3192e-01, -9.0571e-01, ..., -4.5159e-01
         # Nary operators
         # Other
         # "linear",
+        # Convolution functions
         "conv2d",  # skip until calc_input_shapes is properly implemented
     )
 
