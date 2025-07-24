@@ -263,7 +263,7 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
         inputs += [grad, output]
         inputs = tuple(inputs)
 
-        return ac.op("layernorm_bw", inputs, attr)
+        return ac.op_with_named_attrs("layernorm_bw", inputs, {"dim": attr[0], "epsilon": attr[1]}, attr)
 
     if op_type == "batchnorm":
         raise NotImplementedError("Back propagation for Batchnorm op is not implemented yet")

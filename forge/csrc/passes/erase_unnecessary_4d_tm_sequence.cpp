@@ -141,7 +141,10 @@ static void commute_4d_tm_ops(graphlib::Graph *graph, std::vector<graphlib::Node
     std::vector<graphlib::PyOpNode *> new_select_nodes;
     for (int i = 0; i < fourth_dim; i++)
     {
-        graphlib::OpType op_type("select", {-3, i * third_dim, third_dim, orig_third_dim});
+        graphlib::OpType op_type(
+            "select",
+            {-3, i * third_dim, third_dim, orig_third_dim},
+            {{"dim", -3}, {"begin", i * third_dim}, {"length", third_dim}, {"stride", orig_third_dim}});
         std::string op_name = first->name() + "_replaced_select.";
         op_name += std::to_string(i);
         graphlib::PyOpNode *new_node = graph->add_node(
@@ -153,7 +156,7 @@ static void commute_4d_tm_ops(graphlib::Graph *graph, std::vector<graphlib::Node
     }
 
     // create interleave op
-    graphlib::OpType op_type("interleave", {-3, 1});
+    graphlib::OpType op_type("interleave", {-3, 1}, {{"dim", -3}, {"stride", 1}});
     std::string op_name = first->name() + "_replaced_interleave.0";
     graphlib::PyOpNode *new_interleave_node = graph->add_node(
         graphlib::create_node<graphlib::PyOpNode>(op_name, op_type), graph->get_subgraph_id_for_node(first->id()));

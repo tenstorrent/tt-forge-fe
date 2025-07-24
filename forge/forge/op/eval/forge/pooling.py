@@ -686,7 +686,12 @@ def decompose(type, attr, dc, inputs):
 
             d_start = i * sD
 
-            depth_slice = dc.op("index", [activations], (2, d_start, d_start + kD, activations.shape[2]))
+            depth_slice = dc.op_with_named_attrs(
+                "index",
+                [activations],
+                {"dim": 2, "start": d_start, "stop": d_start + kD, "stride": activations.shape[2]},
+                attrs=(2, d_start, d_start + kD, activations.shape[2]),
+            )
             depth_avg = dc.op_with_named_attrs("reduce_avg", [depth_slice], {"dim_arg": [2], "keep_dim": True})
 
             named_attrs = {

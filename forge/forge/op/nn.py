@@ -73,7 +73,7 @@ def LogSoftmax(name: str, operandA: Tensor, *, dim: int, stable: bool = True) ->
     Tensor
         Forge tensor
     """
-    return op("log_softmax", name, operandA, attrs=(dim, stable), dimension=dim).get_tensor()
+    return op("log_softmax", name, operandA, attrs=(dim, stable), dimension=dim, stable=stable).get_tensor()
 
 
 def Layernorm(
@@ -101,7 +101,7 @@ def Layernorm(
         Forge tensor
     """
 
-    return op("layernorm", name, operandA, weights, bias, attrs=(dim, epsilon)).get_tensor()
+    return op("layernorm", name, operandA, weights, bias, attrs=(dim, epsilon), dim=dim, epsilon=epsilon).get_tensor()
 
 
 def Batchnorm(
@@ -136,7 +136,9 @@ def Batchnorm(
         name = f"batchnorm_{get_unique_node_id()}"
 
     if batchnorm_flag:
-        return op("batchnorm", name, operandA, weights, bias, running_mean, running_var, attrs=(epsilon,)).get_tensor()
+        return op(
+            "batchnorm", name, operandA, weights, bias, running_mean, running_var, attrs=(epsilon,), epsilon=epsilon
+        ).get_tensor()
     else:
         running_mean = Unsqueeze(name + "_mean_unsqueeze_1", running_mean, 1)
         running_mean = Unsqueeze(name + "_mean_unsqueeze_2", running_mean, 1)
