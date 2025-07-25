@@ -82,7 +82,7 @@ jobs:
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
         - /mnt/dockercache:/mnt/dockercache
 
-    name: "run-tests ${{ inputs.test_mark }} (${{ inputs.sh-runner && format('{0}-shared', matrix.build.runs-on) || (matrix.build.runs-on) }}, ${{ matrix.test_group_id }})${{ inputs.is-fork && ' [fork-safe]' }}"
+    name: "run-tests ${{ inputs.test_mark }} (${{ inputs.sh-runner && format('{0}-shared', matrix.build.runs-on) || (matrix.build.runs-on) }}, ${{ matrix.test_group_id }})${{ inputs.is-fork && ' [fork-safe]' || '' }}"
 
     steps:
 
@@ -90,7 +90,7 @@ jobs:
         id: fetch-job-id
         uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
         with:
-          job_name: "run-tests ${{ inputs.test_mark }} (${{ inputs.sh-runner && format('{0}-shared', matrix.build.runs-on) || (matrix.build.runs-on) }}, ${{ matrix.test_group_id }})${{ inputs.is-fork && ' [fork-safe]' }}"
+          job_name: "run-tests ${{ inputs.test_mark }} (${{ inputs.sh-runner && format('{0}-shared', matrix.build.runs-on) || (matrix.build.runs-on) }}, ${{ matrix.test_group_id }})${{ inputs.is-fork && ' [fork-safe]' || '' }}"
 
       - name: Set reusable strings
         id: strings
