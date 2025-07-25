@@ -69,9 +69,23 @@ tt::graphlib::NodeContext backward(
     TT_ASSERT(inputs.size() == 1, "reduce_sum should have single input.");
     TT_ASSERT(operand == 0, "Invalid operand index.");
 
-    // For sum, gradient just needs to be broadcast back to original shape
-    // The broadcast will be implicitly figured out during shape calculations
-    return ac.autograd->create_op(ac, graphlib::OpType("nop"), {gradient});
+    std::vector<int> dims = op.attr_as<std::vector<int>>("dim_arg");
+    int dim = dims[0];
+    std::uint32_t size = inputs[0].shape[dim];
+
+    std::optional<NodeContext> unsqueeze;
+    if (!op.attr_as<bool>("keep_dim"))
+    {
+        // If `keep_dim` is false, we need to unsqueeze the gradient to match the input shape.
+        unsqueeze = ac.autograd->create_op(ac, graphlib::OpType("unsqueeze", {}, {{"dim", dim}}), {gradient});
+    }
+
+    // For sum, gradient just needs to be broadcast back to original shape.
+    NodeContext broadcast = ac.autograd->create_op(
+        ac,
+        graphlib::OpType("broadcast", {}, {{"dim", dim}, {"size", static_cast<int>(size)}}),
+        {unsqueeze.has_value() ? *unsqueeze : gradient});
+    return broadcast;
 }
 
 void decompose_initial(
@@ -85,12 +99,20 @@ void decompose_initial(
 
     std::vector<int> dims = op.attr_as<std::vector<int>>("dim_arg");
     int dim = dims[0];
-    if (dim < 0)
-        dim += inputs[0].shape.size();
 
-    if (inputs[0].shape.as_vector<int>()[dim] == 1)
+    if (inputs[0].shape[dim] == 1)
     {
-        NodeContext result = dc.op(graphlib::OpType("nop"), {inputs[0]});
+        // We are reducing on a dimension that is already 1, which is potentially a no-op.
+        if (op.attr_as<bool>("keep_dim"))
+        {
+            // `keep_dim` is true, hence we don't need to do anything.
+            NodeContext result = dc.op(graphlib::OpType("nop"), {inputs[0]});
+            dc.fuse(result);
+            return;
+        }
+
+        // In this case, we can replace `reduce_sum` with a `squeeze` operation.
+        NodeContext result = dc.op(graphlib::OpType("squeeze", {}, {{"dim", dim}}), {inputs[0]});
         dc.fuse(result);
     }
 }
