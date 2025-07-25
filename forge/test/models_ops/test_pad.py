@@ -356,33 +356,33 @@ forge_modules_and_shapes_dtypes_list = [
     #         "args": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False", "value": "0.0"},
     #     },
     # ),
-    # (
-    #     Pad1,
-    #     [((1, 64, 64, 96), torch.float32)],
-    #     {
-    #         "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"],
-    #         "pcc": 0.99,
-    #         "args": {"pad": "(0, 0, 0, 0)", "mode": '"constant"', "channel_last": "False", "value": "0.0"},
-    #     },
-    # ),
-    # (
-    #     Pad1,
-    #     [((1, 32, 32, 192), torch.float32)],
-    #     {
-    #         "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"],
-    #         "pcc": 0.99,
-    #         "args": {"pad": "(0, 0, 0, 0)", "mode": '"constant"', "channel_last": "False", "value": "0.0"},
-    #     },
-    # ),
-    # (
-    #     Pad1,
-    #     [((1, 16, 16, 384), torch.float32)],
-    #     {
-    #         "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"],
-    #         "pcc": 0.99,
-    #         "args": {"pad": "(0, 0, 0, 0)", "mode": '"constant"', "channel_last": "False", "value": "0.0"},
-    #     },
-    # ),
+    (
+        Pad1,
+        [((1, 64, 64, 96), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"],
+            "pcc": 0.99,
+            "args": {"pad": "(0, 0, 0, 0)", "mode": '"constant"', "channel_last": "False", "value": "0.0"},
+        },
+    ),
+    (
+        Pad1,
+        [((1, 32, 32, 192), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"],
+            "pcc": 0.99,
+            "args": {"pad": "(0, 0, 0, 0)", "mode": '"constant"', "channel_last": "False", "value": "0.0"},
+        },
+    ),
+    (
+        Pad1,
+        [((1, 16, 16, 384), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"],
+            "pcc": 0.99,
+            "args": {"pad": "(0, 0, 0, 0)", "mode": '"constant"', "channel_last": "False", "value": "0.0"},
+        },
+    ),
     (
         Pad1,
         [((1, 8, 8, 768), torch.float32)],
