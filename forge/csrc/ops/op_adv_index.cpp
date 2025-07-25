@@ -61,9 +61,16 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
         dim += data_shape.size();
     }
 
-    auto output_shape = data_shape;
-    // Replace the indexed dimension with the size of the indices (last dimension)
-    output_shape[dim] = indices_shape.back();
+    std::vector<std::uint32_t> output_shape = data_shape;
+    // Replace the indexed dimension with the total number of indices
+    // For 1D indices: use the size directly
+    // For 2D indices: use the product of dimensions (total indices)
+    std::uint32_t total_indices = 1;
+    for (std::uint32_t idx_dim : indices_shape)
+    {
+        total_indices *= idx_dim;
+    }
+    output_shape[dim] = total_indices;
 
     return std::make_tuple(Shape::create(output_shape), std::vector<DimBroadcast>{});
 }
@@ -96,6 +103,12 @@ void decompose_initial(
     std::vector<uint32_t> data_shape = inputs[0].shape.as_vector<uint32_t>();
     std::vector<int> indices_shape = inputs[1].shape.as_vector<int>();
     TT_ASSERT(indices_shape.size() == 1 || indices_shape.size() == 2, "indices tensor should be 1D or 2D");
+
+    // Normalize negative dimensions
+    if (dim < 0)
+    {
+        dim += static_cast<int>(data_shape.size());
+    }
 
     // Idea is to reshape the input tensor to [in0_shape[dim], -1] and then apply the embedding operation
     // The embedding operation will select the appropriate indices from the reshaped tensor
@@ -140,7 +153,19 @@ void decompose_initial(
 
     // Step 3: Apply embedding operation
     // embedding op expects indices tensor as first argument and embedding_table as second argument
-    NodeContext selected = dc.op(graphlib::OpType("embedding"), {inputs[1], reshaped});
+    // For 2D indices, flatten them first
+    NodeContext indices_input = inputs[1];
+    if (indices_shape.size() == 2)
+    {
+        std::uint32_t total_indices = 1;
+        for (int idx_dim : indices_shape)
+        {
+            total_indices *= idx_dim;
+        }
+        std::vector<int> flattened_shape = {static_cast<int>(total_indices)};
+        indices_input = dc.op(graphlib::OpType("reshape", {}, {{"shape", flattened_shape}}), {inputs[1]});
+    }
+    NodeContext selected = dc.op(graphlib::OpType("embedding"), {indices_input, reshaped});
 
     // Step 4: Reshape back to appropriate dimensions
     NodeContext reshaped_output = selected;
@@ -151,8 +176,16 @@ void decompose_initial(
         permuted_shape.erase(permuted_shape.begin() + dim);
         permuted_shape.insert(permuted_shape.begin(), indexed_dim_shape);
 
-        // output_shape = indices_shape (1D) + permuted_shape[1:]
-        std::vector<int> output_shape = indices_shape;
+        // output_shape = [total_indices] + permuted_shape[1:]
+        // For 1D indices: use the size directly
+        // For 2D indices: use the product of dimensions (total indices)
+        std::uint32_t total_indices = 1;
+        for (int idx_dim : indices_shape)
+        {
+            total_indices *= idx_dim;
+        }
+
+        std::vector<int> output_shape = {static_cast<int>(total_indices)};
         for (size_t i = 1; i < permuted_shape.size(); i++)
         {
             output_shape.push_back(permuted_shape[i]);
