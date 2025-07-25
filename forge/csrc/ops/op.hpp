@@ -55,6 +55,7 @@ enum class OpType : uint32_t
     Clip,
     Concatenate,
     Constant,
+    ConstantPad,
     Conv2d,
     Conv2dDepthwiseWeights,
     Conv2dDepthwiseWeightsBw,

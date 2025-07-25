@@ -26,17 +26,13 @@ namespace pad
 {
 using namespace graphlib;
 
-// Forward declarations for helper functions - matching Python implementation structure
-NodeContext decompose_constant_mode(
+NodeContext create_constant_pad_op(
     DecomposingContext &dc,
     const NodeContext &input,
-    float value,
-    int left,
-    int right,
-    int top,
-    int bottom,
-    int c_dim_axis,
-    int r_dim_axis);
+    const std::vector<int> &padding,
+    int height_dim,
+    int width_dim,
+    float value);
 
 NodeContext create_pad(DecomposingContext &dc, const std::vector<int> &shape, float value, DataFormat data_format);
 
@@ -126,6 +122,8 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     return std::make_tuple(Shape::create(shape), std::vector<DimBroadcast>{});
 }
 
+// currently this implementation is not used since we decompose pad so when we run backward pass it's run on the
+// decomposed ops (but if we introduce direct mapping to TTIR then we can use this implementation)
 NodeContext backward(
     const graphlib::OpType &old_op_type,
     const Op &op,
@@ -164,43 +162,32 @@ NodeContext backward(
     NodeContext grad = gradient;
 
     int pad_left = padding[0], pad_right = padding[1];
+    int length_width = original_width - pad_left - pad_right;
 
+    // Remove width padding
+    graphlib::OpType narrow_width_op("narrow", {width_dim, pad_left, length_width, original_width});
+    narrow_width_op.set_attr("dim", width_dim);
+    narrow_width_op.set_attr("start", pad_left);
+    narrow_width_op.set_attr("length", length_width);
+    narrow_width_op.set_attr("original_length", original_width);
+
+    grad = ac.autograd->create_op(ac, narrow_width_op, {grad});
+
+    // Then remove height padding if it exists
     if (padding.size() == 4)
     {
         int pad_top = padding[2];
         int pad_bottom = padding[3];
 
-        // Remove height padding first
-        graphlib::OpType narrow_height_op(
-            "narrow",
-            {},
-            {{"dim", height_dim},
-             {"start", pad_top},
-             {"length", original_height - pad_top - pad_bottom},
-             {"original_length", original_height}});
-        grad = ac.autograd->create_op(ac, narrow_height_op, {grad});
+        int length_height = original_height - pad_top - pad_bottom;
 
-        // Then remove width padding
-        graphlib::OpType narrow_width_op(
-            "narrow",
-            {},
-            {{"dim", width_dim},
-             {"start", pad_left},
-             {"length", original_width - pad_left - pad_right},
-             {"original_length", original_width}});
-        grad = ac.autograd->create_op(ac, narrow_width_op, {grad});
-    }
-    else
-    {
-        // Remove only width padding
-        graphlib::OpType narrow_width_op(
-            "narrow",
-            {},
-            {{"dim", width_dim},
-             {"start", pad_left},
-             {"length", original_width - pad_left - pad_right},
-             {"original_length", original_width}});
-        grad = ac.autograd->create_op(ac, narrow_width_op, {grad});
+        graphlib::OpType narrow_height_op("narrow", {height_dim, pad_top, length_height, original_height});
+        narrow_height_op.set_attr("dim", height_dim);
+        narrow_height_op.set_attr("start", pad_top);
+        narrow_height_op.set_attr("length", length_height);
+        narrow_height_op.set_attr("original_length", original_height);
+
+        grad = ac.autograd->create_op(ac, narrow_height_op, {grad});
     }
 
     return grad;
@@ -213,7 +200,6 @@ void decompose_initial(
     TT_ASSERT(inputs.size() == 1, "Pad should have exactly 1 input");
     TT_ASSERT(op.attrs().size() == 4, "Pad should have 4 attributes: padding, mode, value, channel_last");
 
-    // Extract attributes
     auto padding = op.attr_as<std::vector<int>>("padding");
     auto mode = op.attr_as<int>("mode");
     auto value = op.attr_as<float>("value");
@@ -232,20 +218,21 @@ void decompose_initial(
     int shape_size = static_cast<int>(activations.shape.size());
 
     // Determine dimension axes based on channel_last format
-    int r_dim_axis, c_dim_axis;
+    int height_dim, width_dim;
     if (channel_last)
     {
-        r_dim_axis = shape_size - 3;  // height at -3
-        c_dim_axis = shape_size - 2;  // width at -2
+        height_dim = shape_size - 3;  // height at -3
+        width_dim = shape_size - 2;   // width at -2
     }
     else
     {
-        r_dim_axis = shape_size - 2;  // height at -2
-        c_dim_axis = shape_size - 1;  // width at -1
+        height_dim = shape_size - 2;  // height at -2
+        width_dim = shape_size - 1;   // width at -1
     }
 
     // Parse padding values - format is [left, right, top, bottom] or [left, right]
     TT_ASSERT(padding.size() == 2 || padding.size() == 4, "Not supported padding type");
+
     int left = padding[0], right = padding[1], top = 0, bottom = 0;
     if (padding.size() == 4)
     {
@@ -255,8 +242,8 @@ void decompose_initial(
 
     if (mode == 0)
     {  // constant mode
-        NodeContext result =
-            decompose_constant_mode(dc, activations, value, left, right, top, bottom, c_dim_axis, r_dim_axis);
+        // Use ConstantPad operation with direct TTIR mapping
+        NodeContext result = create_constant_pad_op(dc, activations, padding, height_dim, width_dim, value);
         dc.fuse(result);
     }
     else if (mode == 1)
@@ -267,31 +254,31 @@ void decompose_initial(
 
         if (left > 0)
         {
-            NodeContext left_patch = extract(dc, result, c_dim_axis, 0, 1);
-            left_pad = std::make_unique<NodeContext>(repeat_vector(dc, left_patch, left, c_dim_axis));
+            NodeContext left_patch = extract(dc, result, width_dim, 0, 1);
+            left_pad = std::make_unique<NodeContext>(repeat_vector(dc, left_patch, left, width_dim));
         }
         if (right > 0)
         {
-            int c = result.shape[c_dim_axis];
-            NodeContext right_patch = extract(dc, result, c_dim_axis, c - 1, c);
-            right_pad = std::make_unique<NodeContext>(repeat_vector(dc, right_patch, right, c_dim_axis));
+            int c = result.shape[width_dim];
+            NodeContext right_patch = extract(dc, result, width_dim, c - 1, c);
+            right_pad = std::make_unique<NodeContext>(repeat_vector(dc, right_patch, right, width_dim));
         }
 
-        result = concat_patches(dc, left_pad.get(), result, right_pad.get(), c_dim_axis);
+        result = concat_patches(dc, left_pad.get(), result, right_pad.get(), width_dim);
 
         if (top > 0)
         {
-            NodeContext top_patch = extract(dc, result, r_dim_axis, 0, 1);
-            top_pad = std::make_unique<NodeContext>(repeat_vector(dc, top_patch, top, r_dim_axis));
+            NodeContext top_patch = extract(dc, result, height_dim, 0, 1);
+            top_pad = std::make_unique<NodeContext>(repeat_vector(dc, top_patch, top, height_dim));
         }
         if (bottom > 0)
         {
-            int r = activations.shape[r_dim_axis];  // Use original height, not updated
-            NodeContext bot_patch = extract(dc, result, r_dim_axis, r - 1, r);
-            bot_pad = std::make_unique<NodeContext>(repeat_vector(dc, bot_patch, bottom, r_dim_axis));
+            int r = activations.shape[height_dim];  // Use original height, not updated
+            NodeContext bot_patch = extract(dc, result, height_dim, r - 1, r);
+            bot_pad = std::make_unique<NodeContext>(repeat_vector(dc, bot_patch, bottom, height_dim));
         }
 
-        result = concat_patches(dc, top_pad.get(), result, bot_pad.get(), r_dim_axis);
+        result = concat_patches(dc, top_pad.get(), result, bot_pad.get(), height_dim);
         dc.fuse(result);
     }
     else
@@ -301,57 +288,6 @@ void decompose_initial(
         // which is difficult to implement correctly in C++ decomposition context
         return op.base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
     }
-}
-
-NodeContext decompose_constant_mode(
-    DecomposingContext &dc,
-    const NodeContext &input,
-    float value,
-    int left,
-    int right,
-    int top,
-    int bottom,
-    int c_dim_axis,
-    int r_dim_axis)
-{
-    NodeContext result = input;
-    DataFormat data_format = input.output_df;
-
-    // Handle width padding (left/right)
-    std::vector<int> width_shape(result.shape.as_vector<int>());
-    std::unique_ptr<NodeContext> left_pad, right_pad;
-
-    if (left > 0)
-    {
-        width_shape[c_dim_axis] = left;
-        left_pad = std::make_unique<NodeContext>(create_pad(dc, width_shape, value, data_format));
-    }
-    if (right > 0)
-    {
-        width_shape[c_dim_axis] = right;
-        right_pad = std::make_unique<NodeContext>(create_pad(dc, width_shape, value, data_format));
-    }
-
-    result = concat_patches(dc, left_pad.get(), result, right_pad.get(), c_dim_axis);
-
-    // Handle height padding (top/bottom) - use updated result shape
-    std::vector<int> height_shape(result.shape.as_vector<int>());
-    std::unique_ptr<NodeContext> top_pad, bot_pad;
-
-    if (top > 0)
-    {
-        height_shape[r_dim_axis] = top;
-        top_pad = std::make_unique<NodeContext>(create_pad(dc, height_shape, value, data_format));
-    }
-    if (bottom > 0)
-    {
-        height_shape[r_dim_axis] = bottom;
-        bot_pad = std::make_unique<NodeContext>(create_pad(dc, height_shape, value, data_format));
-    }
-
-    result = concat_patches(dc, top_pad.get(), result, bot_pad.get(), r_dim_axis);
-
-    return result;
 }
 
 NodeContext create_pad(DecomposingContext &dc, const std::vector<int> &shape, float value, DataFormat data_format)
@@ -414,6 +350,37 @@ NodeContext concat_patches(
 
     graphlib::OpType concat_op("concatenate", {}, {{"dim", dim_axis}});
     return dc.op(concat_op, inputs);
+}
+
+NodeContext create_constant_pad_op(
+    DecomposingContext &dc,
+    const NodeContext &input,
+    const std::vector<int> &padding,
+    int height_dim,
+    int width_dim,
+    float value)
+{
+    // Convert padding format from [left, right] or [left, right, top, bottom]
+    // to TTIR format: [dim0_low, dim0_high, dim1_low, dim1_high, ...]
+
+    int rank = static_cast<int>(input.shape.size());
+    std::vector<int> constant_padding(rank * 2, 0);  // Initialize all to 0
+
+    int left = padding[0], right = padding[1];
+
+    constant_padding[width_dim * 2] = left;       // low padding
+    constant_padding[width_dim * 2 + 1] = right;  // high padding
+
+    if (padding.size() == 4)
+    {
+        int top = padding[2], bottom = padding[3];
+
+        constant_padding[height_dim * 2] = top;         // low padding
+        constant_padding[height_dim * 2 + 1] = bottom;  // high padding
+    }
+
+    // Create constant_pad operation for direct TTIR mapping
+    return dc.op(graphlib::OpType("constant_pad", {}, {{"padding", constant_padding}, {"value", value}}), {input});
 }
 
 }  // namespace pad

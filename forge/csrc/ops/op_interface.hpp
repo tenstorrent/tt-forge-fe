@@ -92,6 +92,7 @@ DECLARE_OP_INTERFACE(cast);
 DECLARE_OP_INTERFACE(clip);
 DECLARE_OP_INTERFACE(concatenate);
 DECLARE_OP_INTERFACE(constant);
+DECLARE_OP_INTERFACE(constant_pad);
 DECLARE_OP_INTERFACE(conv_2d);
 DECLARE_OP_INTERFACE(conv_2d_depthwise_weights);
 DECLARE_OP_INTERFACE(conv_2d_depthwise_weights_bw);
