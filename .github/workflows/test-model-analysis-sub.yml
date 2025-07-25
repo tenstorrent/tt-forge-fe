@@ -40,6 +40,10 @@ on:
         required: false
         default: false
         type: boolean
+      sh-runner:
+        description: 'Run tests using shared runners'
+        required: false
+        type: boolean
 
 jobs:
   run-tests:
@@ -50,14 +54,12 @@ jobs:
         build: ${{ fromJson(inputs.runs-on) }}
         test_group_id: ${{ fromJSON(inputs.test_group_ids) }}
 
-    runs-on:
-      - in-service
-      - ${{ matrix.build.runs-on }}
+    runs-on: ${{ inputs.sh-runner && format('tt-beta-ubuntu-2204-{0}-large-stable', matrix.build.runs-on) || fromJson(format('["{0}", "in-service"]', matrix.build.runs-on)) }}
 
     continue-on-error: ${{ inputs.allow-fail }}
 
     container:
-      image: ${{ inputs.docker-image }}
+      image: ${{ inputs.sh-runner && format('harbor.ci.tenstorrent.net/{0}', inputs.docker-image) || inputs.docker-image }}
       options: --device /dev/tenstorrent/0
       volumes:
         - /dev/hugepages:/dev/hugepages
@@ -70,13 +72,14 @@ jobs:
     env:
       HF_TOKEN: ${{ secrets.HF_TOKEN }}
       HF_HOME: /mnt/dockercache/huggingface
+      IRD_LF_CACHE: ${{ vars.IRD_LF_CACHE }}
       FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
       HF_HUB_DISABLE_PROGRESS_BARS: 1
       FORGE_DISABLE_REPORTIFY_DUMP: 1
       FORGE_EXTRACT_TVM_UNIQUE_OPS_CONFIG: 1
       FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS: 1
 
-    name: "run-tests ${{ inputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+    name: "run-tests ${{ inputs.test_mark }} (${{ inputs.sh-runner && format('{0}-shared', matrix.build.runs-on) || (matrix.build.runs-on) }}, ${{ matrix.test_group_id }})"
 
     steps:
 
@@ -84,7 +87,7 @@ jobs:
         id: fetch-job-id
         uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
         with:
-          job_name: "run-tests ${{ inputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+          job_name: "run-tests ${{ inputs.test_mark }} (${{ inputs.sh-runner && format('{0}-shared', matrix.build.runs-on) || (matrix.build.runs-on) }}, ${{ matrix.test_group_id }})"
 
       - name: Set reusable strings
         id: strings
@@ -101,11 +104,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
+            .github/workflows/
             env/
             forge/test
             pytest.ini
             conftest.py
             .test_durations
+
+      - name: Setup Forge Models repo
+        shell: bash
+        run: |
+          git submodule update --init --recursive -f third_party/tt_forge_models
 
         # Clean everything from submodules (needed to avoid issues
         # with cmake generated files leftover from previous builds)
@@ -146,18 +155,19 @@ jobs:
 
       - name: Extract and Export Unique Ops Configuration
         shell: bash
+        timeout-minutes: 1440 # Set execution time to 1 days(default: 6 hours)
         run: |
+          set -o pipefail
           source env/activate
-
+          echo "Collecting tests for group ${{ matrix.test_group_id }} with mark '${{ inputs.test_mark }}'..."
+          set +e
           pytest_args=(
             "--splits" "${{ inputs.test_group_cnt }}"
             "--group" "${{ matrix.test_group_id }}"
             "--splitting-algorithm" "least_duration"
             "-m" "${{ inputs.test_mark }}"
-            "--log-memory-usage"
-            "--runxfail"
-            "--no-skips"
-            "-vss"
+            "--collect-only"
+            "-q"
           )
           if [ -n "${{ inputs.tests_to_filter }}" ]; then
             # Split on commas and trim whitespace
@@ -167,15 +177,34 @@ jobs:
               pytest_args+=("$(echo "$tf" | xargs)")
             done
           fi
+          pytest forge/test/models/ "${pytest_args[@]}" \
+                | sed -n '/^Collected tests /,/^collected /p' | sed '/^[Cc]ollected /d' >.pytest_tests_to_run
 
-          pytest forge/test/models/ "${pytest_args[@]}" 2>&1 | tee pytest.log
+          if [ $? -ne 0 ]; then
+            echo "Failed to collect tests. Doing dry run..."
+            set -e
+            pytest forge/test/models/ "${pytest_args[@]}"
+            exit 1
+          fi
+          echo "Collected tests."
+          cat .pytest_tests_to_run
 
-      - name: Upload Test Log
+          python .github/workflows/test_runner.py  \
+               --continue-after-crash \
+               --log-memory-usage \
+               --runxfail \
+               --no-skips \
+               -vss \
+            2>&1 | tee extract-and-export-unique-ops-configs.log
+          exit_code=${PIPESTATUS[0]}
+          exit $exit_code
+
+      - name: Upload Extract And Export Unique Ops Configs Log
         uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
-          name: test-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
-          path: pytest.log
+           name: extract-and-export-unique-ops-configs-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+           path: extract-and-export-unique-ops-configs.log
 
       - name: Upload Memory Usage Log
         uses: actions/upload-artifact@v4
