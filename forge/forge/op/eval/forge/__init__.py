@@ -89,6 +89,7 @@ op_to_module_map = {
     "pad_tile": "tm",
     "narrow": "tm",
     "pad": Pad,
+    "constant_pad": "tm",
     "unsqueeze": "tm",
     "squeeze": "tm",
     "pixel_shuffle": "tm",
