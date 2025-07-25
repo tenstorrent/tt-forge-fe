@@ -4,8 +4,7 @@
 # BART Demo Script - SQuADv1.1 QA
 import pytest
 import torch
-from transformers import BartForSequenceClassification, BartTokenizer
-from transformers.models.bart.modeling_bart import shift_tokens_right
+from third_party.tt_forge_models.bart.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -18,8 +17,6 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
-
-from test.utils import download_model
 
 
 class BartWrapper(torch.nn.Module):
@@ -37,7 +34,7 @@ class BartWrapper(torch.nn.Module):
     "variant",
     [
         pytest.param(
-            "facebook/bart-large-mnli",
+            ModelVariant.LARGE,
         ),
     ],
 )
@@ -51,27 +48,11 @@ def test_pt_bart_classifier(variant):
         source=Source.HUGGINGFACE,
     )
 
-    model = download_model(BartForSequenceClassification.from_pretrained, variant, torchscript=True)
-    tokenizer = download_model(BartTokenizer.from_pretrained, variant, pad_to_max_length=True)
-    hypothesis = "Most of Mrinal Sen's work can be found in European collections."
-    premise = "Calcutta seems to be the only other production center having any pretensions to artistic creativity at all, but ironically you're actually more likely to see the works of Satyajit Ray or Mrinal Sen shown in Europe or North America than in India itself."
-
-    # generate inputs
-    inputs_dict = tokenizer(
-        premise,
-        hypothesis,
-        truncation="only_first",
-        padding="max_length",
-        max_length=256,
-        return_tensors="pt",
-    )
-    decoder_input_ids = shift_tokens_right(
-        inputs_dict["input_ids"], model.config.pad_token_id, model.config.decoder_start_token_id
-    )
-    inputs = [inputs_dict["input_ids"], inputs_dict["attention_mask"], decoder_input_ids]
-
-    # Compile & feed data
-    framework_model = BartWrapper(model.model)
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model()
+    framework_model = BartWrapper(framework_model.model)
+    inputs = loader.load_inputs()
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)

@@ -5,6 +5,7 @@
 import pytest
 import torch
 from pytorchcv.model_provider import get_model as ptcv_get_model
+from third_party.tt_forge_models.inception.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -21,10 +22,7 @@ from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
-from test.models.pytorch.vision.inception.model_utils.model_utils import (
-    get_image,
-    preprocess_timm_model,
-)
+from test.models.pytorch.vision.inception.model_utils.model_utils import get_image
 from test.utils import download_model
 
 
@@ -71,19 +69,9 @@ def test_inception_v4_osmr_pytorch():
     print_cls_results(fw_out[0], co_out[0])
 
 
-def generate_model_inceptionV4_imgcls_timm_pytorch(variant):
-    # Load model & Preprocess image
-    framework_model, img_tensor = download_model(preprocess_timm_model, variant)
-    return framework_model.to(torch.bfloat16), [img_tensor.to(torch.bfloat16)]
-
-
 variants = [
-    pytest.param(
-        "inception_v4",
-    ),
-    pytest.param(
-        "inception_v4.tf_in1k",
-    ),
+    ModelVariant.INCEPTION_V4,
+    ModelVariant.INCEPTION_V4_TF_IN1K,
 ]
 
 
@@ -100,7 +88,11 @@ def test_inception_v4_timm_pytorch(variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    framework_model, inputs = generate_model_inceptionV4_imgcls_timm_pytorch(variant)
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -113,8 +105,8 @@ def test_inception_v4_timm_pytorch(variant):
         compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+    # Model Verification and inference
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post processing
-    print_cls_results(fw_out[0], co_out[0])
+    loader.print_cls_results(co_out)

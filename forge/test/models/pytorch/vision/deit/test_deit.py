@@ -3,8 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from datasets import load_dataset
-from transformers import AutoFeatureExtractor, ViTForImageClassification
+from third_party.tt_forge_models.deit.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -20,29 +19,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.utils import download_model
-
-
-def generate_model_deit_imgcls_hf_pytorch(variant):
-    # STEP 2: Create Forge module from PyTorch model
-    image_processor = download_model(AutoFeatureExtractor.from_pretrained, variant)
-    model = download_model(ViTForImageClassification.from_pretrained, variant, return_dict=False)
-
-    # STEP 3: Run inference on Tenstorrent device
-    dataset = load_dataset("huggingface/cats-image")
-    image_1 = dataset["test"]["image"][0]
-    img_tensor = image_processor(image_1, return_tensors="pt").pixel_values
-    # output = model(img_tensor).logits
-
-    return model, [img_tensor], {}
-
-
-variants = [
-    "facebook/deit-base-patch16-224",
-    "facebook/deit-base-distilled-patch16-224",
-    "facebook/deit-small-patch16-224",
-    "facebook/deit-tiny-patch16-224",
-]
+variants = [ModelVariant.BASE, ModelVariant.BASE_DISTILLED, ModelVariant.SMALL, ModelVariant.TINY]
 
 
 @pytest.mark.nightly
@@ -58,11 +35,13 @@ def test_deit_imgcls_hf_pytorch(variant):
         source=Source.HUGGINGFACE,
     )
 
-    framework_model, inputs, _ = generate_model_deit_imgcls_hf_pytorch(
-        variant,
-    )
-    inputs = [inputs[0].to(torch.bfloat16)]
-    framework_model.to(torch.bfloat16)
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    inputs_dict = loader.load_inputs(dtype_override=torch.bfloat16)
+
+    # Extract pixel_values from inputs dict
+    inputs = [inputs_dict["pixel_values"]]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -76,7 +55,7 @@ def test_deit_imgcls_hf_pytorch(variant):
     )
 
     pcc = 0.99
-    if variant == "facebook/deit-base-patch16-224":
+    if variant == ModelVariant.BASE:
         pcc = 0.96
 
     # Model Verification and inference
@@ -88,6 +67,4 @@ def test_deit_imgcls_hf_pytorch(variant):
     )
 
     # Post processing
-    logits = co_out[0]
-    predicted_class_idx = logits.argmax(-1).item()
-    print("Predicted class:", framework_model.config.id2label[predicted_class_idx])
+    loader.post_processing(co_out, framework_model)
