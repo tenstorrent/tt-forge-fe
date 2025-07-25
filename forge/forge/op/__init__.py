@@ -50,7 +50,7 @@ from .eltwise_unary import (
     Cast,
     Erf,
 )
-from .reduce import ReduceSum, ReduceAvg, ReduceMax, GroupedReduceAvg
+from .reduce import ReduceSum, ReduceAvg, ReduceMax
 from .tm import (
     Transpose,
     Reshape,

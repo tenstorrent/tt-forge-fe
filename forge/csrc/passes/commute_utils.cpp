@@ -756,46 +756,24 @@ bool commute_through_reduce(
         int op_reduce_dim;
         bool op_keep_dim;
 
-        if (op->new_op_type() == ops::OpType::GroupedReduceAvg)
-        {
-            op_reduce_dim = std::get<int>(op_attr[0]);
-            op_keep_dim = std::get<bool>(op_attr[2]);
-        }
-        else
-        {
-            std::vector<int> op_dim_arg = op->op_attr_as<std::vector<int>>("dim_arg");
-            op_reduce_dim = op_dim_arg[0];
-            op_keep_dim = op->op_attr_as<bool>("keep_dim");
-        }
+        std::vector<int> op_dim_arg = op->op_attr_as<std::vector<int>>("dim_arg");
+        op_reduce_dim = op_dim_arg[0];
+        op_keep_dim = op->op_attr_as<bool>("keep_dim");
 
         if (op_reduce_dim < 0)
             op_reduce_dim += clone_shape->size();
 
         int producer_reduce_dim;
 
-        if (producer->new_op_type() == ops::OpType::GroupedReduceAvg)
-        {
-            producer_reduce_dim = std::get<int>(producer_attr[0]);
-        }
-        else
-        {
-            std::vector<int> producer_dim_arg = producer->op_attr_as<std::vector<int>>("dim_arg");
-            producer_reduce_dim = producer_dim_arg[0];
-        }
+        std::vector<int> producer_dim_arg = producer->op_attr_as<std::vector<int>>("dim_arg");
+        producer_reduce_dim = producer_dim_arg[0];
         if (producer_reduce_dim < 0)
             producer_reduce_dim += clone_shape->size();
 
         int new_op_dim = std::max(op_reduce_dim, producer_reduce_dim);
         int updated_dim = new_op_dim - commute_shape->size();
 
-        if (op->new_op_type() == ops::OpType::GroupedReduceAvg)
-        {
-            std::get<int>(op_attr[0]) = updated_dim;
-        }
-        else
-        {
-            op->set_op_attr("dim_arg", std::vector<int>{updated_dim});
-        }
+        op->set_op_attr("dim_arg", std::vector<int>{updated_dim});
 
         auto reduce_shape = *commute_shape;
         auto reduce_vec = reduce_shape.as_vector();
@@ -824,7 +802,7 @@ bool commute_through_reduce(
         auto attr = op->op_legacy_attrs();
         int reduce_dim = std::get<int>(attr[0]);
         bool keep_dim;
-        if (op->new_op_type() == ops::OpType::GroupedReduceAvg || op->new_op_type() == ops::OpType::ReduceMax)
+        if (op->new_op_type() == ops::OpType::ReduceMax)
         {
             keep_dim = std::get<bool>(attr[2]);
         }
@@ -1003,17 +981,6 @@ void update_vstack_attr(graphlib::OpNode *vstack, int slice_size)
     log_trace(LogGraphCompiler, "Vstack operation updated with new slice_size: {}", slice_size);
 }
 /**
- * @brief Updates the attributes and named attributes of grouped_reduce_avg operation with new reduction dimension.
- */
-void update_grouped_reduce_avg_attr(graphlib::OpNode *reduce, int reduce_dim)
-{
-    TT_ASSERT(
-        reduce->new_op_type() == ops::OpType::GroupedReduceAvg,
-        "update_grouped_reduce_avg_attr called for non-grouped_reduce_avg op");
-
-    reduce->set_op_attr("reduce_dim", reduce_dim);
-}
-/**
  * @brief Updates the attributes and named attributes of reduce operation(reduce_sum, reduce_avg, reduce_max) with new
  * reduction dimension.
  */
@@ -1022,11 +989,6 @@ void update_reduce_attr(graphlib::OpNode *reduce, int reduce_dim, bool keep_dim)
     log_trace(LogGraphCompiler, "reduce->op_name() = {}", reduce->op_name());
     TT_ASSERT(reduce->is_reduce(), "update_reduce_attr called for a non-reduce operation");
 
-    if (reduce->new_op_type() == ops::OpType::GroupedReduceAvg)
-    {
-        update_grouped_reduce_avg_attr(reduce, reduce_dim);
-        return;
-    }
     reduce->set_op_attr("dim_arg", std::vector<int>{reduce_dim});
     reduce->set_op_attr("keep_dim", keep_dim);
     log_trace(LogGraphCompiler, "Reduce operation updated with reduce_dim: {}", reduce_dim);
