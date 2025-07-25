@@ -58,15 +58,15 @@ class OptModelWrapper(torch.nn.Module):
 
 
 variants = [
-    "facebook/opt-125m",
-    "facebook/opt-350m",
+    pytest.param(
+        "facebook/opt-125m", marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2661")]
+    ),
+    pytest.param(
+        "facebook/opt-350m", marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2661")]
+    ),
     pytest.param(
         "facebook/opt-1.3b",
-        marks=[
-            pytest.mark.xfail(
-                reason="Data mismatch between framework and compiled model output. Issue Link: https://github.com/tenstorrent/tt-mlir/issues/4174"
-            )
-        ],
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-mlir/issues/4174")],
     ),
 ]
 
@@ -123,6 +123,7 @@ variants = [
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2661")
 @pytest.mark.parametrize("variant", variants)
 def test_opt_qa(variant):
 
@@ -168,6 +169,15 @@ def test_opt_qa(variant):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
+
+
+variants = [
+    "facebook/opt-125m",
+    "facebook/opt-350m",
+    pytest.param(
+        "facebook/opt-1.3b", marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2661")]
+    ),
+]
 
 
 @pytest.mark.nightly
