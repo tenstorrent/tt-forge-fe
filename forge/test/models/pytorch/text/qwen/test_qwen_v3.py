@@ -28,14 +28,14 @@ from test.models.models_utils import (
 from test.utils import download_model
 
 variants = [
-    "Qwen/Qwen3-32B",
-    "Qwen/Qwen3-30B-A3B",
-    "Qwen/QwQ-32B",
-    "Qwen/Qwen3-14B",
+    pytest.param("Qwen/Qwen3-32B", marks=[pytest.mark.out_of_memory]),
+    pytest.param("Qwen/Qwen3-30B-A3B", marks=[pytest.mark.out_of_memory]),
+    pytest.param("Qwen/QwQ-32B", marks=[pytest.mark.out_of_memory]),
+    pytest.param("Qwen/Qwen3-14B", marks=[pytest.mark.out_of_memory]),
     "Qwen/Qwen3-0.6B",
     "Qwen/Qwen3-1.7B",
     "Qwen/Qwen3-4B",
-    "Qwen/Qwen3-8B",
+    pytest.param("Qwen/Qwen3-8B", marks=[pytest.mark.out_of_memory]),
 ]
 
 
@@ -87,7 +87,11 @@ def test_qwen3_clm_pytorch(variant):
     verify(sample_inputs, framework_model, compiled_model)
 
 
-variants = ["Qwen/Qwen3-Embedding-0.6B", "Qwen/Qwen3-Embedding-4B", "Qwen/Qwen3-Embedding-8B"]
+variants = [
+    "Qwen/Qwen3-Embedding-0.6B",
+    "Qwen/Qwen3-Embedding-4B",
+    pytest.param("Qwen/Qwen3-Embedding-8B", marks=[pytest.mark.out_of_memory]),
+]
 
 
 @pytest.mark.parametrize("variant", variants)
