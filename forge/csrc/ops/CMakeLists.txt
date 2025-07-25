@@ -16,6 +16,7 @@ add_library(ops
     op_clip.cpp
     op_concatenate.cpp
     op_constant.cpp
+    op_constant_pad.cpp
     op_conv_2d.cpp
     op_conv_2d_depthwise_weights.cpp
     op_conv_2d_depthwise_weights_bw.cpp

@@ -70,6 +70,7 @@ op_to_module_map = {
     "conv2d_prestride_weights": "tm",
     "pad_tile": "tm",
     "pad": Pad,
+    "constant_pad": "tm",
     "unsqueeze": "tm",
     "squeeze": "tm",
     "pixel_shuffle": "tm",
