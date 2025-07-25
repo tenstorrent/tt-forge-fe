@@ -829,7 +829,7 @@ void Op::decompose_initial(
         case OpType::Less: return;
         case OpType::LessEqual: return;
         case OpType::Log: return;
-        case OpType::LogSoftmax: return;
+        case OpType::LogSoftmax: return log_softmax::decompose_initial(old_op_type, *this, dc, inputs);;
         case OpType::LogicalAnd: return;
         case OpType::LogicalNot: return;
         case OpType::Mask: return mask::decompose_initial(old_op_type, *this, dc, inputs);
