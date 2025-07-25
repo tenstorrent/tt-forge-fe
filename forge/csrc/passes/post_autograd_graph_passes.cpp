@@ -15,13 +15,13 @@ void lower_bwd_gather_ops(Graph *graph)
     auto is_gather_op = [](graphlib::Node *n) -> bool
     {
         graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(n);
-        return op and op->op_name() == "gather";
+        return op and op->new_op_type() == ops::OpType::Gather;
     };
 
     auto is_gather_collapse = [graph, is_gather_op](graphlib::Node *n) -> bool
     {
         graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(n);
-        if (!op or op->op_name() != "add")
+        if (!op or op->new_op_type() != ops::OpType::Add)
             return false;
         std::vector<Node *> operands = graph->data_operands(n);
         return std::all_of(operands.begin(), operands.end(), is_gather_op);

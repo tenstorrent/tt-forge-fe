@@ -71,7 +71,7 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
         if (node->node_type() == graphlib::kPyOp)
         {
             auto op_node = node->as<graphlib::PyOpNode>();
-            if (op_node->op_name() == "index")
+            if (op_node->new_op_type() == ops::OpType::Index)
                 index_count_before++;
         }
     }
@@ -94,7 +94,7 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
         if (node->node_type() == graphlib::kPyOp)
         {
             auto op_node = node->as<graphlib::PyOpNode>();
-            if (op_node->op_name() == "index")
+            if (op_node->new_op_type() == ops::OpType::Index)
                 index_count_after++;
         }
     }
@@ -106,7 +106,7 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
         if (node->node_type() == graphlib::kPyOp)
         {
             auto op_node = node->as<graphlib::PyOpNode>();
-            if (op_node->op_name() == "index")
+            if (op_node->new_op_type() == ops::OpType::Index)
             {
                 // Check connection to input
                 auto operands = graph->operands(node);

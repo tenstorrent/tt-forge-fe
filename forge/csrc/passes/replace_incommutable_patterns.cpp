@@ -81,7 +81,7 @@ static bool is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim(
     graphlib::Graph *graph, graphlib::OpNode *op, graphlib::Shape commute_shape, graphlib::Shape clone_shape)
 {
     bool is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim = true;
-    is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim &= op->op_name() == "reduce_avg";
+    is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim &= op->new_op_type() == ops::OpType::ReduceAvg;
     if (not is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim)
         return false;
     std::vector<int> dim_arg = op->op_attr_as<std::vector<int>>("dim_arg");
@@ -95,7 +95,7 @@ static bool is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim(
 
     auto *next_op = dynamic_cast<graphlib::OpNode *>(graph->data_users(op)[0]);
     is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim &=
-        next_op and next_op->op_name() == "reduce_avg" and graph->data_users(op).size() == 1;
+        next_op and next_op->new_op_type() == ops::OpType::ReduceAvg and graph->data_users(op).size() == 1;
     if (next_op)
     {
         std::vector<graphlib::OpNode *> next_ops;
@@ -149,7 +149,7 @@ static bool is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim(
 static bool is_y_dim_concat_with_changed_x_dim(
     graphlib::Graph *graph, graphlib::OpNode *op, graphlib::Shape commute_shape)
 {
-    if (op->op_name() != "concatenate")
+    if (op->new_op_type() != ops::OpType::Concatenate)
         return false;
 
     int concat_dim = op->op_attr_as<int>("dim");
@@ -165,7 +165,7 @@ static bool is_y_dim_concat_with_changed_x_dim(
     for (auto operand : graph->data_operands(op))
     {
         graphlib::OpNode *operand_op = dynamic_cast<graphlib::OpNode *>(operand);
-        if (not operand_op or operand_op->op_name() != "reshape")
+        if (not operand_op or operand_op->new_op_type() != ops::OpType::Reshape)
             return false;
 
         auto operand_operand_shape = graph->data_operands(operand_op)[0]->shape();
@@ -397,8 +397,8 @@ static bool find_and_replace_incommutable_patterns(
             break;
         }
         // TODO: (lpanos) I dont think is_elementwise should return true for any of these ops, but for now it does
-        bool can_commute = op->is_eltwise() and op->op_name() != "concatenate" and op->op_name() != "select" and
-                           op->op_name() != "interleave";
+        bool can_commute = op->is_eltwise() and op->new_op_type() != ops::OpType::Concatenate and
+                           op->new_op_type() != ops::OpType::Select and op->new_op_type() != ops::OpType::Interleave;
 
         if (not can_commute and op != initial_op)
         {
@@ -453,7 +453,7 @@ bool replace_incommutable_patterns(graphlib::Graph *graph)
         if (not op)
             continue;
 
-        if (op->op_name() != "reshape")
+        if (op->new_op_type() != ops::OpType::Reshape)
             continue;
 
         if (not find_and_replace_incommutable_patterns(graph, op, shape_of_only_operand(graph, op)))

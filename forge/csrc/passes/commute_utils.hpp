@@ -8,6 +8,8 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+
+#include "ops/op.hpp"
 #pragma once
 
 namespace tt::graphlib
@@ -39,11 +41,11 @@ bool match_reshape(graphlib::OpType const &a, graphlib::OpType const &);
 bool match_transpose(graphlib::OpType const &a, graphlib::OpType const &b);
 
 using MatchFn = bool(graphlib::OpType const &, graphlib::OpType const &);
-static std::unordered_map<std::string, MatchFn *> match_fns = {
-    {"reshape", match_reshape},
-    {"transpose", match_transpose},
-    {"unsqueeze", match_unsqueeze},
-    {"squeeze", match_squeeze},
+static std::unordered_map<ops::OpType, MatchFn *> match_fns = {
+    {ops::OpType::Reshape, match_reshape},
+    {ops::OpType::Transpose, match_transpose},
+    {ops::OpType::Unsqueeze, match_unsqueeze},
+    {ops::OpType::Squeeze, match_squeeze},
 };
 
 size_t total_broadcast_volume(graphlib::Graph *graph, graphlib::Edge edge);

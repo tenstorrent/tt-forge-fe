@@ -1874,8 +1874,8 @@ bool is_consteval_capable_input_no_operand_forks(Graph *graph, InputNode *input)
         else
             return false;
 
-    std::string op_name = user_ops[0]->op_name();
-    if (not std::all_of(user_ops.begin(), user_ops.end(), [op_name](OpNode *n) { return n->op_name() == op_name; }))
+    ops::OpType op_type = user_ops[0]->new_op_type();
+    if (not std::all_of(user_ops.begin(), user_ops.end(), [op_type](OpNode *n) { return n->new_op_type() == op_type; }))
         return false;
 
     auto attrs = user_ops[0]->op_legacy_attrs();
