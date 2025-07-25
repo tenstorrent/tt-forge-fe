@@ -3,19 +3,31 @@ name: Performance benchmark
 on:
   workflow_dispatch:
     inputs:
-      rebuild:
-        description: 'Rebuild the Forge'
-        required: false
-        default: false
-        type: boolean
       mlir_override:
         description: 'Git SHA of commit in tenstorrent/tt-mlir'
         required: false
         type: string
+      same_branch:
+        description: 'Run on the branch with same name in tt-forge as the current workflow'
+        required: false
+        type: boolean
+      tt_forge_branch:
+        description: 'Branch of tt-forge to run the benchmarks on (empty=main)'
+        required: false
+        type: string
+      test_filter:
+        description: "Only run tests with name that contains"
+        required: false
+        type: string
+      sh-runner:
+        description: "Run on shared runner"
+        required: false
+        type: boolean
 
 permissions:
   packages: write
   checks: write
+  contents: write
 
 jobs:
   docker-build:
@@ -23,43 +35,39 @@ jobs:
     secrets: inherit
     with:
       mlir_override: ${{ inputs.mlir_override }}
-
-  set-inputs:
-    runs-on: ubuntu-latest
-    needs: docker-build
-    outputs:
-      buildtype: ${{ steps.set-inputs.outputs.buildtype }}
-      run-id: ${{ steps.set-inputs.outputs.runid }}
-    steps:
-      - name: Set Inputs
-        id: set-inputs
-        run: |
-          if [ ${{ inputs.rebuild }} == 'true' ]; then
-            echo "buildtype=Release" >> $GITHUB_OUTPUT
-            echo "runid=${{ github.run_id }}" >> $GITHUB_OUTPUT
-          else
-            echo "buildtype=None" >> $GITHUB_OUTPUT
-          fi
-
   build:
-    needs:
-      - docker-build
-      - set-inputs
+    needs: docker-build
     uses: ./.github/workflows/build.yml
     secrets: inherit
     with:
       mlir_override: ${{ inputs.mlir_override }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      build: ${{ needs.set-inputs.outputs.buildtype}}
-
-  run-perf-benchmarks:
-    if: success() || failure()
-    needs:
-      - docker-build
-      - set-inputs
-      - build
-    uses: ./.github/workflows/perf-benchmark-sub.yml
+      build: Release
+  set-inputs:
+    needs: build
+    runs-on: ubuntu-latest
+    outputs:
+      ref: ${{ steps.set-inputs.outputs.ref }}
+    steps:
+      - id: set-inputs
+        run: |
+          if [ "${{ inputs.same_branch }}" == 'true' ]; then
+            echo "ref=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          else
+            if [ -z "${{ inputs.tt_forge_branch }}" ]; then
+              echo "ref=main" >> $GITHUB_OUTPUT
+            else
+              echo "ref=${{ inputs.tt_forge_branch }}" >> $GITHUB_OUTPUT
+            fi
+          fi
+  perf-benchmark:
+    needs: set-inputs
+    uses: tenstorrent/tt-forge/.github/workflows/perf-benchmark.yml@main
     secrets: inherit
     with:
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      run_id: ${{ needs.set-inputs.outputs.run-id }}
+      project: tt-forge-fe
+      run_id: ${{ github.run_id }}
+      run_id_source: tt-forge-fe
+      ref: ${{ needs.set-inputs.outputs.ref }}
+      test-filter: ${{ inputs.test_filter }}
+      sh-runner: ${{ inputs.sh-runner }}
