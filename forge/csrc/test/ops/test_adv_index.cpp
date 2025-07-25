@@ -112,10 +112,8 @@ std::vector<OpTestParam> generate_adv_index_sweep_params()
 
     // Simpler index shapes for sweep tests
     auto index_shapes = {
-        graphlib::Shape{1},     // Small 1D indices
-        graphlib::Shape{2},     // Medium 1D indices
-        graphlib::Shape{1, 2},  // Small 2D indices
-        graphlib::Shape{2, 1},  // Medium 2D indices
+        graphlib::Shape{2},     // 1D indices
+        graphlib::Shape{1, 2},  // 2D indices
     };
 
     std::vector<OpTestParam> params;
@@ -125,21 +123,24 @@ std::vector<OpTestParam> generate_adv_index_sweep_params()
     {
         for (const auto& indices_shape : index_shapes)
         {
-            // Test a subset of dimensions to keep test count reasonable
-            std::vector<int> test_dims = {0, -1};  // First and last dimensions
-
-            // Add middle dimension for 3D+ tensors
-            if (data_shape.size() >= 3)
-            {
-                test_dims.push_back(1);
-            }
-
-            for (int dim : test_dims)
+            // Test all positive dimensions
+            for (int dim = 0; dim < static_cast<int>(data_shape.size()); ++dim)
             {
                 std::vector<graphlib::Shape> shapes = {data_shape, indices_shape};
                 if (valid_inputs(shapes, dim))
                 {
                     tt::ops::Op op(tt::ops::OpType::AdvIndex, {{"dim", dim}});
+                    params.emplace_back(op, shapes);
+                }
+            }
+
+            // Test all negative dimensions
+            for (int neg_dim = -1; neg_dim >= -static_cast<int>(data_shape.size()); --neg_dim)
+            {
+                std::vector<graphlib::Shape> shapes = {data_shape, indices_shape};
+                if (valid_inputs(shapes, neg_dim))
+                {
+                    tt::ops::Op op(tt::ops::OpType::AdvIndex, {{"dim", neg_dim}});
                     params.emplace_back(op, shapes);
                 }
             }
