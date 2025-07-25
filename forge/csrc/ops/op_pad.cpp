@@ -3,12 +3,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <algorithm>
+#include <memory>
 #include <numeric>
 #include <vector>
 
 #include "autograd/autograd.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
+#include "lower_to_forge/common.hpp"
 #include "op.hpp"
 #include "op_interface.hpp"
 #include "passes/decomposing_context.hpp"
@@ -23,6 +25,31 @@ namespace ops
 namespace pad
 {
 using namespace graphlib;
+
+// Forward declarations for helper functions - matching Python implementation structure
+NodeContext decompose_constant_mode(
+    DecomposingContext &dc,
+    const NodeContext &input,
+    float value,
+    int left,
+    int right,
+    int top,
+    int bottom,
+    int c_dim_axis,
+    int r_dim_axis);
+
+NodeContext create_pad(DecomposingContext &dc, const std::vector<int> &shape, float value, DataFormat data_format);
+
+NodeContext extract(DecomposingContext &dc, const NodeContext &input, int dim_axis, int start, int stop);
+
+NodeContext repeat_vector(DecomposingContext &dc, const NodeContext &input, int n_repeats, int axis);
+
+NodeContext concat_patches(
+    DecomposingContext &dc,
+    const NodeContext *first_patch,
+    const NodeContext &center,
+    const NodeContext *second_patch,
+    int dim_axis);
 
 at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
@@ -108,27 +135,27 @@ NodeContext backward(
     const NodeContext &output,
     const NodeContext &gradient)
 {
+    // Backward pass for pad is to remove the padding (narrow operation)
     TT_DBG_ASSERT(op.type() == OpType::Pad, "Wrong op type.");
     TT_ASSERT(operand == 0, "Pad should have exactly 1 operand");
     TT_ASSERT(op.attrs().size() == 4, "Pad should have 4 attributes: padding, mode, value, channel_last");
 
-    // Extract attributes using the correct pattern
     auto padding = op.attr_as<std::vector<int>>("padding");
     auto channel_last = op.attr_as<bool>("channel_last");
 
-    // Backward pass for pad is to remove the padding (narrow operation)
     TT_ASSERT(padding.size() == 2 || padding.size() == 4, "Not supported padding type");
 
+    int shape_size = static_cast<int>(gradient.shape.size());
     int height_dim, width_dim;
     if (channel_last)
     {
-        height_dim = -3;  // channel_last: height is at -3
-        width_dim = -2;   // channel_last: width is at -2
+        height_dim = shape_size - 3;  // channel_last: height is at -3
+        width_dim = shape_size - 2;   // channel_last: width is at -2
     }
     else
     {
-        height_dim = -2;  // channel_first: height is at -2
-        width_dim = -1;   // channel_first: width is at -1
+        height_dim = shape_size - 2;  // channel_first: height is at -2
+        width_dim = shape_size - 1;   // channel_first: width is at -1
     }
 
     int original_height = gradient.shape[height_dim];
@@ -136,43 +163,43 @@ NodeContext backward(
 
     NodeContext grad = gradient;
 
+    int pad_left = padding[0], pad_right = padding[1];
+
     if (padding.size() == 4)
     {
-        int pad_left = padding[0];
-        int pad_right = padding[1];
         int pad_top = padding[2];
         int pad_bottom = padding[3];
 
-        // Remove height padding first using autograd create_op
+        // Remove height padding first
         graphlib::OpType narrow_height_op(
-            "narrow", {height_dim, pad_top, original_height - pad_top - pad_bottom, original_height});
-        narrow_height_op.set_attr("dim", height_dim);
-        narrow_height_op.set_attr("start", pad_top);
-        narrow_height_op.set_attr("length", original_height - pad_top - pad_bottom);
-        narrow_height_op.set_attr("original_length", original_height);
+            "narrow",
+            {},
+            {{"dim", height_dim},
+             {"start", pad_top},
+             {"length", original_height - pad_top - pad_bottom},
+             {"original_length", original_height}});
         grad = ac.autograd->create_op(ac, narrow_height_op, {grad});
 
         // Then remove width padding
         graphlib::OpType narrow_width_op(
-            "narrow", {width_dim, pad_left, original_width - pad_left - pad_right, original_width});
-        narrow_width_op.set_attr("dim", width_dim);
-        narrow_width_op.set_attr("start", pad_left);
-        narrow_width_op.set_attr("length", original_width - pad_left - pad_right);
-        narrow_width_op.set_attr("original_length", original_width);
+            "narrow",
+            {},
+            {{"dim", width_dim},
+             {"start", pad_left},
+             {"length", original_width - pad_left - pad_right},
+             {"original_length", original_width}});
         grad = ac.autograd->create_op(ac, narrow_width_op, {grad});
     }
     else
     {
-        int pad_left = padding[0];
-        int pad_right = padding[1];
-
-        // Remove width padding only
+        // Remove only width padding
         graphlib::OpType narrow_width_op(
-            "narrow", {width_dim, pad_left, original_width - pad_left - pad_right, original_width});
-        narrow_width_op.set_attr("dim", width_dim);
-        narrow_width_op.set_attr("start", pad_left);
-        narrow_width_op.set_attr("length", original_width - pad_left - pad_right);
-        narrow_width_op.set_attr("original_length", original_width);
+            "narrow",
+            {},
+            {{"dim", width_dim},
+             {"start", pad_left},
+             {"length", original_width - pad_left - pad_right},
+             {"original_length", original_width}});
         grad = ac.autograd->create_op(ac, narrow_width_op, {grad});
     }
 
@@ -187,22 +214,206 @@ void decompose_initial(
     TT_ASSERT(op.attrs().size() == 4, "Pad should have 4 attributes: padding, mode, value, channel_last");
 
     // Extract attributes
-    // auto padding = op.attr_as<std::vector<int>>("padding");
-    // auto mode = op.attr_as<int>("mode");
-    // auto value = op.attr_as<float>("value");
-    // auto channel_last = op.attr_as<bool>("channel_last");
+    auto padding = op.attr_as<std::vector<int>>("padding");
+    auto mode = op.attr_as<int>("mode");
+    auto value = op.attr_as<float>("value");
+    auto channel_last = op.attr_as<bool>("channel_last");
 
-    // // Check if all padding values are 0 - if so, replace with Nop
-    // bool all_zero = std::all_of(padding.begin(), padding.end(), [](int x) { return x == 0; });
-    // if (all_zero) {
-    //     auto nop_result = dc.op("nop", {inputs[0]});
-    //     dc.fuse(nop_result);
-    //     return;
-    // }
+    // Check if all padding values are 0 - if so, replace with Nop
+    bool all_zero = std::all_of(padding.begin(), padding.end(), [](int x) { return x == 0; });
+    if (all_zero)
+    {
+        auto nop_result = dc.op(graphlib::OpType("nop"), {inputs[0]});
+        dc.fuse(nop_result);
+        return;
+    }
 
-    // For now, delegate complex decomposition logic to Python implementation
-    // This handles the complex constant/replicate/reflect mode decompositions
-    return op.base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
+    NodeContext activations = inputs[0];
+    int shape_size = static_cast<int>(activations.shape.size());
+
+    // Determine dimension axes based on channel_last format
+    int r_dim_axis, c_dim_axis;
+    if (channel_last)
+    {
+        r_dim_axis = shape_size - 3;  // height at -3
+        c_dim_axis = shape_size - 2;  // width at -2
+    }
+    else
+    {
+        r_dim_axis = shape_size - 2;  // height at -2
+        c_dim_axis = shape_size - 1;  // width at -1
+    }
+
+    // Parse padding values - format is [left, right, top, bottom] or [left, right]
+    TT_ASSERT(padding.size() == 2 || padding.size() == 4, "Not supported padding type");
+    int left = padding[0], right = padding[1], top = 0, bottom = 0;
+    if (padding.size() == 4)
+    {
+        top = padding[2];
+        bottom = padding[3];
+    }
+
+    if (mode == 0)
+    {  // constant mode
+        NodeContext result =
+            decompose_constant_mode(dc, activations, value, left, right, top, bottom, c_dim_axis, r_dim_axis);
+        dc.fuse(result);
+    }
+    else if (mode == 1)
+    {  // replicate mode
+        NodeContext result = activations;
+
+        std::unique_ptr<NodeContext> left_pad, right_pad, top_pad, bot_pad;
+
+        if (left > 0)
+        {
+            NodeContext left_patch = extract(dc, result, c_dim_axis, 0, 1);
+            left_pad = std::make_unique<NodeContext>(repeat_vector(dc, left_patch, left, c_dim_axis));
+        }
+        if (right > 0)
+        {
+            int c = result.shape[c_dim_axis];
+            NodeContext right_patch = extract(dc, result, c_dim_axis, c - 1, c);
+            right_pad = std::make_unique<NodeContext>(repeat_vector(dc, right_patch, right, c_dim_axis));
+        }
+
+        result = concat_patches(dc, left_pad.get(), result, right_pad.get(), c_dim_axis);
+
+        if (top > 0)
+        {
+            NodeContext top_patch = extract(dc, result, r_dim_axis, 0, 1);
+            top_pad = std::make_unique<NodeContext>(repeat_vector(dc, top_patch, top, r_dim_axis));
+        }
+        if (bottom > 0)
+        {
+            int r = activations.shape[r_dim_axis];  // Use original height, not updated
+            NodeContext bot_patch = extract(dc, result, r_dim_axis, r - 1, r);
+            bot_pad = std::make_unique<NodeContext>(repeat_vector(dc, bot_patch, bottom, r_dim_axis));
+        }
+
+        result = concat_patches(dc, top_pad.get(), result, bot_pad.get(), r_dim_axis);
+        dc.fuse(result);
+    }
+    else
+    {
+        // For reflect mode (mode=2), delegate to Python for now
+        // Reflect mode requires complex tensor creation for index mirroring
+        // which is difficult to implement correctly in C++ decomposition context
+        return op.base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
+    }
+}
+
+NodeContext decompose_constant_mode(
+    DecomposingContext &dc,
+    const NodeContext &input,
+    float value,
+    int left,
+    int right,
+    int top,
+    int bottom,
+    int c_dim_axis,
+    int r_dim_axis)
+{
+    NodeContext result = input;
+    DataFormat data_format = input.output_df;
+
+    // Handle width padding (left/right)
+    std::vector<int> width_shape(result.shape.as_vector<int>());
+    std::unique_ptr<NodeContext> left_pad, right_pad;
+
+    if (left > 0)
+    {
+        width_shape[c_dim_axis] = left;
+        left_pad = std::make_unique<NodeContext>(create_pad(dc, width_shape, value, data_format));
+    }
+    if (right > 0)
+    {
+        width_shape[c_dim_axis] = right;
+        right_pad = std::make_unique<NodeContext>(create_pad(dc, width_shape, value, data_format));
+    }
+
+    result = concat_patches(dc, left_pad.get(), result, right_pad.get(), c_dim_axis);
+
+    // Handle height padding (top/bottom) - use updated result shape
+    std::vector<int> height_shape(result.shape.as_vector<int>());
+    std::unique_ptr<NodeContext> top_pad, bot_pad;
+
+    if (top > 0)
+    {
+        height_shape[r_dim_axis] = top;
+        top_pad = std::make_unique<NodeContext>(create_pad(dc, height_shape, value, data_format));
+    }
+    if (bottom > 0)
+    {
+        height_shape[r_dim_axis] = bottom;
+        bot_pad = std::make_unique<NodeContext>(create_pad(dc, height_shape, value, data_format));
+    }
+
+    result = concat_patches(dc, top_pad.get(), result, bot_pad.get(), r_dim_axis);
+
+    return result;
+}
+
+NodeContext create_pad(DecomposingContext &dc, const std::vector<int> &shape, float value, DataFormat data_format)
+{
+    // Convert int vector to int64_t for PyTorch
+    std::vector<int64_t> torch_shape(shape.begin(), shape.end());
+    at::Tensor tensor = at::full(torch_shape, value, at::TensorOptions().dtype(at::kFloat));
+
+    // Use the new create_constant_tensor method following PR #2619 pattern
+    return DecomposingContext::create_constant_tensor(dc, tensor);
+}
+
+// Following Python: def extract(dc, input, dim_axis, start, stop)
+NodeContext extract(DecomposingContext &dc, const NodeContext &input, int dim_axis, int start, int stop)
+{
+    graphlib::OpType index_op("index", {}, {{"dim", dim_axis}, {"start", start}, {"stop", stop}, {"stride", 1}});
+
+    return dc.op(index_op, {input});
+}
+
+// Following Python: def repeat_vector(dc, input, n_repeats, axis)
+NodeContext repeat_vector(DecomposingContext &dc, const NodeContext &input, int n_repeats, int axis)
+{
+    // Create repeats vector - all dimensions have 1 repeat except the axis
+    std::vector<int> repeats(input.shape.size(), 1);
+    repeats[axis] = n_repeats;
+
+    graphlib::OpType repeat_op("repeat", {}, {{"repeats", repeats}});
+
+    return dc.op(repeat_op, {input});
+}
+
+// Note: extract_and_mirror removed - reflect mode delegates to Python
+
+NodeContext concat_patches(
+    DecomposingContext &dc,
+    const NodeContext *first_patch,
+    const NodeContext &center,
+    const NodeContext *second_patch,
+    int dim_axis)
+{
+    std::vector<NodeContext> inputs;
+
+    if (first_patch)
+    {
+        inputs.push_back(*first_patch);
+    }
+
+    inputs.push_back(center);
+
+    if (second_patch)
+    {
+        inputs.push_back(*second_patch);
+    }
+
+    if (inputs.size() == 1)
+    {
+        return center;  // No concatenation needed
+    }
+
+    graphlib::OpType concat_op("concatenate", {}, {{"dim", dim_axis}});
+    return dc.op(concat_op, inputs);
 }
 
 }  // namespace pad
