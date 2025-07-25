@@ -8,6 +8,8 @@
 #include "passes/decomposing_context.hpp"
 #include "python_bindings_common.hpp"
 #include "shared_utils/sparse_matmul_utils.hpp"
+#include "torch/extension.h"  // Needed for c++ to/from python type conversion.
+#include "torch/torch.h"
 
 namespace tt
 {
@@ -106,12 +108,7 @@ void PassesModule(py::module &m_passes)
         .def("fuse", &tt::DecomposingContext::fuse, py::arg("operand"), py::arg("producer_output_port_id") = 0)
         .def(
             "tensor",
-            [](tt::DecomposingContext &self, py::object tensor)
-            {
-                return self.tensor(
-                    make_shared_py_object(tensor),
-                    graphlib::Shape::create(tensor.attr("shape").cast<std::vector<std::uint32_t>>()));
-            },
+            [](tt::DecomposingContext &self, py::object tensor) { return self.tensor(py::cast<at::Tensor>(tensor)); },
             py::arg("tensor"))
         .def(
             "get_pytorch_tensor",
