@@ -1172,7 +1172,8 @@ class FailingReasons(Enum):
                 # E                   ValueError: Shape mismatch: framework_model.shape=torch.Size([1, 10000]), compiled_model.shape=torch.Size([10000, 1])
                 # forge/forge/verify/verify.py:481: ValueError
                 class_name="ValueError",
-                component=ComponentChecker.FORGE.value,
+                # component=ComponentChecker.FORGE.value,
+                component=ComponentChecker.NONE.value,
                 message=[
                     M.regex("Shape mismatch: framework_model.shape=torch.Size.*, compiled_model.shape=torch.Size.*"),
                 ],
@@ -1588,7 +1589,8 @@ class FailingReasons(Enum):
             # forge/compile.py:731: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.FORGE.value,
+                # component=ComponentChecker.FORGE.value,
+                component=ComponentChecker.NONE.value,
                 message=[
                     M.starts_with("TT_ASSERT"),
                     M.regex("forge/csrc/graph_lib/shape.cpp:\\d+: v.front\\(\\) == 1"),

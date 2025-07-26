@@ -61,8 +61,6 @@ class FailingReasonsRegister:
         ("matmul", FailingReasons.INTERNAL_TVM_ERROR),
         ("matmul", FailingReasons.TTNN_RUNTIME),
         ("matmul", FailingReasons.UNSUPPORTED_DATA_FORMAT),
-        ("max", FailingReasons.BUGGY_SHAPE),
-        ("max", FailingReasons.FORGE_RUNTIME),
         ("maximum", FailingReasons.DATA_MISMATCH),
         ("mean", FailingReasons.COMPILATION_FAILED),
         ("minimum", FailingReasons.DATA_MISMATCH),
