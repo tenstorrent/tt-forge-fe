@@ -104,7 +104,6 @@ op_to_module_map = {
     "reduce_avg": "reduce",
     "reduce_sum": "reduce",
     "reduce_max": "reduce",
-    "grouped_reduce_avg": "reduce",
     "conv2d": Conv2d,
     "conv2d_transpose": Conv2dTranspose,
     "conv3d": "convolution",

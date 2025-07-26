@@ -8,7 +8,6 @@ import torch
 import torch.nn.functional as F
 
 from ..common import to_torch_operands
-from . import reduce
 from .reciprocal import Reciprocal
 
 
