@@ -64,8 +64,14 @@ def test_yolov5_320x320(restore_package_versions, size):
         "ultralytics/yolov5",
         size=size,
     )
-    framework_model.to(torch.bfloat16)
+    framework_model = framework_model.to(torch.bfloat16)
     inputs = [inputs[0].to(torch.bfloat16)]
+
+    # Perform a sanity run before Forge compilation which does constant folding and preserve the
+    # expected Relay IR. Skipping the sanity run prevents constant folding, resulting in a
+    # different TVM Relay IR and producing float32 outputs instead of the expected bfloat16
+    # during Forge verification.
+    framework_model(*inputs)
 
     # Configurations
     compiler_cfg = CompilerConfig()
@@ -122,8 +128,14 @@ def test_yolov5_640x640(restore_package_versions, size):
         "ultralytics/yolov5",
         size=size,
     )
-    framework_model.to(torch.bfloat16)
+    framework_model = framework_model.to(torch.bfloat16)
     inputs = [inputs[0].to(torch.bfloat16)]
+
+    # Perform a sanity run before Forge compilation which does constant folding and preserve the
+    # expected Relay IR. Skipping the sanity run prevents constant folding, resulting in a
+    # different TVM Relay IR and producing float32 outputs instead of the expected bfloat16
+    # during Forge verification.
+    framework_model(*inputs)
 
     # Configurations
     compiler_cfg = CompilerConfig()
@@ -175,8 +187,14 @@ def test_yolov5_480x480(restore_package_versions, size):
         size=size,
     )
 
-    framework_model.to(torch.bfloat16)
+    framework_model = framework_model.to(torch.bfloat16)
     inputs = [inputs[0].to(torch.bfloat16)]
+
+    # Perform a sanity run before Forge compilation which does constant folding and preserve the
+    # expected Relay IR. Skipping the sanity run prevents constant folding, resulting in a
+    # different TVM Relay IR and producing float32 outputs instead of the expected bfloat16
+    # during Forge verification.
+    framework_model(*inputs)
 
     # Configurations
     compiler_cfg = CompilerConfig()
@@ -193,7 +211,6 @@ def test_yolov5_480x480(restore_package_versions, size):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["yolov5s"])
-@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2631")
 def test_yolov5_1280x1280(restore_package_versions, variant):
 
     # Record Forge Property
@@ -213,10 +230,16 @@ def test_yolov5_1280x1280(restore_package_versions, variant):
         variant="ultralytics/yolov5",
     )
 
-    framework_model.to(torch.bfloat16)
+    framework_model = framework_model.to(torch.bfloat16)
     input_shape = (1, 3, 1280, 1280)
     input_tensor = torch.rand(input_shape)
     inputs = [input_tensor.to(torch.bfloat16)]
+
+    # Perform a sanity run before Forge compilation which does constant folding and preserve the
+    # expected Relay IR. Skipping the sanity run prevents constant folding, resulting in a
+    # different TVM Relay IR and producing float32 outputs instead of the expected bfloat16
+    # during Forge verification.
+    framework_model(*inputs)
 
     # Configurations
     compiler_cfg = CompilerConfig()
