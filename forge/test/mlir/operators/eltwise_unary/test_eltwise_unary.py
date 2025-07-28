@@ -697,9 +697,6 @@ def test_floor(input_data):
             (56,),
             0,
             False,
-            marks=pytest.mark.xfail(
-                reason="This argmax reduction should return a scalar, but that's not supported yet"
-            ),
         ),
         ((56,), 0, True),
         ((1, 128), 1, False),
@@ -719,18 +716,12 @@ def test_floor(input_data):
             (56,),
             None,
             False,
-            marks=pytest.mark.xfail(
-                reason="This argmax reduction should return a scalar, but that's not supported yet"
-            ),
         ),
         ((56,), None, True),
         pytest.param(
             (1, 128),
             None,
             False,
-            marks=pytest.mark.xfail(
-                reason="This argmax reduction should return a scalar, but that's not supported yet"
-            ),
         ),
         ((1, 128), None, True),
     ],
