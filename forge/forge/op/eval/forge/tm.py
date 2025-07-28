@@ -9,7 +9,6 @@ import forge
 from forge.tensor import change_rank
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div, align_up
-from .pad import Pad
 
 
 def eval(type, attr, ops):
@@ -439,7 +438,13 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         right = shape[dim] - stop
         value = 0.0
 
-        return Pad.decompose_constant_mode(ac, grad, value, left, right, 0, 0, dim, 0)
+        # constant pad op expects padding in the following format: [dim0_low, dim0_high, dim1_low, dim1_high, ...]
+        # which means we need to create padding for all dimensions zero except the one we are indexing into
+        padding = [0] * (len(shape) * 2)
+        padding[dim * 2] = left
+        padding[dim * 2 + 1] = right
+
+        return ac.op_with_named_attrs("constant_pad", (grad,), {"padding": padding, "value": value})
 
     raise NotImplementedError(f"{type}")
 
