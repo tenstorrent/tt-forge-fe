@@ -43,7 +43,6 @@ from .eltwise_unary import (
     LeakyRelu,
     CumSum,
     LogicalNot,
-    Dropout,
     Pow,
     Tilize,
     Cast,
@@ -69,7 +68,7 @@ from .tm import (
     ForgeUnpad,
 )
 from .constant import Constant
-from .nn import Softmax, Layernorm, LogSoftmax, Batchnorm, MaxPool2dModule
+from .nn import Softmax, Layernorm, LogSoftmax, Batchnorm, Dropout, MaxPool2dModule
 from .eltwise_nary import Concatenate, Where, IndexCopy, Stack, Interleave
 from .resize import Resize1d, Resize2d, Resize3d, Upsample2d, Downsample2d
 from .embedding import Embedding

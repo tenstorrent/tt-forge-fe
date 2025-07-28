@@ -20,21 +20,12 @@ def eval(type, attr, ops):
         or (type == "clip" and len(attr) == 2)
         or (type == "erf" and len(attr) == 0)
         or (type == "cumsum" and len(attr) == 2)
-        or (type == "dropout" and len(attr) == 3)
         or (type == "pow" and len(attr) == 1)
     ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout and pow"
 
     t_ops = to_torch_operands(*ops)
 
     original_types = [o.dtype for o in t_ops]
-
-    if type == "dropout":
-        p, training, seed = attr
-        rng_state = torch.get_rng_state()
-        torch.manual_seed(seed)
-        ret = torch.nn.functional.dropout(t_ops[0], p=p, training=bool(training))
-        torch.set_rng_state(rng_state)
-        return ret
 
     f = {
         "erf": lambda i: torch.erf(i[0]),

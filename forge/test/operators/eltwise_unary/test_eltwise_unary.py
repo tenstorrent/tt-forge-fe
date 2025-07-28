@@ -67,7 +67,6 @@ if SHAPE_FIXED:
         "Log",
         "Relu",
         "Tanh",
-        "Dropout",
         "Sine",
         "Cosine",
         "Argmax",
