@@ -47,6 +47,13 @@ NodeContext concat_patches(
     const NodeContext *second_patch,
     int dim_axis);
 
+void decompose_replicate_mode(
+    DecomposingContext &dc,
+    const NodeContext &activations,
+    const std::vector<int> &padding,
+    int height_dim,
+    int width_dim);
+
 at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Pad, "Wrong op type.");
@@ -233,53 +240,22 @@ void decompose_initial(
     // Parse padding values - format is [left, right, top, bottom] or [left, right]
     TT_ASSERT(padding.size() == 2 || padding.size() == 4, "Not supported padding type");
 
-    int left = padding[0], right = padding[1], top = 0, bottom = 0;
-    if (padding.size() == 4)
-    {
-        top = padding[2];
-        bottom = padding[3];
-    }
+    // int left = padding[0], right = padding[1], top = 0, bottom = 0;
+    // if (padding.size() == 4)
+    // {
+    //     top = padding[2];
+    //     bottom = padding[3];
+    // }
 
-    if (mode == 0)
-    {  // constant mode
+    if (mode == 0)  // constant mode
+    {
         // Use ConstantPad operation with direct TTIR mapping
         NodeContext result = create_constant_pad_op(dc, activations, padding, height_dim, width_dim, value);
         dc.fuse(result);
     }
-    else if (mode == 1)
-    {  // replicate mode
-        NodeContext result = activations;
-
-        std::unique_ptr<NodeContext> left_pad, right_pad, top_pad, bot_pad;
-
-        if (left > 0)
-        {
-            NodeContext left_patch = extract(dc, result, width_dim, 0, 1);
-            left_pad = std::make_unique<NodeContext>(repeat_vector(dc, left_patch, left, width_dim));
-        }
-        if (right > 0)
-        {
-            int c = result.shape[width_dim];
-            NodeContext right_patch = extract(dc, result, width_dim, c - 1, c);
-            right_pad = std::make_unique<NodeContext>(repeat_vector(dc, right_patch, right, width_dim));
-        }
-
-        result = concat_patches(dc, left_pad.get(), result, right_pad.get(), width_dim);
-
-        if (top > 0)
-        {
-            NodeContext top_patch = extract(dc, result, height_dim, 0, 1);
-            top_pad = std::make_unique<NodeContext>(repeat_vector(dc, top_patch, top, height_dim));
-        }
-        if (bottom > 0)
-        {
-            int r = activations.shape[height_dim];  // Use original height, not updated
-            NodeContext bot_patch = extract(dc, result, height_dim, r - 1, r);
-            bot_pad = std::make_unique<NodeContext>(repeat_vector(dc, bot_patch, bottom, height_dim));
-        }
-
-        result = concat_patches(dc, top_pad.get(), result, bot_pad.get(), height_dim);
-        dc.fuse(result);
+    else if (mode == 1)  // replicate mode
+    {
+        decompose_replicate_mode(dc, activations, padding, height_dim, width_dim);
     }
     else
     {
@@ -303,7 +279,11 @@ NodeContext create_pad(DecomposingContext &dc, const std::vector<int> &shape, fl
 // Following Python: def extract(dc, input, dim_axis, start, stop)
 NodeContext extract(DecomposingContext &dc, const NodeContext &input, int dim_axis, int start, int stop)
 {
-    graphlib::OpType index_op("index", {}, {{"dim", dim_axis}, {"start", start}, {"stop", stop}, {"stride", 1}});
+    graphlib::OpType index_op("index", {dim_axis, start, stop, 1});
+    index_op.set_attr("dim", dim_axis);
+    index_op.set_attr("start", start);
+    index_op.set_attr("stop", stop);
+    index_op.set_attr("stride", 1);
 
     return dc.op(index_op, {input});
 }
@@ -315,7 +295,9 @@ NodeContext repeat_vector(DecomposingContext &dc, const NodeContext &input, int 
     std::vector<int> repeats(input.shape.size(), 1);
     repeats[axis] = n_repeats;
 
-    graphlib::OpType repeat_op("repeat", {}, {{"repeats", repeats}});
+    std::vector<graphlib::OpType::Attr> repeat_attrs(repeats.begin(), repeats.end());
+
+    graphlib::OpType repeat_op("repeat", repeat_attrs, {{"repeats", repeats}});
 
     return dc.op(repeat_op, {input});
 }
@@ -381,6 +363,57 @@ NodeContext create_constant_pad_op(
 
     // Create constant_pad operation for direct TTIR mapping
     return dc.op(graphlib::OpType("constant_pad", {}, {{"padding", constant_padding}, {"value", value}}), {input});
+}
+
+void decompose_replicate_mode(
+    DecomposingContext &dc,
+    const NodeContext &activations,
+    const std::vector<int> &padding,
+    int height_dim,
+    int width_dim)
+{
+    NodeContext result = activations;
+
+    // Parse padding values - format is [left, right] or [left, right, top, bottom]
+    int left = padding[0], right = padding[1], top = 0, bottom = 0;
+    if (padding.size() == 4)
+    {
+        top = padding[2];
+        bottom = padding[3];
+    }
+
+    std::unique_ptr<NodeContext> left_pad, right_pad, top_pad, bot_pad;
+
+    // Apply width padding
+    if (left > 0)
+    {
+        NodeContext left_patch = extract(dc, result, width_dim, 0, 1);
+        left_pad = std::make_unique<NodeContext>(repeat_vector(dc, left_patch, left, width_dim));
+    }
+    if (right > 0)
+    {
+        int width_size = result.shape[width_dim];
+        NodeContext right_patch = extract(dc, result, width_dim, width_size - 1, width_size);
+        right_pad = std::make_unique<NodeContext>(repeat_vector(dc, right_patch, right, width_dim));
+    }
+
+    result = concat_patches(dc, left_pad.get(), result, right_pad.get(), width_dim);
+
+    // Apply height padding
+    if (top > 0)
+    {
+        NodeContext top_patch = extract(dc, result, height_dim, 0, 1);
+        top_pad = std::make_unique<NodeContext>(repeat_vector(dc, top_patch, top, height_dim));
+    }
+    if (bottom > 0)
+    {
+        int height_size = result.shape[height_dim];
+        NodeContext bot_patch = extract(dc, result, height_dim, height_size - 1, height_size);
+        bot_pad = std::make_unique<NodeContext>(repeat_vector(dc, bot_patch, bottom, height_dim));
+    }
+
+    result = concat_patches(dc, top_pad.get(), result, bot_pad.get(), height_dim);
+    dc.fuse(result);
 }
 
 }  // namespace pad
