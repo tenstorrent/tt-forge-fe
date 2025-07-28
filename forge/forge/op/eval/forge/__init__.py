@@ -13,7 +13,6 @@ from .buffer import Buffer
 from .tilizer import Tilizer
 from .clip import Clip
 from .cumulativesum import CumulativeSum
-from .argmax import Argmax
 from .convolution import Conv2d
 from .convolution import Conv2dTranspose
 from .pooling import MaxPool2d
@@ -56,7 +55,7 @@ op_to_module_map = {
     "atan": "eltwise_unary",
     "tanh": Tanh,
     "cumsum": CumulativeSum,
-    "argmax": Argmax,
+    "argmax": "eltwise_unary",
     "logical_not": "eltwise_unary",
     "dropout": "eltwise_unary",
     "pow": "eltwise_unary",

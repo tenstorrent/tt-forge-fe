@@ -765,7 +765,7 @@ void Op::decompose_initial(
         case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Add: return;
         case OpType::AdvIndex: return adv_index::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Argmax: return argmax::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Argmax: return;
         case OpType::Atan: return;
         case OpType::AvgPool1d: return avg_pool_1d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::AvgPool2d: return avg_pool_2d::decompose_initial(old_op_type, *this, dc, inputs);
@@ -890,7 +890,7 @@ void Op::decompose_post_optimize(
         case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Add: return;
         case OpType::AdvIndex: return;
-        case OpType::Argmax: return argmax::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Argmax: return;
         case OpType::Atan: return;
         case OpType::AvgPool1d: return avg_pool_1d::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::AvgPool2d: return avg_pool_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -1015,7 +1015,7 @@ void Op::decompose_post_autograd(
         case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Add: return;
         case OpType::AdvIndex: return;
-        case OpType::Argmax: return argmax::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Argmax: return;
         case OpType::Atan: return;
         case OpType::AvgPool1d: return avg_pool_1d::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::AvgPool2d: return avg_pool_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1138,7 +1138,7 @@ long Op::initial_flops_estimate(
         case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Add: return 0;
         case OpType::AdvIndex: return 0;
-        case OpType::Argmax: return argmax::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Argmax: return 0;
         case OpType::Atan: return 0;
         case OpType::AvgPool1d: return avg_pool_1d::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::AvgPool2d: return avg_pool_2d::initial_flops_estimate(old_op_type, *this, inputs);

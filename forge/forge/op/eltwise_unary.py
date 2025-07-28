@@ -347,7 +347,7 @@ def Argmax(name: str, operandA: Tensor, dim: int = None, keep_dim=False) -> Tens
     if dim is not None:
         if dim < 0:
             dim += len(operandA.shape)
-        kwargs["dim"] = dim
+        kwargs["dim_arg"] = [dim]
 
     return op("argmax", name, operandA, **kwargs).get_tensor()
 
