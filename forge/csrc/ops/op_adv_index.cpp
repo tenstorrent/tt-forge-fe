@@ -45,7 +45,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::AdvIndex, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 2, "AdvIndex should have 2 input shapes.");
@@ -53,20 +53,20 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     TT_ASSERT(in_shapes[1].size() == 1 || in_shapes[1].size() == 2, "indices should be 1D or 2D");
 
     int dim = op.attr_as<int>("dim");
-    std::vector<std::uint32_t> data_shape = in_shapes[0];
-    std::vector<std::uint32_t> indices_shape = in_shapes[1];
+    std::vector<uint32_t> data_shape = in_shapes[0];
+    std::vector<uint32_t> indices_shape = in_shapes[1];
 
     if (dim < 0)
     {
         dim += data_shape.size();
     }
 
-    std::vector<std::uint32_t> output_shape = data_shape;
+    std::vector<uint32_t> output_shape = data_shape;
     // Replace the indexed dimension with the total number of indices
     // For 1D indices: use the size directly
     // For 2D indices: use the product of dimensions (total indices)
-    std::uint32_t total_indices = 1;
-    for (std::uint32_t idx_dim : indices_shape)
+    uint32_t total_indices = 1;
+    for (uint32_t idx_dim : indices_shape)
     {
         total_indices *= idx_dim;
     }
@@ -135,8 +135,8 @@ void decompose_initial(
     if (data_shape.size() != 2)
     {
         // Calculate permuted shape, by popping the element at indexed dim and inserting it at the beginning
-        std::vector<std::uint32_t> permuted_shape = data_shape;
-        std::uint32_t indexed_dim_shape = permuted_shape[dim];
+        std::vector<uint32_t> permuted_shape = data_shape;
+        uint32_t indexed_dim_shape = permuted_shape[dim];
         permuted_shape.erase(permuted_shape.begin() + dim);
         permuted_shape.insert(permuted_shape.begin(), indexed_dim_shape);
 
@@ -157,7 +157,7 @@ void decompose_initial(
     NodeContext indices_input = inputs[1];
     if (indices_shape.size() == 2)
     {
-        std::uint32_t total_indices = 1;
+        uint32_t total_indices = 1;
         for (int idx_dim : indices_shape)
         {
             total_indices *= idx_dim;
@@ -171,15 +171,15 @@ void decompose_initial(
     NodeContext reshaped_output = selected;
     if (data_shape.size() != 2)
     {
-        std::vector<std::uint32_t> permuted_shape = data_shape;
-        std::uint32_t indexed_dim_shape = permuted_shape[dim];
+        std::vector<uint32_t> permuted_shape = data_shape;
+        uint32_t indexed_dim_shape = permuted_shape[dim];
         permuted_shape.erase(permuted_shape.begin() + dim);
         permuted_shape.insert(permuted_shape.begin(), indexed_dim_shape);
 
         // output_shape = [total_indices] + permuted_shape[1:]
         // For 1D indices: use the size directly
         // For 2D indices: use the product of dimensions (total indices)
-        std::uint32_t total_indices = 1;
+        uint32_t total_indices = 1;
         for (int idx_dim : indices_shape)
         {
             total_indices *= idx_dim;
