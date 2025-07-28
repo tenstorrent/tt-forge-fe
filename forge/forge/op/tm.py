@@ -164,7 +164,7 @@ def AdvIndex(
     if dim < 0:
         dim += len(operandA.shape)
 
-    return op("adv_index", name, operandA, operandB, attrs=(dim,), dim=dim).get_tensor()
+    return op("adv_index", name, operandA, operandB, dim=dim).get_tensor()
 
 
 def Select(
