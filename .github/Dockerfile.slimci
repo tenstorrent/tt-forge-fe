@@ -1,4 +1,4 @@
-FROM ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:latest AS slimci
+FROM ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:latest AS slim
 SHELL ["/bin/bash", "-c"]
 
 # Set environment variables

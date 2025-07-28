@@ -83,9 +83,8 @@ jobs:
           shell: bash
           run: |
             source env/activate
-            pip install ./tt_tvm*.whl --force-reinstall
-            pip install ./tt_forge_fe*.whl --force-reinstall
-            pip install -r env/dev_requirements.txt
+            pip install ./tt_tvm*.whl --upgrade
+            pip install ./tt_forge_fe*.whl --upgrade
 
         - name: Run Test
           env:

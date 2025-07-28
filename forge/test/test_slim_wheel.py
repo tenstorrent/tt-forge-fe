@@ -22,7 +22,7 @@ from forge.verify.verify import verify
         ((2, 3, 4), torch.float32),
     ],
 )
-def test_eltwise_add(shape, dtype):
+def test_eltwise_add_pt(shape, dtype):
     """Test element-wise addition using forge compile and verify."""
 
     class AddModel(torch.nn.Module):
@@ -76,7 +76,7 @@ def test_eltwise_add_onnx(forge_tmp_path):
 
 
 @pytest.mark.slim_wheel
-def test_eltwise_add_tensorflow():
+def test_eltwise_add_tf():
     class AddModel(tf.keras.Model):
         def call(self, x, y):
             return x + y
