@@ -90,7 +90,6 @@ NodeContext backward(
     TT_DBG_ASSERT(op.type() == OpType::AdvIndex, "Wrong op type.");
     TT_ASSERT(operand == 0, "Invalid operand index");
 
-    // adv_index backward is not implemented in Python either
     TT_THROW("Backward pass for adv_index is not implemented");
     unreachable();
 }
