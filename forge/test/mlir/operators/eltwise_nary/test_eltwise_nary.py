@@ -50,9 +50,6 @@ def test_meshgrid(shapes):
     ],
 )
 @pytest.mark.push
-@pytest.mark.xfail(
-    reason="[MLIR] error: where op casts inputs to float32 and predicate to float32 so we get float32 output"
-)
 def test_where(condition, input, other):
     class Where(nn.Module):
         def __init__(self):

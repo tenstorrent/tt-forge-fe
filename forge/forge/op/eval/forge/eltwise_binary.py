@@ -9,7 +9,6 @@ from forge.tensor import Tensor
 import numpy as np
 import torch
 from .reciprocal import Reciprocal
-from .log import Log
 from .nop import Nop
 
 from ..common import to_torch_operands
@@ -27,7 +26,6 @@ def eval(type, attr, ops):
         "maximum": lambda i: torch.maximum(t_ops[0], t_ops[1]),
         "minimum": lambda i: torch.minimum(t_ops[0], t_ops[1]),
         "heaviside": lambda i: torch.heaviside(t_ops[0], t_ops[1]),
-        "power": lambda i: torch.pow(t_ops[0], t_ops[1]),
         "greater": lambda i: torch.gt(t_ops[0], t_ops[1]).to(t_ops[0].dtype),
         "greater_equal": lambda i: torch.ge(t_ops[0], t_ops[1]).to(t_ops[0].dtype),
         "less": lambda i: torch.lt(t_ops[0], t_ops[1]).to(t_ops[0].dtype),
@@ -96,16 +94,6 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
         # TODO
         return ac.op(Nop.create(), (grad,))  # pass gradient through
 
-    elif op_type == "power":
-        if operand == 0:  # dx = y * (x^y) * recp(x)
-            recip = ac.op(Reciprocal.create(), (inputs[0],))
-            partial_grad = ac.op("multiply", (output, recip))
-            pow_grad = ac.op("multiply", (inputs[1], partial_grad))
-        if operand == 1:  # dy = (x^y) * ln(x)
-            ln_x = ac.op(Log.create(), [inputs[0]])
-            pow_grad = ac.op("multiply", (output, ln_x))
-        return ac.op("multiply", (pow_grad, grad))
-
     assert False, f"{op_type} not defined in eltwise binary backward."
 
 
@@ -149,19 +137,19 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
 
         max_operand_nd = max(len(op0_shape), len(op1_shape), 3)
         while len(operand0.shape) < max_operand_nd:
-            operand0 = dc.op_with_named_attrs("unsqueeze", [operand0], {"dim": 0}, (0, len(operand0.shape)))
+            operand0 = dc.op_with_named_attrs("unsqueeze", [operand0], {"dim": 0}, (0,))
         while len(operand1.shape) < max_operand_nd:
-            operand1 = dc.op_with_named_attrs("unsqueeze", [operand1], {"dim": 0}, (0, len(operand1.shape)))
+            operand1 = dc.op_with_named_attrs("unsqueeze", [operand1], {"dim": 0}, (0,))
 
         if slice_factor != None:
             concat_z = dc.op("interleave", [operand0, operand1], (-3, 1))
-            result = dc.op("reduce_max", [concat_z], (-3, 2))
+            result = dc.op_with_named_attrs("reduce_max", [concat_z], {"dim": -3, "keep_dim": True})
         else:
             concat_z = dc.op_with_named_attrs("concatenate", [operand0, operand1], {"dim": -3})
-            result = dc.op("reduce_max", [concat_z], (-3,))
+            result = dc.op_with_named_attrs("reduce_max", [concat_z], {"dim": -3, "keep_dim": True})
 
         while len(result.shape) > max_operand_nd:
-            result = dc.op("squeeze", [result], (0,))
+            result = dc.op_with_named_attrs("squeeze", [result], {"dim": 0})
 
         dc.fuse(result)
         return
@@ -186,7 +174,7 @@ def decompose_post_optimize(op_type, attr, dc, inputs):
 def initial_flops_estimate(type, attr, ops):
     flops = 0
     output_shape = shape(type, attr, ops)[0]
-    if type in ["add", "power", "maximum", "minumum"]:
+    if type in ["add", "maximum", "minumum"]:
         flops = np.prod(output_shape)
 
     return flops

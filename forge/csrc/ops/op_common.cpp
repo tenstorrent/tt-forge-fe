@@ -110,12 +110,17 @@ tt::graphlib::NodeContext reduce_broadcast_dimensions(
             continue;
 
         int dim = static_cast<int>(i);
-        Attrs named_attrs = {{"keep_dim", true}, {"dim_arg", dim}};
-        result_grad =
-            ac.autograd->create_op(ac, graphlib::OpType("reduce_sum", {dim, true}, named_attrs), {result_grad});
+        result_grad = ac.autograd->create_op(
+            ac, graphlib::OpType("reduce_sum", {}, {{"keep_dim", true}, {"dim_arg", dim}}), {result_grad});
     }
 
     return result_grad;
+}
+
+long initial_flops_estimate_output_dim(std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape_tuple)
+{
+    graphlib::Shape out_shape = std::get<0>(shape_tuple);
+    return std::accumulate(out_shape.begin(), out_shape.end(), 1L, std::multiplies<int64_t>());
 }
 
 }  // namespace op_common

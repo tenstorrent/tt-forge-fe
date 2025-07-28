@@ -36,9 +36,6 @@ class StableDiffusionXLWrapper(torch.nn.Module):
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.skip(
-    reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-)
 @pytest.mark.parametrize("variant", ["stable-diffusion-xl-base-1.0"])
 def test_stable_diffusion_generation(variant, forge_tmp_path):
     # Build Module Name
@@ -49,6 +46,8 @@ def test_stable_diffusion_generation(variant, forge_tmp_path):
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
     )
+
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load the pipeline
     pipe = load_pipe(variant, variant_type="xl")

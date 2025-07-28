@@ -22,6 +22,7 @@ from third_party.tt_forge_models.yolov3 import ModelLoader  # isort:skip
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2660")
 def test_yolo_v3():
     # Record Forge Property
     module_name = record_model_properties(
@@ -33,8 +34,9 @@ def test_yolo_v3():
     )
 
     # Load model and input
-    framework_model = ModelLoader.load_model(dtype_override=torch.bfloat16)
-    input_sample = ModelLoader.load_inputs(dtype_override=torch.bfloat16)
+    loader = ModelLoader()
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_sample = loader.load_inputs(dtype_override=torch.bfloat16)
 
     # Configurations
     compiler_cfg = CompilerConfig()

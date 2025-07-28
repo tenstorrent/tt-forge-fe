@@ -91,7 +91,7 @@ bool has_broadcast_on_dim(graphlib::Graph *graph, graphlib::Edge edge, int neede
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
-            int dim = std::get<int>(op_type.legacy_attrs_[0]);
+            int dim = op_type.attr_as<int>("dim");
             if (dim == needed_dim)
             {
                 return true;
@@ -199,7 +199,7 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
                 set_bcast_dims(graph, commute_bcasts, between_edge);
             }
 
-            if (op->op_name() == "reduce_avg" or op->op_name() == "reduce_sum")
+            if (op->new_op_type() == ops::OpType::ReduceAvg or op->new_op_type() == ops::OpType::ReduceSum)
             {
                 commute_through_reduce(
                     graph,
@@ -214,7 +214,7 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
                     &operand_dims,
                     &golden_transform);
             }
-            else if (op->op_name() == "concatenate")
+            else if (op->new_op_type() == ops::OpType::Concatenate)
             {
                 commute_through_concat(
                     graph,
@@ -228,7 +228,7 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
                     &operand_dims,
                     &golden_transform);
             }
-            else if (op->op_name() == "select")
+            else if (op->new_op_type() == ops::OpType::Select)
             {
                 commute_through_select(
                     graph,
@@ -276,7 +276,7 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
                 auto updated_commute_shape = commute_shape;
                 updated_commute_shape[operand_dims.second] =
                     graph->node_by_id(operand_edge.producer_node_id)->shape()[operand_dims.first];
-                if (op->op_name() == "reshape")
+                if (op->new_op_type() == ops::OpType::Reshape)
                     update_reshape_attr(op, updated_commute_shape);
 
                 clone->set_shape(updated_commute_shape);
@@ -284,7 +284,7 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
             }
             else
             {
-                if (op->op_name() == "reshape")
+                if (op->new_op_type() == ops::OpType::Reshape)
                     update_reshape_attr(op, commute_shape);
 
                 clone->set_shape(commute_shape);
@@ -292,14 +292,14 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
             }
 
             // Operand commute clones for squeeze/unsqueeze need to be swapped to the opposite op
-            if (first->op_name() == "unsqueeze")
+            if (first->new_op_type() == ops::OpType::Unsqueeze)
             {
                 op->change_op_type(
                     "squeeze",
                     {first->op_legacy_attrs()[0]},
                     graphlib::OpType::Attrs{{"dim", first->op_legacy_attrs()[0]}});
             }
-            else if (first->op_name() == "squeeze")
+            else if (first->new_op_type() == ops::OpType::Squeeze)
             {
                 op->change_op_type("unsqueeze");
                 op->change_op_type(
@@ -314,7 +314,7 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
             // (1024,) Placing an unsqueeze clone will cause the input to be (1, 1024) which isn't wrong but also is not
             // correct. In this case we shall convert the clone to a reshape which contains the correct number of
             // unsqueezes implicitly.
-            if ((first->op_name() == "unsqueeze" or first->op_name() == "squeeze") and
+            if ((first->new_op_type() == ops::OpType::Unsqueeze or first->new_op_type() == ops::OpType::Squeeze) and
                 dynamic_cast<graphlib::InputNode *>(graph->node_by_id(operand_edge.producer_node_id)))
             {
                 op->change_op_type("reshape");
@@ -338,8 +338,8 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
                 {
                     if (tm.type() == ops::OpType::Broadcast)
                     {
-                        int dim = std::get<int>(tm.legacy_attrs_[0]);
-                        int volume = std::get<int>(tm.legacy_attrs_[1]);
+                        int dim = tm.attr_as<int>("dim");
+                        int volume = tm.attr_as<int>("size");
                         op_shape[dim] *= volume;
                     }
                 }
@@ -368,7 +368,8 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
         graph->get_edge_attributes(edge)->clear_broadcast_dims();
         graph->get_edge_attributes(edge)->set_broadcast_dim(are_inverse.second, broadcast_volume, false);
     }
-    bool is_squeeze_unsqueeze = first->op_name() == "squeeze" or first->op_name() == "unsqueeze";
+    bool is_squeeze_unsqueeze =
+        first->new_op_type() == ops::OpType::Squeeze or first->new_op_type() == ops::OpType::Unsqueeze;
     int first_id = first->id();
     int last_id = last->id();
     // `first` has commuted to `last`, these nodes are now back to back and cancel each other out
@@ -412,7 +413,7 @@ bool erase_inverse_ops(graphlib::Graph *graph)
             if (op->as<graphlib::TaggedNode>()->has_tag("dont_erase"))
                 continue;
 
-            if (match_fns.find(op->op_name()) == match_fns.end())
+            if (match_fns.find(op->new_op_type()) == match_fns.end())
                 continue;
 
             std::vector<graphlib::Node *> path = find_path_to_inverse_op(graph, op, shape_of_only_operand(graph, op));

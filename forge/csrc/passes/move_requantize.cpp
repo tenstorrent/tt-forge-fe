@@ -45,7 +45,7 @@ static std::vector<graphlib::Node *> find_path_to_requant(graphlib::Graph *graph
         if (not op)
             break;
 
-        if (op->op_name() == "forge_requantize")
+        if (op->new_op_type() == ops::OpType::ForgeRequantize)
         {
             found_requant = true;
             path.push_back(op);
@@ -198,7 +198,7 @@ bool move_tm_through_requantize(graphlib::Graph *graph)
             if (op->as<graphlib::TaggedNode>()->has_tag("dont_erase"))
                 continue;
 
-            if (op->op_name() != "reshape" and op->op_name() != "transpose")
+            if (op->new_op_type() != ops::OpType::Reshape and op->new_op_type() != ops::OpType::Transpose)
                 continue;
 
             std::vector<graphlib::Node *> path = find_path_to_requant(graph, op);

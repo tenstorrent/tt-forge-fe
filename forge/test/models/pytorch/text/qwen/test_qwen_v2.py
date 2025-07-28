@@ -28,17 +28,17 @@ variants = [
     "Qwen/Qwen2.5-0.5B-Instruct",
     "Qwen/Qwen2.5-1.5B",
     "Qwen/Qwen2.5-1.5B-Instruct",
-    "Qwen/Qwen2.5-3B",
-    "Qwen/Qwen2.5-3B-Instruct",
-    "Qwen/Qwen2.5-7B",
-    "Qwen/Qwen2.5-7B-Instruct",
-    "Qwen/Qwen2.5-7B-Instruct-1M",
-    "Qwen/Qwen2.5-14B-Instruct",
-    "Qwen/Qwen2.5-14B-Instruct-1M",
-    "Qwen/Qwen2.5-32B-Instruct",
-    "Qwen/Qwen2.5-72B-Instruct",
-    "Qwen/Qwen2.5-Math-7B",
-    "Qwen/Qwen2.5-14B",
+    pytest.param("Qwen/Qwen2.5-3B", marks=[pytest.mark.out_of_memory]),
+    pytest.param("Qwen/Qwen2.5-3B-Instruct", marks=[pytest.mark.out_of_memory]),
+    pytest.param("Qwen/Qwen2.5-7B", marks=[pytest.mark.out_of_memory]),
+    pytest.param("Qwen/Qwen2.5-7B-Instruct", marks=[pytest.mark.out_of_memory]),
+    pytest.param("Qwen/Qwen2.5-7B-Instruct-1M", marks=[pytest.mark.out_of_memory]),
+    pytest.param("Qwen/Qwen2.5-14B-Instruct", marks=[pytest.mark.out_of_memory]),
+    pytest.param("Qwen/Qwen2.5-14B-Instruct-1M", marks=[pytest.mark.out_of_memory]),
+    pytest.param("Qwen/Qwen2.5-32B-Instruct", marks=[pytest.mark.out_of_memory]),
+    pytest.param("Qwen/Qwen2.5-72B-Instruct", marks=[pytest.mark.out_of_memory]),
+    pytest.param("Qwen/Qwen2.5-Math-7B", marks=[pytest.mark.out_of_memory]),
+    pytest.param("Qwen/Qwen2.5-14B", marks=[pytest.mark.out_of_memory]),
 ]
 
 
@@ -122,7 +122,6 @@ def test_qwen_clm(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["Qwen/Qwen2-7B"])
 def test_qwen2_token_classification(variant):
-    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)")
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -132,6 +131,7 @@ def test_qwen2_token_classification(variant):
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and tokenizer
     model = Qwen2ForTokenClassification.from_pretrained(variant, use_cache=False)

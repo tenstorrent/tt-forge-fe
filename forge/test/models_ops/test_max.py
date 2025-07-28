@@ -41,7 +41,7 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Max0,
         [((1, 16, 256, 256), torch.float32)],
-        {"model_names": ["pt_xglm_facebook_xglm_564m_clm_hf", "pt_xglm_facebook_xglm_1_7b_clm_hf"], "pcc": 0.99},
+        {"model_names": ["pt_xglm_facebook_xglm_1_7b_clm_hf", "pt_xglm_facebook_xglm_564m_clm_hf"], "pcc": 0.99},
     ),
     (Max0, [((1, 112, 112, 64), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
     (Max0, [((1, 56, 55, 64), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
@@ -85,7 +85,6 @@ def test_module(forge_module_and_shapes_dtypes):
     ]
 
     framework_model = forge_module(forge_module.__name__)
-    framework_model.process_framework_parameters()
 
     for name, parameter in framework_model._parameters.items():
         parameter_tensor = Tensor.create_torch_tensor(

@@ -7,6 +7,7 @@
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
 #include "op_interface.hpp"
+#include "ops/op_common.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
 #include "utils/assert.hpp"
@@ -18,7 +19,7 @@ namespace ops
 namespace cosine
 {
 
-at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Cosine, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "cosine::eval should have single input tensor.");
@@ -26,7 +27,7 @@ at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
-    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Cosine, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "cosine::shape should have single input shape.");
@@ -34,6 +35,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
 }
 
 tt::graphlib::NodeContext backward(
+    const graphlib::OpType &old_op_type,
     const Op &op,
     tt::autograd::autograd_context &ac,
     int operand,
@@ -54,16 +56,6 @@ tt::graphlib::NodeContext backward(
     graphlib::NodeContext neg_sine =
         ac.autograd->create_op(ac, graphlib::OpType("multiply"), {sine_output, ac.autograd->create_constant(ac, -1.0)});
     return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {neg_sine, gradient});
-}
-
-long initial_flops_estimate(const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Cosine, "Wrong op type.");
-
-    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape_tuple = cosine::shape(op, inputs);
-    graphlib::Shape out_shape = std::get<0>(shape_tuple);
-
-    return std::accumulate(out_shape.begin(), out_shape.end(), 1u, std::multiplies<uint32_t>());
 }
 
 }  // namespace cosine

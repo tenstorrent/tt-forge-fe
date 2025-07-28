@@ -259,7 +259,7 @@ def verify_backward(
     compiled_output: torch.Tensor,
     framework_model: torch.nn.Module,
     compiled_model: CompiledModel,
-    verify_cfg: VerifyConfig = VerifyConfig(),
+    verify_cfg: VerifyConfig = None,
 ):
     """
     Performs verification of a compiled model by comparing its outputs against a reference framework model.
@@ -277,7 +277,8 @@ def verify_backward(
         compiled_model: compiled model to verify
         verify_cfg: Configuration object controlling which verification checks to perform
     """
-
+    if verify_cfg is None:
+        verify_cfg = VerifyConfig()
     if not verify_cfg.enabled:
         logger.warning("Verification is disabled")
         return
@@ -353,7 +354,7 @@ def verify(
     inputs: List[FrameworkTensor],
     framework_model: FrameworkModule,
     compiled_model: CompiledModel,
-    verify_cfg: VerifyConfig = VerifyConfig(),
+    verify_cfg: VerifyConfig = None,
 ):
     """
     Performs verification of a compiled model by comparing its outputs against a reference framework model.
@@ -372,7 +373,8 @@ def verify(
         tuple: (framework_outputs, compiled_outputs) - outputs from both models
                Returns (None, None) if verification is disabled
     """
-
+    if verify_cfg is None:
+        verify_cfg = VerifyConfig()
     # If model group is RED, turn on verify_emitc_correctness
     model_group = get_model_group()
     if model_group and model_group == ModelGroup.RED:

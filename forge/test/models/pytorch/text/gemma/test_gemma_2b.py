@@ -33,7 +33,6 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b(variant):
-    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 24 GB)")
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -43,6 +42,7 @@ def test_gemma_2b(variant):
         source=Source.HUGGINGFACE,
         task=Task.TEXT_GENERATION,
     )
+    pytest.xfail(reason="Requires multi-chip support")
 
     model = download_model(GemmaForCausalLM.from_pretrained, variant, use_cache=False)
     framework_model = TextModelWrapper(model=model, text_embedding=model.model.embed_tokens)
@@ -82,10 +82,7 @@ def test_gemma_2b(variant):
             "google/gemma-2-2b-it",
             marks=pytest.mark.xfail,
         ),
-        pytest.param(
-            "google/gemma-2-9b-it",
-            marks=pytest.mark.xfail,
-        ),
+        pytest.param("google/gemma-2-9b-it", marks=[pytest.mark.xfail, pytest.mark.out_of_memory]),
     ],
 )
 def test_gemma_pytorch_v2(variant):
@@ -136,7 +133,6 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_gemma_pytorch_27b(variant):
 

@@ -89,10 +89,8 @@ enum class OpType : uint32_t
     ForgeUnpad,
     Gather,
     Gelu,
-    GeluDerivative,
     Greater,
     GreaterEqual,
-    GroupedReduceAvg,
     Heaviside,
     Hslice,
     Hstack,
@@ -149,7 +147,6 @@ enum class OpType : uint32_t
     Subtract,
     Squeeze,
     Tanh,
-    TileBroadcast,
     Tilizer,
     Transpose,
     Unsqueeze,
@@ -286,7 +283,7 @@ class Op
     long initial_flops_estimate(
         const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
-   private:
+   public:
     /* ------------------------------------------------------------*
      * Base - common for all ops that are not yet migrated to cpp. *
      * ------------------------------------------------------------*/
@@ -303,12 +300,6 @@ class Op
         const std::vector<tt::graphlib::NodeContext> &inputs,
         const tt::graphlib::NodeContext &output,
         const tt::graphlib::NodeContext &gradient) const;
-
-    bool base_is_tm(const graphlib::OpType &old_op_type) const;
-    bool base_is_eltwise(const graphlib::OpType &old_op_type) const;
-    bool base_is_eltwise_unary(const graphlib::OpType &old_op_type) const;
-    bool base_is_eltwise_binary(const graphlib::OpType &old_op_type) const;
-    bool base_is_eltwise_nary(const graphlib::OpType &old_op_type) const;
 
     void base_decompose(
         const graphlib::OpType &old_op_type,

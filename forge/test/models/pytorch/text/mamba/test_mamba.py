@@ -29,18 +29,12 @@ variants = [
     pytest.param(
         "state-spaces/mamba-2.8b-hf",
         marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
         "state-spaces/mamba-1.4b-hf",
         marks=[
-            pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
-            ),
             pytest.mark.out_of_memory,
         ],
     ),
@@ -65,6 +59,8 @@ def test_mamba(variant):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
+    if variant in ["state-spaces/mamba-2.8b-hf", "state-spaces/mamba-1.4b-hf"]:
+        pytest.xfail(reason="Requires multi-chip support")
 
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

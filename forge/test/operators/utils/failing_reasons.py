@@ -188,7 +188,7 @@ class ComponentChecker(Enum):
                         M.last_line(M.contains("forge/op/eval/forge/convolution.py:")),
                         M.last_line(M.contains("forge/op/eval/forge/tm.py:")),
                         M.last_line(M.contains("forge/op/eval/forge/embedding.py:")),
-                        M.last_line(M.contains("test/operators/utils/compat.py:")),  # Deprecated verification
+                        M.last_line(M.contains("test/operators/utils/compat.py:")),  # pcc error levels
                         M.last_line(M.contains("test/operators/pytorch/")),
                         # Fail with pytorch also. TODO: check if tests are correct
                         M.last_line(M.contains("torch/nn/modules/conv.py:")),
@@ -407,7 +407,10 @@ class FailingReasons(Enum):
                     ),
                 ],
                 error_log=[
-                    M.last_line(M.contains("forge/verify/value_checkers.py:")),
+                    M.any(
+                        M.last_line(M.contains("forge/verify/value_checkers.py:")),
+                        M.last_line(M.contains("test/operators/utils/compat.py:")),
+                    ),
                 ],
             ),
         ],
@@ -899,7 +902,7 @@ class FailingReasons(Enum):
                 message=[
                     M.starts_with("TT_THROW"),
                     M.any(
-                        M.regex("tt-metal/tt_metal/impl/program/program.cpp:.*: tt::exception"),
+                        M.regex("tt-metal/tt_metal/impl/program/program.cpp:\\d+: tt::exception"),
                     ),
                 ],
                 error_log=[
@@ -954,8 +957,8 @@ class FailingReasons(Enum):
                 class_name="RuntimeError",
                 component=ComponentChecker.NONE.value,
                 message=[
-                    M.contains(
-                        "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/core/core.cpp:49: tt::exception"
+                    M.regex(
+                        "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/core/core.cpp:\\d+: tt::exception"
                     ),
                 ],
             ),
@@ -1378,8 +1381,8 @@ class FailingReasons(Enum):
                 component=ComponentChecker.METAL.value,
                 message=[
                     M.starts_with("TT_ASSERT"),
-                    M.contains(
-                        "tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_cumsum/device/moreh_cumsum_program_factory.cpp:23: dim == 0 || dim == 1"
+                    M.regex(
+                        "tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_cumsum/device/moreh_cumsum_program_factory.cpp:\\d+: dim == 0 || dim == 1"
                     ),
                 ],
                 error_log=[
@@ -1413,8 +1416,8 @@ class FailingReasons(Enum):
                 component=ComponentChecker.METAL.value,
                 message=[
                     M.starts_with("TT_FATAL"),
-                    M.contains(
-                        "tt-metal/ttnn/cpp/ttnn/operations/data_movement/fill_pad/device/fill_pad_op.cpp:18: detail::data_type_to_size.count(input_tensor_a.get_dtype())"
+                    M.regex(
+                        "tt-metal/ttnn/cpp/ttnn/operations/data_movement/fill_pad/device/fill_pad_op.cpp:\\d+: detail::data_type_to_size.count\\(input_tensor_a.get_dtype\\(\\)\\)"
                     ),
                 ],
                 error_log=[
@@ -1524,11 +1527,11 @@ class FailingReasons(Enum):
                 message=[
                     M.starts_with("TT_FATAL"),
                     M.any(
-                        M.contains(
-                            "tt-metal/ttnn/cpp/ttnn/operations/data_movement/transpose/device/transpose_op.cpp:119: input_tensor.get_dtype() == DataType::BFLOAT16 || input_tensor.get_dtype() == DataType::"
+                        M.regex(
+                            "tt-metal/ttnn/cpp/ttnn/operations/data_movement/transpose/device/transpose_op.cpp:\\d+: input_tensor.get_dtype\\(\\) == DataType::BFLOAT16 || input_tensor.get_dtype\\(\\) == DataType::"
                         ),
-                        M.contains(
-                            "tt-metal/ttnn/cpp/ttnn/operations/data_movement/transpose/device/transpose_op.cpp:120: input_tensor.get_dtype() == DataType::BFLOAT16 || input_tensor.get_dtype() == DataType::"
+                        M.regex(
+                            "tt-metal/ttnn/cpp/ttnn/operations/data_movement/transpose/device/transpose_op.cpp:\\d+: input_tensor.get_dtype\\(\\) == DataType::BFLOAT16 || input_tensor.get_dtype\\(\\) == DataType::"
                         ),
                     ),
                 ],
@@ -1574,21 +1577,21 @@ class FailingReasons(Enum):
             # >       inserted_node_id_mapping, context.fracture_chip_id_assignments = run_post_initial_graph_passes(
             #             graph, compiler_cfg, compiler_cfg.fracture_groups
             #         )
-            # E       RuntimeError: TT_ASSERT @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/forge/csrc/graph_lib/shape.cpp:230: v.front() == 1
+            # E       RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/graph_lib/shape.cpp:217: v.front() == 1
             # E       info:
             # E       Cannot squeeze a non-zero dim
             # E       backtrace:
             # E        --- tt::graphlib::Shape::as_rank(unsigned int) const
             # E        --- tt::graphlib::handle_change_rank(tt::graphlib::Graph*, tt::graphlib::Edge)
-            # E        --- tt::decompose_tt_forge_graph(tt::graphlib::Graph*, char const*, std::shared_ptr<void>)
+            # E        --- std::vector<std::pair<long, long>, std::allocator<std::pair<long, long> > > tt::decompose_tt_forge_graph<(tt::DecomposeEpoch)0>(tt::graphlib::Graph*, std::shared_ptr<void>)
             # E        --- tt::run_post_initial_graph_passes(tt::graphlib::Graph*, pybind11::object, std::vector<std::tuple<std::vector<std::tuple<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<int, std::allocator<int> >, std::vector<int, std::allocator<int> > >, std::allocator<std::tuple<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<int, std::allocator<int> >, std::vector<int, std::allocator<int> > > > >, std::unordered_map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<int, std::allocator<int> >, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<int, std::allocator<int> > > > > >, std::allocator<std::tuple<std::vector<std::tuple<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<int, std::allocator<int> >, std::vector<int, std::allocator<int> > >, std::allocator<std::tuple<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<int, std::allocator<int> >, std::vector<int, std::allocator<int> > > > >, std::unordered_map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<int, std::allocator<int> >, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<int, std::allocator<int> > > > > > > > const&)
-            # forge/forge/compile.py:756: RuntimeError
+            # forge/compile.py:731: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
                 component=ComponentChecker.FORGE.value,
                 message=[
                     M.starts_with("TT_ASSERT"),
-                    M.contains("forge/csrc/graph_lib/shape.cpp:230: v.front() == 1"),
+                    M.regex("forge/csrc/graph_lib/shape.cpp:\\d+: v.front\\(\\) == 1"),
                 ],
                 error_log=[
                     M.contains("Cannot squeeze a non-zero dim"),

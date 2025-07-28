@@ -45,7 +45,6 @@ class StableDiffusionXLWrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
-@pytest.mark.skip_model_analysis
 @pytest.mark.parametrize(
     "variant",
     [

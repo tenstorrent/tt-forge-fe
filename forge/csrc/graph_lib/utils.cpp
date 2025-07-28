@@ -3,6 +3,10 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "utils.hpp"
 
+#include <ATen/core/TensorBody.h>
+#include <c10/core/ScalarType.h>
+#include <torch/torch.h>
+
 #include <functional>
 #include <map>
 #include <queue>
@@ -655,6 +659,33 @@ DataFormat infer_data_format_from_py_tensor(const py::object &py_tensor)
     }
 }
 
+DataFormat scalar_type_to_data_format(const at::Tensor &tensor)
+{
+    // C++ equivalent of pytorch_dtype_to_forge_dataformat in forge/forge/tensor.py
+    at::ScalarType scalar_type = tensor.scalar_type();
+    switch (scalar_type)
+    {
+        case at::ScalarType::Float: return DataFormat::Float32;
+        case at::ScalarType::Half: return DataFormat::Float16;
+        case at::ScalarType::BFloat16: return DataFormat::Float16_b;
+        case at::ScalarType::Byte:  // uint8
+            log_warning("Parameter is uint8. Setting to Int32, since uint8 is not supported.");
+            return DataFormat::Int32;
+        case at::ScalarType::Char:  // int8
+            log_warning("Parameter is int8. Setting to Int32, since int8 is not supported.");
+            return DataFormat::Int32;
+        case at::ScalarType::Bool:
+            log_warning("Parameter is bool. Setting to Int32, since bool is not supported.");
+            return DataFormat::Int32;
+        case at::ScalarType::Int:  // int32
+            return DataFormat::Int32;
+        case at::ScalarType::Long:  // int64
+            log_warning("Parameter is int64. Setting to int32, since int64 is not supported.");
+            return DataFormat::Int32;
+        default: throw std::runtime_error("Unsupported torch ScalarType: " + std::string(c10::toString(scalar_type)));
+    }
+}
+
 // Insert new node on the given edge. Node attributes will be picked up from consumer node.
 std::pair<Edge, Edge> insert_node_on_edge(
     Graph *graph,
@@ -1146,10 +1177,7 @@ void convert_implicit_to_explicit_bcasts(Graph *graph, Edge edge)
     for (OpType &op_type : graph->get_edge_attributes(edge)->get_tms())
     {
         if (op_type.type() == ops::OpType::Broadcast)
-        {
-            constexpr bool explicit_bcast = true;
-            std::get<bool>(op_type.legacy_attrs_[2]) = explicit_bcast;
-        }
+            op_type.set_attr("explicit_bcast", true);
     }
 }
 
@@ -1208,13 +1236,13 @@ bool swap_broadcast_dims(graphlib::Graph *graph, graphlib::Edge edge, int old_di
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
-            int dim = std::get<int>(op_type.legacy_attrs_[0]);
-            int size = std::get<int>(op_type.legacy_attrs_[1]);
-            bool explicit_bcast = std::get<bool>(op_type.legacy_attrs_[2]);
+            int dim = op_type.attr_as<int>("dim");
+            int size = op_type.attr_as<int>("size");
+            bool explicit_bcast = op_type.attr_as<bool>("explicit_bcast");
             if (dim == old_dim)
             {
-                graphlib::OpType updated_bcast("broadcast", {new_dim, size, explicit_bcast});
-                new_tms.push_back(updated_bcast);
+                new_tms.push_back(graphlib::OpType(
+                    "broadcast", {}, {{"dim", new_dim}, {"size", size}, {"explicit_bcast", explicit_bcast}}));
                 swapped = true;
             }
             else
@@ -1310,8 +1338,11 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Edge edge)
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
-            if (std::get<int>(op_type.legacy_attrs_[0]) >= 0)
-                std::get<int>(op_type.legacy_attrs_[0]) += diff;
+            int dim = op_type.attr_as<int>("dim");
+            if (dim >= 0)
+            {
+                op_type.set_attr("dim", dim + diff);
+            }
         }
     }
     graph->get_edge_attributes(edge)->set_tms(tms);
@@ -1718,7 +1749,8 @@ void ConstEvalGraph::pad_output_to_forge_dims(std::string const &name_prefix)
     {
         if (shape[dim] % graphlib::Shape::FORGE_TILE_DIM != 0)
         {
-            graphlib::OpType pad_tile("pad_tile", {dim, (int)shape[dim]});
+            graphlib::OpType pad_tile(
+                "pad_tile", {dim, (int)shape[dim]}, {{"dim", dim}, {"original_length", (int)shape[dim]}});
             auto consteval_pad_tile = graphlib::create_node<graphlib::PyOpNode>(
                 name_prefix + "_pad_tile_" + ((dim == -1) ? "c_" : "r_") + output->name(), pad_tile);
             shape[dim] = align_up_tile(shape[dim]);
@@ -1842,8 +1874,8 @@ bool is_consteval_capable_input_no_operand_forks(Graph *graph, InputNode *input)
         else
             return false;
 
-    std::string op_name = user_ops[0]->op_name();
-    if (not std::all_of(user_ops.begin(), user_ops.end(), [op_name](OpNode *n) { return n->op_name() == op_name; }))
+    ops::OpType op_type = user_ops[0]->new_op_type();
+    if (not std::all_of(user_ops.begin(), user_ops.end(), [op_type](OpNode *n) { return n->new_op_type() == op_type; }))
         return false;
 
     auto attrs = user_ops[0]->op_legacy_attrs();

@@ -57,7 +57,7 @@ jobs:
       - ${{ matrix.build.runs-on }}
 
     container:
-      image: ${{ inputs.docker-image }}
+      image: ${{ format('harbor.ci.tenstorrent.net/{0}', inputs.docker-image) }}
 
     steps:
 
@@ -148,7 +148,7 @@ jobs:
       - ${{ matrix.build.runs-on }}
 
     container:
-      image: ${{ inputs.docker-image }}
+      image: ${{ format('harbor.ci.tenstorrent.net/{0}', inputs.docker-image) }}
 
     steps:
 

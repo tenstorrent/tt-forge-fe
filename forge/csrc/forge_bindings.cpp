@@ -27,7 +27,6 @@ namespace py = pybind11;
 #include "passes/consteval.hpp"
 #include "passes/extract_unique_op_configuration.hpp"
 #include "passes/fracture.hpp"
-#include "passes/link_past_cache_ios.hpp"
 #include "passes/mlir_compiler.hpp"
 #include "passes/passes_utils.hpp"
 #include "passes/python_bindings.hpp"
@@ -196,6 +195,11 @@ PYBIND11_MODULE(_C, m)
             [](tt::passes::MLIRConfig &self, bool enable) { return self.set_enable_fusing(enable); },
             py::arg("enable"))
         .def(
+            "set_enable_fusing_conv2d_with_multiply_pattern",
+            [](tt::passes::MLIRConfig &self, bool enable)
+            { return self.set_fusing_conv2d_with_multiply_pattern(enable); },
+            py::arg("enable"))
+        .def(
             "set_custom_config",
             [](tt::passes::MLIRConfig &self, const std::string &config) { return self.set_custom_config(config); },
             py::arg("config"))
@@ -208,7 +212,6 @@ PYBIND11_MODULE(_C, m)
             })
         .def("from_json", [](nlohmann::json const &j) { return j.template get<tt::passes::MLIRConfig>(); });
 
-    m.def("link_past_cache_ios", &passes::link_past_cache_ios);
     m.def("run_post_initial_graph_passes", &run_post_initial_graph_passes);
     m.def("run_optimization_graph_passes", &run_optimization_graph_passes);
     m.def("run_post_optimize_decompose_graph_passes", &run_post_optimize_decompose_graph_passes);

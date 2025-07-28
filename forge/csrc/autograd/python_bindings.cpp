@@ -9,6 +9,7 @@
 #include "graph_lib/node_types.hpp"
 #include "lower_to_forge/common.hpp"
 #include "python_bindings_common.hpp"
+#include "torch/torch.h"
 
 namespace tt
 {
@@ -154,13 +155,8 @@ void AutogradModule(py::module &m_autograd)
             [](tt::autograd::autograd_context &self, py::object tensor, DataFormat df = DataFormat::Invalid)
             {
                 // HACK: df is ignored, placed for compatibility with DecomposingContext
-                return self.autograd->create_constant(
-                    self.current_fwd_op,
-                    self.operand,
-                    make_shared_py_object(tensor),
-                    graphlib::Shape::create(tensor.attr("shape").cast<std::vector<std::uint32_t>>()),
-                    self.created_op_index++,
-                    self.epoch_type);
+                at::Tensor torch_tensor = py::cast<at::Tensor>(tensor);
+                return self.autograd->create_constant_tensor(self, torch_tensor);
             },
             py::arg("tensor"),
             py::arg("df") = DataFormat::Invalid)

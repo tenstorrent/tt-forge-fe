@@ -82,9 +82,6 @@ def test_einsum(einsum_pattern, shape_1, shape_2):
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.xfail(
-    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - Atan"
-)
 @pytest.mark.parametrize(
     "shape",
     [
@@ -333,6 +330,43 @@ def test_greater_equal(dims):
         framework_model,
         compiled_model,
         VerifyConfig(verify_dtype=False),
+    )
+
+
+@pytest.mark.parametrize("dims", [(1, 32, 64)])
+@pytest.mark.push
+def test_power(dims):
+    class Power(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a, b):
+            return torch.pow(a, b)
+
+    # Use positive values for base to avoid complex numbers
+    input1, input2 = torch.rand(dims) + 0.1, torch.rand(dims)
+    input1.requires_grad = True
+    input2.requires_grad = True
+    inputs = [input1, input2]
+
+    framework_model = Power()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=True)
+
+    fw_out, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+    )
+
+    grad = torch.rand_like(fw_out[0])
+
+    verify_backward(
+        inputs,
+        grad,
+        fw_out[0],
+        co_out[0],
+        framework_model,
+        compiled_model,
     )
 
 

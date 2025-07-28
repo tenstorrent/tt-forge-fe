@@ -70,7 +70,6 @@ variants = ["microsoft/Phi-3.5-MoE-instruct"]
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_phi3_5_moe_causal_lm(variant):
 
     # Record Forge Property

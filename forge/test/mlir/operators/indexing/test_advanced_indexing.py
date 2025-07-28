@@ -150,15 +150,11 @@ def test_index_fill(input_dim_index_value):
                 torch.tensor([0, 2]),
                 torch.tensor([[1.0, 1.0, 1.0, 1.0, 1.0], [2.0, 2.0, 2.0, 2.0, 2.0]]),
             ),
-            marks=pytest.mark.xfail(
-                reason="AttributeError: module 'tvm.relay.op.transform' has no attribute 'scatter'"
-            ),
+            marks=pytest.mark.xfail(reason="IndexCopy - unsupported op in lowering to TTIR"),
         ),
         pytest.param(
             (torch.zeros(4, 4, 4, dtype=torch.float32), 1, torch.tensor([1, 3]), torch.ones(4, 2, 4)),
-            marks=pytest.mark.xfail(
-                reason="AttributeError: module 'tvm.relay.op.transform' has no attribute 'scatter'"
-            ),
+            marks=pytest.mark.xfail(reason="IndexCopy - unsupported op in lowering to TTIR"),
         ),
     ],
 )
@@ -181,6 +177,47 @@ def test_index_copy(input_dim_index_source):
     inputs = [input_tensor]
 
     framework_model = IndexCopyModule(dim, index, source)
+    compiled_model = forge.compile(framework_model, inputs)
+
+    # Run verification
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "input_dim_index_source",
+    [
+        # fill cache equivalent. Dims of first operand (cache) are: (batch_size, num_heads, max_cache_len, head_dim)
+        pytest.param(
+            (torch.zeros(1, 8, 32, 100, dtype=torch.float32), 2, torch.tensor([0, 1, 2, 3]), torch.ones(1, 8, 4, 100)),
+        ),
+        # update cache equivalent
+        pytest.param(
+            (torch.zeros(1, 8, 32, 100, dtype=torch.float32), 2, torch.tensor([14]), torch.ones(1, 8, 1, 100)),
+        ),
+    ],
+)
+@pytest.mark.push
+def test_index_copy_kv_cache(input_dim_index_source):
+    """
+    This test simulates the behavior of copying values into a key-value cache using index_copy.
+    """
+    cache, dim, index, update_cache = input_dim_index_source
+
+    class IndexCopyModule(nn.Module):
+        def __init__(self, dim, index, cache):
+            super().__init__()
+            self.dim = dim
+            self.index = index
+            self.cache = cache
+
+        def forward(self, update_cache):
+            # Copy values from `source` into `x` at indices `index` along `dim`
+            return torch.index_copy(self.cache, self.dim, self.index, update_cache)
+
+    # Inputs for the test
+    inputs = [update_cache]
+
+    framework_model = IndexCopyModule(dim, index, cache)
     compiled_model = forge.compile(framework_model, inputs)
 
     # Run verification

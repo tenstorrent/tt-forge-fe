@@ -39,28 +39,6 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Argmax0,
-        [((1, 7), torch.int32)],
-        {
-            "model_names": ["pt_gpt_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "False"},
-        },
-    ),
-    (
-        Argmax0,
-        [((1, 32), torch.int32)],
-        {
-            "model_names": [
-                "pt_opt_facebook_opt_125m_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "False"},
-        },
-    ),
-    (
-        Argmax0,
         [((1, 4), torch.int32)],
         {
             "model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"],
@@ -70,9 +48,31 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Argmax0,
-        [((1, 256), torch.int32)],
+        [((1, 5), torch.int32)],
         {
             "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "False"},
+        },
+    ),
+    (
+        Argmax0,
+        [((1, 32), torch.int32)],
+        {
+            "model_names": [
+                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                "pt_opt_facebook_opt_350m_seq_cls_hf",
+                "pt_opt_facebook_opt_125m_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "False"},
+        },
+    ),
+    (
+        Argmax0,
+        [((1, 7), torch.int32)],
+        {
+            "model_names": ["pt_gpt_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "False"},
         },
@@ -107,7 +107,6 @@ def test_module(forge_module_and_shapes_dtypes):
     ]
 
     framework_model = forge_module(forge_module.__name__)
-    framework_model.process_framework_parameters()
 
     for name, parameter in framework_model._parameters.items():
         parameter_tensor = Tensor.create_torch_tensor(

@@ -16,7 +16,6 @@ variants = ["facebook/llama-7b"]
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.skip()
 @pytest.mark.parametrize("variant", variants)
 def test_llama(variant):
     # Record Forge properties
@@ -27,6 +26,7 @@ def test_llama(variant):
         source=Source.PADDLENLP,
         task=Task.CAUSAL_LM,
     )
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load Model and Tokenizer
     model = LlamaForCausalLM.from_pretrained(variant)

@@ -82,7 +82,6 @@ def test_bert_masked_lm_onnx(variant, forge_tmp_path, opset_version):
 @pytest.mark.parametrize("variant", ["phiyodr/bert-large-finetuned-squad2"])
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
 def test_bert_question_answering_onnx(variant, forge_tmp_path, opset_version):
-    pytest.skip("Transient failure - Out of memory due to other tests in CI pipeline")
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -92,6 +91,8 @@ def test_bert_question_answering_onnx(variant, forge_tmp_path, opset_version):
         task=Task.QA,
         source=Source.HUGGINGFACE,
     )
+
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)

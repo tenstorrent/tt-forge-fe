@@ -543,7 +543,6 @@ pytorch_ops_needing_arguments = {
     "sum": populate_torch_sum_args,
     "tile": populate_torch_tile_args,
     "transpose": populate_torch_transpose_args,
-    # "power"                         : populate_torch_power_args,
     "layernorm": populate_torch_layernorm_args,
     "dropout": populate_torch_dropout_args,
 }
@@ -1758,7 +1757,7 @@ tvm_to_forge_op_map = {
     "forge.vstack": "vstack",
     "reciprocal": "reciprocal",
     "reshape": "reshape",
-    "scatter": "index_copy",
+    "scatter_elements": "index_copy",
     "sigmoid": "sigmoid",
     "sigmoid": "sigmoid",
     "sin": "sin",

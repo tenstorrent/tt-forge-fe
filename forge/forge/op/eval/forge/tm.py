@@ -107,20 +107,6 @@ def eval(type, attr, ops):
 
         return ret
 
-    if type == "broadcast":
-        assert len(attr) <= 3, "Broadcast should have two attributes - dim and size"
-        explicit_bcast = len(attr) == 3 and bool(attr[2])
-
-        tensor = t_ops[0]
-        dim = attr[0]
-        size = attr[1]
-        while len(tensor.shape) <= ((-dim - 1) if dim < 0 else dim):
-            tensor = tensor.unsqueeze(0)
-        target_shape = list(tensor.shape)
-        assert dim < len(target_shape), f"Trying to broadcast on dim that doesn't exist: {dim} on {target_shape}"
-        target_shape[dim] = size
-        return torch.broadcast_to(tensor, target_shape)
-
     if type == "repeat":
         sizes = attr
         return t_ops[0].repeat(*sizes)
@@ -282,19 +268,6 @@ def eval(type, attr, ops):
         act = t_ops[0]
         return act.narrow(dim, start, length)
 
-    if type == "unsqueeze":
-        assert len(attr) == 2
-        dim = attr[0]
-        input_ndim = attr[1]
-        act = t_ops[0]
-        return torch.unsqueeze(act, dim)
-
-    if type == "squeeze":
-        assert len(attr) == 1
-        dim = attr[0]
-        act = t_ops[0]
-        return torch.squeeze(act, dim)
-
     if type == "pixel_shuffle":
         assert len(ops) == 1, "Pixel shuffle should have one operand."
         assert len(attr) == 1, "Pixel shuffle should have one attribute."
@@ -422,22 +395,6 @@ def shape(type, attr, ops):
         shape[-3] //= slice_size
         return tuple(shape), []
 
-    if type == "broadcast":
-        assert len(attr) <= 3, "Broadcast should have two attributes - dim and size"
-        dim = attr[0]
-        size = attr[1]
-        target_shape = list(ops[0])
-
-        if dim < 0:
-            while abs(dim) > len(target_shape):
-                target_shape = [1] + target_shape
-        else:
-            while dim >= len(target_shape):
-                target_shape = [1] + target_shape
-
-        target_shape[dim] = size
-        return tuple(target_shape), []
-
     if type == "repeat":
         sizes = attr
         if len(ops[0]) < len(sizes):
@@ -547,25 +504,6 @@ def shape(type, attr, ops):
         shape[dim] = length
         return tuple(shape), []
 
-    if type == "unsqueeze":
-        assert len(attr) == 2
-        shape = list(ops[0])
-        dim = attr[0]
-        input_ndim = attr[1]
-        # Handle negative dimension
-        if dim < 0:
-            # Adjust dim to be within the correct range
-            dim += input_ndim + 1
-        shape.insert(dim, 1)
-        return tuple(shape), []
-
-    if type == "squeeze":
-        assert len(attr) == 1
-        shape = list(ops[0])
-        dim = attr[0]
-        del shape[dim]
-        return tuple(shape), []
-
     if type == "pixel_shuffle":
         assert len(ops) == 1, "Pixel shuffle should have one operand."
         assert len(attr) == 1, "Pixel shuffle should have one attribute."
@@ -619,10 +557,10 @@ def backward(type, attr, ac, operand, inputs, output, grad):
     assert operand == 0, "Invalid operand index"
 
     if type == "conv2d_depthwise_weights":
-        return ac.op("conv2d_depthwise_weights_bw", (grad,), attributes=attr)
+        return ac.op_with_named_attrs("conv2d_depthwise_weights_bw", (grad,), {}, attr)
 
     elif type == "conv2d_grouped_weights":
-        return ac.op("conv2d_grouped_weights_bw", (grad,), attributes=attr)
+        return ac.op_with_named_attrs("conv2d_grouped_weights_bw", (grad,), {}, attr)
 
     elif type == "select":
         assert len(attr) == 4
@@ -688,61 +626,32 @@ def backward(type, attr, ac, operand, inputs, output, grad):
             dim -= len(inputs[0].shape)
         if dim in [-1, -2] and align_up_tile(length) == align_up_tile(inputs[0].shape[dim]):
             if dim == -1:
-                return ac.op("pad", (grad,), (start, original_length - length - start, 0, False))
+                return ac.op_with_named_attrs(
+                    "pad",
+                    (grad,),
+                    {
+                        "padding": [start, original_length - length - start],
+                        "mode": 0,
+                        "value": 0,
+                        "channel_last": False,
+                    },
+                    (start, original_length - length - start, 0, False),
+                )
             elif dim == -2:
-                return ac.op("pad", (grad,), (0, 0, start, original_length - length - start, 0, False))
+                return ac.op_with_named_attrs(
+                    "pad",
+                    (grad,),
+                    {
+                        "padding": [0, 0, start, original_length - length - start],
+                        "mode": 0,
+                        "value": 0,
+                        "channel_last": False,
+                    },
+                    (0, 0, start, original_length - length - start, 0, False),
+                )
             raise ArgumentError("Only dim == 2 and dim == 3 are supported.")
         else:
             raise NotImplementedError("Unimplemented narrow in forge")
-
-    elif type == "unsqueeze":
-        assert len(attr) == 2
-        if len(inputs[0].shape) == len(grad.shape):
-            # Dimensionality already matches, no need to squeeze
-            return grad
-
-        dim = attr[0]
-        input_ndim = attr[1]
-        return ac.op("squeeze", (grad,), (dim,), {"dim": dim})
-
-    elif type == "squeeze":
-        assert len(attr) == 1
-        if len(inputs[0].shape) == len(grad.shape):
-            # Dimensionality already matches, no need to unsqueeze
-            return grad
-
-        dim = attr[0]
-        if grad.shape.len() == 4:  # Cannot unsqueeze beyond 4D
-            return ac.op(Nop.create(), (grad,))
-        return ac.op("unsqueeze", (grad,), attributes=(dim, grad.shape.len()), named_attrs={"dim": dim})
-
-    elif type == "broadcast":
-        assert len(attr) == 3
-        if attr[0] < 0:
-            attr[0] += inputs[0].shape.len()
-        delta = 4 - inputs[0].shape.len()
-        attr[0] += delta
-        assert attr[0] >= 0 and attr[0] <= 3, f"Invalid broadcast dim after lowering: {attr[0]}"
-
-        if attr[0] == 2 or attr[0] == 3:
-            ret = ac.op("reduce_sum", (grad,), (attr[0],), {"keep_dim": True})
-        else:
-            ret = ac.op_with_named_attrs(
-                "transpose",
-                [
-                    grad,
-                ],
-                {"dim0": attr[0], "dim1": -2},
-            )
-            ret = ac.op("reduce_sum", (ret,), (-2,), {"keep_dim": True})
-            ret = ac.op_with_named_attrs(
-                "transpose",
-                [
-                    ret,
-                ],
-                {"dim0": attr[0], "dim1": -2},
-            )
-        return ret
 
     elif type == "repeat_interleave":
         assert len(attr) == 2, "repeat_interleave should have two attributes - repeats and dim"
@@ -755,8 +664,8 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         shape.insert(dim, repeats)
 
         ret = ac.op_with_named_attrs("reshape", (grad,), {"shape": shape})
-        ret = ac.op("reduce_sum", (ret,), (dim, True), {"dim_arg": [dim], "keep_dim": True})
-        ret = ac.op("squeeze", (ret,), (dim,), {"dim": dim})
+        ret = ac.op_with_named_attrs("reduce_sum", (ret,), {"dim_arg": [dim], "keep_dim": True})
+        ret = ac.op_with_named_attrs("squeeze", (ret,), {"dim": dim})
         return ret
 
     elif type == "index":
@@ -784,7 +693,7 @@ def unsqueeze_input_for_reshape_decomp(dc, inp):
     current_shape = inp.shape.as_list()
     while len(current_shape) < 4:
         current_shape.insert(0, 1)
-        inp = dc.op_with_named_attrs("unsqueeze", (inp,), {"dim": 0}, (0, len(inp.shape.as_list())))
+        inp = dc.op_with_named_attrs("unsqueeze", (inp,), {"dim": 0})
 
     return inp
 
@@ -795,7 +704,7 @@ def squeeze_output_for_reshape_decomp(dc, output, orig_out_shape):
 
     while current_shape_len > len(orig_out_shape):
         current_shape_len -= 1
-        result = dc.op_with_named_attrs("squeeze", [output], {"dim": 0}, (0,))
+        result = dc.op_with_named_attrs("squeeze", [output], {"dim": 0})
 
     return output
 
@@ -873,10 +782,6 @@ def decompose(type, attr, dc, inputs):
 
         dc.fuse(result)
         return
-
-    if type == "broadcast":
-        if attr[1] == 1:
-            dc.fuse(dc.op(Nop.create(), [inputs[0]]))
 
     if type == "pixel_shuffle":
         result = inputs[0]  # Shape: (N, C*r*r, H, W)
@@ -1003,8 +908,12 @@ def decompose_select(attr, dc, inputs):
     ):
         assert len(attr) == 4, "Select should have 4 attributes"
         x = result
-        x = dc.op("pad_tile", [x], (-2, orig_shape[-2]))
-        x = dc.op("pad_tile", [x], (-1, orig_shape[-1]))
+        x = dc.op_with_named_attrs(
+            "pad_tile", [x], {"dim": -2, "original_length": orig_shape[-2]}, attrs=(-2, orig_shape[-2])
+        )
+        x = dc.op_with_named_attrs(
+            "pad_tile", [x], {"dim": -1, "original_length": orig_shape[-1]}, attrs=(-1, orig_shape[-1])
+        )
 
         cols = []
         size = len(range(index, orig_shape[dim], stride)) * len(range(index, index + length))
@@ -1031,12 +940,32 @@ def decompose_select(attr, dc, inputs):
             result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
 
         if is_x_select:
-            result = dc.op("narrow", [result], (-1, 0, size, result.shape[-1]))
-            result = dc.op("narrow", [result], (-2, 0, orig_shape[-2], result.shape[-2]))
+            result = dc.op_with_named_attrs(
+                "narrow",
+                [result],
+                {"dim": -1, "start": 0, "length": size, "original_length": result.shape[-1]},
+                attrs=(-1, 0, size, result.shape[-1]),
+            )
+            result = dc.op_with_named_attrs(
+                "narrow",
+                [result],
+                {"dim": -2, "start": 0, "length": orig_shape[-2], "original_length": result.shape[-2]},
+                attrs=(-2, 0, orig_shape[-2], result.shape[-2]),
+            )
         else:
 
-            result = dc.op("narrow", [result], (-1, 0, orig_shape[-1], result.shape[-1]))
-            result = dc.op("narrow", [result], (-2, 0, size, result.shape[-2]))
+            result = dc.op_with_named_attrs(
+                "narrow",
+                [result],
+                {"dim": -1, "start": 0, "length": orig_shape[-1], "original_length": result.shape[-1]},
+                attrs=(-1, 0, orig_shape[-1], result.shape[-1]),
+            )
+            result = dc.op_with_named_attrs(
+                "narrow",
+                [result],
+                {"dim": -2, "start": 0, "length": size, "original_length": result.shape[-2]},
+                attrs=(-2, 0, size, result.shape[-2]),
+            )
 
         dc.fuse(result)
 
@@ -1087,11 +1016,15 @@ def decompose_xy_unflatten(inputs, dc, orig_shape, attr):
     _orig_shape = result.shape
     # Pad X dimension to TILE_DIM size
     if _orig_shape[-2] % TILE_DIM != 0:
-        result = dc.op("pad_tile", [result], (-2, _orig_shape[-2]))
+        result = dc.op_with_named_attrs(
+            "pad_tile", [result], {"dim": -2, "original_length": _orig_shape[-2]}, attrs=(-2, _orig_shape[-2])
+        )
 
     # Pad Y dimension to TILE_DIM size
     if _orig_shape[-1] % TILE_DIM != 0:
-        result = dc.op("pad_tile", [result], (-1, _orig_shape[-1]))
+        result = dc.op_with_named_attrs(
+            "pad_tile", [result], {"dim": -1, "original_length": _orig_shape[-1]}, attrs=(-1, _orig_shape[-1])
+        )
 
     # Transpose the result matrix
     result = dc.op(TransposeTM.create(-2, -1), [result])
@@ -1144,10 +1077,6 @@ def decompose_xy_unflatten(inputs, dc, orig_shape, attr):
             "unsqueeze",
             [result],
             {"dim": 0},
-            (
-                0,
-                2,
-            ),
         )
     _orig_shape = result.shape
     slice_factor = attr[-2] if attr[-1] < TILE_DIM else (math.ceil(attr[-2] / TILE_DIM) * TILE_DIM)
@@ -1166,9 +1095,19 @@ def decompose_xy_unflatten(inputs, dc, orig_shape, attr):
         result = dc.op("vslice", [result], (attr[-3],))
 
     if attr[-1] % TILE_DIM != 0:
-        result = dc.op("narrow", [result], (-1, 0, attr[-1], result.shape[-1]))
+        result = dc.op_with_named_attrs(
+            "narrow",
+            [result],
+            {"dim": -1, "start": 0, "length": attr[-1], "original_length": result.shape[-1]},
+            (-1, 0, attr[-1], result.shape[-1]),
+        )
     if attr[-2] % TILE_DIM != 0:
-        result = dc.op("narrow", [result], (-2, 0, attr[-2], result.shape[-2]))
+        result = dc.op_with_named_attrs(
+            "narrow",
+            [result],
+            {"dim": -2, "start": 0, "length": attr[-2], "original_length": result.shape[-2]},
+            (-2, 0, attr[-2], result.shape[-2]),
+        )
     return result
 
 
@@ -1177,8 +1116,12 @@ def decompose_non_tile_dim_aligned_vslice(inputs, dc, orig_shape, attr):
     use_sparse_mm = True
 
     slice_factor = attr[-3]
-    result = dc.op("pad_tile", [result], (-2, orig_shape[-2]))
-    result = dc.op("pad_tile", [result], (-1, orig_shape[-1]))
+    result = dc.op_with_named_attrs(
+        "pad_tile", [result], {"dim": -2, "original_length": orig_shape[-2]}, (-2, orig_shape[-2])
+    )
+    result = dc.op_with_named_attrs(
+        "pad_tile", [result], {"dim": -1, "original_length": orig_shape[-1]}, (-1, orig_shape[-1])
+    )
     if attr[-2] % TILE_DIM != 0 or orig_shape[-2] % TILE_DIM != 0:
         padded_dim = math.ceil(attr[-2] / TILE_DIM) * TILE_DIM
         num_tiles = attr[-3] if attr[-2] < TILE_DIM else (math.ceil(attr[-3] / TILE_DIM) * TILE_DIM)
@@ -1205,9 +1148,19 @@ def decompose_non_tile_dim_aligned_vslice(inputs, dc, orig_shape, attr):
 
     result = dc.op("vslice", [result], (slice_factor,))
     if attr[-1] % TILE_DIM != 0:
-        result = dc.op("narrow", [result], (-1, 0, attr[-1], result.shape[-1]))
+        result = dc.op_with_named_attrs(
+            "narrow",
+            [result],
+            {"dim": -1, "start": 0, "length": attr[-1], "original_length": result.shape[-1]},
+            (-1, 0, attr[-1], result.shape[-1]),
+        )
     if attr[-2] % TILE_DIM != 0:
-        result = dc.op("narrow", [result], (-2, 0, attr[-2], result.shape[-2]))
+        result = dc.op_with_named_attrs(
+            "narrow",
+            [result],
+            {"dim": -2, "start": 0, "length": attr[-2], "original_length": result.shape[-2]},
+            (-2, 0, attr[-2], result.shape[-2]),
+        )
 
     return result
 
@@ -1223,11 +1176,12 @@ def decompose_post_optimize(type, attr, dc, inputs):
         result = inputs[0]
         if post_dim % TILE_DIM != 0:
             if input_shape[-2] % TILE_DIM != 0:
-                result = dc.op(
+                result = dc.op_with_named_attrs(
                     "pad_tile",
                     [
                         result,
                     ],
+                    {"dim": -2, "original_length": input_shape[-2]},
                     (-2, input_shape[-2]),
                 )
             cols = []
@@ -1249,7 +1203,6 @@ def decompose_post_optimize(type, attr, dc, inputs):
                         result,
                     ],
                     {"dim": 0},
-                    (0, len(result.shape.as_list())),
                 )
 
             spm = torch.stack([spm] * result.shape[-3], -3).unsqueeze(0)
@@ -1269,28 +1222,31 @@ def decompose_post_optimize(type, attr, dc, inputs):
                 ],
                 attr,
             )
-            result = dc.op(
+            result = dc.op_with_named_attrs(
                 "narrow",
                 [
                     result,
                 ],
+                {"dim": -1, "start": 0, "length": post_dim, "original_length": result.shape[-1]},
                 (-1, 0, post_dim, result.shape[-1]),
             )
             if input_shape[-2] % TILE_DIM != 0:
-                result = dc.op(
+                result = dc.op_with_named_attrs(
                     "narrow",
                     [
                         result,
                     ],
+                    {"dim": -2, "start": 0, "length": input_shape[-2], "original_length": result.shape[-2]},
                     (-2, 0, input_shape[-2], result.shape[-2]),
                 )
             dc.fuse(result)
         elif input_shape[-2] % TILE_DIM != 0:
-            result = dc.op(
+            result = dc.op_with_named_attrs(
                 "pad_tile",
                 [
                     result,
                 ],
+                {"dim": -2, "original_length": input_shape[-2]},
                 (-2, input_shape[-2]),
             )
             result = dc.op(
@@ -1300,11 +1256,12 @@ def decompose_post_optimize(type, attr, dc, inputs):
                 ],
                 attr,
             )
-            result = dc.op(
+            result = dc.op_with_named_attrs(
                 "narrow",
                 [
                     result,
                 ],
+                {"dim": -2, "start": 0, "length": input_shape[-2], "original_length": result.shape[-2]},
                 (-2, 0, input_shape[-2], result.shape[-2]),
             )
             dc.fuse(result)
@@ -1314,20 +1271,22 @@ def decompose_post_optimize(type, attr, dc, inputs):
         result = inputs[0]
         if input_shape[-1] % TILE_DIM != 0:
             if input_shape[-2] % TILE_DIM != 0:
-                result = dc.op(
+                result = dc.op_with_named_attrs(
                     "pad_tile",
                     [
                         result,
                     ],
+                    {"dim": -2, "original_length": input_shape[-2]},
                     (-2, input_shape[-2]),
                 )
             output_dim = input_shape[-1] * attr[0]
             pad_output_dim = align_up_tile(input_shape[-1]) * attr[0]
-            result = dc.op(
+            result = dc.op_with_named_attrs(
                 "pad_tile",
                 [
                     result,
                 ],
+                {"dim": -1, "original_length": input_shape[-1]},
                 (-1, input_shape[-1]),
             )
             result = dc.op(
@@ -1352,20 +1311,22 @@ def decompose_post_optimize(type, attr, dc, inputs):
             result = picker_matmul(True, dc, spm, result)
             result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
             if input_shape[-2] % TILE_DIM != 0:
-                result = dc.op(
+                result = dc.op_with_named_attrs(
                     "narrow",
                     [
                         result,
                     ],
+                    {"dim": -2, "start": 0, "length": input_shape[-2], "original_length": result.shape[-2]},
                     (-2, 0, input_shape[-2], result.shape[-2]),
                 )
             dc.fuse(result)
         elif input_shape[-2] % TILE_DIM != 0:
-            result = dc.op(
+            result = dc.op_with_named_attrs(
                 "pad_tile",
                 [
                     result,
                 ],
+                {"dim": -2, "original_length": input_shape[-2]},
                 (-2, input_shape[-2]),
             )
             result = dc.op(
@@ -1375,11 +1336,12 @@ def decompose_post_optimize(type, attr, dc, inputs):
                 ],
                 attr,
             )
-            result = dc.op(
+            result = dc.op_with_named_attrs(
                 "narrow",
                 [
                     result,
                 ],
+                {"dim": -2, "start": 0, "length": input_shape[-2], "original_length": result.shape[-2]},
                 (-2, 0, input_shape[-2], result.shape[-2]),
             )
             dc.fuse(result)
@@ -1390,11 +1352,12 @@ def decompose_post_optimize(type, attr, dc, inputs):
         result = inputs[0]
         if post_dim % TILE_DIM != 0:
             if input_shape[-1] % TILE_DIM != 0:
-                result = dc.op(
+                result = dc.op_with_named_attrs(
                     "pad_tile",
                     [
                         result,
                     ],
+                    {"dim": -1, "original_length": input_shape[-1]},
                     (-1, input_shape[-1]),
                 )
             cols = []
@@ -1421,19 +1384,21 @@ def decompose_post_optimize(type, attr, dc, inputs):
                 ],
                 attr,
             )
-            result = dc.op(
+            result = dc.op_with_named_attrs(
                 "narrow",
                 [
                     result,
                 ],
+                {"dim": -2, "start": 0, "length": post_dim, "original_length": result.shape[-2]},
                 (-2, 0, post_dim, result.shape[-2]),
             )
             if input_shape[-1] % TILE_DIM != 0:
-                result = dc.op(
+                result = dc.op_with_named_attrs(
                     "narrow",
                     [
                         result,
                     ],
+                    {"dim": -1, "start": 0, "length": input_shape[-1], "original_length": result.shape[-1]},
                     (-1, 0, input_shape[-1], result.shape[-1]),
                 )
             dc.fuse(result)

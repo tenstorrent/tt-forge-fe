@@ -17,8 +17,8 @@ from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 
-@pytest.mark.skip(reason="Segmentation Fault at run_mlir_compiler compilation stage")
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_image_classification_onnx(variant, forge_tmp_path):
 
@@ -30,6 +30,7 @@ def test_swin_v2_tiny_image_classification_onnx(variant, forge_tmp_path):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
+    pytest.xfail(reason="Segmentation Fault")
 
     # Load the model
     framework_model = Swinv2ForImageClassification.from_pretrained(variant)

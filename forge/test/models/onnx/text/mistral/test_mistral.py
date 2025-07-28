@@ -20,7 +20,6 @@ variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.skip(reason="Segmentation Fault")
 def test_mistral_v0_3_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
@@ -31,6 +30,7 @@ def test_mistral_v0_3_onnx(variant, forge_tmp_path):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
+    pytest.xfail(reason="Segmentation Fault")
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

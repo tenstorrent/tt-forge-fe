@@ -4,6 +4,7 @@
 #include "passes/pre_lowering_passes.hpp"
 
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "passes/commute_utils.hpp"
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
@@ -21,7 +22,7 @@ void convert_broadcast_ops_to_tms(Graph *graph)
         [](Node *node) -> bool
         {
             graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(node);
-            return op and op->op_name() == "broadcast";
+            return op and op->new_op_type() == ops::OpType::Broadcast;
         });
 
     for (Node *node : broadcast_ops)
@@ -90,10 +91,8 @@ bool safe_to_hoist_past(const Graph *graph, const Node *operand)
     if (operand->node_type() != NodeType::kPyOp)
         return false;
 
-    const std::string &op_type = operand->as<graphlib::PyOpNode>()->op_type().name();
-
     // Any unary op that doesn't change shape, and not transpose (which could keep the same shape)
-    if (op_type == "transpose")
+    if (operand->as<graphlib::PyOpNode>()->new_op_type() == ops::OpType::Transpose)
         return false;
 
     graphlib::Shape incoming_shape = graph->data_operands(operand)[0]->shape();
