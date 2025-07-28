@@ -43,6 +43,11 @@ def MaxPool1d(
         name,
         activations,
         attrs=attrs,
+        kernel_size=kernel_size,
+        stride=stride,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+        padding=padding,
     ).get_tensor()
 
 
@@ -173,6 +178,23 @@ def MaxPool3d(
         name,
         activations,
         attrs=attrs,
+        kernel_depth=kernel_size[0],
+        kernel_height=kernel_size[1],
+        kernel_width=kernel_size[2],
+        stride_depth=stride[0],
+        stride_height=stride[1],
+        stride_width=stride[2],
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+        padding_left=padding[0],
+        padding_right=padding[1],
+        padding_top=padding[2],
+        padding_bottom=padding[3],
+        padding_front=padding[4],
+        padding_back=padding[5],
+        max_pool_add_sub_surround=max_pool_add_sub_surround,
+        max_pool_add_sub_surround_value=max_pool_add_sub_surround_value,
+        channel_last=channel_last,
     ).get_tensor()
 
 
@@ -227,6 +249,13 @@ def AvgPool1d(
         name,
         activations,
         attrs=attrs,  # 1 is placeholder for dilation
+        kernel_size=kernel_size[0],
+        stride=stride[0],
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+        padding_left=padding[0],
+        padding_right=padding[1],
+        count_include_pad=count_include_pad,
     ).get_tensor()
 
 
@@ -277,6 +306,18 @@ def AvgPool2d(
         name,
         activations,
         attrs=attrs,  # 1 is placeholder for dilation
+        kernel_height=kernel_size[0],
+        kernel_width=kernel_size[1],
+        stride_height=stride[0],
+        stride_width=stride[1],
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+        padding_left=padding[0],
+        padding_right=padding[1],
+        padding_top=padding[2],
+        padding_bottom=padding[3],
+        count_include_pad=count_include_pad,
+        channel_last=channel_last,
     ).get_tensor()
 
 
@@ -335,4 +376,20 @@ def AvgPool3d(
         name,
         activations,
         attrs=attrs,  # 1 is placeholder for dilation
+        kernel_depth=kernel_size[0],
+        kernel_height=kernel_size[1],
+        kernel_width=kernel_size[2],
+        stride_depth=stride[0],
+        stride_height=stride[1],
+        stride_width=stride[2],
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+        padding_left=padding[0],
+        padding_right=padding[1],
+        padding_top=padding[2],
+        padding_bottom=padding[3],
+        padding_front=padding[4],
+        padding_back=padding[5],
+        count_include_pad=count_include_pad,
+        channel_last=channel_last,
     ).get_tensor()
