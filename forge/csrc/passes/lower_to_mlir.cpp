@@ -814,6 +814,7 @@ class MLIRGenerator
         lowering_handler_map["minimum"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MinimumOp>;
         lowering_handler_map["multiply"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MultiplyOp>;
         lowering_handler_map["not_equal"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::NotEqualOp>;
+        lowering_handler_map["power"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::PowOp>;
         lowering_handler_map["reciprocal"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ReciprocalOp>;
         lowering_handler_map["reduce_avg"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MeanOp>;
         lowering_handler_map["reduce_max"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MaxOp>;

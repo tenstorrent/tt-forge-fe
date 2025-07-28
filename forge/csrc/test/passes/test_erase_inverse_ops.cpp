@@ -636,50 +636,6 @@ TEST_F(UpdateReduceMaxAttrsTest, ReduceMaxDim)
     EXPECT_EQ(std::get<bool>(updated_attrs["keep_dim"]), keep_dim);
 }
 
-struct UpdateGroupedReduceAvgTest : testing::Test
-{
-    graphlib::Graph *graph;
-    graphlib::OpNode *reduce_node;
-
-    UpdateGroupedReduceAvgTest()
-    {
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE, "UpdateGroupedReduceAvg");
-    }
-
-   protected:
-    graphlib::OpNode *create_graph(
-        const std::string &reduce_op, const std::vector<int> &attr, const graphlib::Shape &input_shape)
-    {
-        auto input_node = create_input(*graph, "input", input_shape);
-        reduce_node =
-            add_node<graphlib::PyOpNode>(*graph, reduce_op, reduce_op, {attr[0], attr[1], attr[2]}, {input_node});
-        reduce_node->set_op_attr("reduce_dim", attr[0]);
-        reduce_node->set_op_attr("groups", attr[1]);
-        reduce_node->set_op_attr("keep_dims", attr[2]);
-
-        create_output(*graph, "out", reduce_node);
-
-        return reduce_node;
-    }
-};
-
-TEST_F(UpdateGroupedReduceAvgTest, GroupedReduceAvgDim)
-{
-    std::string reduce_op = "grouped_reduce_avg";
-    std::vector<int> attr = {1, 4, 1};
-    graphlib::Shape input_shape = graphlib::Shape::create({1, 512, 160});
-    graphlib::Shape expected_shape = graphlib::Shape::create({1, 4, 160});
-
-    auto reduce_node = create_graph(reduce_op, attr, input_shape);
-
-    passes::update_grouped_reduce_avg_attr(reduce_node, attr[0]);
-
-    auto updated_attrs = reduce_node->op_named_attrs();
-
-    ASSERT_TRUE(updated_attrs.count("reduce_dim"));
-    EXPECT_EQ(std::get<int>(updated_attrs["reduce_dim"]), attr[0]);
-}
-
 struct EraseInverseOpsSqueezeAndUnsqueeze : testing::Test
 {
     graphlib::Graph *graph;

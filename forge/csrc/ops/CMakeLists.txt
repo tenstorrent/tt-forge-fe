@@ -52,7 +52,6 @@ add_library(ops
     op_gelu.cpp
     op_greater.cpp
     op_greater_equal.cpp
-    op_grouped_reduce_avg.cpp
     op_heaviside.cpp
     op_hslice.cpp
     op_hstack.cpp
