@@ -60,6 +60,9 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     {
         dim += data_shape.size();
     }
+    TT_ASSERT(
+        dim < static_cast<int>(data_shape.size()),
+        "dim is out of bound, got " + std::to_string(dim) + " for data shape " + std::to_string(data_shape.size()));
 
     std::vector<uint32_t> output_shape = data_shape;
     // Replace the indexed dimension with the total number of indices
