@@ -6,7 +6,6 @@ from types import ModuleType
 from functools import lru_cache
 from .convolution import Conv2d
 from .convolution import Conv2dTranspose
-from .pad import Pad
 
 op_to_module_map = {
     "add": "eltwise_binary",
@@ -77,7 +76,7 @@ op_to_module_map = {
     "conv2d_prestride_weights": "tm",
     "pad_tile": "tm",
     "narrow": "tm",
-    "pad": Pad,
+    "pad": "tm",
     "constant_pad": "tm",
     "unsqueeze": "tm",
     "squeeze": "tm",
