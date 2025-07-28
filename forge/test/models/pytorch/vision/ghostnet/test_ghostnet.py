@@ -23,8 +23,8 @@ from test.models.pytorch.vision.ghostnet.model_utils.utils import (
 )
 
 params = [
-    pytest.param("ghostnet_100", marks=[pytest.mark.push]),
-    pytest.param("ghostnet_100.in1k", marks=[pytest.mark.push]),
+    pytest.param("ghostnet_100", marks=[pytest.mark.push, pytest.mark.requires_token]),
+    pytest.param("ghostnet_100.in1k", marks=[pytest.mark.push, pytest.mark.requires_token]),
     pytest.param(
         "ghostnetv2_100.in1k",
         marks=[pytest.mark.xfail],

@@ -68,6 +68,7 @@ variants = ["dandelin/vilt-b32-finetuned-vqa"]
 
 @pytest.mark.nightly
 @pytest.mark.push
+@pytest.mark.requires_token
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vilt_question_answering_hf_pytorch(variant):
     # Record Forge Property
