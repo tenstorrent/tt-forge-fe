@@ -12,7 +12,6 @@ from .cumulativesum import CumulativeSum
 from .convolution import Conv2d
 from .convolution import Conv2dTranspose
 from .cast import Cast
-from .pad import Pad
 from .kv_cache import UpdateCache
 from .kv_cache import FillCache
 
@@ -88,7 +87,7 @@ op_to_module_map = {
     "conv2d_prestride_weights": "tm",
     "pad_tile": "tm",
     "narrow": "tm",
-    "pad": Pad,
+    "pad": "tm",
     "constant_pad": "tm",
     "unsqueeze": "tm",
     "squeeze": "tm",
