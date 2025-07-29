@@ -8,7 +8,6 @@ from .cosine import Cosine
 from .ethernet_datacopy import EthernetDatacopy
 from .tanh import Tanh
 from .nop import Nop
-from .buffer import Buffer
 from .tilizer import Tilizer
 from .cumulativesum import CumulativeSum
 from .convolution import Conv2d
@@ -40,7 +39,6 @@ op_to_module_map = {
     "exp": "eltwise_unary",
     "reciprocal": "eltwise_unary",
     "nop": Nop,
-    "buffer": Buffer,
     "sqrt": "eltwise_unary",
     "relu": "eltwise_unary",
     "leaky_relu": "eltwise_unary",
@@ -115,7 +113,6 @@ op_to_module_map = {
     "resize3d": "resize",
     "upsample2d": "resize",
     "downsample2d": "resize",
-    "dram_queue": "dram_queue",
     "softmax": "nn",
     "log_softmax": "nn",
     "softmax_bw": "nn",

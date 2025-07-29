@@ -153,30 +153,6 @@ def Identity(name: str, operandA: Tensor, unsqueeze: str = None, unsqueeze_dim: 
         return op("nop", name, operandA, unsqueeze=unsqueeze, unsqueeze_dim=unsqueeze_dim).get_tensor()
 
 
-def Buffer(name: str, operandA: Tensor) -> Tensor:
-
-    """
-    Identity operation. One key difference is a Buffer op will not get
-    lowered into a NOP and avoid being removed by the time it gets to lowering.
-
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        First operand
-
-    Returns
-    -------
-    Tensor
-        Forge tensor
-    """
-
-    return op("buffer", name, operandA).get_tensor()
-
-
 def Reciprocal(name: str, operandA: Tensor) -> Tensor:
 
     """

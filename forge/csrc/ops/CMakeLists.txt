@@ -13,7 +13,6 @@ add_library(ops
     op_avg_pool_3d.cpp
     op_batchnorm.cpp
     op_broadcast.cpp
-    op_buffer.cpp
     op_cast.cpp
     op_clip.cpp
     op_concatenate.cpp
@@ -33,7 +32,6 @@ add_library(ops
     op_dequantize.cpp
     op_depthwise.cpp
     op_divide.cpp
-    op_dram_queue.cpp
     op_downsample_2d.cpp
     op_dropout.cpp
     op_embedding.cpp
