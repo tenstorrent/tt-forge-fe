@@ -8,7 +8,6 @@ import torch
 import torch.nn.functional as F
 
 from ..common import to_torch_operands
-from .reciprocal import Reciprocal
 
 
 def eval(op_type, attr, ops):
@@ -324,7 +323,7 @@ def decompose(op_type, attr, dc, inputs):
         # decompose
         var_eps = dc.op("add", (running_var, eps_tensor), ())
         sqrt = dc.op("sqrt", (var_eps,), ())
-        recipro = dc.op(Reciprocal.create(), (sqrt,), ())
+        recipro = dc.op("reciprocal", (sqrt,), ())
         weighted = dc.op("multiply", (recipro, weight), ())
         neg_mean = dc.op("multiply", (neg_one, running_mean), ())
         weighted_mean = dc.op("multiply", (weighted, neg_mean), ())
@@ -403,34 +402,25 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
         for bdim in beta_shape[:-1]:
             assert bdim == 1, "All dimensions but the last one must be 1"
 
-        # mean = dc.op("reduce_avg", (input_, ), (dim, ))
         mu = dc.op_with_named_attrs("reduce_sum", (input_,), {"dim_arg": [dim], "keep_dim": True})
         divider = dc.tensor(torch.zeros(input_shape) + 1.0 / input_shape[dim])
         mu = dc.op("multiply", (divider, mu), ())
 
-        # x_minus_mean = dc.op("subtract", (input_, mean), ())
         xmu = dc.op("subtract", (input_, mu), ())
-        # squared = dc.op("multiply", (x_minus_mean, x_minus_mean), ())
         sq = dc.op("multiply", (xmu, xmu), ())
 
-        # var = dc.op("reduce_avg", (squared, ), (dim, ))
         var = dc.op_with_named_attrs("reduce_sum", (sq,), {"dim_arg": [dim], "keep_dim": True})
         divider = dc.tensor(torch.zeros(var.shape.as_list()) + 1.0 / input_shape[dim])
         var = dc.op("multiply", (divider, var), ())
 
         epsilon_tensor = dc.tensor(torch.zeros(var.shape.as_list()) + epsilon)
-        # var_plus_eps = dc.op("add", (var, epsilon_tensor), ())
         var_add = dc.op("add", (var, epsilon_tensor), ())
-        # std = dc.op("sqrt", (var_plus_eps, ), ())
         std = dc.op("sqrt", (var_add,), ())
-        # recip = dc.op("reciprocal", (std, ), ())
-        ivar = dc.op(Reciprocal.create(), (std,), ())
-        # normalized = dc.op("multiply", (x_minus_mean, recip), ())
+        ivar = dc.op("reciprocal", (std,), ())
         xhat = dc.op("multiply", (xmu, ivar), ())
-        # normalized_weighted = dc.op("multiply", (normalized, weights), ())
         xhat_weighted = dc.op("multiply", (xhat, weights), ())
-        # result = dc.op("add", (normalized_weighted, bias), ())
         result = dc.op("add", (xhat_weighted, bias), ())
+
         dc.fuse(result)
         return
 
