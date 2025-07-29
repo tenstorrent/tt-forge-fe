@@ -4,6 +4,7 @@
 import pytest
 import torch
 import onnx
+import os
 
 import forge
 from forge.forge_property_utils import (
@@ -33,7 +34,7 @@ def test_yolo_v3(forge_tmp_path):
     )
 
     # Load model and input
-    print(print os.environ['IRD_LF_CACHE'])
+    print(os.environ['IRD_LF_CACHE'])
     loader = ModelLoader()
     framework_model = loader.load_model()
     input_sample = loader.load_inputs()
