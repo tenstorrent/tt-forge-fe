@@ -115,9 +115,6 @@ class AttributeMapper
     {
         // Sort the mappings in lexicographical order
 
-        // argmax
-        add_op_mapping("argmax", "dim", AttributeRemap("dim_arg", TargetType::I32ArrayAttr));
-
         // conv2d_transpose
         add_op_mapping("conv2d_transpose", "dilation", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
         add_op_mapping("conv2d_transpose", "groups", AttributeRemap(std::nullopt, TargetType::I32Attr));

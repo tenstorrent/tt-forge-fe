@@ -123,6 +123,27 @@ long initial_flops_estimate_output_dim(std::tuple<graphlib::Shape, std::vector<g
     return std::accumulate(out_shape.begin(), out_shape.end(), 1L, std::multiplies<int64_t>());
 }
 
+std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> reduce_ops_shape(
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+{
+    int dim = op.attr_as<std::vector<int>>("dim_arg")[0];
+    bool keep_dim = op.attr_as<bool>("keep_dim");
+
+    if (dim < 0)
+        dim += in_shapes[0].size();
+
+    TT_ASSERT(dim >= 0 && dim < static_cast<int>(in_shapes[0].size()), "Reduce ops should have valid dim.");
+
+    std::vector<std::uint32_t> ret = in_shapes[0];
+
+    if (keep_dim)
+        ret[dim] = 1;
+    else
+        ret.erase(ret.begin() + dim);
+
+    return {graphlib::Shape::create(ret), {}};
+}
+
 }  // namespace op_common
 }  // namespace ops
 }  // namespace tt

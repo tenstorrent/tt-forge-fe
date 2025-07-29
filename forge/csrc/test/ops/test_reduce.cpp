@@ -4,6 +4,7 @@
 
 #include <gtest/gtest.h>
 
+#include <tuple>
 #include <vector>
 
 #include "graph_lib/shape.hpp"
@@ -12,16 +13,66 @@
 
 namespace tt::test::ops::reduce
 {
-
-std::vector<OpTestParam> generate_reduce_test_params()
+/**
+ * Simple struct holding reduce op type and a flag representing whether dim_arg attribute is optional for that op.
+ */
+struct ReduceOpInfo
 {
-    std::vector<tt::ops::OpType> reduce_ops = {
-        tt::ops::OpType::ReduceAvg,
-        tt::ops::OpType::ReduceMax,
-        tt::ops::OpType::ReduceSum,
-    };
+    tt::ops::OpType type;
+    bool dim_arg_optional;
+};
 
-    auto input_shapes = {
+static std::vector<ReduceOpInfo> reduce_ops = {
+    {tt::ops::OpType::ReduceAvg, false},
+    {tt::ops::OpType::ReduceMax, false},
+    {tt::ops::OpType::ReduceSum, false},
+};
+
+static std::vector<ReduceOpInfo> reduce_ops_no_backward = {
+    {tt::ops::OpType::Argmax, true},
+};
+
+/*
+ * Generates test parameters for every possible combination of reduce op, input shape, dimension, and keep_dim.
+ */
+std::vector<OpTestParam> generate_reduce_test_params(
+    const std::vector<ReduceOpInfo>& ops, const std::vector<graphlib::Shape> input_shapes)
+{
+    std::vector<OpTestParam> params;
+
+    for (const auto& reduce_op : ops)
+    {
+        for (const auto& shape : input_shapes)
+        {
+            for (bool keep_dim : {true, false})
+            {
+                if (reduce_op.dim_arg_optional)
+                {
+                    tt::ops::Op op(reduce_op.type, {{"keep_dim", keep_dim}});
+                    params.emplace_back(op, std::vector{shape});
+                }
+
+                std::vector<int> dim_arg(1U);
+                for (int dim = 0; dim < static_cast<int>(shape.size()); ++dim)
+                {
+                    dim_arg[0] = dim;
+                    tt::ops::Op op1(reduce_op.type, {{"dim_arg", dim_arg}, {"keep_dim", keep_dim}});
+                    params.emplace_back(op1, std::vector{shape});
+
+                    dim_arg[0] = -dim - 1;
+                    tt::ops::Op op2(reduce_op.type, {{"dim_arg", dim_arg}, {"keep_dim", keep_dim}});
+                    params.emplace_back(op2, std::vector{shape});
+                }
+            }
+        }
+    }
+
+    return params;
+}
+
+std::vector<graphlib::Shape> generate_reduce_test_shapes()
+{
+    return {
         graphlib::Shape{1, 1, 1, 32},
         graphlib::Shape{1, 1, 32, 1},
         graphlib::Shape{1, 32, 1, 1},
@@ -31,47 +82,21 @@ std::vector<OpTestParam> generate_reduce_test_params()
         graphlib::Shape{3, 4},
         graphlib::Shape{4},
         graphlib::Shape{1}};
-
-    std::vector<OpTestParam> params;
-
-    //  Generate test parameters for every possible combination of reduce op, input shape, dimension, and keep_dim
-    //  value.
-    for (const auto& op_type : reduce_ops)
-    {
-        for (const auto& shape : input_shapes)
-        {
-            for (int dim = 0; dim < static_cast<int>(shape.size()); ++dim)
-            {
-                for (bool keep_dim : {true, false})
-                {
-                    std::vector<int> dim_arg = {dim};
-                    tt::ops::Op op(op_type, {{"dim_arg", dim_arg}, {"keep_dim", keep_dim}});
-                    params.emplace_back(op, std::vector{shape});
-                }
-            }
-
-            for (int neg_dim = -1; neg_dim >= -static_cast<int>(shape.size()); --neg_dim)
-            {
-                for (bool keep_dim : {true, false})
-                {
-                    std::vector<int> dim_arg = {neg_dim};
-                    tt::ops::Op op(op_type, {{"dim_arg", dim_arg}, {"keep_dim", keep_dim}});
-                    params.emplace_back(op, std::vector{shape});
-                }
-            }
-        }
-    }
-
-    return params;
 }
 
 INSTANTIATE_TEST_SUITE_P(
     ReduceOpsIndividual,
     SimpleOpTest,
-    testing::ValuesIn(generate_reduce_test_params()),
+    testing::ValuesIn(generate_reduce_test_params(reduce_ops, generate_reduce_test_shapes())),
     [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
 
-std::vector<graphlib::Shape> generate_input_shapes()
+INSTANTIATE_TEST_SUITE_P(
+    ReduceOpsNoBackwardIndividual,
+    SimpleOpDecomposeOnlyTest,
+    testing::ValuesIn(generate_reduce_test_params(reduce_ops_no_backward, generate_reduce_test_shapes())),
+    [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
+
+std::vector<graphlib::Shape> generate_sweeps_input_shapes()
 {
     std::vector<graphlib::Shape> shapes;
 
@@ -87,50 +112,16 @@ std::vector<graphlib::Shape> generate_input_shapes()
     return shapes;
 }
 
-std::vector<OpTestParam> generate_reduce_sweep_params()
-{
-    std::vector<tt::ops::OpType> reduce_ops = {
-        tt::ops::OpType::ReduceAvg,
-        tt::ops::OpType::ReduceMax,
-        tt::ops::OpType::ReduceSum,
-    };
-
-    auto input_shapes = generate_input_shapes();
-
-    std::vector<OpTestParam> params;
-
-    // Generate test parameters for every possible combination of reduce op, input shape, dimension, and keep_dim.
-    for (const auto& op_type : reduce_ops)
-    {
-        for (const auto& shape : input_shapes)
-        {
-            std::vector<int> test_dims;
-
-            for (int dim = 0; dim < static_cast<int>(shape.size()); ++dim)
-            {
-                test_dims.push_back(dim);
-                test_dims.push_back(-dim - 1);
-            }
-
-            for (int dim : test_dims)
-            {
-                for (bool keep_dim : {true, false})
-                {
-                    std::vector<int> dim_arg = {dim};
-                    tt::ops::Op op(op_type, {{"dim_arg", dim_arg}, {"keep_dim", keep_dim}});
-                    params.emplace_back(op, std::vector{shape});
-                }
-            }
-        }
-    }
-
-    return params;
-}
-
 INSTANTIATE_TEST_SUITE_P(
     ReduceOpsSweep,
     SimpleOpTest,
-    testing::ValuesIn(generate_reduce_sweep_params()),
+    testing::ValuesIn(generate_reduce_test_params(reduce_ops, generate_sweeps_input_shapes())),
+    [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
+
+INSTANTIATE_TEST_SUITE_P(
+    ReduceOpsNoBackwardSweep,
+    SimpleOpDecomposeOnlyTest,
+    testing::ValuesIn(generate_reduce_test_params(reduce_ops_no_backward, generate_sweeps_input_shapes())),
     [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
 
 }  // namespace tt::test::ops::reduce
