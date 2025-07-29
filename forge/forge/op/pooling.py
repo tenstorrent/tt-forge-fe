@@ -298,9 +298,14 @@ def AvgPool2d(
         padding = [kernel_size[1] // 2] * 2 + [kernel_size[0] // 2] * 2
     if isinstance(padding, int):
         padding = [padding] * 4  # [left,right,top,bottom]
+    if isinstance(channel_last, int):
+        channel_last = bool(channel_last)
 
-    dilation = 1  # Only as place holder to standardize interface with MaxPool2d
-    attrs = kernel_size + stride + [dilation, ceil_mode] + padding + [count_include_pad] + [channel_last]
+    # Only as place holder to standardize interface with MaxPool2d
+    dilation = (1, 1)
+    attrs = (
+        kernel_size + stride + [dilation[0], dilation[1], ceil_mode] + padding + [count_include_pad] + [channel_last]
+    )
     return op(
         "avg_pool2d",
         name,
@@ -310,7 +315,8 @@ def AvgPool2d(
         kernel_width=kernel_size[1],
         stride_height=stride[0],
         stride_width=stride[1],
-        dilation=dilation,
+        dilation_width=dilation[0],
+        dilation_height=dilation[1],
         ceil_mode=ceil_mode,
         padding_left=padding[0],
         padding_right=padding[1],

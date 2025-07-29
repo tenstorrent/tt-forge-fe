@@ -786,6 +786,7 @@ class MLIRGenerator
         lowering_handler_map["add"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::AddOp>;
         lowering_handler_map["atan"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::AtanOp>;
         lowering_handler_map["argmax"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ArgMaxOp>;
+        lowering_handler_map["avg_pool2d"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::AvgPool2dOp>;
         lowering_handler_map["cast"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::TypecastOp>;
         lowering_handler_map["clip"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ClampScalarOp>;
         lowering_handler_map["concatenate"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ConcatOp>;
