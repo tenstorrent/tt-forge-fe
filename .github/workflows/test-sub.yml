@@ -68,7 +68,7 @@ jobs:
     continue-on-error: ${{ inputs.allow-fail }}
 
     container:
-      image: ${{ (inputs.test_mark == 'slim_wheel') && 'ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-slim-ubuntu-22-04:latest' || inputs.docker-image }}
+      image: ${{ (inputs.test_mark == 'slim_wheel') && 'ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:latest' || inputs.docker-image }}
       options: --device /dev/tenstorrent/0
       volumes:
         - /dev/hugepages:/dev/hugepages

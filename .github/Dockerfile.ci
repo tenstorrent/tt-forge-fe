@@ -5,14 +5,7 @@ SHELL ["/bin/bash", "-c"]
 
 # Set environment variables
 ENV PROJECT_NAME=tt-forge-fe
-ENV TTMLIR_TOOLCHAIN_DIR=/opt/ttmlir-toolchain
-ENV TTFORGE_TOOLCHAIN_DIR=/opt/ttforge-toolchain
-
-# Create a directory for the build and toolchain
 ARG BUILD_DIR=/home/build
-RUN mkdir -p $BUILD_DIR && \
-    mkdir -p $TTMLIR_TOOLCHAIN_DIR && \
-    mkdir -p $TTFORGE_TOOLCHAIN_DIR
 
 # Copy the project to the container
 ADD . $BUILD_DIR/$PROJECT_NAME
@@ -29,13 +22,19 @@ RUN source env/activate && \
     cmake -B env/build env && \
     cmake --build env/build
 
-FROM ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-slim-ubuntu-22-04:${FROM_TAG} AS ci
+FROM ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:${FROM_TAG} AS ci
 
-# Copy the TTMLIR_TOOLCHAIN_DIR from the previous stage
+# Set environment variables
+ENV PROJECT_NAME=tt-forge-fe
+ARG BUILD_DIR=/home/build
 
-ENV TTMLIR_TOOLCHAIN_DIR=/opt/ttmlir-toolchain
-ENV TTFORGE_TOOLCHAIN_DIR=/opt/ttforge-toolchain
+# Copy the project files (needed for env/activate)
+COPY --from=ci-build $BUILD_DIR/$PROJECT_NAME $BUILD_DIR/$PROJECT_NAME
 
+# Set working directory to project root
+WORKDIR $BUILD_DIR/$PROJECT_NAME
+
+# Copy the toolchain directories from the build stage
 RUN echo "Copying from ci-build stage $TTMLIR_TOOLCHAIN_DIR"
 COPY --from=ci-build $TTMLIR_TOOLCHAIN_DIR $TTMLIR_TOOLCHAIN_DIR
 
@@ -45,6 +44,7 @@ COPY --from=ci-build $TTFORGE_TOOLCHAIN_DIR $TTFORGE_TOOLCHAIN_DIR
 RUN du -h --max-depth=2 $TTMLIR_TOOLCHAIN_DIR
 RUN du -h --max-depth=2 $TTFORGE_TOOLCHAIN_DIR
 
-# Add dev/test requirements on top of slim image (which already has core requirements)
+# Install dev requirements on top of base image (which already has core requirements)
 COPY env/dev_requirements.txt /tmp/dev_requirements.txt
-RUN pip install --ignore-installed -r /tmp/dev_requirements.txt
+RUN source env/activate && \
+    pip install --ignore-installed -r /tmp/dev_requirements.txt
