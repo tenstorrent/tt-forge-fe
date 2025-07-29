@@ -350,3 +350,129 @@ class TestCollectionTorch:
             torch.bfloat16,
         ],
     )
+
+    unary_implemented = TestCollection(
+        operators=[
+            "relu",
+            "sqrt",
+            "reciprocal",
+            "sigmoid",
+            "abs",
+            "cos",
+            "exp",
+            "neg",
+            "rsqrt",
+            "sin",
+            "square",
+            "pow",
+            "clamp",
+            "log",
+            "log1p",
+            "cumsum",
+            "isnan",
+            "tanh",
+        ],
+    )
+
+    unary_not_implemented = TestCollection(
+        operators=[
+            "acos",
+            "acosh",
+            "angle",
+            "asin",
+            "asinh",
+            "atan",
+            "atanh",
+            "bitwise_not",
+            "ceil",
+            "conj_physical",
+            "cosh",
+            "deg2rad",
+            "digamma",
+            "erf",
+            "erfc",
+            "erfinv",
+            "exp2",
+            "expm1",
+            "floor",
+            "frac",
+            "lgamma",
+            "log10",
+            "log2",
+            "logit",
+            "i0",
+            "nan_to_num",
+            "positive",
+            "rad2deg",
+            "round",
+            "sign",
+            "sgn",
+            "signbit",
+            "sinc",
+            "sinh",
+            "tan",
+            "trunc",
+        ],
+    )
+
+    unary = TestCollection(
+        operators=unary_implemented.operators + unary_not_implemented.operators,
+    )
+
+    binary_implemented = TestCollection(
+        operators=[
+            "add",  #                   #00
+            "div",  #                   #01
+            "remainder",  #             #12
+            "mul",  #                   #03
+            "sub",  #                   #05
+            # "true_divide",  #         #07     - Alias for div with rounding_mode=None.
+            "ge",  #                    #08
+            "ne",  #                    #16                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: not_equal      # working with model const
+            "gt",  #                    #19                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: greater        # working with model const
+            "lt",  #                    #21                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less           # working with model const
+            "maximum",  #               #23                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: maximum        # working with model const
+            "minimum",  #               #24                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: minimum        # working with model const
+        ],
+    )
+
+    binary_not_implemented = TestCollection(
+        operators=[
+            "atan2",  #                 #00                         - NotImplementedError: The following operators are not implemented: ['aten::atan2']
+            "bitwise_and",  #           #02                         - RuntimeError: "bitwise_and_cpu" not implemented for 'Float'
+            "bitwise_or",  #            #03                         - RuntimeError: "bitwise_or_cpu" not implemented for 'Float'
+            "bitwise_xor",  #           #04                         - RuntimeError: "bitwise_xor_cpu" not implemented for 'Float'
+            "bitwise_left_shift",  #    #05                         - RuntimeError: "lshift_cpu" not implemented for 'Float'
+            "bitwise_right_shift",  #   #06                         - RuntimeError: "rshift_cpu" not implemented for 'Float'
+            "floor_divide",  #          #07                         - AssertionError: Encountered unsupported op types. Check error logs for more details         # working with model const
+            "fmod",  #                  #08                         - AssertionError: Encountered unsupported op types. Check error logs for more details         # working with model const
+            "logaddexp",  #             #09                         - NotImplementedError: The following operators are not implemented: ['aten::logaddexp']
+            "logaddexp2",  #            #10                         - NotImplementedError: The following operators are not implemented: ['aten::logaddexp2']
+            "nextafter",  #             #11                         - NotImplementedError: The following operators are not implemented: ['aten::nextafter']
+            "fmax",  #                  #13                         - NotImplementedError: The following operators are not implemented: ['aten::fmax']
+            "fmin",  #                  #14                         - NotImplementedError: The following operators are not implemented: ['aten::fmin']
+            "eq",  #                    #15                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: equal          # working with model const
+            "le",  #                    #17                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less_equal     # working with model const
+        ],
+    )
+
+    binary = TestCollection(
+        operators=binary_implemented.operators + binary_not_implemented.operators,
+    )
+
+    bitwise = TestCollection(
+        operators=[
+            # Unary operators
+            "bitwise_not",
+            # Binary operators
+            "bitwise_and",
+            "bitwise_or",
+            "bitwise_xor",
+            "bitwise_left_shift",
+            "bitwise_right_shift",
+        ],
+    )
+
+    not_implemented = TestCollection(
+        operators=unary_not_implemented.operators + binary_not_implemented.operators,
+    )
