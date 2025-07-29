@@ -13,8 +13,11 @@ from loguru import logger
 
 from forge.op_repo import OperatorParamNumber
 
+from test.operators.utils import TestCollectionTorch
+
 from test.random.rgg import Framework
 from test.random.rgg import Frameworks
+from test.random.rgg import OperatorList
 from test.random.rgg import FrameworkTestUtils
 from test.random.rgg import Algorithm
 from test.random.rgg import Algorithms
@@ -145,63 +148,38 @@ class OperatorLists:
     )
 
     NOT_IMPLEMENTED_PYTORCH = (
-        # Unary operators
-        "acos",
-        "acosh",
-        "angle",
-        "asin",
-        "asinh",
-        "atan",
-        "atanh",
-        # "bitwise_not",
-        "ceil",
-        "conj_physical",
-        "cosh",
-        "deg2rad",
-        "digamma",
-        # "erf",  # Pytorch passing, Forge passing
-        "erfc",
-        "erfinv",
-        "exp2",
-        "expm1",
-        # "floor",  # Pytorch passing, Forge passing
-        "frac",
-        "lgamma",
-        "log10",
-        "log2",
-        "logit",
-        "i0",
-        "isnan",
-        # "nan_to_num",  # Pytorch passing, Forge passing
-        "positive",
-        "rad2deg",
-        "round",
-        "rsqrt",
-        "sign",
-        "sgn",
-        "signbit",
-        "sinc",
-        "sinh",
-        "tan",
-        # "tanh",
-        "trunc",
-        "heaviside",
-        # Binary operators
-        "atan2",
-        "floor_divide",
-        "nextafter",
-        "fmin",
-        "fmax",
-        "fmod",
-        "logaddexp",
-        "logaddexp2",
-        "le",
-        "lt",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
-        "ge",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
-        "gt",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
-        "ne",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
-        "eq",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
-    )
+        OperatorList(
+            "Not implemented pytorch",
+            TestCollectionTorch.unary_not_implemented.operators
+            + TestCollectionTorch.binary_not_implemented.operators
+            + [
+                # Unary operators
+                "isnan",  # Not working in graphs, Encountered unsupported op node type: isnan, on device: tt
+                "rsqrt",
+                "heaviside",
+                # Binary operators
+                "lt",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
+                "ge",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
+                "gt",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
+                "ne",  # ?  ValueError: Dtype mismatch: framework_model.dtype=torch.int32, compiled_model.dtype=torch.float32
+            ],
+        )
+        - [
+            # Unary operators
+            "bitwise_not",
+            "atan",  # Pytorch passing, Forge passing
+            "atan2",  # Pytorch passing
+            "erf",  # Pytorch passing, Forge passing
+            "floor",  # Pytorch passing, Forge passing
+            # "nan_to_num",  # Not working in graphs
+            # Binary operators
+            "bitwise_and",
+            "bitwise_or",
+            "bitwise_xor",
+            "bitwise_left_shift",
+            "bitwise_right_shift",
+        ]
+    ).operators
 
     UNSUPPORTED_PYTORCH = (
         # Unary operators
