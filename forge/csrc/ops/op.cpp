@@ -847,7 +847,7 @@ void Op::decompose_initial(
         case OpType::ReduceAvg: return reduce_avg::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::ReduceMax: return reduce_max::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::ReduceSum: return reduce_sum::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Relu: return relu::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Relu: return;
         case OpType::Remainder: return;
         case OpType::Repeat: return repeat::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::RepeatInterleave: return repeat_interleave::decompose_initial(old_op_type, *this, dc, inputs);
@@ -972,7 +972,7 @@ void Op::decompose_post_optimize(
         case OpType::ReduceAvg: return;
         case OpType::ReduceMax: return;
         case OpType::ReduceSum: return;
-        case OpType::Relu: return relu::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Relu: return;
         case OpType::Remainder: return;
         case OpType::Repeat: return repeat::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::RepeatInterleave: return repeat_interleave::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -1097,7 +1097,7 @@ void Op::decompose_post_autograd(
         case OpType::ReduceAvg: return;
         case OpType::ReduceMax: return;
         case OpType::ReduceSum: return;
-        case OpType::Relu: return relu::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Relu: return;
         case OpType::Remainder: return;
         case OpType::Repeat: return repeat::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::RepeatInterleave: return repeat_interleave::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1220,7 +1220,7 @@ long Op::initial_flops_estimate(
         case OpType::ReduceAvg: return 0;
         case OpType::ReduceMax: return 0;
         case OpType::ReduceSum: return 0;
-        case OpType::Relu: return relu::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Relu: return 0;
         case OpType::Remainder: return 0;
         case OpType::Repeat: return repeat::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::RepeatInterleave: return repeat_interleave::initial_flops_estimate(old_op_type, *this, inputs);

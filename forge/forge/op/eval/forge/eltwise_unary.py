@@ -20,7 +20,6 @@ def eval(type, attr, ops):
         len(attr) == 0
         or (type == "clip" and len(attr) == 2)
         or (type == "erf" and len(attr) == 0)
-        or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
         or (type == "dropout" and len(attr) == 3)
         or (type == "pow" and len(attr) == 1)
@@ -38,34 +37,8 @@ def eval(type, attr, ops):
         torch.set_rng_state(rng_state)
         return ret
 
-    if type == "relu":
-
-        def relu(x, threshold):
-            return x * (x >= threshold).to(x.dtype)
-
-        def inv_relu(x, threshold):
-            ir = threshold * (x >= threshold).to(x.dtype) + x * (~(x >= threshold)).to(x.dtype)
-            return relu(ir, 0.0)
-
-        x = t_ops[0]
-        if len(attr) > 0:
-            threshold = attr[0]
-        else:
-            threshold = 0.0
-        if len(attr) > 1:
-            mode = attr[1]
-        else:
-            mode = "min"
-
-        if mode == "min":
-            return relu(x, threshold)
-        else:
-            return inv_relu(x, threshold)
-
-    # relu_threshold = attr[0] if len(attr) > 0 else 0.0
     f = {
         "erf": lambda i: torch.erf(i[0]),
-        # "relu": lambda i: i[0] * (i[0] >= relu_threshold).to(i[0].dtype),
         "nop": lambda i: i[0],
         "tilizer": lambda i: i[0],
         "ethernet_datacopy": lambda i: i[0],
@@ -92,7 +65,6 @@ def shape(type, attr, ops):
         len(attr) == 0
         or (type == "ethernet_datacopy" and (len(attr) == 1 or len(attr) == 2))
         or (type == "clip" and len(attr) == 2)
-        or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
         or (type == "dropout" and len(attr) == 3)
         or (type == "pow" and len(attr) == 1)
@@ -108,7 +80,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
     assert (
         len(attr) == 0
         or (type == "clip" and len(attr) == 2)
-        or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
         or (type == "dropout" and len(attr) == 3)
         or (type == "pow" and len(attr) == 1)
@@ -122,29 +93,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     if type == "buffer":
         return ac.op(Buffer.create(), (grad,))
-
-    if type == "relu":
-        # set theashold
-        threshold = 0.0
-        shape = inputs[0].shape.as_list()
-        if len(attr) > 0:
-            f32_epsilon = 1.19209289551e-07
-            threshold = attr[0] - f32_epsilon
-        threshold_tensor = ac.tensor(torch.zeros(shape) + threshold)
-
-        # handle different modes
-        mode = "min"
-        if len(attr) > 1:
-            mode = attr[1]
-
-        if mode == "min":
-            relud = ac.op("greater_equal", (inputs[0], threshold_tensor))
-        else:
-            l_relud = ac.op("less", (inputs[0], threshold_tensor))
-            g_relud = ac.op("greater_equal", (inputs[0], ac.tensor(torch.zeros(shape))))
-            relud = ac.op("multiply", (l_relud, g_relud))
-
-        return ac.op("multiply", (relud, grad))
 
     if type == "tanh":
         tanh_square = ac.op("multiply", (output, output))
@@ -205,7 +153,6 @@ def initial_flops_estimate(type, attr, ops):
     flops = 0
     sfpu_unary_ops = [
         "sqrt",
-        "relu",
         "abs",
         "tanh",
         "cumsum",
