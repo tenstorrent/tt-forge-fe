@@ -1,23 +1,23 @@
-# SPDX-FileCopyrightText: © 2025 Tenstorrent AI ULC
-
+# SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
+#
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from third_party.tt_forge_models.phi2.causal_lm.pytorch import (
+from third_party.tt_forge_models.phi1_5.causal_lm.pytorch import (
     ModelLoader as CausalLMLoader,
 )
-from third_party.tt_forge_models.phi2.causal_lm.pytorch.loader import (
+from third_party.tt_forge_models.phi1_5.causal_lm.pytorch.loader import (
     ModelVariant as CausalLMVariant,
 )
-from third_party.tt_forge_models.phi2.sequence_classification.pytorch import (
+from third_party.tt_forge_models.phi1_5.sequence_classification.pytorch import (
     ModelLoader as SequenceClassificationLoader,
 )
-from third_party.tt_forge_models.phi2.sequence_classification.pytorch.loader import (
+from third_party.tt_forge_models.phi1_5.sequence_classification.pytorch.loader import (
     ModelVariant as SequenceClassificationVariant,
 )
-from third_party.tt_forge_models.phi2.token_classification.pytorch import (
+from third_party.tt_forge_models.phi1_5.token_classification.pytorch import (
     ModelLoader as TokenClassificationLoader,
 )
-from third_party.tt_forge_models.phi2.token_classification.pytorch.loader import (
+from third_party.tt_forge_models.phi1_5.token_classification.pytorch.loader import (
     ModelVariant as TokenClassificationVariant,
 )
 
@@ -36,34 +36,24 @@ from forge.verify.verify import verify
 from test.models.models_utils import TextModelWrapper
 
 PHI_VARIANTS = [
-    CausalLMVariant.PHI2,
-    CausalLMVariant.PHI2_PYTDML,
+    CausalLMVariant.PHI1_5,
 ]
 
 
-@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", PHI_VARIANTS)
-def test_phi2_causal_lm_pytorch(variant):
-    if variant == CausalLMVariant.PHI2:
-        group = ModelGroup.RED
-        priority = ModelPriority.P1
-    else:
-        group = ModelGroup.GENERALITY
-        priority = ModelPriority.P2
+def test_phi1_5_causal_lm_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model=ModelArch.PHI2,
+        model=ModelArch.PHI1_5,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
-        group=group,
-        priority=priority,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
-
-    pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and input
     loader = CausalLMLoader(variant)
@@ -84,26 +74,22 @@ def test_phi2_causal_lm_pytorch(variant):
 
 
 PHI_VARIANTS = [
-    TokenClassificationVariant.PHI2,
-    TokenClassificationVariant.PHI2_PYTDML,
+    TokenClassificationVariant.PHI1_5,
 ]
 
 
-@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", PHI_VARIANTS)
-def test_phi2_token_classification_pytorch(variant):
+def test_phi1_5_token_classification_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model=ModelArch.PHI2,
+        model=ModelArch.PHI1_5,
         variant=variant,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and input
     loader = TokenClassificationLoader(variant)
@@ -127,25 +113,22 @@ def test_phi2_token_classification_pytorch(variant):
 
 
 PHI_VARIANTS = [
-    SequenceClassificationVariant.PHI2,
-    SequenceClassificationVariant.PHI2_PYTDML,
+    SequenceClassificationVariant.PHI1_5,
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", PHI_VARIANTS)
-def test_phi2_sequence_classification_pytorch(variant):
+def test_phi1_5_sequence_classification_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model=ModelArch.PHI2,
+        model=ModelArch.PHI1_5,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and input
     loader = SequenceClassificationLoader(variant)

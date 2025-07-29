@@ -2,14 +2,9 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import timm
 import torch
-from loguru import logger
 from mlp_mixer_pytorch import MLPMixer
-from PIL import Image
-from third_party.tt_forge_models.tools.utils import get_file
-from timm.data import resolve_data_config
-from timm.data.transforms_factory import create_transform
+from third_party.tt_forge_models.mlp_mixer.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -23,46 +18,24 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.models_utils import print_cls_results
-from test.utils import download_model
-
-varaints = [
-    pytest.param(
-        "mixer_b16_224",
-        marks=[pytest.mark.xfail],
-    ),
-    pytest.param(
-        "mixer_b16_224_in21k",
-        marks=[pytest.mark.xfail],
-    ),
-    pytest.param("mixer_b16_224_miil"),
-    pytest.param(
-        "mixer_b16_224_miil_in21k",
-        marks=[pytest.mark.xfail],
-    ),
-    pytest.param("mixer_b32_224"),
-    pytest.param(
-        "mixer_l16_224",
-        marks=[pytest.mark.xfail],
-    ),
-    pytest.param(
-        "mixer_l16_224_in21k",
-        marks=[pytest.mark.xfail],
-    ),
-    pytest.param("mixer_l32_224"),
-    pytest.param("mixer_s16_224"),
-    pytest.param("mixer_s32_224"),
-    pytest.param(
-        "mixer_b16_224.goog_in21k",
-        marks=[pytest.mark.xfail],
-    ),
+variants = [
+    ModelVariant.MIXER_B16_224,
+    ModelVariant.MIXER_B16_224_IN21K,
+    ModelVariant.MIXER_B16_224_MIIL,
+    ModelVariant.MIXER_B16_224_MIIL_IN21K,
+    ModelVariant.MIXER_B32_224,
+    ModelVariant.MIXER_L16_224,
+    ModelVariant.MIXER_L16_224_IN21K,
+    ModelVariant.MIXER_L32_224,
+    ModelVariant.MIXER_S16_224,
+    ModelVariant.MIXER_S32_224,
+    ModelVariant.MIXER_B16_224_GOOG_IN21K,
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", varaints)
+@pytest.mark.parametrize("variant", variants)
 def test_mlp_mixer_timm_pytorch(variant):
-
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
@@ -72,39 +45,11 @@ def test_mlp_mixer_timm_pytorch(variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    load_pretrained_weights = True
-    if variant in ["mixer_s32_224", "mixer_s16_224", "mixer_b32_224", "mixer_l32_224"]:
-        load_pretrained_weights = False
-
-    framework_model = download_model(timm.create_model, variant, pretrained=load_pretrained_weights).to(torch.bfloat16)
-    config = resolve_data_config({}, model=framework_model)
-    transform = create_transform(**config)
-
-    try:
-        if variant in [
-            "mixer_b16_224_in21k",
-            "mixer_b16_224_miil_in21k",
-            "mixer_l16_224_in21k",
-            "mixer_b16_224.goog_in21k",
-        ]:
-            input_image = get_file(
-                "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/beignets-task-guide.png"
-            )
-            use_1k_labels = False
-        else:
-            input_image = get_file(
-                "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
-            )
-            use_1k_labels = True
-        image = Image.open(str(input_image)).convert("RGB")
-    except:
-        logger.warning(
-            "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
-        )
-        image = torch.rand(1, 3, 256, 256)
-    pixel_values = transform(image).unsqueeze(0)
-
-    inputs = [pixel_values.to(torch.bfloat16)]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -120,8 +65,8 @@ def test_mlp_mixer_timm_pytorch(variant):
     # Model Verification
     fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
-    # Run model on sample data and print results
-    print_cls_results(fw_out[0], co_out[0], use_1k_labels=use_1k_labels)
+    # Post processing
+    loader.print_cls_results(co_out)
 
 
 @pytest.mark.nightly

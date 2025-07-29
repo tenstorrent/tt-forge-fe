@@ -4,6 +4,7 @@
 
 import pytest
 import torch
+from third_party.tt_forge_models.ghostnet.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -17,23 +18,15 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.ghostnet.model_utils.utils import (
-    load_ghostnet_model,
-    post_processing,
-)
-
-params = [
-    pytest.param("ghostnet_100", marks=[pytest.mark.push]),
-    pytest.param("ghostnet_100.in1k", marks=[pytest.mark.push]),
-    pytest.param(
-        "ghostnetv2_100.in1k",
-        marks=[pytest.mark.xfail],
-    ),
+variants = [
+    ModelVariant.GHOSTNET_100,
+    ModelVariant.GHOSTNET_100_IN1K,
+    ModelVariant.GHOSTNETV2_100_IN1K,
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", params)
+@pytest.mark.parametrize("variant", variants)
 def test_ghostnet_timm(variant):
     # Record Forge Property
     module_name = record_model_properties(
@@ -44,10 +37,11 @@ def test_ghostnet_timm(variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Load the model and prepare input data
-    framework_model, inputs = load_ghostnet_model(variant)
-    framework_model.to(torch.bfloat16)
-    inputs = [inputs[0].to(torch.bfloat16)]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -61,7 +55,7 @@ def test_ghostnet_timm(variant):
     )
 
     # Model Verification and Inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post processing
-    post_processing(co_out)
+    loader.post_processing(co_out)

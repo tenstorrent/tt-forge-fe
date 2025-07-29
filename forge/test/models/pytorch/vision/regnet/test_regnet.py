@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from transformers import RegNetForImageClassification
+from third_party.tt_forge_models.regnet.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -20,25 +20,21 @@ from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
-from test.models.pytorch.vision.regnet.model_utils.image_utils import (
-    preprocess_input_data,
-)
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
 
 variants = [
-    "facebook/regnet-y-040",
-    "facebook/regnet-y-064",
-    "facebook/regnet-y-080",
-    "facebook/regnet-y-120",
-    "facebook/regnet-y-160",
-    "facebook/regnet-y-320",
+    ModelVariant.Y_040,
+    ModelVariant.Y_064,
+    ModelVariant.Y_080,
+    ModelVariant.Y_120,
+    ModelVariant.Y_160,
+    ModelVariant.Y_320,
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_regnet_img_classification(variant):
-
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
@@ -48,31 +44,29 @@ def test_regnet_img_classification(variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Load the image processor and the RegNet model
-    framework_model = RegNetForImageClassification.from_pretrained(variant, return_dict=False).to(torch.bfloat16)
-
-    # Preprocess the image
-    inputs = preprocess_input_data(variant)
-    inputs = [inputs[0].to(torch.bfloat16)]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model,
-        sample_inputs=inputs,
-        module_name=module_name,
-        compiler_cfg=compiler_cfg,
+        framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
     )
 
-    # Model Verification and inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    # Model Verification and Inference
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+    )
 
-    # post processing
-    logits = co_out[0]
-    predicted_label = logits.argmax(-1).item()
-    print(framework_model.config.id2label[predicted_label])
+    # Post processing
+    loader.post_processing(co_out)
 
 
 variants_with_weights = {
