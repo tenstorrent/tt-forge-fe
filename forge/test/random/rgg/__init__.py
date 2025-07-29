@@ -16,6 +16,7 @@ from .datatypes import (
 from .datatypes import NodeShapeCalculationContext
 from .datatypes import RandomizerTestContext
 from .datatypes import ModelBuilder, Framework
+from .datatypes import OperatorList
 from .datatypes import Algorithm
 from .config import get_randomizer_config_default
 from .utils import StrUtils, GraphUtils
@@ -46,6 +47,7 @@ __all__ = [
     "GraphUtils",
     "DebugUtils",
     "Framework",
+    "OperatorList",
     "Algorithm",
     "GraphBuilder",
     "RandomizerRunner",
