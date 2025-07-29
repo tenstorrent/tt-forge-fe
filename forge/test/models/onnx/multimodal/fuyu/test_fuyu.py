@@ -8,7 +8,7 @@ import onnx
 import forge
 
 from test.models.models_utils import pad_inputs
-from test.models.onnx.text.fuyu.model_utils.model_utils import generate_no_cache
+from test.models.onnx.multimodal.fuyu.model_utils.model_utils import generate_no_cache
 from forge.verify.verify import verify
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 from datasets import load_dataset
