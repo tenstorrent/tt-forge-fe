@@ -921,7 +921,7 @@ void Op::decompose_post_optimize(
         case OpType::ReduceSum: return;
         case OpType::Relu: return;
         case OpType::Remainder: return;
-        case OpType::Repeat: return repeat::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Repeat: return;
         case OpType::RepeatInterleave: return repeat_interleave::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Requantize: return requantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Reshape: return;
@@ -1038,7 +1038,7 @@ void Op::decompose_post_autograd(
         case OpType::ReduceSum: return;
         case OpType::Relu: return;
         case OpType::Remainder: return;
-        case OpType::Repeat: return repeat::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Repeat: return;
         case OpType::RepeatInterleave: return repeat_interleave::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Requantize: return requantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Reshape: return reshape::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1153,7 +1153,7 @@ long Op::initial_flops_estimate(
         case OpType::ReduceSum: return 0;
         case OpType::Relu: return 0;
         case OpType::Remainder: return 0;
-        case OpType::Repeat: return repeat::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Repeat: return 0;
         case OpType::RepeatInterleave: return repeat_interleave::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Requantize: return requantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Reshape: return 0;
