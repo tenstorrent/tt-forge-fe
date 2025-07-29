@@ -145,6 +145,55 @@ NodeContext backward(
     unreachable();
 }
 
+void decompose_initial(
+    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+{
+    TT_DBG_ASSERT(op.type() == OpType::MaxPool2d, "Wrong op type.");
+    TT_ASSERT(inputs.size() == 1, "MaxPool2d expects 1 input");
+
+    bool channel_last = op.attr_as<bool>("channel_last");
+    NodeContext activations = inputs[0];
+
+    // TTNN can only perform a channel last pooling with its maxpool2d op.
+    // The TTNN maxpool2d requires the input to be in the shape: (N, H, W, C).
+    // If the forge maxpool2d op is not channel last, we must permute the input (N, C, H, W) tensor to (N, H, W, C)
+    // and then transpose it back to (N, C_out, H_out, W_out) afterward.
+
+    if (channel_last)
+        return;
+
+    // (N, C, H, W) --> transpose(-3, -2): (N, H, C, W) --> transpose(-2, -1): (N, H, W, C)
+    activations = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {activations});
+    activations = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {activations});
+
+    // Create a new MaxPool2d operation with channel_last=true
+    NodeContext result = dc.op(
+        graphlib::OpType(
+            "max_pool2d",
+            {},
+            {{"kernel_height", op.attr_as<int>("kernel_height")},
+             {"kernel_width", op.attr_as<int>("kernel_width")},
+             {"stride_height", op.attr_as<int>("stride_height")},
+             {"stride_width", op.attr_as<int>("stride_width")},
+             {"dilation_height", op.attr_as<int>("dilation_height")},
+             {"dilation_width", op.attr_as<int>("dilation_width")},
+             {"ceil_mode", op.attr_as<bool>("ceil_mode")},
+             {"padding_left", op.attr_as<int>("padding_left")},
+             {"padding_right", op.attr_as<int>("padding_right")},
+             {"padding_top", op.attr_as<int>("padding_top")},
+             {"padding_bottom", op.attr_as<int>("padding_bottom")},
+             {"channel_last", true}}),
+        {activations});
+
+    // Transpose back to channel first: (N, H_out, W_out, C_out) --> transpose(-2, -1): (N, H_out, C_out, W_out) -->
+    // transpose(-3, -2): (N, C_out, H_out, W_out)
+    result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
+    result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
+
+    dc.fuse(result);
+    return;
+}
+
 }  // namespace max_pool_2d
 }  // namespace ops
 }  // namespace tt

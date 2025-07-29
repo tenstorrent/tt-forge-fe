@@ -93,6 +93,8 @@ def MaxPool2d(
         padding = [kernel_size[1] // 2] * 2 + [kernel_size[0] // 2] * 2
     if isinstance(padding, int):
         padding = [padding] * 4  # [left,right,top,bottom]
+    if isinstance(channel_last, int):
+        channel_last = bool(channel_last)
 
     attrs = (
         kernel_size
