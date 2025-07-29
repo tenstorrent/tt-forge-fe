@@ -3,8 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 from transformers import FuyuProcessor, FuyuForCausalLM, FuyuConfig
-from PIL import Image
-import requests
 import torch
 import onnx
 import forge
@@ -61,8 +59,8 @@ def test_fuyu_onnx(variant, forge_tmp_path):
     image_patches_indices = model_inputs["image_patches_indices"]
 
     # Pad input_ids and attention_mask
-    padded_input_ids, seq_len = pad_inputs(input_ids, max_new_tokens)
-    padded_attention_mask, _ = pad_inputs(attention_mask, max_new_tokens)
+    padded_input_ids, seq_len = pad_inputs(input_ids, 512)
+    padded_attention_mask, _ = pad_inputs(attention_mask, 512)
 
     # Updated model inputs
     model_inputs["input_ids"] = padded_input_ids
