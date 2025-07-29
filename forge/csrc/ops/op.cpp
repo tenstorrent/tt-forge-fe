@@ -782,7 +782,7 @@ void Op::decompose_initial(
         case OpType::Dequantize: return dequantize::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
         case OpType::Downsample2d: return downsample_2d::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Dropout: return dropout::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Dropout: return;
         case OpType::Embedding: return embedding::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::EmbeddingBw: return embedding_bw::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Equal: return;
@@ -905,7 +905,7 @@ void Op::decompose_post_optimize(
         case OpType::Dequantize: return dequantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
         case OpType::Downsample2d: return downsample_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Dropout: return dropout::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Dropout: return;
         case OpType::Embedding: return embedding::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::EmbeddingBw: return embedding_bw::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Equal: return;
@@ -1028,7 +1028,7 @@ void Op::decompose_post_autograd(
         case OpType::Dequantize: return dequantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
         case OpType::Downsample2d: return downsample_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Dropout: return dropout::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Dropout: return;
         case OpType::Embedding: return embedding::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::EmbeddingBw: return embedding_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Equal: return;
@@ -1149,7 +1149,7 @@ long Op::initial_flops_estimate(
         case OpType::Dequantize: return dequantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Divide: return 0;
         case OpType::Downsample2d: return downsample_2d::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Dropout: return dropout::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Dropout: return 0;
         case OpType::Embedding: return embedding::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::EmbeddingBw: return embedding_bw::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Equal: return 0;
@@ -1389,7 +1389,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Dequantize: return false;
         case OpType::Divide: return true;
         case OpType::Downsample2d: return false;
-        case OpType::Dropout: return true;
+        case OpType::Dropout: return false;
         case OpType::Embedding: return false;
         case OpType::EmbeddingBw: return false;
         case OpType::Equal: return true;
@@ -1509,7 +1509,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Dequantize: return false;
         case OpType::Divide: return false;
         case OpType::Downsample2d: return false;
-        case OpType::Dropout: return true;
+        case OpType::Dropout: return false;
         case OpType::Embedding: return false;
         case OpType::EmbeddingBw: return false;
         case OpType::Equal: return false;

@@ -157,6 +157,36 @@ def Batchnorm(
         return Add(name + "_bias", Multiply(name + "_weights", out, weights), bias)
 
 
+def Dropout(name: str, operandA: Tensor, p: float = 0.5, training: bool = True, seed: int = 0) -> Tensor:
+    """
+    Dropout
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+        First operand
+
+    p: float
+        Probability of an element to be zeroed.
+
+    training: bool
+        Apply dropout if true
+
+    seed: int
+        RNG seed
+
+    Returns
+    -------
+    Tensor
+        Forge tensor
+    """
+
+    return op("dropout", name, operandA, p=p, training=training, seed=seed).get_tensor()
+
+
 class Linear(ForgeModule):
     """
     Linear transformation module.
