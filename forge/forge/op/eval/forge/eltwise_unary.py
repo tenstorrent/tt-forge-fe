@@ -55,7 +55,6 @@ def shape(type, attr, ops):
         or (type == "ethernet_datacopy" and (len(attr) == 1 or len(attr) == 2))
         or (type == "clip" and len(attr) == 2)
         or (type == "cumsum" and len(attr) == 2)
-        or (type == "dropout" and len(attr) == 3)
         or (type == "pow" and len(attr) == 1)
     ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout, and pow"
 
@@ -70,7 +69,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         len(attr) == 0
         or (type == "clip" and len(attr) == 2)
         or (type == "cumsum" and len(attr) == 2)
-        or (type == "dropout" and len(attr) == 3)
         or (type == "pow" and len(attr) == 1)
     ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout and pow"
 
@@ -95,9 +93,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
             return ac.op(Nop.create(), (grad,))
 
         return res
-
-    if type == "dropout":
-        return ac.op_with_named_attrs("dropout", (grad,), {"p": attr[0], "training": attr[1], "seed": attr[2]}, attr)
 
     if type == "clip":
         x = inputs[0]
