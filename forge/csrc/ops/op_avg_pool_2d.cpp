@@ -120,6 +120,64 @@ NodeContext backward(
     unreachable();
 }
 
+void decompose_initial(
+    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+{
+    TT_DBG_ASSERT(op.type() == OpType::AvgPool2d, "Wrong op type.");
+    TT_ASSERT(inputs.size() == 1, "AvgPool2d expects 1 input");
+
+    // TTNN can only perform a channel last pooling with its avg_pool2d op.
+    // The TTNN avg_pool2d requires the input to be in the shape: (N, H, W, C) or (1, 1, N*H*W, C).
+    // If the forge avg_pool2d op is channel-first, we must permute the input (N, C, H, W) tensor to (N, H, W, C)
+    // and then transpose it back to (N, H_out, W_out, C_out) afterward.
+    //     - This is done with two transposes
+    //     - (N, C, H, W) --> transpose(-3, -2): (N, H, C, W) --> transpose(-2, -1): (N, H, W, C)
+    // Afterward:
+    //     - (N, H_out, W_out, C_out) --> transpose(-2, -1): (N, H_out, C_out, W_out) --> transpose(-3, -2): (N, C_out,
+    //     H_out, W_out)
+
+    bool channel_last = op.attr_as<bool>("channel_last");
+    if (channel_last)
+        return;
+
+    int kernel_height = op.attr_as<int>("kernel_height");
+    int kernel_width = op.attr_as<int>("kernel_width");
+    int stride_height = op.attr_as<int>("stride_height");
+    int stride_width = op.attr_as<int>("stride_width");
+    int padding_left = op.attr_as<int>("padding_left");
+    int padding_right = op.attr_as<int>("padding_right");
+    int padding_top = op.attr_as<int>("padding_top");
+    int padding_bottom = op.attr_as<int>("padding_bottom");
+    int dilation_height = op.attr_as<int>("dilation_height");
+    int dilation_width = op.attr_as<int>("dilation_width");
+    bool ceil_mode = op.attr_as<bool>("ceil_mode");
+
+    NodeContext activations = inputs[0];
+    activations = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {activations});
+    activations = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {activations});
+    NodeContext result = dc.op(
+        graphlib::OpType(
+            "avg_pool2d",
+            {},
+            {{"kernel_height", kernel_height},
+             {"kernel_width", kernel_width},
+             {"stride_height", stride_height},
+             {"stride_width", stride_width},
+             {"padding_left", padding_left},
+             {"padding_right", padding_right},
+             {"padding_top", padding_top},
+             {"padding_bottom", padding_bottom},
+             {"channel_last", true},
+             {"ceil_mode", ceil_mode},
+             {"dilation_height", dilation_height},
+             {"dilation_width", dilation_width}}),
+        {activations});
+    result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
+    result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
+    dc.fuse(result);
+    return;
+}
+
 }  // namespace avg_pool_2d
 }  // namespace ops
 }  // namespace tt

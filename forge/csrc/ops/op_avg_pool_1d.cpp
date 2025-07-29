@@ -101,6 +101,28 @@ NodeContext backward(
     unreachable();
 }
 
+void decompose_initial(
+    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+{
+    TT_DBG_ASSERT(op.type() == OpType::AvgPool1d, "Wrong op type.");
+    TT_ASSERT(inputs.size() == 1, "AvgPool1d expects 1 input");
+
+    int kernel_size = op.attr_as<int>("kernel_size");
+    NodeContext activations = inputs[0];
+
+    // Check if this is global pooling (kernel size matches input width)
+    if (kernel_size != static_cast<int>(activations.shape[activations.shape.size() - 1]))
+    {
+        TT_THROW("Only support global avg_pool1d for now");
+        unreachable();
+    }
+
+    NodeContext reduce_avg =
+        dc.op(graphlib::OpType("reduce_avg", {}, {{"dim_arg", -1}, {"keep_dim", true}}), {activations});
+    dc.fuse(reduce_avg);
+    return;
+}
+
 }  // namespace avg_pool_1d
 }  // namespace ops
 }  // namespace tt
