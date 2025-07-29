@@ -259,7 +259,13 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 
     if (!channel_last)
     {
-        return at::pad(input_tensor, std::vector<int64_t>(padding.begin(), padding.end()), mode_options[mode], value);
+        if (mode == 0)  // constant mode - value parameter is used
+        {
+            return at::pad(
+                input_tensor, std::vector<int64_t>(padding.begin(), padding.end()), mode_options[mode], value);
+        }
+        // replicate and reflect modes - no value parameter
+        return at::pad(input_tensor, std::vector<int64_t>(padding.begin(), padding.end()), mode_options[mode]);
     }
 
     // When channel_last=True, the input tensor is in format (N, D1, D2, ..., Dn, C)
@@ -274,8 +280,15 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 
     at::Tensor transposed = input_tensor.permute(perm);
 
-    at::Tensor padded =
-        at::pad(transposed, std::vector<int64_t>(padding.begin(), padding.end()), mode_options[mode], value);
+    at::Tensor padded;
+    if (mode == 0)  // constant mode - value parameter is used
+    {
+        padded = at::pad(transposed, std::vector<int64_t>(padding.begin(), padding.end()), mode_options[mode], value);
+    }
+    else  // replicate and reflect modes - no value parameter
+    {
+        padded = at::pad(transposed, std::vector<int64_t>(padding.begin(), padding.end()), mode_options[mode]);
+    }
 
     // For a tensor (N, C, D1, D2, ..., Dn) -> (N, D1, D2, ..., Dn, C)
     std::vector<int64_t> reverse_perm = {0};                       // batch
