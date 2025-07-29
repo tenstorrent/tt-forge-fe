@@ -34,7 +34,6 @@ def test_yolo_v3(forge_tmp_path):
     )
 
     # Load model and input
-    print(os.environ['IRD_LF_CACHE'])
     loader = ModelLoader()
     framework_model = loader.load_model()
     input_sample = loader.load_inputs()
