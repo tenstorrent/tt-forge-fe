@@ -32,7 +32,6 @@ from .eltwise_unary import (
     Gelu,
     Sqrt,
     Log,
-    Buffer,
     Sigmoid,
     Argmax,
     Abs,
@@ -74,7 +73,6 @@ from .nn import Softmax, Layernorm, LogSoftmax, Batchnorm, MaxPool2dModule
 from .eltwise_nary import Concatenate, Where, IndexCopy, Stack, Interleave
 from .resize import Resize1d, Resize2d, Resize3d, Upsample2d, Downsample2d
 from .embedding import Embedding
-from .dram_queue import DRAMQueue
 from .quantize import Quantize, Dequantize, Requantize, ForgeRequantize
 from .kv_cache import FillCache, UpdateCache
 import forge.op.loss

@@ -11,7 +11,6 @@ import numpy as np
 from forge.op.eval.common import calculate_tile_size
 from .tanh import Tanh
 from .nop import Nop
-from .buffer import Buffer
 
 
 def eval(type, attr, ops):
@@ -42,7 +41,6 @@ def eval(type, attr, ops):
         "nop": lambda i: i[0],
         "tilizer": lambda i: i[0],
         "ethernet_datacopy": lambda i: i[0],
-        "buffer": lambda i: i[0],
         "clip": lambda i: torch.clip(i[0], min=attr[0], max=attr[1]),
         "abs": lambda i: torch.abs(i[0]),
         "tanh": lambda i: torch.tanh(i[0]),
@@ -90,9 +88,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     if type == "tilizer":
         return ac.op(Nop.create(), (grad,))
-
-    if type == "buffer":
-        return ac.op(Buffer.create(), (grad,))
 
     if type == "tanh":
         tanh_square = ac.op("multiply", (output, output))

@@ -66,7 +66,6 @@ if SHAPE_FIXED:
         "Gelu",
         "Log",
         "Relu",
-        "Buffer",
         "Tanh",
         "Dropout",
         "Sine",

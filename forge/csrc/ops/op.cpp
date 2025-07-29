@@ -51,7 +51,6 @@ class NewToOldOpType
         mapping_[OpType::AvgPool3d] = "avg_pool3d";
         mapping_[OpType::Batchnorm] = "batchnorm";
         mapping_[OpType::Broadcast] = "broadcast";
-        mapping_[OpType::Buffer] = "buffer";
         mapping_[OpType::Cast] = "cast";
         mapping_[OpType::Clip] = "clip";
         mapping_[OpType::Concatenate] = "concatenate";
@@ -72,7 +71,6 @@ class NewToOldOpType
         mapping_[OpType::Dequantize] = "dequantize";
         mapping_[OpType::Divide] = "divide";
         mapping_[OpType::Downsample2d] = "downsample2d";
-        mapping_[OpType::DramQueue] = "dram_queue";
         mapping_[OpType::Dropout] = "dropout";
         mapping_[OpType::Embedding] = "embedding";
         mapping_[OpType::EmbeddingBw] = "embedding_bw";
@@ -181,7 +179,6 @@ class OldToNewOpType
         mapping_["avg_pool3d"] = OpType::AvgPool3d;
         mapping_["batchnorm"] = OpType::Batchnorm;
         mapping_["broadcast"] = OpType::Broadcast;
-        mapping_["buffer"] = OpType::Buffer;
         mapping_["cast"] = OpType::Cast;
         mapping_["clip"] = OpType::Clip;
         mapping_["concatenate"] = OpType::Concatenate;
@@ -202,7 +199,6 @@ class OldToNewOpType
         mapping_["dequantize"] = OpType::Dequantize;
         mapping_["divide"] = OpType::Divide;
         mapping_["downsample2d"] = OpType::Downsample2d;
-        mapping_["dram_queue"] = OpType::DramQueue;
         mapping_["dropout"] = OpType::Dropout;
         mapping_["embedding"] = OpType::Embedding;
         mapping_["embedding_bw"] = OpType::EmbeddingBw;
@@ -376,7 +372,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::AvgPool3d: return avg_pool_3d::eval(old_op_type, *this, tensors);
         case OpType::Batchnorm: return batchnorm::eval(old_op_type, *this, tensors);
         case OpType::Broadcast: return broadcast::eval(old_op_type, *this, tensors);
-        case OpType::Buffer: return buffer::eval(old_op_type, *this, tensors);
         case OpType::Cast: return cast::eval(old_op_type, *this, tensors);
         case OpType::Clip: return clip::eval(old_op_type, *this, tensors);
         case OpType::Concatenate: return concatenate::eval(old_op_type, *this, tensors);
@@ -397,7 +392,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Dequantize: return dequantize::eval(old_op_type, *this, tensors);
         case OpType::Divide: return divide::eval(old_op_type, *this, tensors);
         case OpType::Downsample2d: return downsample_2d::eval(old_op_type, *this, tensors);
-        case OpType::DramQueue: return dram_queue::eval(old_op_type, *this, tensors);
         case OpType::Dropout: return dropout::eval(old_op_type, *this, tensors);
         case OpType::Embedding: return embedding::eval(old_op_type, *this, tensors);
         case OpType::EmbeddingBw: return embedding_bw::eval(old_op_type, *this, tensors);
@@ -499,7 +493,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::AvgPool3d: return avg_pool_3d::shape(old_op_type, *this, inputs);
         case OpType::Batchnorm: return batchnorm::shape(old_op_type, *this, inputs);
         case OpType::Broadcast: return broadcast::shape(old_op_type, *this, inputs);
-        case OpType::Buffer: return buffer::shape(old_op_type, *this, inputs);
         case OpType::Cast: return cast::shape(old_op_type, *this, inputs);
         case OpType::Clip: return clip::shape(old_op_type, *this, inputs);
         case OpType::Concatenate: return concatenate::shape(old_op_type, *this, inputs);
@@ -520,7 +513,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Dequantize: return dequantize::shape(old_op_type, *this, inputs);
         case OpType::Divide: return divide::shape(old_op_type, *this, inputs);
         case OpType::Downsample2d: return downsample_2d::shape(old_op_type, *this, inputs);
-        case OpType::DramQueue: return dram_queue::shape(old_op_type, *this, inputs);
         case OpType::Dropout: return dropout::shape(old_op_type, *this, inputs);
         case OpType::Embedding: return embedding::shape(old_op_type, *this, inputs);
         case OpType::EmbeddingBw: return embedding_bw::shape(old_op_type, *this, inputs);
@@ -627,7 +619,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::AvgPool3d: return avg_pool_3d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Batchnorm: return batchnorm::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Broadcast: return broadcast::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Buffer: return buffer::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Cast: return cast::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Clip: return clip::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Concatenate: return concatenate::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -648,7 +639,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Dequantize: return dequantize::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Divide: return divide::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Downsample2d: return downsample_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::DramQueue: return dram_queue::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Dropout: return dropout::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Embedding: return embedding::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::EmbeddingBw: return embedding_bw::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -772,7 +762,6 @@ void Op::decompose_initial(
         case OpType::AvgPool3d: return avg_pool_3d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Batchnorm: return batchnorm::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Broadcast: return broadcast::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Buffer: return buffer::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Cast: return cast::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Clip: return;
         case OpType::Concatenate: return concatenate::decompose_initial(old_op_type, *this, dc, inputs);
@@ -793,7 +782,6 @@ void Op::decompose_initial(
         case OpType::Dequantize: return dequantize::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
         case OpType::Downsample2d: return downsample_2d::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::DramQueue: return dram_queue::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Dropout: return dropout::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Embedding: return embedding::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::EmbeddingBw: return embedding_bw::decompose_initial(old_op_type, *this, dc, inputs);
@@ -897,7 +885,6 @@ void Op::decompose_post_optimize(
         case OpType::AvgPool3d: return avg_pool_3d::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Batchnorm: return batchnorm::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Broadcast: return;
-        case OpType::Buffer: return buffer::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Cast: return cast::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Clip: return;
         case OpType::Concatenate: return;
@@ -918,7 +905,6 @@ void Op::decompose_post_optimize(
         case OpType::Dequantize: return dequantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
         case OpType::Downsample2d: return downsample_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::DramQueue: return dram_queue::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Dropout: return dropout::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Embedding: return embedding::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::EmbeddingBw: return embedding_bw::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -1022,7 +1008,6 @@ void Op::decompose_post_autograd(
         case OpType::AvgPool3d: return avg_pool_3d::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Batchnorm: return batchnorm::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Broadcast: return;
-        case OpType::Buffer: return buffer::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Cast: return cast::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Clip: return;
         case OpType::Concatenate: return;
@@ -1043,7 +1028,6 @@ void Op::decompose_post_autograd(
         case OpType::Dequantize: return dequantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
         case OpType::Downsample2d: return downsample_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::DramQueue: return dram_queue::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Dropout: return dropout::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Embedding: return embedding::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::EmbeddingBw: return embedding_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1145,7 +1129,6 @@ long Op::initial_flops_estimate(
         case OpType::AvgPool3d: return avg_pool_3d::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Batchnorm: return batchnorm::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Broadcast: return 0;
-        case OpType::Buffer: return buffer::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Cast: return cast::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Clip: return 0;
         case OpType::Concatenate: return 0;
@@ -1166,7 +1149,6 @@ long Op::initial_flops_estimate(
         case OpType::Dequantize: return dequantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Divide: return 0;
         case OpType::Downsample2d: return downsample_2d::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::DramQueue: return dram_queue::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Dropout: return dropout::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Embedding: return embedding::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::EmbeddingBw: return embedding_bw::initial_flops_estimate(old_op_type, *this, inputs);
@@ -1267,7 +1249,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::AvgPool3d: return false;
         case OpType::Batchnorm: return false;
         case OpType::Broadcast: return true;
-        case OpType::Buffer: return false;
         case OpType::Cast: return false;
         case OpType::Clip: return false;
         case OpType::Concatenate: return false;
@@ -1288,7 +1269,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Dequantize: return false;
         case OpType::Divide: return false;
         case OpType::Downsample2d: return false;
-        case OpType::DramQueue: return false;
         case OpType::Dropout: return false;
         case OpType::Embedding: return false;
         case OpType::EmbeddingBw: return false;
@@ -1389,7 +1369,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::AvgPool3d: return false;
         case OpType::Batchnorm: return false;
         case OpType::Broadcast: return false;
-        case OpType::Buffer: return true;
         case OpType::Cast: return true;
         case OpType::Clip: return true;
         case OpType::Concatenate: return true;
@@ -1410,7 +1389,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Dequantize: return false;
         case OpType::Divide: return true;
         case OpType::Downsample2d: return false;
-        case OpType::DramQueue: return false;
         case OpType::Dropout: return true;
         case OpType::Embedding: return false;
         case OpType::EmbeddingBw: return false;
@@ -1511,7 +1489,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::AvgPool3d: return false;
         case OpType::Batchnorm: return false;
         case OpType::Broadcast: return false;
-        case OpType::Buffer: return true;
         case OpType::Cast: return true;
         case OpType::Clip: return true;
         case OpType::Concatenate: return false;
@@ -1532,7 +1509,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Dequantize: return false;
         case OpType::Divide: return false;
         case OpType::Downsample2d: return false;
-        case OpType::DramQueue: return false;
         case OpType::Dropout: return true;
         case OpType::Embedding: return false;
         case OpType::EmbeddingBw: return false;
@@ -1633,7 +1609,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::AvgPool3d: return false;
         case OpType::Batchnorm: return false;
         case OpType::Broadcast: return false;
-        case OpType::Buffer: return false;
         case OpType::Cast: return false;
         case OpType::Clip: return false;
         case OpType::Concatenate: return false;
@@ -1654,7 +1629,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Dequantize: return false;
         case OpType::Divide: return true;
         case OpType::Downsample2d: return false;
-        case OpType::DramQueue: return false;
         case OpType::Dropout: return false;
         case OpType::Embedding: return false;
         case OpType::EmbeddingBw: return false;
@@ -1755,7 +1729,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::AvgPool3d: return false;
         case OpType::Batchnorm: return false;
         case OpType::Broadcast: return false;
-        case OpType::Buffer: return false;
         case OpType::Cast: return false;
         case OpType::Clip: return false;
         case OpType::Concatenate: return true;
@@ -1776,7 +1749,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Dequantize: return false;
         case OpType::Divide: return false;
         case OpType::Downsample2d: return false;
-        case OpType::DramQueue: return false;
         case OpType::Dropout: return false;
         case OpType::Embedding: return false;
         case OpType::EmbeddingBw: return false;
