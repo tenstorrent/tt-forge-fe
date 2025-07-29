@@ -132,6 +132,7 @@ std::vector<tt::ops::Op> get_unary_eltwise_ops()
 {
     return {
         tt::ops::OpType::Abs,
+        tt::ops::OpType::Buffer,
         tt::ops::OpType::Sine,
         tt::ops::OpType::Cosine,
         tt::ops::OpType::Relu,

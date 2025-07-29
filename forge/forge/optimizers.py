@@ -614,9 +614,7 @@ class LAMB(Optimizer):
 
         # g(t) -> gradient at current timestep
         # temp fix to avoid circular dependency by importing locally
-        from forge.op.eval.forge.buffer import Buffer
-
-        grad = ac.op(Buffer.create(), (gradient,))
+        grad = ac.op("buffer", (gradient,))
 
         # m(t) <- beta1 * m(t - 1) + (1 - beta1) * g(t)
         # m(t)     : mean at current timestep
@@ -889,9 +887,7 @@ class LARS(Optimizer):
 
         # g(t) -> gradient at current timestep
         # temp fix for circular dependency
-        from forge.op.eval.forge.buffer import Buffer
-
-        grad = ac.op(Buffer.create(), (gradient,))
+        grad = ac.op("buffer", (gradient,))
 
         # lambda <- || w(t) || / (|| g(t) || + beta * || w(t) ||)
         weight_norm = ac.op("multiply", (parameter, parameter))

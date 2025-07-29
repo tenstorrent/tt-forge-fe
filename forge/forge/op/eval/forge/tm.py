@@ -27,7 +27,6 @@ from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div, align_up
 from .pad import Pad
 from .nop import Nop
-from .buffer import Buffer
 
 
 def eval(type, attr, ops):

@@ -772,7 +772,7 @@ void Op::decompose_initial(
         case OpType::AvgPool3d: return avg_pool_3d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Batchnorm: return batchnorm::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Broadcast: return broadcast::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Buffer: return buffer::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Buffer: return;
         case OpType::Cast: return cast::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Clip: return clip::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Concatenate: return concatenate::decompose_initial(old_op_type, *this, dc, inputs);
@@ -897,7 +897,7 @@ void Op::decompose_post_optimize(
         case OpType::AvgPool3d: return avg_pool_3d::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Batchnorm: return batchnorm::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Broadcast: return;
-        case OpType::Buffer: return buffer::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Buffer: return;
         case OpType::Cast: return cast::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Clip: return clip::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Concatenate: return;
@@ -1022,7 +1022,7 @@ void Op::decompose_post_autograd(
         case OpType::AvgPool3d: return avg_pool_3d::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Batchnorm: return batchnorm::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Broadcast: return;
-        case OpType::Buffer: return buffer::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Buffer: return;
         case OpType::Cast: return cast::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Clip: return clip::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Concatenate: return;
@@ -1145,7 +1145,7 @@ long Op::initial_flops_estimate(
         case OpType::AvgPool3d: return avg_pool_3d::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Batchnorm: return batchnorm::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Broadcast: return 0;
-        case OpType::Buffer: return buffer::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Buffer: return 0;
         case OpType::Cast: return cast::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Clip: return clip::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Concatenate: return 0;

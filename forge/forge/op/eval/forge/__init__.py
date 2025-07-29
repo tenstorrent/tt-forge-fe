@@ -8,7 +8,6 @@ from .cosine import Cosine
 from .ethernet_datacopy import EthernetDatacopy
 from .tanh import Tanh
 from .nop import Nop
-from .buffer import Buffer
 from .tilizer import Tilizer
 from .clip import Clip
 from .cumulativesum import CumulativeSum
@@ -42,7 +41,7 @@ op_to_module_map = {
     "exp": "eltwise_unary",
     "reciprocal": "eltwise_unary",
     "nop": Nop,
-    "buffer": Buffer,
+    "buffer": "eltwise_unary",
     "sqrt": "eltwise_unary",
     "relu": "eltwise_unary",
     "leaky_relu": "eltwise_unary",
