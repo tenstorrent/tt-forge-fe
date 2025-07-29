@@ -774,7 +774,7 @@ void Op::decompose_initial(
         case OpType::Broadcast: return broadcast::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Buffer: return buffer::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Cast: return cast::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Clip: return clip::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Clip: return;
         case OpType::Concatenate: return concatenate::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Constant: return;
         case OpType::Conv2d: return conv_2d::decompose_initial(old_op_type, *this, dc, inputs);
@@ -899,7 +899,7 @@ void Op::decompose_post_optimize(
         case OpType::Broadcast: return;
         case OpType::Buffer: return buffer::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Cast: return cast::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Clip: return clip::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Clip: return;
         case OpType::Concatenate: return;
         case OpType::Constant: return;
         case OpType::Conv2d: return conv_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -1024,7 +1024,7 @@ void Op::decompose_post_autograd(
         case OpType::Broadcast: return;
         case OpType::Buffer: return buffer::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Cast: return cast::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Clip: return clip::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Clip: return;
         case OpType::Concatenate: return;
         case OpType::Constant: return;
         case OpType::Conv2d: return conv_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1147,7 +1147,7 @@ long Op::initial_flops_estimate(
         case OpType::Broadcast: return 0;
         case OpType::Buffer: return buffer::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Cast: return cast::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Clip: return clip::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Clip: return 0;
         case OpType::Concatenate: return 0;
         case OpType::Constant: return 0;
         case OpType::Conv2d: return conv_2d::initial_flops_estimate(old_op_type, *this, inputs);

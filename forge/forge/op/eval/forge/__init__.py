@@ -10,7 +10,6 @@ from .tanh import Tanh
 from .nop import Nop
 from .buffer import Buffer
 from .tilizer import Tilizer
-from .clip import Clip
 from .cumulativesum import CumulativeSum
 from .argmax import Argmax
 from .convolution import Conv2d
@@ -49,7 +48,7 @@ op_to_module_map = {
     "gelu": "eltwise_unary",
     "log": "eltwise_unary",
     "sigmoid": "eltwise_unary",
-    "clip": Clip,
+    "clip": "eltwise_unary",
     "cosine": Cosine,
     "sine": "eltwise_unary",
     "atan": "eltwise_unary",
