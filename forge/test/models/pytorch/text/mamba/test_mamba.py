@@ -4,7 +4,7 @@
 # Reference: https://huggingface.co/state-spaces/mamba-2.8b-hf
 
 import pytest
-from transformers import AutoTokenizer, MambaForCausalLM
+from third_party.tt_forge_models.mamba.pytorch.loader import ModelLoader, ModelVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -17,29 +17,28 @@ from forge.forge_property_utils import (
 from forge.verify.verify import verify
 
 from test.models.models_utils import generate_no_cache, pad_inputs
-from test.utils import download_model
 
 variants = [
     pytest.param(
-        "state-spaces/mamba-790m-hf",
+        ModelVariant.MAMBA_790M,
         marks=pytest.mark.skip(
             reason="Segmentation fault. Issue Link: https://github.com/tenstorrent/tt-forge-fe/issues/2586"
         ),
     ),
     pytest.param(
-        "state-spaces/mamba-2.8b-hf",
+        ModelVariant.MAMBA_2_8B,
         marks=[
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
-        "state-spaces/mamba-1.4b-hf",
+        ModelVariant.MAMBA_1_4B,
         marks=[
             pytest.mark.out_of_memory,
         ],
     ),
     pytest.param(
-        "state-spaces/mamba-370m-hf",
+        ModelVariant.MAMBA_370M,
         marks=pytest.mark.skip(
             reason="Segmentation fault. Issue Link: https://github.com/tenstorrent/tt-forge-fe/issues/2586"
         ),
@@ -55,21 +54,19 @@ def test_mamba(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.MAMBA,
-        variant=variant,
+        variant=variant.value,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
-    if variant in ["state-spaces/mamba-2.8b-hf", "state-spaces/mamba-1.4b-hf"]:
+    if variant in [ModelVariant.MAMBA_2_8B, ModelVariant.MAMBA_1_4B]:
         pytest.xfail(reason="Requires multi-chip support")
 
-    # Load tokenizer and model from HuggingFace
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    framework_model = download_model(MambaForCausalLM.from_pretrained, variant, use_cache=False, return_dict=False)
-    framework_model.eval()
+    # Load model and inputs using model loader
+    model_loader = ModelLoader(variant)
+    framework_model = model_loader.load_model()
+    inputs_dict = model_loader.load_inputs()
 
-    # Prepare input
-    prompt = "Hey how are you doing?"
-    inputs = [tokenizer(prompt, return_tensors="pt")["input_ids"]]
+    inputs = [inputs_dict["input_ids"]]
     padded_inputs, seq_len = pad_inputs(*inputs, max_new_tokens=100)
 
     # Forge compile framework model
@@ -83,7 +80,11 @@ def test_mamba(variant):
     verify([padded_inputs], framework_model, compiled_model)
 
     generated_text = generate_no_cache(
-        max_new_tokens=100, model=compiled_model, inputs=padded_inputs, seq_len=seq_len, tokenizer=tokenizer
+        max_new_tokens=100,
+        model=compiled_model,
+        inputs=padded_inputs,
+        seq_len=seq_len,
+        tokenizer=model_loader.tokenizer,
     )
 
     print(generated_text)

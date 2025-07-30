@@ -4,7 +4,7 @@
 
 import pytest
 import torch
-from transformers import AutoModel, AutoTokenizer
+from third_party.tt_forge_models.nanogpt.pytorch.loader import ModelLoader, ModelVariant
 from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_mask
 
 import forge
@@ -37,7 +37,7 @@ class GPTModelWrapper(torch.nn.Module):
 @pytest.mark.parametrize(
     "variant",
     [
-        "FinancialSupport/NanoGPT",
+        ModelVariant.FINANCIAL_SUPPORT_NANOGPT,
     ],
 )
 def test_nanogpt_text_generation(variant):
@@ -46,27 +46,15 @@ def test_nanogpt_text_generation(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.NANOGPT,
-        variant=variant,
+        variant=variant.value,
         task=Task.TEXT_GENERATION,
         source=Source.HUGGINGFACE,
     )
 
-    # Load the model
-    tokenizer = AutoTokenizer.from_pretrained(variant)
-    tokenizer.pad_token = tokenizer.eos_token
-    model = AutoModel.from_pretrained(variant, ignore_mismatched_sizes=True, use_cache=False, return_dict=False)
-
-    # Input prompt
-    input_prompt = "The financial market showed signs of volatility"
-
-    # Tokenize input
-    inputs = tokenizer(
-        input_prompt,
-        return_tensors="pt",
-        max_length=150,
-        padding="max_length",
-        truncation=True,
-    )
+    # Load model and inputs using model loader
+    model_loader = ModelLoader(variant)
+    model = model_loader.load_model()
+    inputs = model_loader.load_inputs()
     input_ids = inputs["input_ids"]
     attn_mask = inputs["attention_mask"]
     inputs = [input_ids, attn_mask]
