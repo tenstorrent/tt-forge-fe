@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from third_party.tt_forge_models.deit.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -18,11 +17,13 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
+from third_party.tt_forge_models.deit.pytorch import ModelLoader, ModelVariant
 
 variants = [ModelVariant.BASE, ModelVariant.BASE_DISTILLED, ModelVariant.SMALL, ModelVariant.TINY]
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2695")
 @pytest.mark.parametrize("variant", variants)
 def test_deit_imgcls_hf_pytorch(variant):
 

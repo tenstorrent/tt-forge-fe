@@ -4,7 +4,6 @@
 import pytest
 import torch
 from mlp_mixer_pytorch import MLPMixer
-from third_party.tt_forge_models.mlp_mixer.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -17,19 +16,38 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
+from third_party.tt_forge_models.mlp_mixer.pytorch import ModelLoader, ModelVariant
 
 variants = [
-    ModelVariant.MIXER_B16_224,
-    ModelVariant.MIXER_B16_224_IN21K,
-    ModelVariant.MIXER_B16_224_MIIL,
-    ModelVariant.MIXER_B16_224_MIIL_IN21K,
-    ModelVariant.MIXER_B32_224,
-    ModelVariant.MIXER_L16_224,
-    ModelVariant.MIXER_L16_224_IN21K,
-    ModelVariant.MIXER_L32_224,
-    ModelVariant.MIXER_S16_224,
-    ModelVariant.MIXER_S32_224,
-    ModelVariant.MIXER_B16_224_GOOG_IN21K,
+    pytest.param(
+        ModelVariant.MIXER_B16_224,
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2697")],
+    ),
+    pytest.param(
+        ModelVariant.MIXER_B16_224_IN21K,
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2697")],
+    ),
+    pytest.param(ModelVariant.MIXER_B16_224_MIIL),
+    pytest.param(
+        ModelVariant.MIXER_B16_224_MIIL_IN21K,
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2697")],
+    ),
+    pytest.param(ModelVariant.MIXER_B32_224),
+    pytest.param(
+        ModelVariant.MIXER_L16_224,
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2697")],
+    ),
+    pytest.param(
+        ModelVariant.MIXER_L16_224_IN21K,
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2697")],
+    ),
+    pytest.param(ModelVariant.MIXER_L32_224),
+    pytest.param(ModelVariant.MIXER_S16_224),
+    pytest.param(ModelVariant.MIXER_S32_224),
+    pytest.param(
+        ModelVariant.MIXER_B16_224_GOOG_IN21K,
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2697")],
+    ),
 ]
 
 
