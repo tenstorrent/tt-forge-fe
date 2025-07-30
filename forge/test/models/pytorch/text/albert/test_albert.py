@@ -2,14 +2,29 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import torch
-from transformers import (
-    AlbertForMaskedLM,
-    AlbertForQuestionAnswering,
-    AlbertForSequenceClassification,
-    AlbertForTokenClassification,
-    AlbertTokenizer,
-    AutoTokenizer,
+from third_party.tt_forge_models.albert.masked_lm.pytorch import (
+    ModelLoader as MaskedLMLoader,
+)
+from third_party.tt_forge_models.albert.masked_lm.pytorch import (
+    ModelVariant as MaskedLMVariant,
+)
+from third_party.tt_forge_models.albert.question_answering.pytorch import (
+    ModelLoader as QuestionAnsweringLoader,
+)
+from third_party.tt_forge_models.albert.question_answering.pytorch import (
+    ModelVariant as QuestionAnsweringVariant,
+)
+from third_party.tt_forge_models.albert.sequence_classification.pytorch import (
+    ModelLoader as SequenceClassificationLoader,
+)
+from third_party.tt_forge_models.albert.sequence_classification.pytorch import (
+    ModelVariant as SequenceClassificationVariant,
+)
+from third_party.tt_forge_models.albert.token_classification.pytorch import (
+    ModelLoader as TokenClassificationLoader,
+)
+from third_party.tt_forge_models.albert.token_classification.pytorch import (
+    ModelVariant as TokenClassificationVariant,
 )
 
 import forge
@@ -23,56 +38,37 @@ from forge.forge_property_utils import (
 from forge.verify.config import AutomaticValueChecker, VerifyConfig
 from forge.verify.verify import verify
 
-from test.utils import download_model
-
-sizes = ["base", "large", "xlarge", "xxlarge"]
-variants = ["v1", "v2"]
-
-
-params = [
-    pytest.param("base", "v1", marks=[pytest.mark.push]),
-    pytest.param("large", "v1"),
-    pytest.param("xlarge", "v1"),
-    pytest.param("xxlarge", "v1"),
-    pytest.param("base", "v2", marks=[pytest.mark.push]),
-    pytest.param("large", "v2"),
-    pytest.param("xlarge", "v2"),
-    pytest.param("xxlarge", "v2"),
+masked_lm_params = [
+    pytest.param(MaskedLMVariant.BASE_V1, marks=[pytest.mark.push]),
+    pytest.param(MaskedLMVariant.LARGE_V1),
+    pytest.param(MaskedLMVariant.XLARGE_V1),
+    pytest.param(MaskedLMVariant.XXLARGE_V1),
+    pytest.param(MaskedLMVariant.BASE_V2, marks=[pytest.mark.push]),
+    pytest.param(MaskedLMVariant.LARGE_V2),
+    pytest.param(MaskedLMVariant.XLARGE_V2),
+    pytest.param(MaskedLMVariant.XXLARGE_V2),
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("size,variant", params)
-def test_albert_masked_lm_pytorch(size, variant):
+@pytest.mark.parametrize("variant", masked_lm_params)
+def test_albert_masked_lm_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.ALBERT,
-        variant=f"{size}_{variant}",
+        variant=variant,
         task=Task.MASKED_LM,
         source=Source.HUGGINGFACE,
     )
 
-    model_ckpt = f"albert-{size}-{variant}"
-
-    # Load Albert tokenizer and model from HuggingFace
-    tokenizer = download_model(AlbertTokenizer.from_pretrained, model_ckpt)
-    framework_model = download_model(AlbertForMaskedLM.from_pretrained, model_ckpt, return_dict=False)
-
-    # Load data sample
-    sample_text = "The capital of France is [MASK]."
-
-    # Data preprocessing
-    input_tokens = tokenizer(
-        sample_text,
-        max_length=128,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    # Load Model and input
+    loader = MaskedLMLoader(variant=variant)
+    framework_model = loader.load_model()
+    framework_model.config.return_dict = False
+    input_dict = loader.load_inputs()
+    inputs = [input_dict["input_ids"], input_dict["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -86,72 +82,49 @@ def test_albert_masked_lm_pytorch(size, variant):
     )
 
     # Post-processing
-    logits = co_out[0]
-    mask_token_index = (input_tokens["input_ids"] == tokenizer.mask_token_id)[0].nonzero(as_tuple=True)[0]
-    predicted_token_id = logits[0, mask_token_index].argmax(axis=-1)
-    print("The predicted token for the [MASK] is: ", tokenizer.decode(predicted_token_id))
+    predicted_tokens = loader.decode_output(co_out, input_dict)
+    print("The predicted token for the [MASK] is: ", predicted_tokens)
 
 
 # Task-specific models like AlbertForTokenClassification are pre-trained on general datasets.
 # To make them suitable for specific tasks, they need to be fine-tuned on a labeled dataset for that task.
 
-sizes = ["base", "large", "xlarge", "xxlarge"]
-variants = ["v1", "v2"]
-
-
-params = [
-    pytest.param("base", "v1", marks=[pytest.mark.push]),
-    pytest.param("large", "v1"),
-    pytest.param("xlarge", "v1"),
-    pytest.param("xxlarge", "v1"),
-    pytest.param("base", "v2", marks=[pytest.mark.push]),
-    pytest.param("large", "v2"),
-    pytest.param("xlarge", "v2", marks=[pytest.mark.xfail]),
-    pytest.param("xxlarge", "v2"),
+token_classification_params = [
+    pytest.param(TokenClassificationVariant.BASE_V1, marks=[pytest.mark.push]),
+    pytest.param(TokenClassificationVariant.LARGE_V1),
+    pytest.param(TokenClassificationVariant.XLARGE_V1),
+    pytest.param(TokenClassificationVariant.XXLARGE_V1),
+    pytest.param(TokenClassificationVariant.BASE_V2, marks=[pytest.mark.push]),
+    pytest.param(TokenClassificationVariant.LARGE_V2),
+    pytest.param(TokenClassificationVariant.XLARGE_V2, marks=[pytest.mark.xfail]),
+    pytest.param(TokenClassificationVariant.XXLARGE_V2),
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("size,variant", params)
-def test_albert_token_classification_pytorch(size, variant):
+@pytest.mark.parametrize("variant", token_classification_params)
+def test_albert_token_classification_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.ALBERT,
-        variant=f"{size}_{variant}",
+        variant=variant,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 
-    # NOTE: These model variants are pre-trined only. They need to be fine-tuned
-    # on a downstream task. Code is for demonstration purposes only.
-    # Variants: albert-base-v1, albert-large-v1, albert-xlarge-v1, albert-xxlarge-v1
-    # albert-base-v2, albert-large-v2, albert-xlarge-v2, albert-xxlarge-v2
-    model_ckpt = f"albert-{size}-{variant}"
-
-    # Load ALBERT tokenizer and model from HuggingFace
-    tokenizer = AlbertTokenizer.from_pretrained(model_ckpt)
-    framework_model = AlbertForTokenClassification.from_pretrained(model_ckpt, return_dict=False)
-
-    # Load data sample
-    sample_text = "HuggingFace is a company based in Paris and New York"
-
-    # Data preprocessing
-    input_tokens = tokenizer(
-        sample_text,
-        max_length=128,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    # Load Model and inputs
+    loader = TokenClassificationLoader(variant=variant)
+    framework_model = loader.load_model()
+    framework_model.config.return_dict = False
+    input_dict = loader.load_inputs()
+    inputs = [input_dict["input_ids"], input_dict["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    if size == "xxlarge" and variant == "v2":
+    if variant == TokenClassificationVariant.XXLARGE_V2:
         pcc = 0.87
     else:
         pcc = 0.95
@@ -164,17 +137,15 @@ def test_albert_token_classification_pytorch(size, variant):
         verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
     )
 
-    # post processing
-    predicted_token_class_ids = co_out[0].argmax(-1)
-    predicted_token_class_ids = torch.masked_select(predicted_token_class_ids, (input_tokens["attention_mask"][0] == 1))
-    predicted_tokens_classes = [framework_model.config.id2label[t.item()] for t in predicted_token_class_ids]
+    # Post-processing
+    predicted_tokens_classes = loader.decode_output(co_out, input_dict)
 
-    print(f"Context: {sample_text}")
+    print(f"Context: {loader.sample_text}")
     print(f"Answer: {predicted_tokens_classes}")
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["twmkn9/albert-base-v2-squad2"])
+@pytest.mark.parametrize("variant", [QuestionAnsweringVariant.SQUAD2])
 def test_albert_question_answering_pytorch(variant):
 
     # Record Forge Property
@@ -186,19 +157,12 @@ def test_albert_question_answering_pytorch(variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Load Albert tokenizer and model from HuggingFace
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    framework_model = download_model(AlbertForQuestionAnswering.from_pretrained, variant, return_dict=False)
-    framework_model.eval()
-
-    # Load data sample
-    question, text = "Who was Jim Henson?", "Jim Henson was a nice puppet"
-
-    # Data preprocessing
-    input_tokens = tokenizer(question, text, return_tensors="pt")
-
-    # Load inputs
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    # Load Model and inputs
+    loader = QuestionAnsweringLoader(variant=variant)
+    framework_model = loader.load_model()
+    framework_model.config.return_dict = False
+    input_dict = loader.load_inputs()
+    inputs = [input_dict["input_ids"], input_dict["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -207,16 +171,12 @@ def test_albert_question_answering_pytorch(variant):
     _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post processing
-    answer_start_index = co_out[0].argmax()
-    answer_end_index = co_out[1].argmax()
-
-    predict_answer_tokens = input_tokens.input_ids[0, answer_start_index : answer_end_index + 1]
-    print("predicted answer ", tokenizer.decode(predict_answer_tokens, skip_special_tokens=True))
+    print("predicted answer ", loader.decode_output(co_out, input_dict))
 
 
 @pytest.mark.nightly
 @pytest.mark.push
-@pytest.mark.parametrize("variant", ["textattack/albert-base-v2-imdb"])
+@pytest.mark.parametrize("variant", [SequenceClassificationVariant.IMDB])
 def test_albert_sequence_classification_pytorch(variant):
 
     # Record Forge Property
@@ -228,19 +188,12 @@ def test_albert_sequence_classification_pytorch(variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Load Albert tokenizer and model from HuggingFace
-    tokenizer = download_model(AlbertTokenizer.from_pretrained, variant)
-    framework_model = download_model(AlbertForSequenceClassification.from_pretrained, variant, return_dict=False)
-    framework_model.eval()
-
-    # Load data sample
-    input_text = "Hello, my dog is cute."
-
-    # Data preprocessing
-    input_tokens = tokenizer(input_text, return_tensors="pt")
-
-    # Load inputs
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    # Load Model and inputs
+    loader = SequenceClassificationLoader(variant=variant)
+    framework_model = loader.load_model()
+    framework_model.config.return_dict = False
+    input_dict = loader.load_inputs()
+    inputs = [input_dict["input_ids"], input_dict["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -249,7 +202,4 @@ def test_albert_sequence_classification_pytorch(variant):
     _, co_out = verify(inputs, framework_model, compiled_model)
 
     # post processing
-    predicted_class_id = co_out[0].argmax().item()
-    predicted_category = framework_model.config.id2label[predicted_class_id]
-
-    print(f"predicted category: {predicted_category}")
+    print(f"predicted category: {loader.decode_output(co_out)}")

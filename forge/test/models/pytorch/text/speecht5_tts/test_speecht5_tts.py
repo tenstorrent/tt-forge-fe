@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from transformers import SpeechT5ForTextToSpeech, SpeechT5Processor
+from third_party.tt_forge_models.speecht5.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -14,8 +14,6 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
-
-from test.utils import download_model
 
 
 class Wrapper(torch.nn.Module):
@@ -32,7 +30,7 @@ class Wrapper(torch.nn.Module):
     "variant",
     [
         pytest.param(
-            "microsoft/speecht5_tts",
+            ModelVariant.TTS,
             marks=[pytest.mark.xfail],
         ),
     ],
@@ -48,16 +46,14 @@ def test_speecht5_tts(variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Load model and Processer
-    processor = download_model(SpeechT5Processor.from_pretrained, variant)
-    model = download_model(SpeechT5ForTextToSpeech.from_pretrained, variant, return_dict=False, use_cache=False)
-    model.eval()
+    # load_model and inputs
+    loader = ModelLoader(variant=variant)
+    model = loader.load_model()
+    model.config.return_dict = False
+    model.config.use_cache = False
     framework_model = Wrapper(model)
-
-    # Prepare input
-    model_inputs = processor(text="Hello, my dog is cute.", return_tensors="pt")
-    decoder_input_values = torch.zeros((1, 1, model.config.num_mel_bins))
-    inputs = [model_inputs["input_ids"], model_inputs["attention_mask"], decoder_input_values]
+    inputs_dict = loader.load_inputs()
+    inputs = [inputs_dict["input_ids"], inputs_dict["attention_mask"], inputs_dict["decoder_input_values"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
