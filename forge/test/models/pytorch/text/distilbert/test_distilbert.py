@@ -3,12 +3,31 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from transformers import (
-    DistilBertForMaskedLM,
-    DistilBertForQuestionAnswering,
-    DistilBertForSequenceClassification,
-    DistilBertForTokenClassification,
-    DistilBertTokenizer,
+
+# Import the model loaders and variants from the new location
+from third_party.tt_forge_models.distilbert.masked_lm.pytorch.loader import (
+    ModelLoader as MaskedLMLoader,
+)
+from third_party.tt_forge_models.distilbert.masked_lm.pytorch.loader import (
+    ModelVariant as MaskedLMVariant,
+)
+from third_party.tt_forge_models.distilbert.question_answering.pytorch.loader import (
+    ModelLoader as QuestionAnsweringLoader,
+)
+from third_party.tt_forge_models.distilbert.question_answering.pytorch.loader import (
+    ModelVariant as QuestionAnsweringVariant,
+)
+from third_party.tt_forge_models.distilbert.sequence_classification.pytorch.loader import (
+    ModelLoader as SequenceClassificationLoader,
+)
+from third_party.tt_forge_models.distilbert.sequence_classification.pytorch.loader import (
+    ModelVariant as SequenceClassificationVariant,
+)
+from third_party.tt_forge_models.distilbert.token_classification.pytorch.loader import (
+    ModelLoader as TokenClassificationLoader,
+)
+from third_party.tt_forge_models.distilbert.token_classification.pytorch.loader import (
+    ModelVariant as TokenClassificationVariant,
 )
 from transformers.modeling_outputs import (
     MaskedLMOutput,
@@ -26,8 +45,6 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
-
-from test.utils import download_model
 
 
 # Wrapper to return tensor outputs
@@ -50,9 +67,9 @@ class DistilBertWrapper(torch.nn.Module):
 
 
 variants = [
-    pytest.param("distilbert-base-cased", marks=[pytest.mark.push]),
-    pytest.param("distilbert-base-uncased"),
-    pytest.param("distilbert-base-multilingual-cased"),
+    pytest.param(MaskedLMVariant.DISTILBERT_BASE_CASED, marks=[pytest.mark.push]),
+    MaskedLMVariant.DISTILBERT_BASE_UNCASED,
+    MaskedLMVariant.DISTILBERT_BASE_MULTILINGUAL_CASED,
 ]
 
 
@@ -64,32 +81,18 @@ def test_distilbert_masked_lm_pytorch(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.DISTILBERT,
-        variant=variant,
+        variant=variant.value,
         task=Task.MASKED_LM,
         source=Source.HUGGINGFACE,
     )
 
-    # Load DistilBert tokenizer and model from HuggingFace
-    # Variants: distilbert-base-uncased, distilbert-base-cased,
-    # distilbert-base-multilingual-cased
-    # NOTE: These model variants are pre-trined only. They need to be fine-tuned
-    # on a downstream task. Code is for demonstration purposes only.
-    tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
-    framework_model = download_model(DistilBertForMaskedLM.from_pretrained, variant)
+    # Load model using the new loader
+    loader = MaskedLMLoader(variant=variant)
+    framework_model = loader.load_model()
     framework_model = DistilBertWrapper(framework_model)
 
-    # Load data sample
-    sample_text = "The capital of France is [MASK]."
-
-    # Data preprocessing
-    input_tokens = tokenizer(
-        sample_text,
-        max_length=128,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-
+    # Get sample inputs from the loader
+    input_tokens = loader.load_inputs()
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
@@ -99,52 +102,32 @@ def test_distilbert_masked_lm_pytorch(variant):
     _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post-processing
-    logits = co_out[0]
-    mask_token_index = (input_tokens["input_ids"] == tokenizer.mask_token_id)[0].nonzero(as_tuple=True)[0]
-    predicted_token_id = logits[0, mask_token_index].argmax(axis=-1)
-    print("The predicted token for the [MASK] is: ", tokenizer.decode(predicted_token_id))
+    loader.decode_output(co_out)
+
+
+variants = [QuestionAnsweringVariant.DISTILBERT_BASE_CASED_DISTILLED_SQUAD]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["distilbert-base-cased-distilled-squad"])
+@pytest.mark.parametrize("variant", variants)
 def test_distilbert_question_answering_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.DISTILBERT,
-        variant=variant,
+        variant=variant.value,
         task=Task.QA,
         source=Source.HUGGINGFACE,
     )
 
-    # Load Bert tokenizer and model from HuggingFace
-    tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
-    framework_model = download_model(DistilBertForQuestionAnswering.from_pretrained, variant)
+    # Load model using the new loader
+    loader = QuestionAnsweringLoader(variant=variant)
+    framework_model = loader.load_model()
     framework_model = DistilBertWrapper(framework_model)
 
-    # Load data sample from SQuADv1.1
-    context = """Super Bowl 50 was an American football game to determine the champion of the National Football League
-    (NFL) for the 2015 season. The American Football Conference (AFC) champion Denver Broncos defeated the
-    National Football Conference (NFC) champion Carolina Panthers 24\u201310 to earn their third Super Bowl title.
-    The game was played on February 7, 2016, at Levi's Stadium in the San Francisco Bay Area at Santa Clara, California.
-    As this was the 50th Super Bowl, the league emphasized the \"golden anniversary\" with various gold-themed
-    initiatives, as well as temporarily suspending the tradition of naming each Super Bowl game with Roman numerals
-    (under which the game would have been known as \"Super Bowl L\"), so that the logo could prominently
-    feature the Arabic numerals 50."""
-
-    question = "Which NFL team represented the AFC at Super Bowl 50?"
-
-    # Data preprocessing
-    input_tokens = tokenizer(
-        question,
-        context,
-        max_length=384,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-
+    # Get sample inputs from the loader
+    input_tokens = loader.load_inputs()
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
@@ -154,43 +137,32 @@ def test_distilbert_question_answering_pytorch(variant):
     _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post processing
-    answer_start_index = co_out[0].argmax()
-    answer_end_index = co_out[1].argmax()
+    loader.decode_output(co_out)
 
-    predict_answer_tokens = input_tokens.input_ids[0, answer_start_index : answer_end_index + 1]
-    print("predicted answer ", tokenizer.decode(predict_answer_tokens, skip_special_tokens=True))
+
+variants = [SequenceClassificationVariant.DISTILBERT_BASE_UNCASED_FINETUNED_SST_2_ENGLISH]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["distilbert-base-uncased-finetuned-sst-2-english"])
+@pytest.mark.parametrize("variant", variants)
 def test_distilbert_sequence_classification_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.DISTILBERT,
-        variant=variant,
+        variant=variant.value,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 
-    # Load DistilBert tokenizer and model from HuggingFace
-    tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
-    framework_model = download_model(DistilBertForSequenceClassification.from_pretrained, variant)
+    # Load model using the new loader
+    loader = SequenceClassificationLoader(variant=variant)
+    framework_model = loader.load_model()
     framework_model = DistilBertWrapper(framework_model)
 
-    # Load data sample
-    review = "the movie was great!"
-
-    # Data preprocessing
-    input_tokens = tokenizer(
-        review,
-        max_length=128,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-
+    # Get sample inputs from the loader
+    input_tokens = loader.load_inputs()
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
@@ -199,43 +171,33 @@ def test_distilbert_sequence_classification_pytorch(variant):
     # Model Verification
     _, co_out = verify(inputs, framework_model, compiled_model)
 
-    # post processing
-    predicted_class_id = co_out[0].argmax().item()
-    predicted_category = framework_model.config.id2label[predicted_class_id]
+    # Post processing
+    loader.decode_output(co_out, framework_model=framework_model)
 
-    print(f"predicted category: {predicted_category}")
+
+variants = [TokenClassificationVariant.DAVLAN_DISTILBERT_BASE_MULTILINGUAL_CASED_NER_HRL]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["Davlan/distilbert-base-multilingual-cased-ner-hrl"])
+@pytest.mark.parametrize("variant", variants)
 def test_distilbert_token_classification_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.DISTILBERT,
-        variant=variant,
+        variant=variant.value,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 
-    # Load DistilBERT tokenizer and model from HuggingFace
-    tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
-    framework_model = download_model(DistilBertForTokenClassification.from_pretrained, variant)
+    # Load model using the new loader
+    loader = TokenClassificationLoader(variant=variant)
+    framework_model = loader.load_model()
     framework_model = DistilBertWrapper(framework_model)
 
-    # Load data sample
-    sample_text = "HuggingFace is a company based in Paris and New York"
-
-    # Data preprocessing
-    input_tokens = tokenizer(
-        sample_text,
-        max_length=128,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-
+    # Get sample inputs from the loader
+    input_tokens = loader.load_inputs()
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
@@ -244,10 +206,5 @@ def test_distilbert_token_classification_pytorch(variant):
     # Model Verification
     _, co_out = verify(inputs, framework_model, compiled_model)
 
-    # post processing
-    predicted_token_class_ids = co_out[0].argmax(-1)
-    predicted_token_class_ids = torch.masked_select(predicted_token_class_ids, (input_tokens["attention_mask"][0] == 1))
-    predicted_tokens_classes = [framework_model.config.id2label[t.item()] for t in predicted_token_class_ids]
-
-    print(f"Context: {sample_text}")
-    print(f"Answer: {predicted_tokens_classes}")
+    # Post processing
+    loader.decode_output(co_out, framework_model=framework_model)
