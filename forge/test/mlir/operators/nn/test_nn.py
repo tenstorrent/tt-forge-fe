@@ -44,43 +44,6 @@ def test_conv2d_reflect_padding_mode(input_shape, in_channels, out_channels, ker
 
 
 @pytest.mark.parametrize(
-    "shape, kernel_size, stride",
-    [
-        ((1, 1, 100, 54, 54), (5, 1, 1), (1, 1, 1)),
-        ((1, 2, 5, 5, 5), (3, 3, 3), (2, 2, 2)),
-        ((1, 4, 100, 54, 54), (3, 1, 1), (1, 1, 1)),
-        ((1, 8, 32, 16, 16), (4, 1, 1), (1, 1, 1)),
-        ((1, 1, 100, 54, 54), (5, 1, 1), (5, 1, 1)),
-        ((1, 4, 10, 4, 4), (1, 1, 1), (1, 1, 1)),
-        ((1, 16, 32, 16, 16), (8, 1, 1), (3, 3, 3)),
-    ],
-)
-@pytest.mark.xfail(
-    reason="permute(sparse_coo): number of dimensions in the tensor input does not match the length of the desired ordering of dimensions i.e. input.dim() = 5 is not equal to len(dims) = 4. Tracking Issue: https://github.com/tenstorrent/tt-forge-fe/issues/1422"
-)
-@pytest.mark.push
-def test_avgpool3d(shape, kernel_size, stride):
-    class AvgPool3D(nn.Module):
-        def __init__(self):
-            super().__init__()
-
-        def forward(self, x):
-            return nn.functional.avg_pool3d(x, kernel_size=kernel_size, stride=stride)
-
-    compiler_cfg = forge.config.CompilerConfig()
-    compiler_cfg.compile_depth = (
-        forge.CompileDepth.SPLIT_GRAPH
-    )  # Due to #https://github.com/tenstorrent/tt-mlir/issues/1343
-    inputs = [torch.rand(shape)]
-
-    framework_model = AvgPool3D()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
-
-    if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
-        verify(inputs, framework_model, compiled_model)
-
-
-@pytest.mark.parametrize(
     "input_shape, kernel_size, stride_size, padding, ceil_mode",
     [
         pytest.param(

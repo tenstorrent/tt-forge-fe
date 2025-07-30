@@ -48,7 +48,6 @@ class NewToOldOpType
         mapping_[OpType::Atan] = "atan";
         mapping_[OpType::AvgPool1d] = "avg_pool1d";
         mapping_[OpType::AvgPool2d] = "avg_pool2d";
-        mapping_[OpType::AvgPool3d] = "avg_pool3d";
         mapping_[OpType::Batchnorm] = "batchnorm";
         mapping_[OpType::Broadcast] = "broadcast";
         mapping_[OpType::Cast] = "cast";
@@ -107,7 +106,6 @@ class NewToOldOpType
         mapping_[OpType::Matmul] = "matmul";
         mapping_[OpType::MaxPool1d] = "max_pool1d";
         mapping_[OpType::MaxPool2d] = "max_pool2d";
-        mapping_[OpType::MaxPool3d] = "max_pool3d";
         mapping_[OpType::Maximum] = "maximum";
         mapping_[OpType::Minimum] = "minimum";
         mapping_[OpType::Multiply] = "multiply";
@@ -176,7 +174,6 @@ class OldToNewOpType
         mapping_["atan"] = OpType::Atan;
         mapping_["avg_pool1d"] = OpType::AvgPool1d;
         mapping_["avg_pool2d"] = OpType::AvgPool2d;
-        mapping_["avg_pool3d"] = OpType::AvgPool3d;
         mapping_["batchnorm"] = OpType::Batchnorm;
         mapping_["broadcast"] = OpType::Broadcast;
         mapping_["cast"] = OpType::Cast;
@@ -235,7 +232,6 @@ class OldToNewOpType
         mapping_["matmul"] = OpType::Matmul;
         mapping_["max_pool1d"] = OpType::MaxPool1d;
         mapping_["max_pool2d"] = OpType::MaxPool2d;
-        mapping_["max_pool3d"] = OpType::MaxPool3d;
         mapping_["maximum"] = OpType::Maximum;
         mapping_["minimum"] = OpType::Minimum;
         mapping_["multiply"] = OpType::Multiply;
@@ -369,7 +365,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Atan: return atan::eval(old_op_type, *this, tensors);
         case OpType::AvgPool1d: return avg_pool_1d::eval(old_op_type, *this, tensors);
         case OpType::AvgPool2d: return avg_pool_2d::eval(old_op_type, *this, tensors);
-        case OpType::AvgPool3d: return avg_pool_3d::eval(old_op_type, *this, tensors);
         case OpType::Batchnorm: return batchnorm::eval(old_op_type, *this, tensors);
         case OpType::Broadcast: return broadcast::eval(old_op_type, *this, tensors);
         case OpType::Cast: return cast::eval(old_op_type, *this, tensors);
@@ -428,7 +423,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Matmul: return matmul::eval(old_op_type, *this, tensors);
         case OpType::MaxPool1d: return max_pool_1d::eval(old_op_type, *this, tensors);
         case OpType::MaxPool2d: return max_pool_2d::eval(old_op_type, *this, tensors);
-        case OpType::MaxPool3d: return max_pool_3d::eval(old_op_type, *this, tensors);
         case OpType::Maximum: return maximum::eval(old_op_type, *this, tensors);
         case OpType::Minimum: return minimum::eval(old_op_type, *this, tensors);
         case OpType::Multiply: return multiply::eval(old_op_type, *this, tensors);
@@ -490,7 +484,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Atan: return atan::shape(old_op_type, *this, inputs);
         case OpType::AvgPool1d: return avg_pool_1d::shape(old_op_type, *this, inputs);
         case OpType::AvgPool2d: return avg_pool_2d::shape(old_op_type, *this, inputs);
-        case OpType::AvgPool3d: return avg_pool_3d::shape(old_op_type, *this, inputs);
         case OpType::Batchnorm: return batchnorm::shape(old_op_type, *this, inputs);
         case OpType::Broadcast: return broadcast::shape(old_op_type, *this, inputs);
         case OpType::Cast: return cast::shape(old_op_type, *this, inputs);
@@ -549,7 +542,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Matmul: return matmul::shape(old_op_type, *this, inputs);
         case OpType::MaxPool1d: return max_pool_1d::shape(old_op_type, *this, inputs);
         case OpType::MaxPool2d: return max_pool_2d::shape(old_op_type, *this, inputs);
-        case OpType::MaxPool3d: return max_pool_3d::shape(old_op_type, *this, inputs);
         case OpType::Maximum: return maximum::shape(old_op_type, *this, inputs);
         case OpType::Minimum: return minimum::shape(old_op_type, *this, inputs);
         case OpType::Multiply: return multiply::shape(old_op_type, *this, inputs);
@@ -616,7 +608,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Atan: return atan::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::AvgPool1d: return avg_pool_1d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::AvgPool2d: return avg_pool_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::AvgPool3d: return avg_pool_3d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Batchnorm: return batchnorm::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Broadcast: return broadcast::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Cast: return cast::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -675,7 +666,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Matmul: return matmul::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::MaxPool1d: return max_pool_1d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::MaxPool2d: return max_pool_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::MaxPool3d: return max_pool_3d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Maximum: return maximum::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Minimum: return minimum::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Multiply: return multiply::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -759,7 +749,6 @@ void Op::decompose_initial(
         case OpType::Atan: return;
         case OpType::AvgPool1d: return avg_pool_1d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::AvgPool2d: return avg_pool_2d::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::AvgPool3d: return;
         case OpType::Batchnorm: return batchnorm::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Broadcast: return broadcast::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Cast: return cast::decompose_initial(old_op_type, *this, dc, inputs);
@@ -818,7 +807,6 @@ void Op::decompose_initial(
         case OpType::Matmul: return matmul::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::MaxPool1d: return;
         case OpType::MaxPool2d: return;
-        case OpType::MaxPool3d: return;
         case OpType::Maximum: return;
         case OpType::Minimum: return;
         case OpType::Multiply: return;
@@ -882,7 +870,6 @@ void Op::decompose_post_optimize(
         case OpType::Atan: return;
         case OpType::AvgPool1d: return;
         case OpType::AvgPool2d: return;
-        case OpType::AvgPool3d: return;
         case OpType::Batchnorm: return batchnorm::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Broadcast: return;
         case OpType::Cast: return cast::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -941,7 +928,6 @@ void Op::decompose_post_optimize(
         case OpType::Matmul: return matmul::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::MaxPool1d: return;
         case OpType::MaxPool2d: return;
-        case OpType::MaxPool3d: return;
         case OpType::Maximum: return;
         case OpType::Minimum: return;
         case OpType::Multiply: return;
@@ -1005,7 +991,6 @@ void Op::decompose_post_autograd(
         case OpType::Atan: return;
         case OpType::AvgPool1d: return;
         case OpType::AvgPool2d: return;
-        case OpType::AvgPool3d: return;
         case OpType::Batchnorm: return batchnorm::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Broadcast: return;
         case OpType::Cast: return cast::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1064,7 +1049,6 @@ void Op::decompose_post_autograd(
         case OpType::Matmul: return matmul::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::MaxPool1d: return;
         case OpType::MaxPool2d: return;
-        case OpType::MaxPool3d: return;
         case OpType::Maximum: return;
         case OpType::Minimum: return;
         case OpType::Multiply: return;
@@ -1126,7 +1110,6 @@ long Op::initial_flops_estimate(
         case OpType::Atan: return 0;
         case OpType::AvgPool1d: return 0;
         case OpType::AvgPool2d: return 0;
-        case OpType::AvgPool3d: return 0;
         case OpType::Batchnorm: return batchnorm::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Broadcast: return 0;
         case OpType::Cast: return cast::initial_flops_estimate(old_op_type, *this, inputs);
@@ -1185,7 +1168,6 @@ long Op::initial_flops_estimate(
         case OpType::Matmul: return matmul::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::MaxPool1d: return 0;
         case OpType::MaxPool2d: return 0;
-        case OpType::MaxPool3d: return 0;
         case OpType::Maximum: return 0;
         case OpType::Minimum: return 0;
         case OpType::Multiply: return 0;
@@ -1246,7 +1228,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Atan: return false;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;
-        case OpType::AvgPool3d: return false;
         case OpType::Batchnorm: return false;
         case OpType::Broadcast: return true;
         case OpType::Cast: return false;
@@ -1305,7 +1286,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Matmul: return false;
         case OpType::MaxPool1d: return false;
         case OpType::MaxPool2d: return false;
-        case OpType::MaxPool3d: return false;
         case OpType::Maximum: return false;
         case OpType::Minimum: return false;
         case OpType::Multiply: return false;
@@ -1366,7 +1346,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Atan: return true;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;
-        case OpType::AvgPool3d: return false;
         case OpType::Batchnorm: return false;
         case OpType::Broadcast: return false;
         case OpType::Cast: return true;
@@ -1425,7 +1404,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Matmul: return false;
         case OpType::MaxPool1d: return false;
         case OpType::MaxPool2d: return false;
-        case OpType::MaxPool3d: return false;
         case OpType::Maximum: return true;
         case OpType::Minimum: return true;
         case OpType::Multiply: return true;
@@ -1486,7 +1464,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Atan: return true;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;
-        case OpType::AvgPool3d: return false;
         case OpType::Batchnorm: return false;
         case OpType::Broadcast: return false;
         case OpType::Cast: return true;
@@ -1545,7 +1522,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Matmul: return false;
         case OpType::MaxPool1d: return false;
         case OpType::MaxPool2d: return false;
-        case OpType::MaxPool3d: return false;
         case OpType::Maximum: return false;
         case OpType::Minimum: return false;
         case OpType::Multiply: return false;
@@ -1606,7 +1582,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Atan: return false;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;
-        case OpType::AvgPool3d: return false;
         case OpType::Batchnorm: return false;
         case OpType::Broadcast: return false;
         case OpType::Cast: return false;
@@ -1665,7 +1640,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Matmul: return false;
         case OpType::MaxPool1d: return false;
         case OpType::MaxPool2d: return false;
-        case OpType::MaxPool3d: return false;
         case OpType::Maximum: return true;
         case OpType::Minimum: return true;
         case OpType::Multiply: return true;
@@ -1726,7 +1700,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Atan: return false;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;
-        case OpType::AvgPool3d: return false;
         case OpType::Batchnorm: return false;
         case OpType::Broadcast: return false;
         case OpType::Cast: return false;
@@ -1785,7 +1758,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Matmul: return false;
         case OpType::MaxPool1d: return false;
         case OpType::MaxPool2d: return false;
-        case OpType::MaxPool3d: return false;
         case OpType::Maximum: return false;
         case OpType::Minimum: return false;
         case OpType::Multiply: return false;
