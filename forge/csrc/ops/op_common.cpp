@@ -7,6 +7,9 @@
 #include "autograd/autograd.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
+#include "lower_to_forge/common.hpp"
+#include "torch/extension.h"  // Needed for c++ to/from python type conversion.
+#include "torch/torch.h"
 #include "utils/assert.hpp"
 
 namespace tt
@@ -142,6 +145,31 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> reduce_ops_shap
         ret.erase(ret.begin() + dim);
 
     return {graphlib::Shape::create(ret), {}};
+}
+
+/**
+ * Convert data format to pytorch scalar type.
+ */
+at::ScalarType data_format_to_scalar_type(DataFormat data_format)
+{
+    switch (data_format)
+    {
+        case DataFormat::Float32: return at::ScalarType::Float;
+        case DataFormat::Float16:
+        case DataFormat::Bfp8:
+        case DataFormat::Bfp4:
+        case DataFormat::Bfp2: return at::ScalarType::Half;
+        case DataFormat::Float16_b:
+        case DataFormat::Bfp8_b:
+        case DataFormat::Bfp4_b: return at::ScalarType::BFloat16;
+        case DataFormat::RawUInt8: return at::ScalarType::Byte;
+        case DataFormat::RawUInt32:
+        case DataFormat::UInt16:
+        case DataFormat::Int32: return at::ScalarType::Int;
+        default:
+            TT_THROW("Unsupported DataFormat for casting: " + std::to_string(static_cast<int>(data_format)));
+            unreachable();
+    }
 }
 
 }  // namespace op_common

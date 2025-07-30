@@ -8,7 +8,6 @@ import numpy as np
 import tensorflow as tf
 from loguru import logger
 import forge
-from forge.tensor import forge_dataformat_to_pytorch_dtype
 
 from typing import Any, Dict, List, Optional, Tuple, Union
 

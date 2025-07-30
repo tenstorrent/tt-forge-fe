@@ -14,7 +14,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.compare import determine_consistency_limits
 from forge.config import CompilerConfig
 from forge._C import DataFormat
-from forge.tensor import Tensor, forge_dataformat_to_pytorch_dtype
+from forge.tensor import Tensor
 from loguru import logger
 from forge.module import ForgeModule
 import forge
