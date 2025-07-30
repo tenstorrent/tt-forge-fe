@@ -9,7 +9,7 @@ from loguru import logger
 
 from .failing_reasons import ExceptionData
 from .failing_reasons import FailingReasons
-from .pytest import PyTestUtils
+from .failing_reasons import FailingReasonsFinder
 
 
 class FailingReasonsValidation:
@@ -32,15 +32,7 @@ class FailingReasonsValidation:
             return False
 
         if len(failing_reason.value.checks) > 0:
-            ex_class_name = f"{type(exception_value).__module__}.{type(exception_value).__name__}"
-            ex_class_name = ex_class_name.replace("builtins.", "")
-            ex_message = f"{exception_value}"
-            exception_traceback = PyTestUtils.remove_colors(exception_traceback)
-            ex_data = ExceptionData(
-                class_name=ex_class_name,
-                message=ex_message,
-                error_log=exception_traceback,
-            )
+            ex_data = FailingReasonsFinder.build_ex_data(exception_value, exception_traceback)
 
             # Checking if exception data matches the failing reason
             if ex_data in failing_reason.value:
