@@ -492,6 +492,16 @@ class ModelInfo:
 
 @dataclass_json
 @dataclass
+class SweepsTags:
+    operator: str = ""
+    expected_failing_reason: str = ""
+    expected_failing_reason_desc: str = ""
+    detected_failing_reason: str = ""
+    detected_failing_reason_desc: str = ""
+
+
+@dataclass_json
+@dataclass
 class Tags:
     model_name: Optional[str] = None
     bringup_status: str = ""
@@ -503,6 +513,7 @@ class Tags:
     inputs: Optional[List[TensorDesc]] = None
     outputs: Optional[List[TensorDesc]] = None
     model_info: Optional[ModelInfo] = None
+    sweeps: Optional[SweepsTags] = None
     failure_category: str = ""
     refined_error_message: str = ""
     group: Optional[str] = None
@@ -961,6 +972,52 @@ def record_consistency_limits(
         fph.add("tags.atol", atol)
     if rtol is not None:
         fph.add("tags.rtol", rtol)
+
+
+def record_sweeps_expected_failing_reason(
+    operator: str,
+    expected_failing_reason: str = "",
+    expected_failing_reason_desc: str = "",
+):
+    """
+    Records the operator and failing reason in the sweeps tags.
+
+    Args:
+        operator (str): The operator name.
+        expected_failing_reason (str): The expected failing reason.
+        expected_failing_reason_desc (str): The description of the expected failing reason.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    if operator is not None:
+        fph.add("tags.sweeps.operator", operator)
+    if expected_failing_reason is not None:
+        fph.add("tags.sweeps.expected_failing_reason", expected_failing_reason)
+    if expected_failing_reason_desc is not None:
+        fph.add("tags.sweeps.expected_failing_reason_desc", expected_failing_reason_desc)
+
+
+def record_sweeps_detected_failing_reason(
+    detected_failing_reason: str = "",
+    detected_failing_reason_desc: str = "",
+):
+    """
+    Records detected failing reason and its description in the sweeps tags.
+
+    Args:
+        detected_failing_reason (str): The detected failing reason.
+        detected_failing_reason_desc (str): The description of the detected failing reason.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    if detected_failing_reason is not None:
+        fph.add("tags.sweeps.detected_failing_reason", detected_failing_reason)
+    if detected_failing_reason_desc is not None:
+        fph.add("tags.sweeps.detected_failing_reason_desc", detected_failing_reason_desc)
 
 
 def record_forge_op_name(forge_op_name: str):
