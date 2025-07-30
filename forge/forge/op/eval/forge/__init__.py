@@ -12,7 +12,6 @@ from .tilizer import Tilizer
 from .cumulativesum import CumulativeSum
 from .convolution import Conv2d
 from .convolution import Conv2dTranspose
-from .pooling import MaxPool2d
 from .cast import Cast
 from .pad import Pad
 from .kv_cache import UpdateCache
@@ -103,7 +102,7 @@ op_to_module_map = {
     "conv2d_transpose": Conv2dTranspose,
     "conv3d": "convolution",
     "max_pool1d": "pooling",
-    "max_pool2d": MaxPool2d,
+    "max_pool2d": "pooling",
     "avg_pool1d": "pooling",
     "avg_pool2d": "pooling",
     "resize1d": "resize",

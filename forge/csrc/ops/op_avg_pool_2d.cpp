@@ -173,6 +173,7 @@ void decompose_initial(
     int dilation_height = op.attr_as<int>("dilation_height");
     int dilation_width = op.attr_as<int>("dilation_width");
     bool ceil_mode = op.attr_as<bool>("ceil_mode");
+    bool count_include_pad = op.attr_as<bool>("count_include_pad");
 
     NodeContext activations = inputs[0];
     activations = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {activations});
@@ -192,7 +193,8 @@ void decompose_initial(
              {"channel_last", true},
              {"ceil_mode", ceil_mode},
              {"dilation_height", dilation_height},
-             {"dilation_width", dilation_width}}),
+             {"dilation_width", dilation_width},
+             {"count_include_pad", count_include_pad}}),
         {activations});
     result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
     result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});

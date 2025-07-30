@@ -64,9 +64,11 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     int stride = op.attr_as<int>("stride");
     int dilation = op.attr_as<int>("dilation");
     bool ceil_mode = op.attr_as<bool>("ceil_mode");
+    int padding_right = op.attr_as<int>("padding_right");
     int padding_left = op.attr_as<int>("padding_left");
 
     TT_ASSERT(dilation == 1, "Currently only support dilation = 1");
+    TT_ASSERT(padding_left == padding_right, "AvgPool1d padding must be symmetric");
 
     uint32_t l_in = input_shape[input_shape.size() - 1];
     uint32_t l_out;
