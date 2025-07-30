@@ -37,12 +37,10 @@ def MaxPool1d(
     assert type(kernel_size) is int, f"Unsupported arg type: type of kernel_size ({type(kernel_size)}) != int"
     assert type(padding) is int, f"Unsupported arg type: type of padding ({type(padding)}) != int"
 
-    attrs = [kernel_size, stride, dilation, ceil_mode, padding]
     return op(
         "max_pool1d",
         name,
         activations,
-        attrs=attrs,
         kernel_size=kernel_size,
         stride=stride,
         dilation=dilation,
@@ -96,14 +94,6 @@ def MaxPool2d(
     if isinstance(channel_last, int):
         channel_last = bool(channel_last)
 
-    attrs = (
-        kernel_size
-        + stride
-        + [dilation, ceil_mode]
-        + padding
-        + [max_pool_add_sub_surround, max_pool_add_sub_surround_value]
-        + [channel_last]
-    )
     return op(
         "max_pool2d",
         name,
@@ -126,12 +116,7 @@ def MaxPool2d(
 def AvgPool1d(
     name: str,
     activations: Tensor,
-    kernel_size: Union[
-        int,
-        Tuple[
-            int,
-        ],
-    ],
+    kernel_size: Union[int, Tuple[int, int]],
     stride: int = 1,
     padding: Union[int, str] = "same",
     ceil_mode: bool = False,
@@ -168,12 +153,10 @@ def AvgPool1d(
         padding = [padding] * 2  # [left,right]
 
     dilation = 1  # Only as place holder to standardize interface with MaxPool2d
-    attrs = kernel_size + stride + [dilation, ceil_mode] + padding + [count_include_pad]
     return op(
         "avg_pool1d",
         name,
         activations,
-        attrs=attrs,  # 1 is placeholder for dilation
         kernel_size=kernel_size[0],
         stride=stride[0],
         dilation=dilation,
@@ -228,14 +211,11 @@ def AvgPool2d(
 
     # Only as place holder to standardize interface with MaxPool2d
     dilation = (1, 1)
-    attrs = (
-        kernel_size + stride + [dilation[0], dilation[1], ceil_mode] + padding + [count_include_pad] + [channel_last]
-    )
+
     return op(
         "avg_pool2d",
         name,
         activations,
-        attrs=attrs,  # 1 is placeholder for dilation
         kernel_height=kernel_size[0],
         kernel_width=kernel_size[1],
         stride_height=stride[0],
