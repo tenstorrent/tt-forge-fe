@@ -33,7 +33,7 @@ on:
 # Set cache root to avoid IRD_LF_CACHE error when loading CenterNet ONNX model in CI
 env:
   DOCKER_CACHE_ROOT: /mnt/dockercache
-  IRD_LF_CACHE: varsity.IRD_LF_CACHE
+  IRD_LF_CACHE: ${{ vars.IRD_LF_CACHE }}
 
 permissions:
   packages: write
