@@ -30,8 +30,10 @@ from .plan import FailingRulesConverter
 from .plan import TestPlanScanner
 from .test_data import TestCollectionCommon
 from .test_data import TestCollectionTorch
+from .logger_utils import SweepsTagsLogger
 from .failing_reasons import FailingReason
 from .failing_reasons import FailingReasons
+from .failing_reasons import FailingReasonsFinder
 from .failing_reasons_validation import FailingReasonsValidation
 from .pytest import PyTestUtils
 from .pytest import PytestParamsUtils
@@ -66,8 +68,10 @@ __all__ = [
     "TestPlanScanner",
     "TestCollectionCommon",
     "TestCollectionTorch",
+    "SweepsTagsLogger",
     "FailingReason",
     "FailingReasons",
+    "FailingReasonsFinder",
     "FailingReasonsValidation",
     "PyTestUtils",
     "PytestParamsUtils",
