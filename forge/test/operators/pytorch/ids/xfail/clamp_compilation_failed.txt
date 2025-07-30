@@ -1,4 +1,4 @@
-# xfail_clamp_DTYPE_MISMATCH ids
+# xfail_clamp_COMPILATION_FAILED ids
 
 clamp-FROM_HOST-{'min': 0.0, 'max': 0.5}-(1, 2, 3, 4)-torch.int8-HiFi4
 clamp-FROM_HOST-{'min': 0.5, 'max': 0.0}-(1, 2, 3, 4)-torch.int8-HiFi4
