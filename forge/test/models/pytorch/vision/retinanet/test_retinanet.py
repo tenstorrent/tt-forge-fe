@@ -1,12 +1,9 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
-import shutil
-import zipfile
+# Import the ModelLoader from tt-forge
 
 import pytest
-import requests
 import torch
 
 import forge
@@ -20,17 +17,19 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
+from third_party.tt_forge_models.retinanet.pytorch.loader import (
+    ModelLoader,
+    ModelVariant,
+)
 
-from test.models.pytorch.vision.retinanet.model_utils.image_utils import img_preprocess
-from test.models.pytorch.vision.retinanet.model_utils.model import Model
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
 
 variants = [
-    "retinanet_rn18fpn",
-    "retinanet_rn34fpn",
-    "retinanet_rn50fpn",
-    "retinanet_rn101fpn",
-    "retinanet_rn152fpn",
+    ModelVariant.RETINANET_RN18FPN,
+    ModelVariant.RETINANET_RN34FPN,
+    ModelVariant.RETINANET_RN50FPN,
+    ModelVariant.RETINANET_RN101FPN,
+    ModelVariant.RETINANET_RN152FPN,
 ]
 
 
@@ -43,38 +42,16 @@ def test_retinanet(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.RETINANET,
-        variant=variant,
-        source=Source.HUGGINGFACE,
+        variant=variant.value,
+        source=Source.CUSTOM,
         task=Task.OBJECT_DETECTION,
     )
 
-    # Prepare model
-    url = f"https://github.com/NVIDIA/retinanet-examples/releases/download/19.04/{variant}.zip"
-    local_zip_path = f"{variant}.zip"
-
-    response = requests.get(url)
-    with open(local_zip_path, "wb") as f:
-        f.write(response.content)
-
-    # Unzip the file
-    with zipfile.ZipFile(local_zip_path, "r") as zip_ref:
-        zip_ref.extractall(".")
-
-    # Find the path of the .pth file
-    extracted_path = f"{variant}"
-    checkpoint_path = ""
-    for root, _, files in os.walk(extracted_path):
-        for file in files:
-            if file.endswith(".pth"):
-                checkpoint_path = os.path.join(root, file)
-
-    framework_model = Model.load(checkpoint_path)
-    framework_model.eval()
-    framework_model.to(torch.bfloat16)
-
-    # Prepare input
-    input_batch = img_preprocess()
-    inputs = [input_batch.to(torch.bfloat16)]
+    # Load model and inputs using ModelLoader
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -89,10 +66,6 @@ def test_retinanet(variant):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
-
-    # Delete the extracted folder and the zip file
-    shutil.rmtree(extracted_path)
-    os.remove(local_zip_path)
 
 
 variants_with_weights = {
