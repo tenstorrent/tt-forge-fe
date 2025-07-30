@@ -12,6 +12,8 @@ import pluggy.callers
 from loguru import logger
 
 from test.operators.utils import PyTestUtils
+from test.operators.utils import SweepsTagsLogger
+from test.operators.utils import FailingReasonsFinder
 from test.operators.utils import FailingReasonsValidation
 
 from ..utils import TestPlanUtils
@@ -22,11 +24,16 @@ def pytest_runtest_makereport(item: _pytest.python.Function, call: _pytest.runne
     outcome: pluggy.callers._Result = yield
     report: _pytest.reports.TestReport = outcome.get_result()
 
+    xfail_reason = None
+
     if report.when == "call" or (report.when == "setup" and report.skipped):
         xfail_reason = PyTestUtils.get_xfail_reason(item)
 
     # This hook function is called after each step of the test execution (setup, call, teardown)
     if call.when == "call":  # 'call' is a phase when the test is actually executed
+
+        if xfail_reason is not None:  # an xfail reason is defined for the test
+            SweepsTagsLogger.log_expected_failing_reason(xfail_reason=xfail_reason)
 
         if call.excinfo is not None:  # an exception occurred during the test execution
 
@@ -37,6 +44,9 @@ def pytest_runtest_makereport(item: _pytest.python.Function, call: _pytest.runne
             exception_value = call.excinfo.value
             long_repr = call.excinfo.getrepr(style="long")
             exception_traceback = str(long_repr)
+
+            ex_data = FailingReasonsFinder.build_ex_data(exception_value, exception_traceback)
+            SweepsTagsLogger.log_detected_failing_reason(ex_data)
 
             if xfail_reason is not None:  # an xfail reason is defined for the test
                 valid_reason = FailingReasonsValidation.validate_exception(
@@ -84,6 +94,8 @@ def log_test_vector_properties(
         # This is not a valid test id. It happens when no tests are selected to run.
         return
     test_vector = TestPlanUtils.test_id_to_test_vector(test_id)
+
+    SweepsTagsLogger.log_test_properties(test_vector=test_vector)
 
     item.user_properties.append(("id", test_id))
     item.user_properties.append(("operator", test_vector.operator))
