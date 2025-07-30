@@ -63,11 +63,23 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     int stride = op.attr_as<int>("stride");
     int dilation = op.attr_as<int>("dilation");
     int padding = op.attr_as<int>("padding");
+    bool ceil_mode = op.attr_as<bool>("ceil_mode");
 
     TT_ASSERT(dilation == 1, "Currently only support dilation = 1");
 
     uint32_t l_in = input_shape[input_shape.size() - 1];
-    uint32_t l_out = (l_in + 2 * padding - dilation * (kernel_size - 1) - 1) / stride + 1;
+
+    uint32_t l_out;
+    if (ceil_mode)
+    {
+        l_out = static_cast<uint32_t>(
+            std::ceil(static_cast<float>(l_in + 2 * padding - dilation * (kernel_size - 1) - 1) / stride + 1));
+    }
+    else
+    {
+        l_out = static_cast<uint32_t>(
+            std::floor(static_cast<float>(l_in + 2 * padding - dilation * (kernel_size - 1) - 1) / stride + 1));
+    }
 
     std::vector<uint32_t> output_shape = input_shape;
     output_shape[output_shape.size() - 1] = l_out;

@@ -84,14 +84,36 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     int padding_top = op.attr_as<int>("padding_top");
     int padding_bottom = op.attr_as<int>("padding_bottom");
     bool channel_last = op.attr_as<bool>("channel_last");
+    bool ceil_mode = op.attr_as<bool>("ceil_mode");
+    int dilation_height = op.attr_as<int>("dilation_height");
+    int dilation_width = op.attr_as<int>("dilation_width");
+
+    TT_ASSERT(dilation_height == 1 && dilation_width == 1, "Currently only support dilation = 1");
+    TT_ASSERT(padding_left == padding_right && padding_top == padding_bottom, "AvgPool2d padding must be symmetric");
 
     uint32_t batch_size = input_shape[0];
     uint32_t channels = channel_last ? input_shape[input_shape.size() - 1] : input_shape[input_shape.size() - 3];
     uint32_t h_in = channel_last ? input_shape[input_shape.size() - 3] : input_shape[input_shape.size() - 2];
     uint32_t w_in = channel_last ? input_shape[input_shape.size() - 2] : input_shape[input_shape.size() - 1];
 
-    uint32_t h_out = (h_in + (padding_top + padding_bottom) - kernel_height) / stride_height + 1;
-    uint32_t w_out = (w_in + (padding_left + padding_right) - kernel_width) / stride_width + 1;
+    uint32_t h_out;
+    uint32_t w_out;
+    if (ceil_mode)
+    {
+        h_out = static_cast<uint32_t>(std::ceil(
+            static_cast<float>(h_in + 2 * padding_top - dilation_height * (kernel_height - 1) - 1) / stride_height +
+            1));
+        w_out = static_cast<uint32_t>(std::ceil(
+            static_cast<float>(w_in + 2 * padding_left - dilation_width * (kernel_width - 1) - 1) / stride_width + 1));
+    }
+    else
+    {
+        h_out = static_cast<uint32_t>(std::floor(
+            static_cast<float>(h_in + 2 * padding_top - dilation_height * (kernel_height - 1) - 1) / stride_height +
+            1));
+        w_out = static_cast<uint32_t>(std::floor(
+            static_cast<float>(w_in + 2 * padding_left - dilation_width * (kernel_width - 1) - 1) / stride_width + 1));
+    }
 
     std::vector<uint32_t> output_shape;
     if (channel_last)

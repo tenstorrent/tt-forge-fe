@@ -96,26 +96,26 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     uint32_t h_in = channel_last ? input_shape[input_shape.size() - 3] : input_shape[input_shape.size() - 2];
     uint32_t w_in = channel_last ? input_shape[input_shape.size() - 2] : input_shape[input_shape.size() - 1];
 
-    int h_numerator = h_in + (padding_top + padding_bottom) - dilation_height * (kernel_height - 1) - 1;
-    uint32_t h_out;
-    if (ceil_mode)
-    {
-        h_out = static_cast<uint32_t>(std::ceil(1 + static_cast<float>(h_numerator) / stride_height));
-    }
-    else
-    {
-        h_out = static_cast<uint32_t>(std::floor(1 + static_cast<float>(h_numerator) / stride_height));
-    }
+    TT_ASSERT(dilation_height == 1 && dilation_width == 1, "Currently only support dilation = 1");
+    TT_ASSERT(padding_left == padding_right && padding_top == padding_bottom, "MaxPool2d padding must be symmetric");
 
-    int w_numerator = w_in + (padding_left + padding_right) - dilation_width * (kernel_width - 1) - 1;
+    uint32_t h_out;
     uint32_t w_out;
     if (ceil_mode)
     {
-        w_out = static_cast<uint32_t>(std::ceil(1 + static_cast<float>(w_numerator) / stride_width));
+        h_out = static_cast<uint32_t>(std::ceil(
+            1 +
+            static_cast<float>(h_in + 2 * padding_top - dilation_height * (kernel_height - 1) - 1) / stride_height));
+        w_out = static_cast<uint32_t>(std::ceil(
+            1 + static_cast<float>(w_in + 2 * padding_left - dilation_width * (kernel_width - 1) - 1) / stride_width));
     }
     else
     {
-        w_out = static_cast<uint32_t>(std::floor(1 + static_cast<float>(w_numerator) / stride_width));
+        h_out = static_cast<uint32_t>(std::floor(
+            1 +
+            static_cast<float>(h_in + 2 * padding_top - dilation_height * (kernel_height - 1) - 1) / stride_height));
+        w_out = static_cast<uint32_t>(std::floor(
+            1 + static_cast<float>(w_in + 2 * padding_left - dilation_width * (kernel_width - 1) - 1) / stride_width));
     }
 
     std::vector<uint32_t> output_shape;
