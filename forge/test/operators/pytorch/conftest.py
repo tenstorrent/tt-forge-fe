@@ -11,7 +11,10 @@ import pluggy.callers
 
 from loguru import logger
 
+from forge.forge_property_utils import record_sweeps_expected_failing_reason
+
 from test.operators.utils import PyTestUtils
+from test.operators.utils import FailingReasons
 from test.operators.utils import FailingReasonsValidation
 
 from ..utils import TestPlanUtils
@@ -37,6 +40,9 @@ def pytest_runtest_makereport(item: _pytest.python.Function, call: _pytest.runne
             exception_value = call.excinfo.value
             long_repr = call.excinfo.getrepr(style="long")
             exception_traceback = str(long_repr)
+
+            ex_data = FailingReasonsValidation.build_ex_data(exception_value, exception_traceback)
+            FailingReasonsValidation.record_detected_failing_reason(ex_data)
 
             if xfail_reason is not None:  # an xfail reason is defined for the test
                 valid_reason = FailingReasonsValidation.validate_exception(
@@ -85,6 +91,11 @@ def log_test_vector_properties(
         return
     test_vector = TestPlanUtils.test_id_to_test_vector(test_id)
 
+    log_sweeps_tags(
+        test_vector=test_vector,
+        xfail_reason=xfail_reason,
+    )
+
     item.user_properties.append(("id", test_id))
     item.user_properties.append(("operator", test_vector.operator))
     item.user_properties.append(
@@ -117,3 +128,15 @@ def log_test_vector_properties(
                 atol = None
             item.user_properties.append(("all_close_rtol", rtol))
             item.user_properties.append(("all_close_atol", atol))
+
+
+def log_sweeps_tags(
+    test_vector,
+    xfail_reason: str,
+):
+    failing_reason = FailingReasons.find_by_description(xfail_reason)
+    record_sweeps_expected_failing_reason(
+        operator=test_vector.operator,
+        expected_failing_reason=failing_reason.name if failing_reason else None,
+        expected_failing_reason_desc=xfail_reason,
+    )
