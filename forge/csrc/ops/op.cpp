@@ -806,7 +806,7 @@ void Op::decompose_initial(
         case OpType::Mask: return mask::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Matmul: return matmul::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::MaxPool1d: return;
-        case OpType::MaxPool2d: return;
+        case OpType::MaxPool2d: return max_pool_2d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Maximum: return;
         case OpType::Minimum: return;
         case OpType::Multiply: return;
