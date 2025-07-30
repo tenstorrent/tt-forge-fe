@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from pytorchcv.model_provider import get_model as ptcv_get_model
+from third_party.tt_forge_models.vovnet.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -23,7 +23,6 @@ from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.vovnet.model_utils.model_utils import (
-    get_image,
     preprocess_steps,
     preprocess_timm_model,
 )
@@ -33,15 +32,15 @@ from test.models.pytorch.vision.vovnet.model_utils.src_vovnet_stigma import (
 )
 from test.utils import download_model
 
-varaints = [
-    pytest.param("vovnet27s", marks=pytest.mark.push),
-    "vovnet39",
-    "vovnet57",
+variants = [
+    ModelVariant.VOVNET27S,
+    ModelVariant.VOVNET39,
+    ModelVariant.VOVNET57,
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", varaints)
+@pytest.mark.parametrize("variant", variants)
 def test_vovnet_osmr_pytorch(variant):
 
     # Record Forge Property
@@ -53,12 +52,11 @@ def test_vovnet_osmr_pytorch(variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Load model
-    framework_model = download_model(ptcv_get_model, variant, pretrained=True).to(torch.bfloat16)
-
-    # prepare input
-    image_tensor = get_image()
-    inputs = [image_tensor.to(torch.bfloat16)]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -75,7 +73,7 @@ def test_vovnet_osmr_pytorch(variant):
     )
 
     # Model Verification
-    fw_out, co_out = verify(
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
@@ -83,7 +81,7 @@ def test_vovnet_osmr_pytorch(variant):
     )
 
     # Run model on sample data and print results
-    print_cls_results(fw_out[0], co_out[0])
+    loader.print_cls_results(co_out)
 
 
 def generate_model_vovnet39_imgcls_stigma_pytorch():
