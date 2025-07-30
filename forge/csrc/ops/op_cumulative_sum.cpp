@@ -9,7 +9,6 @@
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
 #include "op_interface.hpp"
-#include "passes/decomposing_context.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
 #include "utils/assert.hpp"
@@ -25,16 +24,27 @@ using namespace graphlib;
 at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::CumulativeSum, "Wrong op type.");
-    return op.base_eval(old_op_type, tensors);
+    TT_ASSERT(tensors.size() == 1, "Cumulative sum should have one input.");
+    TT_ASSERT(op.attrs().size() == 1, "Cumulative sum should have one attribute.");
+
+    return torch::cumsum(tensors[0], op.attr_as<int>("dim"));
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
     const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::CumulativeSum, "Wrong op type.");
-    return op.base_shape(old_op_type, in_shapes);
+    TT_ASSERT(in_shapes.size() == 1, "Cumulative sum should have one input.");
+    TT_ASSERT(op.attrs().size() == 1, "Cumulative sum should have one attribute.");
+
+    return {Shape::create(in_shapes[0]), {}};
 }
 
+/**
+ * The backward pass of cumsum is the "reverse cumsum" or cumsum in reverse order.
+ * For cumsum along dim, the gradient flows backwards:
+ * If y = cumsum(x, dim), then dy/dx[i] = sum(grad_output[j] for j >= i along dim)
+ */
 NodeContext backward(
     const graphlib::OpType &old_op_type,
     const Op &op,
@@ -45,35 +55,33 @@ NodeContext backward(
     const NodeContext &gradient)
 {
     TT_DBG_ASSERT(op.type() == OpType::CumulativeSum, "Wrong op type.");
-    return op.base_backward(old_op_type, ac, operand, inputs, output, gradient);
-}
+    TT_ASSERT(inputs.size() == 1, "Cumulative sum should have one input.");
+    TT_ASSERT(operand == 0, "Invalid operand index for cumsum.");
+    TT_ASSERT(op.has_attr("dim"), "Cumulative sum should have one attribute.");
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::CumulativeSum, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
-}
+    /**
+     * We can not implement backward since we don't have flip operation.
+     * The proper mathematical backward pass would require:
+     * flip(cumsum(flip(grad, dim), dim), dim) - which computes reverse cumsum.
+     *
+     * Here is a full implementation:
+     *
+     * int dim = op.attr_as<int>("dim");
 
-void decompose_post_optimize(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::CumulativeSum, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
-}
+     * // Step 1: Flip the gradient along the dimension
+     * auto flipped_grad = ac.autograd->create_op(ac, graphlib::OpType("flip", {}, {{"dims", std::vector<int>{dim}}}),
+     * {gradient});
+     *
+     * // Step 2: Apply cumsum to the flipped gradient
+     * auto cumsum_flipped = ac.autograd->create_op(ac, graphlib::OpType("cumsum", {}, {{"dim", dim}}), {flipped_grad});
+     *
+     * // Step 3: Flip the result back to get the final gradient
+     * return ac.autograd->create_op(ac, graphlib::OpType("flip", {}, {{"dims", std::vector<int>{dim}}}),
+     * {cumsum_flipped});
+     */
 
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::CumulativeSum, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
-}
-
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::CumulativeSum, "Wrong op type.");
-    return op.base_initial_flops_estimate(old_op_type, inputs);
+    TT_ASSERT(false, "Cumsum does not have backward implemented.");
+    unreachable();
 }
 
 }  // namespace cumulative_sum

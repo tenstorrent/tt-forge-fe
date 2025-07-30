@@ -756,7 +756,7 @@ void Op::decompose_initial(
         case OpType::Conv3d: return conv_3d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::ConvSum: return conv_sum::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Cosine: return;
-        case OpType::CumulativeSum: return cumulative_sum::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::CumulativeSum: return;
         case OpType::Depthwise: return depthwise::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Dequantize: return dequantize::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
@@ -875,7 +875,7 @@ void Op::decompose_post_optimize(
         case OpType::Conv3d: return conv_3d::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::ConvSum: return conv_sum::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Cosine: return;
-        case OpType::CumulativeSum: return cumulative_sum::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::CumulativeSum: return;
         case OpType::Depthwise: return depthwise::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Dequantize: return dequantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
@@ -994,7 +994,7 @@ void Op::decompose_post_autograd(
         case OpType::Conv3d: return conv_3d::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::ConvSum: return conv_sum::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Cosine: return;
-        case OpType::CumulativeSum: return cumulative_sum::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::CumulativeSum: return;
         case OpType::Depthwise: return depthwise::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Dequantize: return dequantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
@@ -1111,7 +1111,7 @@ long Op::initial_flops_estimate(
         case OpType::Conv3d: return conv_3d::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::ConvSum: return conv_sum::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Cosine: return 0;
-        case OpType::CumulativeSum: return cumulative_sum::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::CumulativeSum: return 0;
         case OpType::Depthwise: return depthwise::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Dequantize: return dequantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Divide: return 0;
