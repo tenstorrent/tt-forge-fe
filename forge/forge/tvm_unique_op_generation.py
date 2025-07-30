@@ -615,7 +615,7 @@ def extract_and_export_unique_ops_config(
         export_unique_op_configuration_info(current_module_name, unique_operation_details, unique_ops_metadata)
 
 
-def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_test_output_directory_path: str):
+def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_test_output_directory_path: str, training=False):
     """
     Generate models ops test forge modules with test function from the provided unique operation configuration extracted across all the models
     """
@@ -635,6 +635,7 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
             module_name,
             framework="pytorch",  # Currently unique operation extraction is supported for pytorch framework so explicitly specifying the framework as pytorch
             module_directory=models_ops_test_output_directory_path,
+            training=training
         )
         writer.write_header(include_pytest_imports=True)
 

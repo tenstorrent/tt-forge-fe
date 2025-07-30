@@ -76,10 +76,13 @@ def export_unique_ops_config(
                 framework = extract_framework_from_test_file_path(test_file_path)
                 model_script_output_logs_dir_path = os.path.join(model_output_dir_path, "model_script_logs")
                 test_case_name = test_case_name.replace("/", "-")
+                # Truncate long filenames to avoid filesystem limits (usually 255 chars)
+                if len(test_case_name) > 200:
+                    test_case_name = test_case_name[:200] + "_truncated"
                 test_log_file_path = os.path.join(model_script_output_logs_dir_path, test_case_name + ".log")
                 try:
                     result = subprocess.run(
-                        ["pytest", test, "-vss", "--no-skips", "--runxfail"],
+                        ["/opt/ttforge-toolchain/venv/bin/python3", "-m", "pytest", test, "-vss", "--no-skips", "--runxfail"],
                         capture_output=True,
                         text=True,
                         check=True,

@@ -4,6 +4,8 @@
 import os
 from loguru import logger
 import argparse
+
+from onnx import parser
 from utils import create_python_package, run_precommit, remove_directory, filter_unique_operations, check_path
 from unique_ops_utils import (
     extract_unique_op_tests_from_models,
@@ -54,7 +56,13 @@ def main():
             "and then combine it with unique ops configuration extracted for the list of models tests specified in the tests_to_filter and then generate models ops tests"
         ),
     )
-
+    parser.add_argument(
+        "--training",
+        action="store_true",
+        help=(
+            "If set, generated tests will test backward pass as well."
+        )
+    )
     args = parser.parse_args()
 
     models_ops_tests_directory_path = os.path.join(
@@ -94,6 +102,7 @@ def main():
     generate_models_ops_test(
         unique_operations_across_all_models_ops_test,
         models_ops_tests_directory_path,
+        training=args.training
     )
     run_precommit(directory_path=models_ops_tests_directory_path)
 

@@ -15,8 +15,6 @@ import jax
 import jax.numpy as jnp
 import json
 
-import keras
-
 from .forgeglobal import TILE_DIM, align_up_tile, round_up_div
 from forge._C import DataFormat
 from forge._C.graph import OpType, RuntimeTensorTransform, RuntimeTensorTransformType, get_constant_input_value
@@ -261,12 +259,16 @@ class Tensor(TensorBase):
 
     @classmethod
     def create_from_torch(
-        cls, torch_tensor: torch.Tensor, dev_data_format: Optional[DataFormat] = None, constant: bool = False
+        cls,
+        torch_tensor: torch.Tensor,
+        dev_data_format: Optional[DataFormat] = None,
+        constant: bool = False,
+        requires_grad=False,
     ) -> "TensorFromPytorch":
         """
         Create tensor from pytorch tensor, and set value
         """
-        return TensorFromPytorch(torch_tensor, dev_data_format, constant)
+        return TensorFromPytorch(torch_tensor, dev_data_format, constant, requires_grad)
 
     @classmethod
     def create_torch_tensor(
@@ -275,10 +277,12 @@ class Tensor(TensorBase):
         dtype: Optional[torch.dtype] = None,
         min_int: int = 0,
         max_int: int = 1000,
+        requires_grad: bool = False,
     ) -> torch.Tensor:
 
         if dtype in [torch.float16, torch.bfloat16, torch.float32, torch.float64]:
             torch_tensor = torch.rand(shape, dtype=dtype)
+            torch_tensor.requires_grad = requires_grad
         elif dtype in [torch.int8, torch.uint8, torch.int16, torch.int32, torch.int64]:
             if min_int == max_int:
                 torch_tensor = torch.full(size=shape, fill_value=max_int, dtype=dtype)
@@ -288,6 +292,7 @@ class Tensor(TensorBase):
             torch_tensor = torch.randint(low=0, high=2, size=shape, dtype=dtype)  # this will create boolean tensor
         elif dtype is None:
             torch_tensor = torch.rand(shape, dtype=torch.float32)
+            torch_tensor.requires_grad = requires_grad
         else:
             raise RuntimeError(f"[create_torch_tensor] - Unsupported dtype {dtype}")
 
@@ -301,10 +306,11 @@ class Tensor(TensorBase):
         min_int: int = 0,
         max_int: int = 1000,
         constant: bool = False,
+        requires_grad: bool = False,
     ) -> "TensorFromPytorch":
 
         torch_tensor = Tensor.create_torch_tensor(
-            shape=tensor_shape, dtype=torch_dtype, min_int=min_int, max_int=max_int
+            shape=tensor_shape, dtype=torch_dtype, min_int=min_int, max_int=max_int, requires_grad=requires_grad
         )
 
         return TensorFromPytorch(
@@ -331,9 +337,12 @@ class TensorFromPytorch(Tensor):
     Tensor wrapper created from a conrete pytorch tensor
     """
 
-    def __init__(self, torch_tensor: torch.Tensor, dev_data_format: Optional[DataFormat], constant: bool):
+    def __init__(
+        self, torch_tensor: torch.Tensor, dev_data_format: Optional[DataFormat], constant: bool, requires_grad=False
+    ):
         super().__init__()
         self._value = torch_tensor
+        self._value.requires_grad_()
         self._data_format: DataFormat = (
             dev_data_format if dev_data_format is not None else pytorch_dtype_to_forge_dataformat(self._value.dtype)
         )
@@ -487,9 +496,7 @@ class TensorFromTrace(Tensor):
         return super().to_framework(framework)
 
 
-FrameworkTensor: TypeAlias = (
-    torch.Tensor | tf.Tensor | tf.Variable | paddle.Tensor | jax.Array | (keras.src.backend.Variable)
-)
+FrameworkTensor: TypeAlias = torch.Tensor | tf.Tensor | tf.Variable | paddle.Tensor | jax.Array
 AnyTensor: TypeAlias = FrameworkTensor | Tensor
 
 
@@ -752,8 +759,6 @@ def to_pt_tensors(tensors: Union[AnyTensor, Tuple[AnyTensor, ...], List[AnyTenso
 
 
 def to_pt_tensor(t: AnyTensor) -> torch.Tensor:
-    if isinstance(t, keras.src.backend.Variable):
-        t = tf.convert_to_tensor(t)
     if isinstance(t, torch.Tensor):
         return t
     elif isinstance(t, (tf.Tensor, tf.Variable)):
@@ -937,8 +942,8 @@ def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]
         return inputs[name]
 
     def eval_op(op_type, inputs):
-        op = OpType(op_type["type"], op_type["attrs"], op_type["named_attrs"])
-        return op.eval(inputs)
+        forge_eval = eval_module.get_f_forge_eval(OpType(op_type["type"], op_type["attrs"], op_type["named_attrs"]))
+        return forge_eval(inputs)
 
     logger.debug("ConstEval graph: {}", name)
     node_to_tensor: Dict[str, torch.Tensor] = {}

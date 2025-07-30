@@ -35,7 +35,13 @@ def main():
         required=False,
         help="Specify the list of model names to which the generate models ops tests need to be removed",
     )
-
+    parser.add_argument(
+        "--training",
+        action="store_true",
+        help=(
+            "If set, generated tests will test training mode."
+        )
+    )
     args = parser.parse_args()
 
     models_ops_tests_directory_path = os.path.join(
@@ -57,6 +63,7 @@ def main():
     generate_models_ops_test(
         existing_unique_ops_config,
         models_ops_tests_directory_path,
+        training=args.training,
     )
     run_precommit(directory_path=models_ops_tests_directory_path)
 

@@ -60,21 +60,30 @@ def collect_all_model_analysis_test(directory_or_file_path: str, marker: str, ou
     logger.info(f"Collecting all the tests that matches with {marker} marker in {directory_or_file_path}")
 
     collected_test_outputs = ""
+    
     try:
-        # Run pytest to collect all the tests that matches with the specified marker
         result = subprocess.run(
-            ["pytest", directory_or_file_path, "-m", marker, "--collect-only"],
+            ["/opt/ttforge-toolchain/venv/bin/python3", "-m", "pytest", directory_or_file_path, "-m", marker, "--collect-only"],
             capture_output=True,
             text=True,
             check=True,
         )
-
-        # Append stdout and stderr to the collected outputs
+        print("marker:", marker)
         collected_test_outputs += "STDOUT:\n" + result.stdout
         collected_test_outputs += "STDERR:\n" + result.stderr
+        print(result.stdout, result.stderr)
 
     except subprocess.CalledProcessError as e:
-        collected_test_outputs += e.output
+        print("subprocess failed:")
+        print("Return code:", e.returncode)
+        print("Command:", e.cmd)
+        print("STDOUT:\n", e.stdout)
+        print("STDERR:\n", e.stderr)
+
+        collected_test_outputs += f"Command failed with return code {e.returncode}\n"
+        collected_test_outputs += f"CMD: {e.cmd}\n"
+        collected_test_outputs += "STDOUT:\n" + (e.stdout or "")
+        collected_test_outputs += "STDERR:\n" + (e.stderr or "")
 
     # Save the collected test outputs to a file
     collected_test_file_path = os.path.join(output_directory_path, "collected_tests.txt")
@@ -93,7 +102,7 @@ def collect_all_model_analysis_test(directory_or_file_path: str, marker: str, ou
                 break
             elif test_lines:
                 test_list.append(str(line).replace("\n", ""))
-
+    print(test_list, test_lines)
     return test_list
 
 

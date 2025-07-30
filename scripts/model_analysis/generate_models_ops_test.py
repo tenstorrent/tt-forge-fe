@@ -81,6 +81,13 @@ def main():
             "and then combine it with unique ops configuration extracted for the list of models tests specified in the tests_to_filter and then generate models ops tests"
         ),
     )
+    parser.add_argument(
+        "--training",
+        action="store_true",
+        help=(
+            "If set, generated tests will test training mode."
+        )
+    )
 
     args = parser.parse_args()
 
@@ -133,6 +140,7 @@ def main():
     generate_models_ops_test(
         unique_operations_across_all_models_ops_test,
         models_ops_tests_directory_path,
+        training=args.training
     )
     run_precommit(directory_path=models_ops_tests_directory_path)
 
