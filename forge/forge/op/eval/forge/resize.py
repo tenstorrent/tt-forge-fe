@@ -6,7 +6,6 @@ from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div, clamp
 from forge import Tensor
 from forge.op.resize import INT_TO_RESIZE2d_METHOD
-from .nop import Nop
 
 from ..common import to_torch_operands
 from ..sparse_utils import (
@@ -333,7 +332,7 @@ def decompose_resize3d(attr, dc, inputs, resize_method):
     scale_factor_y = attr[1] // shape[-2]
     scale_factor_x = attr[2] // shape[-1]
     if scale_factor_x == 1 and scale_factor_y == 1 and scale_factor_d == 1:
-        result = dc.op(Nop.create(), [activations])
+        result = dc.op("nop", [activations])
         dc.fuse(result)
         return
 

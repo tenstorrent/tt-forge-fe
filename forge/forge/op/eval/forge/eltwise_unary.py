@@ -10,7 +10,6 @@ from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
 from .tanh import Tanh
-from .nop import Nop
 
 
 def eval(type, attr, ops):
@@ -29,7 +28,6 @@ def eval(type, attr, ops):
 
     f = {
         "erf": lambda i: torch.erf(i[0]),
-        "nop": lambda i: i[0],
         "tilizer": lambda i: i[0],
         "ethernet_datacopy": lambda i: i[0],
         "clip": lambda i: torch.clip(i[0], min=attr[0], max=attr[1]),
@@ -72,11 +70,8 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         or (type == "pow" and len(attr) == 1)
     ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout and pow"
 
-    if type == "nop":
-        return ac.op(Nop.create(), (grad,))
-
     if type == "tilizer":
-        return ac.op(Nop.create(), (grad,))
+        return ac.op("nop", (grad,))
 
     if type == "tanh":
         tanh_square = ac.op("multiply", (output, output))
@@ -90,7 +85,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         assert dim == 0, "Unsupported dim different then 0 for cumulative sum backward pass"
 
         if dim == 0:
-            return ac.op(Nop.create(), (grad,))
+            return ac.op("nop", (grad,))
 
         return res
 

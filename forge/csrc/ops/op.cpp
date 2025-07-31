@@ -811,7 +811,7 @@ void Op::decompose_initial(
         case OpType::Minimum: return;
         case OpType::Multiply: return;
         case OpType::Narrow: return narrow::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Nop: return nop::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Nop: return;
         case OpType::NotEqual: return;
         case OpType::Pad: return pad::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::PadTile: return pad_tile::decompose_initial(old_op_type, *this, dc, inputs);
@@ -932,7 +932,7 @@ void Op::decompose_post_optimize(
         case OpType::Minimum: return;
         case OpType::Multiply: return;
         case OpType::Narrow: return narrow::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Nop: return nop::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Nop: return;
         case OpType::NotEqual: return;
         case OpType::Pad: return pad::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::PadTile: return pad_tile::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -1053,7 +1053,7 @@ void Op::decompose_post_autograd(
         case OpType::Minimum: return;
         case OpType::Multiply: return;
         case OpType::Narrow: return narrow::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Nop: return nop::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Nop: return;
         case OpType::NotEqual: return;
         case OpType::Pad: return pad::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::PadTile: return pad_tile::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1172,7 +1172,7 @@ long Op::initial_flops_estimate(
         case OpType::Minimum: return 0;
         case OpType::Multiply: return 0;
         case OpType::Narrow: return narrow::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Nop: return nop::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Nop: return 0;
         case OpType::NotEqual: return 0;
         case OpType::Pad: return pad::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::PadTile: return pad_tile::initial_flops_estimate(old_op_type, *this, inputs);

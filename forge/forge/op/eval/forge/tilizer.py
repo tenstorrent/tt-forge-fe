@@ -12,7 +12,6 @@ from ....forgeglobal import TILE_DIM
 from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from .nop import Nop
 
 
 class Tilizer(PyEltwiseUnaryOp):
@@ -41,4 +40,4 @@ class Tilizer(PyEltwiseUnaryOp):
         assert len(inputs) == 1, "Tilizer should have one input"
         assert operand == 0, "Invalid operand index"
 
-        return ac.op(Nop.create(), (grad,))
+        return ac.op("nop", (grad,))
