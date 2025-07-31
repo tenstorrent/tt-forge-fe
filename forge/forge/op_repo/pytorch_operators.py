@@ -179,6 +179,8 @@ _OPERATORS = [
     OperatorDefinition("unsqueeze", "torch.unsqueeze", 1),
     OperatorDefinition("transpose", "torch.transpose", 1),
     OperatorDefinition("layer_norm", "torch.nn.LayerNorm", 1),
+    # Indexing operators
+    OperatorDefinition("index_copy", "torch.Tensor.index_copy", 2),
 ]
 
 
