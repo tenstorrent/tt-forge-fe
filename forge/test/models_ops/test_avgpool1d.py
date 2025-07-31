@@ -62,7 +62,6 @@ forge_modules_and_shapes_dtypes_list = [
                 },
             },
         ),
-        marks=[pytest.mark.skip(reason="Segmentation fault at run_mlir_compiler compilation stage")],
     )
 ]
 

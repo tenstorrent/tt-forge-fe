@@ -732,57 +732,6 @@ def populate_argmax_args(graph, nid, compiler_cfg):
     return args
 
 
-def populate_avgpool3d_args(graph, nid, compiler_cfg):
-    node = graph["nodes"][nid]
-    args = []
-
-    kernel_size = [int(pool_size) for pool_size in node["attrs"]["pool_size"][0]]
-    args.append(
-        (
-            "kernel_size",
-            f"{kernel_size}",
-        )
-    )
-
-    strides = [int(stride) for stride in node["attrs"]["strides"][0]]
-    args.append(
-        (
-            "stride",
-            f"{strides}",
-        )
-    )
-
-    padding = [int(padding) for padding in node["attrs"]["padding"][0]]
-    # TVM has padding [depth_first, top, left, depth_last, bottom, right]
-    # Convert to [left right top bottom depth_first depth_last]
-    reordered_padding = [padding[2], padding[5], padding[1], padding[4], padding[0], padding[3]]
-
-    args.append(
-        (
-            "padding",
-            f"{reordered_padding}",
-        )
-    )
-
-    ceil_mode = int(node["attrs"]["ceil_mode"][0][0])  # 1 for True
-    ceil_mode = "True" if ceil_mode == 1 else "False"
-    args.append(
-        (
-            "ceil_mode",
-            f"{ceil_mode}",
-        )
-    )
-
-    count_include_pad = int(node["attrs"]["count_include_pad"][0][0])
-    count_include_pad = "True" if count_include_pad == 1 else "False"
-    args.append(("count_include_pad", count_include_pad))
-
-    channel_last = int(node["attrs"]["layout"][0][0] == "NDHWC")
-    args.append(("channel_last", f"{channel_last}"))
-
-    return args
-
-
 def populate_avgpool2d_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
     args = []
@@ -967,63 +916,6 @@ def populate_maxpool2d_args(graph, nid, compiler_cfg):
         padding[0],
         padding[2],
     ]
-    args.append(
-        (
-            "padding",
-            f"{reordered_padding}",
-        )
-    )
-
-    dilation = [int(dilation) for dilation in node["attrs"]["dilation"][0]]
-    assert all([dim == dilation[0] for dim in dilation])
-    args.append(
-        (
-            "dilation",
-            f"{dilation[0]}",
-        )
-    )
-
-    ceil_mode = int(node["attrs"]["ceil_mode"][0][0])
-    ceil_mode = "True" if ceil_mode == 1 else "False"
-    args.append(
-        (
-            "ceil_mode",
-            f"{ceil_mode}",
-        )
-    )
-
-    channel_last = int(node["attrs"]["layout"][0][0] == "NHWC")
-    args.append(("channel_last", f"{channel_last}"))
-
-    return args
-
-
-def populate_maxpool3d_args(graph, nid, compiler_cfg):
-    args = []
-    node = graph["nodes"][nid]
-
-    kernel_size = [int(pool_size) for pool_size in node["attrs"]["pool_size"][0]]
-    assert all([dim == kernel_size[0] for dim in kernel_size])
-    args.append(
-        (
-            "kernel_size",
-            f"{kernel_size[0]}",
-        )
-    )
-
-    strides = [int(stride) for stride in node["attrs"]["strides"][0]]
-    assert all([stride == strides[0] for stride in strides])
-    args.append(
-        (
-            "stride",
-            f"{strides[0]}",
-        )
-    )
-
-    padding = [int(padding) for padding in node["attrs"]["padding"][0]]
-    # TVM has padding [depth_first, top, left, depth_last, bottom, right]
-    # Convert to [left right top bottom depth_first depth_last]
-    reordered_padding = [padding[2], padding[5], padding[1], padding[4], padding[0], padding[3]]
     args.append(
         (
             "padding",
@@ -1727,7 +1619,6 @@ tvm_to_forge_op_map = {
     "multiply": "multiply",
     "nn.avg_pool1d": "avg_pool1d",
     "nn.avg_pool2d": "avg_pool2d",
-    "nn.avg_pool3d": "avg_pool3d",
     "nn.batch_matmul": "matmul",
     "nn.conv2d_transpose": "conv2d_transpose",
     "nn.conv2d": "conv2d",
@@ -1737,7 +1628,6 @@ tvm_to_forge_op_map = {
     "nn.matmul": "matmul",
     "nn.max_pool1d": "max_pool1d",
     "nn.max_pool2d": "max_pool2d",
-    "nn.max_pool3d": "max_pool3d",
     "nn.pad": "pad",
     "nn.relu": "relu",
     "nn.softmax": "softmax",
@@ -1791,7 +1681,6 @@ forge_op_to_function_name = {
     "argmax": "forge.op.Argmax",
     "avg_pool1d": "forge.op.AvgPool1d",
     "avg_pool2d": "forge.op.AvgPool2d",
-    "avg_pool3d": "forge.op.AvgPool3d",
     "broadcast": "forge.op.Broadcast",
     "cast": "forge.op.Cast",  # Datatype cast
     "clip": "forge.op.Clip",
@@ -1826,7 +1715,6 @@ forge_op_to_function_name = {
     "matmul": "forge.op.Matmul",
     "max_pool1d": "forge.op.MaxPool1d",
     "max_pool2d": "forge.op.MaxPool2d",
-    "max_pool3d": "forge.op.MaxPool3d",
     "maximum": "forge.op.Max",
     "mean": "forge.op.ReduceAvg",
     "minimum": "forge.op.Min",
@@ -1874,7 +1762,6 @@ forge_ops_needing_arguments = {
     "argmax": populate_argmax_args,
     "avg_pool1d": populate_avgpool1d_args,
     "avg_pool2d": populate_avgpool2d_args,
-    "avg_pool3d": populate_avgpool3d_args,
     "broadcast": populate_broadcast_args,
     "cast": populate_cast_args,
     "clip": populate_clip_transpose_args,
@@ -1893,7 +1780,6 @@ forge_ops_needing_arguments = {
     "log_softmax": populate_softmax_args,
     "max_pool1d": populate_maxpool1d_args,
     "max_pool2d": populate_maxpool2d_args,
-    "max_pool3d": populate_maxpool3d_args,
     "pad": populate_pad_args,
     "pixel_shuffle": populate_pixel_shuffle_args,
     "prelu": populate_prelu_args,

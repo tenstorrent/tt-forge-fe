@@ -10,7 +10,6 @@ add_library(ops
     op_atan.cpp
     op_avg_pool_1d.cpp
     op_avg_pool_2d.cpp
-    op_avg_pool_3d.cpp
     op_batchnorm.cpp
     op_broadcast.cpp
     op_cast.cpp
@@ -69,7 +68,6 @@ add_library(ops
     op_matmul.cpp
     op_max_pool_1d.cpp
     op_max_pool_2d.cpp
-    op_max_pool_3d.cpp
     op_maximum.cpp
     op_minimum.cpp
     op_multiply.cpp
