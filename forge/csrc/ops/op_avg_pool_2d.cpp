@@ -148,6 +148,277 @@ void decompose_initial(
     TT_DBG_ASSERT(op.type() == OpType::AvgPool2d, "Wrong op type.");
     TT_ASSERT(inputs.size() == 1, "AvgPool2d expects 1 input");
 
+    int kernel_height = op.attr_as<int>("kernel_height");
+    int kernel_width = op.attr_as<int>("kernel_width");
+    int stride_height = op.attr_as<int>("stride_height");
+    int stride_width = op.attr_as<int>("stride_width");
+    int dilation_height = op.attr_as<int>("dilation_height");
+    int dilation_width = op.attr_as<int>("dilation_width");
+    bool ceil_mode = op.attr_as<bool>("ceil_mode");
+    int padding_left = op.attr_as<int>("padding_left");
+    int padding_right = op.attr_as<int>("padding_right");
+    int padding_top = op.attr_as<int>("padding_top");
+    int padding_bottom = op.attr_as<int>("padding_bottom");
+    bool channel_last = op.attr_as<bool>("channel_last");
+    bool count_include_pad = op.attr_as<bool>("count_include_pad");
+
+    TT_ASSERT(dilation_height == 1 && dilation_width == 1, "Currently only support dilation = 1");
+
+    NodeContext activations = inputs[0];
+    Shape activations_shape = activations.shape;
+
+    uint32_t w, cin, y, x;
+    if (channel_last)
+    {
+        w = activations_shape[0];
+        y = activations_shape[activations_shape.size() - 3];
+        x = activations_shape[activations_shape.size() - 2];
+        cin = activations_shape[activations_shape.size() - 1];
+    }
+    else
+    {
+        w = activations_shape[0];
+        cin = activations_shape[activations_shape.size() - 3];
+        y = activations_shape[activations_shape.size() - 2];
+        x = activations_shape[activations_shape.size() - 1];
+    }
+
+    std::vector<int> kernel_size = {kernel_height, kernel_width};
+    std::vector<int> stride = {stride_height, stride_width};
+    std::vector<int> padding = {padding_left, padding_right, padding_top, padding_bottom};
+    std::vector<int> original_padding = padding;
+
+    // Handle ceil_mode
+    if (ceil_mode)
+    {
+        // Calculate padding adjustments for ceil mode
+        auto calculate_ceil_pad =
+            [](int original_dim, int kernel_dim, int stride_dim, int pad_prefix, int pad_suffix) -> int
+        {
+            if (pad_suffix >= kernel_dim)
+                return 0;
+
+            int out_dim_ceil = static_cast<int>(
+                std::ceil(static_cast<float>(original_dim + pad_prefix + pad_suffix - kernel_dim) / stride_dim + 1));
+            int total_padding = stride_dim * (out_dim_ceil - 1) - original_dim + kernel_dim;
+            int padding_to_add = total_padding - pad_prefix - pad_suffix;
+            return std::max(0, padding_to_add);
+        };
+
+        int ceil_pad_right = calculate_ceil_pad(x, kernel_width, stride_width, padding_left, padding_right);
+        int ceil_pad_bottom = calculate_ceil_pad(y, kernel_height, stride_height, padding_top, padding_bottom);
+
+        if (ceil_pad_right == 0 && ceil_pad_bottom == 0)
+        {
+            ceil_mode = false;
+        }
+        else
+        {
+            padding[1] += ceil_pad_right;   // padding_right
+            padding[3] += ceil_pad_bottom;  // padding_bottom
+        }
+    }
+
+    int kH = kernel_height;
+    int kW = kernel_width;
+
+    // Check for global average pooling
+    bool is_global_avg =
+        (static_cast<int>(y) == kH && static_cast<int>(x) == kW &&
+         ((stride_height == kH && stride_width == kW) ||
+          (padding[0] == 0 && padding[1] == 0 && padding[2] == 0 && padding[3] == 0)));
+
+    if (is_global_avg)
+    {
+        NodeContext result = activations;  // Initialize with input
+        if (channel_last)
+        {
+            result = dc.op(
+                graphlib::OpType(
+                    "reshape",
+                    {},
+                    {{"shape",
+                      std::vector<int>{static_cast<int>(w), 1, static_cast<int>(y * x), static_cast<int>(cin)}}}),
+                {activations});
+            result = dc.op(
+                graphlib::OpType("reduce_avg", {}, {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}), {result});
+            result = dc.op(
+                graphlib::OpType(
+                    "reshape", {}, {{"shape", std::vector<int>{static_cast<int>(w), 1, 1, static_cast<int>(cin)}}}),
+                {result});
+        }
+        else
+        {
+            result = dc.op(
+                graphlib::OpType(
+                    "reshape",
+                    {},
+                    {{"shape",
+                      std::vector<int>{static_cast<int>(w), 1, static_cast<int>(cin), static_cast<int>(y * x)}}}),
+                {activations});
+            result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", 2}, {"dim1", 3}}), {result});
+            result = dc.op(
+                graphlib::OpType("reduce_avg", {}, {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}), {result});
+            result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", 2}, {"dim1", 3}}), {result});
+            result = dc.op(
+                graphlib::OpType(
+                    "reshape", {}, {{"shape", std::vector<int>{static_cast<int>(w), static_cast<int>(cin), 1, 1}}}),
+                {result});
+        }
+        dc.fuse(result);
+        return;
+    }
+
+    // Create weight tensor for convolution
+    float weight_value = 1.0f / (kH * kW);
+    at::Tensor weight_tensor = weight_value * torch::ones({static_cast<int64_t>(cin), 1, kH, kW});
+    NodeContext weight = dc.tensor(weight_tensor);
+
+    // Perform convolution
+    NodeContext result = dc.op(
+        graphlib::OpType(
+            "conv2d",
+            {},
+            {{"stride", std::vector<int>{stride_height, stride_width}},
+             {"dilation", std::vector<int>{dilation_height, dilation_width}},
+             {"groups", static_cast<int>(cin)},
+             {"padding", padding},
+             {"channel_last", channel_last}}),
+        {activations, weight});
+
+    // Handle count_include_pad=False or ceil_mode padding correction
+    bool need_padding_correction =
+        (padding[0] != 0 || padding[1] != 0 || padding[2] != 0 || padding[3] != 0) && (ceil_mode || !count_include_pad);
+
+    if (need_padding_correction)
+    {
+        Shape result_shape = result.shape;
+        int y_out, x_out;
+
+        if (channel_last)
+        {
+            y_out = result_shape[result_shape.size() - 3];
+            x_out = result_shape[result_shape.size() - 2];
+
+            result = dc.op(
+                graphlib::OpType(
+                    "reshape",
+                    {},
+                    {{"shape",
+                      std::vector<int>{
+                          static_cast<int>(w), 1, static_cast<int>(y_out * x_out), static_cast<int>(cin)}}}),
+                {result});
+        }
+        else
+        {
+            y_out = result_shape[result_shape.size() - 2];
+            x_out = result_shape[result_shape.size() - 1];
+
+            result = dc.op(
+                graphlib::OpType(
+                    "reshape",
+                    {},
+                    {{"shape",
+                      std::vector<int>{
+                          static_cast<int>(w), 1, static_cast<int>(cin), static_cast<int>(y_out * x_out)}}}),
+                {result});
+            result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", 2}, {"dim1", 3}}), {result});
+        }
+
+        // Create padding correction matrix
+        int corrected_y = y;
+        int corrected_x = x;
+        std::vector<int> correction_padding = padding;
+
+        if (!count_include_pad)
+        {
+            // For count_include_pad=False, correct all padding
+            corrected_y = y;
+            corrected_x = x;
+            correction_padding = padding;
+        }
+        else if (ceil_mode)
+        {
+            // For ceil_mode=True, only correct ceil padding
+            corrected_y = y + original_padding[2] + original_padding[3];
+            corrected_x = x + original_padding[0] + original_padding[1];
+            int ceil_pad_right = padding[1] - original_padding[1];
+            int ceil_pad_bottom = padding[3] - original_padding[3];
+            correction_padding = {0, ceil_pad_right, 0, ceil_pad_bottom};
+        }
+
+        // Create correction matrix (simplified implementation)
+        at::Tensor padding_mask =
+            torch::zeros({static_cast<int64_t>(corrected_y), static_cast<int64_t>(corrected_x)}, torch::kUInt8)
+                .view({1, 1, static_cast<int64_t>(corrected_y), static_cast<int64_t>(corrected_x)});
+        padding_mask = torch::nn::functional::pad(
+            padding_mask,
+            torch::nn::functional::PadFuncOptions(
+                {correction_padding[0], correction_padding[1], correction_padding[2], correction_padding[3]})
+                .value(1));
+
+        at::Tensor correction_weights = torch::ones({1, 1, kH, kW}, torch::kUInt8);
+        at::Tensor picker = torch::nn::functional::conv2d(
+            padding_mask,
+            correction_weights,
+            torch::nn::functional::Conv2dFuncOptions().stride({stride_height, stride_width}));
+        picker = picker.squeeze(0).squeeze(0);
+
+        // Calculate correction factors
+        at::Tensor onehot = picker.to(torch::kBool).to(torch::kUInt8);
+        int kernel_volume = kH * kW;
+        picker = onehot * kernel_volume / (kernel_volume - picker);
+        picker = picker + 1 - onehot;
+
+        picker = picker.reshape(-1);
+        at::Tensor rows_cols = torch::arange(picker.size(0));
+
+        int picker_dim = static_cast<int>(picker.size(0));
+        at::Tensor correction_matrix = torch::sparse_coo_tensor(
+                                           torch::stack({rows_cols, rows_cols}),
+                                           picker.to(torch::kFloat32),
+                                           {picker_dim, picker_dim},
+                                           torch::kFloat32)
+                                           .coalesce();
+
+        NodeContext correction_tensor = dc.tensor(correction_matrix.to_dense());
+        result = dc.op(graphlib::OpType("matmul", {}, {}), {correction_tensor, result});
+
+        if (channel_last)
+        {
+            result = dc.op(
+                graphlib::OpType(
+                    "reshape",
+                    {},
+                    {{"shape",
+                      std::vector<int>{
+                          static_cast<int>(w),
+                          static_cast<int>(y_out),
+                          static_cast<int>(x_out),
+                          static_cast<int>(cin)}}}),
+                {result});
+        }
+        else
+        {
+            result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", 2}, {"dim1", 3}}), {result});
+            result = dc.op(
+                graphlib::OpType(
+                    "reshape",
+                    {},
+                    {{"shape",
+                      std::vector<int>{
+                          static_cast<int>(w),
+                          static_cast<int>(cin),
+                          static_cast<int>(y_out),
+                          static_cast<int>(x_out)}}}),
+                {result});
+        }
+    }
+
+    dc.fuse(result);
+
+    // TODO: After fix to the TTNN avg_pool2d op, we can use this code
+
     // TTNN can only perform a channel last pooling with its avg_pool2d op.
     // The TTNN avg_pool2d requires the input to be in the shape: (N, H, W, C) or (1, 1, N*H*W, C).
     // If the forge avg_pool2d op is channel-first, we must permute the input (N, C, H, W) tensor to (N, H, W, C)
@@ -158,48 +429,35 @@ void decompose_initial(
     //     - (N, H_out, W_out, C_out) --> transpose(-2, -1): (N, H_out, C_out, W_out) --> transpose(-3, -2): (N, C_out,
     //     H_out, W_out)
 
-    bool channel_last = op.attr_as<bool>("channel_last");
-    if (channel_last)
-        return;
+    // bool channel_last = op.attr_as<bool>("channel_last");
+    // if (channel_last)
+    //     return;
 
-    int kernel_height = op.attr_as<int>("kernel_height");
-    int kernel_width = op.attr_as<int>("kernel_width");
-    int stride_height = op.attr_as<int>("stride_height");
-    int stride_width = op.attr_as<int>("stride_width");
-    int padding_left = op.attr_as<int>("padding_left");
-    int padding_right = op.attr_as<int>("padding_right");
-    int padding_top = op.attr_as<int>("padding_top");
-    int padding_bottom = op.attr_as<int>("padding_bottom");
-    int dilation_height = op.attr_as<int>("dilation_height");
-    int dilation_width = op.attr_as<int>("dilation_width");
-    bool ceil_mode = op.attr_as<bool>("ceil_mode");
-    bool count_include_pad = op.attr_as<bool>("count_include_pad");
-
-    NodeContext activations = inputs[0];
-    activations = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {activations});
-    activations = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {activations});
-    NodeContext result = dc.op(
-        graphlib::OpType(
-            "avg_pool2d",
-            {},
-            {{"kernel_height", kernel_height},
-             {"kernel_width", kernel_width},
-             {"stride_height", stride_height},
-             {"stride_width", stride_width},
-             {"padding_left", padding_left},
-             {"padding_right", padding_right},
-             {"padding_top", padding_top},
-             {"padding_bottom", padding_bottom},
-             {"channel_last", true},
-             {"ceil_mode", ceil_mode},
-             {"dilation_height", dilation_height},
-             {"dilation_width", dilation_width},
-             {"count_include_pad", count_include_pad}}),
-        {activations});
-    result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
-    result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
-    dc.fuse(result);
-    return;
+    // NodeContext activations = inputs[0];
+    // activations = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {activations});
+    // activations = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {activations});
+    // NodeContext result = dc.op(
+    //     graphlib::OpType(
+    //         "avg_pool2d",
+    //         {},
+    //         {{"kernel_height", kernel_height},
+    //          {"kernel_width", kernel_width},
+    //          {"stride_height", stride_height},
+    //          {"stride_width", stride_width},
+    //          {"padding_left", padding_left},
+    //          {"padding_right", padding_right},
+    //          {"padding_top", padding_top},
+    //          {"padding_bottom", padding_bottom},
+    //          {"channel_last", true},
+    //          {"ceil_mode", ceil_mode},
+    //          {"dilation_height", dilation_height},
+    //          {"dilation_width", dilation_width},
+    //          {"count_include_pad", count_include_pad}}),
+    //     {activations});
+    // result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
+    // result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
+    // dc.fuse(result);
+    // return;
 }
 
 }  // namespace avg_pool_2d
