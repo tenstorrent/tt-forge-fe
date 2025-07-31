@@ -73,7 +73,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
         activations,
         torch::nn::functional::AvgPool2dFuncOptions({kernel_height, kernel_width})
             .stride({stride_height, stride_width})
-            .padding({padding_left, padding_right, padding_top, padding_bottom})
+            .padding({padding_left, padding_top})
             .ceil_mode(ceil_mode)
             .count_include_pad(count_include_pad));
 
