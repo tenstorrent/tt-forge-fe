@@ -96,6 +96,9 @@ def MaxPool2d(
     if isinstance(dilation, int):
         dilation = (dilation, dilation)
 
+    # change padding from [pL, pR, pT, pB] to [pT, pL, pB, pR]
+    padding = [padding[2], padding[0], padding[3], padding[1]]
+
     return op(
         "max_pool2d",
         name,
@@ -204,6 +207,9 @@ def AvgPool2d(
         padding = [padding] * 4  # [left,right,top,bottom]
     if isinstance(channel_last, int):
         channel_last = bool(channel_last)
+
+    # change padding from [pL, pR, pT, pB] to [pT, pL, pB, pR]
+    padding = [padding[2], padding[0], padding[3], padding[1]]
 
     # Only as place holder to standardize interface with MaxPool2d
     dilation = (1, 1)

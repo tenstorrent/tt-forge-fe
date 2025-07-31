@@ -41,22 +41,11 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
     int stride_width = stride[1];
 
     auto padding = op.attr_as<std::vector<int>>("padding");
-    TT_ASSERT(
-        padding.size() == 2 || padding.size() == 4,
-        "padding array must have 2 elements [pH, pW] or 4 elements [pT, pL, pB, pR]");
-    int padding_left, padding_right, padding_top, padding_bottom;
-    if (padding.size() == 2)
-    {
-        padding_left = padding_right = padding[0];
-        padding_top = padding_bottom = padding[1];
-    }
-    else
-    {
-        padding_left = padding[0];
-        padding_right = padding[1];
-        padding_top = padding[2];
-        padding_bottom = padding[3];
-    }
+    TT_ASSERT(padding.size() == 4, "padding array must have 4 elements [pT, pL, pB, pR]");
+    int padding_top = padding[0];
+    int padding_left = padding[1];
+    int padding_bottom = padding[2];
+    int padding_right = padding[3];
 
     bool ceil_mode = op.attr_as<bool>("ceil_mode");
     bool count_include_pad = op.attr_as<bool>("count_include_pad");
@@ -110,22 +99,11 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     int dilation_width = dilation[1];
 
     auto padding = op.attr_as<std::vector<int>>("padding");
-    TT_ASSERT(
-        padding.size() == 2 || padding.size() == 4,
-        "padding array must have 2 elements [pH, pW] or 4 elements [pT, pL, pB, pR]");
-    int padding_left, padding_right, padding_top, padding_bottom;
-    if (padding.size() == 2)
-    {
-        padding_left = padding_right = padding[0];
-        padding_top = padding_bottom = padding[1];
-    }
-    else
-    {
-        padding_left = padding[0];
-        padding_right = padding[1];
-        padding_top = padding[2];
-        padding_bottom = padding[3];
-    }
+    TT_ASSERT(padding.size() == 4, "padding array must have 4 elements [pT, pL, pB, pR]");
+    int padding_top = padding[0];
+    int padding_left = padding[1];
+    int padding_bottom = padding[2];
+    int padding_right = padding[3];
 
     bool channel_last = op.attr_as<bool>("channel_last");
     bool ceil_mode = op.attr_as<bool>("ceil_mode");
@@ -206,22 +184,11 @@ void decompose_initial(
     int dilation_width = dilation[1];
 
     auto padding = op.attr_as<std::vector<int>>("padding");
-    TT_ASSERT(
-        padding.size() == 2 || padding.size() == 4,
-        "padding array must have 2 elements [pH, pW] or 4 elements [pT, pL, pB, pR]");
-    int padding_left, padding_right, padding_top, padding_bottom;
-    if (padding.size() == 2)
-    {
-        padding_left = padding_right = padding[0];
-        padding_top = padding_bottom = padding[1];
-    }
-    else
-    {
-        padding_left = padding[0];
-        padding_right = padding[1];
-        padding_top = padding[2];
-        padding_bottom = padding[3];
-    }
+    TT_ASSERT(padding.size() == 4, "padding array must have 4 elements [pT, pL, pB, pR]");
+    int padding_top = padding[0];
+    int padding_left = padding[1];
+    int padding_bottom = padding[2];
+    int padding_right = padding[3];
 
     bool ceil_mode = op.attr_as<bool>("ceil_mode");
     bool channel_last = op.attr_as<bool>("channel_last");
