@@ -43,7 +43,6 @@ size = [
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("size", size)
 def test_yolov5_320x320(size, forge_tmp_path):
 
