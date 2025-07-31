@@ -30,17 +30,40 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 
     at::Tensor activations = tensors[0];
 
-    int kernel_height = op.attr_as<int>("kernel_height");
-    int kernel_width = op.attr_as<int>("kernel_width");
-    int stride_height = op.attr_as<int>("stride_height");
-    int stride_width = op.attr_as<int>("stride_width");
-    int dilation_height = op.attr_as<int>("dilation_height");
-    int dilation_width = op.attr_as<int>("dilation_width");
+    auto kernel = op.attr_as<std::vector<int>>("kernel");
+    TT_ASSERT(kernel.size() == 2, "kernel array must have 2 elements [kH, kW]");
+    int kernel_height = kernel[0];
+    int kernel_width = kernel[1];
+
+    auto stride = op.attr_as<std::vector<int>>("stride");
+    TT_ASSERT(stride.size() == 2, "stride array must have 2 elements [sH, sW]");
+    int stride_height = stride[0];
+    int stride_width = stride[1];
+
+    auto dilation = op.attr_as<std::vector<int>>("dilation");
+    TT_ASSERT(dilation.size() == 2, "dilation array must have 2 elements [dH, dW]");
+    int dilation_height = dilation[0];
+    int dilation_width = dilation[1];
+
+    auto padding = op.attr_as<std::vector<int>>("padding");
+    TT_ASSERT(
+        padding.size() == 2 || padding.size() == 4,
+        "padding array must have 2 elements [pH, pW] or 4 elements [pT, pL, pB, pR]");
+    int padding_left, padding_right, padding_top, padding_bottom;
+    if (padding.size() == 2)
+    {
+        padding_left = padding_right = padding[0];
+        padding_top = padding_bottom = padding[1];
+    }
+    else
+    {
+        padding_left = padding[0];
+        padding_right = padding[1];
+        padding_top = padding[2];
+        padding_bottom = padding[3];
+    }
+
     bool ceil_mode = op.attr_as<bool>("ceil_mode");
-    int padding_left = op.attr_as<int>("padding_left");
-    int padding_right = op.attr_as<int>("padding_right");
-    int padding_top = op.attr_as<int>("padding_top");
-    int padding_bottom = op.attr_as<int>("padding_bottom");
     bool channel_last = op.attr_as<bool>("channel_last");
 
     if (channel_last)
@@ -78,17 +101,40 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     const auto &input_shape = in_shapes[0];
     TT_DBG_ASSERT(input_shape.size() >= 4, "MaxPool2d input must have at least 4 dimensions");
 
-    int kernel_height = op.attr_as<int>("kernel_height");
-    int kernel_width = op.attr_as<int>("kernel_width");
-    int stride_height = op.attr_as<int>("stride_height");
-    int stride_width = op.attr_as<int>("stride_width");
-    int dilation_height = op.attr_as<int>("dilation_height");
-    int dilation_width = op.attr_as<int>("dilation_width");
+    auto kernel = op.attr_as<std::vector<int>>("kernel");
+    TT_ASSERT(kernel.size() == 2, "kernel array must have 2 elements [kH, kW]");
+    int kernel_height = kernel[0];
+    int kernel_width = kernel[1];
+
+    auto stride = op.attr_as<std::vector<int>>("stride");
+    TT_ASSERT(stride.size() == 2, "stride array must have 2 elements [sH, sW]");
+    int stride_height = stride[0];
+    int stride_width = stride[1];
+
+    auto dilation = op.attr_as<std::vector<int>>("dilation");
+    TT_ASSERT(dilation.size() == 2, "dilation array must have 2 elements [dH, dW]");
+    int dilation_height = dilation[0];
+    int dilation_width = dilation[1];
+
+    auto padding = op.attr_as<std::vector<int>>("padding");
+    TT_ASSERT(
+        padding.size() == 2 || padding.size() == 4,
+        "padding array must have 2 elements [pH, pW] or 4 elements [pT, pL, pB, pR]");
+    int padding_left, padding_right, padding_top, padding_bottom;
+    if (padding.size() == 2)
+    {
+        padding_left = padding_right = padding[0];
+        padding_top = padding_bottom = padding[1];
+    }
+    else
+    {
+        padding_left = padding[0];
+        padding_right = padding[1];
+        padding_top = padding[2];
+        padding_bottom = padding[3];
+    }
+
     bool ceil_mode = op.attr_as<bool>("ceil_mode");
-    int padding_left = op.attr_as<int>("padding_left");
-    int padding_right = op.attr_as<int>("padding_right");
-    int padding_top = op.attr_as<int>("padding_top");
-    int padding_bottom = op.attr_as<int>("padding_bottom");
     bool channel_last = op.attr_as<bool>("channel_last");
 
     uint32_t batch_size = input_shape[0];
@@ -171,17 +217,11 @@ void decompose_initial(
         graphlib::OpType(
             "max_pool2d",
             {},
-            {{"kernel_height", op.attr_as<int>("kernel_height")},
-             {"kernel_width", op.attr_as<int>("kernel_width")},
-             {"stride_height", op.attr_as<int>("stride_height")},
-             {"stride_width", op.attr_as<int>("stride_width")},
-             {"dilation_height", op.attr_as<int>("dilation_height")},
-             {"dilation_width", op.attr_as<int>("dilation_width")},
+            {{"kernel", op.attr_as<std::vector<int>>("kernel")},
+             {"stride", op.attr_as<std::vector<int>>("stride")},
+             {"dilation", op.attr_as<std::vector<int>>("dilation")},
+             {"padding", op.attr_as<std::vector<int>>("padding")},
              {"ceil_mode", op.attr_as<bool>("ceil_mode")},
-             {"padding_left", op.attr_as<int>("padding_left")},
-             {"padding_right", op.attr_as<int>("padding_right")},
-             {"padding_top", op.attr_as<int>("padding_top")},
-             {"padding_bottom", op.attr_as<int>("padding_bottom")},
              {"channel_last", true}}),
         {activations});
 
