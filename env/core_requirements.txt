@@ -5,23 +5,6 @@ numpy==1.26.4
 loguru==0.5.3
 
 #framework requirements - core ML frameworks
-onnx>=1.15.0
-onnxruntime>=1.16.3
-tf2onnx==1.15.1
-tensorflow==2.19.0
-tflite==2.10.0
 torch @ https://download.pytorch.org/whl/cpu/torch-2.7.0%2Bcpu-cp310-cp310-manylinux_2_28_x86_64.whl ; python_version == "3.10"
-
-# needed for unit tests
-pytest==6.2.4
-transformers==4.52.4
-pyinstrument>=4.1.1
-dataclasses-json==0.5.7
-openpyxl==3.1.5
-
-# Paddle stack
-paddlepaddle==2.6.2
-
-# JAX stack
-jax==0.6.1
-flax==0.10.6
+#adding this here as torch internally installs the cuda version
+torchvision @ https://download.pytorch.org/whl/cpu/torchvision-0.22.0%2Bcpu-cp310-cp310-manylinux_2_28_x86_64.whl ; python_version == "3.10"
