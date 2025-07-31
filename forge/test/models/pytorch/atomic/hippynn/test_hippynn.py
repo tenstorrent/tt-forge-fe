@@ -2,15 +2,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import os
-
-os.environ["HIPPYNN_USE_CUSTOM_KERNELS"] = "False"
-
-import ase.build
-import ase.units
 import pytest
 import torch
-from hippynn.graphs import inputs
+from third_party.tt_forge_models.hippynn import ModelLoader
 
 import forge
 from forge.forge_property_utils import (
@@ -21,8 +15,6 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
-
-from test.models.pytorch.atomic.hippynn.model_utils.model import load_model
 
 
 class HippynWrapper(torch.nn.Module):
@@ -52,19 +44,17 @@ def test_hippynn():
     )
 
     # Load model
-    framework_model, output_key = load_model()
-    framework_model.eval()
+    loader = ModelLoader()
+    framework_model, output_key = loader.load_model()
     framework_model = HippynWrapper(framework_model, output_key=output_key)
 
     # Load inputs
-    atoms = ase.build.molecule("H2O")
-    pos = torch.as_tensor(atoms.positions / ase.units.Bohr).unsqueeze(0).to(torch.get_default_dtype())
-    sp = torch.as_tensor(atoms.get_atomic_numbers()).unsqueeze(0)
+    inputs = loader.load_inputs()
 
     # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,
-        sample_inputs=(sp, pos),
+        sample_inputs=inputs,
         module_name=module_name,
     )
     # Model Verification

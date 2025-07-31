@@ -2,9 +2,9 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-
 import pytest
 import torch
+from third_party.tt_forge_models.llava.pytorch import ModelLoader
 from transformers import AutoProcessor, LlavaForConditionalGeneration
 
 import forge
@@ -18,8 +18,6 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
-
-from test.models.pytorch.multimodal.llava.model_utils.utils import load_inputs
 
 
 class Wrapper(torch.nn.Module):
@@ -59,15 +57,13 @@ def test_llava(variant):
         priority=ModelPriority.P1,
     )
 
-    pytest.xfail(reason="Requires multi-chip support")
-
-    framework_model, processor = load_model(variant)
-    image = "https://www.ilankelman.org/stopsigns/australia.jpg"
-    text = "What’s shown in this image?"
+    loader = ModelLoader()
+    framework_model = loader.load_model()
+    framework_model = Wrapper(framework_model)
 
     # Input sample
-    input_ids, attn_mask, pixel_values = load_inputs(image, text, processor)
-    inputs = [input_ids, attn_mask, pixel_values]
+    inputs = loader.load_inputs()
+    inputs = [inputs["input_ids"], inputs["attention_mask"], inputs["pixel_values"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
