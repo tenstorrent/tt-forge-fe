@@ -113,11 +113,9 @@ void decompose_initial(
     NodeContext activations = inputs[0];
 
     // Check if this is global pooling (kernel size matches input width)
-    if (kernel_size != static_cast<int>(activations.shape[activations.shape.size() - 1]))
-    {
-        TT_THROW("Only support global avg_pool1d for now");
-        unreachable();
-    }
+    TT_ASSERT(
+        kernel_size == static_cast<int>(activations.shape[activations.shape.size() - 1]),
+        "Only support global avg_pool1d for now");
 
     NodeContext reduce_avg = dc.op(
         graphlib::OpType("reduce_avg", {}, {{"dim_arg", std::vector<int>{-1}}, {"keep_dim", true}}), {activations});
