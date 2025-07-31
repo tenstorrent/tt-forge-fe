@@ -13,6 +13,11 @@ class FailingReasonsRegister:
     # Format: (operator, failing_reason)
     xfail = [
         ("add", FailingReasons.DATA_MISMATCH),
+        ("avg_pool_2d", FailingReasons.ALLOCATION_CIRCULAR_BUFFER),
+        ("avg_pool_2d", FailingReasons.ALLOCATION_FAILED),
+        ("avg_pool_2d", FailingReasons.DATA_MISMATCH),
+        ("avg_pool_2d", FailingReasons.FORGE_RUNTIME),
+        ("avg_pool_2d", FailingReasons.INCORRECT_TENSOR_SHAPE),
         ("clamp", FailingReasons.DTYPE_MISMATCH),
         ("clamp", FailingReasons.FORGE_RUNTIME),
         ("concatenate", FailingReasons.ALLOCATION_CIRCULAR_BUFFER),
@@ -107,4 +112,5 @@ class FailingReasonsRegister:
         ("linear", FailingReasons.FATAL_ERROR, None),
         ("pow", FailingReasons.FATAL_ERROR, None),
         ("square", FailingReasons.FATAL_ERROR, None),
+        ("avg_pool_2d", FailingReasons.INFERENCE_FROZE, None),
     ]
