@@ -76,7 +76,6 @@ jobs:
       project: tt-forge-fe
       run_id: ${{ github.run_id }}
       run_id_source: tt-forge-fe
-      ref: ${{ github.ref }}
 
     #   uses: ./.github/workflows/perf-benchmark-sub.yml
     # secrets: inherit
