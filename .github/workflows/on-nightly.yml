@@ -158,7 +158,6 @@ jobs:
       - docker-build
       - build
       - test_full_model_passing
-      - perf-benchmark
       - test_full_model_xfailing
       - test_models_ops
       - test_sweeps
