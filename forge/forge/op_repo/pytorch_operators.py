@@ -216,6 +216,10 @@ _OPERATORS = [
     OperatorDefinition("batch_norm_1d", "torch.nn.BatchNorm1d", 1),
     OperatorDefinition("batch_norm_2d", "torch.nn.BatchNorm2d", 1),
     OperatorDefinition("batch_norm_3d", "torch.nn.BatchNorm3d", 1),
+    # Indexing operators
+    OperatorDefinition("index_copy", "torch.Tensor.index_copy", 2),
+    OperatorDefinition("update_cache", "torch.Tensor.index_copy", 2),
+    OperatorDefinition("fill_cache", "torch.Tensor.index_copy", 2),
 ]
 
 
