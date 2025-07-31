@@ -30,20 +30,28 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 
     at::Tensor activations = tensors[0];
 
-    int kernel_height = op.attr_as<int>("kernel_height");
-    int kernel_width = op.attr_as<int>("kernel_width");
-    int stride_height = op.attr_as<int>("stride_height");
-    int stride_width = op.attr_as<int>("stride_width");
+    auto kernel = op.attr_as<std::vector<int>>("kernel");
+    TT_ASSERT(kernel.size() == 2, "kernel array must have 2 elements [kH, kW]");
+    int kernel_height = kernel[0];
+    int kernel_width = kernel[1];
+
+    auto stride = op.attr_as<std::vector<int>>("stride");
+    TT_ASSERT(stride.size() == 2, "stride array must have 2 elements [sH, sW]");
+    int stride_height = stride[0];
+    int stride_width = stride[1];
+
+    auto padding = op.attr_as<std::vector<int>>("padding");
+    TT_ASSERT(padding.size() == 4, "padding array must have 4 elements [pT, pL, pB, pR]");
+    int padding_top = padding[0];
+    int padding_left = padding[1];
+    int padding_bottom = padding[2];
+    int padding_right = padding[3];
+
     bool ceil_mode = op.attr_as<bool>("ceil_mode");
-    int padding_left = op.attr_as<int>("padding_left");
-    int padding_right = op.attr_as<int>("padding_right");
-    int padding_top = op.attr_as<int>("padding_top");
-    int padding_bottom = op.attr_as<int>("padding_bottom");
     bool count_include_pad = op.attr_as<bool>("count_include_pad");
     bool channel_last = op.attr_as<bool>("channel_last");
 
     TT_ASSERT(padding_left == padding_right && padding_top == padding_bottom, "AvgPool2d padding must be symmetric");
-    std::vector<int64_t> padding = {padding_left, padding_top};
 
     if (channel_last)
     {
@@ -54,7 +62,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
         activations,
         torch::nn::functional::AvgPool2dFuncOptions({kernel_height, kernel_width})
             .stride({stride_height, stride_width})
-            .padding(padding)
+            .padding({padding_left, padding_top})
             .ceil_mode(ceil_mode)
             .count_include_pad(count_include_pad));
 
@@ -75,18 +83,30 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     const auto &input_shape = in_shapes[0];
     TT_ASSERT(input_shape.size() >= 4, "AvgPool2d input must have at least 4 dimensions");
 
-    int kernel_height = op.attr_as<int>("kernel_height");
-    int kernel_width = op.attr_as<int>("kernel_width");
-    int stride_height = op.attr_as<int>("stride_height");
-    int stride_width = op.attr_as<int>("stride_width");
-    int padding_left = op.attr_as<int>("padding_left");
-    int padding_right = op.attr_as<int>("padding_right");
-    int padding_top = op.attr_as<int>("padding_top");
-    int padding_bottom = op.attr_as<int>("padding_bottom");
+    auto kernel = op.attr_as<std::vector<int>>("kernel");
+    TT_ASSERT(kernel.size() == 2, "kernel array must have 2 elements [kH, kW]");
+    int kernel_height = kernel[0];
+    int kernel_width = kernel[1];
+
+    auto stride = op.attr_as<std::vector<int>>("stride");
+    TT_ASSERT(stride.size() == 2, "stride array must have 2 elements [sH, sW]");
+    int stride_height = stride[0];
+    int stride_width = stride[1];
+
+    auto dilation = op.attr_as<std::vector<int>>("dilation");
+    TT_ASSERT(dilation.size() == 2, "dilation array must have 2 elements [dH, dW]");
+    int dilation_height = dilation[0];
+    int dilation_width = dilation[1];
+
+    auto padding = op.attr_as<std::vector<int>>("padding");
+    TT_ASSERT(padding.size() == 4, "padding array must have 4 elements [pT, pL, pB, pR]");
+    int padding_top = padding[0];
+    int padding_left = padding[1];
+    int padding_bottom = padding[2];
+    int padding_right = padding[3];
+
     bool channel_last = op.attr_as<bool>("channel_last");
     bool ceil_mode = op.attr_as<bool>("ceil_mode");
-    int dilation_height = op.attr_as<int>("dilation_height");
-    int dilation_width = op.attr_as<int>("dilation_width");
 
     TT_ASSERT(dilation_height == 1 && dilation_width == 1, "Currently only support dilation = 1");
     TT_ASSERT(padding_left == padding_right && padding_top == padding_bottom, "AvgPool2d padding must be symmetric");
@@ -148,17 +168,29 @@ void decompose_initial(
     TT_DBG_ASSERT(op.type() == OpType::AvgPool2d, "Wrong op type.");
     TT_ASSERT(inputs.size() == 1, "AvgPool2d expects 1 input");
 
-    int kernel_height = op.attr_as<int>("kernel_height");
-    int kernel_width = op.attr_as<int>("kernel_width");
-    int stride_height = op.attr_as<int>("stride_height");
-    int stride_width = op.attr_as<int>("stride_width");
-    int dilation_height = op.attr_as<int>("dilation_height");
-    int dilation_width = op.attr_as<int>("dilation_width");
+    auto kernel = op.attr_as<std::vector<int>>("kernel");
+    TT_ASSERT(kernel.size() == 2, "kernel array must have 2 elements [kH, kW]");
+    int kernel_height = kernel[0];
+    int kernel_width = kernel[1];
+
+    auto stride = op.attr_as<std::vector<int>>("stride");
+    TT_ASSERT(stride.size() == 2, "stride array must have 2 elements [sH, sW]");
+    int stride_height = stride[0];
+    int stride_width = stride[1];
+
+    auto dilation = op.attr_as<std::vector<int>>("dilation");
+    TT_ASSERT(dilation.size() == 2, "dilation array must have 2 elements [dH, dW]");
+    int dilation_height = dilation[0];
+    int dilation_width = dilation[1];
+
+    auto padding = op.attr_as<std::vector<int>>("padding");
+    TT_ASSERT(padding.size() == 4, "padding array must have 4 elements [pT, pL, pB, pR]");
+    int padding_top = padding[0];
+    int padding_left = padding[1];
+    int padding_bottom = padding[2];
+    int padding_right = padding[3];
+
     bool ceil_mode = op.attr_as<bool>("ceil_mode");
-    int padding_left = op.attr_as<int>("padding_left");
-    int padding_right = op.attr_as<int>("padding_right");
-    int padding_top = op.attr_as<int>("padding_top");
-    int padding_bottom = op.attr_as<int>("padding_bottom");
     bool channel_last = op.attr_as<bool>("channel_last");
     bool count_include_pad = op.attr_as<bool>("count_include_pad");
 
@@ -182,10 +214,6 @@ void decompose_initial(
         y = activations_shape[activations_shape.size() - 2];
         x = activations_shape[activations_shape.size() - 1];
     }
-
-    std::vector<int> kernel_size = {kernel_height, kernel_width};
-    std::vector<int> stride = {stride_height, stride_width};
-    std::vector<int> padding = {padding_left, padding_right, padding_top, padding_bottom};
     std::vector<int> original_padding = padding;
 
     // Handle ceil_mode

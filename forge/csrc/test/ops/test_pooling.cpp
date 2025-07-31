@@ -236,17 +236,11 @@ std::vector<OpTestParam> generate_avg_pool_2d_individual_params()
             {
                 tt::ops::Op op(
                     tt::ops::OpType::AvgPool2d,
-                    {{"kernel_height", kernel_h},
-                     {"kernel_width", kernel_w},
-                     {"stride_height", stride_h},
-                     {"stride_width", stride_w},
-                     {"dilation_height", 1},
-                     {"dilation_width", 1},
+                    {{"kernel", std::vector<int>{kernel_h, kernel_w}},
+                     {"stride", std::vector<int>{stride_h, stride_w}},
+                     {"dilation", std::vector<int>{1, 1}},
+                     {"padding", std::vector<int>{padding, padding, padding, padding}},
                      {"ceil_mode", ceil_mode},
-                     {"padding_left", padding},
-                     {"padding_right", padding},
-                     {"padding_top", padding},
-                     {"padding_bottom", padding},
                      {"count_include_pad", true},
                      {"channel_last", channel_last}});
                 params.emplace_back(op, shape_vec);
@@ -281,17 +275,11 @@ std::vector<OpTestParam> generate_avg_pool_2d_sweep_params()
                 {
                     tt::ops::Op op(
                         tt::ops::OpType::AvgPool2d,
-                        {{"kernel_height", kernel_h},
-                         {"kernel_width", kernel_w},
-                         {"stride_height", stride_h},
-                         {"stride_width", stride_w},
-                         {"dilation_height", 1},
-                         {"dilation_width", 1},
+                        {{"kernel", std::vector<int>{kernel_h, kernel_w}},
+                         {"stride", std::vector<int>{stride_h, stride_w}},
+                         {"dilation", std::vector<int>{1, 1}},
+                         {"padding", std::vector<int>{padding, padding, padding, padding}},
                          {"ceil_mode", ceil_mode},
-                         {"padding_left", padding},
-                         {"padding_right", padding},
-                         {"padding_top", padding},
-                         {"padding_bottom", padding},
                          {"count_include_pad", true},
                          {"channel_last", channel_last}});
                     params.emplace_back(op, shape_vec);
@@ -419,17 +407,11 @@ std::vector<OpTestParam> generate_max_pool_2d_individual_params()
             {
                 tt::ops::Op op(
                     tt::ops::OpType::MaxPool2d,
-                    {{"kernel_height", kernel_h},
-                     {"kernel_width", kernel_w},
-                     {"stride_height", stride_h},
-                     {"stride_width", stride_w},
-                     {"dilation_height", 1},
-                     {"dilation_width", 1},
+                    {{"kernel", std::vector<int>{kernel_h, kernel_w}},
+                     {"stride", std::vector<int>{stride_h, stride_w}},
+                     {"dilation", std::vector<int>{1, 1}},
+                     {"padding", std::vector<int>{padding, padding, padding, padding}},
                      {"ceil_mode", ceil_mode},
-                     {"padding_left", padding},
-                     {"padding_right", padding},
-                     {"padding_top", padding},
-                     {"padding_bottom", padding},
                      {"channel_last", channel_last}});
                 params.emplace_back(op, shape_vec);
             }
@@ -461,17 +443,11 @@ std::vector<OpTestParam> generate_max_pool_2d_sweep_params()
                 {
                     tt::ops::Op op(
                         tt::ops::OpType::MaxPool2d,
-                        {{"kernel_height", kernel_h},
-                         {"kernel_width", kernel_w},
-                         {"stride_height", stride_h},
-                         {"stride_width", stride_w},
-                         {"dilation_height", 1},
-                         {"dilation_width", 1},
+                        {{"kernel", std::vector<int>{kernel_h, kernel_w}},
+                         {"stride", std::vector<int>{stride_h, stride_w}},
+                         {"dilation", std::vector<int>{1, 1}},
+                         {"padding", std::vector<int>{padding, padding, padding, padding}},
                          {"ceil_mode", ceil_mode},
-                         {"padding_left", padding},
-                         {"padding_right", padding},
-                         {"padding_top", padding},
-                         {"padding_bottom", padding},
                          {"channel_last", channel_last}});
                     params.emplace_back(op, shape_vec);
                 }

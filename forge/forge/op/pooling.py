@@ -93,22 +93,21 @@ def MaxPool2d(
         padding = [padding] * 4  # [left,right,top,bottom]
     if isinstance(channel_last, int):
         channel_last = bool(channel_last)
+    if isinstance(dilation, int):
+        dilation = (dilation, dilation)
+
+    # change padding from [pL, pR, pT, pB] to [pT, pL, pB, pR]
+    padding = [padding[2], padding[0], padding[3], padding[1]]
 
     return op(
         "max_pool2d",
         name,
         activations,
-        kernel_height=kernel_size[0],
-        kernel_width=kernel_size[1],
-        stride_height=stride[0],
-        stride_width=stride[1],
-        dilation_height=dilation,
-        dilation_width=dilation,
+        kernel=kernel_size,
+        stride=stride,
+        dilation=dilation,
+        padding=padding,
         ceil_mode=ceil_mode,
-        padding_left=padding[0],
-        padding_right=padding[1],
-        padding_top=padding[2],
-        padding_bottom=padding[3],
         channel_last=channel_last,
     ).get_tensor()
 
@@ -209,6 +208,9 @@ def AvgPool2d(
     if isinstance(channel_last, int):
         channel_last = bool(channel_last)
 
+    # change padding from [pL, pR, pT, pB] to [pT, pL, pB, pR]
+    padding = [padding[2], padding[0], padding[3], padding[1]]
+
     # Only as place holder to standardize interface with MaxPool2d
     dilation = (1, 1)
 
@@ -216,17 +218,11 @@ def AvgPool2d(
         "avg_pool2d",
         name,
         activations,
-        kernel_height=kernel_size[0],
-        kernel_width=kernel_size[1],
-        stride_height=stride[0],
-        stride_width=stride[1],
-        dilation_width=dilation[0],
-        dilation_height=dilation[1],
+        kernel=kernel_size,
+        stride=stride,
+        dilation=dilation,
+        padding=padding,
         ceil_mode=ceil_mode,
-        padding_left=padding[0],
-        padding_right=padding[1],
-        padding_top=padding[2],
-        padding_bottom=padding[3],
         count_include_pad=count_include_pad,
         channel_last=channel_last,
     ).get_tensor()
