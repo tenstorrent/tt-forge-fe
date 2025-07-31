@@ -4,6 +4,7 @@
 
 import pytest
 import torch
+from third_party.tt_forge_models.googlenet.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -16,7 +17,6 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
-from third_party.tt_forge_models.googlenet.pytorch import ModelLoader, ModelVariant
 
 variants = [
     ModelVariant.GOOGLENET,
@@ -24,7 +24,6 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2697")
 @pytest.mark.parametrize("variant", variants)
 def test_googlenet_pytorch(variant):
     # Record Forge Property
