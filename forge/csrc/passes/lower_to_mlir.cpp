@@ -115,6 +115,12 @@ class AttributeMapper
     {
         // Sort the mappings in lexicographical order
 
+        // avg_pool2d
+        add_op_mapping("avg_pool2d", "kernel", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+        add_op_mapping("avg_pool2d", "stride", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+        add_op_mapping("avg_pool2d", "padding", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+        add_op_mapping("avg_pool2d", "dilation", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+
         // conv2d_transpose
         add_op_mapping("conv2d_transpose", "dilation", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
         add_op_mapping("conv2d_transpose", "groups", AttributeRemap(std::nullopt, TargetType::I32Attr));
@@ -131,6 +137,12 @@ class AttributeMapper
 
         // cumsum
         add_op_mapping("cumsum", "dim", AttributeRemap(std::nullopt, TargetType::I64Attr));
+
+        // max_pool2d
+        add_op_mapping("max_pool2d", "kernel", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+        add_op_mapping("max_pool2d", "stride", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+        add_op_mapping("max_pool2d", "padding", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+        add_op_mapping("max_pool2d", "dilation", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
 
         // softmax
         add_op_mapping("softmax", "dim", AttributeRemap("dimension"));
