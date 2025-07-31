@@ -19,7 +19,6 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-
 variants = [ModelVariant.BASE, ModelVariant.BASE_DISTILLED, ModelVariant.SMALL, ModelVariant.TINY]
 
 
