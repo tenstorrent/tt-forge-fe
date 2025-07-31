@@ -38,6 +38,7 @@ def test_deit_imgcls_hf_pytorch(variant):
     # Load model and inputs
     loader = ModelLoader(variant=variant)
     framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    framework_model.config.return_dict = False
     inputs_dict = loader.load_inputs(dtype_override=torch.bfloat16)
 
     # Extract pixel_values from inputs dict
