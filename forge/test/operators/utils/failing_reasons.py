@@ -219,6 +219,8 @@ class ComponentChecker(Enum):
                         # Fail with pytorch also. TODO: check if tests are correct
                         M.last_line(M.contains("torch/nn/modules/conv.py:")),
                         M.last_line(M.contains("torch/nn/functional.py")),
+                        M.last_line(M.contains("forge/op/eval/forge/pooling.py")),
+                        M.last_line(M.contains("forge/tensor.py:")),
                     ),
                 ],
             ),
@@ -233,6 +235,7 @@ class ComponentChecker(Enum):
                         M.last_line(M.contains("forge/verify/value_checkers.py:")),
                         M.last_line(M.contains("forge/op/eval/interface.py:")),
                         M.last_line(M.contains("forge/compile.py:")),
+                        M.last_line(M.contains("forge/op/common.py")),
                     ),
                 ],
             ),
@@ -2094,6 +2097,49 @@ class FailingReasons(Enum):
                 error_log=[
                     M.contains(">       return torch.embedding(t_ops[1], t_ops[0].to(torch.int32))"),
                     M.last_line(M.contains("forge/op/eval/forge/embedding.py:")),
+                ],
+            ),
+        ],
+    )
+
+    INCORRECT_TENSOR_SHAPE = FailingReason(
+        description="Incorrect tensor shape",
+        checks=[
+            # E       AssertionError: Setting a tensor value of incorrect shape: (3, 11, 9, 7) vs torch.Size([3, 11, 8, 9])
+            # forge/forge_wheels/venv/lib/python3.10/site-packages/forge/tensor.py:414: AssertionError
+            ExceptionCheck(
+                class_name="AssertionError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    M.regex(
+                        "Setting a tensor value of incorrect shape: \\(\\d+, \\d+, \\d+, \\d+\\) vs torch.Size\\(\\[\\d+, \\d+, \\d+, \\d+\\]\\)"
+                    ),
+                ],
+                error_log=[
+                    M.last_line(M.contains("forge/tensor.py:")),
+                ],
+            ),
+        ],
+    )
+
+    PAD_BIGGER_THAN_HALF_OF_KERNEL = FailingReason(
+        description="pad should be at most half of effective kernel size",
+        checks=[
+            # E           RuntimeError: pad should be at most half of effective kernel size, but got pad=1, kernel_size=1 and dilation=1
+            # forge/forge_wheels/venv/lib/python3.10/site-packages/forge/op/eval/forge/pooling.py:319: RuntimeError
+            ExceptionCheck(
+                class_name="RuntimeError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    M.regex(
+                        "pad should be at most half of effective kernel size, but got pad=\\d+, kernel_size=\\d+ and dilation=\\d+"
+                    ),
+                ],
+                error_log=[
+                    M.any(
+                        M.last_line(M.contains("forge/op/eval/forge/pooling.py")),
+                        M.last_line(M.contains("forge/op/common.py")),
+                    ),
                 ],
             ),
         ],
