@@ -4,6 +4,7 @@
 
 import pytest
 import torch
+from third_party.tt_forge_models.ghostnet.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -16,15 +17,11 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
-from third_party.tt_forge_models.ghostnet.pytorch import ModelLoader, ModelVariant
 
 variants = [
-    pytest.param(ModelVariant.GHOSTNET_100),
-    pytest.param(ModelVariant.GHOSTNET_100_IN1K),
-    pytest.param(
-        ModelVariant.GHOSTNETV2_100_IN1K,
-        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2697")],
-    ),
+    ModelVariant.GHOSTNET_100,
+    ModelVariant.GHOSTNET_100_IN1K,
+    ModelVariant.GHOSTNETV2_100_IN1K,
 ]
 
 
