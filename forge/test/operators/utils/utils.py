@@ -329,6 +329,8 @@ class PytorchUtils:
             module = torch.nn.functional
         if module_name == "torch.nn":
             module = torch.nn
+        if module_name == "torch.Tensor":
+            module = torch.Tensor
         # Get operator name from full name
         name = op_full_name.rsplit(".", 1)[-1]
         # Get the operator class from the module
