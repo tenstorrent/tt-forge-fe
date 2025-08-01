@@ -57,6 +57,10 @@ def Resize1d(
         name,
         operandA,
         attrs=(size, RESIZE2d_METHOD_TO_INT[method], int(align_corners), int(channel_last)),
+        size=size,
+        method=RESIZE2d_METHOD_TO_INT[method],
+        align_corners=align_corners,
+        channel_last=channel_last,
     ).get_tensor()
 
     return result
@@ -100,6 +104,10 @@ def Resize2d(
         name,
         operandA,
         attrs=(*sizes, RESIZE2d_METHOD_TO_INT[method], int(align_corners), int(channel_last)),
+        sizes=sizes,
+        method=RESIZE2d_METHOD_TO_INT[method],
+        align_corners=align_corners,
+        channel_last=channel_last,
     ).get_tensor()
 
     return result
