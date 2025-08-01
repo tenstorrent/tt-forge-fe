@@ -16,29 +16,7 @@ from ..sparse_utils import (
 
 
 def eval(type, attr, ops):
-    if type == "resize1d":
-        assert len(attr) == 4, "Resize1d should have 4 attrs: [size, method, align_corners, channel_last]"
-        assert len(ops) == 1
-        size, method, align_corners, channel_last = attr
-        acts = ops[0]
-        shape = acts.shape
-
-        if channel_last:
-            acts = acts.permute((0, 2, 1))
-
-        result = torch.nn.functional.interpolate(
-            acts,
-            size=size,
-            mode="linear",
-            align_corners=bool(align_corners),
-        )
-
-        if channel_last:
-            result = result.permute((0, 2, 1))
-
-        return result
-
-    elif type == "resize2d":
+    if type == "resize2d":
         assert len(attr) == 5, "Resize2d should have 4 attrs: [size, size, method, align_corners, channel_last]"
         assert len(ops) == 1
         resize_method = INT_TO_RESIZE2d_METHOD[attr[-3]]
@@ -108,31 +86,7 @@ def eval(type, attr, ops):
 
 def shape(type, attr, ops):
 
-    if type == "resize1d":
-        assert len(attr) == 4, "Resize1d should have 4 attrs: [size, method, align_corners, channel_last]"
-        size, _, _, channel_last = attr
-        shape = list(ops[0])
-
-        if channel_last:
-            old_w = shape[-2]
-            upsample = size >= old_w
-            if upsample:
-                assert size % old_w == 0, "Only support upsample with integer scale factor"
-            else:
-                assert old_w % size == 0, "Only support downsample with integer scale factor"
-            shape[-2] = size
-        else:
-            old_w = shape[-1]
-            upsample = size >= old_w
-            if upsample:
-                assert size % old_w == 0, "Only support upsample with integer scale factor"
-            else:
-                assert old_w % size == 0, "Only support downsample with integer scale factor"
-            shape[-1] = size
-
-        return shape, []
-
-    elif type == "resize2d":
+    if type == "resize2d":
         assert len(attr) == 5, "Resize2d should have 4 attrs: [size, size, method, align_corners]"
         shape = list(ops[0])
         channel_last = attr[-1]
