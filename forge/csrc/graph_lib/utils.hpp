@@ -10,8 +10,6 @@
 
 #pragma clang diagnostic pop
 
-#include <c10/core/ScalarType.h>
-
 #include <functional>
 #include <string_view>
 #include <typeindex>
@@ -20,6 +18,11 @@
 #include "graph_lib/defines.hpp"
 
 // Forward declarations
+namespace c10
+{
+enum class ScalarType : int8_t;
+}
+
 namespace at
 {
 class Tensor;
@@ -92,7 +95,7 @@ DataFormat scalar_type_to_data_format(const c10::ScalarType scalar_type);
 c10::ScalarType data_format_to_scalar_type(const DataFormat data_format);
 
 // Convert DataFormat to at::ScalarType directly (C++ equivalent of forge_dataformat_to_pytorch_dtype)
-c10::ScalarType data_format_to_scalar_type(const DataFormat &data_format);
+at::ScalarType data_format_to_scalar_type(const DataFormat &data_format);
 
 // Insert new node on the given edge. Node attributes will be picked up from consumer node.
 // Returns new edges to and from the new node.
