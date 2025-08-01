@@ -51,7 +51,7 @@ def Cast(name: str, operandA: Tensor, dtype: Union[torch.dtype, DataFormat]) -> 
         Forge tensor
     """
     dtype = pytorch_dtype_to_forge_dataformat(dtype)
-    return op("cast", name, operandA, dtype=dtype.to_json()).get_tensor(out_df=dtype)
+    return op("cast", name, operandA, dtype=dtype).get_tensor(out_df=dtype)
 
 
 def Exp(name: str, operandA: Tensor) -> Tensor:

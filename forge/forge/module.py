@@ -28,7 +28,6 @@ from .tensor import (
     to_tf_variables,
     to_pd_tensors,
     pytorch_dtype_to_forge_dataformat,
-    forge_dataformat_to_pytorch_dtype,
 )
 from .parameter import Parameter
 

@@ -8,6 +8,8 @@
 #include <vector>
 
 #include "autograd/autograd.hpp"
+#include "torch/extension.h"  // Needed for c++ to/from python type conversion.
+#include "torch/torch.h"
 
 namespace tt
 {
@@ -60,6 +62,11 @@ long initial_flops_estimate_output_dim(std::tuple<graphlib::Shape, std::vector<g
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> reduce_ops_shape(
     const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes);
+
+/**
+ * Convert DataFormat to PyTorch ScalarType.
+ */
+at::ScalarType data_format_to_scalar_type(DataFormat data_format);
 
 }  // namespace op_common
 }  // namespace ops
