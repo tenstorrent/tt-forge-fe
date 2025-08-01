@@ -765,7 +765,7 @@ void Op::decompose_initial(
         case OpType::Embedding: return embedding::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::EmbeddingBw: return embedding_bw::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Equal: return;
-        case OpType::Erf: return erf::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Erf: return;
         case OpType::Exp: return;
         case OpType::FillCache: return fill_cache::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::ForgeDequantize: return forge_dequantize::decompose_initial(old_op_type, *this, dc, inputs);
@@ -805,7 +805,7 @@ void Op::decompose_initial(
         case OpType::Pad: return pad::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::PadTile: return pad_tile::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Pow: return pow::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Pow: return;
         case OpType::Power: return;
         case OpType::Quantize: return quantize::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Reciprocal: return;
@@ -831,7 +831,7 @@ void Op::decompose_initial(
         case OpType::Squeeze: return;
         case OpType::Stack: return stack::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Subtract: return;
-        case OpType::Tanh: return tanh::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Tanh: return;
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return update_cache::decompose_initial(old_op_type, *this, dc, inputs);
@@ -884,7 +884,7 @@ void Op::decompose_post_optimize(
         case OpType::Embedding: return embedding::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::EmbeddingBw: return embedding_bw::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Equal: return;
-        case OpType::Erf: return erf::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Erf: return;
         case OpType::Exp: return;
         case OpType::FillCache: return fill_cache::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::ForgeDequantize: return forge_dequantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -924,7 +924,7 @@ void Op::decompose_post_optimize(
         case OpType::Pad: return pad::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::PadTile: return pad_tile::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Pow: return pow::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Pow: return;
         case OpType::Power: return;
         case OpType::Quantize: return quantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Reciprocal: return;
@@ -950,7 +950,7 @@ void Op::decompose_post_optimize(
         case OpType::Squeeze: return;
         case OpType::Stack: return stack::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Subtract: return;
-        case OpType::Tanh: return tanh::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Tanh: return;
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return update_cache::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -1003,7 +1003,7 @@ void Op::decompose_post_autograd(
         case OpType::Embedding: return embedding::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::EmbeddingBw: return embedding_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Equal: return;
-        case OpType::Erf: return erf::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Erf: return;
         case OpType::Exp: return;
         case OpType::FillCache: return fill_cache::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::ForgeDequantize: return forge_dequantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1043,7 +1043,7 @@ void Op::decompose_post_autograd(
         case OpType::Pad: return pad::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::PadTile: return pad_tile::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Pow: return pow::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Pow: return;
         case OpType::Power: return;
         case OpType::Quantize: return quantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Reciprocal: return;
@@ -1069,7 +1069,7 @@ void Op::decompose_post_autograd(
         case OpType::Squeeze: return;
         case OpType::Stack: return stack::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Subtract: return;
-        case OpType::Tanh: return tanh::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Tanh: return;
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return update_cache::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1120,7 +1120,7 @@ long Op::initial_flops_estimate(
         case OpType::Embedding: return embedding::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::EmbeddingBw: return embedding_bw::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Equal: return 0;
-        case OpType::Erf: return erf::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Erf: return 0;
         case OpType::Exp: return 0;
         case OpType::FillCache: return fill_cache::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::ForgeDequantize: return forge_dequantize::initial_flops_estimate(old_op_type, *this, inputs);
@@ -1160,7 +1160,7 @@ long Op::initial_flops_estimate(
         case OpType::Pad: return pad::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::PadTile: return pad_tile::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Pow: return pow::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Pow: return 0;
         case OpType::Power: return 0;
         case OpType::Quantize: return quantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Reciprocal: return 0;
@@ -1186,7 +1186,7 @@ long Op::initial_flops_estimate(
         case OpType::Squeeze: return 0;
         case OpType::Stack: return stack::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Subtract: return 0;
-        case OpType::Tanh: return tanh::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Tanh: return 0;
         case OpType::Transpose: return 0;
         case OpType::Unsqueeze: return 0;
         case OpType::UpdateCache: return update_cache::initial_flops_estimate(old_op_type, *this, inputs);
