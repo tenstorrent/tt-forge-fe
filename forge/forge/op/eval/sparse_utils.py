@@ -640,7 +640,7 @@ def create_nearest_neighbor_upsample_picker_matrix(
 ):
     if channel_last:
         if for_din:
-            raise RuntimeError("Resize3d is not supported in channel-last format yet")
+            raise RuntimeError("3D resize is not supported in channel-last format yet")
 
         rows = torch.arange(shape[-3] * scale_factor[0] * shape[-2] * scale_factor[1])
         cols = []

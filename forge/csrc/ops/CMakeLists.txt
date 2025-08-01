@@ -90,7 +90,6 @@ add_library(ops
     op_requantize.cpp
     op_reshape.cpp
     op_resize_2d.cpp
-    op_resize_3d.cpp
     op_select.cpp
     op_sigmoid.cpp
     op_sine.cpp
