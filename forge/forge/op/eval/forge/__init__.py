@@ -4,7 +4,6 @@
 import importlib
 from types import ModuleType
 from functools import lru_cache
-from .cosine import Cosine
 from .ethernet_datacopy import EthernetDatacopy
 from .tanh import Tanh
 from .tilizer import Tilizer
@@ -12,7 +11,6 @@ from .cumulativesum import CumulativeSum
 from .convolution import Conv2d
 from .convolution import Conv2dTranspose
 from .cast import Cast
-from .pad import Pad
 from .kv_cache import UpdateCache
 from .kv_cache import FillCache
 
@@ -44,7 +42,7 @@ op_to_module_map = {
     "log": "eltwise_unary",
     "sigmoid": "eltwise_unary",
     "clip": "eltwise_unary",
-    "cosine": Cosine,
+    "cosine": "eltwise_unary",
     "sine": "eltwise_unary",
     "atan": "eltwise_unary",
     "tanh": Tanh,
@@ -88,7 +86,8 @@ op_to_module_map = {
     "conv2d_prestride_weights": "tm",
     "pad_tile": "tm",
     "narrow": "tm",
-    "pad": Pad,
+    "pad": "tm",
+    "constant_pad": "tm",
     "unsqueeze": "tm",
     "squeeze": "tm",
     "pixel_shuffle": "tm",

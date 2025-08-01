@@ -63,9 +63,12 @@ class DecomposingContext
 
     NodeContext tensor(const at::Tensor& tensor);
 
+    static NodeContext create_constant_tensor(DecomposingContext& dc, const at::Tensor& tensor);
+
     Graph* get_graph() { return graph; }
 
     inline int get_op_index() { return op_index; }
+    inline void increment_op_index() { op_index++; }
 
     inline graphlib::NodeId get_output_node_id() { return output_node_id; }
 
@@ -74,6 +77,10 @@ class DecomposingContext
     inline std::string get_node_name() { return node_->name(); }
 
     inline std::shared_ptr<void> get_compiler_cfg() { return compiler_cfg; }
+
+    inline unsigned int get_subgraph_idx() { return subgraph_idx; }
+
+    inline graphlib::PyOpNode* get_node() { return node_; }
 };
 
 template <DecomposeEpoch epoch>

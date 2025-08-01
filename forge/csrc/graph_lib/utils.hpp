@@ -10,6 +10,8 @@
 
 #pragma clang diagnostic pop
 
+#include <c10/core/ScalarType.h>
+
 #include <functional>
 #include <string_view>
 #include <typeindex>
@@ -83,6 +85,9 @@ DataFormat infer_data_format_from_py_tensor(const py::object &py_tensor);
 
 // Convert at::ScalarType to DataFormat directly (C++ equivalent of pytorch_dtype_to_forge_dataformat)
 DataFormat scalar_type_to_data_format(const at::Tensor &tensor);
+
+// Convert DataFormat to at::ScalarType directly (C++ equivalent of forge_dataformat_to_pytorch_dtype)
+at::ScalarType data_format_to_scalar_type(const DataFormat &data_format);
 
 // Insert new node on the given edge. Node attributes will be picked up from consumer node.
 // Returns new edges to and from the new node.
