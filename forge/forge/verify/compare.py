@@ -33,6 +33,7 @@ def compare_with_golden(
         calculated_pcc = calculate_pcc(golden, calculated)
         result = compare_pcc(calculated_pcc, pcc)
     else:
+        logger.info("inside relative and absolute tolerances cal")
         # For scalar values, we can't calculate PCC, but we can compare golden and calculated values using relative and absolute tolerances
         golden = golden.flatten()[0]
         calculated = calculated.flatten()[0]
