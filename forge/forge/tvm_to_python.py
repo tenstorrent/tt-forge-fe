@@ -1973,10 +1973,13 @@ def generate_forge_module(
 
     if not reload:
         module_name = graph_name if counter == 0 else f"{graph_name}_{counter}"
+        # TVM compilation (for example torch.jit.trace) can change input tensors if module
+        # had inplace operations. Therefore we clone inputs to avoid modifying the original ones.
+        cloned_inputs = [inp.clone() for inp in pytorch_inputs]
         module_writers, flattened_inputs = compile_tvm_to_python(
             framework_mod,
             graph_name,
-            pytorch_inputs,
+            cloned_inputs,
             module_name=module_name,
             compiler_cfg=compiler_cfg,
             verify_cfg=verify_cfg,
