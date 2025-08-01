@@ -294,7 +294,7 @@ void GraphModule(py::module &m_graph)
         .def_readonly("op", &tt::graphlib::OpType::op_)
         .def_readonly("attr", &tt::graphlib::OpType::legacy_attrs_)
         .def_readonly("named_attrs", &tt::graphlib::OpType::named_attrs_)
-        .def("eval", &tt::graphlib::OpType::eval)
+        .def("eval", &tt::graphlib::OpType::eval_with_prepare_inputs)
         .def("shape", &tt::graphlib::OpType::shape)
         .def(
             "__getattr__",
@@ -717,7 +717,7 @@ py::object eval_op(graphlib::OpType type, std::vector<py::object> inputs)
     tensors.reserve(inputs.size());
     for (const auto &tensor : inputs) tensors.emplace_back(tensor.cast<at::Tensor>());
 
-    py::object result = py::cast(type.eval(tensors));
+    py::object result = py::cast(type.eval_with_prepare_inputs(tensors));
 
     log_trace(LogEval, "  eval_op: {}", type);
     py::object common_module = py::module_::import("forge.op.eval");

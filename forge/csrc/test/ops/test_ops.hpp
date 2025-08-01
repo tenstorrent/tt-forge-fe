@@ -236,7 +236,7 @@ class BaseOpTest : public ForgeGraphTest
                 }
 
                 // Evaluate the operation using the op's eval method
-                torch::Tensor output_tensor = op_node->op_type().eval(input_tensors_for_op);
+                torch::Tensor output_tensor = op_node->op_type().eval_with_prepare_inputs(input_tensors_for_op);
 
                 // Confirm that the `node->shape()` is properly calculated.
                 verify_shape(graph, op_node, output_tensor.sizes());
