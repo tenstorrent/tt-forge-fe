@@ -950,8 +950,8 @@ void Op::decompose_post_optimize(
         case OpType::RepeatInterleave: return repeat_interleave::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Requantize: return requantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Reshape: return;
-        case OpType::Resize1d: return resize_1d::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Resize2d: return resize_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Resize1d: return;
+        case OpType::Resize2d: return;
         case OpType::Resize3d: return resize_3d::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Select: return select::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Sigmoid: return;
@@ -968,7 +968,7 @@ void Op::decompose_post_optimize(
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return update_cache::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Upsample2d: return upsample_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Upsample2d: return;
         case OpType::Vslice: return vslice::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Vstack: return vstack::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Where: return where::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -1071,8 +1071,8 @@ void Op::decompose_post_autograd(
         case OpType::RepeatInterleave: return repeat_interleave::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Requantize: return requantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Reshape: return reshape::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Resize1d: return resize_1d::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Resize2d: return resize_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Resize1d: return;
+        case OpType::Resize2d: return;
         case OpType::Resize3d: return resize_3d::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Select: return select::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Sigmoid: return;
@@ -1089,7 +1089,7 @@ void Op::decompose_post_autograd(
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return update_cache::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Upsample2d: return upsample_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Upsample2d: return;
         case OpType::Vslice: return vslice::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Vstack: return vstack::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Where: return where::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1190,8 +1190,8 @@ long Op::initial_flops_estimate(
         case OpType::RepeatInterleave: return repeat_interleave::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Requantize: return requantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Reshape: return 0;
-        case OpType::Resize1d: return resize_1d::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Resize2d: return resize_2d::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Resize1d: return 0;
+        case OpType::Resize2d: return 0;
         case OpType::Resize3d: return resize_3d::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Select: return select::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Sigmoid: return 0;
@@ -1208,7 +1208,7 @@ long Op::initial_flops_estimate(
         case OpType::Transpose: return 0;
         case OpType::Unsqueeze: return 0;
         case OpType::UpdateCache: return update_cache::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Upsample2d: return upsample_2d::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Upsample2d: return 0;
         case OpType::Vslice: return vslice::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Vstack: return vstack::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Where: return where::initial_flops_estimate(old_op_type, *this, inputs);
