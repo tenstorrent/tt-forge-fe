@@ -4,7 +4,6 @@
 import importlib
 from types import ModuleType
 from functools import lru_cache
-from .cosine import Cosine
 from .ethernet_datacopy import EthernetDatacopy
 from .tanh import Tanh
 from .tilizer import Tilizer
@@ -43,7 +42,7 @@ op_to_module_map = {
     "log": "eltwise_unary",
     "sigmoid": "eltwise_unary",
     "clip": "eltwise_unary",
-    "cosine": Cosine,
+    "cosine": "eltwise_unary",
     "sine": "eltwise_unary",
     "atan": "eltwise_unary",
     "tanh": Tanh,

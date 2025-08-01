@@ -4,25 +4,12 @@
 from argparse import ArgumentError
 from ..common import to_torch_operands
 from ..sparse_utils import (
-    create_index_sparse_picker_matrix,
-    create_all_around_padding_picker_matrix,
-    create_padding_shift_sparse_picker_matrix,
-    create_real_row_sparse_picker_matrix,
     create_reshape_flatten_sparse_picker_matrix,
     create_flattened_padding_removal_sparse_picker_matrix,
-    create_sparse_interleave_picker_matrix,
-    create_reshape_flatten_sparse_picker_matrix_narrower,
-    create_repeat_sparse_picker_matrix,
     calculate_conv2d_prestride_weights_and_padding,
-    create_pad_replicate_sparse_picker,
-    create_pad_reflect_sparse_picker,
 )
-import numpy as np
 import torch
 import math
-from loguru import logger
-import forge
-from forge.tensor import change_rank
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div, align_up
 
@@ -69,25 +56,6 @@ def eval(type, attr, ops):
             else:
                 result.append(zero_slice)
         return torch.stack(result, dim=dim)
-
-    if type == "index":
-        assert len(attr) == 4, "Index should have 4 attributes"
-        dim, start, stop, stride = attr
-        if dim >= 0:
-            dim -= len(ops[0].shape)
-
-        if dim == -5:
-            return t_ops[0][..., start:stop:stride, :, :, :, :]
-        elif dim == -4:
-            return t_ops[0][..., start:stop:stride, :, :, :]
-        elif dim == -3:
-            return t_ops[0][..., start:stop:stride, :, :]
-        elif dim == -2:
-            return t_ops[0][..., start:stop:stride, :]
-        elif dim == -1:
-            return t_ops[0][..., start:stop:stride]
-        else:
-            raise NotImplementedError(f"Dim={dim}")
 
     if type == "repeat":
         sizes = attr
@@ -292,17 +260,6 @@ def eval(type, attr, ops):
 
 def shape(type, attr, ops):
     assert len(ops) == 1, f"Tensor manipulation ops should have one input, has {len(ops)} input instead"
-
-    if type == "index":
-        assert len(attr) == 4, "Index should have 4 attributes"
-        dim, start, stop, stride = attr
-        shape = list(ops[0])
-
-        if start < 0:
-            start = shape[dim] + start
-
-        shape[dim] = round_up_div(stop - start, stride)
-        return tuple(shape), []
 
     if type == "select":
         assert len(attr) == 4, "Select should have 4 attributes"
@@ -637,29 +594,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         ret = ac.op_with_named_attrs("reduce_sum", (ret,), {"dim_arg": [dim], "keep_dim": True})
         ret = ac.op_with_named_attrs("squeeze", (ret,), {"dim": dim})
         return ret
-
-    elif type == "index":
-        assert len(attr) == 4
-        dim, start, stop, stride = attr
-
-        if stride != 1:
-            raise NotImplementedError("Only stride == 1 is supported for index op backward")
-        shape = inputs[0].shape.as_list()
-
-        if dim >= 0:
-            dim -= len(shape)
-
-        left = start
-        right = shape[dim] - stop
-        value = 0.0
-
-        # constant pad op expects padding in the following format: [dim0_low, dim0_high, dim1_low, dim1_high, ...]
-        # which means we need to create padding for all dimensions zero except the one we are indexing into
-        padding = [0] * (len(shape) * 2)
-        padding[dim * 2] = left
-        padding[dim * 2 + 1] = right
-
-        return ac.op_with_named_attrs("constant_pad", (grad,), {"padding": padding, "value": value})
 
     raise NotImplementedError(f"{type}")
 

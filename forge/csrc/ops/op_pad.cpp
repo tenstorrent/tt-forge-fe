@@ -55,7 +55,7 @@ struct PaddingParams
 
 NodeContext extract(DecomposingContext &dc, const NodeContext &input, int dim_axis, int start, int stop)
 {
-    graphlib::OpType index_op("index", {dim_axis, start, stop, 1});
+    graphlib::OpType index_op("index");
     index_op.set_attr("dim", dim_axis);
     index_op.set_attr("start", start);
     index_op.set_attr("stop", stop);
