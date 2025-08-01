@@ -154,16 +154,26 @@ TEST_F(EraseInverseOps, erase_inverse_ops_dual_reduce)
     // auto buffer2 = add_node<graphlib::PyOpNode>(*graph, "buffer2", "nop", {}, {buffer1});
 
     auto post_transpose = graph->get_node_by_name("post_transpose");
-    auto smx_1 = add_node<graphlib::PyOpNode>(*graph, "smx_1", "softmax", {-1, false}, {post_transpose});
+    auto smx_1 = add_node<graphlib::PyOpNode>(
+        *graph, "smx_1", graphlib::OpType("softmax", {}, {{"dim", -1}, {"stable", false}}), {post_transpose});
     auto reshape_1 = add_node<graphlib::PyOpNode>(
         *graph, "reshape_1", graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 512, 10, 16}}}), {smx_1});
 
-    auto reduce_1 = add_node<graphlib::PyOpNode>(*graph, "reduce_1", "reduce_sum", {-2, true}, {reshape_1});
-    auto reduce_2 = add_node<graphlib::PyOpNode>(*graph, "reduce_2", "reduce_sum", {-1, true}, {reduce_1});
+    auto reduce_1 = add_node<graphlib::PyOpNode>(
+        *graph,
+        "reduce_1",
+        graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}),
+        {reshape_1});
+    auto reduce_2 = add_node<graphlib::PyOpNode>(
+        *graph,
+        "reduce_2",
+        graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{-1}}, {"keep_dim", true}}),
+        {reduce_1});
     auto reshape_2 = add_node<graphlib::PyOpNode>(
         *graph, "reshape_2", graphlib::OpType("reshape", {}, {{"shape", std::vector{1, 1, 512, 1}}}), {reduce_2});
 
-    auto smx_2 = add_node<graphlib::PyOpNode>(*graph, "smx_2", "softmax", {-1, false}, {reshape_2});
+    auto smx_2 = add_node<graphlib::PyOpNode>(
+        *graph, "smx_2", graphlib::OpType("softmax", {}, {{"dim", -1}, {"stable", false}}), {reshape_2});
     graph->remove_node(graph->get_node_by_name("out0"));
     create_output(*graph, "out0", smx_2);
 
@@ -284,8 +294,8 @@ TEST_F(CommuteBroadcastThroughTranspose, commute_broadcast_through_transpose)
     EXPECT_EQ(tms[1].type(), ops::OpType::Broadcast);
     // Broadcast along dimension -2 should become broadcast along -3
     // after commuting through transpose.
-    EXPECT_EQ(std::get<int>(tms[1].legacy_attrs_[0]), -3);
-    EXPECT_EQ(std::get<int>(tms[1].legacy_attrs_[1]), 112);
+    EXPECT_EQ(tms[1].attr_as<int>("dim"), -3);
+    EXPECT_EQ(tms[1].attr_as<int>("size"), 112);
 }
 
 struct UpdateReshapeNamedAttrsTest : testing::Test
@@ -349,8 +359,14 @@ struct UpdateSelectNamedAttrsTest : testing::Test
 
         graphlib::Shape initial_shape = graphlib::Shape::create({1, 512, 160});
         graphlib::InputNode *input_node = create_input(*graph, "input", initial_shape);
-        auto select_node =
-            add_node<graphlib::PyOpNode>(*graph, "select", "select", {dim, begin, length, stride}, {input_node});
+        auto select_node = add_node<graphlib::PyOpNode>(
+            *graph,
+            "select",
+            graphlib::OpType(
+                "select",
+                {dim, begin, length, stride},
+                {{"dim", dim}, {"begin", begin}, {"length", length}, {"stride", stride}}),
+            {input_node});
         select_node->set_op_attr("select_dim", dim);
         select_node->set_op_attr("begin", begin);
         select_node->set_op_attr("length", length);
@@ -450,7 +466,8 @@ struct UpdateVStackAttrsTest : testing::Test
 
         auto input_node_0 = create_input(*graph, "input_0", shape_0);
 
-        vstack_node = add_node<graphlib::PyOpNode>(*graph, "vstack", "vstack", {16}, {input_node_0});
+        vstack_node = add_node<graphlib::PyOpNode>(
+            *graph, "vstack", graphlib::OpType("vstack", {16}, {{"num_stacks", 16}}), {input_node_0});
 
         create_output(*graph, "out", vstack_node);
     }
@@ -540,14 +557,8 @@ struct UpdateReduceSumAttrsTest : testing::Test
         reduce_node = add_node<graphlib::PyOpNode>(
             *graph,
             reduce_op,
-            reduce_op,
-            {
-                reduce_dim,
-                keep_dim,
-            },
+            graphlib::OpType(reduce_op, {}, {{"dim_arg", std::vector<int>{reduce_dim}}, {"keep_dim", keep_dim}}),
             {input_node});
-        reduce_node->set_op_attr("dim", reduce_dim);
-        reduce_node->set_op_attr("keep_dim", keep_dim);
         create_output(*graph, "out", reduce_node);
 
         return reduce_node;
@@ -568,8 +579,9 @@ TEST_F(UpdateReduceSumAttrsTest, ReduceSumDim)
 
     auto updated_attrs = reduce_node->op_named_attrs();
 
-    ASSERT_TRUE(updated_attrs.count("dim"));
-    EXPECT_EQ(std::get<int>(updated_attrs["dim"]), reduce_dim);
+    ASSERT_TRUE(updated_attrs.count("dim_arg"));
+    auto dim_arg_vec = std::get<std::vector<int>>(updated_attrs["dim_arg"]);
+    EXPECT_EQ(dim_arg_vec[0], reduce_dim);
 
     ASSERT_TRUE(updated_attrs.count("keep_dim"));
     EXPECT_EQ(std::get<bool>(updated_attrs["keep_dim"]), keep_dim);
@@ -587,23 +599,15 @@ struct UpdateReduceMaxAttrsTest : testing::Test
 
    protected:
     graphlib::OpNode *create_graph(
-        const std::string &reduce_op, int reduce_dim, int stride, bool keep_dim, const graphlib::Shape &input_shape)
+        const std::string &reduce_op, int reduce_dim, bool keep_dim, const graphlib::Shape &input_shape)
     {
         auto input_node = create_input(*graph, "input", input_shape);
 
         reduce_node = add_node<graphlib::PyOpNode>(
             *graph,
             reduce_op,
-            reduce_op,
-            {
-                reduce_dim,
-                stride,
-                keep_dim,
-            },
+            graphlib::OpType(reduce_op, {}, {{"dim_arg", std::vector<int>{reduce_dim}}, {"keep_dim", keep_dim}}),
             {input_node});
-        reduce_node->set_op_attr("dim", reduce_dim);
-        reduce_node->set_op_attr("stride", stride);
-        reduce_node->set_op_attr("keep_dim", keep_dim);
 
         create_output(*graph, "out", reduce_node);
         return reduce_node;
@@ -614,69 +618,22 @@ TEST_F(UpdateReduceMaxAttrsTest, ReduceMaxDim)
 {
     std::string reduce_op = "reduce_max";
     int reduce_dim = 2;
-    int stride = 1;
     bool keep_dim = true;
     graphlib::Shape input_shape = graphlib::Shape::create({1, 512, 160});
     graphlib::Shape expected_shape = graphlib::Shape::create({1, 512, 1});
 
-    auto reduce_node = create_graph(reduce_op, reduce_dim, stride, keep_dim, input_shape);
+    auto reduce_node = create_graph(reduce_op, reduce_dim, keep_dim, input_shape);
 
     passes::update_reduce_attr(reduce_node, reduce_dim, keep_dim);
 
     auto updated_attrs = reduce_node->op_named_attrs();
 
-    ASSERT_TRUE(updated_attrs.count("dim"));
-    EXPECT_EQ(std::get<int>(updated_attrs["dim"]), reduce_dim);
-
-    ASSERT_TRUE(updated_attrs.count("stride"));
-    EXPECT_EQ(std::get<int>(updated_attrs["stride"]), stride);
+    ASSERT_TRUE(updated_attrs.count("dim_arg"));
+    auto dim_arg_vec = std::get<std::vector<int>>(updated_attrs["dim_arg"]);
+    EXPECT_EQ(dim_arg_vec[0], reduce_dim);
 
     ASSERT_TRUE(updated_attrs.count("keep_dim"));
     EXPECT_EQ(std::get<bool>(updated_attrs["keep_dim"]), keep_dim);
-}
-
-struct UpdateGroupedReduceAvgTest : testing::Test
-{
-    graphlib::Graph *graph;
-    graphlib::OpNode *reduce_node;
-
-    UpdateGroupedReduceAvgTest()
-    {
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE, "UpdateGroupedReduceAvg");
-    }
-
-   protected:
-    graphlib::OpNode *create_graph(
-        const std::string &reduce_op, const std::vector<int> &attr, const graphlib::Shape &input_shape)
-    {
-        auto input_node = create_input(*graph, "input", input_shape);
-        reduce_node =
-            add_node<graphlib::PyOpNode>(*graph, reduce_op, reduce_op, {attr[0], attr[1], attr[2]}, {input_node});
-        reduce_node->set_op_attr("reduce_dim", attr[0]);
-        reduce_node->set_op_attr("groups", attr[1]);
-        reduce_node->set_op_attr("keep_dims", attr[2]);
-
-        create_output(*graph, "out", reduce_node);
-
-        return reduce_node;
-    }
-};
-
-TEST_F(UpdateGroupedReduceAvgTest, GroupedReduceAvgDim)
-{
-    std::string reduce_op = "grouped_reduce_avg";
-    std::vector<int> attr = {1, 4, 1};
-    graphlib::Shape input_shape = graphlib::Shape::create({1, 512, 160});
-    graphlib::Shape expected_shape = graphlib::Shape::create({1, 4, 160});
-
-    auto reduce_node = create_graph(reduce_op, attr, input_shape);
-
-    passes::update_grouped_reduce_avg_attr(reduce_node, attr[0]);
-
-    auto updated_attrs = reduce_node->op_named_attrs();
-
-    ASSERT_TRUE(updated_attrs.count("reduce_dim"));
-    EXPECT_EQ(std::get<int>(updated_attrs["reduce_dim"]), attr[0]);
 }
 
 struct EraseInverseOpsSqueezeAndUnsqueeze : testing::Test
@@ -694,7 +651,8 @@ struct EraseInverseOpsSqueezeAndUnsqueeze : testing::Test
         auto mask_node = create_input(*graph, "attention_mask", mask_shape);
         auto weights_node = create_input(*graph, "attention_weights", weights_shape);
 
-        auto cast_1_node = add_node<graphlib::PyOpNode>(*graph, "cast", "cast", {"Float32"}, {mask_node});
+        auto cast_1_node = add_node<graphlib::PyOpNode>(
+            *graph, "cast", graphlib::OpType("cast", {"Float32"}, {{"dtype", "Float32"}}), {mask_node});
         auto unsqueeze_node = add_node<graphlib::PyOpNode>(
             *graph, "unsqueeze", graphlib::OpType("unsqueeze", {0}, {{"dim", 0}}), {weights_node});
 
@@ -722,7 +680,7 @@ TEST_F(EraseInverseOpsSqueezeAndUnsqueeze, erase_inv_ops_sq_unsq)
     std::vector<Node *> nodes = graphlib::topological_sort(*graph);
     Node *squeeze_node = nodes[4];
     graphlib::OpNode *squeeze_op = nodes[4]->as<graphlib::PyOpNode>();
-    ASSERT_EQ(squeeze_op->op_name(), "squeeze");
+    ASSERT_EQ(squeeze_op->new_op_type(), ops::OpType::Squeeze);
     graphlib::Node *operand_node = graph->operands(squeeze_node)[0];
 
     // Check that dimension on which we squeeze is 0
@@ -764,7 +722,11 @@ struct CommuteTransposeThroughReduce : testing::Test
             {transpose_node});
 
         // Add a reduce_avg on the last dimension (-1)
-        auto reduce_node = add_node<graphlib::PyOpNode>(*graph, "reduce", "reduce_avg", {-1, true}, {reshape_node});
+        auto reduce_node = add_node<graphlib::PyOpNode>(
+            *graph,
+            "reduce",
+            graphlib::OpType("reduce_avg", {}, {{"dim_arg", std::vector<int>{-1}}, {"keep_dim", true}}),
+            {reshape_node});
 
         create_output(*graph, "out", reduce_node);
     }

@@ -7,6 +7,7 @@
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
 #include "op_interface.hpp"
+#include "ops/op_common.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
 #include "utils/assert.hpp"
@@ -67,17 +68,6 @@ tt::graphlib::NodeContext backward(
     auto stretched = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {subtract, sch});
 
     return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {stretched, gradient});
-}
-
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Abs, "Wrong op type.");
-
-    auto shape_tuple = abs::shape(old_op_type, op, inputs);
-    graphlib::Shape out_shape = std::get<0>(shape_tuple);
-
-    return std::accumulate(out_shape.begin(), out_shape.end(), 1u, std::multiplies<uint32_t>());
 }
 
 }  // namespace abs

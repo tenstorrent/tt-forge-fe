@@ -46,7 +46,7 @@ def Softmax(name: str, operandA: Tensor, *, dim: int, stable: bool = True) -> Te
     Tensor
         Forge tensor
     """
-    return op("softmax", name, operandA, attrs=(dim, stable), dimension=dim).get_tensor()
+    return op("softmax", name, operandA, dim=dim, stable=stable).get_tensor()
 
 
 def LogSoftmax(name: str, operandA: Tensor, *, dim: int, stable: bool = True) -> Tensor:
@@ -73,7 +73,7 @@ def LogSoftmax(name: str, operandA: Tensor, *, dim: int, stable: bool = True) ->
     Tensor
         Forge tensor
     """
-    return op("log_softmax", name, operandA, attrs=(dim, stable), dimension=dim).get_tensor()
+    return op("log_softmax", name, operandA, attrs=(dim, stable), dimension=dim, stable=stable).get_tensor()
 
 
 def Layernorm(
@@ -101,7 +101,7 @@ def Layernorm(
         Forge tensor
     """
 
-    return op("layernorm", name, operandA, weights, bias, attrs=(dim, epsilon)).get_tensor()
+    return op("layernorm", name, operandA, weights, bias, attrs=(dim, epsilon), dim=dim, epsilon=epsilon).get_tensor()
 
 
 def Batchnorm(
@@ -136,7 +136,9 @@ def Batchnorm(
         name = f"batchnorm_{get_unique_node_id()}"
 
     if batchnorm_flag:
-        return op("batchnorm", name, operandA, weights, bias, running_mean, running_var, attrs=(epsilon,)).get_tensor()
+        return op(
+            "batchnorm", name, operandA, weights, bias, running_mean, running_var, attrs=(epsilon,), epsilon=epsilon
+        ).get_tensor()
     else:
         running_mean = Unsqueeze(name + "_mean_unsqueeze_1", running_mean, 1)
         running_mean = Unsqueeze(name + "_mean_unsqueeze_2", running_mean, 1)
@@ -153,6 +155,36 @@ def Batchnorm(
         recip = Reciprocal(name + "_recip", Sqrt(name + "_sqrt", var_plus_eps))
         out = Multiply(name + "_output", x_minus_mean, recip)
         return Add(name + "_bias", Multiply(name + "_weights", out, weights), bias)
+
+
+def Dropout(name: str, operandA: Tensor, p: float = 0.5, training: bool = True, seed: int = 0) -> Tensor:
+    """
+    Dropout
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+        First operand
+
+    p: float
+        Probability of an element to be zeroed.
+
+    training: bool
+        Apply dropout if true
+
+    seed: int
+        RNG seed
+
+    Returns
+    -------
+    Tensor
+        Forge tensor
+    """
+
+    return op("dropout", name, operandA, p=p, training=training, seed=seed).get_tensor()
 
 
 class Linear(ForgeModule):

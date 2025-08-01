@@ -4,11 +4,8 @@
 
 import pytest
 import torch
-from transformers import (
-    SegformerConfig,
-    SegformerForImageClassification,
-    SegformerForSemanticSegmentation,
-)
+from third_party.tt_forge_models.segformer.pytorch import ModelLoader, ModelVariant
+from transformers import SegformerForSemanticSegmentation
 
 import forge
 from forge._C import DataFormat
@@ -27,12 +24,12 @@ from forge.verify.verify import verify
 from test.models.pytorch.vision.segformer.model_utils.image_utils import get_sample_data
 
 variants_img_classification = [
-    pytest.param("nvidia/mit-b0", marks=pytest.mark.push),
-    "nvidia/mit-b1",
-    "nvidia/mit-b2",
-    "nvidia/mit-b3",
-    "nvidia/mit-b4",
-    "nvidia/mit-b5",
+    ModelVariant.MIT_B0,
+    ModelVariant.MIT_B1,
+    ModelVariant.MIT_B2,
+    ModelVariant.MIT_B3,
+    ModelVariant.MIT_B4,
+    ModelVariant.MIT_B5,
 ]
 
 
@@ -40,7 +37,7 @@ variants_img_classification = [
 @pytest.mark.parametrize("variant", variants_img_classification)
 def test_segformer_image_classification_pytorch(variant):
 
-    if variant in ["nvidia/mit-b0"]:
+    if variant == ModelVariant.MIT_B0:
         group = ModelGroup.RED
         priority = ModelPriority.P1
     else:
@@ -58,38 +55,29 @@ def test_segformer_image_classification_pytorch(variant):
         priority=priority,
     )
 
-    # Set model configurations
-    config = SegformerConfig.from_pretrained(variant)
-    config_dict = config.to_dict()
-    config_dict["return_dict"] = False
-    config = SegformerConfig(**config_dict)
-
-    # Load the model from HuggingFace
-    framework_model = SegformerForImageClassification.from_pretrained(variant, config=config).to(torch.bfloat16)
-    framework_model.eval()
-
-    # Load the sample image
-    pixel_values = get_sample_data(variant)
-    inputs = [pixel_values.to(torch.bfloat16)]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model,
-        sample_inputs=inputs,
-        module_name=module_name,
-        compiler_cfg=compiler_cfg,
+        framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
     )
 
-    # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    # Model Verification and Inference
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+    )
 
     # Post processing
-    logits = co_out[0]
-    predicted_label = logits.argmax(-1).item()
-    print("Predicted class: ", framework_model.config.id2label[predicted_label])
+    loader.post_processing(co_out)
 
 
 variants_semseg = [

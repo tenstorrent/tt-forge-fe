@@ -2,14 +2,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-#include <vector>
-
 #include "autograd/autograd.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
 #include "op_interface.hpp"
-#include "passes/decomposing_context.hpp"
+#include "ops/op_common.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
 #include "utils/assert.hpp"
@@ -20,60 +18,51 @@ namespace ops
 {
 namespace atan
 {
-using namespace graphlib;
 
 at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Atan, "Wrong op type.");
-    return op.base_eval(old_op_type, tensors);
+    TT_ASSERT(tensors.size() == 1, "Atan should have one input");
+    return torch::atan(tensors[0]);
 }
 
-std::tuple<Shape, std::vector<DimBroadcast>> shape(
+std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Atan, "Wrong op type.");
-    return op.base_shape(old_op_type, in_shapes);
+    TT_ASSERT(in_shapes.size() == 1, "Atan should have one input");
+    return std::make_tuple(graphlib::Shape::create(in_shapes[0]), std::vector<graphlib::DimBroadcast>{});
 }
 
-NodeContext backward(
+tt::graphlib::NodeContext backward(
     const graphlib::OpType &old_op_type,
     const Op &op,
-    autograd::autograd_context &ac,
+    tt::autograd::autograd_context &ac,
     int operand,
-    const std::vector<NodeContext> &inputs,
-    const NodeContext &output,
-    const NodeContext &gradient)
+    const std::vector<tt::graphlib::NodeContext> &inputs,
+    const tt::graphlib::NodeContext &output,
+    const tt::graphlib::NodeContext &gradient)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Atan, "Wrong op type.");
-    return op.base_backward(old_op_type, ac, operand, inputs, output, gradient);
-}
+    /**
+     * Derivative of atan(x) = 1 / (1 + x^2)
+     */
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
     TT_DBG_ASSERT(op.type() == OpType::Atan, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
-}
+    TT_ASSERT(inputs.size() == 1, "Atan should have one input");
+    TT_ASSERT(operand == 0, "Invalid operand index");
 
-void decompose_post_optimize(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Atan, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
-}
+    // x^2
+    auto x_squared = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {inputs[0], inputs[0]});
 
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Atan, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
-}
+    // 1 + x^2
+    auto one = ac.autograd->create_constant(ac, 1.0);
+    auto one_plus_x_squared = ac.autograd->create_op(ac, graphlib::OpType("add"), {one, x_squared});
 
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Atan, "Wrong op type.");
-    return op.base_initial_flops_estimate(old_op_type, inputs);
+    // 1 / (1 + x^2)
+    auto derivative = ac.autograd->create_op(ac, graphlib::OpType("divide"), {one, one_plus_x_squared});
+
+    // derivative * gradient
+    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {derivative, gradient});
 }
 
 }  // namespace atan

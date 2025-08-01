@@ -5,6 +5,7 @@
 import pytest
 import torch
 from pytorchcv.model_provider import get_model as ptcv_get_model
+from third_party.tt_forge_models.resnext.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -20,16 +21,17 @@ from forge.verify.verify import verify
 
 from test.models.pytorch.vision.resnext.model_utils.utils import (
     get_image_tensor,
-    get_resnext_model_and_input,
     post_processing,
 )
 from test.utils import download_model
 
+variants = [ModelVariant.RESNEXT50_32X4D, ModelVariant.RESNEXT101_32X8D, ModelVariant.RESNEXT101_32X8D_WSL]
+
 
 @pytest.mark.push
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["resnext50_32x4d"])
-def test_resnext_50_torchhub_pytorch(variant):
+@pytest.mark.parametrize("variant", variants)
+def test_resnext_torchhub_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
@@ -39,10 +41,11 @@ def test_resnext_50_torchhub_pytorch(variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Load the model and prepare input data
-    framework_model, inputs = get_resnext_model_and_input("pytorch/vision:v0.10.0", variant)
-    framework_model.to(torch.bfloat16)
-    inputs = [inputs[0].to(torch.bfloat16)]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -56,85 +59,14 @@ def test_resnext_50_torchhub_pytorch(variant):
     )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
-
-    # Post processing
-    post_processing(co_out)
-
-
-@pytest.mark.push
-@pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["resnext101_32x8d"])
-def test_resnext_101_torchhub_pytorch(variant):
-    # Record Forge Property
-    module_name = record_model_properties(
-        framework=Framework.PYTORCH,
-        model=ModelArch.RESNEXT,
-        source=Source.TORCH_HUB,
-        variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
-    )
-
-    # Load the model and prepare input data
-    framework_model, inputs = get_resnext_model_and_input("pytorch/vision:v0.10.0", variant)
-    framework_model.to(torch.bfloat16)
-    inputs = [inputs[0].to(torch.bfloat16)]
-
-    data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
-
-    # Forge compile framework model
-    compiled_model = forge.compile(
+    _, co_out = verify(
+        inputs,
         framework_model,
-        sample_inputs=inputs,
-        module_name=module_name,
-        compiler_cfg=compiler_cfg,
+        compiled_model,
     )
-
-    # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post processing
-    post_processing(co_out)
-
-
-@pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["resnext101_32x8d_wsl"])
-def test_resnext_101_32x8d_fb_wsl_pytorch(variant):
-
-    # Record Forge Property
-    module_name = record_model_properties(
-        framework=Framework.PYTORCH,
-        model=ModelArch.RESNEXT,
-        source=Source.TORCH_HUB,
-        variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
-    )
-
-    # Load the model and prepare input data
-    framework_model = download_model(torch.hub.load, "facebookresearch/WSL-Images", variant)
-    framework_model.eval()
-    framework_model.to(torch.bfloat16)
-
-    input_batch = get_image_tensor()
-    inputs = [input_batch.to(torch.bfloat16)]
-
-    data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
-
-    # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model,
-        sample_inputs=inputs,
-        module_name=module_name,
-        compiler_cfg=compiler_cfg,
-    )
-
-    # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model)
-
-    # Post processing
-    post_processing(co_out)
+    loader.print_cls_results(co_out)
 
 
 @pytest.mark.nightly

@@ -220,6 +220,40 @@ Shape Shape::as_rank(std::uint32_t rank) const
     return graphlib::Shape::create(v);
 }
 
+bool can_be_broadcasted(const Shape &a, const Shape &b)
+{
+    return a.can_be_broadcasted_to(b) || b.can_be_broadcasted_to(a);
+}
+
+bool Shape::can_be_broadcasted_to(const Shape &other) const
+{
+    TT_ASSERT(valid_ && other.valid_);
+
+    if (dims_.size() > other.dims_.size())
+    {
+        // If current shape has more dimensions than other, it cannot be broadcasted to other.
+        return false;
+    }
+
+    // To be able to broadcast current shape to other shape, all dimensions of the current shape must satisfy:
+    //      curr_dims[i] == other_dims[i] or curr_dims[i] == 1
+    //
+    // If the rank of current shape is less than the rank of the other shape, we assume that the current shape
+    // dimensions are prepended with 1s to match the rank of the other shape - hence for these prepended dimensions the
+    // above condition will always be satisfied.
+    for (auto dim = dims_.rbegin(), other_dim = other.dims_.rbegin();
+         dim != dims_.rend() && other_dim != other.dims_.rend();
+         ++dim, ++other_dim)
+    {
+        if (*dim != *other_dim && *dim != 1)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 // Return the list of dims_ (and amount) that need to be broadcast from current to other
 std::vector<DimBroadcast> Shape::broadcast_dims(const Shape &other) const
 {

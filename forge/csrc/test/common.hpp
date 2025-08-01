@@ -14,6 +14,50 @@ namespace tt
 struct DeviceConfig;
 }
 
+struct GraphTestFlags
+{
+    bool enable_reportify = false;
+
+    static GraphTestFlags from_cli_args(int argc, char** argv)
+    {
+        GraphTestFlags flags;
+        for (int i = 0; i < argc; ++i)
+        {
+            if (std::string(argv[i]) == "--reportify")
+            {
+                flags.enable_reportify = true;
+            }
+        }
+
+        return flags;
+    }
+};
+
+class GraphTestFlagsEnvironment : public ::testing::Environment
+{
+   public:
+    explicit GraphTestFlagsEnvironment(GraphTestFlags flags) : flags_(std::move(flags))
+    {
+        GraphTestFlagsEnvironment::instance_ = &flags_;
+    }
+
+    void SetUp() override {}
+    void TearDown() override {}
+
+    static const GraphTestFlags* instance()
+    {
+        if (!instance_)
+        {
+            throw std::runtime_error("TestFlagsEnvironment instance is not set");
+        }
+        return instance_;
+    }
+
+   private:
+    GraphTestFlags flags_;
+    inline static const GraphTestFlags* instance_;
+};
+
 namespace tt::test
 {
 template <graphlib::IRLevel ir_level>
@@ -31,10 +75,20 @@ class GraphTest : public ::testing::Test
         {
             create_output(output);
         }
-        graph->dump("pre");
+
+        if (GraphTestFlagsEnvironment::instance()->enable_reportify)
+        {
+            graph->dump("pre");
+        }
     }
 
-    void TearDown() override { graph->dump("post"); }
+    void TearDown() override
+    {
+        if (GraphTestFlagsEnvironment::instance()->enable_reportify)
+        {
+            graph->dump("post");
+        }
+    }
 
     graphlib::Graph* get_graph()
     {
@@ -111,6 +165,12 @@ class GraphTest : public ::testing::Test
     {
         return tt::add_node<OpType>(
             *graph, name, op_type.name(), op_type.legacy_attrs_, operands, {}, {}, op_type.attrs());
+    }
+
+    OpType* create_op(tt::ops::Op const& op, std::vector<graphlib::Node*> const& operands)
+    {
+        std::string name = op.as_string() + std::to_string(op_name_id[op.as_string()]++);
+        return tt::add_node<OpType>(*graph, name, op.as_string(), {}, operands, {}, {}, op.attrs());
     }
 
     OpType* create_op(graphlib::OpType const& op_type, std::vector<graphlib::Node*> const& operands)

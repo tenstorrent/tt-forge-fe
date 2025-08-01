@@ -50,9 +50,6 @@ def test_meshgrid(shapes):
     ],
 )
 @pytest.mark.push
-@pytest.mark.xfail(
-    reason="[MLIR] error: where op casts inputs to float32 and predicate to float32 so we get float32 output"
-)
 def test_where(condition, input, other):
     class Where(nn.Module):
         def __init__(self):
@@ -131,5 +128,43 @@ def test_block_diag(input_shapes):
             return torch.block_diag(*inputs)
 
     framework_model = block_diag()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "n,m",
+    [
+        (2, None),
+        (5, None),
+        (12, None),
+        (3, 3),
+        (4, 6),
+        (10, 10),
+        (2, 5),
+        (6, 1),
+    ],
+)
+@pytest.mark.push
+def test_eye(n, m):
+    class EyeModule(nn.Module):
+        def __init__(self, n, m):
+            super().__init__()
+            self.n = n
+            self.m = m
+
+        def forward(self, x):
+            if self.m is not None:
+                eye_mat = torch.eye(self.n, self.m, dtype=x.dtype)
+                return eye_mat + x.unsqueeze(1)
+            else:
+                eye_mat = torch.eye(self.n, dtype=x.dtype)
+                return eye_mat + x.unsqueeze(0)
+
+    framework_model = EyeModule(n, m)
+    x = torch.randn(n)
+
+    inputs = [x]
+
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     verify(inputs, framework_model, compiled_model)

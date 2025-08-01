@@ -196,7 +196,10 @@ static std::unique_ptr<graphlib::PyOpNode> create_slice(
 
     int start = i * (int)shape[dim];
     int length = (int)shape[dim];
-    graphlib::OpType select("select", {dim, start, length, stride});
+    graphlib::OpType select(
+        "select",
+        {dim, start, length, stride},
+        {{"dim", dim}, {"begin", start}, {"length", length}, {"stride", stride}});
     auto new_op = graphlib::create_node<graphlib::PyOpNode>(new_op_name, select);
     new_op->set_shape(shape);
     new_op->set_epoch_type(op->get_epoch_type());
@@ -606,7 +609,7 @@ static FracturedNodes gather(
         for (graphlib::NodeId& gather_op_id : gathered_ops)
         {
             graphlib::PyOpNode* gather_op = graph->node_by_id(gather_op_id)->as<graphlib::PyOpNode>();
-            if (gather_op->op_name() == "add")
+            if (gather_op->new_op_type() == ops::OpType::Add)
             {
                 gather_op = graphlib::cascade_nary_to_binary_op(graph, gather_op)->as<graphlib::PyOpNode>();
                 gather_op_id = gather_op->id();
@@ -791,10 +794,11 @@ static FracturedNodes fracture_tm(
     std::unordered_map<graphlib::NodeId, FracturedNodes> const& node_to_fractured_nodes,
     FractureGroup const& group)
 {
-    if (op->op_name() == "unsqueeze" or op->op_name() == "squeeze" or op->op_name() == "transpose")
+    if (op->new_op_type() == ops::OpType::Unsqueeze or op->new_op_type() == ops::OpType::Squeeze or
+        op->new_op_type() == ops::OpType::Transpose)
     {
         auto [nd_slice, fractured_ops] = fracture_op(graph, op, node_to_fractured_nodes, group);
-        if (op->op_name() == "transpose")
+        if (op->new_op_type() == ops::OpType::Transpose)
         {
             int dim0 = op->op_type().attr_as<int>("dim0");
             int dim1 = op->op_type().attr_as<int>("dim1");
@@ -805,7 +809,7 @@ static FracturedNodes fracture_tm(
         }
         return std::make_pair(nd_slice, fractured_ops);
     }
-    else if (op->op_name() == "select")
+    else if (op->new_op_type() == ops::OpType::Select)
     {
         NDSlice nd_slice = get_node_nd_slice(graph, op, node_to_fractured_nodes, group);
         int select_dim = std::get<int>(op->op_legacy_attrs().at(0));

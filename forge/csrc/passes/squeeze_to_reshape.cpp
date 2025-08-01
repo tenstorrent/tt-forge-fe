@@ -20,7 +20,7 @@ bool squeeze_to_reshape(graphlib::Graph *graph)
         if (not op)
             continue;
 
-        if (op->op_name() != "squeeze" and op->op_name() != "unsqueeze")
+        if (op->new_op_type() != ops::OpType::Squeeze and op->new_op_type() != ops::OpType::Unsqueeze)
             continue;
 
         std::vector<uint32_t> shape_vec = op->shape().as_vector();

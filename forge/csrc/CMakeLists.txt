@@ -30,6 +30,8 @@ set(TTFORGE_CSRC_INCLUDES
     ${TTMLIR_INCLUDE_DIRS}
 )
 
+set(TORCH_LIB_DIR "${TTFORGE_VENV_DIR}/lib/${TTFORGE_PYTHON_VERSION}/site-packages/torch/lib")
+
 include_directories(${TTFORGE_CSRC_INCLUDES})
 # This is workaround for utils/assert.hpp using ##__VA_ARGS__ which is not supported by clang
 include_directories(SYSTEM ${CMAKE_SOURCE_DIR})
@@ -63,7 +65,6 @@ add_dependencies(ttforge_csrc_objs tt-mlir)
 ######## ttforge_csrc ########
 
 set(TTMLIR_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/install/lib")
-set(TORCH_LIB_DIR "${TTFORGE_VENV_DIR}/lib/${TTFORGE_PYTHON_VERSION}/site-packages/torch/lib")
 
 add_library(ttforge_csrc SHARED)
 

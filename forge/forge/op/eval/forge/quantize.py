@@ -8,7 +8,6 @@ from forge.utils import align_up_tile
 import numpy as np
 from ..common import to_torch_operands
 from forge.tensor import pytorch_dtype_to_forge_dataformat
-from .reciprocal import Reciprocal
 
 STRING_TO_TORCH_DTYPE = {
     "torch.int8": torch.int8,
@@ -166,7 +165,7 @@ def decompose(type, attr, dc, inputs):
         torch_dtype = STRING_TO_TORCH_DTYPE[out_dtype]
         forge_dtype = pytorch_dtype_to_forge_dataformat(torch_dtype)
         scale = inputs[1]
-        scale = dc.op(Reciprocal.create(), [scale], output_df=scale.output_df)
+        scale = dc.op("reciprocal", [scale], output_df=scale.output_df)
         out = dc.op("forge_quantize", [inputs[0], scale], attrs=attr, output_df=forge_dtype)
         dc.fuse(out)
         return
@@ -209,16 +208,16 @@ def decompose(type, attr, dc, inputs):
 
         if out_scale_shape[axis] != act.shape[axis]:
             assert out_scale_shape[axis] == 1
-            out_scale = dc.op(
+            out_scale = dc.op_with_named_attrs(
                 "broadcast",
                 [out_scale],
-                attrs=(axis - len(out_scale_shape), act.shape[axis]),
+                {"dim": axis - len(out_scale_shape), "size": act.shape[axis]},
                 output_df=out_scale.output_df,
             )
             out_scale_shape[axis] = act.shape[axis]
 
         recip_out_scale = dc.op(
-            Reciprocal.create(),
+            "reciprocal",
             [out_scale],
             output_df=out_scale.output_df,
         )

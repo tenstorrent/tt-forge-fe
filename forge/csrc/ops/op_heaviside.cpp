@@ -8,6 +8,7 @@
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
+#include "op_common.hpp"
 #include "op_interface.hpp"
 #include "passes/decomposing_context.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
@@ -24,15 +25,18 @@ using namespace graphlib;
 
 at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Heaviside, "Wrong op type.");
-    return op.base_eval(old_op_type, tensors);
+    TT_ASSERT(tensors.size() == 2, "Heaviside should have two input tensors.");
+    return torch::heaviside(tensors[0], tensors[1]);
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
     const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Heaviside, "Wrong op type.");
-    return op.base_shape(old_op_type, in_shapes);
+    TT_ASSERT(in_shapes.size() == 2, "Heaviside should have two input shapes.");
+    TT_ASSERT(op.attrs().size() == 0, "Heaviside should not have any attrs.");
+
+    return op_common::compute_elementwise_binary_shape(in_shapes);
 }
 
 NodeContext backward(
@@ -44,36 +48,29 @@ NodeContext backward(
     const NodeContext &output,
     const NodeContext &gradient)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Heaviside, "Wrong op type.");
-    return op.base_backward(old_op_type, ac, operand, inputs, output, gradient);
+    TT_ASSERT(false, "Heaviside does not have backward.");
+    unreachable();
 }
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Heaviside, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
-}
-
-void decompose_post_optimize(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Heaviside, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
-}
-
+/**
+ * Decompose Heaviside: result = (x > 0) + (x == 0) * y
+ */
 void decompose_post_autograd(
     const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Heaviside, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
-}
+    TT_ASSERT(inputs.size() == 2, "Heaviside should have two inputs");
 
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Heaviside, "Wrong op type.");
-    return op.base_initial_flops_estimate(old_op_type, inputs);
+    auto x = inputs[0];
+    auto y = inputs[1];
+
+    auto zero = dc.op(graphlib::OpType("constant", {}, {{"c", 0.0f}}), {});
+    auto x_gt = dc.op(graphlib::OpType("greater"), {x, zero});
+    auto x_eq = dc.op(graphlib::OpType("equal"), {x, zero});
+    auto res = dc.op(graphlib::OpType("multiply"), {x_eq, y});
+    res = dc.op(graphlib::OpType("add"), {res, x_gt});
+
+    dc.fuse(res, 0);
 }
 
 }  // namespace heaviside

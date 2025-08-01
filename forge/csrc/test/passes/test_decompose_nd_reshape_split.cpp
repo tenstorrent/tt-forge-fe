@@ -37,10 +37,18 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
     reshape_node->set_shape(graphlib::Shape::create({2, 2, 6}));
 
     // Create index operations
-    auto index1_node = add_node<graphlib::PyOpNode>(*graph, "index1", "index", {1, 0, 1, 1}, {reshape_node});
+    auto index1_node = add_node<graphlib::PyOpNode>(
+        *graph,
+        "index1",
+        graphlib::OpType("index", {1, 0, 1, 1}, {{"dim", 1}, {"begin", 0}, {"length", 1}, {"stride", 1}}),
+        {reshape_node});
     index1_node->set_shape(graphlib::Shape::create({2, 1, 6}));
 
-    auto index2_node = add_node<graphlib::PyOpNode>(*graph, "index2", "index", {1, 1, 2, 1}, {reshape_node});
+    auto index2_node = add_node<graphlib::PyOpNode>(
+        *graph,
+        "index2",
+        graphlib::OpType("index", {1, 1, 2, 1}, {{"dim", 1}, {"begin", 1}, {"length", 2}, {"stride", 1}}),
+        {reshape_node});
     index2_node->set_shape(graphlib::Shape::create({2, 1, 6}));
 
     // Create squeeze operations
@@ -63,7 +71,7 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
         if (node->node_type() == graphlib::kPyOp)
         {
             auto op_node = node->as<graphlib::PyOpNode>();
-            if (op_node->op_name() == "index")
+            if (op_node->new_op_type() == ops::OpType::Index)
                 index_count_before++;
         }
     }
@@ -86,7 +94,7 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
         if (node->node_type() == graphlib::kPyOp)
         {
             auto op_node = node->as<graphlib::PyOpNode>();
-            if (op_node->op_name() == "index")
+            if (op_node->new_op_type() == ops::OpType::Index)
                 index_count_after++;
         }
     }
@@ -98,7 +106,7 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
         if (node->node_type() == graphlib::kPyOp)
         {
             auto op_node = node->as<graphlib::PyOpNode>();
-            if (op_node->op_name() == "index")
+            if (op_node->new_op_type() == ops::OpType::Index)
             {
                 // Check connection to input
                 auto operands = graph->operands(node);

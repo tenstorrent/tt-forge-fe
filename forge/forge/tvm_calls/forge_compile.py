@@ -470,6 +470,15 @@ class ConvertEmulatedDtypes:
                         key = f"{mod_name}.{attr}" if mod_name else attr
                         self.attr_dfs[key] = (mod, attr, val.dtype)  # store module, attr name, and dtype
                         setattr(mod, attr, val.to(self.fallback))  # overwrite with fallback dtype
+                    elif isinstance(val, (list, tuple)) and all(isinstance(v, torch.Tensor) for v in val):
+                        original_dtypes = [v.dtype for v in val]
+                        if any(dt in self.emulated_dfs for dt in original_dtypes):
+                            key = f"{mod_name}.{attr}" if mod_name else attr
+                            self.attr_dfs[key] = (mod, attr, original_dtypes)
+                            converted_val = [v.to(self.fallback) if v.dtype in self.emulated_dfs else v for v in val]
+                            if isinstance(val, tuple):
+                                converted_val = tuple(converted_val)
+                            setattr(mod, attr, converted_val)
 
     def __exit__(self, *args):
         # Convert model parameters back to original dtype
@@ -491,7 +500,13 @@ class ConvertEmulatedDtypes:
             try:
                 val = getattr(mod, attr)
                 if isinstance(val, torch.Tensor):
-                    setattr(mod, attr, val.to(orig_dtype))  # revert to original dtype
+                    restored_val = val.to(orig_dtype)
+                else:
+                    restored_val = [v.to(dt) for v, dt in zip(val, orig_dtype)]
+                    restored_val = tuple(restored_val) if isinstance(val, tuple) else restored_val
+
+                setattr(mod, attr, restored_val)
+
             except Exception as e:
                 logger.warning(f"Failed to restore attribute '{attr}' on module '{mod}': {e}")
 

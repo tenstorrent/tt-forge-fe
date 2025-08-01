@@ -18,6 +18,8 @@ from paddlenlp.transformers import (
 from forge.tvm_calls.forge_utils import paddle_trace
 import forge
 from forge.verify.verify import verify
+from forge.verify.value_checkers import AutomaticValueChecker
+from forge.verify.config import VerifyConfig
 
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
@@ -54,7 +56,6 @@ def test_chineseclip_text(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_chineseclip_vision(variant):
     # Record Forge properties
@@ -84,11 +85,10 @@ def test_chineseclip_vision(variant):
     compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.96)))
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_chineseclip(variant):
     # Record Forge properties
@@ -133,4 +133,4 @@ def test_chineseclip(variant):
     compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.96)))

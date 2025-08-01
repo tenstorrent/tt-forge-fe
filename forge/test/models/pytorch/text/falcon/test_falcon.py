@@ -65,15 +65,15 @@ variants = [
     pytest.param("tiiuae/Falcon3-1B-Base"),
     pytest.param(
         "tiiuae/Falcon3-3B-Base",
-        marks=pytest.mark.out_of_memory,
+        marks=[pytest.mark.xfail, pytest.mark.out_of_memory],
     ),
     pytest.param(
         "tiiuae/Falcon3-7B-Base",
-        marks=pytest.mark.out_of_memory,
+        marks=[pytest.mark.xfail, pytest.mark.out_of_memory],
     ),
     pytest.param(
         "tiiuae/Falcon3-10B-Base",
-        marks=pytest.mark.out_of_memory,
+        marks=[pytest.mark.xfail, pytest.mark.out_of_memory],
     ),
     pytest.param(
         "tiiuae/Falcon3-Mamba-7B-Base",

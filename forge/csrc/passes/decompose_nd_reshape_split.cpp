@@ -15,7 +15,7 @@ using Attr = ForgeOpAttr;
 static bool is_reshape(graphlib::Node const *node)
 {
     graphlib::OpNode const *op = dynamic_cast<graphlib::OpNode const *>(node);
-    return op and op->op_name() == "reshape";
+    return op and op->new_op_type() == ops::OpType::Reshape;
 }
 
 template <typename T>
@@ -88,7 +88,7 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
             [](auto const &consumer)
             {
                 auto op = dynamic_cast<graphlib::OpNode const *>(consumer);
-                return op and op->op_name() == "index";
+                return op and op->new_op_type() == ops::OpType::Index;
             });
 
         // All consumers must be index
@@ -131,7 +131,7 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
                 auto shape_before = consumer->shape();
                 auto shape_after = users[0]->shape();
                 auto op = dynamic_cast<graphlib::OpNode const *>(users[0]);
-                return users.size() == 1 and op->op_name() == "reshape" and
+                return users.size() == 1 and op->new_op_type() == ops::OpType::Reshape and
                        shape_after.volume() == shape_before.volume() and shape_after.size() + 1 == shape_before.size();
             });
 
