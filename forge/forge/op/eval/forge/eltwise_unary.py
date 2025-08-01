@@ -14,10 +14,7 @@ from forge.op.eval.common import calculate_tile_size
 def eval(type, attr, ops):
     assert len(ops) == 1, "Eltwise unary should have one input"
     assert (
-        len(attr) == 0
-        or (type == "clip" and len(attr) == 2)
-        or (type == "cumsum" and len(attr) == 2)
-        or (type == "pow" and len(attr) == 1)
+        len(attr) == 0 or (type == "clip" and len(attr) == 2) or (type == "cumsum" and len(attr) == 2)
     ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout and pow"
 
     t_ops = to_torch_operands(*ops)
@@ -30,7 +27,6 @@ def eval(type, attr, ops):
         "clip": lambda i: torch.clip(i[0], min=attr[0], max=attr[1]),
         "abs": lambda i: torch.abs(i[0]),
         "cumsum": lambda i: torch.cumsum(i[0], dim=attr[0]),
-        "pow": lambda i: torch.pow(i[0], attr[0]),
     }
 
     assert type in f, f"{type} not defined in eval map for eltwise unary ops."
@@ -49,7 +45,6 @@ def shape(type, attr, ops):
         or (type == "ethernet_datacopy" and (len(attr) == 1 or len(attr) == 2))
         or (type == "clip" and len(attr) == 2)
         or (type == "cumsum" and len(attr) == 2)
-        or (type == "pow" and len(attr) == 1)
     ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout, and pow"
 
     return ops[0], []
@@ -60,10 +55,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
     assert len(inputs) == 1, "Eltwise unary should have one input"
     assert operand == 0, "Invalid operand index"
     assert (
-        len(attr) == 0
-        or (type == "clip" and len(attr) == 2)
-        or (type == "cumsum" and len(attr) == 2)
-        or (type == "pow" and len(attr) == 1)
+        len(attr) == 0 or (type == "clip" and len(attr) == 2) or (type == "cumsum" and len(attr) == 2)
     ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout and pow"
 
     if type == "tilizer":
@@ -93,14 +85,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         res = ac.op("multiply", (mask, grad))
         return res
 
-    elif type == "pow":
-        exponent_value = attr[0]
-        shape = list(inputs[0].shape.as_list())
-        recip = ac.op("reciprocal", (inputs[0],))
-        partial_grad = ac.op("multiply", (output, recip))
-        pow_grad = ac.op("multiply", (ac.tensor(torch.zeros(shape) + exponent_value), partial_grad))
-        return ac.op("multiply", (pow_grad, grad))
-
     elif type == "abs":
 
         heaviside = ac.op("heaviside", (inputs[0], ac.constant(0.5)))
@@ -121,7 +105,6 @@ def initial_flops_estimate(type, attr, ops):
         "sqrt",
         "abs",
         "cumsum",
-        "pow",
     ]
     output_shape = shape(type, attr, ops)[0]
 

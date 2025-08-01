@@ -816,7 +816,7 @@ void Op::decompose_initial(
         case OpType::Pad: return pad::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::PadTile: return pad_tile::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Pow: return pow::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Pow: return;
         case OpType::Power: return;
         case OpType::Quantize: return quantize::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Reciprocal: return;
@@ -937,7 +937,7 @@ void Op::decompose_post_optimize(
         case OpType::Pad: return pad::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::PadTile: return pad_tile::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Pow: return pow::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Pow: return;
         case OpType::Power: return;
         case OpType::Quantize: return quantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Reciprocal: return;
@@ -1058,7 +1058,7 @@ void Op::decompose_post_autograd(
         case OpType::Pad: return pad::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::PadTile: return pad_tile::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Pow: return pow::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Pow: return;
         case OpType::Power: return;
         case OpType::Quantize: return quantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Reciprocal: return;
@@ -1177,7 +1177,7 @@ long Op::initial_flops_estimate(
         case OpType::Pad: return pad::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::PadTile: return pad_tile::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Pow: return pow::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Pow: return 0;
         case OpType::Power: return 0;
         case OpType::Quantize: return quantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Reciprocal: return 0;
