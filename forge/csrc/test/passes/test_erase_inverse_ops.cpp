@@ -4,6 +4,7 @@
 #include "graph_lib/edge.hpp"
 #include "graph_lib/node_types.hpp"
 #include "gtest/gtest.h"
+#include "lower_to_forge/common.hpp"
 #include "ops/op.hpp"
 #include "passes/commute_utils.hpp"
 #include "passes/erase_inverse_ops.hpp"
@@ -652,7 +653,10 @@ struct EraseInverseOpsSqueezeAndUnsqueeze : testing::Test
         auto weights_node = create_input(*graph, "attention_weights", weights_shape);
 
         auto cast_1_node = add_node<graphlib::PyOpNode>(
-            *graph, "cast", graphlib::OpType("cast", {"Float32"}, {{"dtype", "Float32"}}), {mask_node});
+            *graph,
+            "cast",
+            graphlib::OpType("cast", {}, {{"dtype", static_cast<int>(DataFormat::Float32)}}),
+            {mask_node});
         auto unsqueeze_node = add_node<graphlib::PyOpNode>(
             *graph, "unsqueeze", graphlib::OpType("unsqueeze", {0}, {{"dim", 0}}), {weights_node});
 
