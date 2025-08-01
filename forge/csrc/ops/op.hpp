@@ -130,7 +130,6 @@ enum class OpType : uint32_t
     Requantize,
     Reshape,
     Resize2d,
-    Resize3d,
     Select,
     Sigmoid,
     Sine,
