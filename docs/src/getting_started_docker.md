@@ -20,9 +20,16 @@ Before setup can happen, you must configure your hardware. You can skip this sec
 
 2. Reboot your machine.
 
-3. Please ensure that after you run this script, after you complete reboot, you activate the virtual environment it sets up - ```source ~/.tenstorrent-venv/bin/activate```.
+3. Make sure **hugepages** is enabled: 
 
-4. When your environment is running, to check that everything is configured, type the following:
+```bash
+sudo systemctl enable --now 'dev-hugepages\x2d1G.mount'
+sudo systemctl enable --now tenstorrent-hugepages.service
+```
+
+4. Please ensure that after you run the TT-Installer script, after you complete reboot and set up hugepages, you activate the virtual environment it sets up - ```source ~/.tenstorrent-venv/bin/activate```.
+
+5. When your environment is running, to check that everything is configured, type the following:
 
 ```bash
 tt-smi
@@ -128,16 +135,13 @@ git submodule update --init --recursive
 
 4. Navigate back out of the TT-Forge directory.
 
-5. Run a model. For this set up, the **mobile_netv2_demo.py** is used:
+5. For this set up, the **mobile_netv2_demo.py** is used. Navigate into **tt-forge** and run the following command:
 
 ```bash
-python tt-forge/demos/tt-forge-fe/cnn/mobile_netv2_demo.py
+python demos/tt-forge-fe/cnn/mobile_netv2_demo.py
 ```
 
-6. If all goes well you will get the following output:
-
-Prediction: Samoyed, Samoyede (class 258)
-Confidence: 0.868
+6. If all goes well you will get a prediction stating the best guess for what the image is, and the probability that the model identified the image correctly. 
 
 ## Where to Go Next
 
