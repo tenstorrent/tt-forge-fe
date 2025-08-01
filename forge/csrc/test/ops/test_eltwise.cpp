@@ -267,44 +267,6 @@ INSTANTIATE_TEST_SUITE_P(
         [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
     [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
 
-/**
- * Testing cumulative sum operation.
- */
-const std::vector<OpTestParam> get_cumsum_test_params(const std::vector<VecShapes>& in_shapes)
-{
-    std::vector<OpTestParam> params;
-
-    for (const auto& shape_vec : in_shapes)
-    {
-        for (const auto& shape : shape_vec)
-        {
-            for (int dim = 0; dim < static_cast<int>(shape.size()); ++dim)
-            {
-                tt::ops::Op op1(tt::ops::OpType::CumulativeSum, {{"dim", static_cast<int>(dim)}});
-                tt::ops::Op op2(tt::ops::OpType::CumulativeSum, {{"dim", -static_cast<int>(dim) - 1}});
-                params.emplace_back(op1, std::vector{shape});
-                params.emplace_back(op2, std::vector{shape});
-            }
-        }
-    }
-
-    return params;
-}
-
-INSTANTIATE_TEST_SUITE_P(
-    CumulativeSumOpNoBackwardIndividual,
-    SimpleOpDecomposeOnlyTest,
-    testing::ValuesIn(get_cumsum_test_params(get_unary_individual_test_shapes())),
-    [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
-    { return SimpleOpTest::get_test_name(info); });
-
-INSTANTIATE_TEST_SUITE_P(
-    CumulativeSumOpNoBackwardSweeps,
-    SimpleOpDecomposeOnlyTest,
-    testing::ValuesIn(get_cumsum_test_params(generate_input_shapes())),
-    [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
-    { return SimpleOpTest::get_test_name(info); });
-
 }  // namespace tt::test::ops::eltwise_unary
 
 namespace tt::test::ops::comparison
