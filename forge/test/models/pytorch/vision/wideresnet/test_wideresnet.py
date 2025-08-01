@@ -6,7 +6,6 @@ import pytest
 import timm
 import torch
 from PIL import Image
-from third_party.tt_forge_models.tools.utils import get_file
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
@@ -23,16 +22,15 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
+from third_party.tt_forge_models.tools.utils import get_file
+from third_party.tt_forge_models.wide_resnet.pytorch import ModelLoader, ModelVariant
 
-from test.models.pytorch.vision.wideresnet.model_utils.utils import (
-    generate_model_wideresnet_imgcls_pytorch,
-    post_processing,
-)
+from test.models.pytorch.vision.wideresnet.model_utils.utils import post_processing
 from test.utils import download_model
 
 variants = [
-    pytest.param("wide_resnet50_2", marks=[pytest.mark.push]),
-    pytest.param("wide_resnet101_2"),
+    ModelVariant.WIDE_RESNET50_2,
+    ModelVariant.WIDE_RESNET101_2,
 ]
 
 
@@ -49,10 +47,11 @@ def test_wideresnet_pytorch(variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Load the model and prepare input data
-    (framework_model, inputs) = generate_model_wideresnet_imgcls_pytorch(variant)
-    framework_model.to(torch.bfloat16)
-    inputs = [inputs[0].to(torch.bfloat16)]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -73,7 +72,7 @@ def test_wideresnet_pytorch(variant):
     _, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
 
     # Post processing
-    post_processing(co_out)
+    loader.post_processing(co_out)
 
 
 def generate_model_wideresnet_imgcls_timm(variant):

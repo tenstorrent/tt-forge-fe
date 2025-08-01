@@ -19,7 +19,7 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
-from test.models.pytorch.vision.retinanet.model_utils.image_utils import img_preprocess
+from test.models.pytorch.vision.retinanet.model_utils.model_utils import img_preprocess
 from test.models.pytorch.vision.retinanet.model_utils.model import Model
 
 variants = [
