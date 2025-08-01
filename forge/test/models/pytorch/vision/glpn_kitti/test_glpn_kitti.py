@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
+from third_party.tt_forge_models.glpn_kitti import ModelLoader
 
 import forge
 from forge._C import DataFormat
@@ -16,37 +17,25 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.glpn_kitti.model_utils.utils import (
-    load_input,
-    load_model,
-)
-
 
 @pytest.mark.nightly
-@pytest.mark.parametrize(
-    "variant",
-    [
-        pytest.param(
-            "vinvino02/glpn-kitti",
-            marks=[pytest.mark.xfail],
-        ),
-    ],
-)
-def test_glpn_kitti(variant):
+@pytest.mark.xfail
+def test_glpn_kitti():
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.GLPNKITTI,
-        variant=variant,
+        variant="default",
         source=Source.HUGGINGFACE,
         task=Task.DEPTH_ESTIMATION,
     )
 
     # Load model and input
-    framework_model = load_model(variant).to(torch.bfloat16)
-    inputs = load_input(variant)
-    inputs = [inputs[0].to(torch.bfloat16)]
+    loader = ModelLoader()
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_dict = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_dict["pixel_values"]]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
