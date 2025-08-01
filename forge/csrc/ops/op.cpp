@@ -823,7 +823,7 @@ void Op::decompose_initial(
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return update_cache::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Upsample2d: return upsample_2d::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Upsample2d: return;
         case OpType::Vslice: return vslice::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Vstack: return vstack::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Where: return where::decompose_initial(old_op_type, *this, dc, inputs);
