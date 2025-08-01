@@ -33,6 +33,8 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
     std::string mode = op.attr_as<std::string>("mode");
     bool channel_last = op.attr_as<bool>("channel_last");
 
+    TT_ASSERT(mode == "nearest" || mode == "bilinear", "Unsupported upsample mode: " + mode);
+
     if (channel_last)
     {
         activations = activations.permute({0, 3, 1, 2});
@@ -43,17 +45,9 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
         options.scale_factor(std::vector<double>{static_cast<double>(scale_factor), static_cast<double>(scale_factor)});
 
     if (mode == "nearest")
-    {
         options = options.mode(torch::kNearest);
-    }
     else if (mode == "bilinear")
-    {
         options = options.mode(torch::kBilinear);
-    }
-    else
-    {
-        TT_THROW("Unsupported upsample mode: " + mode);
-    }
 
     at::Tensor result = torch::nn::functional::interpolate(activations, options);
 

@@ -8,6 +8,7 @@
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
+#include "op_common.hpp"
 #include "op_interface.hpp"
 #include "passes/decomposing_context.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
@@ -34,24 +35,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
     int method = op.attr_as<int>("method");
     bool channel_last = op.attr_as<bool>("channel_last");
 
-    // Convert method int to string (matching INT_TO_RESIZE2d_METHOD)
-    std::string resize_method;
-    if (method == 0)
-    {
-        resize_method = "nearest";
-    }
-    else if (method == 1)
-    {
-        resize_method = "bilinear";
-    }
-    else if (method == 2)
-    {
-        resize_method = "cubic";
-    }
-    else
-    {
-        TT_THROW("Unsupported resize method: " + std::to_string(method));
-    }
+    std::string resize_method = op_common::get_resize_method(method);
 
     auto shape = activations.sizes();
 
@@ -68,7 +52,6 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 
     if (upsample)
     {
-        // Use upsample with scale_factor (matching Python upsample path)
         torch::nn::functional::InterpolateFuncOptions options = torch::nn::functional::InterpolateFuncOptions();
         options = options.scale_factor(
             std::vector<double>{static_cast<double>(scale_factor), static_cast<double>(scale_factor)});
@@ -90,7 +73,6 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
     }
     else
     {
-        // Use interpolate with target size (matching Python downsample path)
         std::string interp_method = (resize_method == "cubic") ? "bicubic" : resize_method;
 
         torch::nn::functional::InterpolateFuncOptions options = torch::nn::functional::InterpolateFuncOptions();
@@ -178,24 +160,7 @@ void decompose_initial(
     int method = op.attr_as<int>("method");
     bool channel_last = op.attr_as<bool>("channel_last");
 
-    // Convert method int to string (matching INT_TO_RESIZE2d_METHOD)
-    std::string resize_method;
-    if (method == 0)
-    {
-        resize_method = "nearest";
-    }
-    else if (method == 1)
-    {
-        resize_method = "bilinear";
-    }
-    else if (method == 2)
-    {
-        resize_method = "cubic";
-    }
-    else
-    {
-        TT_THROW("Unsupported resize method: " + std::to_string(method));
-    }
+    std::string resize_method = op_common::get_resize_method(method);
 
     NodeContext result = inputs[0];
     Shape input_shape = result.shape;
