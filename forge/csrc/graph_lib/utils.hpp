@@ -87,7 +87,7 @@ DataFormat infer_data_format_from_py_tensor(const py::object &py_tensor);
 DataFormat scalar_type_to_data_format(const at::Tensor &tensor);
 
 // Convert DataFormat to at::ScalarType directly (C++ equivalent of forge_dataformat_to_pytorch_dtype)
-c10::ScalarType data_format_to_scalar_type(const DataFormat &data_format);
+at::ScalarType data_format_to_scalar_type(const DataFormat &data_format);
 
 // Insert new node on the given edge. Node attributes will be picked up from consumer node.
 // Returns new edges to and from the new node.

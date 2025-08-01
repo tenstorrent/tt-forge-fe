@@ -334,49 +334,8 @@ NodeContext backward(
     const NodeContext &output,
     const NodeContext &gradient)
 {
-    // Backward pass for pad is to remove the padding (narrow operation)
-    TT_DBG_ASSERT(op.type() == OpType::Pad, "Wrong op type.");
-    TT_ASSERT(operand == 0, "Pad should have exactly 1 operand");
-    TT_ASSERT(op.attrs().size() == 4, "Pad should have 4 attributes: padding, mode, value, channel_last");
-
-    auto padding = op.attr_as<std::vector<int>>("padding");
-    auto channel_last = op.attr_as<bool>("channel_last");
-
-    TT_ASSERT(padding.size() == 2 || padding.size() == 4, "Not supported padding type");
-
-    int shape_size = static_cast<int>(gradient.shape.size());
-    PaddingParams params(padding, shape_size, channel_last);
-
-    int original_height = gradient.shape[params.height_dim];
-    int original_width = gradient.shape[params.width_dim];
-
-    NodeContext grad = gradient;
-    int length_width = original_width - params.left - params.right;
-
-    // Remove width padding
-    graphlib::OpType narrow_width_op("narrow", {params.width_dim, params.left, length_width, original_width});
-    narrow_width_op.set_attr("dim", params.width_dim);
-    narrow_width_op.set_attr("start", params.left);
-    narrow_width_op.set_attr("length", length_width);
-    narrow_width_op.set_attr("original_length", original_width);
-
-    grad = ac.autograd->create_op(ac, narrow_width_op, {grad});
-
-    // Then remove height padding if it exists
-    if (params.top > 0 || params.bottom > 0)
-    {
-        int length_height = original_height - params.top - params.bottom;
-
-        graphlib::OpType narrow_height_op("narrow", {params.height_dim, params.top, length_height, original_height});
-        narrow_height_op.set_attr("dim", params.height_dim);
-        narrow_height_op.set_attr("start", params.top);
-        narrow_height_op.set_attr("length", length_height);
-        narrow_height_op.set_attr("original_length", original_height);
-
-        grad = ac.autograd->create_op(ac, narrow_height_op, {grad});
-    }
-
-    return grad;
+    TT_ASSERT(false, "Pad op should've been decomposed, so we don't need a backward pass.");
+    return nullptr;
 }
 
 void decompose_initial(
