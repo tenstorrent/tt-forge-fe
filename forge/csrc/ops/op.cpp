@@ -736,7 +736,7 @@ void Op::decompose_initial(
         case OpType::Heaviside: return;
         case OpType::Hslice: return hslice::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Hstack: return hstack::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Index: return index::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Index: return;
         case OpType::IndexCopy: return index_copy::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Interleave: return interleave::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Layernorm: return;
@@ -847,7 +847,7 @@ void Op::decompose_post_optimize(
         case OpType::Heaviside: return;
         case OpType::Hslice: return hslice::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Hstack: return hstack::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Index: return index::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Index: return;
         case OpType::IndexCopy: return index_copy::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Interleave: return interleave::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Layernorm: return;
@@ -958,7 +958,7 @@ void Op::decompose_post_autograd(
         case OpType::Heaviside: return heaviside::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Hslice: return hslice::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Hstack: return hstack::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Index: return index::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Index: return;
         case OpType::IndexCopy: return index_copy::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Interleave: return interleave::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Layernorm: return layernorm::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1067,7 +1067,7 @@ long Op::initial_flops_estimate(
         case OpType::Heaviside: return 0;
         case OpType::Hslice: return hslice::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Hstack: return hstack::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Index: return index::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Index: return 0;
         case OpType::IndexCopy: return index_copy::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Interleave: return interleave::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Layernorm: return 0;
