@@ -28,8 +28,6 @@ def eval(type, attr, ops):
 
     f = {
         "erf": lambda i: torch.erf(i[0]),
-        "tilizer": lambda i: i[0],
-        "ethernet_datacopy": lambda i: i[0],
         "clip": lambda i: torch.clip(i[0], min=attr[0], max=attr[1]),
         "abs": lambda i: torch.abs(i[0]),
         "tanh": lambda i: torch.tanh(i[0]),
@@ -50,7 +48,6 @@ def shape(type, attr, ops):
     assert len(ops) == 1, "Eltwise unary should have one input"
     assert (
         len(attr) == 0
-        or (type == "ethernet_datacopy" and (len(attr) == 1 or len(attr) == 2))
         or (type == "clip" and len(attr) == 2)
         or (type == "cumsum" and len(attr) == 2)
         or (type == "pow" and len(attr) == 1)
@@ -69,9 +66,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         or (type == "cumsum" and len(attr) == 2)
         or (type == "pow" and len(attr) == 1)
     ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout and pow"
-
-    if type == "tilizer":
-        return ac.op("nop", (grad,))
 
     if type == "tanh":
         tanh_square = ac.op("multiply", (output, output))

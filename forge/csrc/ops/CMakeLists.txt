@@ -37,7 +37,6 @@ add_library(ops
     op_embedding_bw.cpp
     op_equal.cpp
     op_erf.cpp
-    op_ethernet_data_copy.cpp
     op_exp.cpp
     op_fill_cache.cpp
     op_forge_dequantize.cpp
@@ -104,7 +103,6 @@ add_library(ops
     op_subtract.cpp
     op_squeeze.cpp
     op_tanh.cpp
-    op_tilizer.cpp
     op_transpose.cpp
     op_unsqueeze.cpp
     op_update_cache.cpp
