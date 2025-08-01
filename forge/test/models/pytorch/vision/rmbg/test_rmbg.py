@@ -4,6 +4,7 @@
 
 import pytest
 import torch
+from third_party.tt_forge_models.rmbg.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -17,12 +18,12 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.rmbg.model_utils.utils import load_input, load_model
+variants = [ModelVariant.RMBG_2_0]
 
 
 @pytest.mark.nightly
 @pytest.mark.xfail
-@pytest.mark.parametrize("variant", ["briaai/RMBG-2.0"])
+@pytest.mark.parametrize("variant", variants)
 def test_rmbg(variant):
 
     # Record Forge Property
@@ -35,9 +36,10 @@ def test_rmbg(variant):
     )
 
     # Load model and input
-    framework_model = load_model(variant).to(torch.bfloat16)
-    inputs = load_input()
-    inputs = [inputs[0].to(torch.bfloat16)]
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    inputs = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [inputs]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)

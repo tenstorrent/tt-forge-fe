@@ -5,6 +5,7 @@
 # From: https://huggingface.co/alibaba-damo/mgp-str-base
 import pytest
 import torch
+from third_party.tt_forge_models.mgp_str_base import ModelLoader
 
 import forge
 from forge._C import DataFormat
@@ -18,12 +19,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
-from forge.verify.verify import DeprecatedVerifyConfig, verify
-
-from test.models.pytorch.vision.mgp_str_base.model_utils.utils import (
-    load_input,
-    load_model,
-)
+from forge.verify.verify import verify
 
 
 class Wrapper(torch.nn.Module):
@@ -36,28 +32,23 @@ class Wrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize(
-    "variant",
-    [
-        "alibaba-damo/mgp-str-base",
-    ],
-)
-def test_mgp_scene_text_recognition(variant):
+def test_mgp_scene_text_recognition():
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.MGP,
-        variant=variant,
+        variant="default",
         source=Source.HUGGINGFACE,
         task=Task.SCENE_TEXT_RECOGNITION,
     )
 
     # Load model and input
-    framework_model = load_model(variant)
-    framework_model = Wrapper(framework_model).to(torch.bfloat16)
-    inputs, processor = load_input(variant)
-    inputs = [inputs[0].to(torch.bfloat16)]
+    loader = ModelLoader()
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    framework_model = Wrapper(framework_model)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -66,7 +57,6 @@ def test_mgp_scene_text_recognition(variant):
     compiled_model = forge.compile(
         framework_model,
         sample_inputs=inputs,
-        verify_cfg=DeprecatedVerifyConfig(verify_forge_codegen_vs_framework=True),
         module_name=module_name,
         compiler_cfg=compiler_cfg,
     )
@@ -80,8 +70,4 @@ def test_mgp_scene_text_recognition(variant):
     )
 
     # Post processing
-    output = (co_out[0], co_out[1], co_out[2])
-
-    generated_text = processor.batch_decode(output)["generated_text"]
-
-    print(f"Generated text: {generated_text}")
+    loader.decode_output(co_out)

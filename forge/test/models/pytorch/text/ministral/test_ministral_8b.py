@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from third_party.tt_forge_models.mistral.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -16,14 +16,12 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.utils import download_model
-
-variants = ["mistralai/Ministral-8B-Instruct-2410"]
+variants = [ModelVariant.MINISTRAL_8B]
 
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_ministral_8b(variant):
 
     # Record Forge Property
@@ -39,17 +37,13 @@ def test_ministral_8b(variant):
 
     pytest.xfail(reason="Requires multi-chip support")
 
-    # Load model and tokenizer
-    framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    tokenizer.pad_token = tokenizer.eos_token
-
-    # Sample input
-    prompt = "What is the capital of France?"
-    inputs = tokenizer(prompt, return_tensors="pt")
-    input_ids = inputs["input_ids"]
-    attn_mask = inputs["attention_mask"]
-    inputs = [input_ids, attn_mask]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model()
+    framework_model.config.return_dict = False
+    framework_model.config.use_cache = False
+    input_dict = loader.load_inputs()
+    inputs = [input_dict["input_ids"], input_dict["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)

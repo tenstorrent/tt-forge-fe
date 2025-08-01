@@ -26,7 +26,6 @@ from forge.tensor import change_rank
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div, align_up
 from .pad import Pad
-from .nop import Nop
 
 
 def eval(type, attr, ops):
@@ -794,7 +793,7 @@ def decompose_select(attr, dc, inputs):
 
     result = inputs[0]
     if orig_shape[dim] == length:
-        result = dc.op(Nop.create(), [result])
+        result = dc.op("nop", [result])
         dc.fuse(result)
 
     # select on z dim is supported via splice

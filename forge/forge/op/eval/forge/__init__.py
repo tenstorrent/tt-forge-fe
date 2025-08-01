@@ -7,7 +7,6 @@ from functools import lru_cache
 from .cosine import Cosine
 from .ethernet_datacopy import EthernetDatacopy
 from .tanh import Tanh
-from .nop import Nop
 from .tilizer import Tilizer
 from .cumulativesum import CumulativeSum
 from .convolution import Conv2d
@@ -37,7 +36,7 @@ op_to_module_map = {
     "logical_and": "eltwise_binary",
     "exp": "eltwise_unary",
     "reciprocal": "eltwise_unary",
-    "nop": Nop,
+    "nop": "eltwise_unary",
     "sqrt": "eltwise_unary",
     "relu": "eltwise_unary",
     "leaky_relu": "eltwise_unary",

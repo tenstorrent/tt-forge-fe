@@ -7,7 +7,6 @@ import torch.nn.functional
 from ..interface import PyTM
 from forge._C import DataFormat
 from forge.tensor import forge_dataformat_to_pytorch_dtype
-from .nop import Nop
 
 
 class Pad(PyTM):
@@ -74,7 +73,7 @@ class Pad(PyTM):
     def decompose(self, dc, inputs):
         if all([x == 0 for x in self.padding]):
             # Pad size is 0
-            result = dc.op(Nop.create(), [inputs[0]])
+            result = dc.op("nop", [inputs[0]])
             dc.fuse(result)
             return
 

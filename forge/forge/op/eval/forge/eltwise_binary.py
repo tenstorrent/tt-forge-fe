@@ -8,7 +8,6 @@ from forge.forgeglobal import TILE_DIM
 from forge.tensor import Tensor
 import numpy as np
 import torch
-from .nop import Nop
 
 from ..common import to_torch_operands
 from forge.utils import align_up_tile
@@ -91,7 +90,7 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
 
     if op_type == "maximum":
         # TODO
-        return ac.op(Nop.create(), (grad,))  # pass gradient through
+        return ac.op("nop", (grad,))  # pass gradient through
 
     assert False, f"{op_type} not defined in eltwise binary backward."
 
