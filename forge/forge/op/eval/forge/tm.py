@@ -2,11 +2,9 @@
 
 # SPDX-License-Identifier: Apache-2.0
 from ..common import to_torch_operands
-import numpy as np
 import torch
 from loguru import logger
 import forge
-from forge.tensor import change_rank
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div, align_up
 
@@ -30,25 +28,6 @@ def eval(type, attr, ops):
                 else:
                     result.append(zero_slice)
         return torch.stack(result, dim=dim)
-
-    if type == "index":
-        assert len(attr) == 4, "Index should have 4 attributes"
-        dim, start, stop, stride = attr
-        if dim >= 0:
-            dim -= len(ops[0].shape)
-
-        if dim == -5:
-            return t_ops[0][..., start:stop:stride, :, :, :, :]
-        elif dim == -4:
-            return t_ops[0][..., start:stop:stride, :, :, :]
-        elif dim == -3:
-            return t_ops[0][..., start:stop:stride, :, :]
-        elif dim == -2:
-            return t_ops[0][..., start:stop:stride, :]
-        elif dim == -1:
-            return t_ops[0][..., start:stop:stride]
-        else:
-            raise NotImplementedError(f"Dim={dim}")
 
     if type == "conv2d_depthwise_weights":
         weights = t_ops[0]
@@ -225,17 +204,6 @@ def eval(type, attr, ops):
 
 def shape(type, attr, ops):
     assert len(ops) == 1, f"Tensor manipulation ops should have one input, has {len(ops)} input instead"
-
-    if type == "index":
-        assert len(attr) == 4, "Index should have 4 attributes"
-        dim, start, stop, stride = attr
-        shape = list(ops[0])
-
-        if start < 0:
-            start = shape[dim] + start
-
-        shape[dim] = round_up_div(stop - start, stride)
-        return tuple(shape), []
 
     if type == "select":
         assert len(attr) == 4, "Select should have 4 attributes"

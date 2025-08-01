@@ -40,14 +40,14 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
     auto index1_node = add_node<graphlib::PyOpNode>(
         *graph,
         "index1",
-        graphlib::OpType("index", {1, 0, 1, 1}, {{"dim", 1}, {"begin", 0}, {"length", 1}, {"stride", 1}}),
+        graphlib::OpType("index", {1, 0, 1, 1}, {{"dim", 1}, {"start", 0}, {"stop", 1}, {"stride", 1}}),
         {reshape_node});
     index1_node->set_shape(graphlib::Shape::create({2, 1, 6}));
 
     auto index2_node = add_node<graphlib::PyOpNode>(
         *graph,
         "index2",
-        graphlib::OpType("index", {1, 1, 2, 1}, {{"dim", 1}, {"begin", 1}, {"length", 2}, {"stride", 1}}),
+        graphlib::OpType("index", {1, 1, 2, 1}, {{"dim", 1}, {"start", 1}, {"stop", 2}, {"stride", 1}}),
         {reshape_node});
     index2_node->set_shape(graphlib::Shape::create({2, 1, 6}));
 
