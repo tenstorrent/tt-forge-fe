@@ -818,7 +818,7 @@ void Op::decompose_initial(
         case OpType::RepeatInterleave: return repeat_interleave::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Requantize: return requantize::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Reshape: return reshape::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Resize1d: return resize_1d::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Resize1d: return;
         case OpType::Resize2d: return resize_2d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Resize3d: return resize_3d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Select: return select::decompose_initial(old_op_type, *this, dc, inputs);
