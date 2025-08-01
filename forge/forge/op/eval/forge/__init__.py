@@ -8,7 +8,6 @@ from .cosine import Cosine
 from .ethernet_datacopy import EthernetDatacopy
 from .tanh import Tanh
 from .tilizer import Tilizer
-from .cumulativesum import CumulativeSum
 from .convolution import Conv2d
 from .convolution import Conv2dTranspose
 from .cast import Cast
@@ -48,7 +47,7 @@ op_to_module_map = {
     "sine": "eltwise_unary",
     "atan": "eltwise_unary",
     "tanh": Tanh,
-    "cumsum": CumulativeSum,
+    "cumsum": "scan",
     "argmax": "eltwise_unary",
     "logical_not": "eltwise_unary",
     "dropout": "eltwise_unary",

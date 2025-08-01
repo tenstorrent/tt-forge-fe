@@ -41,7 +41,6 @@ from .eltwise_unary import (
     Cosine,
     Tanh,
     LeakyRelu,
-    CumSum,
     LogicalNot,
     Pow,
     Tilize,
@@ -74,4 +73,5 @@ from .resize import Resize1d, Resize2d, Resize3d, Upsample2d, Downsample2d
 from .embedding import Embedding
 from .quantize import Quantize, Dequantize, Requantize, ForgeRequantize
 from .kv_cache import FillCache, UpdateCache
+from .scan import CumSum
 import forge.op.loss
