@@ -99,6 +99,10 @@ def Resize2d(
     assert (
         method == "nearest_neighbor" or method == "linear" or method == "bilinear" or method == "cubic"
     ), "Only support nearest_neighbor, linear and cubic interpolation for now"
+
+    if isinstance(channel_last, int):
+        channel_last = bool(channel_last)
+
     result: Tensor = op(
         "resize2d",
         name,
