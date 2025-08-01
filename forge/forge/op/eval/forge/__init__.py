@@ -47,7 +47,7 @@ op_to_module_map = {
     "sine": "eltwise_unary",
     "atan": "eltwise_unary",
     "tanh": Tanh,
-    "cumsum": "eltwise_unary",
+    "cumsum": "scan",
     "argmax": "eltwise_unary",
     "logical_not": "eltwise_unary",
     "dropout": "eltwise_unary",

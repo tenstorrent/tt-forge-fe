@@ -1363,7 +1363,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Conv3d: return false;
         case OpType::ConvSum: return true;
         case OpType::Cosine: return true;
-        case OpType::CumulativeSum: return true;
+        case OpType::CumulativeSum: return false;
         case OpType::Depthwise: return false;
         case OpType::Dequantize: return false;
         case OpType::Divide: return true;
@@ -1481,7 +1481,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Conv3d: return false;
         case OpType::ConvSum: return false;
         case OpType::Cosine: return true;
-        case OpType::CumulativeSum: return true;
+        case OpType::CumulativeSum: return false;
         case OpType::Depthwise: return false;
         case OpType::Dequantize: return false;
         case OpType::Divide: return false;
