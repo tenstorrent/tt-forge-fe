@@ -4,6 +4,8 @@
 
 
 import pytest
+import torch
+from third_party.tt_forge_models.stereo.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -15,22 +17,22 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.audio.stereo.model_utils.utils import load_inputs, load_model
-
 variants = [
-    pytest.param(
-        "facebook/musicgen-small",
-    ),
-    pytest.param(
-        "facebook/musicgen-medium",
-    ),
-    pytest.param(
-        "facebook/musicgen-large",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
-    ),
+    pytest.param(ModelVariant.SMALL),
+    pytest.param(ModelVariant.MEDIUM),
+    pytest.param(ModelVariant.LARGE, marks=[pytest.mark.out_of_memory]),
 ]
+
+
+class Wrapper(torch.nn.Module):
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+
+    def forward(self, input_ids, attention_mask, decoder_input_ids):
+        inputs = {"input_ids": input_ids, "attention_mask": attention_mask, "decoder_input_ids": decoder_input_ids}
+        output = self.model(**inputs)
+        return output.logits
 
 
 @pytest.mark.nightly
@@ -45,13 +47,15 @@ def test_stereo(variant):
         task=Task.MUSIC_GENERATION,
         source=Source.HUGGINGFACE,
     )
-    if variant == "facebook/musicgen-large":
+    if variant == ModelVariant.LARGE:
         pytest.xfail(reason="Requires multi-chip support")
 
-    framework_model, processor = load_model(variant)
-
-    input_ids, attn_mask, decoder_input_ids = load_inputs(framework_model, processor)
-    inputs = [input_ids, attn_mask, decoder_input_ids]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    model = loader.load_model()
+    framework_model = Wrapper(model)
+    inputs_dict = loader.load_inputs()
+    inputs = [inputs_dict["input_ids"], inputs_dict["attention_mask"], inputs_dict["decoder_input_ids"]]
 
     # Issue: https://github.com/tenstorrent/tt-forge-fe/issues/615
     # Forge compile framework model

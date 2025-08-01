@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+from third_party.tt_forge_models.deepcogito.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -13,13 +14,13 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.deepcogito.model_utils.model import get_input_model
+from test.models.pytorch.text.deepcogito.model_utils.model import CogitoWrapper
 
 
 @pytest.mark.out_of_memory
 @pytest.mark.xfail
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["deepcogito/cogito-v1-preview-llama-3B"])
+@pytest.mark.parametrize("variant", [ModelVariant.V1_PREVIEW_LLAMA_3B])
 def test_cogito_generation(variant):
 
     # Record Forge Property
@@ -32,9 +33,13 @@ def test_cogito_generation(variant):
     )
     pytest.xfail(reason="Requires multi-chip support")
 
-    # Load model and tokenizer
-    input_tensor_list, framework_model = get_input_model(variant)
-    sample_inputs = [input_tensor_list]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    model = loader.load_model()
+    framework_model = CogitoWrapper(model)
+    framework_model.eval()
+    inputs_dict = loader.load_inputs()
+    sample_inputs = [inputs_dict["input_ids"]]
 
     # Compile with Forge
     compiled_model = forge.compile(

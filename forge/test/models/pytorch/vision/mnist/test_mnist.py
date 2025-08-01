@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
+from third_party.tt_forge_models.mnist.pytorch import ModelLoader
 
 import forge
 from forge._C import DataFormat
@@ -18,9 +19,6 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.models_utils import print_cls_results
-from test.models.pytorch.vision.mnist.model_utils.utils import load_input, load_model
-
 
 @pytest.mark.nightly
 def test_mnist():
@@ -34,9 +32,10 @@ def test_mnist():
     )
 
     # Load model and input
-    framework_model = load_model().to(torch.bfloat16)
-    inputs = load_input()
-    inputs = [inputs[0].to(torch.bfloat16)]
+    loader = ModelLoader()
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -50,7 +49,7 @@ def test_mnist():
     )
 
     # Model Verification and Inference
-    fw_out, co_out = verify(
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
@@ -58,4 +57,4 @@ def test_mnist():
     )
 
     # Post Processing
-    print_cls_results(fw_out[0], co_out[0])
+    loader.print_cls_results(co_out)
