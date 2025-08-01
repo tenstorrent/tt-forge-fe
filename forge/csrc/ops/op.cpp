@@ -1342,7 +1342,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::AdaptiveMaxPool2d: return false;
         case OpType::Add: return true;
         case OpType::AdvIndex: return false;
-        case OpType::Argmax: return true;
+        case OpType::Argmax: return false;
         case OpType::Atan: return true;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;
@@ -1460,7 +1460,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::AdaptiveMaxPool2d: return false;
         case OpType::Add: return false;
         case OpType::AdvIndex: return false;
-        case OpType::Argmax: return true;
+        case OpType::Argmax: return false;
         case OpType::Atan: return true;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;
