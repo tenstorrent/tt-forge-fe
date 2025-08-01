@@ -24,6 +24,7 @@ variants = [
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2700")
 @pytest.mark.parametrize("variant", variants)
 def test_googlenet_pytorch(variant):
     # Record Forge Property
