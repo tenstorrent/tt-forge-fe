@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer, FalconForCausalLM
+from third_party.tt_forge_models.falcon.pytorch.loader import ModelLoader, ModelVariant
+from transformers import AutoTokenizer, FalconForCausalLM
 
 import forge
 from forge.forge_property_utils import (
@@ -17,7 +18,6 @@ from forge.forge_property_utils import (
 from forge.verify.verify import verify
 
 from test.models.models_utils import generate_no_cache, pad_inputs
-from test.utils import download_model
 
 
 @pytest.mark.out_of_memory
@@ -62,21 +62,21 @@ def test_falcon(variant):
 
 
 variants = [
-    pytest.param("tiiuae/Falcon3-1B-Base"),
+    pytest.param(ModelVariant.FALCON_1B),
     pytest.param(
-        "tiiuae/Falcon3-3B-Base",
+        ModelVariant.FALCON_3B,
         marks=[pytest.mark.xfail, pytest.mark.out_of_memory],
     ),
     pytest.param(
-        "tiiuae/Falcon3-7B-Base",
+        ModelVariant.FALCON_7B,
         marks=[pytest.mark.xfail, pytest.mark.out_of_memory],
     ),
     pytest.param(
-        "tiiuae/Falcon3-10B-Base",
+        ModelVariant.FALCON_10B,
         marks=[pytest.mark.xfail, pytest.mark.out_of_memory],
     ),
     pytest.param(
-        "tiiuae/Falcon3-Mamba-7B-Base",
+        ModelVariant.FALCON_MAMBA_7B,
         marks=[
             pytest.mark.out_of_memory,
         ],
@@ -89,10 +89,10 @@ variants = [
 def test_falcon_3(variant):
     # Record Forge Property
     if variant in [
-        "tiiuae/Falcon3-1B-Base",
-        "tiiuae/Falcon3-3B-Base",
-        "tiiuae/Falcon3-7B-Base",
-        "tiiuae/Falcon3-10B-Base",
+        ModelVariant.FALCON_1B,
+        ModelVariant.FALCON_3B,
+        ModelVariant.FALCON_7B,
+        ModelVariant.FALCON_10B,
     ]:
         group = ModelGroup.RED
     else:
@@ -102,23 +102,22 @@ def test_falcon_3(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.FALCON3,
-        variant=variant,
+        variant=variant.value,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=group,
     )
 
-    if variant != "tiiuae/Falcon3-1B-Base":
+    if variant != ModelVariant.FALCON_1B:
         pytest.xfail(reason="Requires multi-chip support")
 
-    # Load model and tokenizer
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)
+    # Load model and inputs using model loader
+    model_loader = ModelLoader(variant)
+    framework_model = model_loader.load_model()
     framework_model.eval()
 
-    # prepare input
-    input_text = "Write a function to calculate the factorial of a number"
-    inputs = tokenizer.encode(input_text, return_tensors="pt")
+    # Load inputs and pad them
+    inputs = model_loader.load_inputs()
     padded_inputs, seq_len = pad_inputs(inputs)
 
     # Forge compile framework model
@@ -133,7 +132,7 @@ def test_falcon_3(variant):
 
     # post processing
     generated_text = generate_no_cache(
-        max_new_tokens=50, model=compiled_model, inputs=padded_inputs, seq_len=seq_len, tokenizer=tokenizer
+        max_new_tokens=50, model=compiled_model, inputs=padded_inputs, seq_len=seq_len, tokenizer=model_loader.tokenizer
     )
 
     print("generated_text : ", generated_text)
