@@ -40,107 +40,212 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Leakyrelu0,
         [((1, 128, 60, 80), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v4_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 256, 30, 40), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v4_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 512, 15, 20), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v4_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 1024, 15, 20), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v4_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 256, 15, 20), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v4_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 512, 30, 40), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v4_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 128, 30, 40), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v4_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 256, 60, 80), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v4_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 32, 512, 512), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v3_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v3_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 64, 256, 256), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v3_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v3_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 32, 256, 256), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v3_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v3_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 128, 128, 128), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v3_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v3_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 64, 128, 128), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v3_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v3_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 256, 64, 64), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v3_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v3_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 128, 64, 64), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v3_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v3_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 512, 32, 32), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v3_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v3_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 256, 32, 32), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v3_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v3_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 1024, 16, 16), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v3_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v3_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 512, 16, 16), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v3_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v3_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 256, 16, 16), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v3_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v3_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
         [((1, 128, 32, 32), torch.bfloat16)],
-        {"model_names": ["pt_yolo_v3_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
+        {
+            "model_names": ["pt_yolo_v3_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"alpha": "0.10000000000000001"},
+        },
     ),
     (
         Leakyrelu0,
@@ -148,6 +253,7 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {"alpha": "0.10000000000000001"},
         },
     ),
@@ -157,6 +263,7 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {"alpha": "0.10000000000000001"},
         },
     ),
@@ -166,6 +273,7 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {"alpha": "0.10000000000000001"},
         },
     ),
@@ -175,6 +283,7 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {"alpha": "0.10000000000000001"},
         },
     ),
@@ -184,6 +293,7 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {"alpha": "0.10000000000000001"},
         },
     ),
@@ -193,6 +303,7 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {"alpha": "0.10000000000000001"},
         },
     ),
@@ -202,6 +313,7 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {"alpha": "0.10000000000000001"},
         },
     ),
@@ -211,6 +323,7 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {"alpha": "0.10000000000000001"},
         },
     ),
@@ -220,6 +333,7 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {"alpha": "0.10000000000000001"},
         },
     ),
@@ -229,6 +343,7 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {"alpha": "0.10000000000000001"},
         },
     ),
@@ -238,6 +353,7 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {"alpha": "0.10000000000000001"},
         },
     ),
@@ -247,6 +363,7 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {"alpha": "0.10000000000000001"},
         },
     ),
@@ -256,6 +373,7 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {"alpha": "0.10000000000000001"},
         },
     ),
@@ -289,7 +407,6 @@ def test_module(forge_module_and_shapes_dtypes):
     ]
 
     framework_model = forge_module(forge_module.__name__)
-    framework_model.process_framework_parameters()
 
     for name, parameter in framework_model._parameters.items():
         parameter_tensor = Tensor.create_torch_tensor(

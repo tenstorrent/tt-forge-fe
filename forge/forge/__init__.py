@@ -77,7 +77,7 @@ from .verify import DeprecatedVerifyConfig
 from .forgeglobal import set_device_pipeline, is_silicon, get_tenstorrent_device
 from .parameter import Parameter
 from .tensor import Tensor, SomeTensor, TensorShape
-from .optimizers import SGD, Adam, AdamW, LAMB, LARS
+from .optimizers import SGD, Adam, AdamW
 from ._C import DataFormat, MathFidelity
 from ._C import k_dim
 

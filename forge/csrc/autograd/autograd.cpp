@@ -3,10 +3,15 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "autograd/autograd.hpp"
 
+#include <ATen/core/ATen_fwd.h>
+#include <pybind11/pybind11.h>
+#include <torch/extension.h>
+
 #include "autograd/binding.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
 #include "ops/op.hpp"
+#include "python_bindings_common.hpp"
 #include "utils/logger.hpp"
 
 using NodeType = tt::graphlib::NodeType;
@@ -395,13 +400,13 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
                     log_debug(
                         tt::LogAutograd,
                         "Edge has broadcast: dim={} size={}",
-                        std::get<int>(tm.legacy_attrs_[0]),
-                        std::get<int>(tm.legacy_attrs_[1]));
-                    int dim = std::get<int>(tm.legacy_attrs_[0]);
+                        tm.attr_as<int>("dim"),
+                        tm.attr_as<int>("size"));
+                    int dim = tm.attr_as<int>("dim");
 
                     NodeContext src = last_out;
                     last_out = create_backward_op(
-                        OpType("reduce_sum", {dim, true}, {{"keep_dim", true}, {"dim_arg", std::vector<int>({dim})}}),
+                        OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>({dim})}, {"keep_dim", true}}),
                         {src},
                         node,
                         edge.consumer_input_port_id,
@@ -539,6 +544,11 @@ NodeContext autograd_engine::create_op(
     throw std::runtime_error("Expected autograd_context.epoch_type to be Backward or Optimizer");
 }
 
+NodeContext autograd_engine::create_constant_tensor(struct autograd_context &self, const at::Tensor &tensor)
+{
+    return create_constant_tensor(self.current_fwd_op, self.operand, tensor, self.created_op_index++, self.epoch_type);
+}
+
 // Create a backward op for the given fwd op's operand
 NodeContext autograd_engine::create_backward_op(
     const graphlib::OpType &type,
@@ -647,25 +657,29 @@ static void tag_disable_consteval(bool disable_consteval, Node *node)
     }
 }
 
-NodeContext autograd_engine::create_constant(
+NodeContext autograd_engine::create_constant_tensor(
     Node *current_fwd_op,
     int operand_index,
-    std::shared_ptr<void> tensor,
-    const graphlib::Shape &shape,
+    const at::Tensor &tensor,
     int created_op_index,
     graphlib::NodeEpochType epoch_type)
 {
-    TT_ASSERT(tensor, "Trying to create constant tensor node with null tensor");
+    // Convert at::Tensor to Python object for storage
+    py::object py_tensor = py::cast(tensor);
+    std::shared_ptr<void> tensor_ptr = make_shared_py_object(py_tensor);
+
+    at::IntArrayRef tensor_shape = tensor.sizes();
+    std::vector<int64_t> shape_vec(tensor_shape.begin(), tensor_shape.end());
+    graphlib::Shape shape = graphlib::Shape::create(shape_vec);
 
     auto node = graph->add_node(
         graphlib::create_node<graphlib::ConstantInputNode>(
-            "input_constant_" + current_fwd_op->name() + "_" + std::to_string(created_op_index), tensor, shape),
+            "input_constant_" + current_fwd_op->name() + "_" + std::to_string(created_op_index), tensor_ptr, shape),
         graph->get_subgraph_id_for_node(current_fwd_op->id()));
 
     node->set_shape(shape);
 
-    py::object py_tensor = borrow_shared_py_object(tensor);
-    DataFormat output_df = graphlib::infer_data_format_from_py_tensor(py_tensor);
+    DataFormat output_df = graphlib::scalar_type_to_data_format(tensor);
     node->set_output_df(output_df);
 
     if (epoch_type == graphlib::NodeEpochType::Backward)

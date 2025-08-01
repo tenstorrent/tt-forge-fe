@@ -49,6 +49,18 @@ tt::graphlib::NodeContext reduce_broadcast_dimensions(
     const tt::graphlib::Shape &input_shape,
     const tt::graphlib::Shape &grad_shape);
 
+/**
+ * Calculate initial FLOPS estimate for operations based on output shape.
+ * This is a common pattern where FLOPS equals the number of output elements.
+ *
+ * @param shape_tuple Tuple containing the output shape and broadcast information from an operation's shape function
+ * @return FLOPS estimate (number of output elements)
+ */
+long initial_flops_estimate_output_dim(std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape_tuple);
+
+std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> reduce_ops_shape(
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes);
+
 }  // namespace op_common
 }  // namespace ops
 }  // namespace tt

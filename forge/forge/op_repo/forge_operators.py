@@ -14,7 +14,6 @@ _OPERATORS = [
     # Unary operators
     OperatorDefinition("exp", "forge.op.Exp", 1),
     OperatorDefinition("reciprocal", "forge.op.Reciprocal", 1),
-    OperatorDefinition("buffer", "forge.op.Buffer", 1),
     OperatorDefinition("sqrt", "forge.op.Sqrt", 1),
     OperatorDefinition("relu", "forge.op.Relu", 1),
     OperatorDefinition(

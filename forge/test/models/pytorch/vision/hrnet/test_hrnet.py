@@ -3,14 +3,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-import timm
 import torch
-from loguru import logger
 from PIL import Image
 from pytorchcv.model_provider import get_model as ptcv_get_model
+from third_party.tt_forge_models.hrnet.pytorch import ModelLoader, ModelVariant
 from third_party.tt_forge_models.tools.utils import get_file
-from timm.data import resolve_data_config
-from timm.data.transforms_factory import create_transform
 from torchvision import transforms
 
 import forge
@@ -105,7 +102,7 @@ def test_hrnet_osmr_pytorch(variant):
         model=ModelArch.HRNET,
         variant=variant,
         source=Source.OSMR,
-        task=Task.POSE_ESTIMATION,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     framework_model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
@@ -135,82 +132,17 @@ def test_hrnet_osmr_pytorch(variant):
     print_cls_results(fw_out[0], co_out[0])
 
 
-def generate_model_hrnet_imgcls_timm_pytorch(variant):
-    # STEP 2: Create Forge module from PyTorch model
-    """
-    default_cfgs = {
-    'hrnet_w18_small'
-    'hrnet_w18_small_v2'
-    'hrnet_w18'
-    'hrnet_w30'
-    'hrnet_w32'
-    'hrnet_w40'
-    'hrnet_w44'
-    'hrnet_w48'
-    'hrnet_w64'
-    }
-    """
-    model = download_model(timm.create_model, variant, pretrained=True)
-    model.eval()
-
-    ## Preprocessing
-    try:
-        config = resolve_data_config({}, model=model)
-        transform = create_transform(**config)
-        file_path = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
-        img = Image.open(file_path).convert("RGB")
-        input_tensor = transform(img).unsqueeze(0)  # transform and add batch dimension
-    except:
-        logger.warning(
-            "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
-        )
-        input_tensor = torch.rand(1, 3, 224, 224)
-    print(input_tensor.shape)
-
-    return model.to(torch.bfloat16), [input_tensor.to(torch.bfloat16)], {}
-
-
 variants = [
-    pytest.param("hrnet_w18_small"),
-    pytest.param("hrnet_w18_small_v2"),
-    pytest.param("hrnet_w18"),
-    pytest.param("hrnet_w30"),
-    pytest.param(
-        "hrnet_w32",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
-    ),
-    pytest.param(
-        "hrnet_w40",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
-    ),
-    pytest.param(
-        "hrnet_w44",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
-    ),
-    pytest.param(
-        "hrnet_w48",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
-    ),
-    pytest.param(
-        "hrnet_w64",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
-    ),
-    pytest.param(
-        "hrnet_w18.ms_aug_in1k",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
-    ),
+    ModelVariant.HRNET_W18_SMALL,
+    ModelVariant.HRNET_W18_SMALL_V2,
+    ModelVariant.HRNET_W18,
+    ModelVariant.HRNET_W30,
+    ModelVariant.HRNET_W32,
+    ModelVariant.HRNET_W40,
+    ModelVariant.HRNET_W44,
+    ModelVariant.HRNET_W48,
+    ModelVariant.HRNET_W64,
+    ModelVariant.HRNET_W18_MS_AUG_IN1K,
 ]
 
 
@@ -224,14 +156,24 @@ def test_hrnet_timm_pytorch(variant):
         model=ModelArch.HRNET,
         variant=variant,
         source=Source.TIMM,
-        task=Task.POSE_ESTIMATION,
+        task=Task.IMAGE_CLASSIFICATION,
     )
-    if variant in ["hrnet_w32", "hrnet_w40", "hrnet_w44", "hrnet_w48", "hrnet_w64", "hrnet_w18.ms_aug_in1k"]:
+
+    if variant in [
+        ModelVariant.HRNET_W32,
+        ModelVariant.HRNET_W40,
+        ModelVariant.HRNET_W44,
+        ModelVariant.HRNET_W48,
+        ModelVariant.HRNET_W64,
+        ModelVariant.HRNET_W18_MS_AUG_IN1K,
+    ]:
         pytest.xfail(reason="Requires multi-chip support")
 
-    framework_model, inputs, _ = generate_model_hrnet_imgcls_timm_pytorch(
-        variant,
-    )
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -244,8 +186,8 @@ def test_hrnet_timm_pytorch(variant):
         compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+    # Model Verification and inference
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
-    print_cls_results(fw_out[0], co_out[0])
+    loader.print_cls_results(co_out)

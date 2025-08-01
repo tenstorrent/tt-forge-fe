@@ -2,12 +2,23 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from transformers import (
-    AutoTokenizer,
-    PhiConfig,
-    PhiForCausalLM,
-    PhiForSequenceClassification,
-    PhiForTokenClassification,
+from third_party.tt_forge_models.phi2.causal_lm.pytorch import (
+    ModelLoader as CausalLMLoader,
+)
+from third_party.tt_forge_models.phi2.causal_lm.pytorch.loader import (
+    ModelVariant as CausalLMVariant,
+)
+from third_party.tt_forge_models.phi2.sequence_classification.pytorch import (
+    ModelLoader as SequenceClassificationLoader,
+)
+from third_party.tt_forge_models.phi2.sequence_classification.pytorch.loader import (
+    ModelVariant as SequenceClassificationVariant,
+)
+from third_party.tt_forge_models.phi2.token_classification.pytorch import (
+    ModelLoader as TokenClassificationLoader,
+)
+from third_party.tt_forge_models.phi2.token_classification.pytorch.loader import (
+    ModelVariant as TokenClassificationVariant,
 )
 
 import forge
@@ -24,21 +35,17 @@ from forge.verify.verify import verify
 
 from test.models.models_utils import TextModelWrapper
 
-variants = [
-    pytest.param(
-        "microsoft/phi-2",
-    ),
-    pytest.param(
-        "microsoft/phi-2-pytdml",
-    ),
+PHI_VARIANTS = [
+    CausalLMVariant.PHI2,
+    CausalLMVariant.PHI2_PYTDML,
 ]
 
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants)
-def test_phi2_clm(variant):
-    if variant in ["microsoft/phi-2"]:
+@pytest.mark.parametrize("variant", PHI_VARIANTS)
+def test_phi2_causal_lm_pytorch(variant):
+    if variant == CausalLMVariant.PHI2:
         group = ModelGroup.RED
         priority = ModelPriority.P1
     else:
@@ -58,51 +65,34 @@ def test_phi2_clm(variant):
 
     pytest.xfail(reason="Requires multi-chip support")
 
-    # Load model and tokenizer from HuggingFace
-    model = PhiForCausalLM.from_pretrained(variant, trust_remote_code=True, use_cache=False)
+    # Load model and input
+    loader = CausalLMLoader(variant)
+    model = loader.load_model()
+    input_dict = loader.load_inputs()
+
+    # prepare input and model
+    inputs = [input_dict["input_ids"], input_dict["attention_mask"]]
+    model.config.use_cache = False
     framework_model = TextModelWrapper(model=model, text_embedding=model.model.embed_tokens)
     framework_model.eval()
-    tokenizer = AutoTokenizer.from_pretrained(variant, return_tensors="pt", trust_remote_code=True)
-    tokenizer.add_special_tokens({"pad_token": "[PAD]"})
-
-    # input_prompt
-    input_prompt = "Write a detailed analogy between mathematics and a lighthouse."
-
-    # Tokenize input
-    inputs = tokenizer(
-        input_prompt,
-        return_tensors="pt",
-        max_length=256,
-        padding="max_length",
-        truncation=True,
-    )
-
-    input_ids = inputs["input_ids"]
-    attn_mask = inputs["attention_mask"]
-
-    inputs = [input_ids, attn_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(framework_model, inputs, module_name)
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
-variants = [
-    pytest.param(
-        "microsoft/phi-2",
-    ),
-    pytest.param(
-        "microsoft/phi-2-pytdml",
-    ),
+PHI_VARIANTS = [
+    TokenClassificationVariant.PHI2,
+    TokenClassificationVariant.PHI2_PYTDML,
 ]
 
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants)
-def test_phi2_token_classification(variant):
+@pytest.mark.parametrize("variant", PHI_VARIANTS)
+def test_phi2_token_classification_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -112,45 +102,39 @@ def test_phi2_token_classification(variant):
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
+
     pytest.xfail(reason="Requires multi-chip support")
 
-    # Load tokenizer and model from HuggingFace
-    tokenizer = AutoTokenizer.from_pretrained(variant, return_tensors="pt", trust_remote_code=True)
-    model = PhiForTokenClassification.from_pretrained(variant, trust_remote_code=True, use_cache=False)
-    framework_model = TextModelWrapper(model)
+    # Load model and input
+    loader = TokenClassificationLoader(variant)
+    model = loader.load_model()
+    input_dict = loader.load_inputs()
+
+    # prepare input and model
+    inputs = [input_dict["input_ids"]]
+    model.config.use_cache = False
+    framework_model = TextModelWrapper(model=model)
     framework_model.eval()
 
-    # input_prompt
-    input_prompt = "HuggingFace is a company based in Paris and New York"
-
-    # Tokenize input
-    inputs = tokenizer(input_prompt, return_tensors="pt")
-
-    inputs = [inputs["input_ids"]]
-
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(framework_model, inputs, module_name)
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # post processing
+    print(f"Answer: {loader.decode_output(co_out)}")
 
 
-variants = [
-    pytest.param(
-        "microsoft/phi-2",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
-    ),
-    pytest.param(
-        "microsoft/phi-2-pytdml",
-    ),
+PHI_VARIANTS = [
+    SequenceClassificationVariant.PHI2,
+    SequenceClassificationVariant.PHI2_PYTDML,
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants)
-def test_phi2_sequence_classification(variant):
+@pytest.mark.parametrize("variant", PHI_VARIANTS)
+def test_phi2_sequence_classification_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -160,32 +144,25 @@ def test_phi2_sequence_classification(variant):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-    if variant == "microsoft/phi-2":
-        pytest.xfail(reason="Requires multi-chip support")
 
-    # PhiConfig from pretrained variant, disable return_dict and caching.
-    config = PhiConfig.from_pretrained(variant)
-    config_dict = config.to_dict()
-    config_dict["use_cache"] = False
-    config_dict["pad_token_id"] = None
-    config = PhiConfig(**config_dict)
+    pytest.xfail(reason="Requires multi-chip support")
 
-    # Load tokenizer and model from HuggingFace
-    tokenizer = AutoTokenizer.from_pretrained(variant, return_tensors="pt", trust_remote_code=True)
-    model = PhiForSequenceClassification.from_pretrained(variant, trust_remote_code=True, config=config)
-    framework_model = TextModelWrapper(model)
+    # Load model and input
+    loader = SequenceClassificationLoader(variant)
+    model = loader.load_model()
+    input_dict = loader.load_inputs()
+
+    # prepare input and model
+    inputs = [input_dict["input_ids"]]
+    model.config.use_cache = False
+    framework_model = TextModelWrapper(model=model)
     framework_model.eval()
 
-    # input_prompt
-    input_prompt = "I am not satisfied with the quality of this product."
-
-    # Tokenize input
-    inputs = tokenizer(input_prompt, return_tensors="pt")
-
-    inputs = [inputs["input_ids"]]
-
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(framework_model, inputs, module_name)
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # post processing
+    print(f"Predicted Sentiment: {loader.decode_output(co_out)}")

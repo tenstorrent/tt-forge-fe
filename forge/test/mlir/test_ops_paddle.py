@@ -303,3 +303,23 @@ def test_embedding_pp(vocab_size, token_num, embedding_dim):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.push
+def test_expand_concat_pp():
+    class ExpandConcat(paddle.nn.Layer):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, inp1, inp2):
+            return paddle.concat([inp2, inp1.expand([1, 1, -1])], axis=1)
+
+    inputs = [
+        paddle.rand((1, 1, 768)),
+        paddle.rand((1, 577, 768)),
+    ]
+
+    framework_model = ExpandConcat()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)

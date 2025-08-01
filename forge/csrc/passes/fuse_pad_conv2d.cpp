@@ -20,7 +20,7 @@ void fuse_pad_conv2d(graphlib::Graph *graph)
     for (auto *node : graphlib::topological_sort(*graph))
     {
         graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(node);
-        if (not op or op->op_name() != "pad")
+        if (not op or op->new_op_type() != ops::OpType::Pad)
         {
             continue;
         }
@@ -58,7 +58,7 @@ void fuse_pad_conv2d(graphlib::Graph *graph)
         for (auto *user : users)
         {
             graphlib::OpNode *user_op = dynamic_cast<graphlib::OpNode *>(user);
-            if (not user_op or user_op->op_name() != "conv2d")
+            if (not user_op or user_op->new_op_type() != ops::OpType::Conv2d)
             {
                 all_users_are_conv2d = false;
                 break;

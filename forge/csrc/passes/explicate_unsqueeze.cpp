@@ -98,7 +98,7 @@ void hoist_unsqueeze_squeeze_to_reshape(graphlib::Graph *graph)
         {
             continue;
         }
-        if (op->op_name() != "reshape")
+        if (op->new_op_type() != ops::OpType::Reshape)
         {
             continue;
         }
@@ -113,9 +113,11 @@ void hoist_unsqueeze_squeeze_to_reshape(graphlib::Graph *graph)
         auto user_op = dynamic_cast<graphlib::OpNode *>(users[0]);
         auto operand_op = dynamic_cast<graphlib::OpNode *>(operands[0]);
         bool user_is_squeeze_unsqueeze =
-            (user_op and (user_op->op_name() == "unsqueeze" or user_op->op_name() == "squeeze"));
+            (user_op and
+             (user_op->new_op_type() == ops::OpType::Unsqueeze or user_op->new_op_type() == ops::OpType::Squeeze));
         bool operand_is_squeeze_unsqueeze =
-            (operand_op and (operand_op->op_name() == "unsqueeze" or operand_op->op_name() == "squeeze"));
+            (operand_op and (operand_op->new_op_type() == ops::OpType::Unsqueeze or
+                             operand_op->new_op_type() == ops::OpType::Squeeze));
         if (not user_is_squeeze_unsqueeze and not operand_is_squeeze_unsqueeze)
         {
             continue;

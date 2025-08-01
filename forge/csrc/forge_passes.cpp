@@ -26,7 +26,6 @@
 #include "passes/generate_initial_flops_estimate.hpp"
 #include "passes/hoist_transforms_to_inputs.hpp"
 #include "passes/insert_inverse_on_io.hpp"
-#include "passes/link_past_cache_ios.hpp"
 #include "passes/mlir_compiler.hpp"
 #include "passes/move_requantize.hpp"
 #include "passes/pad_output_buffer.hpp"

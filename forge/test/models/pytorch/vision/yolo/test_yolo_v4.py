@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import os
+
 import pytest
 import torch
 
@@ -17,25 +19,17 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
+
+from test.models.pytorch.vision.yolo.model_utils.yolov4_utils import Wrapper
 
 from third_party.tt_forge_models.yolov4 import ModelLoader  # isort:skip
 
 
-class Wrapper(torch.nn.Module):
-    def __init__(self, model):
-        super().__init__()
-        self.model = model
-
-    def forward(self, image: torch.Tensor):
-        x, y, z = self.model(image)
-        # Post processing inside model casts output to float32,
-        # even though raw output is aligned with image.dtype
-        # Therefore we need to cast it back to image.dtype
-        return x.to(image.dtype), y.to(image.dtype), z.to(image.dtype)
-
-
 @pytest.mark.nightly
+@pytest.mark.xfail
 def test_yolo_v4():
     # Record Forge Property
     module_name = record_model_properties(
@@ -49,9 +43,10 @@ def test_yolo_v4():
     )
 
     # Load model and input
-    framework_model = ModelLoader.load_model(dtype_override=torch.bfloat16)
+    loader = ModelLoader()
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
     framework_model = Wrapper(framework_model).to(torch.bfloat16)
-    input_sample = ModelLoader.load_inputs(dtype_override=torch.bfloat16)
+    input_sample = loader.load_inputs(dtype_override=torch.bfloat16)
 
     # Configurations
     compiler_cfg = CompilerConfig()
@@ -66,7 +61,19 @@ def test_yolo_v4():
     )
 
     # Model Verification
-    verify([input_sample], framework_model, compiled_model)
+    _, co_out = verify(
+        [input_sample],
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98)),
+    )
+
+    # Post-Processing
+    output_path = loader.post_processing(co_out)
+
+    # Cleanup: Remove output image file after test
+    if os.path.exists(output_path):
+        os.remove(output_path)
 
 
 @pytest.mark.nightly

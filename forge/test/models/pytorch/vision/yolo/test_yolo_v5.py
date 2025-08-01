@@ -63,7 +63,7 @@ def test_yolov5_320x320(restore_package_versions, size):
         "ultralytics/yolov5",
         size=size,
     )
-    framework_model.to(torch.bfloat16)
+    framework_model = framework_model.to(torch.bfloat16)
     inputs = [inputs[0].to(torch.bfloat16)]
 
     # Configurations
@@ -98,7 +98,7 @@ size = [
     pytest.param("s", id="yolov5s"),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),
-    pytest.param("x", id="yolov5x", marks=[pytest.mark.xfail]),
+    pytest.param("x", id="yolov5x"),
 ]
 
 
@@ -120,7 +120,7 @@ def test_yolov5_640x640(restore_package_versions, size):
         "ultralytics/yolov5",
         size=size,
     )
-    framework_model.to(torch.bfloat16)
+    framework_model = framework_model.to(torch.bfloat16)
     inputs = [inputs[0].to(torch.bfloat16)]
 
     # Configurations
@@ -172,7 +172,7 @@ def test_yolov5_480x480(restore_package_versions, size):
         size=size,
     )
 
-    framework_model.to(torch.bfloat16)
+    framework_model = framework_model.to(torch.bfloat16)
     inputs = [inputs[0].to(torch.bfloat16)]
 
     # Configurations
@@ -190,7 +190,6 @@ def test_yolov5_480x480(restore_package_versions, size):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["yolov5s"])
-@pytest.mark.xfail
 def test_yolov5_1280x1280(restore_package_versions, variant):
 
     # Record Forge Property
@@ -210,7 +209,7 @@ def test_yolov5_1280x1280(restore_package_versions, variant):
         variant="ultralytics/yolov5",
     )
 
-    framework_model.to(torch.bfloat16)
+    framework_model = framework_model.to(torch.bfloat16)
     input_shape = (1, 3, 1280, 1280)
     input_tensor = torch.rand(input_shape)
     inputs = [input_tensor.to(torch.bfloat16)]

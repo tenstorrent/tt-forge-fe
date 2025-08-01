@@ -2,14 +2,11 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-#include <vector>
-
 #include "autograd/autograd.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
 #include "op_interface.hpp"
-#include "passes/decomposing_context.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
 #include "utils/assert.hpp"
@@ -25,14 +22,17 @@ using namespace graphlib;
 at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Reciprocal, "Wrong op type.");
-    return op.base_eval(old_op_type, tensors);
+    TT_ASSERT(tensors.size() == 1, "OpReciprocal::eval should have single input tensor.");
+    // Add epsilon to avoid infinity
+    return torch::reciprocal(tensors[0] + 1e-10);
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
     const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Reciprocal, "Wrong op type.");
-    return op.base_shape(old_op_type, in_shapes);
+    TT_ASSERT(in_shapes.size() == 1, "OpReciprocal::shape should have single input shape.");
+    return std::make_tuple(Shape::create(in_shapes[0]), std::vector<DimBroadcast>{});
 }
 
 NodeContext backward(
@@ -44,36 +44,20 @@ NodeContext backward(
     const NodeContext &output,
     const NodeContext &gradient)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Reciprocal, "Wrong op type.");
-    return op.base_backward(old_op_type, ac, operand, inputs, output, gradient);
-}
+    /**
+     * Backward implementation:
+     * dx = -1/x^2 * grad
+     */
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
     TT_DBG_ASSERT(op.type() == OpType::Reciprocal, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
-}
+    TT_ASSERT(inputs.size() == 1, "Reciprocal should have single input.");
+    TT_ASSERT(operand == 0, "Invalid operand index.");
 
-void decompose_post_optimize(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Reciprocal, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
-}
+    auto sq = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {output, output});
+    auto neg_one = ac.autograd->create_constant(ac, -1.0);
+    auto neg = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {sq, neg_one});
 
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Reciprocal, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
-}
-
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Reciprocal, "Wrong op type.");
-    return op.base_initial_flops_estimate(old_op_type, inputs);
+    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {neg, gradient});
 }
 
 }  // namespace reciprocal

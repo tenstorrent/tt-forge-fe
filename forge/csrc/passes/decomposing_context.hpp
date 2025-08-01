@@ -7,6 +7,11 @@
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
 
+namespace at
+{
+class Tensor;
+}
+
 namespace tt
 {
 
@@ -55,7 +60,8 @@ class DecomposingContext
         bool optimize_hoist = false,
         DataFormat output_df = DataFormat::Invalid);
     void fuse(NodeContext operand, graphlib::PortId out_port = 0);
-    NodeContext tensor(std::shared_ptr<void> tensor_handle, graphlib::Shape tensor_shape);
+
+    NodeContext tensor(const at::Tensor& tensor);
 
     Graph* get_graph() { return graph; }
 

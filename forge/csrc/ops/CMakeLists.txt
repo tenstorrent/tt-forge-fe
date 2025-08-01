@@ -10,10 +10,8 @@ add_library(ops
     op_atan.cpp
     op_avg_pool_1d.cpp
     op_avg_pool_2d.cpp
-    op_avg_pool_3d.cpp
     op_batchnorm.cpp
     op_broadcast.cpp
-    op_buffer.cpp
     op_cast.cpp
     op_clip.cpp
     op_concatenate.cpp
@@ -33,7 +31,6 @@ add_library(ops
     op_dequantize.cpp
     op_depthwise.cpp
     op_divide.cpp
-    op_dram_queue.cpp
     op_downsample_2d.cpp
     op_dropout.cpp
     op_embedding.cpp
@@ -50,10 +47,8 @@ add_library(ops
     op_forge_unpad.cpp
     op_gather.cpp
     op_gelu.cpp
-    op_gelu_derivative.cpp
     op_greater.cpp
     op_greater_equal.cpp
-    op_grouped_reduce_avg.cpp
     op_heaviside.cpp
     op_hslice.cpp
     op_hstack.cpp
@@ -73,7 +68,6 @@ add_library(ops
     op_matmul.cpp
     op_max_pool_1d.cpp
     op_max_pool_2d.cpp
-    op_max_pool_3d.cpp
     op_maximum.cpp
     op_minimum.cpp
     op_multiply.cpp
@@ -110,7 +104,6 @@ add_library(ops
     op_subtract.cpp
     op_squeeze.cpp
     op_tanh.cpp
-    op_tile_broadcast.cpp
     op_tilizer.cpp
     op_transpose.cpp
     op_unsqueeze.cpp
@@ -122,5 +115,8 @@ add_library(ops
     python_bindings.cpp)
 
 target_link_libraries(ops PUBLIC coverage_config)
-
 target_compile_options(ops PRIVATE ${STATIC_LIB_FLAGS} ${TTFORGE_CSRC_CFLAGS})
+
+# Enable precompiled headers and unity build for faster compilation.
+target_precompile_headers(ops PRIVATE ops_pch.hpp)
+set_target_properties(ops PROPERTIES UNITY_BUILD ON)

@@ -40,59 +40,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     return op_common::compute_elementwise_binary_shape(in_shapes);
 }
 
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type,
-    const Op &op,
-    DecomposingContext &dc,
-    const std::vector<tt::graphlib::NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Subtract, "Wrong op type.");
-    TT_ASSERT(inputs.size() == 2, "subtract::decompose_post_autograd should have two input tensors.");
-    TT_ASSERT(op.attrs().size() == 0, "subtract::decompose_post_autograd should not have any attrs.");
-
-    // Get dimensions of both inputs
-    Shape input0_shape = inputs[0].shape;
-    Shape input1_shape = inputs[1].shape;
-
-    uint32_t input0_size = input0_shape.size();
-    uint32_t input1_size = input1_shape.size();
-
-    if (input0_size > input1_size && input0_size == 5)
-    {
-        // Reshape input[1] to match input[0] shape
-        std::vector<std::uint32_t> uint_vec_target = input0_shape.as_vector();
-        std::vector<int> int_vec_target(uint_vec_target.begin(), uint_vec_target.end());
-
-        std::vector<graphlib::OpType::Attr> pos_attrs(int_vec_target.begin(), int_vec_target.end());
-
-        Attrs named_attrs;
-        named_attrs["shape"] = int_vec_target;
-
-        tt::graphlib::NodeContext ops1 = dc.op(graphlib::OpType("reshape", pos_attrs, named_attrs), {inputs[1]});
-
-        tt::graphlib::NodeContext result = dc.op(graphlib::OpType("subtract"), {inputs[0], ops1});
-
-        dc.fuse(result, 0);
-    }
-    else if (input1_size > input0_size && input1_size == 5)
-    {
-        // Reshape input[0] to match input[1] shape
-        std::vector<std::uint32_t> uint_vec_target = input1_shape.as_vector();
-        std::vector<int> int_vec_target(uint_vec_target.begin(), uint_vec_target.end());
-
-        std::vector<graphlib::OpType::Attr> pos_attrs(int_vec_target.begin(), int_vec_target.end());
-
-        Attrs named_attrs;
-        named_attrs["shape"] = int_vec_target;
-
-        tt::graphlib::NodeContext ops0 = dc.op(graphlib::OpType("reshape", pos_attrs, named_attrs), {inputs[0]});
-
-        tt::graphlib::NodeContext result = dc.op(graphlib::OpType("subtract"), {ops0, inputs[1]});
-
-        dc.fuse(result, 0);
-    }
-}
-
 tt::graphlib::NodeContext backward(
     const graphlib::OpType &old_op_type,
     const Op &op,

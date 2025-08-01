@@ -78,11 +78,11 @@ static void insert_pad_within_tile(graphlib::Graph *graph, graphlib::Edge edge, 
             break;
         }
 
-        int tm_dim = consumer->shape().negative_index(std::get<int>(tm.legacy_attrs_[0]));
+        int tm_dim = consumer->shape().negative_index(tm.attr_as<int>("dim"));
         if (tm_dim == dim)
         {
-            std::get<int>(tm.legacy_attrs_[0]) = tm_dim;
-            std::get<int>(tm.legacy_attrs_[1]) = size;
+            tm.set_attr("dim", tm_dim);
+            tm.set_attr("size", size);
             return;
         }
     }
@@ -91,7 +91,7 @@ static void insert_pad_within_tile(graphlib::Graph *graph, graphlib::Edge edge, 
     bool implicit_broadcast = producer_dim_size == 1;
     if (implicit_broadcast)
     {
-        tms.push_back(graphlib::OpType("broadcast", {dim, size}, {}));
+        tms.push_back(graphlib::OpType("broadcast", {}, {{"dim", dim}, {"size", size}}));
         return;
     }
 
@@ -104,7 +104,10 @@ static void insert_pad_within_tile(graphlib::Graph *graph, graphlib::Edge edge, 
                 consumer->clone("pad_tile_" + producer->name() + "_" + std::to_string(edge.edge_creation_id)),
                 graph->get_subgraph_id_for_node(producer->id()))
             ->as<graphlib::OpNode>();
-    pad_tile->change_op_type(graphlib::OpType("pad_tile", {dim, (int)producer->shape()[dim]}));
+    pad_tile->change_op_type(graphlib::OpType(
+        "pad_tile",
+        {dim, (int)producer->shape()[dim]},
+        {{"dim", dim}, {"original_length", (int)producer->shape()[dim]}}));
     auto [incoming_edge, outgoing_edge] = graphlib::insert_node_on_edge(graph, edge, pad_tile);
     if (only_bcast)
     {
@@ -122,7 +125,7 @@ static void insert_pad_within_tile(graphlib::Graph *graph, graphlib::Edge edge, 
 
 static bool try_hoist_above_narrow(graphlib::Graph *graph, graphlib::OpNode *narrow, graphlib::OpNode *consumer)
 {
-    if (narrow->op_name() != "narrow")
+    if (narrow->new_op_type() != ops::OpType::Narrow)
         return false;
 
     if (graph->user_data_edges(narrow).size() > 1)
@@ -206,7 +209,7 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
     //  - op is eltwise multiply
     //  - 1 argument is a 1 dimensional constant tensor
     //  - 1 argument is a matmul with RHS parameters
-    if (multiply->op_name() != "multiply")
+    if (multiply->new_op_type() != ops::OpType::Multiply)
         return false;
 
     std::vector<graphlib::Node *> matmuls = find_operands_commute_through(
@@ -215,7 +218,7 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
         [](graphlib::Node *commutable)
         {
             graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(commutable);
-            return op and (op->is_op_type("add") or op->is_op_type("nop"));
+            return op and (op->new_op_type() == ops::OpType::Add or op->new_op_type() == ops::OpType::Nop);
         },
         [](graphlib::Node *matmul)
         {
@@ -270,11 +273,9 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
         {
             if (tm.type() == ops::OpType::Broadcast)
             {
-                int tm_dim = multiply->shape().negative_index(std::get<int>(tm.legacy_attrs_[0]));
+                int tm_dim = multiply->shape().negative_index(tm.attr_as<int>("dim"));
                 if (tm_dim == -2)
-                {
-                    std::get<int>(tm.legacy_attrs_[1]) = matmul_rhs->shape()[-2];
-                }
+                    tm.set_attr("size", static_cast<int>(matmul_rhs->shape()[-2]));
             }
         }
 
@@ -310,10 +311,10 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
 
 static bool try_fold_constant_associative(graphlib::Graph *graph, graphlib::OpNode *a, graphlib::OpNode *b)
 {
-    if (a->op_name() != b->op_name())
+    if (a->new_op_type() != b->new_op_type())
         return false;
 
-    if (a->op_name() != "multiply" and a->op_name() != "add")
+    if (a->new_op_type() != ops::OpType::Multiply and a->new_op_type() != ops::OpType::Add)
         return false;
 
     graphlib::InputNode *a_constant = get_constant_input(graph, a);

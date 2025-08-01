@@ -6,6 +6,7 @@
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "utils/logger.hpp"
 
 namespace tt::passes
@@ -14,24 +15,24 @@ namespace tt::passes
 static bool is_reshape(graphlib::Node const *node)
 {
     graphlib::OpNode const *op = dynamic_cast<graphlib::OpNode const *>(node);
-    return op and op->op_name() == "reshape";
+    return op and op->new_op_type() == ops::OpType::Reshape;
 }
 
 static bool is_transpose(graphlib::Node const *node)
 {
     graphlib::OpNode const *op = dynamic_cast<graphlib::OpNode const *>(node);
-    return op and op->op_name() == "transpose";
+    return op and op->new_op_type() == ops::OpType::Transpose;
 }
 
 static bool involves_w_dim(graphlib::OpNode const *op)
 {
     auto shape = op->shape().as_vector();
-    if (op->op_name() == "reshape")
+    if (op->new_op_type() == ops::OpType::Reshape)
     {
         int w_dim = shape.size() - 4;
         return shape.size() >= 4 and shape[w_dim] > 1;
     }
-    else if (op->op_name() == "transpose")
+    else if (op->new_op_type() == ops::OpType::Transpose)
     {
         int _dim0 = op->op_type().attr_as<int>("dim0");
         if (_dim0 > 0)
@@ -49,7 +50,7 @@ static bool involves_w_dim(graphlib::OpNode const *op)
 
 static bool output_shape_matches(graphlib::OpNode const *op, graphlib::Shape const &first_input_shape)
 {
-    if (op->op_name() != "reshape")
+    if (op->new_op_type() != ops::OpType::Reshape)
         return false;
 
     auto input_shape_v = first_input_shape.as_vector();
@@ -141,7 +142,10 @@ static void commute_4d_tm_ops(graphlib::Graph *graph, std::vector<graphlib::Node
     std::vector<graphlib::PyOpNode *> new_select_nodes;
     for (int i = 0; i < fourth_dim; i++)
     {
-        graphlib::OpType op_type("select", {-3, i * third_dim, third_dim, orig_third_dim});
+        graphlib::OpType op_type(
+            "select",
+            {-3, i * third_dim, third_dim, orig_third_dim},
+            {{"dim", -3}, {"begin", i * third_dim}, {"length", third_dim}, {"stride", orig_third_dim}});
         std::string op_name = first->name() + "_replaced_select.";
         op_name += std::to_string(i);
         graphlib::PyOpNode *new_node = graph->add_node(
@@ -153,7 +157,7 @@ static void commute_4d_tm_ops(graphlib::Graph *graph, std::vector<graphlib::Node
     }
 
     // create interleave op
-    graphlib::OpType op_type("interleave", {-3, 1});
+    graphlib::OpType op_type("interleave", {-3, 1}, {{"dim", -3}, {"stride", 1}});
     std::string op_name = first->name() + "_replaced_interleave.0";
     graphlib::PyOpNode *new_interleave_node = graph->add_node(
         graphlib::create_node<graphlib::PyOpNode>(op_name, op_type), graph->get_subgraph_id_for_node(first->id()));

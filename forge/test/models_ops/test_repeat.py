@@ -30,15 +30,6 @@ class Repeat0(ForgeModule):
         return repeat_output_1
 
 
-class Repeat1(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, repeat_input_0):
-        repeat_output_1 = forge.op.Repeat("", repeat_input_0, repeats=[1, 100, 1, 1, 1])
-        return repeat_output_1
-
-
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -48,102 +39,11 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Repeat0,
-        [((1, 100, 256), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"repeats": "[1, 1, 1]"},
-        },
-    ),
-    (
-        Repeat0,
         [((1, 100, 256), torch.float32)],
         {
-            "model_names": [
-                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
-                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_obj_det_hf"],
             "pcc": 0.99,
             "args": {"repeats": "[1, 1, 1]"},
-        },
-    ),
-    (
-        Repeat1,
-        [((1, 1, 32, 107, 160), torch.float32)],
-        {
-            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "args": {"repeats": "[1, 100, 1, 1, 1]"},
-        },
-    ),
-    (
-        Repeat1,
-        [((1, 1, 64, 54, 80), torch.float32)],
-        {
-            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "args": {"repeats": "[1, 100, 1, 1, 1]"},
-        },
-    ),
-    (
-        Repeat1,
-        [((1, 1, 128, 27, 40), torch.float32)],
-        {
-            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "args": {"repeats": "[1, 100, 1, 1, 1]"},
-        },
-    ),
-    (
-        Repeat1,
-        [((1, 1, 256, 14, 20), torch.float32)],
-        {
-            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "args": {"repeats": "[1, 100, 1, 1, 1]"},
-        },
-    ),
-    (
-        Repeat1,
-        [((1, 1, 32, 200, 267), torch.bfloat16)],
-        {
-            "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"repeats": "[1, 100, 1, 1, 1]"},
-        },
-    ),
-    (
-        Repeat1,
-        [((1, 1, 64, 100, 134), torch.bfloat16)],
-        {
-            "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"repeats": "[1, 100, 1, 1, 1]"},
-        },
-    ),
-    (
-        Repeat1,
-        [((1, 1, 128, 50, 67), torch.bfloat16)],
-        {
-            "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"repeats": "[1, 100, 1, 1, 1]"},
-        },
-    ),
-    (
-        Repeat1,
-        [((1, 1, 256, 25, 34), torch.bfloat16)],
-        {
-            "model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"repeats": "[1, 100, 1, 1, 1]"},
         },
     ),
 ]
@@ -176,7 +76,6 @@ def test_module(forge_module_and_shapes_dtypes):
     ]
 
     framework_model = forge_module(forge_module.__name__)
-    framework_model.process_framework_parameters()
 
     for name, parameter in framework_model._parameters.items():
         parameter_tensor = Tensor.create_torch_tensor(

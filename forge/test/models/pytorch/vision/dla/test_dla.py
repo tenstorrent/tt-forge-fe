@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
+from third_party.tt_forge_models.dla.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -19,20 +20,19 @@ from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
-from test.models.pytorch.vision.dla.model_utils.utils import load_dla_model
 from test.models.pytorch.vision.vision_utils.utils import load_timm_model_and_input
 
 variants = [
-    "dla34",
-    "dla46_c",
-    "dla46x_c",
-    "dla60",
-    "dla60x",
-    "dla60x_c",
-    "dla102",
-    "dla102x",
-    "dla102x2",
-    "dla169",
+    ModelVariant.DLA34,
+    ModelVariant.DLA46_C,
+    ModelVariant.DLA46X_C,
+    ModelVariant.DLA60,
+    ModelVariant.DLA60X,
+    ModelVariant.DLA60X_C,
+    ModelVariant.DLA102,
+    ModelVariant.DLA102X,
+    ModelVariant.DLA102X2,
+    ModelVariant.DLA169,
 ]
 
 
@@ -49,10 +49,11 @@ def test_dla_pytorch(variant):
         source=Source.TORCHVISION,
     )
 
-    # Load the model and prepare input data
-    framework_model, inputs = load_dla_model(variant)
-    framework_model.to(torch.bfloat16)
-    inputs = [inp.to(torch.bfloat16) for inp in inputs]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -63,10 +64,10 @@ def test_dla_pytorch(variant):
     )
 
     # Model Verification and Inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post processing
-    print_cls_results(fw_out[0], co_out[0])
+    loader.print_cls_results(co_out)
 
 
 variants = ["dla34.in1k"]

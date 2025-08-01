@@ -8,11 +8,6 @@ import torch
 import torch.nn.functional as F
 
 from ..common import to_torch_operands
-from . import reduce
-from .exp import Exp
-from .reciprocal import Reciprocal
-from .log import Log
-from .sqrt import Sqrt
 
 
 def eval(op_type, attr, ops):
@@ -36,18 +31,6 @@ def eval(op_type, attr, ops):
 
     """
 
-    if op_type == "softmax":
-
-        assert len(ops) == 1, "Softmax should have one operand."
-        assert len(attr) == 2, "Softmax should have two attributes."
-
-        t_ops = to_torch_operands(*ops)
-        input_ = t_ops[0]
-        dim = attr[0]
-        stable = attr[1]
-        assert input_.dim() > dim, "Given dimension is out of the shape"
-        return F.softmax(input_, dim=dim)
-
     if op_type == "log_softmax":
 
         assert len(ops) == 1, "LogSoftmax should have one operand."
@@ -62,32 +45,6 @@ def eval(op_type, attr, ops):
         result = F.log_softmax(input_, dim=dim)
 
         return result
-
-    if op_type == "softmax_bw":
-
-        assert len(ops) == 3, "Softmax backward should have three operands."
-        assert len(attr) == 1, "Softmax backward should have one attribute."
-
-        t_ops = to_torch_operands(*ops)
-
-        input_ = t_ops[0]  # the input of the softmax
-        output = t_ops[1]  # the output of the softmax function
-        grad = t_ops[2]  # gradient from the previous layer
-        dim = attr[0]  # the dimension by which we do softmax
-
-        assert input_.dim() > dim and dim >= -output.dim(), "Given dimesnion is out of the shape"
-
-        # assert output.dim() > dim and dim >= -output.dim(), "Given dimension is out of the shape"
-
-        # result = (grad - torch.sum(grad * output, dim=dim, keepdim=True)) * output
-        # return result
-
-        input__ = input_.clone().detach()
-        input__.requires_grad = True
-        output = F.softmax(input__, dim=dim)
-        output.backward(gradient=grad)
-
-        return input__.grad
 
     if op_type == "layernorm":
 
@@ -216,24 +173,10 @@ def shape(op_type, attr, ops):
 
     """
 
-    if op_type == "softmax":
-
-        assert len(ops) == 1, "Softmax should have one operand."
-        assert len(attr) == 2, "Softmax should have two attributes."
-
-        return ops[0], []
-
     if op_type == "log_softmax":
 
         assert len(ops) == 1, "LogSoftmax should have one operand."
         assert len(attr) == 2, "LogSoftmax should have two attributes."
-
-        return ops[0], []
-
-    if op_type == "softmax_bw":
-
-        assert len(ops) == 3, "Softmax should have three operands."
-        assert len(attr) == 1, "Softmax backward should have one attribute."
 
         return ops[0], []
 
@@ -302,15 +245,6 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
 
     """
 
-    if op_type == "softmax":
-
-        assert len(inputs) == 1, "Softmax should have one operand."
-        assert len(attr) == 2, "Softmax should have two attributes."
-
-        dim = attr[0]
-
-        return ac.op("softmax_bw", (inputs[0], output, grad), (dim,))
-
     if op_type == "layernorm":
 
         assert len(inputs) == 3, "Layernorm should have three operands."
@@ -327,7 +261,7 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
         inputs += [grad, output]
         inputs = tuple(inputs)
 
-        return ac.op("layernorm_bw", inputs, attr)
+        return ac.op_with_named_attrs("layernorm_bw", inputs, {"dim": attr[0], "epsilon": attr[1]}, attr)
 
     if op_type == "batchnorm":
         raise NotImplementedError("Back propagation for Batchnorm op is not implemented yet")
@@ -366,8 +300,8 @@ def decompose(op_type, attr, dc, inputs):
         x = inputs[0]
         dim = attr[0]
         stable = attr[1]
-        result = dc.op_with_named_attrs("softmax", (x,), {"dimension": dim}, (dim, stable))
-        result = dc.op(Log.create(), (result,))
+        result = dc.op_with_named_attrs("softmax", (x,), {"dim": dim, "stable": stable})
+        result = dc.op("log", (result,))
         dc.fuse(result)
         return
 
@@ -388,8 +322,8 @@ def decompose(op_type, attr, dc, inputs):
 
         # decompose
         var_eps = dc.op("add", (running_var, eps_tensor), ())
-        sqrt = dc.op(Sqrt.create(), (var_eps,), ())
-        recipro = dc.op(Reciprocal.create(), (sqrt,), ())
+        sqrt = dc.op("sqrt", (var_eps,), ())
+        recipro = dc.op("reciprocal", (sqrt,), ())
         weighted = dc.op("multiply", (recipro, weight), ())
         neg_mean = dc.op("multiply", (neg_one, running_mean), ())
         weighted_mean = dc.op("multiply", (weighted, neg_mean), ())
@@ -445,28 +379,6 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
 
     """
 
-    if op_type == "softmax":
-        return
-
-    if op_type == "softmax_bw":
-
-        assert len(inputs) == 3, "Softmax backward should have three operands."
-        assert len(attr) == 1, "Softmax backward should have one attribute."
-
-        output = inputs[1]  # the output of the softmax function
-        grad = inputs[2]  # gradient from the previous layer
-        dim = attr[0]  # the dimension by which we do softmax
-        out_shape = output.shape.as_list()
-
-        assert len(out_shape) > dim and dim >= -len(out_shape), "Given dimension is out of the shape"
-
-        grad_out = dc.op("multiply", (grad, output), ())
-        gout_sum = dc.op_with_named_attrs("reduce_sum", (grad_out,), {"dim_arg": [dim], "keep_dim": True}, (dim, True))
-        gout_sub = dc.op("subtract", (grad, gout_sum), ())
-        result = dc.op("multiply", (gout_sub, output), ())
-        dc.fuse(result)
-        return
-
     if op_type == "layernorm":
 
         assert len(inputs) == 3, "Layernorm should have three operands."
@@ -490,34 +402,25 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
         for bdim in beta_shape[:-1]:
             assert bdim == 1, "All dimensions but the last one must be 1"
 
-        # mean = dc.op("reduce_avg", (input_, ), (dim, ))
-        mu = dc.op_with_named_attrs("reduce_sum", (input_,), {"dim_arg": [dim], "keep_dim": True}, (dim, True))
+        mu = dc.op_with_named_attrs("reduce_sum", (input_,), {"dim_arg": [dim], "keep_dim": True})
         divider = dc.tensor(torch.zeros(input_shape) + 1.0 / input_shape[dim])
         mu = dc.op("multiply", (divider, mu), ())
 
-        # x_minus_mean = dc.op("subtract", (input_, mean), ())
         xmu = dc.op("subtract", (input_, mu), ())
-        # squared = dc.op("multiply", (x_minus_mean, x_minus_mean), ())
         sq = dc.op("multiply", (xmu, xmu), ())
 
-        # var = dc.op("reduce_avg", (squared, ), (dim, ))
-        var = dc.op_with_named_attrs("reduce_sum", (sq,), {"dim_arg": [dim], "keep_dim": True}, (dim, True))
+        var = dc.op_with_named_attrs("reduce_sum", (sq,), {"dim_arg": [dim], "keep_dim": True})
         divider = dc.tensor(torch.zeros(var.shape.as_list()) + 1.0 / input_shape[dim])
         var = dc.op("multiply", (divider, var), ())
 
         epsilon_tensor = dc.tensor(torch.zeros(var.shape.as_list()) + epsilon)
-        # var_plus_eps = dc.op("add", (var, epsilon_tensor), ())
         var_add = dc.op("add", (var, epsilon_tensor), ())
-        # std = dc.op("sqrt", (var_plus_eps, ), ())
-        std = dc.op(Sqrt.create(), (var_add,), ())
-        # recip = dc.op("reciprocal", (std, ), ())
-        ivar = dc.op(Reciprocal.create(), (std,), ())
-        # normalized = dc.op("multiply", (x_minus_mean, recip), ())
+        std = dc.op("sqrt", (var_add,), ())
+        ivar = dc.op("reciprocal", (std,), ())
         xhat = dc.op("multiply", (xmu, ivar), ())
-        # normalized_weighted = dc.op("multiply", (normalized, weights), ())
         xhat_weighted = dc.op("multiply", (xhat, weights), ())
-        # result = dc.op("add", (normalized_weighted, bias), ())
         result = dc.op("add", (xhat_weighted, bias), ())
+
         dc.fuse(result)
         return
 
@@ -550,7 +453,7 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
             assert bdim == 1, "All dimensions but the last one must be 1"
 
         if operand == 2:
-            dbeta = dc.op_with_named_attrs("reduce_sum", (grad,), {"dim_arg": [-2], "keep_dim": True}, (-2, True))
+            dbeta = dc.op_with_named_attrs("reduce_sum", (grad,), {"dim_arg": [-2], "keep_dim": True})
             # dbeta = dc.op("reduce_sum", (grad, ), (0, ))
             # grad_shape = grad.shape.as_list()
             # for i in range(1, len(grad_shape) - 1):
@@ -564,7 +467,7 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
 
         if operand == 1:
             xhat_grad = dc.op("multiply", (xhat, grad), ())
-            dgamma = dc.op_with_named_attrs("reduce_sum", (xhat_grad,), {"dim_arg": [-2], "keep_dim": True}, (-2, True))
+            dgamma = dc.op_with_named_attrs("reduce_sum", (xhat_grad,), {"dim_arg": [-2], "keep_dim": True})
             # dgamma = dc.op("reduce_sum", (xhat_grad, ), (0, ))
             # xhat_grad_shape = xhat_grad.shape.as_list()
             # for i in range(1, len(xhat_grad_shape) - 1):
@@ -575,11 +478,9 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
         if operand == 0:
             dxhat = dc.op("multiply", (grad, gamma), ())
             N = input_shape[dim]
-            sum_1 = dc.op_with_named_attrs("reduce_sum", (dxhat,), {"dim_arg": [dim], "keep_dim": True}, (dim, True))
+            sum_1 = dc.op_with_named_attrs("reduce_sum", (dxhat,), {"dim_arg": [dim], "keep_dim": True})
             dxhat_xhat = dc.op("multiply", (dxhat, xhat), ())
-            sum_2 = dc.op_with_named_attrs(
-                "reduce_sum", (dxhat_xhat,), {"dim_arg": [dim], "keep_dim": True}, (dim, True)
-            )
+            sum_2 = dc.op_with_named_attrs("reduce_sum", (dxhat_xhat,), {"dim_arg": [dim], "keep_dim": True})
             xhat_sum_2 = dc.op("multiply", (xhat, sum_2), ())
             sum_1_sum_2_add = dc.op("add", (sum_1, xhat_sum_2), ())
             N_recip = torch.zeros(sum_1_sum_2_add.shape.as_list()) + 1.0 / N
