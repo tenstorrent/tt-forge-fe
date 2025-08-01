@@ -53,7 +53,6 @@ _OPERATORS = [
             OperatorParamNumber("exponent", float, 0, 100),
         ],
     ),
-    OperatorDefinition("tilizer", "forge.op.Tilize", 1),
     # Binary operators
     OperatorDefinition("add", "forge.op.Add", 2),
     OperatorDefinition("divide", "forge.op.Divide", 2),

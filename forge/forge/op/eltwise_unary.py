@@ -495,28 +495,6 @@ def LogicalNot(name: str, operandA: Tensor) -> Tensor:
     return op("logical_not", name, operandA).get_tensor()
 
 
-def Tilize(name: str, operandA: Tensor) -> Tensor:
-
-    """
-    Tilize operation.
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        First operand
-
-    Returns
-    -------
-    Tensor
-        Forge tensor
-    """
-
-    return op("tilizer", name, operandA).get_tensor()
-
-
 def Erf(name: str, operandA: Tensor) -> Tensor:
     """
     Error function (erf)
