@@ -34,23 +34,12 @@ tt::ops::Op create_upsample2d(int scale_factor, std::string mode = "nearest", bo
 bool valid_resize2d_inputs(
     const std::vector<graphlib::Shape>& shapes, const std::vector<int>& sizes, bool channel_last = false)
 {
-    if (shapes.size() != 1)
-        return false;
-
-    const auto& shape = shapes[0];
-    if (shape.size() < 4)
-        return false;
-
-    if (sizes.size() != 2)
-        return false;
-
-    // Check that sizes are positive
-    if (sizes[0] <= 0 || sizes[1] <= 0)
-        return false;
-
     // Check input dimensions
-    uint32_t input_h = channel_last ? shape[shape.size() - 3] : shape[shape.size() - 2];
-    uint32_t input_w = channel_last ? shape[shape.size() - 2] : shape[shape.size() - 1];
+    uint32_t input_h = channel_last ? shapes[0][shapes[0].size() - 3] : shapes[0][shapes[0].size() - 2];
+    uint32_t input_w = channel_last ? shapes[0][shapes[0].size() - 2] : shapes[0][shapes[0].size() - 1];
+
+    if (input_h != input_w)
+        return false;
 
     // For integer scale factors, check divisibility
     bool upsample_h = sizes[0] >= static_cast<int>(input_h);
@@ -64,25 +53,26 @@ bool valid_resize2d_inputs(
     }
     else if (!upsample_h && !upsample_w)
     {
+        // TODO: Implement downsampling validation
+        return false;
         // Downsampling: check integer scale factors
-        return (input_h % sizes[0] == 0) && (input_w % sizes[1] == 0) &&
-               (input_h / sizes[0] == input_w / sizes[1]);  // Same scale factor
+        // return (input_h % sizes[0] == 0) && (input_w % sizes[1] == 0) &&
+        //        (input_h / sizes[0] == input_w / sizes[1]);  // Same scale factor
     }
 
     return false;  // Mixed up/down scaling not supported
 }
 
-bool valid_upsample2d_inputs(const std::vector<graphlib::Shape>& shapes, int scale_factor)
+bool valid_upsample2d_inputs(const std::vector<graphlib::Shape>& shapes, bool channel_last)
 {
-    if (shapes.size() != 1)
-        return false;
-
-    const auto& shape = shapes[0];
-    if (shape.size() < 4)
-        return false;
-
-    // Check that scale_factor is positive and reasonable
-    return scale_factor > 0 && scale_factor <= 8;  // Reasonable upper bound
+    if (channel_last)
+    {
+        return shapes[0][shapes[0].size() - 3] == shapes[0][shapes[0].size() - 2];
+    }
+    else
+    {
+        return shapes[0][shapes[0].size() - 2] == shapes[0][shapes[0].size() - 1];
+    }
 }
 
 // Test shape generators
@@ -183,8 +173,32 @@ std::vector<tt::ops::Op> get_upsample2d_ops()
     return ops;
 }
 
-// Generate valid test combinations for resize2d
-std::vector<OpTestParam> generate_resize2d_valid_combinations()
+// Generate individual test combinations for resize2d
+std::vector<OpTestParam> generate_resize2d_individual_combinations()
+{
+    std::vector<OpTestParam> combinations;
+    auto ops = get_resize2d_ops();
+    auto shapes = get_resize2d_individual_test_shapes();
+
+    for (const auto& op : ops)
+    {
+        auto sizes = op.attr_as<std::vector<int>>("sizes");
+        bool channel_last = op.attr_as<bool>("channel_last");
+
+        for (const auto& shape_vec : shapes)
+        {
+            if (valid_resize2d_inputs(shape_vec, sizes, channel_last))
+            {
+                combinations.push_back({op, shape_vec});
+            }
+        }
+    }
+
+    return combinations;
+}
+
+// Generate valid test combinations for resize2d sweep
+std::vector<OpTestParam> generate_resize2d_sweep_combinations()
 {
     std::vector<OpTestParam> valid_combinations;
     auto ops = get_resize2d_ops();
@@ -208,8 +222,30 @@ std::vector<OpTestParam> generate_resize2d_valid_combinations()
     return valid_combinations;
 }
 
-// Generate valid test combinations for upsample2d
-std::vector<OpTestParam> generate_upsample2d_valid_combinations()
+// Generate individual test combinations for upsample2d
+std::vector<OpTestParam> generate_upsample2d_individual_combinations()
+{
+    std::vector<OpTestParam> combinations;
+    auto ops = get_upsample2d_ops();
+    auto shapes = get_upsample2d_individual_test_shapes();
+
+    for (const auto& op : ops)
+    {
+        bool channel_last = op.attr_as<bool>("channel_last");
+        for (const auto& shape_vec : shapes)
+        {
+            if (valid_upsample2d_inputs(shape_vec, channel_last))
+            {
+                combinations.push_back({op, shape_vec});
+            }
+        }
+    }
+
+    return combinations;
+}
+
+// Generate sweep test combinations for upsample2d
+std::vector<OpTestParam> generate_upsample2d_sweep_combinations()
 {
     std::vector<OpTestParam> valid_combinations;
     auto ops = get_upsample2d_ops();
@@ -217,12 +253,11 @@ std::vector<OpTestParam> generate_upsample2d_valid_combinations()
 
     for (const auto& op : ops)
     {
-        int scale_factor = op.attr_as<int>("scale_factor");
-
+        bool channel_last = op.attr_as<bool>("channel_last");
         for (const auto& shape : shapes)
         {
             VecShapes shape_vec = {shape};
-            if (valid_upsample2d_inputs(shape_vec, scale_factor))
+            if (valid_upsample2d_inputs(shape_vec, channel_last))
             {
                 valid_combinations.push_back({op, shape_vec});
             }
@@ -236,17 +271,14 @@ std::vector<OpTestParam> generate_upsample2d_valid_combinations()
 INSTANTIATE_TEST_SUITE_P(
     Resize2DIndividual,
     SimpleOpDecomposeOnlyTest,
-    testing::ConvertGenerator(
-        testing::Combine(
-            testing::ValuesIn(get_resize2d_ops()), testing::ValuesIn(get_resize2d_individual_test_shapes())),
-        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    testing::ValuesIn(generate_resize2d_individual_combinations()),
     [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
     { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
 
 INSTANTIATE_TEST_SUITE_P(
     Resize2DSweep,
     SimpleOpDecomposeOnlyTest,
-    testing::ValuesIn(generate_resize2d_valid_combinations()),
+    testing::ValuesIn(generate_resize2d_sweep_combinations()),
     [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
     { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
 
@@ -254,17 +286,14 @@ INSTANTIATE_TEST_SUITE_P(
 INSTANTIATE_TEST_SUITE_P(
     Upsample2DIndividual,
     SimpleOpDecomposeOnlyTest,
-    testing::ConvertGenerator(
-        testing::Combine(
-            testing::ValuesIn(get_upsample2d_ops()), testing::ValuesIn(get_upsample2d_individual_test_shapes())),
-        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    testing::ValuesIn(generate_upsample2d_individual_combinations()),
     [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
     { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
 
 INSTANTIATE_TEST_SUITE_P(
     Upsample2DSweep,
     SimpleOpDecomposeOnlyTest,
-    testing::ValuesIn(generate_upsample2d_valid_combinations()),
+    testing::ValuesIn(generate_upsample2d_sweep_combinations()),
     [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
     { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
 
