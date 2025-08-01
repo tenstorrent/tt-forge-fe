@@ -6,7 +6,6 @@ from types import ModuleType
 from functools import lru_cache
 from .cosine import Cosine
 from .ethernet_datacopy import EthernetDatacopy
-from .tanh import Tanh
 from .tilizer import Tilizer
 from .cumulativesum import CumulativeSum
 from .convolution import Conv2d
@@ -47,7 +46,7 @@ op_to_module_map = {
     "cosine": Cosine,
     "sine": "eltwise_unary",
     "atan": "eltwise_unary",
-    "tanh": Tanh,
+    "tanh": "eltwise_unary",
     "cumsum": CumulativeSum,
     "argmax": "eltwise_unary",
     "logical_not": "eltwise_unary",

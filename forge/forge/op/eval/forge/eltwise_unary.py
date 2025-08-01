@@ -9,7 +9,6 @@ from ....forgeglobal import TILE_DIM
 from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from .tanh import Tanh
 
 
 def eval(type, attr, ops):
@@ -30,7 +29,6 @@ def eval(type, attr, ops):
         "ethernet_datacopy": lambda i: i[0],
         "clip": lambda i: torch.clip(i[0], min=attr[0], max=attr[1]),
         "abs": lambda i: torch.abs(i[0]),
-        "tanh": lambda i: torch.tanh(i[0]),
         "cumsum": lambda i: torch.cumsum(i[0], dim=attr[0]),
         "pow": lambda i: torch.pow(i[0], attr[0]),
     }
@@ -70,12 +68,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     if type == "tilizer":
         return ac.op("nop", (grad,))
-
-    if type == "tanh":
-        tanh_square = ac.op("multiply", (output, output))
-        subtract = ac.op("subtract", (ac.constant(1), tanh_square))
-        res = ac.op("multiply", (subtract, grad))
-        return res
 
     if type == "cumsum":
         dim = attr[0]
@@ -128,7 +120,6 @@ def initial_flops_estimate(type, attr, ops):
     sfpu_unary_ops = [
         "sqrt",
         "abs",
-        "tanh",
         "cumsum",
         "pow",
     ]

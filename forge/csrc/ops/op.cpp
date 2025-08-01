@@ -842,7 +842,7 @@ void Op::decompose_initial(
         case OpType::Squeeze: return;
         case OpType::Stack: return stack::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Subtract: return;
-        case OpType::Tanh: return tanh::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Tanh: return;
         case OpType::Tilizer: return tilizer::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
@@ -963,7 +963,7 @@ void Op::decompose_post_optimize(
         case OpType::Squeeze: return;
         case OpType::Stack: return stack::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Subtract: return;
-        case OpType::Tanh: return tanh::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Tanh: return;
         case OpType::Tilizer: return tilizer::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
@@ -1084,7 +1084,7 @@ void Op::decompose_post_autograd(
         case OpType::Squeeze: return;
         case OpType::Stack: return stack::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Subtract: return;
-        case OpType::Tanh: return tanh::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Tanh: return;
         case OpType::Tilizer: return tilizer::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
@@ -1203,7 +1203,7 @@ long Op::initial_flops_estimate(
         case OpType::Squeeze: return 0;
         case OpType::Stack: return stack::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Subtract: return 0;
-        case OpType::Tanh: return tanh::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Tanh: return 0;
         case OpType::Tilizer: return tilizer::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Transpose: return 0;
         case OpType::Unsqueeze: return 0;
