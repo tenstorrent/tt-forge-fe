@@ -13,6 +13,8 @@ class FailingReasonsRegister:
     # Format: (operator, failing_reason)
     xfail = [
         ("add", FailingReasons.DATA_MISMATCH),
+        ("batch_norm_1d", FailingReasons.INTERNAL_TVM_ERROR),
+        ("batch_norm_3d", FailingReasons.INTERNAL_TVM_ERROR),
         ("clamp", FailingReasons.DTYPE_MISMATCH),
         ("clamp", FailingReasons.FORGE_RUNTIME),
         ("concatenate", FailingReasons.ALLOCATION_CIRCULAR_BUFFER),

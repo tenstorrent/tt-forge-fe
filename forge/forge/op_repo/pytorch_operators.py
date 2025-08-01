@@ -179,6 +179,9 @@ _OPERATORS = [
     OperatorDefinition("unsqueeze", "torch.unsqueeze", 1),
     OperatorDefinition("transpose", "torch.transpose", 1),
     OperatorDefinition("layer_norm", "torch.nn.LayerNorm", 1),
+    OperatorDefinition("batch_norm_1d", "torch.nn.BatchNorm1d", 1),
+    OperatorDefinition("batch_norm_2d", "torch.nn.BatchNorm2d", 1),
+    OperatorDefinition("batch_norm_3d", "torch.nn.BatchNorm3d", 1),
 ]
 
 
