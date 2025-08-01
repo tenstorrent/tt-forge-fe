@@ -143,6 +143,7 @@ std::vector<tt::ops::Op> get_unary_eltwise_ops()
         // tt::ops::OpType::Gelu,  // Has decompose bugs
         tt::ops::OpType::Exp,
         tt::ops::OpType::Reciprocal,
+        tt::ops::OpType::Nop,
         // tt::ops::OpType::LeakyRelu,  // Has decompose bugs
     };
 }
