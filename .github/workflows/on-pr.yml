@@ -66,15 +66,23 @@ jobs:
       runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
 
   perf-benchmark:
-    if: inputs.run_perf_benchmark
+    if: inputs.run_perf_benchmark || (vars.RUN_PERF_ON_UPLIFT == 'true'  && github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'uplift'))
     needs:
       - docker-build
       - build
-    uses: ./.github/workflows/perf-benchmark-sub.yml
+    uses: tenstorrent/tt-forge/.github/workflows/perf-benchmark.yml@main
     secrets: inherit
     with:
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      run_id: ${{ needs.build.outputs.run_id }}
+      project: tt-forge-fe
+      run_id: ${{ github.run_id }}
+      run_id_source: tt-forge-fe
+      ref: main
+
+    #   uses: ./.github/workflows/perf-benchmark-sub.yml
+    # secrets: inherit
+    # with:
+    #   docker-image: ${{ needs.docker-build.outputs.docker-image }}
+    #   run_id: ${{ needs.build.outputs.run_id }}
 
   check-all-green:
     if: always()
