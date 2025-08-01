@@ -3,8 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from datasets import load_dataset
-from transformers import AutoImageProcessor, ViTForImageClassification
+from third_party.tt_forge_models.vit.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -24,11 +23,10 @@ from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
-from test.utils import download_model
 
 variants = [
-    pytest.param("google/vit-base-patch16-224", marks=pytest.mark.push),
-    "google/vit-large-patch16-224",
+    pytest.param(ModelVariant.BASE, marks=pytest.mark.push),
+    ModelVariant.LARGE,
 ]
 
 
@@ -37,7 +35,7 @@ variants = [
 def test_vit_classify_224_hf_pytorch(variant):
 
     # Record Forge Property
-    if variant in ["google/vit-base-patch16-224"]:
+    if variant == ModelVariant.BASE:
         group = ModelGroup.RED
         priority = ModelPriority.P1
     else:
@@ -55,17 +53,11 @@ def test_vit_classify_224_hf_pytorch(variant):
         priority=priority,
     )
 
-    dataset = load_dataset("huggingface/cats-image")
-    image_1 = dataset["test"]["image"][0]
-
-    # Load processor and model
-    image_processor = download_model(AutoImageProcessor.from_pretrained, variant)
-    framework_model = download_model(ViTForImageClassification.from_pretrained, variant, return_dict=False).to(
-        torch.bfloat16
-    )
-
-    # prepare input
-    inputs = [image_processor(image_1, return_tensors="pt").pixel_values.to(torch.bfloat16)]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    inputs = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [inputs]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -81,10 +73,8 @@ def test_vit_classify_224_hf_pytorch(variant):
     # Model Verification
     _, co_out = verify(inputs, framework_model, compiled_model)
 
-    # post processing
-    logits = co_out[0]
-    predicted_class_idx = logits.argmax(-1).item()
-    print("Predicted class:", framework_model.config.id2label[predicted_class_idx])
+    # Post processing
+    loader.post_processing(co_out)
 
 
 variants_with_weights = {

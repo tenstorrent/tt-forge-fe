@@ -4,7 +4,7 @@
 # Reference: https://huggingface.co/deepmind/language-perceiver
 
 import pytest
-from transformers import PerceiverForMaskedLM, PerceiverTokenizer
+from third_party.tt_forge_models.perceiver.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -16,12 +16,12 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.utils import download_model
+variants = [ModelVariant.LANGUAGE_PERCEIVER]
 
 
 @pytest.mark.nightly
 @pytest.mark.push
-@pytest.mark.parametrize("variant", ["deepmind/language-perceiver"])
+@pytest.mark.parametrize("variant", variants)
 def test_perceiverio_masked_lm_pytorch(variant):
 
     # Record Forge Property
@@ -33,18 +33,16 @@ def test_perceiverio_masked_lm_pytorch(variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Load model and tokenizer
-    tokenizer = download_model(PerceiverTokenizer.from_pretrained, variant)
-    framework_model = download_model(PerceiverForMaskedLM.from_pretrained, variant, return_dict=False)
-    framework_model.eval()
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model()
+    framework_model.config.return_dict = False
+    input_dict = loader.load_inputs()
 
-    # Prepare input
-    text = "This is an incomplete sentence where some words are missing."
-    encoding = tokenizer(text, padding="max_length", return_tensors="pt")
     # mask " missing.". Note that the model performs much better if the masked span starts with a space.
-    encoding.input_ids[0, 52:61] = tokenizer.mask_token_id
+    input_dict.input_ids[0, 52:61] = loader.tokenizer.mask_token_id
 
-    inputs = [encoding.input_ids, encoding.attention_mask]
+    inputs = [input_dict.input_ids, input_dict.attention_mask]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -52,7 +50,6 @@ def test_perceiverio_masked_lm_pytorch(variant):
     # Model Verification and Inference
     _, co_out = verify(inputs, framework_model, compiled_model)
 
-    # post processing
-    logits = co_out[0]
-    masked_tokens_predictions = logits[0, 51:61].argmax(dim=-1)
-    print("The predicted token for the [MASK] is: ", tokenizer.decode(masked_tokens_predictions))
+    # Post processing
+    predicted_text = loader.decode_output(co_out)
+    print("The predicted token for the [MASK] is: ", predicted_text)
