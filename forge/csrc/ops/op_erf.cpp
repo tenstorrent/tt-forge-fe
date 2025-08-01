@@ -9,7 +9,6 @@
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
 #include "op_interface.hpp"
-#include "passes/decomposing_context.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
 #include "utils/assert.hpp"
@@ -25,14 +24,18 @@ using namespace graphlib;
 at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Erf, "Wrong op type.");
-    return op.base_eval(old_op_type, tensors);
+    TT_ASSERT(tensors.size() == 1, "Erf should have one input.");
+
+    return torch::erf(tensors[0]);
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
     const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Erf, "Wrong op type.");
-    return op.base_shape(old_op_type, in_shapes);
+    TT_ASSERT(in_shapes.size() == 1, "Erf should have one input.");
+
+    return {Shape::create(in_shapes[0]), {}};
 }
 
 NodeContext backward(
@@ -45,35 +48,28 @@ NodeContext backward(
     const NodeContext &gradient)
 {
     TT_DBG_ASSERT(op.type() == OpType::Erf, "Wrong op type.");
-    return op.base_backward(old_op_type, ac, operand, inputs, output, gradient);
-}
+    TT_ASSERT(inputs.size() == 1, "Erf should have one input.");
+    TT_ASSERT(operand == 0, "Invalid operand index for erf.");
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Erf, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
-}
+    // d/dx erf(x) = (2/√π) * exp(-x²)
+    // Create constant: 2/√π ≈ 1.1283791670955126
+    auto two_over_sqrt_pi = ac.autograd->create_constant(ac, 1.1283791670955126f);
 
-void decompose_post_optimize(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Erf, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
-}
+    // Compute x²
+    auto x_squared = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {inputs[0], inputs[0]});
 
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Erf, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
-}
+    // Compute -x²
+    auto neg_one = ac.autograd->create_constant(ac, -1.0f);
+    auto neg_x_squared = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {neg_one, x_squared});
 
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Erf, "Wrong op type.");
-    return op.base_initial_flops_estimate(old_op_type, inputs);
+    // Compute exp(-x²)
+    auto exp_neg_x_squared = ac.autograd->create_op(ac, graphlib::OpType("exp"), {neg_x_squared});
+
+    // Compute derivative: (2/√π) * exp(-x²)
+    auto derivative = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {two_over_sqrt_pi, exp_neg_x_squared});
+
+    // Apply chain rule: derivative * gradient
+    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {derivative, gradient});
 }
 
 }  // namespace erf

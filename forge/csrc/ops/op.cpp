@@ -775,7 +775,7 @@ void Op::decompose_initial(
         case OpType::Embedding: return embedding::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::EmbeddingBw: return embedding_bw::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Equal: return;
-        case OpType::Erf: return erf::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Erf: return;
         case OpType::EthernetDatacopy: return ethernet_data_copy::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Exp: return;
         case OpType::FillCache: return fill_cache::decompose_initial(old_op_type, *this, dc, inputs);
@@ -896,7 +896,7 @@ void Op::decompose_post_optimize(
         case OpType::Embedding: return embedding::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::EmbeddingBw: return embedding_bw::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Equal: return;
-        case OpType::Erf: return erf::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Erf: return;
         case OpType::EthernetDatacopy: return ethernet_data_copy::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Exp: return;
         case OpType::FillCache: return fill_cache::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -1017,7 +1017,7 @@ void Op::decompose_post_autograd(
         case OpType::Embedding: return embedding::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::EmbeddingBw: return embedding_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Equal: return;
-        case OpType::Erf: return erf::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Erf: return;
         case OpType::EthernetDatacopy: return ethernet_data_copy::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Exp: return;
         case OpType::FillCache: return fill_cache::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1136,7 +1136,7 @@ long Op::initial_flops_estimate(
         case OpType::Embedding: return embedding::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::EmbeddingBw: return embedding_bw::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Equal: return 0;
-        case OpType::Erf: return erf::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Erf: return 0;
         case OpType::EthernetDatacopy: return ethernet_data_copy::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Exp: return 0;
         case OpType::FillCache: return fill_cache::initial_flops_estimate(old_op_type, *this, inputs);

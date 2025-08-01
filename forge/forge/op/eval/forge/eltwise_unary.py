@@ -17,7 +17,6 @@ def eval(type, attr, ops):
     assert (
         len(attr) == 0
         or (type == "clip" and len(attr) == 2)
-        or (type == "erf" and len(attr) == 0)
         or (type == "cumsum" and len(attr) == 2)
         or (type == "pow" and len(attr) == 1)
     ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout and pow"
@@ -27,7 +26,6 @@ def eval(type, attr, ops):
     original_types = [o.dtype for o in t_ops]
 
     f = {
-        "erf": lambda i: torch.erf(i[0]),
         "tilizer": lambda i: i[0],
         "ethernet_datacopy": lambda i: i[0],
         "clip": lambda i: torch.clip(i[0], min=attr[0], max=attr[1]),
