@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "autograd/autograd.hpp"
+#include "torch/torch.h"
 
 namespace tt
 {

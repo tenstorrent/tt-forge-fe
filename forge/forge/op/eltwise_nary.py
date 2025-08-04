@@ -91,7 +91,7 @@ def IndexCopy(name: str, operandA: Tensor, index: Tensor, value: Tensor, dim: in
     """
     if dim < 0:
         dim += len(operandA.shape)
-    return op("index_copy", name, operandA, index, value, attrs=(dim,), dim=dim).get_tensor()
+    return op("index_copy", name, operandA, index, value, dim=dim).get_tensor()
 
 
 def Stack(name: str, *operands: Tensor, axis: int) -> Tensor:
