@@ -35,7 +35,10 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 {
     TT_DBG_ASSERT(op.type() == OpType::Embedding, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 2, "Embedding should have exactly 2 input shapes.");
+    TT_ASSERT(in_shapes[0].size() <= 2, "Embedding indices should have at most 2 dimensions.");
+    TT_ASSERT(in_shapes[1].size() == 2, "Embedding weights should be 2D.");
 
+    // output shape is [*input_shape, embedding_dim]
     std::vector<std::uint32_t> output_shape = in_shapes[0];
     output_shape.push_back(in_shapes[1].back());
 
@@ -53,7 +56,10 @@ NodeContext backward(
 {
     TT_DBG_ASSERT(op.type() == OpType::Embedding, "Wrong op type.");
 
-    return ac.autograd->create_op(ac, graphlib::OpType("embedding_bw", {}, {}), {inputs[0], inputs[1], gradient});
+    auto embedding_bw_context =
+        ac.autograd->create_op(ac, graphlib::OpType("embedding_bw"), {inputs[0], inputs[1], gradient});
+    embedding_bw_context.output_df = inputs[1].output_df;
+    return embedding_bw_context;
 }
 
 }  // namespace embedding
