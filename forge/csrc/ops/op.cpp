@@ -900,7 +900,7 @@ void Op::decompose_post_optimize(
         case OpType::Hslice: return hslice::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Hstack: return hstack::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Index: return index::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::IndexCopy: return index_copy::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::IndexCopy: return;
         case OpType::Interleave: return interleave::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Layernorm: return layernorm::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::LayernormBw: return layernorm_bw::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -1019,7 +1019,7 @@ void Op::decompose_post_autograd(
         case OpType::Hslice: return hslice::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Hstack: return hstack::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Index: return index::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::IndexCopy: return index_copy::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::IndexCopy: return;
         case OpType::Interleave: return interleave::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Layernorm: return layernorm::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::LayernormBw: return layernorm_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1136,7 +1136,7 @@ long Op::initial_flops_estimate(
         case OpType::Hslice: return hslice::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Hstack: return hstack::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Index: return index::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::IndexCopy: return index_copy::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::IndexCopy: return 0;
         case OpType::Interleave: return interleave::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Layernorm: return layernorm::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::LayernormBw: return layernorm_bw::initial_flops_estimate(old_op_type, *this, inputs);

@@ -144,6 +144,39 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> reduce_ops_shap
     return {graphlib::Shape::create(ret), {}};
 }
 
+std::vector<at::Tensor> promote_floating_dtypes(const std::vector<at::Tensor> &tensors)
+{
+    std::vector<at::Tensor> result = tensors;
+    // Extract all floating point dtypes
+    std::vector<at::ScalarType> float_dtypes;
+    for (const at::Tensor &tensor : tensors)
+    {
+        if (tensor.is_floating_point())
+        {
+            float_dtypes.push_back(tensor.scalar_type());
+        }
+    }
+    if (float_dtypes.empty())
+    {
+        return result;  // nothing to promote
+    }
+    // Determine highest precision dtype
+    at::ScalarType promoted_dtype = float_dtypes[0];
+    for (size_t i = 1; i < float_dtypes.size(); ++i)
+    {
+        promoted_dtype = at::promoteTypes(promoted_dtype, float_dtypes[i]);
+    }
+    // Cast all floating point tensors to promoted dtype
+    for (size_t i = 0; i < result.size(); ++i)
+    {
+        if (result[i].is_floating_point() && result[i].scalar_type() != promoted_dtype)
+        {
+            result[i] = result[i].to(promoted_dtype);
+        }
+    }
+    return result;
+}
+
 }  // namespace op_common
 }  // namespace ops
 }  // namespace tt
