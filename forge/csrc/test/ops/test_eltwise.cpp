@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "graph_lib/shape.hpp"
+#include "gtest/gtest.h"
 #include "ops/op.hpp"
 #include "test/ops/test_ops.hpp"
 
@@ -133,6 +134,7 @@ std::vector<tt::ops::Op> get_unary_eltwise_ops()
     return {
         tt::ops::OpType::Abs,
         // tt::ops::OpType::Clip, // Tested separately.
+        // tt::ops::OpType::CumulativeSum, // Tested separately.
         tt::ops::OpType::Sine,
         tt::ops::OpType::Cosine,
         tt::ops::OpType::Relu,

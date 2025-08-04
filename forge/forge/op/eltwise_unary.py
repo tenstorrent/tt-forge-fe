@@ -403,41 +403,6 @@ def Tanh(name: str, operandA: Tensor) -> Tensor:
     return op("tanh", name, operandA).get_tensor()
 
 
-def CumSum(name: str, operandA: Tensor, dim: int) -> Tensor:
-
-    """
-    Cumulative sum operation.
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        First operand
-
-    exclusive: bool
-        Perform exclusive cumulative sum which includes (or not) the
-        first operand. For example:
-        x: [2, 4, 6, 8]
-
-        cumsum(x, exclusive=False)
-        [2, 6, 12, 20]
-
-        cumsum(x, exclusive=True)
-        [0,  2,  6, 12]
-
-    Returns
-    -------
-    Tensor
-        Forge tensor
-    """
-    if dim < 0:
-        dim += len(operandA.shape)
-
-    return op("cumsum", name, operandA, dim=dim).get_tensor()
-
-
 def LogicalNot(name: str, operandA: Tensor) -> Tensor:
 
     """
