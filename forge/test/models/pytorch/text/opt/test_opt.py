@@ -3,11 +3,19 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from transformers import (
-    AutoTokenizer,
-    OPTForCausalLM,
-    OPTForQuestionAnswering,
-    OPTForSequenceClassification,
+from third_party.tt_forge_models.opt.causal_lm.pytorch.loader import (
+    ModelLoader as CausalLMLoader,
+)
+from third_party.tt_forge_models.opt.causal_lm.pytorch.loader import (
+    ModelVariant as CausalLMVariant,
+)
+from third_party.tt_forge_models.opt.qa.pytorch.loader import ModelLoader as QALoader
+from third_party.tt_forge_models.opt.qa.pytorch.loader import ModelVariant as QAVariant
+from third_party.tt_forge_models.opt.sequence_classification.pytorch.loader import (
+    ModelLoader as SequenceClassificationLoader,
+)
+from third_party.tt_forge_models.opt.sequence_classification.pytorch.loader import (
+    ModelVariant as SequenceClassificationVariant,
 )
 from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_mask
 from transformers.modeling_outputs import (
@@ -27,8 +35,6 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
-
-from test.utils import download_model
 
 
 class OptModelWrapper(torch.nn.Module):
@@ -59,13 +65,15 @@ class OptModelWrapper(torch.nn.Module):
 
 variants = [
     pytest.param(
-        "facebook/opt-125m", marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2661")]
+        CausalLMVariant.OPT_125M,
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2661")],
     ),
     pytest.param(
-        "facebook/opt-350m", marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2661")]
+        CausalLMVariant.OPT_350M,
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2661")],
     ),
     pytest.param(
-        "facebook/opt-1.3b",
+        CausalLMVariant.OPT_1_3B,
         marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-mlir/issues/4174")],
     ),
 ]
@@ -79,30 +87,16 @@ def test_opt_causal_lm(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.OPT,
-        variant=variant,
+        variant=variant.value,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
 
-    # Load tokenizer and model from HuggingFace
-    model = download_model(OPTForCausalLM.from_pretrained, variant, use_cache=False)
-    framework_model = OptModelWrapper(model=model, text_embedding=model.model.decoder.embed_tokens)
-    framework_model.eval()
-
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    tokenizer.pad_token = tokenizer.eos_token
-
-    # Input sample
-    prefix_text = "My name is Thomas and my main"
-    input_tokens = tokenizer(
-        prefix_text,
-        max_length=256,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    # Load model and inputs using model loader
+    model_loader = CausalLMLoader(variant)
+    framework_model = model_loader.load_model()
+    framework_model = OptModelWrapper(framework_model, framework_model.model.decoder.embed_tokens)
+    inputs = model_loader.load_inputs()
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -116,9 +110,9 @@ def test_opt_causal_lm(variant):
 
 
 variants = [
-    "facebook/opt-125m",
-    "facebook/opt-350m",
-    "facebook/opt-1.3b",
+    QAVariant.OPT_125M,
+    QAVariant.OPT_350M,
+    QAVariant.OPT_1_3B,
 ]
 
 
@@ -129,32 +123,16 @@ def test_opt_qa(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model=ModelArch.OPT, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH, model=ModelArch.OPT, variant=variant.value, task=Task.QA, source=Source.HUGGINGFACE
     )
 
-    # Load tokenizer and model from HuggingFace
-    # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
-    # NOTE: These model variants are pre-trined only. They need to be fine-tuned
+    # Load model and inputs using model loader
+    # NOTE: These model variants are pre-trained only. They need to be fine-tuned
     # on a downstream task. Code is for demonstration purposes only.
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    model = download_model(OPTForQuestionAnswering.from_pretrained, variant, use_cache=False)
-    framework_model = OptModelWrapper(model=model, text_embedding=model.model.decoder.embed_tokens)
-    framework_model.eval()
-
-    # Load data sample
-    question, context = "Who was Jim Henson?", "Jim Henson was a nice puppet"
-
-    # Data preprocessing
-    input_tokens = tokenizer(
-        question,
-        context,
-        max_length=32,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    model_loader = QALoader(variant)
+    framework_model = model_loader.load_model()
+    framework_model = OptModelWrapper(framework_model, framework_model.model.decoder.embed_tokens)
+    inputs = model_loader.load_inputs()
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -164,7 +142,7 @@ def test_opt_qa(variant):
     )
 
     pcc = 0.99
-    if variant in ["facebook/opt-125m", "facebook/opt-1.3b"]:
+    if variant in [QAVariant.OPT_125M, QAVariant.OPT_1_3B]:
         pcc = 0.95
 
     # Model Verification
@@ -172,10 +150,11 @@ def test_opt_qa(variant):
 
 
 variants = [
-    "facebook/opt-125m",
-    "facebook/opt-350m",
+    SequenceClassificationVariant.OPT_125M,
+    SequenceClassificationVariant.OPT_350M,
     pytest.param(
-        "facebook/opt-1.3b", marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2661")]
+        SequenceClassificationVariant.OPT_1_3B,
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2661")],
     ),
 ]
 
@@ -188,34 +167,18 @@ def test_opt_sequence_classification(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.OPT,
-        variant=variant,
+        variant=variant.value,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 
-    # Load tokenizer and model from HuggingFace
-    # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
-    # NOTE: These model variants are pre-trined only. They need to be fine-tuned
+    # Load model and inputs using model loader
+    # NOTE: These model variants are pre-trained only. They need to be fine-tuned
     # on a downstream task. Code is for demonstration purposes only.
-
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    model = download_model(OPTForSequenceClassification.from_pretrained, variant, use_cache=False)
-    framework_model = OptModelWrapper(model=model, text_embedding=model.model.decoder.embed_tokens)
-    framework_model.eval()
-
-    # Load data sample
-    review = "the movie was great!"
-
-    # Data preprocessing
-    input_tokens = tokenizer(
-        review,
-        max_length=32,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    model_loader = SequenceClassificationLoader(variant)
+    framework_model = model_loader.load_model()
+    framework_model = OptModelWrapper(framework_model, framework_model.model.decoder.embed_tokens)
+    inputs = model_loader.load_inputs()
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -227,6 +190,5 @@ def test_opt_sequence_classification(variant):
     # Model Verification and inference
     _, co_out = verify(inputs, framework_model, compiled_model)
 
-    # post processing
-    predicted_value = co_out[0].argmax(-1).item()
-    print(f"Predicted Sentiment: {model.config.id2label[predicted_value]}")
+    # Post processing
+    model_loader.decode_output(co_out)

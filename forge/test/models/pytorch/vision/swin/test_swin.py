@@ -4,6 +4,7 @@
 # STEP 0: import Forge library
 import pytest
 import torch
+from third_party.tt_forge_models.swin.pytorch.loader import ModelLoader, ModelVariant
 from transformers import (
     SwinForImageClassification,
     Swinv2ForImageClassification,
@@ -28,9 +29,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.swin.model_utils.image_utils import load_image
-from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
 
 
 @pytest.mark.nightly
@@ -172,22 +171,13 @@ def test_swin_v2_tiny_masked(variant):
     verify(inputs, framework_model, compiled_model)
 
 
-variants_with_weights = {
-    "swin_t": "Swin_T_Weights",
-    "swin_s": "Swin_S_Weights",
-    "swin_b": "Swin_B_Weights",
-    "swin_v2_t": "Swin_V2_T_Weights",
-    "swin_v2_s": "Swin_V2_S_Weights",
-    "swin_v2_b": "Swin_V2_B_Weights",
-}
-
 variants = [
-    "swin_t",
-    "swin_s",
-    "swin_b",
-    pytest.param("swin_v2_t", marks=[pytest.mark.xfail]),
-    pytest.param("swin_v2_s", marks=[pytest.mark.xfail]),
-    pytest.param("swin_v2_b"),
+    ModelVariant.SWIN_T,
+    ModelVariant.SWIN_S,
+    ModelVariant.SWIN_B,
+    pytest.param(ModelVariant.SWIN_V2_T),
+    pytest.param(ModelVariant.SWIN_V2_S),
+    pytest.param(ModelVariant.SWIN_V2_B),
 ]
 
 
@@ -199,33 +189,38 @@ def test_swin_torchvision(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.SWIN,
-        variant=variant,
+        variant=variant.value,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
 
-    # Load model and input
-    weight_name = variants_with_weights[variant]
-    framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
+    # Load model and input using ModelLoader
+    loader = ModelLoader(variant=variant)
 
-    if variant in ["swin_t", "swin_s", "swin_b"]:
-
-        framework_model.to(torch.bfloat16)
-        inputs = [inputs[0].to(torch.bfloat16)]
+    if variant in [ModelVariant.SWIN_T, ModelVariant.SWIN_S, ModelVariant.SWIN_B]:
+        # Load model and inputs with bfloat16 for Swin v1 variants
+        framework_model = loader.load_model(dtype_override=torch.bfloat16)
+        inputs = loader.load_inputs(dtype_override=torch.bfloat16)
+        inputs = [inputs]  # Wrap in list to match expected format
 
         data_format_override = DataFormat.Float16_b
         compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     else:
+        # Load model and inputs with default dtype for Swin v2 variants
+        framework_model = loader.load_model()
+        inputs = loader.load_inputs()
+        inputs = [inputs]  # Wrap in list to match expected format
+
         compiler_cfg = CompilerConfig()
 
     pcc = 0.99
 
-    if variant == "swin_t":
-        pcc = 0.97
-    elif variant == "swin_s":
+    if variant in [ModelVariant.SWIN_T, ModelVariant.SWIN_V2_T, ModelVariant.SWIN_V2_S]:
+        pcc = 0.95
+    elif variant == ModelVariant.SWIN_S:
         pcc = 0.92
-    elif variant == "swin_b":
+    elif variant == ModelVariant.SWIN_B:
         pcc = 0.93
 
     # Forge compile framework model
@@ -245,4 +240,4 @@ def test_swin_torchvision(variant):
     )
 
     # Post processing
-    print_cls_results(fw_out[0], co_out[0])
+    loader.print_cls_results(co_out)

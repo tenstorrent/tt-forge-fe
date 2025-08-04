@@ -3,13 +3,23 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from transformers import (
-    DPRContextEncoder,
-    DPRContextEncoderTokenizer,
-    DPRQuestionEncoder,
-    DPRQuestionEncoderTokenizer,
-    DPRReader,
-    DPRReaderTokenizer,
+from third_party.tt_forge_models.dpr.context_encoder.pytorch.loader import (
+    ModelLoader as ContextEncoderLoader,
+)
+from third_party.tt_forge_models.dpr.context_encoder.pytorch.loader import (
+    ModelVariant as ContextEncoderVariant,
+)
+from third_party.tt_forge_models.dpr.question_encoder.pytorch.loader import (
+    ModelLoader as QuestionEncoderLoader,
+)
+from third_party.tt_forge_models.dpr.question_encoder.pytorch.loader import (
+    ModelVariant as QuestionEncoderVariant,
+)
+from third_party.tt_forge_models.dpr.reader.pytorch.loader import (
+    ModelLoader as ReaderLoader,
+)
+from third_party.tt_forge_models.dpr.reader.pytorch.loader import (
+    ModelVariant as ReaderVariant,
 )
 
 import forge
@@ -23,11 +33,9 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
-from test.utils import download_model
-
 params = [
-    "facebook/dpr-ctx_encoder-single-nq-base",
-    "facebook/dpr-ctx_encoder-multiset-base",
+    ContextEncoderVariant.DPR_SINGLE_NQ_BASE,
+    ContextEncoderVariant.DPR_MULTISET_BASE,
 ]
 
 
@@ -39,30 +47,18 @@ def test_dpr_context_encoder_pytorch(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.DPR,
-        variant=variant,
+        variant=variant.value,
         suffix="context_encoder",
         source=Source.HUGGINGFACE,
         task=Task.QA,
     )
 
-    # Load Bert tokenizer and model from HuggingFace
-    # Variants: facebook/dpr-ctx_encoder-single-nq-base, facebook/dpr-ctx_encoder-multiset-base
-    model_ckpt = variant
-    tokenizer = download_model(DPRContextEncoderTokenizer.from_pretrained, model_ckpt)
-    framework_model = download_model(DPRContextEncoder.from_pretrained, model_ckpt, return_dict=False)
+    # Load model using the new loader
+    loader = ContextEncoderLoader(variant=variant)
+    framework_model = loader.load_model()
 
-    # Load data sample
-    sample_text = "Hello, is my dog cute?"
-
-    # Data preprocessing
-    input_tokens = tokenizer(
-        sample_text,
-        max_length=128,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-
+    # Get sample inputs from the loader
+    input_tokens = loader.load_inputs()
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"]]
 
     # Forge compile framework model
@@ -80,8 +76,8 @@ def test_dpr_context_encoder_pytorch(variant):
 
 
 params = [
-    "facebook/dpr-question_encoder-single-nq-base",
-    "facebook/dpr-question_encoder-multiset-base",
+    QuestionEncoderVariant.DPR_SINGLE_NQ_BASE,
+    QuestionEncoderVariant.DPR_MULTISET_BASE,
 ]
 
 
@@ -93,30 +89,18 @@ def test_dpr_question_encoder_pytorch(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.DPR,
-        variant=variant,
+        variant=variant.value,
         suffix="question_encoder",
         source=Source.HUGGINGFACE,
         task=Task.QA,
     )
 
-    # Load Bert tokenizer and model from HuggingFace
-    # Variants: facebook/dpr-question_encoder-single-nq-base, facebook/dpr-question_encoder-multiset-base
-    model_ckpt = variant
-    tokenizer = download_model(DPRQuestionEncoderTokenizer.from_pretrained, model_ckpt)
-    framework_model = download_model(DPRQuestionEncoder.from_pretrained, model_ckpt, return_dict=False)
+    # Load model using the new loader
+    loader = QuestionEncoderLoader(variant=variant)
+    framework_model = loader.load_model()
 
-    # Load data sample
-    sample_text = "Hello, is my dog cute?"
-
-    # Data preprocessing
-    input_tokens = tokenizer(
-        sample_text,
-        max_length=128,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-
+    # Get sample inputs from the loader
+    input_tokens = loader.load_inputs()
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"]]
 
     # Forge compile framework model
@@ -124,7 +108,7 @@ def test_dpr_question_encoder_pytorch(variant):
 
     verify_values = True
 
-    if variant == "facebook/dpr-question_encoder-multiset-base":
+    if variant == QuestionEncoderVariant.DPR_MULTISET_BASE:
         verify_values = False
 
     # Model Verification and Inference
@@ -139,41 +123,30 @@ def test_dpr_question_encoder_pytorch(variant):
     print("embeddings", co_out)
 
 
-variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-base"]
+variants = [ReaderVariant.DPR_SINGLE_NQ_BASE, ReaderVariant.DPR_MULTISET_BASE]
 
 
 @pytest.mark.nightly
 @pytest.mark.xfail
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_dpr_reader_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.DPR,
-        variant=variant,
+        variant=variant.value,
         suffix="reader",
         source=Source.HUGGINGFACE,
         task=Task.QA,
     )
 
-    # Load Bert tokenizer and model from HuggingFace
-    # Variants: facebook/dpr-reader-single-nq-base, facebook/dpr-reader-multiset-base
-    model_ckpt = variant
-    tokenizer = download_model(DPRReaderTokenizer.from_pretrained, model_ckpt)
-    framework_model = download_model(DPRReader.from_pretrained, model_ckpt, return_dict=False)
+    # Load model using the new loader
+    loader = ReaderLoader(variant=variant)
+    framework_model = loader.load_model()
 
-    # Data preprocessing
-    input_tokens = tokenizer(
-        questions=["What is love?"],
-        titles=["Haddaway"],
-        texts=["'What Is Love' is a song recorded by the artist Haddaway"],
-        max_length=128,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-
+    # Get sample inputs from the loader
+    input_tokens = loader.load_inputs()
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
@@ -199,7 +172,7 @@ def test_dpr_reader_pytorch(variant):
         start_idx = start_indices[i].item()
         end_idx = end_indices[i].item()
         answer_tokens = input_id[start_idx : end_idx + 1]
-        answer = tokenizer.decode(answer_tokens, skip_special_tokens=True)
+        answer = loader.tokenizer.decode(answer_tokens, skip_special_tokens=True)
         answers.append(answer)
 
     print("Predicted Answer:", answers[0])
