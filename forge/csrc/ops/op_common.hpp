@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "autograd/autograd.hpp"
+#include "torch/torch.h"
 
 namespace tt
 {
@@ -60,6 +61,16 @@ long initial_flops_estimate_output_dim(std::tuple<graphlib::Shape, std::vector<g
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> reduce_ops_shape(
     const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes);
+
+/**
+ * Promote floating point tensors to common dtype.
+ * This function finds the highest precision floating point dtype among all input tensors
+ * and casts all floating point tensors to that dtype.
+ *
+ * @param tensors Vector of input tensors
+ * @return Vector of tensors with promoted floating point dtypes
+ */
+std::vector<at::Tensor> promote_floating_dtypes(const std::vector<at::Tensor> &tensors);
 
 }  // namespace op_common
 }  // namespace ops
