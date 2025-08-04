@@ -46,3 +46,5 @@ peft
 pyclipper>=1.3.0
 shapely==2.1.1
 pyarrow==20.0.0
+librosa
+soundfile
