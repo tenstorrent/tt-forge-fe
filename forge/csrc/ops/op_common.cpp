@@ -144,6 +144,18 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> reduce_ops_shap
     return {graphlib::Shape::create(ret), {}};
 }
 
+std::string get_resize_method(int method)
+{
+    TT_ASSERT(method >= 0 && method <= 2, "Unsupported resize method: " + std::to_string(method));
+    if (method == 0)
+        return "nearest";
+    else if (method == 1)
+        return "bilinear";
+    else if (method == 2)
+        return "cubic";
+    unreachable();
+}
+
 }  // namespace op_common
 }  // namespace ops
 }  // namespace tt

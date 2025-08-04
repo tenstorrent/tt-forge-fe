@@ -127,9 +127,7 @@ class NewToOldOpType
         mapping_[OpType::RepeatInterleave] = "repeat_interleave";
         mapping_[OpType::Requantize] = "requantize";
         mapping_[OpType::Reshape] = "reshape";
-        mapping_[OpType::Resize1d] = "resize1d";
         mapping_[OpType::Resize2d] = "resize2d";
-        mapping_[OpType::Resize3d] = "resize3d";
         mapping_[OpType::Select] = "select";
         mapping_[OpType::Sigmoid] = "sigmoid";
         mapping_[OpType::Sine] = "sine";
@@ -251,9 +249,7 @@ class OldToNewOpType
         mapping_["repeat_interleave"] = OpType::RepeatInterleave;
         mapping_["requantize"] = OpType::Requantize;
         mapping_["reshape"] = OpType::Reshape;
-        mapping_["resize1d"] = OpType::Resize1d;
         mapping_["resize2d"] = OpType::Resize2d;
-        mapping_["resize3d"] = OpType::Resize3d;
         mapping_["select"] = OpType::Select;
         mapping_["sigmoid"] = OpType::Sigmoid;
         mapping_["sine"] = OpType::Sine;
@@ -440,9 +436,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::RepeatInterleave: return repeat_interleave::eval(old_op_type, *this, tensors);
         case OpType::Requantize: return requantize::eval(old_op_type, *this, tensors);
         case OpType::Reshape: return reshape::eval(old_op_type, *this, tensors);
-        case OpType::Resize1d: return resize_1d::eval(old_op_type, *this, tensors);
         case OpType::Resize2d: return resize_2d::eval(old_op_type, *this, tensors);
-        case OpType::Resize3d: return resize_3d::eval(old_op_type, *this, tensors);
         case OpType::Select: return select::eval(old_op_type, *this, tensors);
         case OpType::Sigmoid: return sigmoid::eval(old_op_type, *this, tensors);
         case OpType::Sine: return sine::eval(old_op_type, *this, tensors);
@@ -557,9 +551,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::RepeatInterleave: return repeat_interleave::shape(old_op_type, *this, inputs);
         case OpType::Requantize: return requantize::shape(old_op_type, *this, inputs);
         case OpType::Reshape: return reshape::shape(old_op_type, *this, inputs);
-        case OpType::Resize1d: return resize_1d::shape(old_op_type, *this, inputs);
         case OpType::Resize2d: return resize_2d::shape(old_op_type, *this, inputs);
-        case OpType::Resize3d: return resize_3d::shape(old_op_type, *this, inputs);
         case OpType::Select: return select::shape(old_op_type, *this, inputs);
         case OpType::Sigmoid: return sigmoid::shape(old_op_type, *this, inputs);
         case OpType::Sine: return sine::shape(old_op_type, *this, inputs);
@@ -679,9 +671,7 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::RepeatInterleave: return repeat_interleave::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Requantize: return requantize::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Reshape: return reshape::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Resize1d: return resize_1d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Resize2d: return resize_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Resize3d: return resize_3d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Select: return select::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Sigmoid: return sigmoid::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Sine: return sine::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -818,9 +808,7 @@ void Op::decompose_initial(
         case OpType::RepeatInterleave: return repeat_interleave::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Requantize: return requantize::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Reshape: return reshape::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Resize1d: return resize_1d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Resize2d: return resize_2d::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Resize3d: return resize_3d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Select: return select::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Sigmoid: return;
         case OpType::Sine: return;
@@ -835,7 +823,7 @@ void Op::decompose_initial(
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return update_cache::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Upsample2d: return upsample_2d::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Upsample2d: return;
         case OpType::Vslice: return vslice::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Vstack: return vstack::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Where: return where::decompose_initial(old_op_type, *this, dc, inputs);
@@ -937,9 +925,7 @@ void Op::decompose_post_optimize(
         case OpType::RepeatInterleave: return repeat_interleave::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Requantize: return requantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Reshape: return;
-        case OpType::Resize1d: return resize_1d::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Resize2d: return resize_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Resize3d: return resize_3d::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Resize2d: return;
         case OpType::Select: return select::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Sigmoid: return;
         case OpType::Sine: return;
@@ -954,7 +940,7 @@ void Op::decompose_post_optimize(
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return update_cache::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Upsample2d: return upsample_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Upsample2d: return;
         case OpType::Vslice: return vslice::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Vstack: return vstack::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Where: return where::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -1056,9 +1042,7 @@ void Op::decompose_post_autograd(
         case OpType::RepeatInterleave: return repeat_interleave::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Requantize: return requantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Reshape: return reshape::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Resize1d: return resize_1d::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Resize2d: return resize_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Resize3d: return resize_3d::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Resize2d: return;
         case OpType::Select: return select::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Sigmoid: return;
         case OpType::Sine: return;
@@ -1073,7 +1057,7 @@ void Op::decompose_post_autograd(
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return update_cache::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Upsample2d: return upsample_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Upsample2d: return;
         case OpType::Vslice: return vslice::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Vstack: return vstack::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Where: return where::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1173,9 +1157,7 @@ long Op::initial_flops_estimate(
         case OpType::RepeatInterleave: return repeat_interleave::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Requantize: return requantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Reshape: return 0;
-        case OpType::Resize1d: return resize_1d::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Resize2d: return resize_2d::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Resize3d: return resize_3d::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Resize2d: return 0;
         case OpType::Select: return select::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Sigmoid: return 0;
         case OpType::Sine: return 0;
@@ -1190,7 +1172,7 @@ long Op::initial_flops_estimate(
         case OpType::Transpose: return 0;
         case OpType::Unsqueeze: return 0;
         case OpType::UpdateCache: return update_cache::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Upsample2d: return upsample_2d::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Upsample2d: return 0;
         case OpType::Vslice: return vslice::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Vstack: return vstack::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Where: return where::initial_flops_estimate(old_op_type, *this, inputs);
@@ -1289,9 +1271,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::RepeatInterleave: return true;
         case OpType::Requantize: return false;
         case OpType::Reshape: return true;
-        case OpType::Resize1d: return false;
         case OpType::Resize2d: return false;
-        case OpType::Resize3d: return false;
         case OpType::Select: return true;
         case OpType::Sigmoid: return false;
         case OpType::Sine: return false;
@@ -1405,9 +1385,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::RepeatInterleave: return false;
         case OpType::Requantize: return false;
         case OpType::Reshape: return false;
-        case OpType::Resize1d: return false;
         case OpType::Resize2d: return false;
-        case OpType::Resize3d: return false;
         case OpType::Select: return false;
         case OpType::Sigmoid: return true;
         case OpType::Sine: return true;
@@ -1521,9 +1499,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::RepeatInterleave: return false;
         case OpType::Requantize: return false;
         case OpType::Reshape: return false;
-        case OpType::Resize1d: return false;
         case OpType::Resize2d: return false;
-        case OpType::Resize3d: return false;
         case OpType::Select: return false;
         case OpType::Sigmoid: return true;
         case OpType::Sine: return true;
@@ -1637,9 +1613,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::RepeatInterleave: return false;
         case OpType::Requantize: return false;
         case OpType::Reshape: return false;
-        case OpType::Resize1d: return false;
         case OpType::Resize2d: return false;
-        case OpType::Resize3d: return false;
         case OpType::Select: return false;
         case OpType::Sigmoid: return false;
         case OpType::Sine: return false;
@@ -1753,9 +1727,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::RepeatInterleave: return false;
         case OpType::Requantize: return false;
         case OpType::Reshape: return false;
-        case OpType::Resize1d: return false;
         case OpType::Resize2d: return false;
-        case OpType::Resize3d: return false;
         case OpType::Select: return false;
         case OpType::Sigmoid: return false;
         case OpType::Sine: return false;
