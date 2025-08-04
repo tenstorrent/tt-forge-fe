@@ -32,10 +32,13 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
     at::Tensor grad = tensors[2];
 
     at::Tensor result = torch::zeros(weight.sizes(), weight.options());
-    for (int64_t i = 0; i < input.numel(); ++i)
+    at::Tensor flat_input = input.flatten();
+    at::Tensor flat_grad = grad.view({-1, grad.size(-1)});
+
+    for (int64_t i = 0; i < flat_input.numel(); ++i)
     {
-        int64_t idx = input.flatten()[i].item<int64_t>();
-        result[idx] = grad.flatten()[i];
+        int64_t idx = flat_input[i].item<int64_t>();
+        result[idx] += flat_grad[i];
     }
     return result;
 }
@@ -45,6 +48,8 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 {
     TT_DBG_ASSERT(op.type() == OpType::EmbeddingBw, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 3, "EmbeddingBw should have exactly 3 input shapes.");
+    TT_ASSERT(in_shapes[0].size() <= 2, "Embedding indices should have at most 2 dimensions.");
+    TT_ASSERT(in_shapes[1].size() == 2, "Embedding weights should be 2D.");
 
     return std::make_tuple(Shape::create(in_shapes[1]), std::vector<DimBroadcast>{});
 }
@@ -59,8 +64,8 @@ NodeContext backward(
     const NodeContext &gradient)
 {
     TT_DBG_ASSERT(op.type() == OpType::EmbeddingBw, "Wrong op type.");
-    TT_ASSERT(false, "embedding_bw should not be backwarded");
-    return gradient;
+    TT_THROW("embedding_bw should not be backwarded");
+    unreachable();
 }
 
 }  // namespace embedding_bw
