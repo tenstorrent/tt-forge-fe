@@ -762,8 +762,8 @@ void Op::decompose_initial(
         case OpType::Divide: return;
         case OpType::Downsample2d: return downsample_2d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Dropout: return;
-        case OpType::Embedding: return embedding::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::EmbeddingBw: return embedding_bw::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Embedding: return;
+        case OpType::EmbeddingBw: return;
         case OpType::Equal: return;
         case OpType::Erf: return;
         case OpType::Exp: return;
@@ -881,8 +881,8 @@ void Op::decompose_post_optimize(
         case OpType::Divide: return;
         case OpType::Downsample2d: return downsample_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Dropout: return;
-        case OpType::Embedding: return embedding::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::EmbeddingBw: return embedding_bw::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Embedding: return;
+        case OpType::EmbeddingBw: return;
         case OpType::Equal: return;
         case OpType::Erf: return;
         case OpType::Exp: return;
@@ -1000,8 +1000,8 @@ void Op::decompose_post_autograd(
         case OpType::Divide: return;
         case OpType::Downsample2d: return downsample_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Dropout: return;
-        case OpType::Embedding: return embedding::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::EmbeddingBw: return embedding_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Embedding: return;
+        case OpType::EmbeddingBw: return;
         case OpType::Equal: return;
         case OpType::Erf: return;
         case OpType::Exp: return;
@@ -1117,8 +1117,8 @@ long Op::initial_flops_estimate(
         case OpType::Divide: return 0;
         case OpType::Downsample2d: return downsample_2d::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Dropout: return 0;
-        case OpType::Embedding: return embedding::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::EmbeddingBw: return embedding_bw::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Embedding: return 0;
+        case OpType::EmbeddingBw: return 0;
         case OpType::Equal: return 0;
         case OpType::Erf: return 0;
         case OpType::Exp: return 0;
