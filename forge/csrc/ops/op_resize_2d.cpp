@@ -189,14 +189,17 @@ void decompose_initial(
     }
     else
     {
-        int scale_factor = channel_last ? static_cast<int>(input_shape[input_shape.size() - 3]) / sizes[0]
-                                        : static_cast<int>(input_shape[input_shape.size() - 2]) / sizes[0];
-        result = dc.op(
-            graphlib::OpType(
-                "downsample2d",
-                {scale_factor, resize_method, true},
-                {{"scale_factor", scale_factor}, {"mode", resize_method}, {"channel_last", true}}),
-            {result});
+        TT_THROW("Downsample2d is not supported yet.");
+        unreachable();
+        // TODO: Implement downsample2d
+        // int scale_factor = channel_last ? static_cast<int>(input_shape[input_shape.size() - 3]) / sizes[0]
+        //                                 : static_cast<int>(input_shape[input_shape.size() - 2]) / sizes[0];
+        // result = dc.op(
+        //     graphlib::OpType(
+        //         "downsample2d",
+        //         {scale_factor, resize_method, true},
+        //         {{"scale_factor", scale_factor}, {"mode", resize_method}, {"channel_last", true}}),
+        //     {result});
     }
 
     if (!channel_last)
