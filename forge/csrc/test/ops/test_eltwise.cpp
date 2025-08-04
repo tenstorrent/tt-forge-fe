@@ -147,6 +147,9 @@ std::vector<tt::ops::Op> get_unary_eltwise_ops()
         tt::ops::OpType::Reciprocal,
         tt::ops::OpType::Nop,
         // tt::ops::OpType::LeakyRelu,  // Has decompose bugs
+        tt::ops::OpType::Erf,
+        tt::ops::OpType::Tanh,
+        // tt::ops::OpType::Pow, // Tested separately.
     };
 }
 
@@ -264,6 +267,34 @@ INSTANTIATE_TEST_SUITE_P(
     SimpleOpTest,
     testing::ConvertGenerator(
         testing::Combine(testing::ValuesIn(get_clip_ops()), testing::ValuesIn(generate_input_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
+
+/**
+ * Testing pow operation.
+ */
+std::vector<tt::ops::Op> get_pow_ops()
+{
+    std::vector<tt::ops::Op> ops;
+    for (float exp : {0.0f, 0.1f, 2.0f, 3.0f, 3.5f, 12.5f, 20.01f})
+        ops.push_back(tt::ops::Op(tt::ops::OpType::Pow, {{"exponent", exp}}));
+
+    return ops;
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    PowOpIndividual,
+    SimpleOpTest,
+    testing::ConvertGenerator(
+        testing::Combine(testing::ValuesIn(get_pow_ops()), testing::ValuesIn(get_unary_individual_test_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
+
+INSTANTIATE_TEST_SUITE_P(
+    PowOpSweeps,
+    SimpleOpTest,
+    testing::ConvertGenerator(
+        testing::Combine(testing::ValuesIn(get_pow_ops()), testing::ValuesIn(generate_input_shapes())),
         [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
     [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
 
