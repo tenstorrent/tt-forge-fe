@@ -11,7 +11,7 @@
 #include "ops/op.hpp"
 #include "test/ops/test_ops.hpp"
 
-namespace tt::test::ops::scan
+namespace tt::test::ops::misc
 {
 std::vector<VecShapes> get_individual_test_shapes()
 {
@@ -88,4 +88,4 @@ INSTANTIATE_TEST_SUITE_P(
     [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
     { return SimpleOpTest::get_test_name(info); });
 
-}  // namespace tt::test::ops::scan
+}  // namespace tt::test::ops::misc
