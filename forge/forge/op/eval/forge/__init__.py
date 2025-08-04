@@ -4,7 +4,6 @@
 import importlib
 from types import ModuleType
 from functools import lru_cache
-from .cosine import Cosine
 from .tanh import Tanh
 from .cumulativesum import CumulativeSum
 from .convolution import Conv2d
@@ -42,12 +41,12 @@ op_to_module_map = {
     "log": "eltwise_unary",
     "sigmoid": "eltwise_unary",
     "clip": "eltwise_unary",
-    "cosine": Cosine,
+    "cosine": "eltwise_unary",
     "sine": "eltwise_unary",
     "atan": "eltwise_unary",
     "tanh": Tanh,
     "cumsum": CumulativeSum,
-    "argmax": "eltwise_unary",
+    "argmax": "reduce",
     "logical_not": "eltwise_unary",
     "dropout": "eltwise_unary",
     "pow": "eltwise_unary",
