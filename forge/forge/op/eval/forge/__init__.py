@@ -6,14 +6,13 @@ from types import ModuleType
 from functools import lru_cache
 from .convolution import Conv2d
 from .convolution import Conv2dTranspose
-from .cast import Cast
 from .pad import Pad
 from .kv_cache import UpdateCache
 from .kv_cache import FillCache
 
 op_to_module_map = {
     "add": "eltwise_binary",
-    "cast": Cast,
+    "cast": "eltwise_unary",
     "divide": "eltwise_binary",
     "remainder": "eltwise_binary",
     "subtract": "eltwise_binary",
