@@ -3,14 +3,9 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from loguru import logger
-from PIL import Image
-from third_party.tt_forge_models.tools.utils import get_file
-from transformers import (
-    AutoImageProcessor,
-    PerceiverForImageClassificationConvProcessing,
-    PerceiverForImageClassificationFourier,
-    PerceiverForImageClassificationLearned,
+from third_party.tt_forge_models.perceiverio_vision.pytorch.loader import (
+    ModelLoader,
+    ModelVariant,
 )
 
 import forge
@@ -27,36 +22,15 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.models_utils import print_cls_results
-
-
-def get_sample_data(model_name):
-    image_processor = AutoImageProcessor.from_pretrained(model_name)
-    try:
-        input_image = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
-        image = Image.open(str(input_image))
-        pixel_values = image_processor(images=image, return_tensors="pt").pixel_values
-    except:
-        logger.warning(
-            "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
-        )
-        height = image_processor.to_dict()["size"]["height"]
-        width = image_processor.to_dict()["size"]["width"]
-        pixel_values = torch.rand(1, 3, height, width).to(torch.float32)
-    return pixel_values
-
-
 variants = [
-    pytest.param("deepmind/vision-perceiver-conv", id="deepmind/vision-perceiver-conv"),
+    ModelVariant.VISION_PERCEIVER_CONV,
     pytest.param(
-        "deepmind/vision-perceiver-learned",
+        ModelVariant.VISION_PERCEIVER_LEARNED,
         marks=pytest.mark.xfail,
-        id="deepmind/vision-perceiver-learned",
     ),
     pytest.param(
-        "deepmind/vision-perceiver-fourier",
+        ModelVariant.VISION_PERCEIVER_FOURIER,
         marks=pytest.mark.xfail,
-        id="deepmind/vision-perceiver-fourier",
     ),
 ]
 
@@ -74,26 +48,13 @@ def test_perceiverio_for_image_classification_pytorch(variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Sample Image
-    pixel_values = get_sample_data(variant)
-
-    # Load the model from HuggingFace
-    if variant == "deepmind/vision-perceiver-learned":
-        framework_model = PerceiverForImageClassificationLearned.from_pretrained(variant, return_dict=False)
-
-    elif variant == "deepmind/vision-perceiver-conv":
-        framework_model = PerceiverForImageClassificationConvProcessing.from_pretrained(variant, return_dict=False)
-
-    elif variant == "deepmind/vision-perceiver-fourier":
-        framework_model = PerceiverForImageClassificationFourier.from_pretrained(variant, return_dict=False)
-
-    else:
-        logger.info(f"The model {variant} is not supported")
-
-    framework_model.eval()
+    # Load model and inputs using ModelLoader
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model()
     framework_model.to(torch.bfloat16)
 
-    inputs = [pixel_values.to(torch.bfloat16)]
+    pixel_values = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [pixel_values]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -107,9 +68,9 @@ def test_perceiverio_for_image_classification_pytorch(variant):
     )
 
     # Model Verification
-    fw_out, co_out = verify(
+    _, co_out = verify(
         inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
     )
 
     # Run model on sample data and print results
-    print_cls_results(fw_out[0], co_out[0])
+    loader.print_cls_results(co_out)
