@@ -26,3 +26,9 @@ yolov6detect==0.4.1
 peft==0.15.1
 safetensors==0.6.0.dev0
 yolov5==7.0.9
+# Required by the Whisper model package for audio processing
+librosa
+# Required by the Whisper model package for audio processing
+soundfile
+# Required by the RMBG model
+kornia
