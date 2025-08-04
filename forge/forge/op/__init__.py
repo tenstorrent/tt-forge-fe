@@ -33,7 +33,6 @@ from .eltwise_unary import (
     Sqrt,
     Log,
     Sigmoid,
-    Argmax,
     Abs,
     Clip,
     Atan,
@@ -47,7 +46,7 @@ from .eltwise_unary import (
     Cast,
     Erf,
 )
-from .reduce import ReduceSum, ReduceAvg, ReduceMax
+from .reduce import ReduceSum, ReduceAvg, ReduceMax, Argmax
 from .tm import (
     Transpose,
     Reshape,

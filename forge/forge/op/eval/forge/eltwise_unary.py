@@ -16,7 +16,6 @@ def eval(type, attr, ops):
     assert len(ops) == 1, "Eltwise unary should have one input"
     assert (
         len(attr) == 0
-        or (type == "clip" and len(attr) == 2)
         or (type == "erf" and len(attr) == 0)
         or (type == "cumsum" and len(attr) == 2)
         or (type == "pow" and len(attr) == 1)
@@ -28,8 +27,6 @@ def eval(type, attr, ops):
 
     f = {
         "erf": lambda i: torch.erf(i[0]),
-        "clip": lambda i: torch.clip(i[0], min=attr[0], max=attr[1]),
-        "abs": lambda i: torch.abs(i[0]),
         "tanh": lambda i: torch.tanh(i[0]),
         "cumsum": lambda i: torch.cumsum(i[0], dim=attr[0]),
         "pow": lambda i: torch.pow(i[0], attr[0]),
@@ -47,10 +44,7 @@ def eval(type, attr, ops):
 def shape(type, attr, ops):
     assert len(ops) == 1, "Eltwise unary should have one input"
     assert (
-        len(attr) == 0
-        or (type == "clip" and len(attr) == 2)
-        or (type == "cumsum" and len(attr) == 2)
-        or (type == "pow" and len(attr) == 1)
+        len(attr) == 0 or (type == "cumsum" and len(attr) == 2) or (type == "pow" and len(attr) == 1)
     ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout, and pow"
 
     return ops[0], []
@@ -61,10 +55,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
     assert len(inputs) == 1, "Eltwise unary should have one input"
     assert operand == 0, "Invalid operand index"
     assert (
-        len(attr) == 0
-        or (type == "clip" and len(attr) == 2)
-        or (type == "cumsum" and len(attr) == 2)
-        or (type == "pow" and len(attr) == 1)
+        len(attr) == 0 or (type == "cumsum" and len(attr) == 2) or (type == "pow" and len(attr) == 1)
     ), "Eltwise unary should have no attributes, execpt for clip, relu, cumsum, dropout and pow"
 
     if type == "tanh":
@@ -83,20 +74,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
         return res
 
-    if type == "clip":
-        x = inputs[0]
-        shape = x.shape.as_list()
-        min_value = attr[0]
-        max_value = attr[1]
-        min_value_tensor = ac.tensor(torch.zeros(shape) + min_value)
-        max_value_tensor = ac.tensor(torch.zeros(shape) + max_value)
-
-        ge_x = ac.op("greater_equal", (x, min_value_tensor))
-        le_x = ac.op("less_equal", (x, max_value_tensor))
-        mask = ac.op("multiply", (ge_x, le_x))
-        res = ac.op("multiply", (mask, grad))
-        return res
-
     elif type == "pow":
         exponent_value = attr[0]
         shape = list(inputs[0].shape.as_list())
@@ -104,13 +81,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         partial_grad = ac.op("multiply", (output, recip))
         pow_grad = ac.op("multiply", (ac.tensor(torch.zeros(shape) + exponent_value), partial_grad))
         return ac.op("multiply", (pow_grad, grad))
-
-    elif type == "abs":
-
-        heaviside = ac.op("heaviside", (inputs[0], ac.constant(0.5)))
-        subtract = ac.op("subtract", (heaviside, ac.constant(0.5)))
-        stretched = ac.op("multiply", (subtract, ac.constant(2.0)))
-        return ac.op("multiply", (stretched, grad))
 
     assert False, f"{type} not defined in eltwise unary backward."
 
@@ -122,8 +92,6 @@ def decompose(type, attr, dc, inputs):
 def initial_flops_estimate(type, attr, ops):
     flops = 0
     sfpu_unary_ops = [
-        "sqrt",
-        "abs",
         "tanh",
         "cumsum",
         "pow",
