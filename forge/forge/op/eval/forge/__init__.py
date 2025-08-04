@@ -5,9 +5,7 @@ import importlib
 from types import ModuleType
 from functools import lru_cache
 from .cosine import Cosine
-from .ethernet_datacopy import EthernetDatacopy
 from .tanh import Tanh
-from .tilizer import Tilizer
 from .cumulativesum import CumulativeSum
 from .convolution import Conv2d
 from .convolution import Conv2dTranspose
@@ -53,7 +51,6 @@ op_to_module_map = {
     "logical_not": "eltwise_unary",
     "dropout": "eltwise_unary",
     "pow": "eltwise_unary",
-    "tilizer": Tilizer,
     "erf": "eltwise_unary",
     "conv_sum": "eltwise_nary",
     "concatenate": "eltwise_nary",
@@ -66,7 +63,6 @@ op_to_module_map = {
     "depthwise": "depthwise",
     "embedding": "embedding",
     "embedding_bw": "embedding_bw",
-    "ethernet_datacopy": EthernetDatacopy,
     "transpose": "tm",
     "adv_index": "tm",
     "reshape": "tm",
