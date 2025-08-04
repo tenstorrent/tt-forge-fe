@@ -57,7 +57,6 @@ from .tm import (
     Repeat,
     RepeatInterleave,
     AdvIndex,
-    Narrow,
     Unsqueeze,
     Squeeze,
     PixelShuffle,

@@ -6,59 +6,6 @@
 
 namespace tt::test
 {
-struct ConstantFoldMultiply : public ForgeGraphTest
-{
-   protected:
-    virtual std::vector<OpType*> create_graph() override
-    {
-        std::uint32_t m = 784;
-        std::uint32_t k = 64;
-        std::uint32_t n = 128;
-
-        auto act = create_activation(shape(1, 1, m, k));
-        auto weights = create_parameter(shape(1, 1, k, n));
-
-        auto bn_constant = create_constant(shape(1, 1, 1, n));
-        auto bias = create_constant(shape(1, 1, 1, n));
-
-        auto matmul = create_op("matmul", {act, weights});
-        auto narrow0 = create_op("narrow", {matmul}, -2, 0, (int)m, (int)m);
-        auto narrow1 = create_op("narrow", {narrow0}, -1, 0, (int)n, (int)n);
-        auto multiply = create_op("multiply", {bn_constant, narrow1});
-        auto add = create_op("add", {bias, multiply});
-
-        multiply_name = multiply->name();
-        add_name = add->name();
-        narrow_name = narrow0->name();
-
-        return {add};
-    }
-
-    std::string multiply_name;
-    std::string add_name;
-    std::string narrow_name;
-};
-
-TEST_F(ConstantFoldMultiply, constant_fold_multiply)
-{
-    graphlib::Graph* graph = get_graph();
-
-    passes::constant_folding(graph);
-
-    auto nodes = graphlib::topological_sort(*graph);
-
-    // Expect the multiply was erased
-    EXPECT_TRUE(std::none_of(nodes.begin(), nodes.end(), [this](auto* n) { return n->name() == this->multiply_name; }));
-
-    // Expect the add to be hoisted ahead of narrow
-    auto add_position =
-        std::find_if(nodes.begin(), nodes.end(), [this](auto* n) { return n->name() == this->add_name; });
-    ASSERT_NE(add_position, nodes.end());
-    auto narrow_position =
-        std::find_if(nodes.begin(), nodes.end(), [this](auto* n) { return n->name() == this->narrow_name; });
-    ASSERT_NE(narrow_position, nodes.end());
-    EXPECT_LT(add_position, narrow_position);
-}
 
 struct ConstantFoldMultiplyThroughAdd : public ForgeGraphTest, public testing::WithParamInterface<std::pair<int, bool>>
 {

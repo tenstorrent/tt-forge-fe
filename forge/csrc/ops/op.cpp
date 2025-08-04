@@ -103,7 +103,6 @@ class NewToOldOpType
         mapping_[OpType::Maximum] = "maximum";
         mapping_[OpType::Minimum] = "minimum";
         mapping_[OpType::Multiply] = "multiply";
-        mapping_[OpType::Narrow] = "narrow";
         mapping_[OpType::Nop] = "nop";
         mapping_[OpType::NotEqual] = "not_equal";
         mapping_[OpType::Pad] = "pad";
@@ -218,7 +217,6 @@ class OldToNewOpType
         mapping_["maximum"] = OpType::Maximum;
         mapping_["minimum"] = OpType::Minimum;
         mapping_["multiply"] = OpType::Multiply;
-        mapping_["narrow"] = OpType::Narrow;
         mapping_["nop"] = OpType::Nop;
         mapping_["not_equal"] = OpType::NotEqual;
         mapping_["pad"] = OpType::Pad;
@@ -398,7 +396,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Maximum: return maximum::eval(old_op_type, *this, tensors);
         case OpType::Minimum: return minimum::eval(old_op_type, *this, tensors);
         case OpType::Multiply: return multiply::eval(old_op_type, *this, tensors);
-        case OpType::Narrow: return narrow::eval(old_op_type, *this, tensors);
         case OpType::Nop: return nop::eval(old_op_type, *this, tensors);
         case OpType::NotEqual: return not_equal::eval(old_op_type, *this, tensors);
         case OpType::Pad: return pad::eval(old_op_type, *this, tensors);
@@ -506,7 +503,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Maximum: return maximum::shape(old_op_type, *this, inputs);
         case OpType::Minimum: return minimum::shape(old_op_type, *this, inputs);
         case OpType::Multiply: return multiply::shape(old_op_type, *this, inputs);
-        case OpType::Narrow: return narrow::shape(old_op_type, *this, inputs);
         case OpType::Nop: return nop::shape(old_op_type, *this, inputs);
         case OpType::NotEqual: return not_equal::shape(old_op_type, *this, inputs);
         case OpType::Pad: return pad::shape(old_op_type, *this, inputs);
@@ -619,7 +615,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Maximum: return maximum::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Minimum: return minimum::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Multiply: return multiply::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Narrow: return narrow::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Nop: return nop::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::NotEqual: return not_equal::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Pad: return pad::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -749,7 +744,6 @@ void Op::decompose_initial(
         case OpType::Maximum: return;
         case OpType::Minimum: return;
         case OpType::Multiply: return;
-        case OpType::Narrow: return narrow::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Nop: return;
         case OpType::NotEqual: return;
         case OpType::Pad: return pad::decompose_initial(old_op_type, *this, dc, inputs);
@@ -859,7 +853,6 @@ void Op::decompose_post_optimize(
         case OpType::Maximum: return;
         case OpType::Minimum: return;
         case OpType::Multiply: return;
-        case OpType::Narrow: return narrow::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Nop: return;
         case OpType::NotEqual: return;
         case OpType::Pad: return pad::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -969,7 +962,6 @@ void Op::decompose_post_autograd(
         case OpType::Maximum: return;
         case OpType::Minimum: return;
         case OpType::Multiply: return;
-        case OpType::Narrow: return narrow::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Nop: return;
         case OpType::NotEqual: return;
         case OpType::Pad: return pad::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1077,7 +1069,6 @@ long Op::initial_flops_estimate(
         case OpType::Maximum: return 0;
         case OpType::Minimum: return 0;
         case OpType::Multiply: return 0;
-        case OpType::Narrow: return narrow::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Nop: return 0;
         case OpType::NotEqual: return 0;
         case OpType::Pad: return pad::initial_flops_estimate(old_op_type, *this, inputs);
@@ -1184,7 +1175,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Maximum: return false;
         case OpType::Minimum: return false;
         case OpType::Multiply: return false;
-        case OpType::Narrow: return true;
         case OpType::Nop: return false;
         case OpType::NotEqual: return false;
         case OpType::Pad: return true;
@@ -1291,7 +1281,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Maximum: return true;
         case OpType::Minimum: return true;
         case OpType::Multiply: return true;
-        case OpType::Narrow: return false;
         case OpType::Nop: return true;
         case OpType::NotEqual: return true;
         case OpType::Pad: return false;
@@ -1398,7 +1387,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Maximum: return false;
         case OpType::Minimum: return false;
         case OpType::Multiply: return false;
-        case OpType::Narrow: return false;
         case OpType::Nop: return true;
         case OpType::NotEqual: return false;
         case OpType::Pad: return false;
@@ -1505,7 +1493,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Maximum: return true;
         case OpType::Minimum: return true;
         case OpType::Multiply: return true;
-        case OpType::Narrow: return false;
         case OpType::Nop: return false;
         case OpType::NotEqual: return true;
         case OpType::Pad: return false;
@@ -1612,7 +1599,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Maximum: return false;
         case OpType::Minimum: return false;
         case OpType::Multiply: return false;
-        case OpType::Narrow: return false;
         case OpType::Nop: return false;
         case OpType::NotEqual: return false;
         case OpType::Pad: return false;

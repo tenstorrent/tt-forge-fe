@@ -170,10 +170,9 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
         result = ac.op("hstack", (result,), (num_operands,))
         if grad.shape[-2] % TILE_DIM != 0:
             result = ac.op_with_named_attrs(
-                "narrow",
+                "index",
                 (result,),
-                {"dim": -2, "start": 0, "length": grad.shape[-2], "original_length": result.shape[-2]},
-                (-2, 0, grad.shape[-2], result.shape[-2]),
+                {"dim": -2, "start": 0, "stop": grad.shape[-2], "stride": 1},
             )
         result = ac.op(
             "select",
@@ -187,10 +186,9 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
         )
         if grad.shape[-1] % TILE_DIM != 0:
             result = ac.op_with_named_attrs(
-                "narrow",
+                "index",
                 (result,),
-                {"dim": -1, "start": 0, "length": grad.shape[-1], "original_length": result.shape[-1]},
-                (-1, 0, grad.shape[-1], result.shape[-1]),
+                {"dim": -1, "start": 0, "stop": grad.shape[-1], "stride": 1},
             )
         return result
 

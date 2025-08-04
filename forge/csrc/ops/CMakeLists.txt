@@ -67,7 +67,6 @@ add_library(ops
     op_multiply.cpp
     op_nop.cpp
     op_not_equal.cpp
-    op_narrow.cpp
     op_pad.cpp
     op_pad_tile.cpp
     op_pixel_shuffle.cpp
