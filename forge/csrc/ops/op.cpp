@@ -75,7 +75,6 @@ class NewToOldOpType
         mapping_[OpType::EmbeddingBw] = "embedding_bw";
         mapping_[OpType::Equal] = "equal";
         mapping_[OpType::Erf] = "erf";
-        mapping_[OpType::EthernetDatacopy] = "ethernet_datacopy";
         mapping_[OpType::Exp] = "exp";
         mapping_[OpType::FillCache] = "fill_cache";
         mapping_[OpType::ForgeDequantize] = "forge_dequantize";
@@ -142,7 +141,6 @@ class NewToOldOpType
         mapping_[OpType::Stack] = "stack";
         mapping_[OpType::Subtract] = "subtract";
         mapping_[OpType::Tanh] = "tanh";
-        mapping_[OpType::Tilizer] = "tilizer";
         mapping_[OpType::Transpose] = "transpose";
         mapping_[OpType::Unsqueeze] = "unsqueeze";
         mapping_[OpType::UpdateCache] = "update_cache";
@@ -201,7 +199,6 @@ class OldToNewOpType
         mapping_["embedding_bw"] = OpType::EmbeddingBw;
         mapping_["equal"] = OpType::Equal;
         mapping_["erf"] = OpType::Erf;
-        mapping_["ethernet_datacopy"] = OpType::EthernetDatacopy;
         mapping_["exp"] = OpType::Exp;
         mapping_["fill_cache"] = OpType::FillCache;
         mapping_["forge_dequantize"] = OpType::ForgeDequantize;
@@ -268,7 +265,6 @@ class OldToNewOpType
         mapping_["stack"] = OpType::Stack;
         mapping_["subtract"] = OpType::Subtract;
         mapping_["tanh"] = OpType::Tanh;
-        mapping_["tilizer"] = OpType::Tilizer;
         mapping_["transpose"] = OpType::Transpose;
         mapping_["unsqueeze"] = OpType::Unsqueeze;
         mapping_["update_cache"] = OpType::UpdateCache;
@@ -392,7 +388,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::EmbeddingBw: return embedding_bw::eval(old_op_type, *this, tensors);
         case OpType::Equal: return equal::eval(old_op_type, *this, tensors);
         case OpType::Erf: return erf::eval(old_op_type, *this, tensors);
-        case OpType::EthernetDatacopy: return ethernet_data_copy::eval(old_op_type, *this, tensors);
         case OpType::Exp: return exp::eval(old_op_type, *this, tensors);
         case OpType::FillCache: return fill_cache::eval(old_op_type, *this, tensors);
         case OpType::ForgeDequantize: return forge_dequantize::eval(old_op_type, *this, tensors);
@@ -459,7 +454,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Stack: return stack::eval(old_op_type, *this, tensors);
         case OpType::Subtract: return subtract::eval(old_op_type, *this, tensors);
         case OpType::Tanh: return tanh::eval(old_op_type, *this, tensors);
-        case OpType::Tilizer: return tilizer::eval(old_op_type, *this, tensors);
         case OpType::Transpose: return transpose::eval(old_op_type, *this, tensors);
         case OpType::Unsqueeze: return unsqueeze::eval(old_op_type, *this, tensors);
         case OpType::UpdateCache: return update_cache::eval(old_op_type, *this, tensors);
@@ -511,7 +505,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::EmbeddingBw: return embedding_bw::shape(old_op_type, *this, inputs);
         case OpType::Equal: return equal::shape(old_op_type, *this, inputs);
         case OpType::Erf: return erf::shape(old_op_type, *this, inputs);
-        case OpType::EthernetDatacopy: return ethernet_data_copy::shape(old_op_type, *this, inputs);
         case OpType::Exp: return exp::shape(old_op_type, *this, inputs);
         case OpType::FillCache: return fill_cache::shape(old_op_type, *this, inputs);
         case OpType::ForgeDequantize: return forge_dequantize::shape(old_op_type, *this, inputs);
@@ -578,7 +571,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Stack: return stack::shape(old_op_type, *this, inputs);
         case OpType::Subtract: return subtract::shape(old_op_type, *this, inputs);
         case OpType::Tanh: return tanh::shape(old_op_type, *this, inputs);
-        case OpType::Tilizer: return tilizer::shape(old_op_type, *this, inputs);
         case OpType::Transpose: return transpose::shape(old_op_type, *this, inputs);
         case OpType::Unsqueeze: return unsqueeze::shape(old_op_type, *this, inputs);
         case OpType::UpdateCache: return update_cache::shape(old_op_type, *this, inputs);
@@ -635,7 +627,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::EmbeddingBw: return embedding_bw::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Equal: return equal::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Erf: return erf::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::EthernetDatacopy: return ethernet_data_copy::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Exp: return exp::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::FillCache: return fill_cache::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::ForgeDequantize: return forge_dequantize::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -702,7 +693,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Stack: return stack::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Subtract: return subtract::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Tanh: return tanh::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Tilizer: return tilizer::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Transpose: return transpose::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Unsqueeze: return unsqueeze::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::UpdateCache: return update_cache::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -766,7 +756,7 @@ void Op::decompose_initial(
         case OpType::Conv3d: return conv_3d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::ConvSum: return conv_sum::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Cosine: return;
-        case OpType::CumulativeSum: return cumulative_sum::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::CumulativeSum: return;
         case OpType::Depthwise: return depthwise::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Dequantize: return dequantize::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
@@ -775,8 +765,7 @@ void Op::decompose_initial(
         case OpType::Embedding: return embedding::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::EmbeddingBw: return embedding_bw::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Equal: return;
-        case OpType::Erf: return erf::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::EthernetDatacopy: return ethernet_data_copy::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Erf: return;
         case OpType::Exp: return;
         case OpType::FillCache: return fill_cache::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::ForgeDequantize: return forge_dequantize::decompose_initial(old_op_type, *this, dc, inputs);
@@ -816,7 +805,7 @@ void Op::decompose_initial(
         case OpType::Pad: return pad::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::PadTile: return pad_tile::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Pow: return pow::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Pow: return;
         case OpType::Power: return;
         case OpType::Quantize: return quantize::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Reciprocal: return;
@@ -842,8 +831,7 @@ void Op::decompose_initial(
         case OpType::Squeeze: return;
         case OpType::Stack: return stack::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Subtract: return;
-        case OpType::Tanh: return tanh::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Tilizer: return tilizer::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Tanh: return;
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return update_cache::decompose_initial(old_op_type, *this, dc, inputs);
@@ -887,7 +875,7 @@ void Op::decompose_post_optimize(
         case OpType::Conv3d: return conv_3d::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::ConvSum: return conv_sum::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Cosine: return;
-        case OpType::CumulativeSum: return cumulative_sum::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::CumulativeSum: return;
         case OpType::Depthwise: return depthwise::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Dequantize: return dequantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
@@ -896,8 +884,7 @@ void Op::decompose_post_optimize(
         case OpType::Embedding: return embedding::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::EmbeddingBw: return embedding_bw::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Equal: return;
-        case OpType::Erf: return erf::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::EthernetDatacopy: return ethernet_data_copy::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Erf: return;
         case OpType::Exp: return;
         case OpType::FillCache: return fill_cache::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::ForgeDequantize: return forge_dequantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -937,7 +924,7 @@ void Op::decompose_post_optimize(
         case OpType::Pad: return pad::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::PadTile: return pad_tile::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Pow: return pow::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Pow: return;
         case OpType::Power: return;
         case OpType::Quantize: return quantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Reciprocal: return;
@@ -963,8 +950,7 @@ void Op::decompose_post_optimize(
         case OpType::Squeeze: return;
         case OpType::Stack: return stack::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Subtract: return;
-        case OpType::Tanh: return tanh::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Tilizer: return tilizer::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Tanh: return;
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return update_cache::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -1008,7 +994,7 @@ void Op::decompose_post_autograd(
         case OpType::Conv3d: return conv_3d::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::ConvSum: return conv_sum::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Cosine: return;
-        case OpType::CumulativeSum: return cumulative_sum::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::CumulativeSum: return;
         case OpType::Depthwise: return depthwise::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Dequantize: return dequantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
@@ -1017,8 +1003,7 @@ void Op::decompose_post_autograd(
         case OpType::Embedding: return embedding::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::EmbeddingBw: return embedding_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Equal: return;
-        case OpType::Erf: return erf::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::EthernetDatacopy: return ethernet_data_copy::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Erf: return;
         case OpType::Exp: return;
         case OpType::FillCache: return fill_cache::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::ForgeDequantize: return forge_dequantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1058,7 +1043,7 @@ void Op::decompose_post_autograd(
         case OpType::Pad: return pad::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::PadTile: return pad_tile::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Pow: return pow::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Pow: return;
         case OpType::Power: return;
         case OpType::Quantize: return quantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Reciprocal: return;
@@ -1084,8 +1069,7 @@ void Op::decompose_post_autograd(
         case OpType::Squeeze: return;
         case OpType::Stack: return stack::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Subtract: return;
-        case OpType::Tanh: return tanh::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Tilizer: return tilizer::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Tanh: return;
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return update_cache::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1127,7 +1111,7 @@ long Op::initial_flops_estimate(
         case OpType::Conv3d: return conv_3d::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::ConvSum: return conv_sum::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Cosine: return 0;
-        case OpType::CumulativeSum: return cumulative_sum::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::CumulativeSum: return 0;
         case OpType::Depthwise: return depthwise::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Dequantize: return dequantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Divide: return 0;
@@ -1136,8 +1120,7 @@ long Op::initial_flops_estimate(
         case OpType::Embedding: return embedding::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::EmbeddingBw: return embedding_bw::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Equal: return 0;
-        case OpType::Erf: return erf::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::EthernetDatacopy: return ethernet_data_copy::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Erf: return 0;
         case OpType::Exp: return 0;
         case OpType::FillCache: return fill_cache::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::ForgeDequantize: return forge_dequantize::initial_flops_estimate(old_op_type, *this, inputs);
@@ -1177,7 +1160,7 @@ long Op::initial_flops_estimate(
         case OpType::Pad: return pad::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::PadTile: return pad_tile::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Pow: return pow::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Pow: return 0;
         case OpType::Power: return 0;
         case OpType::Quantize: return quantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Reciprocal: return 0;
@@ -1203,8 +1186,7 @@ long Op::initial_flops_estimate(
         case OpType::Squeeze: return 0;
         case OpType::Stack: return stack::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Subtract: return 0;
-        case OpType::Tanh: return tanh::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Tilizer: return tilizer::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Tanh: return 0;
         case OpType::Transpose: return 0;
         case OpType::Unsqueeze: return 0;
         case OpType::UpdateCache: return update_cache::initial_flops_estimate(old_op_type, *this, inputs);
@@ -1255,7 +1237,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::EmbeddingBw: return false;
         case OpType::Equal: return false;
         case OpType::Erf: return false;
-        case OpType::EthernetDatacopy: return false;
         case OpType::Exp: return false;
         case OpType::FillCache: return false;
         case OpType::ForgeDequantize: return false;
@@ -1322,7 +1303,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Stack: return false;
         case OpType::Subtract: return false;
         case OpType::Tanh: return false;
-        case OpType::Tilizer: return false;
         case OpType::Transpose: return true;
         case OpType::Unsqueeze: return true;
         case OpType::UpdateCache: return false;
@@ -1342,7 +1322,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::AdaptiveMaxPool2d: return false;
         case OpType::Add: return true;
         case OpType::AdvIndex: return false;
-        case OpType::Argmax: return true;
+        case OpType::Argmax: return false;
         case OpType::Atan: return true;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;
@@ -1363,7 +1343,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Conv3d: return false;
         case OpType::ConvSum: return true;
         case OpType::Cosine: return true;
-        case OpType::CumulativeSum: return true;
+        case OpType::CumulativeSum: return false;
         case OpType::Depthwise: return false;
         case OpType::Dequantize: return false;
         case OpType::Divide: return true;
@@ -1373,7 +1353,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::EmbeddingBw: return false;
         case OpType::Equal: return true;
         case OpType::Erf: return true;
-        case OpType::EthernetDatacopy: return true;
         case OpType::Exp: return true;
         case OpType::FillCache: return false;
         case OpType::ForgeDequantize: return false;
@@ -1440,7 +1419,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Stack: return true;
         case OpType::Subtract: return true;
         case OpType::Tanh: return true;
-        case OpType::Tilizer: return true;
         case OpType::Transpose: return false;
         case OpType::Unsqueeze: return false;
         case OpType::UpdateCache: return false;
@@ -1460,7 +1438,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::AdaptiveMaxPool2d: return false;
         case OpType::Add: return false;
         case OpType::AdvIndex: return false;
-        case OpType::Argmax: return true;
+        case OpType::Argmax: return false;
         case OpType::Atan: return true;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;
@@ -1481,7 +1459,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Conv3d: return false;
         case OpType::ConvSum: return false;
         case OpType::Cosine: return true;
-        case OpType::CumulativeSum: return true;
+        case OpType::CumulativeSum: return false;
         case OpType::Depthwise: return false;
         case OpType::Dequantize: return false;
         case OpType::Divide: return false;
@@ -1491,7 +1469,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::EmbeddingBw: return false;
         case OpType::Equal: return false;
         case OpType::Erf: return true;
-        case OpType::EthernetDatacopy: return true;
         case OpType::Exp: return true;
         case OpType::FillCache: return false;
         case OpType::ForgeDequantize: return false;
@@ -1558,7 +1535,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Stack: return false;
         case OpType::Subtract: return false;
         case OpType::Tanh: return true;
-        case OpType::Tilizer: return true;
         case OpType::Transpose: return false;
         case OpType::Unsqueeze: return false;
         case OpType::UpdateCache: return false;
@@ -1609,7 +1585,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::EmbeddingBw: return false;
         case OpType::Equal: return true;
         case OpType::Erf: return false;
-        case OpType::EthernetDatacopy: return false;
         case OpType::Exp: return false;
         case OpType::FillCache: return false;
         case OpType::ForgeDequantize: return false;
@@ -1676,7 +1651,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Stack: return false;
         case OpType::Subtract: return true;
         case OpType::Tanh: return false;
-        case OpType::Tilizer: return false;
         case OpType::Transpose: return false;
         case OpType::Unsqueeze: return false;
         case OpType::UpdateCache: return false;
@@ -1727,7 +1701,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::EmbeddingBw: return false;
         case OpType::Equal: return false;
         case OpType::Erf: return false;
-        case OpType::EthernetDatacopy: return false;
         case OpType::Exp: return false;
         case OpType::FillCache: return false;
         case OpType::ForgeDequantize: return false;
@@ -1794,7 +1767,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Stack: return true;
         case OpType::Subtract: return true;
         case OpType::Tanh: return false;
-        case OpType::Tilizer: return false;
         case OpType::Transpose: return false;
         case OpType::Unsqueeze: return false;
         case OpType::UpdateCache: return false;

@@ -25,14 +25,18 @@ using namespace graphlib;
 at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Tanh, "Wrong op type.");
-    return op.base_eval(old_op_type, tensors);
+    TT_ASSERT(tensors.size() == 1, "Tanh should have one input.");
+
+    return torch::tanh(tensors[0]);
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
     const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Tanh, "Wrong op type.");
-    return op.base_shape(old_op_type, in_shapes);
+    TT_ASSERT(in_shapes.size() == 1, "Tanh should have one input.");
+
+    return {Shape::create(in_shapes[0]), {}};
 }
 
 NodeContext backward(
@@ -45,35 +49,21 @@ NodeContext backward(
     const NodeContext &gradient)
 {
     TT_DBG_ASSERT(op.type() == OpType::Tanh, "Wrong op type.");
-    return op.base_backward(old_op_type, ac, operand, inputs, output, gradient);
-}
+    TT_ASSERT(inputs.size() == 1, "Tanh should have one input.");
+    TT_ASSERT(operand == 0, "Invalid operand index for tanh.");
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Tanh, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
-}
+    // d/dx tanh(x) = 1 - tanh²(x) = sech²(x)
+    // We can use the output (which is tanh(x)) to compute this efficiently
 
-void decompose_post_optimize(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Tanh, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
-}
+    // Compute tanh²(x)
+    auto tanh_squared = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {output, output});
 
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Tanh, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
-}
+    // Compute 1 - tanh²(x)
+    auto one = ac.autograd->create_constant(ac, 1.0f);
+    auto derivative = ac.autograd->create_op(ac, graphlib::OpType("subtract"), {one, tanh_squared});
 
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Tanh, "Wrong op type.");
-    return op.base_initial_flops_estimate(old_op_type, inputs);
+    // Apply chain rule: derivative * gradient
+    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {derivative, gradient});
 }
 
 }  // namespace tanh
