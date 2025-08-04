@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from forge.op.matmul import SparseMatmul
 import math
 import torch
 from typing import Union
@@ -450,23 +449,3 @@ class AvgPool2dModule(ForgeModule):
 
     def forward(self, activations):
         return AvgPool2d(self.name, activations, **self.kwargs)
-
-
-class SparseMatmulModule(ForgeModule):
-    """
-    SparseMatmulModule
-    """
-
-    def __init__(
-        self,
-        name: str,
-        sparseA: Tensor,
-    ):
-        super().__init__(name)
-
-        self.sparseA = Parameter(*sparseA.value().shape, requires_grad=False, name="sparseA")
-        self.set_parameter("sparseA", sparseA.value())
-
-    def forward(self, denseB):
-        m1 = SparseMatmul(self.name, self.sparseA, denseB)
-        return m1

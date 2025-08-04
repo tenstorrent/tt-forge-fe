@@ -303,7 +303,7 @@ std::unique_ptr<Node> ConstantInputNode::clone(std::string const &name) const
     if (consteval_graph_)
         node->consteval_graph_ = consteval_graph_->clone(node.get());
     node->add_tags(this->as<TaggedNode>()->get_tags());
-    node->sparse_forge = sparse_forge;
+
     return node;
 }
 

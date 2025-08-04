@@ -7,7 +7,7 @@ from ..tensor import Tensor
 from ..parameter import Parameter
 from .common import ForgeOp as op
 
-from forge.op.eval.sparse_utils import conv2d_padding_to_canonical, conv3d_padding_to_canonical
+from forge.op.eval.forge.convolution import conv2d_padding_to_canonical, conv3d_padding_to_canonical
 
 
 def Conv2d(

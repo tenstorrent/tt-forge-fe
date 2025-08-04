@@ -7,9 +7,6 @@ import torch
 from ..common import to_torch_operands
 from forge.forgeglobal import TILE_DIM, align_up_tile
 from forge.forgeglobal import TILE_DIM, align_up_tile, is_tile_dim_aligned
-from ..sparse_utils import (
-    create_flattened_padding_removal_sparse_picker_matrix,
-)
 from loguru import logger
 
 

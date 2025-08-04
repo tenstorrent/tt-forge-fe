@@ -125,7 +125,6 @@ class NewToOldOpType
         mapping_[OpType::Sine] = "sine";
         mapping_[OpType::Softmax] = "softmax";
         mapping_[OpType::SoftmaxBw] = "softmax_bw";
-        mapping_[OpType::SparseMatmul] = "sparse_matmul";
         mapping_[OpType::Sqrt] = "sqrt";
         mapping_[OpType::Squeeze] = "squeeze";
         mapping_[OpType::Stack] = "stack";
@@ -135,7 +134,6 @@ class NewToOldOpType
         mapping_[OpType::Unsqueeze] = "unsqueeze";
         mapping_[OpType::UpdateCache] = "update_cache";
         mapping_[OpType::Upsample2d] = "upsample2d";
-        mapping_[OpType::Vslice] = "vslice";
         mapping_[OpType::Vstack] = "vstack";
         mapping_[OpType::Where] = "where";
     }
@@ -239,7 +237,6 @@ class OldToNewOpType
         mapping_["sine"] = OpType::Sine;
         mapping_["softmax"] = OpType::Softmax;
         mapping_["softmax_bw"] = OpType::SoftmaxBw;
-        mapping_["sparse_matmul"] = OpType::SparseMatmul;
         mapping_["sqrt"] = OpType::Sqrt;
         mapping_["squeeze"] = OpType::Squeeze;
         mapping_["stack"] = OpType::Stack;
@@ -249,7 +246,6 @@ class OldToNewOpType
         mapping_["unsqueeze"] = OpType::Unsqueeze;
         mapping_["update_cache"] = OpType::UpdateCache;
         mapping_["upsample2d"] = OpType::Upsample2d;
-        mapping_["vslice"] = OpType::Vslice;
         mapping_["vstack"] = OpType::Vstack;
         mapping_["where"] = OpType::Where;
     }
@@ -418,7 +414,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Sine: return sine::eval(old_op_type, *this, tensors);
         case OpType::Softmax: return softmax::eval(old_op_type, *this, tensors);
         case OpType::SoftmaxBw: return softmax_bw::eval(old_op_type, *this, tensors);
-        case OpType::SparseMatmul: return sparse_matmul::eval(old_op_type, *this, tensors);
         case OpType::Sqrt: return sqrt::eval(old_op_type, *this, tensors);
         case OpType::Squeeze: return squeeze::eval(old_op_type, *this, tensors);
         case OpType::Stack: return stack::eval(old_op_type, *this, tensors);
@@ -428,7 +423,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Unsqueeze: return unsqueeze::eval(old_op_type, *this, tensors);
         case OpType::UpdateCache: return update_cache::eval(old_op_type, *this, tensors);
         case OpType::Upsample2d: return upsample_2d::eval(old_op_type, *this, tensors);
-        case OpType::Vslice: return vslice::eval(old_op_type, *this, tensors);
         case OpType::Vstack: return vstack::eval(old_op_type, *this, tensors);
         case OpType::Where: return where::eval(old_op_type, *this, tensors);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
@@ -525,7 +519,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Sine: return sine::shape(old_op_type, *this, inputs);
         case OpType::Softmax: return softmax::shape(old_op_type, *this, inputs);
         case OpType::SoftmaxBw: return softmax_bw::shape(old_op_type, *this, inputs);
-        case OpType::SparseMatmul: return sparse_matmul::shape(old_op_type, *this, inputs);
         case OpType::Sqrt: return sqrt::shape(old_op_type, *this, inputs);
         case OpType::Squeeze: return squeeze::shape(old_op_type, *this, inputs);
         case OpType::Stack: return stack::shape(old_op_type, *this, inputs);
@@ -535,7 +528,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Unsqueeze: return unsqueeze::shape(old_op_type, *this, inputs);
         case OpType::UpdateCache: return update_cache::shape(old_op_type, *this, inputs);
         case OpType::Upsample2d: return upsample_2d::shape(old_op_type, *this, inputs);
-        case OpType::Vslice: return vslice::shape(old_op_type, *this, inputs);
         case OpType::Vstack: return vstack::shape(old_op_type, *this, inputs);
         case OpType::Where: return where::shape(old_op_type, *this, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
@@ -637,7 +629,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Sine: return sine::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Softmax: return softmax::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::SoftmaxBw: return softmax_bw::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::SparseMatmul: return sparse_matmul::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Sqrt: return sqrt::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Squeeze: return squeeze::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Stack: return stack::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -647,7 +638,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Unsqueeze: return unsqueeze::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::UpdateCache: return update_cache::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Upsample2d: return upsample_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Vslice: return vslice::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Vstack: return vstack::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Where: return where::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
@@ -766,7 +756,6 @@ void Op::decompose_initial(
         case OpType::Sine: return;
         case OpType::Softmax: return;
         case OpType::SoftmaxBw: return;
-        case OpType::SparseMatmul: return sparse_matmul::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Sqrt: return;
         case OpType::Squeeze: return;
         case OpType::Stack: return stack::decompose_initial(old_op_type, *this, dc, inputs);
@@ -776,7 +765,6 @@ void Op::decompose_initial(
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
-        case OpType::Vslice: return vslice::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Vstack: return vstack::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Where: return where::decompose_initial(old_op_type, *this, dc, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
@@ -875,7 +863,6 @@ void Op::decompose_post_optimize(
         case OpType::Sine: return;
         case OpType::Softmax: return;
         case OpType::SoftmaxBw: return;
-        case OpType::SparseMatmul: return sparse_matmul::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Sqrt: return;
         case OpType::Squeeze: return;
         case OpType::Stack: return;
@@ -885,7 +872,6 @@ void Op::decompose_post_optimize(
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
-        case OpType::Vslice: return vslice::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Vstack: return vstack::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Where: return where::decompose_post_optimize(old_op_type, *this, dc, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
@@ -984,7 +970,6 @@ void Op::decompose_post_autograd(
         case OpType::Sine: return;
         case OpType::Softmax: return;
         case OpType::SoftmaxBw: return softmax_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::SparseMatmul: return sparse_matmul::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Sqrt: return;
         case OpType::Squeeze: return;
         case OpType::Stack: return;
@@ -994,7 +979,6 @@ void Op::decompose_post_autograd(
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
-        case OpType::Vslice: return vslice::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Vstack: return vstack::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Where: return where::decompose_post_autograd(old_op_type, *this, dc, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
@@ -1091,7 +1075,6 @@ long Op::initial_flops_estimate(
         case OpType::Sine: return 0;
         case OpType::Softmax: return 0;
         case OpType::SoftmaxBw: return 0;
-        case OpType::SparseMatmul: return sparse_matmul::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Sqrt: return 0;
         case OpType::Squeeze: return 0;
         case OpType::Stack: return 0;
@@ -1101,7 +1084,6 @@ long Op::initial_flops_estimate(
         case OpType::Unsqueeze: return 0;
         case OpType::UpdateCache: return 0;
         case OpType::Upsample2d: return 0;
-        case OpType::Vslice: return vslice::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Vstack: return vstack::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Where: return where::initial_flops_estimate(old_op_type, *this, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
@@ -1197,7 +1179,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return false;
         case OpType::Softmax: return false;
         case OpType::SoftmaxBw: return false;
-        case OpType::SparseMatmul: return false;
         case OpType::Sqrt: return false;
         case OpType::Squeeze: return true;
         case OpType::Stack: return false;
@@ -1207,7 +1188,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Unsqueeze: return true;
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
-        case OpType::Vslice: return true;
         case OpType::Vstack: return true;
         case OpType::Where: return false;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
@@ -1303,7 +1283,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return true;
         case OpType::Softmax: return false;
         case OpType::SoftmaxBw: return false;
-        case OpType::SparseMatmul: return false;
         case OpType::Sqrt: return true;
         case OpType::Squeeze: return false;
         case OpType::Stack: return true;
@@ -1313,7 +1292,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Unsqueeze: return false;
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
-        case OpType::Vslice: return false;
         case OpType::Vstack: return false;
         case OpType::Where: return true;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
@@ -1409,7 +1387,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return true;
         case OpType::Softmax: return false;
         case OpType::SoftmaxBw: return false;
-        case OpType::SparseMatmul: return false;
         case OpType::Sqrt: return true;
         case OpType::Squeeze: return false;
         case OpType::Stack: return false;
@@ -1419,7 +1396,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Unsqueeze: return false;
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
-        case OpType::Vslice: return false;
         case OpType::Vstack: return false;
         case OpType::Where: return false;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
@@ -1515,7 +1491,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return false;
         case OpType::Softmax: return false;
         case OpType::SoftmaxBw: return false;
-        case OpType::SparseMatmul: return false;
         case OpType::Sqrt: return false;
         case OpType::Squeeze: return false;
         case OpType::Stack: return false;
@@ -1525,7 +1500,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Unsqueeze: return false;
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
-        case OpType::Vslice: return false;
         case OpType::Vstack: return false;
         case OpType::Where: return false;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
@@ -1621,7 +1595,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return false;
         case OpType::Softmax: return false;
         case OpType::SoftmaxBw: return false;
-        case OpType::SparseMatmul: return false;
         case OpType::Sqrt: return false;
         case OpType::Squeeze: return false;
         case OpType::Stack: return true;
@@ -1631,7 +1604,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Unsqueeze: return false;
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
-        case OpType::Vslice: return false;
         case OpType::Vstack: return false;
         case OpType::Where: return true;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();

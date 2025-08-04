@@ -11,6 +11,11 @@
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
 
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wgnu-anonymous-struct"
+#pragma clang diagnostic ignored "-Wc99-extensions"
+#endif
+
 namespace at
 {
 class Tensor;

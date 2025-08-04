@@ -972,28 +972,6 @@ def populate_squeeze_args(graph, nid, compiler_cfg):
     return args
 
 
-def populate_vslice_args(graph, nid, compiler_cfg):
-    node = graph["nodes"][nid]
-    output_shape = node["attrs"]["shape"][0][0]
-
-    assert int(node["attrs"]["num_inputs"]) == 1
-    input_nid = node["inputs"][0][0]
-    input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
-
-    slice_size = output_shape[-3] // input_shape[-3]
-    args = [("slices", f"{slice_size}")]
-    return args
-
-
-def populate_hslice_args(graph, nid, compiler_cfg):
-    slices = graph["nodes"][nid]["forge_shape"][-3]
-
-    args = [
-        ("slices", f"{slices}"),
-    ]
-    return args
-
-
 def populate_hstack_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
 
@@ -1567,10 +1545,8 @@ tvm_to_forge_op_map = {
     "forge.forge_conv2d_with_bias": "conv2d",
     "forge.concatenate": "concatenate",
     "forge.dropout": "dropout",
-    "forge.hslice": "hslice",
     "forge.hstack": "hstack",
     "forge.matmul": "matmul",
-    "forge.vslice": "vslice",
     "forge.vstack": "vstack",
     "reciprocal": "reciprocal",
     "reshape": "reshape",
@@ -1622,7 +1598,6 @@ forge_op_to_function_name = {
     "gelu": "forge.op.Gelu",
     "greater_equal": "forge.op.GreaterEqual",
     "greater": "forge.op.Greater",
-    "hslice": "forge.op.HSlice",
     "hstack": "forge.op.HStack",
     "identity": "forge.op.Identity",
     "index_copy": "forge.op.IndexCopy",
@@ -1667,7 +1642,6 @@ forge_op_to_function_name = {
     "tanh": "forge.op.Tanh",
     "transpose": "forge.op.Transpose",
     "unsupported": "Unsupported",
-    "vslice": "forge.op.VSlice",
     "vstack": "forge.op.VStack",
     "where": "forge.op.Where",
     "unsqueeze": "forge.op.Unsqueeze",
@@ -1688,7 +1662,6 @@ forge_ops_needing_arguments = {
     "conv3d": populate_conv3d_args,
     "cumsum": populate_cumsum_args,
     "gelu": populate_gelu_args,
-    "hslice": populate_hslice_args,
     "hstack": populate_hstack_args,
     "index_copy": populate_index_copy_args,
     "index": populate_index_args,
@@ -1712,7 +1685,6 @@ forge_ops_needing_arguments = {
     "stack": populate_stack_args,
     "transpose": populate_transpose_args,
     "unsupported": populate_unsupported_args,
-    "vslice": populate_vslice_args,
     "vstack": populate_vstack_args,
     "unsqueeze": populate_unsqueeze_args,
     "squeeze": populate_squeeze_args,

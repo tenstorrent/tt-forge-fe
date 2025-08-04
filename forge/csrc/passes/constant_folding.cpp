@@ -106,7 +106,7 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
         [](graphlib::Node *matmul)
         {
             graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(matmul);
-            return op and op->is_dense_matmul();
+            return op and op->is_matmul();
         });
 
     if (matmuls.empty())

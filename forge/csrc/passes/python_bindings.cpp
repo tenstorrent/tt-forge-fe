@@ -7,7 +7,6 @@
 #include "lower_to_forge/common.hpp"
 #include "passes/decomposing_context.hpp"
 #include "python_bindings_common.hpp"
-#include "shared_utils/sparse_matmul_utils.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
 
