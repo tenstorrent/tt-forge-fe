@@ -48,3 +48,5 @@ shapely==2.1.1
 pyarrow==20.0.0
 librosa
 soundfile
+kornia
+
