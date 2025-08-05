@@ -95,7 +95,9 @@ NodeContext backward(
     std::vector<NodeContext> bw_inputs = {inputs[0], inputs[1], inputs[2], gradient, output};
 
     return ac.autograd->create_op(
-        ac, graphlib::OpType("layernorm_bw", {}, {{"dim", dim}, {"epsilon", epsilon}}), bw_inputs);
+        ac,
+        graphlib::OpType("layernorm_bw", {}, {{"dim", dim}, {"epsilon", epsilon}, {"operand", operand}}),
+        bw_inputs);
 }
 
 void decompose_initial(
@@ -122,8 +124,7 @@ void decompose_initial(
     std::vector<uint32_t> beta_shape = bias.shape.as_vector<uint32_t>();
 
     TT_ASSERT(
-        dim == -1 || dim == static_cast<int>(input_shape.size()) - 1,
-        "Normalization can be done only over the last dimension.");
+        dim == static_cast<int>(input_shape.size()) - 1, "Normalization can be done only over the last dimension.");
     TT_ASSERT(gamma_shape.back() == input_shape.back(), "Weights shape must be the same as normalized shape.");
     TT_ASSERT(beta_shape.back() == input_shape.back(), "Bias shape must be the same as normalized shape.");
 
