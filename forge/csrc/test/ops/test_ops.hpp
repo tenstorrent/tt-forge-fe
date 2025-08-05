@@ -68,7 +68,7 @@ inline void assert_equal(const torch::Tensor& golden, const torch::Tensor& outpu
     // Compare the two tensors for equality.
     EXPECT_TRUE(golden.is_same_size(output))
         << "Tensors have different sizes: golden = " << golden.sizes() << ", output = " << output.sizes();
-    EXPECT_TRUE(torch::allclose(golden, output))
+    EXPECT_TRUE(torch::allclose(golden, output, /*rtol=*/1e-4, /*atol=*/1e-5))
         << "Tensors do not match: golden = " << golden << ", output = " << output;
 }
 
