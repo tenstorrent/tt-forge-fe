@@ -284,4 +284,4 @@ def repeat_vector(dc, input, n_repeats, axis):
     repeats = [1] * len(input.shape)
     repeats[axis] = n_repeats
     repeats = tuple(repeats)
-    return dc.op_with_named_attrs("repeat", [input], {"repeats": repeats}, repeats)
+    return dc.op_with_named_attrs("repeat", [input], {"repeats": repeats})
