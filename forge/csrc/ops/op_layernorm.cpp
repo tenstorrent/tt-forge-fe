@@ -175,6 +175,13 @@ void decompose_initial(
     dc.fuse(result);
 }
 
+void decompose_post_autograd(
+    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+{
+    TT_DBG_ASSERT(op.type() == OpType::Layernorm, "Wrong op type.");
+    decompose_initial(old_op_type, op, dc, inputs);
+}
+
 }  // namespace layernorm
 }  // namespace ops
 }  // namespace tt
