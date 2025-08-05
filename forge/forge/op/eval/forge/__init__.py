@@ -103,7 +103,7 @@ op_to_module_map = {
     "softmax": "nn",
     "log_softmax": "nn",
     "softmax_bw": "nn",
-    "mask": "mask",
+    "mask": "misc",
     "layernorm": "nn",
     "layernorm_bw": "nn",
     "batchnorm": "nn",
