@@ -34,11 +34,11 @@ class T5Wrapper(torch.nn.Module):
 
 variants = [
     pytest.param(ModelVariant.SMALL),
-    pytest.param(ModelVariant.BASE, marks=[pytest.mark.xfail]),
+    pytest.param(ModelVariant.BASE),
     pytest.param(ModelVariant.LARGE, marks=[pytest.mark.xfail]),
-    pytest.param(ModelVariant.FLAN_T5_SMALL, marks=[pytest.mark.xfail]),
+    pytest.param(ModelVariant.FLAN_T5_SMALL),
     pytest.param(ModelVariant.FLAN_T5_BASE),
-    pytest.param(ModelVariant.FLAN_T5_LARGE, marks=[pytest.mark.out_of_memory]),
+    pytest.param(ModelVariant.FLAN_T5_LARGE, marks=[pytest.mark.xfail]),
 ]
 
 
@@ -55,9 +55,8 @@ def test_t5_generation(variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Skip multi-chip variants for now
-    if variant not in [ModelVariant.SMALL, ModelVariant.FLAN_T5_SMALL, ModelVariant.BASE, ModelVariant.LARGE]:
-        pytest.xfail(reason="Requires multi-chip support")
+    if variant in [ModelVariant.LARGE, ModelVariant.FLAN_T5_LARGE]:
+        pytest.xfail(reason="Fatal Python error")
 
     # Load model and inputs
     loader = ModelLoader(variant=variant)
