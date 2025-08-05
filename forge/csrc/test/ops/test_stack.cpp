@@ -55,7 +55,7 @@ INSTANTIATE_TEST_SUITE_P(
 
 std::vector<OpTestParam> generate_stack_sweep_params()
 {
-    std::vector<OpTestParam> params;
+    std::vector<OpTestParam> sweep_params;
 
     // Select a few key shapes for sweep testing
     auto key_shapes = {
@@ -70,18 +70,18 @@ std::vector<OpTestParam> generate_stack_sweep_params()
         std::vector<graphlib::Shape> shapes = {shape, shape};
 
         // Test first, middle, and last positions (positive and negative)
-        params.emplace_back(create_stack_op(0), shapes);   // First position
-        params.emplace_back(create_stack_op(-1), shapes);  // Last position (negative, tests dim < 0 branch)
+        sweep_params.emplace_back(create_stack_op(0), shapes);   // First position
+        sweep_params.emplace_back(create_stack_op(-1), shapes);  // Last position (negative, tests dim < 0 branch)
 
         if (shape.size() > 1)
         {
             int mid = static_cast<int>(shape.size()) / 2;
-            params.emplace_back(create_stack_op(mid), shapes);       // Middle position
-            params.emplace_back(create_stack_op(-mid - 1), shapes);  // Middle position (negative, tests dim < 0 branch)
+            sweep_params.emplace_back(create_stack_op(mid), shapes);       // Middle position
+            sweep_params.emplace_back(create_stack_op(-mid - 1), shapes);  // Middle position (negative, tests dim < 0 branch)
         }
     }
 
-    return params;
+    return sweep_params;
 }
 
 INSTANTIATE_TEST_SUITE_P(
