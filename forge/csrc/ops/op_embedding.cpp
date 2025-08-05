@@ -35,7 +35,6 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 {
     TT_DBG_ASSERT(op.type() == OpType::Embedding, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 2, "Embedding should have exactly 2 input shapes.");
-    TT_ASSERT(in_shapes[0].size() <= 2, "Embedding indices should have at most 2 dimensions.");
     TT_ASSERT(in_shapes[1].size() == 2, "Embedding weights should be 2D.");
 
     // output shape is [*input_shape, embedding_dim]
