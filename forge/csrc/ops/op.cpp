@@ -843,8 +843,8 @@ void Op::decompose_post_optimize(
         case OpType::Index: return index::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::IndexCopy: return index_copy::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Interleave: return interleave::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Layernorm: return layernorm::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::LayernormBw: return layernorm_bw::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Layernorm: return;
+        case OpType::LayernormBw: return;
         case OpType::LeakyRelu: return;
         case OpType::Less: return;
         case OpType::LessEqual: return;
@@ -953,8 +953,8 @@ void Op::decompose_post_autograd(
         case OpType::Index: return index::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::IndexCopy: return index_copy::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Interleave: return interleave::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Layernorm: return layernorm::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::LayernormBw: return layernorm_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Layernorm: return;
+        case OpType::LayernormBw: return;
         case OpType::LeakyRelu: return;
         case OpType::Less: return;
         case OpType::LessEqual: return;
@@ -1061,8 +1061,8 @@ long Op::initial_flops_estimate(
         case OpType::Index: return index::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::IndexCopy: return index_copy::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Interleave: return interleave::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Layernorm: return layernorm::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::LayernormBw: return layernorm_bw::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Layernorm: return 0;
+        case OpType::LayernormBw: return 0;
         case OpType::LeakyRelu: return 0;
         case OpType::Less: return 0;
         case OpType::LessEqual: return 0;
