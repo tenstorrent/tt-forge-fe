@@ -25,16 +25,41 @@ using namespace graphlib;
 at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Repeat, "Wrong op type.");
-    return op.base_eval(old_op_type, tensors);
+    TT_ASSERT(tensors.size() == 1, "Repeat should have one input tensor.");
+
+    std::vector<int> repeats_vec = op.attr_as<std::vector<int>>("repeats");
+    std::vector<int64_t> repeats(repeats_vec.begin(), repeats_vec.end());
+
+    return tensors[0].repeat(repeats);
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
     const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Repeat, "Wrong op type.");
-    return op.base_shape(old_op_type, in_shapes);
+    TT_ASSERT(in_shapes.size() == 1, "Repeat should have one input shape.");
+
+    std::vector<int> repeats = op.attr_as<std::vector<int>>("repeats");
+
+    const auto &input_shape = in_shapes[0];
+
+    TT_ASSERT(
+        repeats.size() >= input_shape.size(),
+        "Repeats vector must have more or equal elements than input shape dimensions");
+
+    // Pad input shape with 1s if needed
+    std::vector<std::uint32_t> adjusted_input_shape(repeats.size() - input_shape.size(), 1);
+    adjusted_input_shape.insert(adjusted_input_shape.end(), input_shape.begin(), input_shape.end());
+
+    // Calculate output shape
+    std::vector<std::uint32_t> output_shape;
+    output_shape.reserve(repeats.size());
+    for (size_t i = 0; i < repeats.size(); i++) output_shape.push_back(adjusted_input_shape[i] * repeats[i]);
+
+    return {Shape::create(output_shape), {}};
 }
 
+// TODO: Implement backward pass
 NodeContext backward(
     const graphlib::OpType &old_op_type,
     const Op &op,
@@ -52,28 +77,29 @@ void decompose_initial(
     const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Repeat, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
-}
+    TT_ASSERT(inputs.size() == 1, "Repeat should have one input.");
 
-void decompose_post_optimize(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Repeat, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
-}
+    auto repeats = op.attr_as<std::vector<int>>("repeats");
+    auto input_shape = inputs[0].shape.as_vector();
 
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Repeat, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
-}
+    TT_ASSERT(
+        repeats.size() >= input_shape.size(),
+        "Repeats vector must have more or equal elements than input shape dimensions");
+    auto result = inputs[0];
 
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Repeat, "Wrong op type.");
-    return op.base_initial_flops_estimate(old_op_type, inputs);
+    // If input has fewer dimensions than repeats, reshape to match dimensions
+    if (input_shape.size() < repeats.size())
+    {
+        std::vector<std::uint32_t> new_shape(repeats.size() - input_shape.size(), 1);
+        new_shape.insert(new_shape.end(), input_shape.begin(), input_shape.end());
+
+        graphlib::OpType::Attrs reshape_attrs = {{"shape", std::vector<int>(new_shape.begin(), new_shape.end())}};
+        result = dc.op(graphlib::OpType("reshape", {}, reshape_attrs), {result});
+
+        graphlib::OpType::Attrs repeat_attrs = {{"repeats", repeats}};
+        result = dc.op(graphlib::OpType("repeat", {}, repeat_attrs), {result});
+        dc.fuse(result);
+    }
 }
 
 }  // namespace repeat

@@ -398,7 +398,7 @@ def Repeat(name: str, operandA: Tensor, repeats: List[int]) -> Tensor:
     Tensor
         Forge tensor
     """
-    return op("repeat", name, operandA, attrs=repeats, repeats=repeats).get_tensor()
+    return op("repeat", name, operandA, repeats=repeats).get_tensor()
 
 
 def RepeatInterleave(name: str, operandA: Tensor, repeats: int, dim: int) -> Tensor:
