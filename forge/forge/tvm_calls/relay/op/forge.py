@@ -64,11 +64,6 @@ def dense_to_matmul():
     return is_op("nn.dense")(data, weight_t)
 
 
-def reshape_to_vstack():
-    act = wildcard()
-    return is_op("reshape")(act)
-
-
 def decompose_adv_index_input_tuple():
     act = wildcard()
     indices = wildcard()

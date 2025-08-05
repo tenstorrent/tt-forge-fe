@@ -94,7 +94,6 @@ add_library(ops
     op_unsqueeze.cpp
     op_update_cache.cpp
     op_upsample_2d.cpp
-    op_vstack.cpp
     op_where.cpp
     python_bindings.cpp)
 

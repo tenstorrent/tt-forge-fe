@@ -947,19 +947,6 @@ def populate_maxpool2d_args(graph, nid, compiler_cfg):
     return args
 
 
-def populate_vstack_args(graph, nid, compiler_cfg):
-    node = graph["nodes"][nid]
-    output_shape = node["attrs"]["shape"][0][0]
-
-    assert int(node["attrs"]["num_inputs"]) == 1
-    input_nid = node["inputs"][0][0]
-    input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
-
-    slice_size = input_shape[-3] // output_shape[-3]
-    args = [("slices", f"{slice_size}")]
-    return args
-
-
 def populate_unsqueeze_args(graph, nid, compiler_cfg):
     dim = graph["nodes"][nid]["attrs"]["axis"][0][0]
     args = [("dim", f"{dim}")]
@@ -1533,7 +1520,6 @@ tvm_to_forge_op_map = {
     "forge.concatenate": "concatenate",
     "forge.dropout": "dropout",
     "forge.matmul": "matmul",
-    "forge.vstack": "vstack",
     "reciprocal": "reciprocal",
     "reshape": "reshape",
     "scatter_elements": "index_copy",
@@ -1627,7 +1613,6 @@ forge_op_to_function_name = {
     "tanh": "forge.op.Tanh",
     "transpose": "forge.op.Transpose",
     "unsupported": "Unsupported",
-    "vstack": "forge.op.VStack",
     "where": "forge.op.Where",
     "unsqueeze": "forge.op.Unsqueeze",
     "squeeze": "forge.op.Squeeze",
@@ -1669,7 +1654,6 @@ forge_ops_needing_arguments = {
     "stack": populate_stack_args,
     "transpose": populate_transpose_args,
     "unsupported": populate_unsupported_args,
-    "vstack": populate_vstack_args,
     "unsqueeze": populate_unsqueeze_args,
     "squeeze": populate_squeeze_args,
     # "dropout"                      : populate_dropout_args,
