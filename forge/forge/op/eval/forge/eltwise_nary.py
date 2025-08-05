@@ -62,11 +62,6 @@ def eval(type, attr, ops):
         out = t_ops[0].index_copy(attr[0], t_ops[1], t_ops[2])
         return out
 
-    elif type == "stack":
-        assert len(attr) == 1, "Stack should have 1 attr"
-        t_ops = to_torch_operands(*ops)
-        return torch.stack(t_ops, dim=attr[0])
-
     elif type == "interleave":
         assert len(attr) == 2, "Interleave should have 2 attr"
         axis = attr[0]
@@ -130,19 +125,6 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
         # index copy writes data to specified indices in the first operand
         # so the output shape is the same as the first operand
         return ops[0], []
-
-    elif type == "stack":
-        axis = attr[0]
-
-        output_shape = list(ops[0])
-        if axis == -1:
-            output_shape.append(len(ops))
-        elif axis < -1:
-            # axis + 1 is added because insertion at the correct position requires adjusting for negative axes to ensure proper behavior.
-            output_shape.insert(axis + 1, len(ops))
-        else:
-            output_shape.insert(axis, len(ops))
-        return output_shape, []
 
     elif type == "interleave":
         assert len(attr) == 2, "Interleave should have 2 attr"
@@ -217,25 +199,6 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
 
 
 def decompose(type, attr, dc, inputs):
-    if type == "stack":
-        assert len(attr) == 1, "Stack should have 1 attr"
-        axis = attr[0]
-
-        new_inputs = []
-        for inp in inputs:
-            inp_shape = inp.shape.as_list()
-            if axis == -1:
-                inp_shape.append(1)
-            elif axis < -1:
-                # axis + 1 is added because insertion at the correct position requires adjusting for negative axes to ensure proper behavior.
-                inp_shape.insert(axis + 1, 1)
-            else:
-                inp_shape.insert(axis, 1)
-            new_inp = dc.op_with_named_attrs("reshape", [inp], {"shape": (*inp_shape,)})
-            new_inputs.append(new_inp)
-
-        output = dc.op_with_named_attrs("concatenate", new_inputs, {"dim": (axis)})
-        dc.fuse(output)
 
     if type == "index_copy":
         assert len(inputs) == 3, "Index copy should have 3 inputs"

@@ -934,7 +934,7 @@ void Op::decompose_post_optimize(
         case OpType::SparseMatmul: return sparse_matmul::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Sqrt: return;
         case OpType::Squeeze: return;
-        case OpType::Stack: return stack::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Stack: return;
         case OpType::Subtract: return;
         case OpType::Tanh: return;
         case OpType::Transpose: return;
@@ -1051,7 +1051,7 @@ void Op::decompose_post_autograd(
         case OpType::SparseMatmul: return sparse_matmul::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Sqrt: return;
         case OpType::Squeeze: return;
-        case OpType::Stack: return stack::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Stack: return;
         case OpType::Subtract: return;
         case OpType::Tanh: return;
         case OpType::Transpose: return;
@@ -1166,7 +1166,7 @@ long Op::initial_flops_estimate(
         case OpType::SparseMatmul: return sparse_matmul::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Sqrt: return 0;
         case OpType::Squeeze: return 0;
-        case OpType::Stack: return stack::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Stack: return 0;
         case OpType::Subtract: return 0;
         case OpType::Tanh: return 0;
         case OpType::Transpose: return 0;
