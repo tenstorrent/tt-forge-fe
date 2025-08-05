@@ -83,7 +83,6 @@ enum class OpType : uint32_t
     Greater,
     GreaterEqual,
     Heaviside,
-    Hslice,
     Hstack,
     Index,
     IndexCopy,

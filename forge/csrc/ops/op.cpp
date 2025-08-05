@@ -82,7 +82,6 @@ class NewToOldOpType
         mapping_[OpType::Greater] = "greater";
         mapping_[OpType::GreaterEqual] = "greater_equal";
         mapping_[OpType::Heaviside] = "heaviside";
-        mapping_[OpType::Hslice] = "hslice";
         mapping_[OpType::Hstack] = "hstack";
         mapping_[OpType::Index] = "index";
         mapping_[OpType::IndexCopy] = "index_copy";
@@ -194,7 +193,6 @@ class OldToNewOpType
         mapping_["greater"] = OpType::Greater;
         mapping_["greater_equal"] = OpType::GreaterEqual;
         mapping_["heaviside"] = OpType::Heaviside;
-        mapping_["hslice"] = OpType::Hslice;
         mapping_["hstack"] = OpType::Hstack;
         mapping_["index"] = OpType::Index;
         mapping_["index_copy"] = OpType::IndexCopy;
@@ -371,7 +369,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Greater: return greater::eval(old_op_type, *this, tensors);
         case OpType::GreaterEqual: return greater_equal::eval(old_op_type, *this, tensors);
         case OpType::Heaviside: return heaviside::eval(old_op_type, *this, tensors);
-        case OpType::Hslice: return hslice::eval(old_op_type, *this, tensors);
         case OpType::Hstack: return hstack::eval(old_op_type, *this, tensors);
         case OpType::Index: return index::eval(old_op_type, *this, tensors);
         case OpType::IndexCopy: return index_copy::eval(old_op_type, *this, tensors);
@@ -476,7 +473,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Greater: return greater::shape(old_op_type, *this, inputs);
         case OpType::GreaterEqual: return greater_equal::shape(old_op_type, *this, inputs);
         case OpType::Heaviside: return heaviside::shape(old_op_type, *this, inputs);
-        case OpType::Hslice: return hslice::shape(old_op_type, *this, inputs);
         case OpType::Hstack: return hstack::shape(old_op_type, *this, inputs);
         case OpType::Index: return index::shape(old_op_type, *this, inputs);
         case OpType::IndexCopy: return index_copy::shape(old_op_type, *this, inputs);
@@ -586,7 +582,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Greater: return greater::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::GreaterEqual: return greater_equal::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Heaviside: return heaviside::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Hslice: return hslice::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Hstack: return hstack::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Index: return index::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::IndexCopy: return index_copy::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -713,7 +708,6 @@ void Op::decompose_initial(
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
         case OpType::Heaviside: return;
-        case OpType::Hslice: return hslice::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Hstack: return hstack::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Index: return index::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::IndexCopy: return index_copy::decompose_initial(old_op_type, *this, dc, inputs);
@@ -820,7 +814,6 @@ void Op::decompose_post_optimize(
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
         case OpType::Heaviside: return;
-        case OpType::Hslice: return hslice::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Hstack: return hstack::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Index: return index::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::IndexCopy: return index_copy::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -927,7 +920,6 @@ void Op::decompose_post_autograd(
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
         case OpType::Heaviside: return heaviside::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Hslice: return hslice::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Hstack: return hstack::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Index: return index::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::IndexCopy: return index_copy::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1032,7 +1024,6 @@ long Op::initial_flops_estimate(
         case OpType::Greater: return 0;
         case OpType::GreaterEqual: return 0;
         case OpType::Heaviside: return 0;
-        case OpType::Hslice: return hslice::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Hstack: return hstack::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Index: return index::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::IndexCopy: return index_copy::initial_flops_estimate(old_op_type, *this, inputs);
@@ -1136,7 +1127,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Greater: return false;
         case OpType::GreaterEqual: return false;
         case OpType::Heaviside: return false;
-        case OpType::Hslice: return true;
         case OpType::Hstack: return true;
         case OpType::Index: return true;
         case OpType::IndexCopy: return false;
@@ -1240,7 +1230,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Greater: return true;
         case OpType::GreaterEqual: return true;
         case OpType::Heaviside: return true;
-        case OpType::Hslice: return false;
         case OpType::Hstack: return false;
         case OpType::Index: return false;
         case OpType::IndexCopy: return true;
@@ -1344,7 +1333,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Greater: return false;
         case OpType::GreaterEqual: return false;
         case OpType::Heaviside: return false;
-        case OpType::Hslice: return false;
         case OpType::Hstack: return false;
         case OpType::Index: return false;
         case OpType::IndexCopy: return false;
@@ -1448,7 +1436,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Greater: return true;
         case OpType::GreaterEqual: return true;
         case OpType::Heaviside: return true;
-        case OpType::Hslice: return false;
         case OpType::Hstack: return false;
         case OpType::Index: return false;
         case OpType::IndexCopy: return false;
@@ -1552,7 +1539,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Greater: return false;
         case OpType::GreaterEqual: return false;
         case OpType::Heaviside: return false;
-        case OpType::Hslice: return false;
         case OpType::Hstack: return false;
         case OpType::Index: return false;
         case OpType::IndexCopy: return true;

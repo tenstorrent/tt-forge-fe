@@ -165,35 +165,6 @@ def is_superfluous_reshape(call):
     return superfluous_reshape
 
 
-def is_reshape_hslice(call):
-    r_input_shape = call.args[0].type_args[0].shape
-    r_newshape = call.args[0].checked_type.shape
-
-    if (
-        not (len(r_newshape) == 3 or (len(r_newshape) == 4 and r_newshape[0].value == 1))
-        or len(r_input_shape) < 2
-        or not (r_input_shape[-2].value == r_newshape[-3].value)
-        or is_superfluous_reshape(call.args[0])
-    ):
-        return False
-
-    return True
-
-
-def is_transpose_hslice(call):
-    t_axes = call.attrs.axes
-    hslice_t_axes = (0, 2, 1, 3)
-
-    if not (len(t_axes) == 4 and all([hslice_t_axes[i] == t_axes[i] for i in range(4)])):
-        return False
-
-    return True
-
-
-def is_reshape_transpose_hslice(call):
-    return is_reshape_hslice(call) and is_transpose_hslice(call)
-
-
 def _is_transpose_reshape_hstack_helper(transpose_axes, reshape_newshape, reshape_in_shape):
     hstack_t_axes = (0, 2, 1, 3)
 

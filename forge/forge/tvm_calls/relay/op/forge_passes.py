@@ -964,31 +964,6 @@ class LowerSplitToStridedSlice(DFPatternCallback):
         return sliced_act
 
 
-class ExplicateHSliceTranspose(DFPatternCallback):
-    def __init__(self):
-        super().__init__(rewrite_once=True, require_type=True)
-        act = wildcard()
-        act_r = is_op("reshape")(act)
-        self.pattern = is_op("transpose")(act_r)
-
-    def callback(self, pre, post, node_map):
-        if is_reshape_transpose_hslice(post) or not is_reshape_hslice(post):
-            return post
-
-        t_axes = post.attrs.axes
-        hslicet_t_taxes = [0, 2, 3, 1]
-
-        if not (len(t_axes) == 4 and all([hslicet_t_taxes[i] == t_axes[i] for i in range(4)])):
-            return post
-
-        act = post.args[0].args[0]
-        r = tvm.relay.reshape(act, newshape=post.args[0].attrs.newshape)
-        rt = tvm.relay.transpose(r, axes=[0, 2, 1, 3])
-        rtt = tvm.relay.transpose(rt, axes=[0, 1, 3, 2])
-
-        return rtt
-
-
 class RemoveRedundantTake(DFPatternCallback):
     def __init__(self, rewrite_once=True, require_type=True):
         super().__init__(rewrite_once=rewrite_once, require_type=require_type)
@@ -5116,7 +5091,6 @@ def run_forge_compile_passes(
             DecomposeNegative(),
             DecomposeRsqrt(),
             ExplicateTranspose(),
-            ExplicateHSliceTranspose(),
             DecomposeConv1DToConv2D(),
             PopulateReduceAxes(),
             DecomposeMultiAxisMax(),
