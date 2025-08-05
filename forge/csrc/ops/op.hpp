@@ -83,7 +83,6 @@ enum class OpType : uint32_t
     Greater,
     GreaterEqual,
     Heaviside,
-    Hstack,
     Index,
     IndexCopy,
     Interleave,
@@ -136,7 +135,6 @@ enum class OpType : uint32_t
     Unsqueeze,
     UpdateCache,
     Upsample2d,
-    Vslice,
     Vstack,
     Where,
 };

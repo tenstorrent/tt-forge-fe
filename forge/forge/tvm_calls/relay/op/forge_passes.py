@@ -3454,61 +3454,6 @@ class RepositionQNormScalarMultiplier(DFPatternCallback):
         return batch_matmul_with_reposition
 
 
-class ReconstructQKVMatmulToEnableFurtherHstackOverTransposeZ(DFPatternCallback):
-    """
-    Reconstruction of the batch matmul used to multiply QK states and V states. In sum,
-    this pass transposes and reorders inputs of the batch matmul in order to create
-    more appropriate shape where hstack can be used, instead of previously existing
-    transpose on Z dim (currently not supported).
-    """
-
-    def __init__(self):
-        super().__init__(rewrite_once=True, require_type=True)
-        self.v_bias = is_constant()
-        self.v_bias_add = is_op("add")(wildcard(), self.v_bias)
-        self.split_head_reshape = is_op("reshape")(self.v_bias_add)
-        self.split_head_transpose_z = is_op("transpose")(self.split_head_reshape)
-        self.split_head_transpose_rc = is_op("transpose")(self.split_head_transpose_z)
-        self.reshape_squeeze = is_op("reshape")(self.split_head_transpose_rc)
-
-        self.qk_hidden_states = wildcard()
-        self.batch_matmul = is_op("nn.batch_matmul")(self.reshape_squeeze, self.qk_hidden_states)
-        self.bmm_reshape = is_op("reshape")(self.batch_matmul)
-        self.bmm_transpose_z = is_op("transpose")(self.bmm_reshape)
-        self.bmm_transpose_rc = is_op("transpose")(self.bmm_transpose_z)
-        self.final_reshape = is_op("reshape")(self.bmm_transpose_rc)
-
-        self.pattern = self.final_reshape
-
-    def callback(self, pre, post, node_map):
-        pre_node_map = construct_pre_node_map(self.pattern, pre)
-
-        reshape_squeeze = node_map[self.reshape_squeeze][0]
-        qk_hidden_states = node_map[self.qk_hidden_states][0]
-
-        orig_srcA_shape = pre_node_map[self.reshape_squeeze][0].checked_type.shape
-        orig_srcB_shape = pre_node_map[self.qk_hidden_states][0].checked_type.shape
-
-        if len(orig_srcA_shape) != 3 or len(orig_srcB_shape) != 3:
-            logger.warning(f"Invalid shape lengths for ReconstructQKVMatmulToEnableFurtherHstackOverTransposeZ pass")
-            return post
-
-        transpose_v_states = tvm.relay.transpose(reshape_squeeze, axes=[0, 2, 1])
-        transpose_qk_states = tvm.relay.transpose(qk_hidden_states, axes=[0, 2, 1])
-        reordered_batch_matmul = tvm.relay.nn.batch_matmul(
-            transpose_qk_states, transpose_v_states, transpose_a=False, transpose_b=False
-        )
-        new_bmm_reshape = tvm.relay.reshape(
-            reordered_batch_matmul, newshape=[1, orig_srcA_shape[-3], orig_srcB_shape[-1], orig_srcA_shape[-2]]
-        )
-        new_bmm_transpose_zr = tvm.relay.transpose(new_bmm_reshape, axes=[0, 2, 1, 3])
-        new_final_reshape = tvm.relay.reshape(
-            new_bmm_transpose_zr, newshape=[1, orig_srcB_shape[-2], orig_srcA_shape[-3] * orig_srcA_shape[-2]]
-        )
-
-        return new_final_reshape
-
-
 class CombineReshapes(DFPatternCallback):
     def __init__(self):
         super().__init__(require_type=True)
@@ -4178,120 +4123,6 @@ class DecomposeNonZeroPadtoConcat(DFPatternCallback):
                 current_pad_shape[i] += pad_shape[i]
                 pad_shape = current_pad_shape
         return act
-
-
-class SimplifyVITOnnxAttention(DFPatternCallback):
-    def __init__(self, require_type=True, rewrite_once=True):
-        super().__init__(require_type, rewrite_once)
-        self.bias_const_0 = wildcard()
-        self.bias_const_1 = wildcard()
-        self.bias_const_2 = wildcard()
-        self.input = wildcard()
-
-        self.reshape_0 = is_op("reshape")(self.input)
-        self.add_1 = is_op("add")(self.reshape_0, self.bias_const_0)
-        self.reshape_2 = is_op("reshape")(self.add_1)
-        self.transpose_3 = is_op("transpose")(self.reshape_2).has_attr({"axes": [3, 1, 2, 0, 4]})
-        self.reshape_4 = is_op("reshape")(self.transpose_3)
-
-        # SPLIT QKV
-        self.index_0_0 = is_op("strided_slice")(self.reshape_4)
-        self.reshape_0_1 = is_op("reshape")(self.index_0_0)
-        self.transpose_0_2 = is_op("transpose")(self.reshape_0_1).has_attr({"axes": [1, 0, 2]})
-        self.reshape_0_3 = is_op("reshape")(self.transpose_0_2)
-        self.transpose_0_4 = is_op("transpose")(self.reshape_0_3).has_attr({"axes": [0, 2, 1]})
-        self.transpose_0_5 = is_op("transpose")(self.transpose_0_4).has_attr({"axes": [0, 2, 1]})
-
-        self.index_1_0 = is_op("strided_slice")(self.reshape_4)
-        self.reshape_1_1 = is_op("reshape")(self.index_1_0)
-        self.transpose_1_2 = is_op("transpose")(self.reshape_1_1).has_attr({"axes": [1, 0, 2]})
-        self.reshape_1_3 = is_op("reshape")(self.transpose_1_2)
-        self.mul_1_4 = is_op("multiply")(self.reshape_1_3, self.bias_const_1)
-        self.reshape_1_5 = is_op("reshape")(self.mul_1_4)
-
-        self.index_2_0 = is_op("strided_slice")(self.reshape_4)
-        self.reshape_2_1 = is_op("reshape")(self.index_2_0)
-        self.transpose_2_2 = is_op("transpose")(self.reshape_2_1).has_attr({"axes": [1, 0, 2]})
-        self.reshape_2_3 = is_op("reshape")(self.transpose_2_2)
-        self.transpose_2_4 = is_op("transpose")(self.reshape_2_3).has_attr({"axes": [0, 1, 3, 2]})
-        self.mul_2_5 = is_op("multiply")(self.transpose_2_4, self.bias_const_2)
-        self.reshape_2_6 = is_op("reshape")(self.mul_2_5)
-        self.transpose_2_7 = is_op("transpose")(self.reshape_2_6).has_attr({"axes": [0, 2, 1]})
-        self.transpose_2_8 = is_op("transpose")(self.transpose_2_7).has_attr({"axes": [0, 2, 1]})
-
-        # ATTENTION
-        self.bmm_5 = is_op("nn.batch_matmul")(self.reshape_1_5, self.transpose_2_8)
-        self.reshape_6 = is_op("reshape")(self.bmm_5)
-        self.softmax_7 = is_op("nn.softmax")(self.reshape_6)
-        self.reshape_8 = is_op("reshape")(self.softmax_7)
-        self.bmm_9 = is_op("nn.batch_matmul")(self.reshape_8, self.transpose_0_5)
-        self.reshape_10 = is_op("reshape")(self.bmm_9)
-        self.transpose_11 = is_op("transpose")(self.reshape_10).has_attr({"axes": [2, 1, 0, 3]})
-        self.transpose_12 = is_op("transpose")(self.transpose_11).has_attr({"axes": [0, 2, 1, 3]})
-        self.reshape_13 = is_op("reshape")(self.transpose_12)
-
-        self.pattern = self.reshape_13
-
-    def callback(self, pre, post, node_map):
-        bias_const_0 = node_map[self.bias_const_0][0]
-        bias_const_1 = node_map[self.bias_const_1][0]
-        bias_const_2 = node_map[self.bias_const_2][0]
-
-        # Reconstruct self attention
-        input_act = node_map[self.input][0]
-
-        bias_add_0 = tvm.relay.add(input_act, bias_const_0)
-        target_shape1 = list(node_map[self.reshape_2][0].attrs.newshape)
-        squeezed_shape = [int(x) for x in target_shape1 if (int(x) != 1)]
-        reshape_1 = tvm.relay.reshape(bias_add_0, newshape=squeezed_shape)
-        transpose_2 = tvm.relay.transpose(reshape_1, axes=[1, 0, 2])
-
-        # SPLIT QKV
-        index_0_attrs = node_map[self.index_0_0][0].attrs
-        index_0_0 = tvm.relay.strided_slice(
-            transpose_2,
-            begin=index_0_attrs.begin,
-            end=index_0_attrs.end,
-            strides=index_0_attrs.strides,
-            axes=(0,),
-        )
-        reshape_0_1 = tvm.relay.reshape(index_0_0, newshape=node_map[self.reshape_0_1][0].attrs.newshape)
-        transpose_0_2 = tvm.relay.transpose(reshape_0_1, axes=[1, 0, 2])
-
-        index_1_attrs = node_map[self.index_1_0][0].attrs
-        index_1_0 = tvm.relay.strided_slice(
-            transpose_2,
-            begin=index_1_attrs.begin,
-            end=index_1_attrs.end,
-            strides=index_1_attrs.strides,
-            axes=(0,),
-        )
-        reshape_1_1 = tvm.relay.reshape(index_1_0, newshape=node_map[self.reshape_1_1][0].attrs.newshape)
-        transpose_1_2 = tvm.relay.transpose(reshape_1_1, axes=[1, 0, 2])
-        mul_1_3 = tvm.relay.multiply(transpose_1_2, bias_const_1)
-
-        index_2_attrs = node_map[self.index_2_0][0].attrs
-        index_2_0 = tvm.relay.strided_slice(
-            transpose_2,
-            begin=index_2_attrs.begin,
-            end=index_2_attrs.end,
-            strides=index_2_attrs.strides,
-            axes=(0,),
-        )
-        reshape_2_1 = tvm.relay.reshape(index_2_0, newshape=node_map[self.reshape_2_1][0].attrs.newshape)
-        transpose_2_2 = tvm.relay.transpose(reshape_2_1, axes=[1, 0, 2])
-        transpose_2_3 = tvm.relay.transpose(transpose_2_2, axes=[0, 2, 1])
-        mul_2_4 = tvm.relay.multiply(transpose_2_3, bias_const_2)
-
-        # ATTENTION
-        bmm_3 = tvm.relay.nn.batch_matmul(mul_1_3, mul_2_4, transpose_a=False, transpose_b=False)
-        softmax_4 = tvm.relay.nn.softmax(bmm_3)
-        bmm_5 = tvm.relay.nn.batch_matmul(softmax_4, transpose_0_2, transpose_a=False, transpose_b=False)
-
-        # HSTACK
-        transpose_6 = tvm.relay.transpose(bmm_5, axes=[1, 0, 2])
-        reshape_7 = tvm.relay.reshape(transpose_6, newshape=node_map[self.reshape_13][0].attrs.newshape)
-        return reshape_7
 
 
 class ReplaceYolov5Perf(DFPatternCallback):
@@ -5128,7 +4959,6 @@ def run_forge_compile_passes(
             ReconstructJaxGelu(),
             ReconstructTFLayerNorm(),
             RepositionQNormScalarMultiplier(),
-            ReconstructQKVMatmulToEnableFurtherHstackOverTransposeZ(),
             CombineReshapes(),
             ReconstructJaxLayerNorm(),
             RemoveRedundantTranposesBetwenAvgPoolAndFlatteningReshape(),
@@ -5144,7 +4974,6 @@ def run_forge_compile_passes(
             BroadcastScatterValuesToMatchIndices(),
             InverseMaskGen(),
             PadSpecificBatchMatmulShapes(),
-            SimplifyVITOnnxAttention(),
             GQABroadcastReshape(),
             RemoveDenseInputSqueeze(),
             RemoveEmptyConcat(),

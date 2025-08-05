@@ -245,18 +245,6 @@ def shape(type, attr, ops):
         shape[dim] = length * round_up_div(shape[dim] - begin, stride)
         return tuple(shape), []
 
-    if type == "hstack":
-        assert len(ops[0]) >= 3, "HStack should at least have 3 dims"
-        assert len(attr) == 1, "hstack should have one attribute, equal to number of stacks of Z dim to create"
-        slice_size = attr[0]
-        assert (
-            ops[0][-3] % slice_size == 0
-        ), f"HStack requires Z: {ops[0][-3]} to be a multiple of slice_size: {slice_size},"
-        shape = list(ops[0])
-        shape[-1] *= slice_size
-        shape[-3] //= slice_size
-        return tuple(shape), []
-
     if type == "vstack":
         assert len(ops[0]) >= 3, "VStack should at least have 3 dims"
         assert len(attr) == 1, "vstack should have one attribute, equal to number of stacks of Z dim to create"

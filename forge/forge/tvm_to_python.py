@@ -972,19 +972,6 @@ def populate_squeeze_args(graph, nid, compiler_cfg):
     return args
 
 
-def populate_hstack_args(graph, nid, compiler_cfg):
-    node = graph["nodes"][nid]
-
-    assert int(node["attrs"]["num_inputs"]) == 1
-    input_nid = node["inputs"][0][0]
-    input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
-
-    args = [
-        ("slices", f"{input_shape[-3]}"),
-    ]
-    return args
-
-
 def populate_index_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
     strides = [int(strides) for strides in node["attrs"]["strides"][0]]
@@ -1545,7 +1532,6 @@ tvm_to_forge_op_map = {
     "forge.forge_conv2d_with_bias": "conv2d",
     "forge.concatenate": "concatenate",
     "forge.dropout": "dropout",
-    "forge.hstack": "hstack",
     "forge.matmul": "matmul",
     "forge.vstack": "vstack",
     "reciprocal": "reciprocal",
@@ -1598,7 +1584,6 @@ forge_op_to_function_name = {
     "gelu": "forge.op.Gelu",
     "greater_equal": "forge.op.GreaterEqual",
     "greater": "forge.op.Greater",
-    "hstack": "forge.op.HStack",
     "identity": "forge.op.Identity",
     "index_copy": "forge.op.IndexCopy",
     "index": "forge.op.Index",
@@ -1662,7 +1647,6 @@ forge_ops_needing_arguments = {
     "conv3d": populate_conv3d_args,
     "cumsum": populate_cumsum_args,
     "gelu": populate_gelu_args,
-    "hstack": populate_hstack_args,
     "index_copy": populate_index_copy_args,
     "index": populate_index_args,
     "layernorm": populate_layernorm_args,

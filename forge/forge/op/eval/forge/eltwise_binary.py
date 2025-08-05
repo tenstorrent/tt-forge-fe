@@ -2,7 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import os
 from typing import List, Tuple
 from forge.forgeglobal import TILE_DIM
 from forge.tensor import Tensor
@@ -111,45 +110,6 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
         res = dc.op("multiply", (x_eq, y))
         res = dc.op("add", (res, x_gt))
         dc.fuse(res)
-        return
-    elif op_type == "maximum" and os.environ.get("FORGE_ENABLE_MAXIMUM_DECOMPOSITION", "0") == "1":
-        operand0, operand1 = inputs[0], inputs[1]
-        orig_op0_shape = operand0.shape.as_list()
-        orig_op1_shape = operand1.shape.as_list()
-        vslice_op0, vslice_op1 = False, False
-        slice_factor = None
-
-        if len(orig_op1_shape) > 2 and orig_op1_shape[-3] != 1:
-            slice_factor = orig_op1_shape[-3]
-            vslice_op1 = True
-
-        if len(orig_op0_shape) > 2 and orig_op0_shape[-3] != 1:
-            slice_factor = orig_op0_shape[-3]
-            vslice_op0 = True
-
-        if vslice_op0 and vslice_op1:
-            assert orig_op0_shape[-3] == orig_op1_shape[-3]
-
-        op0_shape = operand0.shape.as_list()
-        op1_shape = operand1.shape.as_list()
-
-        max_operand_nd = max(len(op0_shape), len(op1_shape), 3)
-        while len(operand0.shape) < max_operand_nd:
-            operand0 = dc.op_with_named_attrs("unsqueeze", [operand0], {"dim": 0}, (0,))
-        while len(operand1.shape) < max_operand_nd:
-            operand1 = dc.op_with_named_attrs("unsqueeze", [operand1], {"dim": 0}, (0,))
-
-        if slice_factor != None:
-            concat_z = dc.op("interleave", [operand0, operand1], (-3, 1))
-            result = dc.op_with_named_attrs("reduce_max", [concat_z], {"dim": -3, "keep_dim": True})
-        else:
-            concat_z = dc.op_with_named_attrs("concatenate", [operand0, operand1], {"dim": -3})
-            result = dc.op_with_named_attrs("reduce_max", [concat_z], {"dim": -3, "keep_dim": True})
-
-        while len(result.shape) > max_operand_nd:
-            result = dc.op_with_named_attrs("squeeze", [result], {"dim": 0})
-
-        dc.fuse(result)
         return
 
 

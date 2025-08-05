@@ -61,7 +61,6 @@ op_to_module_map = {
     "reshape": "tm",
     "index": "tm",
     "select": "tm",
-    "hstack": "tm",
     "vstack": "tm",
     "broadcast": "tm",
     "repeat": "tm",
