@@ -27,6 +27,7 @@ TEST_P(SimpleOpTest, test_decompose)
 // initial graph and verifying that the evaluation of the backward graph matches the torch `output.backward()` call.
 TEST_P(SimpleOpTest, test_backward)
 {
+    pybind11::gil_scoped_release gil_release;  // release GIL for PyTorch autograd
     run_autograd();
 
     // Confirm that the forward pass produced the expected output.

@@ -320,9 +320,6 @@ class BaseOpTest : public ForgeGraphTest
     /// Runs torch backward on the golden output tensors.
     void run_torch_backward()
     {
-        // NOTE: GIL needs to be released so that c++ torch can run the backward pass.
-        pybind11::gil_scoped_release gil_release;
-
         for (const auto& [name, tensor] : golden_tensors_)
         {
             EXPECT_TRUE(tensor.requires_grad())
