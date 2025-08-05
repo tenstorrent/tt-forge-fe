@@ -49,7 +49,7 @@ def test_monodepth2(variant):
         task=Task.DEPTH_PREDICTION,
     )
 
-    pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2629")
+    pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2629")
 
     # prepare model and input using ModelLoader
     loader = ModelLoader(variant=variant)
