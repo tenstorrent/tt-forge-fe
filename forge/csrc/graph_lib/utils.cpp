@@ -714,22 +714,6 @@ at::ScalarType data_format_to_scalar_type(const DataFormat data_format)
     }
 }
 
-at::ScalarType data_format_to_scalar_type(const DataFormat &data_format)
-{
-    // C++ equivalent of forge_dataformat_to_pytorch_dtype in forge/forge/tensor.py
-    switch (data_format)
-    {
-        case DataFormat::Float32: return at::ScalarType::Float;
-        case DataFormat::Float16: return at::ScalarType::Half;
-        case DataFormat::Float16_b: return at::ScalarType::BFloat16;
-        case DataFormat::Int32: return at::ScalarType::Int;
-        default:
-            throw std::runtime_error(
-                "Unsupported DataFormat for conversion to torch ScalarType: " +
-                std::to_string(static_cast<int>(data_format)));
-    }
-}
-
 // Insert new node on the given edge. Node attributes will be picked up from consumer node.
 std::pair<Edge, Edge> insert_node_on_edge(
     Graph *graph,

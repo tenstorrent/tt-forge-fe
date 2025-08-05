@@ -49,34 +49,30 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     int stop = op.attr_as<int>("stop");
     int stride = op.attr_as<int>("stride");
 
-    // Convert positive dim to absolute index
-    if (dim >= 0)
-    {
-        dim -= static_cast<int>(output_shape.size());
-    }
+    // Convert dim to positive
+    if (dim < 0)
+        dim += static_cast<int>(output_shape.size());
 
-    // Convert to positive index
-    int abs_dim = dim + static_cast<int>(output_shape.size());
-    TT_ASSERT(abs_dim >= 0 && abs_dim < static_cast<int>(output_shape.size()), "Invalid dimension index");
+    TT_ASSERT(dim >= 0 && dim < static_cast<int>(output_shape.size()), "Invalid dimension index");
+
+    // Handle stride=0 case (use full dimension size as stride)
+    if (stride == 0)
+        stride = static_cast<int>(output_shape[dim]);
 
     // Convert start to positive
     if (start < 0)
-    {
-        start = static_cast<int>(output_shape[abs_dim]) + start;
-    }
+        start = static_cast<int>(output_shape[dim]) + start;
 
     // Convert stop to positive
     if (stop < 0)
-    {
-        stop = static_cast<int>(output_shape[abs_dim]) + stop;
-    }
+        stop = static_cast<int>(output_shape[dim]) + stop;
 
     // Calculate the new dimension size: ceil((stop - start) / stride)
     int new_size = (stop - start + stride - 1) / stride;
     if (new_size < 0)
         new_size = 0;
 
-    output_shape[abs_dim] = static_cast<std::uint32_t>(new_size);
+    output_shape[dim] = static_cast<std::uint32_t>(new_size);
 
     return std::make_tuple(Shape::create(output_shape), std::vector<DimBroadcast>{});
 }
@@ -107,17 +103,17 @@ NodeContext backward(
 
     TT_ASSERT(dim >= 0 && dim < num_dims, "Invalid dimension index: " + std::to_string(dim));
 
+    // Handle stride=0 case (use full dimension size as stride)
+    if (stride == 0)
+        stride = static_cast<int>(input_shape[dim]);
+
     // Convert start to positive
     if (start < 0)
-    {
         start = static_cast<int>(input_shape[dim]) + start;
-    }
 
     // Convert stop to positive
     if (stop < 0)
-    {
         stop = static_cast<int>(input_shape[dim]) + stop;
-    }
 
     // For each gradient element, create a padded tensor that places it at the correct position
     // Then add it to the result which is initially zero tensor of the same shape as the input

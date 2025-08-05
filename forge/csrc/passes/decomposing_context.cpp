@@ -204,7 +204,7 @@ NodeContext DecomposingContext::create_constant_tensor(DecomposingContext &dc, c
 
     node->set_shape(shape);
 
-    DataFormat output_df = graphlib::scalar_type_to_data_format(tensor);
+    DataFormat output_df = graphlib::scalar_type_to_data_format(tensor.scalar_type());
     node->set_output_df(output_df);
 
     node->set_epoch_type(dc.get_node()->get_epoch_type());
