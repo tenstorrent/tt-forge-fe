@@ -334,6 +334,7 @@ NodeContext backward(
     const NodeContext &output,
     const NodeContext &gradient)
 {
+    TT_DBG_ASSERT(op.type() == OpType::Pad, "Wrong op type.");
     TT_ASSERT(false, "Pad op should've been decomposed, so we don't need a backward pass.");
     return nullptr;
 }
