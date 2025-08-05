@@ -32,13 +32,13 @@ variants = [
     ModelVariant.MONO_STEREO_NO_PT_640X192,
     ModelVariant.MONO_1024X320,
     ModelVariant.STEREO_1024X320,
-    pytest.param(ModelVariant.MONO_STEREO_1024X320, marks=[pytest.mark.xfail]),
+    ModelVariant.MONO_STEREO_1024X320,
 ]
 
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-@pytest.mark.skip(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2629")
+@pytest.mark.xfail
 def test_monodepth2(variant):
     # Record Forge Property
     module_name = record_model_properties(
@@ -48,6 +48,8 @@ def test_monodepth2(variant):
         source=Source.TORCHVISION,
         task=Task.DEPTH_PREDICTION,
     )
+
+    pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2629")
 
     # prepare model and input using ModelLoader
     loader = ModelLoader(variant=variant)

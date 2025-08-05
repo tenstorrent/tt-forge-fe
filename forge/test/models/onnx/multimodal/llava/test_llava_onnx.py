@@ -22,8 +22,8 @@ from test.models.pytorch.multimodal.llava.test_llava import load_model
 variants = ["llava-hf/llava-1.5-7b-hf"]
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="Hangs at generate initial graph stage.")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_llava_onnx(variant, forge_tmp_path):
 
@@ -35,6 +35,8 @@ def test_llava_onnx(variant, forge_tmp_path):
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
     )
+
+    pytest.xfail(reason="Hangs at generate initial graph stage.")
 
     torch_model, processor = load_model(variant)
     image = "https://www.ilankelman.org/stopsigns/australia.jpg"
