@@ -87,7 +87,9 @@ NodeContext backward(
     const NodeContext &output,
     const NodeContext &gradient)
 {
+    TT_DBG_ASSERT(op.type() == OpType::Stack, "Wrong op type.");
     TT_ASSERT(false, "Stack op should've been decomposed, so we don't need a backward pass.");
+
     return nullptr;
 }
 

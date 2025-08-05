@@ -76,8 +76,9 @@ std::vector<OpTestParam> generate_stack_sweep_params()
         if (shape.size() > 1)
         {
             int mid = static_cast<int>(shape.size()) / 2;
-            sweep_params.emplace_back(create_stack_op(mid), shapes);       // Middle position
-            sweep_params.emplace_back(create_stack_op(-mid - 1), shapes);  // Middle position (negative, tests dim < 0 branch)
+            sweep_params.emplace_back(create_stack_op(mid), shapes);  // Middle position
+            sweep_params.emplace_back(
+                create_stack_op(-mid - 1), shapes);  // Middle position (negative, tests dim < 0 branch)
         }
     }
 
