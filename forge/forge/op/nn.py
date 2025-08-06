@@ -136,9 +136,7 @@ def Batchnorm(
         name = f"batchnorm_{get_unique_node_id()}"
 
     if batchnorm_flag:
-        return op(
-            "batchnorm", name, operandA, weights, bias, running_mean, running_var, attrs=(epsilon,), epsilon=epsilon
-        ).get_tensor()
+        return op("batchnorm", name, operandA, weights, bias, running_mean, running_var, epsilon=epsilon).get_tensor()
     else:
         running_mean = Unsqueeze(name + "_mean_unsqueeze_1", running_mean, 1)
         running_mean = Unsqueeze(name + "_mean_unsqueeze_2", running_mean, 1)

@@ -66,7 +66,8 @@ NodeContext backward(
     const NodeContext &gradient)
 {
     TT_DBG_ASSERT(op.type() == OpType::Batchnorm, "Wrong op type.");
-    throw std::runtime_error("Back propagation for Batchnorm op is not implemented yet");
+    TT_THROW("Back propagation for Batchnorm op is not implemented yet");
+    unreachable();
 }
 
 }  // namespace batchnorm
