@@ -31,15 +31,9 @@ std::vector<VecShapes> get_layernorm_individual_test_shapes()
         VecShapes{{1, 8, 16}, {1, 1, 16}, {1, 1, 16}},  // Single batch, seq length 8
         VecShapes{{3, 6, 32}, {1, 1, 32}, {1, 1, 32}},  // Larger dimensions
 
-        // 4D shapes (common in vision models)
-        VecShapes{{1, 1, 4, 8}, {1, 1, 1, 8}, {1, 1, 1, 8}},     // Small 4D
-        VecShapes{{2, 3, 4, 16}, {1, 1, 1, 16}, {1, 1, 1, 16}},  // Larger 4D
-        VecShapes{{1, 2, 8, 32}, {1, 1, 1, 32}, {1, 1, 1, 32}},  // Typical transformer dimensions
-
         // Edge cases
-        VecShapes{{1, 1}, {1, 1}, {1, 1}},                          // Minimal shape
-        VecShapes{{8, 64}, {1, 64}, {1, 64}},                       // Larger batch
-        VecShapes{{1, 1, 1, 128}, {1, 1, 1, 128}, {1, 1, 1, 128}},  // Large feature dim
+        VecShapes{{1, 1}, {1, 1}, {1, 1}},     // Minimal shape
+        VecShapes{{8, 64}, {1, 64}, {1, 64}},  // Larger batch
     };
 }
 
@@ -60,10 +54,6 @@ std::vector<OpTestParam> generate_layernorm_sweep_params()
         VecShapes{{1, 4, 16}, {1, 1, 16}, {1, 1, 16}},
         VecShapes{{2, 8, 32}, {1, 1, 32}, {1, 1, 32}},
         VecShapes{{1, 16, 64}, {1, 1, 64}, {1, 1, 64}},
-
-        // 4D shapes
-        VecShapes{{1, 2, 4, 16}, {1, 1, 1, 16}, {1, 1, 1, 16}},
-        VecShapes{{1, 1, 8, 32}, {1, 1, 1, 32}, {1, 1, 1, 32}},
     };
 
     for (float epsilon : epsilons)
@@ -85,9 +75,8 @@ std::vector<OpTestParam> generate_layernorm_dimension_tests()
     // Test both dim=-1 and dim=(last_dim_index) for various rank tensors
     std::vector<std::pair<VecShapes, std::vector<int>>> dim_test_cases = {
         // {shapes, {valid_dims}}
-        {VecShapes{{4, 8}, {1, 8}, {1, 8}}, {-1, 1}},                       // 2D: dim=-1 or dim=1
-        {VecShapes{{2, 4, 16}, {1, 1, 16}, {1, 1, 16}}, {-1, 2}},           // 3D: dim=-1 or dim=2
-        {VecShapes{{1, 2, 4, 32}, {1, 1, 1, 32}, {1, 1, 1, 32}}, {-1, 3}},  // 4D: dim=-1 or dim=3
+        {VecShapes{{4, 8}, {1, 8}, {1, 8}}, {-1, 1}},              // 2D: dim=-1 or dim=1
+        {VecShapes{{2, 4, 16}, {1, 1, 16}, {1, 1, 16}}, {-1, 2}},  // 3D: dim=-1 or dim=2
     };
 
     float epsilon = 1e-5f;

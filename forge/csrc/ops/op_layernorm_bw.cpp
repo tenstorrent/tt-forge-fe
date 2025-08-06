@@ -106,7 +106,7 @@ NodeContext backward(
     unreachable();
 }
 
-void decompose_initial(
+void decompose_post_autograd(
     const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::LayernormBw, "Wrong op type.");
@@ -140,9 +140,17 @@ void decompose_initial(
 
     if (operand == 2)
     {
+        NodeContext grad_reduced = grad;
+        if (grad.shape.size() == 3 && grad.shape[0] != 1)
+        {
+            // has to reduce over batch first
+            grad_reduced = dc.op(
+                graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{0}}, {"keep_dim", true}}), {grad});
+        }
         // Gradient w.r.t. bias (beta): dbeta = reduce_sum(grad, dim=-2, keep_dim=True)
-        NodeContext dbeta =
-            dc.op(graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}), {grad});
+        NodeContext dbeta = dc.op(
+            graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}),
+            {grad_reduced});
         dc.fuse(dbeta);
         return;
     }
@@ -167,8 +175,17 @@ void decompose_initial(
     {
         // Gradient w.r.t. weights (gamma): dgamma = reduce_sum(xhat * grad, dim=-2, keep_dim=True)
         NodeContext xhat_grad = dc.op(graphlib::OpType("multiply", {}, {}), {xhat, grad});
+        NodeContext xhat_grad_reduced = xhat_grad;
+        if (xhat_grad.shape.size() == 3 && xhat_grad.shape[0] != 1)
+        {
+            // has to reduce over batch first
+            xhat_grad_reduced = dc.op(
+                graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{0}}, {"keep_dim", true}}),
+                {xhat_grad});
+        }
         NodeContext dgamma = dc.op(
-            graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}), {xhat_grad});
+            graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}),
+            {xhat_grad_reduced});
         dc.fuse(dgamma);
         return;
     }
@@ -210,13 +227,6 @@ void decompose_initial(
 
     dc.fuse(dx);
     return;
-}
-
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::LayernormBw, "Wrong op type.");
-    decompose_initial(old_op_type, op, dc, inputs);
 }
 
 }  // namespace layernorm_bw

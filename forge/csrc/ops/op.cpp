@@ -733,8 +733,8 @@ void Op::decompose_initial(
         case OpType::Index: return index::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::IndexCopy: return index_copy::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Interleave: return interleave::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Layernorm: return layernorm::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::LayernormBw: return layernorm_bw::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Layernorm: return;
+        case OpType::LayernormBw: return;
         case OpType::LeakyRelu: return;
         case OpType::Less: return;
         case OpType::LessEqual: return;
@@ -953,8 +953,8 @@ void Op::decompose_post_autograd(
         case OpType::Index: return index::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::IndexCopy: return index_copy::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Interleave: return interleave::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Layernorm: return;
-        case OpType::LayernormBw: return;
+        case OpType::Layernorm: return layernorm::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::LayernormBw: return layernorm_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::LeakyRelu: return;
         case OpType::Less: return;
         case OpType::LessEqual: return;

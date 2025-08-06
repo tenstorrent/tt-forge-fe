@@ -27,7 +27,6 @@ TEST_P(SimpleOpTest, test_decompose)
 // initial graph and verifying that the evaluation of the backward graph matches the torch `output.backward()` call.
 TEST_P(SimpleOpTest, test_backward)
 {
-    pybind11::gil_scoped_release gil_release;  // release GIL for PyTorch autograd
     run_autograd();
 
     // Confirm that the forward pass produced the expected output.
@@ -35,7 +34,10 @@ TEST_P(SimpleOpTest, test_backward)
     compare_with_golden(outputs);
 
     auto computed_grads = eval_graph(graphlib::NodeEpochType::Backward);
-    verify_bwd_gradients(computed_grads);
+    {
+        pybind11::gil_scoped_release gil_release;  // release GIL for PyTorch backward evaluation
+        verify_bwd_gradients(computed_grads);
+    }
 }
 
 // Only test decompose for ops without backward support
