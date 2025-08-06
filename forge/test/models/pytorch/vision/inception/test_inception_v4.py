@@ -5,6 +5,7 @@
 import pytest
 import torch
 from pytorchcv.model_provider import get_model as ptcv_get_model
+from third_party.tt_forge_models.inception.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -19,7 +20,6 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
-from third_party.tt_forge_models.inception.pytorch import ModelLoader, ModelVariant
 
 from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.inception.model_utils.model_utils import get_image
