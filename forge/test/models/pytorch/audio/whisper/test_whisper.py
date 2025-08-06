@@ -7,6 +7,12 @@
 
 import pytest
 import torch
+from third_party.tt_forge_models.whisper.pytorch.loader import (
+    ModelLoader as WhisperLoader,
+)
+from third_party.tt_forge_models.whisper.pytorch.loader import (
+    ModelVariant as WhisperVariant,
+)
 
 import forge
 from forge.forge_property_utils import (
