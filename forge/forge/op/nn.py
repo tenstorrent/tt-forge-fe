@@ -101,7 +101,7 @@ def Layernorm(
         Forge tensor
     """
 
-    return op("layernorm", name, operandA, weights, bias, attrs=(dim, epsilon), dim=dim, epsilon=epsilon).get_tensor()
+    return op("layernorm", name, operandA, weights, bias, dim=dim, epsilon=epsilon).get_tensor()
 
 
 def Batchnorm(
