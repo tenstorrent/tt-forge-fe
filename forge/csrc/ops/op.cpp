@@ -439,7 +439,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Clip: return clip::shape(old_op_type, *this, inputs);
         case OpType::Concatenate: return concatenate::shape(old_op_type, *this, inputs);
         case OpType::Constant: return constant::shape(old_op_type, *this, inputs);
-        case OpType::Conv2d: return conv_2d::shape(old_op_type, *this, inputs);
+        case OpType::Conv2d: return conv_2d::shape( old_op_type, *this, inputs);
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::shape(old_op_type, *this, inputs);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::shape(old_op_type, *this, inputs);
         case OpType::Conv2dGroupedWeights: return conv_2d_grouped_weights::shape(old_op_type, *this, inputs);
@@ -774,7 +774,7 @@ void Op::decompose_post_optimize(
         case OpType::Clip: return;
         case OpType::Concatenate: return;
         case OpType::Constant: return;
-        case OpType::Conv2d: return conv_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Conv2d: return;
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Conv2dGroupedWeights: return conv_2d_grouped_weights::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -878,7 +878,7 @@ void Op::decompose_post_autograd(
         case OpType::Clip: return;
         case OpType::Concatenate: return;
         case OpType::Constant: return;
-        case OpType::Conv2d: return conv_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Conv2d: return;
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Conv2dGroupedWeights: return conv_2d_grouped_weights::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -980,7 +980,7 @@ long Op::initial_flops_estimate(
         case OpType::Clip: return 0;
         case OpType::Concatenate: return 0;
         case OpType::Constant: return 0;
-        case OpType::Conv2d: return conv_2d::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Conv2d: return 0;
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Conv2dGroupedWeights: return conv_2d_grouped_weights::initial_flops_estimate(old_op_type, *this, inputs);

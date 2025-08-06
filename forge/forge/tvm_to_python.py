@@ -585,7 +585,7 @@ def populate_conv2d_args(graph, nid, compiler_cfg):
         )
     )
 
-    channel_last = int(node["attrs"]["data_layout"][0][0] == "NHWC")
+    channel_last = node["attrs"]["data_layout"][0][0] == "NHWC"
     args.append(("channel_last", f"{channel_last}"))
 
     return args

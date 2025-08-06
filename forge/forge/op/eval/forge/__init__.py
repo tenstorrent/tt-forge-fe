@@ -4,7 +4,6 @@
 import importlib
 from types import ModuleType
 from functools import lru_cache
-from .convolution import Conv2d
 from .convolution import Conv2dTranspose
 from .pad import Pad
 
@@ -80,7 +79,7 @@ op_to_module_map = {
     "reduce_avg": "reduce",
     "reduce_sum": "reduce",
     "reduce_max": "reduce",
-    "conv2d": Conv2d,
+    "conv2d": "convolution",
     "conv2d_transpose": Conv2dTranspose,
     "conv3d": "convolution",
     "max_pool1d": "pooling",
