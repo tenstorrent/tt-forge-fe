@@ -1022,7 +1022,7 @@ long Op::initial_flops_estimate(
         case OpType::Atan: return 0;
         case OpType::AvgPool1d: return 0;
         case OpType::AvgPool2d: return 0;
-        case OpType::Batchnorm: return batchnorm::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Batchnorm: return 0;
         case OpType::Broadcast: return 0;
         case OpType::Cast: return 0;
         case OpType::Clip: return 0;

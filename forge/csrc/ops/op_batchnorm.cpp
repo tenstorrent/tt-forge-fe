@@ -118,36 +118,6 @@ void decompose_initial(
     dc.fuse(result);
 }
 
-void decompose_post_optimize(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Batchnorm, "Wrong op type.");
-    // No post-optimization decomposition needed
-}
-
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Batchnorm, "Wrong op type.");
-    // No post-autograd decomposition needed
-}
-
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Batchnorm, "Wrong op type.");
-    // Batchnorm FLOPS: normalize (5 ops per element) + scale and shift (2 ops per element) = 7 ops per element
-    if (inputs.empty())
-        return 0;
-
-    long flops = 7;  // Base operations per element
-    for (auto dim : inputs[0])
-    {
-        flops *= dim;
-    }
-    return flops;
-}
-
 }  // namespace batchnorm
 }  // namespace ops
 }  // namespace tt
