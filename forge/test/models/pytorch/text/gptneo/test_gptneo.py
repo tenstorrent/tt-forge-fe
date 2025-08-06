@@ -2,6 +2,16 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+
+import forge
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
+from forge.verify.verify import verify
 from third_party.tt_forge_models.gpt_neo.causal_lm.pytorch import (
     ModelLoader as CausalLMLoader,
 )
@@ -15,20 +25,13 @@ from third_party.tt_forge_models.gpt_neo.sequence_classification.pytorch.loader 
     ModelVariant as SequenceClassificationVariant,
 )
 
-import forge
-from forge.forge_property_utils import (
-    Framework,
-    ModelArch,
-    Source,
-    Task,
-    record_model_properties,
-)
-from forge.verify.verify import verify
-
 from test.models.models_utils import TextModelWrapper
 
 GPTNEO_VARIANTS = [
-    CausalLMVariant.GPT_NEO_125M,
+    pytest.param(
+        CausalLMVariant.GPT_NEO_125M,
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2747")],
+    ),
     CausalLMVariant.GPT_NEO_1_3B,
     pytest.param(
         CausalLMVariant.GPT_NEO_2_7B,

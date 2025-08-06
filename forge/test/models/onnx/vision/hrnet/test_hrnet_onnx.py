@@ -27,7 +27,10 @@ variants = [
     "hrnet_w18_small_v2",
     "hrnetv2_w18",
     "hrnetv2_w30",
-    "hrnetv2_w44",
+    pytest.param(
+        "hrnetv2_w44",
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2747")],
+    ),
     "hrnetv2_w48",
     "hrnetv2_w64",
 ]

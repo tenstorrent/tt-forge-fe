@@ -6,8 +6,6 @@ import pytest
 import torch
 from PIL import Image
 from pytorchcv.model_provider import get_model as ptcv_get_model
-from third_party.tt_forge_models.hrnet.pytorch import ModelLoader, ModelVariant
-from third_party.tt_forge_models.tools.utils import get_file
 from torchvision import transforms
 
 import forge
@@ -22,6 +20,8 @@ from forge.forge_property_utils import (
 )
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
+from third_party.tt_forge_models.hrnet.pytorch import ModelLoader, ModelVariant
+from third_party.tt_forge_models.tools.utils import get_file
 
 from test.models.models_utils import print_cls_results
 from test.utils import download_model
@@ -73,18 +73,25 @@ variants = [
     pytest.param("hrnet_w18_small_v1", marks=pytest.mark.push),
     pytest.param("hrnet_w18_small_v2"),
     pytest.param("hrnetv2_w18"),
-    pytest.param("hrnetv2_w30"),
+    pytest.param(
+        "hrnetv2_w30",
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2747")],
+    ),
     pytest.param(
         "hrnetv2_w32",
     ),
     pytest.param(
         "hrnetv2_w40",
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2747")],
     ),
     pytest.param("hrnetv2_w44"),
     pytest.param(
         "hrnetv2_w48",
     ),
-    pytest.param("hrnetv2_w64"),
+    pytest.param(
+        "hrnetv2_w64",
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2747")],
+    ),
 ]
 
 
