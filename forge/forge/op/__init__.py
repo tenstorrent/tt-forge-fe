@@ -5,7 +5,7 @@
 from .matmul import Matmul, SparseMatmul
 
 from .convolution import Conv2d, Conv2dTranspose, Conv3d
-from .pooling import MaxPool1d, MaxPool2d, MaxPool3d, AvgPool1d, AvgPool2d, AvgPool3d
+from .pooling import MaxPool1d, MaxPool2d, AvgPool1d, AvgPool2d
 from .eltwise_binary import (
     Add,
     Divide,
@@ -32,9 +32,7 @@ from .eltwise_unary import (
     Gelu,
     Sqrt,
     Log,
-    Buffer,
     Sigmoid,
-    Argmax,
     Abs,
     Clip,
     Atan,
@@ -42,15 +40,12 @@ from .eltwise_unary import (
     Cosine,
     Tanh,
     LeakyRelu,
-    CumSum,
     LogicalNot,
-    Dropout,
     Pow,
-    Tilize,
     Cast,
     Erf,
 )
-from .reduce import ReduceSum, ReduceAvg, ReduceMax
+from .reduce import ReduceSum, ReduceAvg, ReduceMax, Argmax
 from .tm import (
     Transpose,
     Reshape,
@@ -70,11 +65,11 @@ from .tm import (
     ForgeUnpad,
 )
 from .constant import Constant
-from .nn import Softmax, Layernorm, LogSoftmax, Batchnorm, MaxPool2dModule
+from .nn import Softmax, Layernorm, LogSoftmax, Batchnorm, Dropout, MaxPool2dModule
 from .eltwise_nary import Concatenate, Where, IndexCopy, Stack, Interleave
-from .resize import Resize1d, Resize2d, Resize3d, Upsample2d, Downsample2d
+from .resize import Resize2d, Upsample2d, Downsample2d
 from .embedding import Embedding
-from .dram_queue import DRAMQueue
 from .quantize import Quantize, Dequantize, Requantize, ForgeRequantize
 from .kv_cache import FillCache, UpdateCache
+from .misc import CumSum
 import forge.op.loss

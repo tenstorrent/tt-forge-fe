@@ -8,6 +8,8 @@
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
 #include "reportify/reportify.hpp"
+#include "torch/extension.h"
+#include "torch/torch.h"
 #include "utils/assert.hpp"
 #include "utils/logger.hpp"
 
@@ -160,28 +162,30 @@ void DecomposingContext::fuse(NodeContext operand, graphlib::PortId producer_out
     }
 }
 
-NodeContext DecomposingContext::tensor(std::shared_ptr<void> tensor, graphlib::Shape tensor_shape)
+NodeContext DecomposingContext::tensor(const at::Tensor &tensor)
 {
-    TT_ASSERT(tensor, "Trying to create constant tensor node with null tensor");
-    // Import and call forge.tensor.pytorch_dtype_to_forge_dataformat
-    py::module_ tensor_module = py::module_::import("forge.tensor");
+    // Convert at::Tensor to Python object for storage
+    py::object py_tensor = py::cast(tensor);
+    std::shared_ptr<void> tensor_ptr = make_shared_py_object(py_tensor);
 
-    auto new_node = graph->add_node(
+    graphlib::Shape shape = graphlib::Shape::create(std::vector<int64_t>(tensor.sizes().begin(), tensor.sizes().end()));
+
+    // Create node with given shape
+    auto node = graph->add_node(
         graphlib::create_node<graphlib::ConstantInputNode>(
-            "dc.input_tensor." + this->node_->name() + "." + std::to_string(this->op_index), tensor, tensor_shape),
+            "dc.input_tensor_" + node_->name() + "_" + std::to_string(op_index), tensor_ptr, shape),
         subgraph_idx);
 
-    new_node->set_shape(tensor_shape);
+    node->set_shape(shape);
 
-    py::object py_tensor = borrow_shared_py_object(tensor);
-    DataFormat output_df = graphlib::infer_data_format_from_py_tensor(py_tensor);
+    DataFormat output_df = graphlib::scalar_type_to_data_format(tensor);
+    node->set_output_df(output_df);
 
-    new_node->set_output_df(output_df);
+    node->set_epoch_type(node_->get_epoch_type());
 
-    new_node->set_epoch_type(this->node_->get_epoch_type());
     this->op_index++;
 
-    return NodeContext(new_node);
+    return NodeContext(node);
 }
 
 template <DecomposeEpoch epoch>

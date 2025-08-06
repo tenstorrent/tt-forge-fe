@@ -7,6 +7,7 @@
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
 #include "op_interface.hpp"
+#include "ops/op_common.hpp"
 #include "passes/decomposing_context.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
@@ -39,21 +40,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     TT_ASSERT(in_shapes.size() == 1, "reduce_avg should have single input shape.");
     TT_ASSERT(op.attrs().size() == 2, "reduce_avg should have 2 attrs (dim, keep_dim).");
 
-    std::vector<int> dims = op.attr_as<std::vector<int>>("dim_arg");
-    int dim = dims[0];
-    if (dim < 0)
-        dim += in_shapes[0].size();
-    TT_ASSERT(dim < static_cast<int>(in_shapes[0].size()), "reduce_avg should have valid dim.");
-
-    bool keep_dim = op.attr_as<bool>("keep_dim");
-    std::vector<std::uint32_t> ret = in_shapes[0];
-
-    if (keep_dim)
-        ret[dim] = 1;
-    else
-        ret.erase(ret.begin() + dim);
-
-    return std::make_tuple(graphlib::Shape::create(ret), std::vector<graphlib::DimBroadcast>{});
+    return op_common::reduce_ops_shape(op, in_shapes);
 }
 
 tt::graphlib::NodeContext backward(

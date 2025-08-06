@@ -58,6 +58,17 @@ tt::graphlib::NodeContext reduce_broadcast_dimensions(
  */
 long initial_flops_estimate_output_dim(std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape_tuple);
 
+std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> reduce_ops_shape(
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes);
+
+/**
+ * Convert resize method integer to string.
+ *
+ * @param method Resize method integer
+ * @return Resize method string
+ */
+std::string get_resize_method(int method);
+
 }  // namespace op_common
 }  // namespace ops
 }  // namespace tt

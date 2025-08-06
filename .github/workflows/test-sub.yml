@@ -155,6 +155,7 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_HOME: /mnt/dockercache/huggingface
+          IRD_LF_CACHE: ${{ vars.IRD_LF_CACHE }}
           FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
           HF_HUB_DISABLE_PROGRESS_BARS: 1
           FORGE_DISABLE_REPORTIFY_DUMP: 1

@@ -600,7 +600,6 @@ class OpNode : public TaggedNode
         return new_op_type() == ops::OpType::Embedding || new_op_type() == ops::OpType::EmbeddingBw;
     }
     bool is_matmul() const { return new_op_type() == ops::OpType::Matmul || is_depthwise_matmul(); }
-    bool is_tilize() const { return new_op_type() == ops::OpType::Tilizer; }
     bool is_reduce() const
     {
         return new_op_type() == ops::OpType::ReduceAvg or new_op_type() == ops::OpType::ReduceMax or

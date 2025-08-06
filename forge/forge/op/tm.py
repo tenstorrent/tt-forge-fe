@@ -164,7 +164,7 @@ def AdvIndex(
     if dim < 0:
         dim += len(operandA.shape)
 
-    return op("adv_index", name, operandA, operandB, attrs=(dim,), dim=dim).get_tensor()
+    return op("adv_index", name, operandA, operandB, dim=dim).get_tensor()
 
 
 def Select(
@@ -398,7 +398,7 @@ def Repeat(name: str, operandA: Tensor, repeats: List[int]) -> Tensor:
     Tensor
         Forge tensor
     """
-    return op("repeat", name, operandA, attrs=repeats, repeats=repeats).get_tensor()
+    return op("repeat", name, operandA, repeats=repeats).get_tensor()
 
 
 def RepeatInterleave(name: str, operandA: Tensor, repeats: int, dim: int) -> Tensor:

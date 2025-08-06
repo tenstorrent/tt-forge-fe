@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from third_party.tt_forge_models.mistral.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -16,12 +16,12 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-variants = ["ministral/Ministral-3b-instruct"]
+variants = [ModelVariant.MINISTRAL_3B]
 
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_ministral_3b(variant):
 
     # Record Forge Property
@@ -37,17 +37,13 @@ def test_ministral_3b(variant):
 
     pytest.xfail(reason="Requires multi-chip support")
 
-    # Load tokenizer
-    tokenizer = AutoTokenizer.from_pretrained(variant)
-    # Load model with modified configuration
-    framework_model = AutoModelForCausalLM.from_pretrained(variant)
-    framework_model.eval()
-
-    # Generate sample inputs
-    prompt = "What are the benefits of AI in healthcare?"
-    input_tokens = tokenizer(prompt, return_tensors="pt")
-    input_ids = input_tokens["input_ids"]
-    inputs = [input_ids]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model()
+    framework_model.config.return_dict = False
+    framework_model.config.use_cache = False
+    input_dict = loader.load_inputs()
+    inputs = [input_dict["input_ids"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)

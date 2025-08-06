@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "graph_lib/shape.hpp"
+#include "gtest/gtest.h"
 #include "ops/op.hpp"
 #include "test/ops/test_ops.hpp"
 
@@ -132,6 +133,8 @@ std::vector<tt::ops::Op> get_unary_eltwise_ops()
 {
     return {
         tt::ops::OpType::Abs,
+        // tt::ops::OpType::Clip, // Tested separately.
+        // tt::ops::OpType::CumulativeSum, // Tested separately.
         tt::ops::OpType::Sine,
         tt::ops::OpType::Cosine,
         tt::ops::OpType::Relu,
@@ -142,7 +145,11 @@ std::vector<tt::ops::Op> get_unary_eltwise_ops()
         // tt::ops::OpType::Gelu,  // Has decompose bugs
         tt::ops::OpType::Exp,
         tt::ops::OpType::Reciprocal,
+        tt::ops::OpType::Nop,
         // tt::ops::OpType::LeakyRelu,  // Has decompose bugs
+        tt::ops::OpType::Erf,
+        tt::ops::OpType::Tanh,
+        // tt::ops::OpType::Pow, // Tested separately.
     };
 }
 
@@ -229,6 +236,67 @@ INSTANTIATE_TEST_SUITE_P(
         [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
     [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
     { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
+
+/**
+ * Testing clip operation.
+ */
+std::vector<tt::ops::Op> get_clip_ops()
+{
+    std::vector<tt::ops::Op> ops;
+    for (float min : {0.0f, 0.1f, 0.3f, 1.0f, 5.0f, 12.5f, 20.01f})
+    {
+        for (float max : {0.0f, 0.1f, 0.3f, 1.0f, 5.0f, 12.5f, 20.01f})
+        {
+            ops.push_back(tt::ops::Op(tt::ops::OpType::Clip, {{"min", min}, {"max", max}}));
+        }
+    }
+
+    return ops;
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    ClipOpIndividual,
+    SimpleOpTest,
+    testing::ConvertGenerator(
+        testing::Combine(testing::ValuesIn(get_clip_ops()), testing::ValuesIn(get_unary_individual_test_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
+
+INSTANTIATE_TEST_SUITE_P(
+    ClipOpSweeps,
+    SimpleOpTest,
+    testing::ConvertGenerator(
+        testing::Combine(testing::ValuesIn(get_clip_ops()), testing::ValuesIn(generate_input_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
+
+/**
+ * Testing pow operation.
+ */
+std::vector<tt::ops::Op> get_pow_ops()
+{
+    std::vector<tt::ops::Op> ops;
+    for (float exp : {0.0f, 0.1f, 2.0f, 3.0f, 3.5f, 12.5f, 20.01f})
+        ops.push_back(tt::ops::Op(tt::ops::OpType::Pow, {{"exponent", exp}}));
+
+    return ops;
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    PowOpIndividual,
+    SimpleOpTest,
+    testing::ConvertGenerator(
+        testing::Combine(testing::ValuesIn(get_pow_ops()), testing::ValuesIn(get_unary_individual_test_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
+
+INSTANTIATE_TEST_SUITE_P(
+    PowOpSweeps,
+    SimpleOpTest,
+    testing::ConvertGenerator(
+        testing::Combine(testing::ValuesIn(get_pow_ops()), testing::ValuesIn(generate_input_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
 
 }  // namespace tt::test::ops::eltwise_unary
 

@@ -2,14 +2,35 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import torch
-from transformers import (
-    BertForMaskedLM,
-    BertForQuestionAnswering,
-    BertForSequenceClassification,
-    BertForTokenClassification,
-    BertModel,
-    BertTokenizer,
+from third_party.tt_forge_models.bert.masked_lm.pytorch.loader import (
+    ModelLoader as MaskedLMLoader,
+)
+from third_party.tt_forge_models.bert.masked_lm.pytorch.loader import (
+    ModelVariant as MaskedLMVariant,
+)
+from third_party.tt_forge_models.bert.question_answering.pytorch.loader import (
+    ModelLoader as QuestionAnsweringLoader,
+)
+from third_party.tt_forge_models.bert.question_answering.pytorch.loader import (
+    ModelVariant as QuestionAnsweringVariant,
+)
+from third_party.tt_forge_models.bert.sentence_embedding_generation.pytorch.loader import (
+    ModelLoader as SentenceEmbeddingGenerationLoader,
+)
+from third_party.tt_forge_models.bert.sentence_embedding_generation.pytorch.loader import (
+    ModelVariant as SentenceEmbeddingGenerationVariant,
+)
+from third_party.tt_forge_models.bert.sequence_classification.pytorch.loader import (
+    ModelLoader as SequenceClassificationLoader,
+)
+from third_party.tt_forge_models.bert.sequence_classification.pytorch.loader import (
+    ModelVariant as SequenceClassificationVariant,
+)
+from third_party.tt_forge_models.bert.token_classification.pytorch.loader import (
+    ModelLoader as TokenClassificationLoader,
+)
+from third_party.tt_forge_models.bert.token_classification.pytorch.loader import (
+    ModelVariant as TokenClassificationVariant,
 )
 
 import forge
@@ -26,40 +47,27 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.bert.model_utils.utils import mean_pooling
-from test.utils import download_model
-
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["bert-base-uncased"])
+@pytest.mark.parametrize("variant", [MaskedLMVariant.BERT_BASE_UNCASED])
 @pytest.mark.push
 def test_bert_masked_lm_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.BERT,
-        variant=variant,
+        variant=variant.value,
         task=Task.MASKED_LM,
         source=Source.HUGGINGFACE,
     )
 
-    # Load Bert tokenizer and model from HuggingFace
-    tokenizer = BertTokenizer.from_pretrained(variant)
-    framework_model = BertForMaskedLM.from_pretrained(variant, return_dict=False)
+    # Load model using the new loader
+    loader = MaskedLMLoader()
+    framework_model = loader.load_model()
 
-    # Load data sample
-    sample_text = "The capital of France is [MASK]."
-
-    # Data preprocessing
-    tokenized = tokenizer(
-        sample_text,
-        max_length=128,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-
-    inputs = [tokenized["input_ids"], tokenized["attention_mask"]]
+    # Get sample inputs from the loader
+    input_tokens = loader.load_inputs()
+    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -71,48 +79,13 @@ def test_bert_masked_lm_pytorch(variant):
         compiled_model,
     )
 
-    # post processing
-    logits = co_out[0]
-    mask_token_index = (tokenized["input_ids"] == tokenizer.mask_token_id)[0].nonzero(as_tuple=True)[0]
-    predicted_token_id = logits[0, mask_token_index].argmax(axis=-1)
-    print("The predicted token for the [MASK] is: ", tokenizer.decode(predicted_token_id))
-
-
-def generate_model_bert_qa_hf_pytorch(variant):
-    # Load Bert tokenizer and model from HuggingFace
-    tokenizer = download_model(BertTokenizer.from_pretrained, variant)
-    framework_model = download_model(BertForQuestionAnswering.from_pretrained, variant, return_dict=False)
-
-    # Load data sample from SQuADv1.1
-    context = """Super Bowl 50 was an American football game to determine the champion of the National Football League
-    (NFL) for the 2015 season. The American Football Conference (AFC) champion Denver Broncos defeated the
-    National Football Conference (NFC) champion Carolina Panthers 24\u201310 to earn their third Super Bowl title.
-    The game was played on February 7, 2016, at Levi's Stadium in the San Francisco Bay Area at Santa Clara, California.
-    As this was the 50th Super Bowl, the league emphasized the \"golden anniversary\" with various gold-themed
-    initiatives, as well as temporarily suspending the tradition of naming each Super Bowl game with Roman numerals
-    (under which the game would have been known as \"Super Bowl L\"), so that the logo could prominently
-    feature the Arabic numerals 50."""
-
-    question = "Which NFL team represented the AFC at Super Bowl 50?"
-
-    # Data preprocessing
-    input_tokens = tokenizer(
-        question,
-        context,
-        max_length=384,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-
-    return framework_model, inputs, tokenizer
+    # Post processing
+    loader.decode_output(co_out)
 
 
 variants = [
-    pytest.param("phiyodr/bert-large-finetuned-squad2", marks=[pytest.mark.push]),
-    pytest.param("bert-large-cased-whole-word-masking-finetuned-squad"),
+    pytest.param(QuestionAnsweringVariant.PHIYODR_BERT_LARGE_FINETUNED_SQUAD2, marks=[pytest.mark.push]),
+    QuestionAnsweringVariant.BERT_LARGE_CASED_WHOLE_WORD_MASKING_FINETUNED_SQUAD,
 ]
 
 
@@ -122,17 +95,26 @@ def test_bert_question_answering_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model=ModelArch.BERT, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model=ModelArch.BERT,
+        variant=variant.value,
+        task=Task.QA,
+        source=Source.HUGGINGFACE,
     )
 
-    framework_model, inputs, tokenizer = generate_model_bert_qa_hf_pytorch(variant)
-    framework_model.eval()
+    # Load model using the new loader
+    loader = QuestionAnsweringLoader(variant=variant)
+    framework_model = loader.load_model()
+
+    # Get sample inputs from the loader
+    input_tokens = loader.load_inputs()
+    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     verify_cfg = VerifyConfig()
-    if variant == "phiyodr/bert-large-finetuned-squad2":
+    if variant == QuestionAnsweringVariant.PHIYODR_BERT_LARGE_FINETUNED_SQUAD2:
         verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
 
     # Model Verification and Inference
@@ -143,53 +125,30 @@ def test_bert_question_answering_pytorch(variant):
         verify_cfg=verify_cfg,
     )
 
-    # post processing
-    start_logits = co_out[0]
-    end_logits = co_out[1]
-
-    answer_start_index = start_logits.argmax()
-    answer_end_index = end_logits.argmax()
-
-    input_ids = inputs[0]
-    predict_answer_tokens = input_ids[0, answer_start_index : answer_end_index + 1]
-
-    print("predicted answer ", tokenizer.decode(predict_answer_tokens, skip_special_tokens=True))
-
-
-def generate_model_bert_seqcls_hf_pytorch(variant):
-    # Load Bert tokenizer and model from HuggingFace
-    tokenizer = download_model(BertTokenizer.from_pretrained, variant)
-    framework_model = download_model(BertForSequenceClassification.from_pretrained, variant, return_dict=False)
-
-    # Load data sample
-    review = "the movie was great!"
-
-    # Data preprocessing
-    input_tokens = tokenizer(
-        review,
-        max_length=128,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-
-    return framework_model, [input_tokens["input_ids"]], {}
+    # Post processing
+    loader.decode_output(co_out)
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["textattack/bert-base-uncased-SST-2"])
+@pytest.mark.parametrize("variant", [SequenceClassificationVariant.TEXTATTACK_BERT_BASE_UNCASED_SST_2])
 def test_bert_sequence_classification_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.BERT,
-        variant=variant,
+        variant=variant.value,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 
-    framework_model, inputs, _ = generate_model_bert_seqcls_hf_pytorch(variant)
+    # Load model using the new loader
+    loader = SequenceClassificationLoader()
+    framework_model = loader.load_model()
+
+    # Get sample inputs from the loader
+    input_tokens = loader.load_inputs()
+    inputs = [input_tokens["input_ids"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -197,47 +156,30 @@ def test_bert_sequence_classification_pytorch(variant):
     # Model Verification and Inference
     _, co_out = verify(inputs, framework_model, compiled_model)
 
-    # post processing
-    predicted_value = co_out[0].argmax(-1).item()
-
-    # Answer - "positive"
-    print(f"Predicted Sentiment: {framework_model.config.id2label[predicted_value]}")
-
-
-def generate_model_bert_tkcls_hf_pytorch(variant):
-    # Load Bert tokenizer and model from HuggingFace
-    tokenizer = download_model(BertTokenizer.from_pretrained, variant)
-    model = download_model(BertForTokenClassification.from_pretrained, variant, return_dict=False)
-
-    # Load data sample
-    sample_text = "HuggingFace is a company based in Paris and New York"
-
-    # Data preprocessing
-    input_tokens = tokenizer(
-        sample_text,
-        max_length=128,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-
-    return model, sample_text, [input_tokens["input_ids"]], input_tokens
+    # Post processing
+    loader.decode_output(co_out)
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["dbmdz/bert-large-cased-finetuned-conll03-english"])
+@pytest.mark.parametrize("variant", [TokenClassificationVariant.DBMDZ_BERT_LARGE_CASED_FINETUNED_CONLL03_ENGLISH])
 def test_bert_token_classification_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.BERT,
-        variant=variant,
+        variant=variant.value,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 
-    framework_model, sample_text, inputs, input_tokens = generate_model_bert_tkcls_hf_pytorch(variant)
+    # Load model using the new loader
+    loader = TokenClassificationLoader(variant=variant)
+    framework_model = loader.load_model()
+
+    # Get sample inputs from the loader
+    input_tokens = loader.load_inputs()
+    inputs = [input_tokens["input_ids"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -249,44 +191,37 @@ def test_bert_token_classification_pytorch(variant):
         compiled_model,
     )
 
-    # post processing
-    predicted_token_class_ids = co_out[0].argmax(-1)
-    predicted_token_class_ids = torch.masked_select(predicted_token_class_ids, (input_tokens["attention_mask"][0] == 1))
-    predicted_tokens_classes = [framework_model.config.id2label[t.item()] for t in predicted_token_class_ids]
-
-    print(f"Context: {sample_text}")
-    print(f"Answer: {predicted_tokens_classes}")
+    # Post processing
+    loader.decode_output(co_out)
 
 
 @pytest.mark.nightly
 @pytest.mark.push
-@pytest.mark.parametrize("variant", ["emrecan/bert-base-turkish-cased-mean-nli-stsb-tr"])
+@pytest.mark.parametrize(
+    "variant", [SentenceEmbeddingGenerationVariant.EMRECAN_BERT_BASE_TURKISH_CASED_MEAN_NLI_STSB_TR]
+)
 def test_bert_sentence_embedding_generation_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.BERT,
-        variant=variant,
+        variant=variant.value,
         task=Task.SENTENCE_EMBEDDING_GENERATION,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
     )
 
-    # Load model and tokenizer
-    tokenizer = download_model(BertTokenizer.from_pretrained, variant)
-    framework_model = download_model(BertModel.from_pretrained, variant, return_dict=False, use_cache=False)
-    framework_model.eval()
+    # Load model using the new loader
+    loader = SentenceEmbeddingGenerationLoader(variant=variant)
+    framework_model = loader.load_model()
 
-    # prepare input
-    sentence = "Bu örnek bir cümle"
-    encoding = tokenizer(sentence, padding="max_length", truncation=True, max_length=16, return_tensors="pt")
-
-    # Inputs for forward pass
+    # Get sample inputs from the loader
+    input_tokens = loader.load_inputs()
     inputs = [
-        encoding["input_ids"],
-        encoding["attention_mask"],
+        input_tokens["input_ids"],
+        input_tokens["attention_mask"],
     ]
 
     # Forge compile framework model
@@ -296,6 +231,4 @@ def test_bert_sentence_embedding_generation_pytorch(variant):
     _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post processing
-    sentence_embeddings = mean_pooling(co_out, encoding["attention_mask"])
-
-    print("Sentence embeddings:", sentence_embeddings)
+    loader.decode_output(co_out)

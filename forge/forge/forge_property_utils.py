@@ -907,6 +907,9 @@ def record_model_properties(
     if fph is None:
         return
 
+    if not isinstance(variant, str):
+        variant = str(variant)
+
     # Record individual properties
     fph.add("tags.model_info.framework", framework.full)
     fph.add("tags.model_info.model_arch", model.full)

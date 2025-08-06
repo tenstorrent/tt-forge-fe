@@ -26,14 +26,10 @@ from forge.tensor import change_rank
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div, align_up
 from .pad import Pad
-from .nop import Nop
-from .buffer import Buffer
 
 
 def eval(type, attr, ops):
-    assert len(ops) == 1 or (
-        type == "adv_index" and len(ops) == 2
-    ), f"Tensor manipulation ops should have one input {len(ops)} {attr}"
+    assert len(ops) == 1, f"Tensor manipulation ops should have one input {len(ops)} {attr}"
     t_ops = to_torch_operands(*ops)
     dtype = ops[0].dtype
 
@@ -93,23 +89,6 @@ def eval(type, attr, ops):
             return t_ops[0][..., start:stop:stride]
         else:
             raise NotImplementedError(f"Dim={dim}")
-
-    if type == "adv_index":
-        assert len(attr) == 1, "AdvIndex should have 1 attributes"
-        assert len(t_ops[1].shape) == 1 or len(t_ops[1].shape) == 2, "indices should be 1D or 2D"
-        dim = attr[0]
-        indices = t_ops[1].type(torch.LongTensor)
-        if len(indices.shape) == 2:
-            # Indices are 2D, we need to reshape them to 1D
-            indices = indices.reshape(-1)
-
-        ret = torch.index_select(t_ops[0], dim, indices)
-
-        return ret
-
-    if type == "repeat":
-        sizes = attr
-        return t_ops[0].repeat(*sizes)
 
     if type == "repeat_interleave":
         assert len(attr) == 2, "repeat_interleave should have two attributes - repeats and dim"
@@ -309,9 +288,7 @@ def eval(type, attr, ops):
 
 
 def shape(type, attr, ops):
-    assert len(ops) == 1 or (
-        type == "adv_index" and len(ops) == 2
-    ), f"Tensor manipulation ops should have one input, has {len(ops)} input instead"
+    assert len(ops) == 1, f"Tensor manipulation ops should have one input, has {len(ops)} input instead"
 
     if type == "index":
         assert len(attr) == 4, "Index should have 4 attributes"
@@ -323,14 +300,6 @@ def shape(type, attr, ops):
 
         shape[dim] = round_up_div(stop - start, stride)
         return tuple(shape), []
-
-    if type == "adv_index":
-        assert len(attr) == 1, "AdvIndex should have 1 attributes"
-        assert len(ops[1]) == 1 or len(ops[1]) == 2, "indices should be 1D or 2D"
-        dim = attr[0]
-        shape = list(ops[0])
-        shape[dim] = ops[1][-1]
-        return shape, []
 
     if type == "select":
         assert len(attr) == 4, "Select should have 4 attributes"
@@ -394,18 +363,6 @@ def shape(type, attr, ops):
         shape[-2] *= slice_size
         shape[-3] //= slice_size
         return tuple(shape), []
-
-    if type == "repeat":
-        sizes = attr
-        if len(ops[0]) < len(sizes):
-            # Scenario: When the input is a 1D tensor and needs to be repeated in 2D,
-            # `ttir.repeat` does not currently support this directly,
-            # so we are calculating the new shape by expanding the dimensions
-            # to match repeat attr dimensions and calculate the output shape
-            shape = (1,) * (len(sizes) - len(ops[0])) + tuple(ops[0])
-        else:
-            shape = ops[0]
-        return tuple(dim * size for dim, size in zip(list(shape), sizes)), []
 
     if type == "repeat_interleave":
         assert len(attr) <= 3, "repeat_interleave should have two attributes - repeats and dim"
@@ -710,78 +667,6 @@ def squeeze_output_for_reshape_decomp(dc, output, orig_out_shape):
 
 
 def decompose(type, attr, dc, inputs):
-    if type == "adv_index":
-        dim = attr[0]
-        in0_shape = inputs[0].shape.as_list()
-        indices_shape = inputs[1].shape.as_list()
-
-        assert len(indices_shape) == 2 or len(indices_shape) == 1, "indices tensor should be 1D or 2D"
-
-        # Idea is to reshape the input tensor to [in0_shape[dim], -1] and then apply the embedding operation
-        # The embedding operation will select the appropriate indices from the reshaped tensor
-        # and then we will reshape the output back to the original shape.
-        #
-        # For example:
-        # If the input tensor is of shape [N, C, H, W] and we want to index along dim = 2 with indices shape [X],
-        # we will first reshape it: [N, C, H, W] -> [N, H, C, W] and [N, H, C, W] -> [H, N, C, W] (permuted)
-        # and then reshape it to [H, N * C * W] (flattening the last 3 dimensions)
-        # and then apply the embedding operation to select the appropriate indices [H, N * C * W] -> [X, N * C * W].
-        # Next, we will reshape the output back to the 4D shape [X, N * C * W] -> [X, N, C, W]
-        # and finally, we will transpose the output back to the original order.
-        # [X, N, C, W] -> [N, X, C, W] and [N, X, C, W] -> [N, C, X, W]
-
-        # Step 1: Move the indexed dimension to the front using a sequence of transposes
-        if dim != 0:
-            current = inputs[0]
-            for i in range(dim, 0, -1):
-                current = dc.op_with_named_attrs("transpose", [current], {"dim0": i, "dim1": i - 1})
-            permuted = current
-        else:
-            # No need to transpose if dim is already 0
-            permuted = inputs[0]
-
-        # Step 2: Reshape to [in0_shape[dim], -1]
-        # Calculate product of all dimensions except the first (after transposition)
-
-        if len(in0_shape) != 2:
-            # Calculate permuted shape, by popping the element at indexed dim and inserting it at the begging
-            permuted_shape = in0_shape.copy()  # copy is needed to avoid modifying the original shape
-            indexed_dim_shape = permuted_shape.pop(dim)
-            permuted_shape = [indexed_dim_shape, *permuted_shape]
-
-            rest_dims_product = math.prod(permuted_shape[1:])
-
-            reshape_dims = [in0_shape[dim], rest_dims_product]
-            reshaped = dc.op_with_named_attrs("reshape", [permuted], {"shape": reshape_dims})
-        else:
-            reshaped = permuted
-
-        # Step 3: Apply embedding operation
-        # embedding op expects indices tensor as first argument and embedding_table as second argument
-        selected = dc.op("embedding", (inputs[1], reshaped))
-
-        # Step 4: Reshape back to appropriate dimensions
-        # The new shape replaces the indexed dimension with the indices shape
-        if len(in0_shape) != 2:
-            output_shape = indices_shape + permuted_shape[1:]
-
-            reshaped_output = dc.op_with_named_attrs("reshape", [selected], {"shape": output_shape})
-        else:
-            reshaped_output = selected
-
-        # Step 5: Restore original dimension order if necessary using transposes
-        if dim != 0:
-            # Move dimension 0 to position 'dim' using transposes
-            current = reshaped_output
-            for i in range(0, dim):
-                current = dc.op_with_named_attrs("transpose", [current], {"dim0": i, "dim1": i + 1})
-            result = current
-        else:
-            # No need to transpose if dim is already 0
-            result = reshaped_output
-
-        dc.fuse(result)
-        return
 
     if type == "pixel_shuffle":
         result = inputs[0]  # Shape: (N, C*r*r, H, W)
@@ -803,20 +688,6 @@ def decompose(type, attr, dc, inputs):
         x = dc.op_with_named_attrs("reshape", [x], {"shape": reshape_dims})
 
         dc.fuse(x)
-
-    if type == "repeat":
-        input_shape = inputs[0].shape.as_list()
-        target_shape = attr
-        result = inputs[0]
-
-        if len(input_shape) < len(target_shape):
-            # Scenario: When the input is a 1D tensor and needs to be repeated in 2D,
-            # `ttir.repeat` does not currently support this directly.
-            # To handle this, we first reshape the input to ensure both the input and the repeats have the same dimensions
-            new_shape = (1,) * (len(target_shape) - len(input_shape)) + tuple(input_shape)
-            result = dc.op_with_named_attrs("reshape", [result], {"shape": new_shape})
-            result = dc.op_with_named_attrs("repeat", [result], {"repeats": target_shape}, target_shape)
-            dc.fuse(result)
 
 
 def create_row_picker_matrix(col_indices, lhs_num_cols, lhs_num_channels=None, lhs_batch_size=None):
@@ -892,7 +763,7 @@ def decompose_select(attr, dc, inputs):
 
     result = inputs[0]
     if orig_shape[dim] == length:
-        result = dc.op(Nop.create(), [result])
+        result = dc.op("nop", [result])
         dc.fuse(result)
 
     # select on z dim is supported via splice

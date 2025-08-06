@@ -3,11 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from transformers import (
-    AutoModelForMaskedLM,
-    AutoModelForSequenceClassification,
-    AutoTokenizer,
-)
+from third_party.tt_forge_models.roberta.pytorch import ModelLoader, ModelVariant
+from transformers import AutoModelForMaskedLM, AutoTokenizer
 
 import forge
 from forge.forge_property_utils import (
@@ -68,7 +65,7 @@ def test_roberta_masked_lm(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["cardiffnlp/twitter-roberta-base-sentiment"])
+@pytest.mark.parametrize("variant", [ModelVariant.ROBERTA_BASE_SENTIMENT])
 def test_roberta_sentiment_pytorch(variant):
 
     # Record Forge Property
@@ -80,21 +77,10 @@ def test_roberta_sentiment_pytorch(variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Load Bart tokenizer and model from HuggingFace
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    framework_model = download_model(AutoModelForSequenceClassification.from_pretrained, variant, return_dict=False)
-
-    # Example from multi-nli validation set
-    text = """Great road trip views! @ Shartlesville, Pennsylvania"""
-
-    # Data preprocessing
-    input_tokens = tokenizer.encode(
-        text,
-        max_length=128,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
+    # Load model and inputs using the new loader
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model()
+    input_tokens = loader.load_inputs()
     inputs = [input_tokens]
 
     # Forge compile framework model
@@ -105,6 +91,5 @@ def test_roberta_sentiment_pytorch(variant):
         inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
     )
 
-    # post processing
-    predicted_value = co_out[0].argmax(-1).item()
-    print(f"Predicted Sentiment: {framework_model.config.id2label[predicted_value]}")
+    # post processing using loader's decode method
+    loader.decode_output(co_out)

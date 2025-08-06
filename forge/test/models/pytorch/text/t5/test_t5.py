@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from transformers import AutoTokenizer, T5Config, T5ForConditionalGeneration
+from third_party.tt_forge_models.t5.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -19,33 +19,26 @@ from test.models.models_utils import (
     generate_no_cache_for_encoder_decoder_model,
     pad_inputs,
 )
-from test.utils import download_model
+
+
+class T5Wrapper(torch.nn.Module):
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+
+    def forward(self, input_ids, decoder_input_ids):
+        inputs = {"input_ids": input_ids, "decoder_input_ids": decoder_input_ids}
+        output = self.model(**inputs)
+        return output
+
 
 variants = [
-    pytest.param(
-        "t5-small",
-        id="t5-small",
-    ),
-    pytest.param(
-        "t5-base",
-        id="t5-base",
-        marks=[pytest.mark.xfail],
-    ),
-    pytest.param(
-        "t5-large",
-        id="t5-large",
-        marks=[pytest.mark.xfail],
-    ),
-    pytest.param(
-        "google/flan-t5-small",
-        id="google_flan_t5_small",
-        marks=[pytest.mark.xfail],
-    ),
-    pytest.param(
-        "google/flan-t5-base",
-        id="google_flan_t5_base",
-    ),
-    pytest.param("google/flan-t5-large", id="google_flan_t5_large", marks=[pytest.mark.out_of_memory]),
+    pytest.param(ModelVariant.SMALL),
+    pytest.param(ModelVariant.BASE),
+    pytest.param(ModelVariant.LARGE, marks=[pytest.mark.xfail]),
+    pytest.param(ModelVariant.FLAN_T5_SMALL),
+    pytest.param(ModelVariant.FLAN_T5_BASE),
+    pytest.param(ModelVariant.FLAN_T5_LARGE, marks=[pytest.mark.xfail]),
 ]
 
 
@@ -61,45 +54,23 @@ def test_t5_generation(variant):
         task=Task.TEXT_GENERATION,
         source=Source.HUGGINGFACE,
     )
-    if variant not in ["t5-small", "google/flan-t5-small", "t5-base", "t5-large"]:
-        pytest.xfail(reason="Requires multi-chip support")
 
-    # Load tokenizer and model from HuggingFace
-    # Variants: t5-small, t5-base, t5-large
+    if variant in [ModelVariant.LARGE, ModelVariant.FLAN_T5_LARGE]:
+        pytest.xfail(reason="Fatal Python error")
 
-    config = download_model(T5Config.from_pretrained, variant)
-    config_dict = config.to_dict()
-    config_dict["return_dict"] = False
-    config_dict["use_cache"] = False
-    config = T5Config(**config_dict)
-    model = download_model(T5ForConditionalGeneration.from_pretrained, variant, config=config)
-    tokenizer = AutoTokenizer.from_pretrained(variant)
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    model = loader.load_model()
+    input_dict = loader.load_inputs()
 
-    inputs = tokenizer(
-        "summarize: Researchers have extensively studied the benefits of having pets, "
-        "particularly dogs, on human health and well-being. Findings suggest that pet ownership "
-        "can lead to improved mental health, reduced stress levels, and even physical health benefits "
-        "such as lower blood pressure and increased physical activity levels due to regular walks.",
-        return_tensors="pt",
-    )
-
-    input_ids = inputs.input_ids
-    decoder_start_token_tensor = torch.tensor(model.generation_config.decoder_start_token_id, dtype=torch.long)
-    decoder_input_ids = torch.ones((1, 1), dtype=torch.long) * decoder_start_token_tensor
+    # Extract the inputs and prepare them for the model
+    input_ids = input_dict["input_ids"]
+    decoder_input_ids = input_dict["decoder_input_ids"]
     padded_decoder_input_ids, seq_len = pad_inputs(decoder_input_ids)
     inputs = [input_ids, padded_decoder_input_ids]
 
-    class Wrapper(torch.nn.Module):
-        def __init__(self, model):
-            super().__init__()
-            self.model = model
-
-        def forward(self, input_ids, decoder_input_ids):
-            inputs = {"input_ids": input_ids, "decoder_input_ids": decoder_input_ids}
-            output = self.model(**inputs)
-            return output
-
-    framework_model = Wrapper(model)
+    # Create wrapper for the model
+    framework_model = T5Wrapper(model)
 
     # Forge compile
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -107,12 +78,13 @@ def test_t5_generation(variant):
     # Model Verification
     verify(inputs, framework_model, compiled_model)
 
+    # Generate text using the compiled model
     generated_text = generate_no_cache_for_encoder_decoder_model(
         max_new_tokens=512,
         model=compiled_model,
         input_ids=inputs[0],
         decoder_input_ids=padded_decoder_input_ids,
         seq_len=seq_len,
-        tokenizer=tokenizer,
+        tokenizer=loader.tokenizer,
     )
     print(generated_text)
