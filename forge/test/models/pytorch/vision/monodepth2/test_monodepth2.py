@@ -4,6 +4,10 @@
 
 import pytest
 import torch
+from third_party.tt_forge_models.monodepth2.pytorch.loader import (
+    ModelLoader,
+    ModelVariant,
+)
 
 import forge
 from forge._C import DataFormat
@@ -19,28 +23,22 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.monodepth2.model_utils.utils import (
-    download_model,
-    load_input,
-    load_model,
-    postprocess_and_save_disparity_map,
-)
-
 variants = [
-    "mono_640x192",
-    "stereo_640x192",
-    "mono+stereo_640x192",
-    "mono_no_pt_640x192",
-    "stereo_no_pt_640x192",
-    "mono+stereo_no_pt_640x192",
-    "mono_1024x320",
-    "stereo_1024x320",
-    pytest.param("mono+stereo_1024x320", marks=[pytest.mark.xfail]),
+    ModelVariant.MONO_640X192,
+    ModelVariant.STEREO_640X192,
+    ModelVariant.MONO_STEREO_640X192,
+    ModelVariant.MONO_NO_PT_640X192,
+    ModelVariant.STEREO_NO_PT_640X192,
+    ModelVariant.MONO_STEREO_NO_PT_640X192,
+    ModelVariant.MONO_1024X320,
+    ModelVariant.STEREO_1024X320,
+    ModelVariant.MONO_STEREO_1024X320,
 ]
 
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
+@pytest.mark.xfail
 def test_monodepth2(variant):
     # Record Forge Property
     module_name = record_model_properties(
@@ -51,13 +49,15 @@ def test_monodepth2(variant):
         task=Task.DEPTH_PREDICTION,
     )
 
-    # prepare model and input
-    download_model(variant)
-    framework_model, height, width = load_model(variant)
-    framework_model.to(torch.bfloat16)
-    input_tensor, original_width, original_height = load_input(height, width)
+    pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2629")
 
-    inputs = [input_tensor.to(torch.bfloat16)]
+    # prepare model and input using ModelLoader
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model()
+    framework_model.to(torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+
+    inputs = [input_tensor]
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override, enable_optimization_passes=True)
 
@@ -82,4 +82,4 @@ def test_monodepth2(variant):
     )
 
     # Post-process and save result
-    postprocess_and_save_disparity_map(co_out, original_height, original_width, variant)
+    loader.postprocess_and_save_disparity_map(co_out, f"./disparity_maps/{variant}")

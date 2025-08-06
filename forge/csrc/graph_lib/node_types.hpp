@@ -594,14 +594,12 @@ class OpNode : public TaggedNode
     void set_op_attr(const std::string &name, OpType::Attr value) { op_type_.set_attr(name, std::move(value)); }
 
     void set_gradient_op(bool value = true) { gradient_op_ = value; }
-    bool is_op_type(std::string const &type) const { return type == op_name(); }
     bool is_gradient_op() const { return gradient_op_; }
     bool is_embedding() const
     {
         return new_op_type() == ops::OpType::Embedding || new_op_type() == ops::OpType::EmbeddingBw;
     }
     bool is_matmul() const { return new_op_type() == ops::OpType::Matmul || is_depthwise_matmul(); }
-    bool is_tilize() const { return new_op_type() == ops::OpType::Tilizer; }
     bool is_reduce() const
     {
         return new_op_type() == ops::OpType::ReduceAvg or new_op_type() == ops::OpType::ReduceMax or
@@ -672,7 +670,8 @@ class EdgeAttributes
     void clear_broadcast_dims();
     void set_broadcast_dim(int dim, int size_or_factor, bool explicit_bcast = false)
     {
-        tms.push_back(OpType("broadcast", {dim, size_or_factor, explicit_bcast}));
+        tms.push_back(
+            OpType("broadcast", {}, {{"dim", dim}, {"size", size_or_factor}, {"explicit_bcast", explicit_bcast}}));
     }
     void remove_broadcast_dim(int dim);
     inline UBlockOrder get_ublock_order() const { return ublock_order; }

@@ -4,10 +4,17 @@
 # Llama3 Demo - CasualLM
 
 import pytest
-from transformers import (
-    AutoModelForCausalLM,
-    AutoModelForSequenceClassification,
-    AutoTokenizer,
+from third_party.tt_forge_models.llama.causal_lm.pytorch import (
+    ModelLoader as CausalLMLoader,
+)
+from third_party.tt_forge_models.llama.causal_lm.pytorch import (
+    ModelVariant as CausalLMVariant,
+)
+from third_party.tt_forge_models.llama.sequence_classification.pytorch import (
+    ModelLoader as SequenceClassificationLoader,
+)
+from third_party.tt_forge_models.llama.sequence_classification.pytorch import (
+    ModelVariant as SequenceClassificationVariant,
 )
 
 import forge
@@ -23,76 +30,52 @@ from forge.forge_property_utils import (
 from forge.verify.verify import verify
 
 from test.models.models_utils import TextModelWrapper
-from test.utils import download_model
 
-variants = [
+llama_loader_variants = [
+    pytest.param(CausalLMVariant.LLAMA_3_2_1B),
+    pytest.param(CausalLMVariant.LLAMA_3_2_1B_INSTRUCT),
     pytest.param(
-        "meta-llama/Meta-Llama-3-8B",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
+        CausalLMVariant.LLAMA_3_8B,
+        marks=[pytest.mark.out_of_memory],
     ),
     pytest.param(
-        "meta-llama/Meta-Llama-3-8B-Instruct",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
+        CausalLMVariant.LLAMA_3_8B_INSTRUCT,
+        marks=[pytest.mark.out_of_memory],
     ),
     pytest.param(
-        "meta-llama/Llama-3.1-8B",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
+        CausalLMVariant.LLAMA_3_1_8B,
+        marks=[pytest.mark.out_of_memory],
     ),
     pytest.param(
-        "meta-llama/Llama-3.1-8B-Instruct",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
+        CausalLMVariant.LLAMA_3_1_8B_INSTRUCT,
+        marks=[pytest.mark.out_of_memory],
     ),
     pytest.param(
-        "meta-llama/Meta-Llama-3.1-8B-Instruct",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
-    ),
-    pytest.param("meta-llama/Llama-3.2-1B"),
-    pytest.param("meta-llama/Llama-3.2-1B-Instruct"),
-    pytest.param(
-        "meta-llama/Llama-3.2-3B",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
+        CausalLMVariant.LLAMA_3_2_3B,
+        marks=[pytest.mark.out_of_memory],
     ),
     pytest.param(
-        "meta-llama/Llama-3.2-3B-Instruct",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
+        CausalLMVariant.LLAMA_3_2_3B_INSTRUCT,
+        marks=[pytest.mark.out_of_memory],
     ),
     pytest.param(
-        "huggyllama/llama-7b",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
+        CausalLMVariant.HUGGYLLAMA_7B,
+        marks=[pytest.mark.out_of_memory],
     ),
-    pytest.param("meta-llama/Meta-Llama-3.1-70B", marks=pytest.mark.out_of_memory),
-    pytest.param("meta-llama/Meta-Llama-3.1-70B-Instruct", marks=pytest.mark.out_of_memory),
-    pytest.param("meta-llama/Llama-3.3-70B-Instruct", marks=pytest.mark.out_of_memory),
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants)
-def test_llama3_causal_lm(variant):
+@pytest.mark.parametrize("variant", llama_loader_variants)
+def test_llama3_causal_lm_pytorch(variant):
     if variant in [
-        "meta-llama/Llama-3.1-8B-Instruct",
-        "meta-llama/Llama-3.2-1B-Instruct",
-        "meta-llama/Llama-3.2-3B-Instruct",
-        "meta-llama/Meta-Llama-3.1-70B",
-        "meta-llama/Meta-Llama-3.1-70B-Instruct",
-        "meta-llama/Llama-3.3-70B-Instruct",
-        "meta-llama/Meta-Llama-3.1-8B-Instruct",
+        CausalLMVariant.LLAMA_3_1_8B_INSTRUCT,
+        CausalLMVariant.LLAMA_3_2_1B_INSTRUCT,
+        CausalLMVariant.LLAMA_3_2_3B_INSTRUCT,
+        CausalLMVariant.LLAMA_3_1_70B,
+        CausalLMVariant.LLAMA_3_1_70B_INSTRUCT,
+        CausalLMVariant.LLAMA_3_3_70B_INSTRUCT,
+        CausalLMVariant.LLAMA_3_8B_INSTRUCT,
     ]:
         group = ModelGroup.RED
         priority = ModelPriority.P1
@@ -112,32 +95,18 @@ def test_llama3_causal_lm(variant):
     )
 
     if variant not in [
-        "meta-llama/Llama-3.2-1B",
-        "meta-llama/Llama-3.2-1B-Instruct",
+        CausalLMVariant.LLAMA_3_2_1B,
+        CausalLMVariant.LLAMA_3_2_1B_INSTRUCT,
     ]:
         pytest.xfail(reason="Requires multi-chip support")
 
-    # Load model (with tokenizer)
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    tokenizer.pad_token = tokenizer.eos_token
-    model = download_model(AutoModelForCausalLM.from_pretrained, variant, use_cache=False)
+    # Load model and input
+    loader = CausalLMLoader(variant)
+    model = loader.load_model()
     framework_model = TextModelWrapper(model=model, text_embedding=model.model.embed_tokens)
     framework_model.eval()
-
-    # Input prompt
-    input_prompt = "Hey how are you doing today?"
-    inputs = tokenizer(
-        input_prompt,
-        return_tensors="pt",
-        max_length=128,
-        padding="max_length",
-        truncation=True,
-    )
-
-    input_ids = inputs["input_ids"]
-    attn_mask = inputs["attention_mask"]
-
-    inputs = [input_ids, attn_mask]
+    input_dict = loader.load_inputs()
+    inputs = [input_dict["input_ids"], input_dict["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -150,57 +119,43 @@ def test_llama3_causal_lm(variant):
     verify(inputs, framework_model, compiled_model)
 
 
-variants = [
+llama_seq_cls_variants = [
+    pytest.param(SequenceClassificationVariant.LLAMA_3_2_1B),
+    pytest.param(SequenceClassificationVariant.LLAMA_3_2_1B_INSTRUCT),
     pytest.param(
-        "meta-llama/Meta-Llama-3-8B",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
+        SequenceClassificationVariant.LLAMA_3_8B,
+        marks=[pytest.mark.out_of_memory],
     ),
     pytest.param(
-        "meta-llama/Meta-Llama-3-8B-Instruct",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
+        SequenceClassificationVariant.LLAMA_3_8B_INSTRUCT,
+        marks=[pytest.mark.out_of_memory],
     ),
     pytest.param(
-        "meta-llama/Llama-3.1-8B",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
+        SequenceClassificationVariant.LLAMA_3_1_8B,
+        marks=[pytest.mark.out_of_memory],
     ),
     pytest.param(
-        "meta-llama/Llama-3.1-8B-Instruct",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
-    ),
-    pytest.param("meta-llama/Llama-3.2-1B"),
-    pytest.param("meta-llama/Llama-3.2-1B-Instruct"),
-    pytest.param(
-        "meta-llama/Llama-3.2-3B",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
+        SequenceClassificationVariant.LLAMA_3_1_8B_INSTRUCT,
+        marks=[pytest.mark.out_of_memory],
     ),
     pytest.param(
-        "meta-llama/Llama-3.2-3B-Instruct",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
+        SequenceClassificationVariant.LLAMA_3_2_3B,
+        marks=[pytest.mark.out_of_memory],
     ),
     pytest.param(
-        "huggyllama/llama-7b",
-        marks=[
-            pytest.mark.out_of_memory,
-        ],
+        SequenceClassificationVariant.LLAMA_3_2_3B_INSTRUCT,
+        marks=[pytest.mark.out_of_memory],
+    ),
+    pytest.param(
+        SequenceClassificationVariant.HUGGYLLAMA_7B,
+        marks=[pytest.mark.out_of_memory],
     ),
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants)
-def test_llama3_sequence_classification(variant):
+@pytest.mark.parametrize("variant", llama_seq_cls_variants)
+def test_llama3_sequence_classification_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -212,24 +167,18 @@ def test_llama3_sequence_classification(variant):
     )
 
     if variant not in [
-        "meta-llama/Llama-3.2-1B",
-        "meta-llama/Llama-3.2-1B-Instruct",
+        SequenceClassificationVariant.LLAMA_3_2_1B,
+        SequenceClassificationVariant.LLAMA_3_2_1B_INSTRUCT,
     ]:
         pytest.xfail(reason="Requires multi-chip support")
 
-    # Load model (with tokenizer)
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    model = download_model(AutoModelForSequenceClassification.from_pretrained, variant, use_cache=False)
-    framework_model = TextModelWrapper(model=model)
+    # Load model and input
+    loader = SequenceClassificationLoader(variant)
+    framework_model = loader.load_model()
+    input_dict = loader.load_inputs()
+    inputs = [input_dict["input_ids"]]
+    framework_model = TextModelWrapper(model=framework_model)
     framework_model.eval()
-
-    # Input prompt
-    input_prompt = "Movie is great"
-
-    # Tokenize input
-    inputs = tokenizer(input_prompt, return_tensors="pt")
-    input_ids = inputs["input_ids"]
-    inputs = [input_ids]
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -242,6 +191,4 @@ def test_llama3_sequence_classification(variant):
     _, co_out = verify(inputs, framework_model, compiled_model)
 
     # post processing
-    predicted_value = co_out[0].argmax(-1).item()
-
-    print(f"Prediction : {model.config.id2label[predicted_value]}")
+    print(f"Prediction: {loader.decode_output(co_out)}")

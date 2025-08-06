@@ -19,6 +19,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.vision_utils.utils import load_timm_model_and_input
 
 variants = [
@@ -64,4 +65,9 @@ def test_efficientnet_lite_timm(variant):
         pcc = 0.98
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
+    fw_out, co_out = verify(
+        inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc))
+    )
+
+    # Model Postprocessing
+    print_cls_results(fw_out[0], co_out[0])

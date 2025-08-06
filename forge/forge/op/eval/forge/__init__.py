@@ -4,22 +4,8 @@
 import importlib
 from types import ModuleType
 from functools import lru_cache
-from .exp import Exp
-from .cosine import Cosine
-from .ethernet_datacopy import EthernetDatacopy
-from .reciprocal import Reciprocal
-from .tanh import Tanh
-from .log import Log
-from .nop import Nop
-from .buffer import Buffer
-from .sqrt import Sqrt
-from .tilizer import Tilizer
-from .clip import Clip
-from .cumulativesum import CumulativeSum
-from .argmax import Argmax
 from .convolution import Conv2d
 from .convolution import Conv2dTranspose
-from .pooling import MaxPool2d
 from .cast import Cast
 from .pad import Pad
 from .kv_cache import UpdateCache
@@ -43,29 +29,25 @@ op_to_module_map = {
     "equal": "eltwise_binary",
     "not_equal": "eltwise_binary",
     "logical_and": "eltwise_binary",
-    "exp": Exp,
-    "reciprocal": Reciprocal,
-    "nop": Nop,
-    "buffer": Buffer,
-    "sqrt": Sqrt,
+    "exp": "eltwise_unary",
+    "reciprocal": "eltwise_unary",
+    "nop": "eltwise_unary",
+    "sqrt": "eltwise_unary",
     "relu": "eltwise_unary",
     "leaky_relu": "eltwise_unary",
     "gelu": "eltwise_unary",
-    "gelu_derivative": "eltwise_unary",
-    "log": Log,
+    "log": "eltwise_unary",
     "sigmoid": "eltwise_unary",
-    "clip": Clip,
-    "cosine": Cosine,
+    "clip": "eltwise_unary",
+    "cosine": "eltwise_unary",
     "sine": "eltwise_unary",
     "atan": "eltwise_unary",
-    "tile_broadcast": "eltwise_unary",
-    "tanh": Tanh,
-    "cumsum": CumulativeSum,
-    "argmax": Argmax,
+    "tanh": "eltwise_unary",
+    "cumsum": "misc",
+    "argmax": "reduce",
     "logical_not": "eltwise_unary",
     "dropout": "eltwise_unary",
     "pow": "eltwise_unary",
-    "tilizer": Tilizer,
     "erf": "eltwise_unary",
     "conv_sum": "eltwise_nary",
     "concatenate": "eltwise_nary",
@@ -78,7 +60,6 @@ op_to_module_map = {
     "depthwise": "depthwise",
     "embedding": "embedding",
     "embedding_bw": "embedding_bw",
-    "ethernet_datacopy": EthernetDatacopy,
     "transpose": "tm",
     "adv_index": "tm",
     "reshape": "tm",
@@ -109,22 +90,16 @@ op_to_module_map = {
     "reduce_avg": "reduce",
     "reduce_sum": "reduce",
     "reduce_max": "reduce",
-    "grouped_reduce_avg": "reduce",
     "conv2d": Conv2d,
     "conv2d_transpose": Conv2dTranspose,
     "conv3d": "convolution",
     "max_pool1d": "pooling",
-    "max_pool2d": MaxPool2d,
-    "max_pool3d": "pooling",
+    "max_pool2d": "pooling",
     "avg_pool1d": "pooling",
     "avg_pool2d": "pooling",
-    "avg_pool3d": "pooling",
-    "resize1d": "resize",
     "resize2d": "resize",
-    "resize3d": "resize",
     "upsample2d": "resize",
     "downsample2d": "resize",
-    "dram_queue": "dram_queue",
     "softmax": "nn",
     "log_softmax": "nn",
     "softmax_bw": "nn",

@@ -164,7 +164,7 @@ def AdvIndex(
     if dim < 0:
         dim += len(operandA.shape)
 
-    return op("adv_index", name, operandA, operandB, attrs=(dim,)).get_tensor()
+    return op("adv_index", name, operandA, operandB, dim=dim).get_tensor()
 
 
 def Select(
@@ -335,7 +335,9 @@ def PadTile(name: str, operandA: Tensor, dim: int, original_length: int) -> Tens
         Forge tensor
     """
 
-    return op("pad_tile", name, operandA, attrs=(dim, original_length)).get_tensor()
+    return op(
+        "pad_tile", name, operandA, attrs=(dim, original_length), dim=dim, original_length=original_length
+    ).get_tensor()
 
 
 def Broadcast(name: str, operandA: Tensor, dim: int, shape: int) -> Tensor:
@@ -362,7 +364,7 @@ def Broadcast(name: str, operandA: Tensor, dim: int, shape: int) -> Tensor:
         Forge tensor
     """
 
-    return op("broadcast", name, operandA, attrs=(dim, shape, True)).get_tensor()
+    return op("broadcast", name, operandA, dim=dim, size=shape).get_tensor()
 
 
 def Repeat(name: str, operandA: Tensor, repeats: List[int]) -> Tensor:
@@ -396,7 +398,7 @@ def Repeat(name: str, operandA: Tensor, repeats: List[int]) -> Tensor:
     Tensor
         Forge tensor
     """
-    return op("repeat", name, operandA, attrs=repeats, repeats=repeats).get_tensor()
+    return op("repeat", name, operandA, repeats=repeats).get_tensor()
 
 
 def RepeatInterleave(name: str, operandA: Tensor, repeats: int, dim: int) -> Tensor:
@@ -518,7 +520,16 @@ def Narrow(name: str, operandA: Tensor, dim: int, start: int, length: int, origi
         Forge tensor
     """
 
-    return op("narrow", name, operandA, attrs=(dim, start, length, original_length)).get_tensor()
+    return op(
+        "narrow",
+        name,
+        operandA,
+        attrs=(dim, start, length, original_length),
+        dim=dim,
+        start=start,
+        length=length,
+        original_length=original_length,
+    ).get_tensor()
 
 
 def PixelShuffle(name: str, operandA: Tensor, upscale_factor: int) -> Tensor:
@@ -538,7 +549,7 @@ def PixelShuffle(name: str, operandA: Tensor, upscale_factor: int) -> Tensor:
     Tensor
         Forge tensor
     """
-    return op("pixel_shuffle", name, operandA, attrs=(upscale_factor,)).get_tensor()
+    return op("pixel_shuffle", name, operandA, attrs=(upscale_factor,), upscale_factor=upscale_factor).get_tensor()
 
 
 def ForgePad(name: str, operandA: Tensor, paddings: Tuple[int, int], value: float) -> Tensor:
@@ -559,7 +570,15 @@ def ForgePad(name: str, operandA: Tensor, paddings: Tuple[int, int], value: floa
     value: float
         Value to pad with
     """
-    return op("forge_pad", name, operandA, attrs=(paddings[0], paddings[1], value)).get_tensor()
+    return op(
+        "forge_pad",
+        name,
+        operandA,
+        attrs=(paddings[0], paddings[1], value),
+        pad_r=paddings[0],
+        pad_c=paddings[1],
+        value=value,
+    ).get_tensor()
 
 
 def ForgeUnpad(
@@ -590,4 +609,8 @@ def ForgeUnpad(
         name,
         operandA,
         attrs=(paddings[0], paddings[1], original_length[0], original_length[1]),
+        pad_r=paddings[0],
+        pad_c=paddings[1],
+        original_length_r=original_length[0],
+        original_length_c=original_length[1],
     ).get_tensor()

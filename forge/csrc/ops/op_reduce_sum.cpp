@@ -2,13 +2,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-#include <vector>
-
 #include "autograd/autograd.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
 #include "op_interface.hpp"
+#include "ops/op_common.hpp"
 #include "passes/decomposing_context.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
@@ -20,60 +19,89 @@ namespace ops
 {
 namespace reduce_sum
 {
-using namespace graphlib;
 
 at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::ReduceSum, "Wrong op type.");
-    return op.base_eval(old_op_type, tensors);
+    TT_ASSERT(tensors.size() == 1, "reduce_sum should have single input tensor.");
+    TT_ASSERT(op.attrs().size() == 2, "reduce_sum should have 2 attrs (dim, keep_dim).");
+
+    std::vector<int> dims = op.attr_as<std::vector<int>>("dim_arg");
+    int dim = dims[0];
+    bool keep_dim = op.attr_as<bool>("keep_dim");
+
+    return torch::sum(tensors[0], dim, keep_dim);
 }
 
-std::tuple<Shape, std::vector<DimBroadcast>> shape(
+std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
     const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::ReduceSum, "Wrong op type.");
-    return op.base_shape(old_op_type, in_shapes);
+    TT_ASSERT(in_shapes.size() == 1, "reduce_sum should have single input shape.");
+    TT_ASSERT(op.attrs().size() == 2, "reduce_sum should have 2 attrs (dim, keep_dim).");
+
+    return op_common::reduce_ops_shape(op, in_shapes);
 }
 
-NodeContext backward(
+tt::graphlib::NodeContext backward(
     const graphlib::OpType &old_op_type,
     const Op &op,
-    autograd::autograd_context &ac,
+    tt::autograd::autograd_context &ac,
     int operand,
-    const std::vector<NodeContext> &inputs,
-    const NodeContext &output,
-    const NodeContext &gradient)
+    const std::vector<tt::graphlib::NodeContext> &inputs,
+    const tt::graphlib::NodeContext &output,
+    const tt::graphlib::NodeContext &gradient)
 {
     TT_DBG_ASSERT(op.type() == OpType::ReduceSum, "Wrong op type.");
-    return op.base_backward(old_op_type, ac, operand, inputs, output, gradient);
+    TT_ASSERT(inputs.size() == 1, "reduce_sum should have single input.");
+    TT_ASSERT(operand == 0, "Invalid operand index.");
+
+    std::vector<int> dims = op.attr_as<std::vector<int>>("dim_arg");
+    int dim = dims[0];
+    std::uint32_t size = inputs[0].shape[dim];
+
+    std::optional<NodeContext> unsqueeze;
+    if (!op.attr_as<bool>("keep_dim"))
+    {
+        // If `keep_dim` is false, we need to unsqueeze the gradient to match the input shape.
+        unsqueeze = ac.autograd->create_op(ac, graphlib::OpType("unsqueeze", {}, {{"dim", dim}}), {gradient});
+    }
+
+    // For sum, gradient just needs to be broadcast back to original shape.
+    NodeContext broadcast = ac.autograd->create_op(
+        ac,
+        graphlib::OpType("broadcast", {}, {{"dim", dim}, {"size", static_cast<int>(size)}}),
+        {unsqueeze.has_value() ? *unsqueeze : gradient});
+    return broadcast;
 }
 
 void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+    const graphlib::OpType &old_op_type,
+    const Op &op,
+    DecomposingContext &dc,
+    const std::vector<tt::graphlib::NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::ReduceSum, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
-}
+    TT_ASSERT(inputs.size() == 1, "reduce_sum should have single input.");
 
-void decompose_post_optimize(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::ReduceSum, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
-}
+    std::vector<int> dims = op.attr_as<std::vector<int>>("dim_arg");
+    int dim = dims[0];
 
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::ReduceSum, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
-}
+    if (inputs[0].shape[dim] == 1)
+    {
+        // We are reducing on a dimension that is already 1, which is potentially a no-op.
+        if (op.attr_as<bool>("keep_dim"))
+        {
+            // `keep_dim` is true, hence we don't need to do anything.
+            NodeContext result = dc.op(graphlib::OpType("nop"), {inputs[0]});
+            dc.fuse(result);
+            return;
+        }
 
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::ReduceSum, "Wrong op type.");
-    return op.base_initial_flops_estimate(old_op_type, inputs);
+        // In this case, we can replace `reduce_sum` with a `squeeze` operation.
+        NodeContext result = dc.op(graphlib::OpType("squeeze", {}, {{"dim", dim}}), {inputs[0]});
+        dc.fuse(result);
+    }
 }
 
 }  // namespace reduce_sum

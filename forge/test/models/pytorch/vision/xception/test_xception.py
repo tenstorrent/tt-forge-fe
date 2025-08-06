@@ -7,6 +7,7 @@ import timm
 import torch
 from PIL import Image
 from third_party.tt_forge_models.tools.utils import get_file
+from third_party.tt_forge_models.xception.pytorch import ModelLoader, ModelVariant
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
@@ -22,7 +23,6 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.xception.model_utils.utils import post_processing
 from test.utils import download_model
 
 
@@ -41,20 +41,16 @@ def generate_model_xception_imgcls_timm(variant):
     return framework_model, [img_tensor]
 
 
-params = [
-    pytest.param(
-        "xception",
-        marks=[pytest.mark.xfail],
-    ),
-    pytest.param("xception41"),
-    pytest.param("xception65"),
-    pytest.param("xception71"),
-    pytest.param("xception71.tf_in1k", marks=[pytest.mark.push]),
+variants = [
+    ModelVariant.XCEPTION41,
+    ModelVariant.XCEPTION65,
+    ModelVariant.XCEPTION71,
+    ModelVariant.XCEPTION71_TF_IN1K,
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", params)
+@pytest.mark.parametrize("variant", variants)
 def test_xception_timm(variant):
 
     # Record Forge Property
@@ -66,9 +62,11 @@ def test_xception_timm(variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    (framework_model, inputs) = generate_model_xception_imgcls_timm(variant)
-    framework_model.to(torch.bfloat16)
-    inputs = [inputs[0].to(torch.bfloat16)]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -82,7 +80,7 @@ def test_xception_timm(variant):
     )
 
     # Model Verification and Inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
-    # Post Processing
-    post_processing(co_out)
+    # Post processing
+    loader.print_cls_results(co_out)

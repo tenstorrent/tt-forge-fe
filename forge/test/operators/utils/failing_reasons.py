@@ -188,7 +188,7 @@ class ComponentChecker(Enum):
                         M.last_line(M.contains("forge/op/eval/forge/convolution.py:")),
                         M.last_line(M.contains("forge/op/eval/forge/tm.py:")),
                         M.last_line(M.contains("forge/op/eval/forge/embedding.py:")),
-                        M.last_line(M.contains("test/operators/utils/compat.py:")),  # Deprecated verification
+                        M.last_line(M.contains("test/operators/utils/compat.py:")),  # pcc error levels
                         M.last_line(M.contains("test/operators/pytorch/")),
                         # Fail with pytorch also. TODO: check if tests are correct
                         M.last_line(M.contains("torch/nn/modules/conv.py:")),
@@ -407,7 +407,10 @@ class FailingReasons(Enum):
                     ),
                 ],
                 error_log=[
-                    M.last_line(M.contains("forge/verify/value_checkers.py:")),
+                    M.any(
+                        M.last_line(M.contains("forge/verify/value_checkers.py:")),
+                        M.last_line(M.contains("test/operators/utils/compat.py:")),
+                    ),
                 ],
             ),
         ],

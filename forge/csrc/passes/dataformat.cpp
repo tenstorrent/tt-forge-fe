@@ -101,8 +101,9 @@ void configure_output_data_formats(graphlib::Graph *graph, std::optional<DataFor
             {
                 std::vector<Node *> consumers = graph->data_users(node);
                 TT_ASSERT(
-                    consumers.size() == 1,
-                    "By this point, constant input node should have only one consumer, but it has {} consumers",
+                    consumers.size() == 1 || node_is_int,
+                    "By this point, non integer constant input node should have only one consumer, but it has {} "
+                    "consumers",
                     consumers.size());
                 // check if consumer is cast node
                 bool consumer_is_cast = consumers[0]->node_type() == graphlib::NodeType::kPyOp &&

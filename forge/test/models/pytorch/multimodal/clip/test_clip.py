@@ -2,8 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from datasets import load_dataset
-from transformers import CLIPModel, CLIPProcessor
+from third_party.tt_forge_models.clip.pytorch.loader import ModelLoader, ModelVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -16,50 +15,41 @@ from forge.forge_property_utils import (
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.clip.model_utils.clip_model import CLIPTextWrapper
-from test.utils import download_model
+
+variants = [
+    ModelVariant.CLIP_VIT_BASE_PATCH32,
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize(
-    "variant",
-    [
-        pytest.param(
-            "openai/clip-vit-base-patch32",
-        ),
-    ],
-)
+@pytest.mark.parametrize("variant", variants)
 def test_clip_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.CLIP,
-        variant=variant,
+        variant=variant.value,
         suffix="text",
         source=Source.HUGGINGFACE,
         task=Task.TEXT_GENERATION,
     )
 
-    # Load processor and model from HuggingFace
-    model = download_model(CLIPModel.from_pretrained, variant, torchscript=True)
-    processor = download_model(CLIPProcessor.from_pretrained, variant)
-
-    # Load image from the IAM dataset
-    dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
-    image = next(iter(dataset.skip(10)))["image"]
-
-    # Process image
-    text = [
-        "a photo of a cat",
-        "a photo of a dog",
-    ]
-    inputs = processor(text=text, images=image, return_tensors="pt")
-
-    inputs = [inputs["input_ids"], inputs["pixel_values"], inputs["attention_mask"]]
+    # Load model and inputs using ModelLoader
+    loader = ModelLoader(variant=variant)
+    model = loader.load_model()
     framework_model = CLIPTextWrapper(model)
-    inputs = [inputs[0], inputs[2]]
+    inputs_dict = loader.load_inputs()
+
+    # Extract inputs in the format expected by CLIPTextWrapper
+    input_ids = inputs_dict["input_ids"]
+    attention_mask = inputs_dict["attention_mask"]
+    inputs = [input_ids, attention_mask]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Model Postprocessing
+    loader.print_cls_results(co_out)

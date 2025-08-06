@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+#include <tuple>
 #include <vector>
 
 #include "autograd/autograd.hpp"
@@ -22,20 +23,62 @@ namespace broadcast
 {
 using namespace graphlib;
 
+/**
+ * Returns broadcasted tensor with torch broadcast.
+ * Since tensor shape should be big enough to set new size on dim index, we need to expand it if it is not big
+ * enough. If dim is possitive, we need to have at least dim+1 elements, and if it negative, we need -dim.
+ * Negative elements are indexed as shape.size() + dim (which is negative), meaning dim's element from back.
+ */
 at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Broadcast, "Wrong op type.");
-    return op.base_eval(old_op_type, tensors);
+    TT_ASSERT(tensors.size() == 1, "Broadcast should have single input tensor.");
+    TT_ASSERT(op.attrs().size() >= 2, "Broadcast should have at least two attributes - dim and size.");
+
+    int dim = op.attr_as<int>("dim");
+    int size = op.attr_as<int>("size");
+
+    int64_t min_shape_size = dim >= 0 ? dim + 1 : -dim;
+    at::Tensor tensor = tensors[0];
+
+    while (tensor.dim() < min_shape_size) tensor = tensor.unsqueeze(0);
+
+    std::vector<int64_t> target_shape = tensor.sizes().vec();
+
+    size_t idx = dim >= 0 ? dim : target_shape.size() + dim;
+    target_shape[idx] = size;
+
+    return tensor.broadcast_to(target_shape);
 }
 
+/**
+ * Returns shape based on provided input shape.
+ * Since tensor shape should be big enough to set new size on dim index, we need to expand it if it is not big
+ * enough. If dim is possitive, we need to have at least dim+1 elements, and if it negative, we need -dim.
+ * Negative elements are indexed as shape.size() + dim (which is negative), meaning dim's element from back.
+ */
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
     const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Broadcast, "Wrong op type.");
-    return op.base_shape(old_op_type, in_shapes);
+    TT_ASSERT(in_shapes.size() == 1, "Broadcast should have single input shape.");
+    TT_ASSERT(op.attrs().size() >= 2, "Broadcast should have at least two attributes - dim and size.");
+
+    int dim = op.attr_as<int>("dim");
+    int size = op.attr_as<int>("size");
+
+    size_t min_shape_size = dim >= 0 ? dim + 1 : -dim;
+    std::vector<std::uint32_t> target_shape = in_shapes[0];
+
+    while (target_shape.size() < min_shape_size) target_shape.insert(target_shape.begin(), 1);
+
+    size_t idx = dim >= 0 ? dim : target_shape.size() + dim;
+    target_shape[idx] = size;
+
+    return {Shape::create(target_shape), {}};
 }
 
-NodeContext backward(
+tt::graphlib::NodeContext backward(
     const graphlib::OpType &old_op_type,
     const Op &op,
     autograd::autograd_context &ac,
@@ -45,35 +88,27 @@ NodeContext backward(
     const NodeContext &gradient)
 {
     TT_DBG_ASSERT(op.type() == OpType::Broadcast, "Wrong op type.");
-    return op.base_backward(old_op_type, ac, operand, inputs, output, gradient);
+    TT_ASSERT(inputs.size() == 1, "Broadcast should have single input.");
+    TT_ASSERT(op.attrs().size() >= 2, "Broadcast should have at least two attributes - dim and size.");
+    TT_ASSERT(operand == 0, "Invalid operand index.");
+
+    int dim = op.attr_as<int>("dim");
+
+    return ac.autograd->create_op(
+        ac,
+        graphlib::OpType("reduce_sum", {dim, true}, {{"dim_arg", std::vector<int>({dim})}, {"keep_dim", true}}),
+        {gradient});
 }
 
 void decompose_initial(
     const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Broadcast, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
-}
+    TT_ASSERT(inputs.size() == 1, "Broadcast should have single input.");
+    TT_ASSERT(op.attrs().size() >= 2, "Broadcast should have at least two attributes - dim and size.");
 
-void decompose_post_optimize(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Broadcast, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
-}
-
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Broadcast, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
-}
-
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Broadcast, "Wrong op type.");
-    return op.base_initial_flops_estimate(old_op_type, inputs);
+    if (op.attr_as<int>("size") == 1)
+        dc.fuse(dc.op(graphlib::OpType("nop"), {inputs[0]}));
 }
 
 }  // namespace broadcast

@@ -14,7 +14,6 @@ _OPERATORS = [
     # Unary operators
     OperatorDefinition("exp", "forge.op.Exp", 1),
     OperatorDefinition("reciprocal", "forge.op.Reciprocal", 1),
-    OperatorDefinition("buffer", "forge.op.Buffer", 1),
     OperatorDefinition("sqrt", "forge.op.Sqrt", 1),
     OperatorDefinition("relu", "forge.op.Relu", 1),
     OperatorDefinition(
@@ -54,7 +53,6 @@ _OPERATORS = [
             OperatorParamNumber("exponent", float, 0, 100),
         ],
     ),
-    OperatorDefinition("tilizer", "forge.op.Tilize", 1),
     # Binary operators
     OperatorDefinition("add", "forge.op.Add", 2),
     OperatorDefinition("divide", "forge.op.Divide", 2),

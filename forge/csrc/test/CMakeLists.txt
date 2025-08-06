@@ -26,8 +26,13 @@ function (add_unittest TEST_DIR)
             gtest
             gtest_main
             ttforge_csrc
+            torch_python
             ${TORCH_LIBRARIES}
             ${TTFORGE_PYTHON_VERSION}
+    )
+
+    target_link_directories(${TEST_NAME} PRIVATE
+        ${TORCH_LIB_DIR}
     )
 
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
@@ -40,6 +45,7 @@ endfunction()
 add_unittest("passes")
 add_unittest("graph_lib")
 add_unittest("verif")
+add_unittest("ops")
 
 add_custom_target(build_unit_tests
     COMMENT "Building unit tests..."

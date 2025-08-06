@@ -39,15 +39,6 @@ class Cumsum1(ForgeModule):
         return cumsum_output_1
 
 
-class Cumsum2(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, cumsum_input_0):
-        cumsum_output_1 = forge.op.CumSum("", cumsum_input_0, dim=2)
-        return cumsum_output_1
-
-
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -57,62 +48,11 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Cumsum0,
-        [((1, 32), torch.int64)],
+        [((1, 128), torch.int32)],
         {
             "model_names": [
-                "pt_opt_facebook_opt_125m_qa_hf",
-                "pt_opt_facebook_opt_350m_qa_hf",
-                "pt_opt_facebook_opt_125m_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_qa_hf",
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "1"},
-        },
-    ),
-    (
-        Cumsum1,
-        [((1, 32), torch.int64)],
-        {"model_names": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Cumsum0,
-        [((1, 11), torch.int64)],
-        {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99, "args": {"dim": "1"}},
-    ),
-    (
-        Cumsum0,
-        [((1, 25, 34), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "1"},
-        },
-    ),
-    (
-        Cumsum2,
-        [((1, 25, 34), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "2"},
-        },
-    ),
-    (
-        Cumsum0,
-        [((1, 256), torch.int64)],
-        {
-            "model_names": [
-                "pt_opt_facebook_opt_1_3b_clm_hf",
-                "pt_opt_facebook_opt_125m_clm_hf",
-                "pt_opt_facebook_opt_350m_clm_hf",
+                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_roberta_xlm_roberta_base_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "1"},
@@ -125,11 +65,38 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Cumsum0,
-        [((1, 128), torch.int32)],
+        [((1, 11), torch.int64)],
+        {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99, "args": {"dim": "1"}},
+    ),
+    (
+        Cumsum0,
+        [((1, 32), torch.int64)],
         {
             "model_names": [
-                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
-                "pt_roberta_xlm_roberta_base_mlm_hf",
+                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                "pt_opt_facebook_opt_350m_seq_cls_hf",
+                "pt_opt_facebook_opt_125m_qa_hf",
+                "pt_opt_facebook_opt_350m_qa_hf",
+                "pt_opt_facebook_opt_125m_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_qa_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "1"},
+        },
+    ),
+    (
+        Cumsum1,
+        [((1, 32), torch.int64)],
+        {"model_names": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Cumsum0,
+        [((1, 256), torch.int64)],
+        {
+            "model_names": [
+                "pt_opt_facebook_opt_1_3b_clm_hf",
+                "pt_opt_facebook_opt_350m_clm_hf",
+                "pt_opt_facebook_opt_125m_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "1"},
@@ -165,7 +132,6 @@ def test_module(forge_module_and_shapes_dtypes):
     ]
 
     framework_model = forge_module(forge_module.__name__)
-    framework_model.process_framework_parameters()
 
     for name, parameter in framework_model._parameters.items():
         parameter_tensor = Tensor.create_torch_tensor(

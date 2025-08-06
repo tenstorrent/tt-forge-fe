@@ -4,6 +4,7 @@
 
 import pytest
 import torch
+from third_party.tt_forge_models.sam.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -19,30 +20,26 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.sam.model_utils.model import (
-    SamWrapper,
-    get_model_inputs,
-)
+from test.models.pytorch.vision.sam.model_utils.model import SamWrapper
+
+variants = [
+    pytest.param(
+        ModelVariant.HUGE,
+        marks=[pytest.mark.skip_model_analysis],
+    ),
+    pytest.param(
+        ModelVariant.LARGE,
+        marks=[pytest.mark.skip_model_analysis],
+    ),
+    pytest.param(ModelVariant.BASE, marks=pytest.mark.xfail()),
+]
 
 
-@pytest.mark.parametrize(
-    "variant",
-    [
-        pytest.param(
-            "facebook/sam-vit-huge",
-            marks=[pytest.mark.skip_model_analysis],
-        ),
-        pytest.param(
-            "facebook/sam-vit-large",
-            marks=[pytest.mark.skip_model_analysis],
-        ),
-        pytest.param("facebook/sam-vit-base", marks=pytest.mark.xfail()),
-    ],
-)
+@pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_sam(variant):
 
-    if variant == "facebook/sam-vit-base":
+    if variant == ModelVariant.BASE:
         group = ModelGroup.RED
         priority = ModelPriority.P1
     else:
@@ -59,15 +56,15 @@ def test_sam(variant):
         group=group,
         priority=priority,
     )
-    if variant != "acebook/sam-vit-base":
+    if variant != ModelVariant.BASE:
         pytest.xfail(reason="Requires multi-chip support")
 
-    # Load  model and input
-    framework_model, sample_inputs = get_model_inputs(variant)
-    sample_inputs = [sample_inputs[0].to(torch.bfloat16), sample_inputs[1].to(torch.bfloat16)]
-
-    # Forge compile framework model
-    framework_model = SamWrapper(framework_model).to(torch.bfloat16)
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    framework_model = SamWrapper(framework_model)
+    pixel_values, input_points = loader.load_inputs(dtype_override=torch.bfloat16)
+    sample_inputs = [pixel_values, input_points]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)

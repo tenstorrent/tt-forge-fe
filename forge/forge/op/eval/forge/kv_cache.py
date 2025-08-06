@@ -14,6 +14,8 @@ class UpdateCache(PyOp):
 
     def eval(self, tensors):
         cache, input, update_index = to_torch_operands(*tensors)
+        cache_out = cache.clone()
+        # Create a copy of the cache to avoid modifying the original cache
 
         if update_index.ndim == 0:
             update_index = update_index.unsqueeze(0)
@@ -45,9 +47,9 @@ class UpdateCache(PyOp):
         for b in range(B_in):
             idx = update_index[b].item()
             assert 0 <= idx < S_cache, f"Invalid update index {idx} at batch {b}"
-            cache[b + batch_offset, :, idx : idx + S_in, :] = input[b]
+            cache_out[b + batch_offset, :, idx : idx + S_in, :] = input[b]
 
-        return cache
+        return cache_out
 
     def shape(self, tensor_shapes):
         cache_shape, _, _ = tensor_shapes
@@ -71,14 +73,15 @@ class UpdateCache(PyOp):
 
 class FillCache(PyOp):
     @classmethod
-    def create(cls, update_idx, batch_offset=0):
+    def create(cls, batch_offset=0):
         self = cls("fill_cache")
-        self.update_idx = update_idx
         self.batch_offset = batch_offset
         return self
 
     def eval(self, tensors):
         cache, input = to_torch_operands(*tensors)
+        cache_out = cache.clone()
+        # Create a copy of the cache to avoid modifying the original cache
 
         assert cache.ndim == 4, "Expected 4D tensor for cache"
         assert input.ndim == 4, "Expected 4D tensor for input"
@@ -99,9 +102,9 @@ class FillCache(PyOp):
 
         for b in range(B_in):
             assert S_in <= S_cache, f"Fill would write past the end of cache: S_in {S_in} > S_cache {S_cache}"
-            cache[b + batch_offset, :, 0:S_in, :] = input[b]
+            cache_out[b + batch_offset, :, 0:S_in, :] = input[b]
 
-        return cache
+        return cache_out
 
     def shape(self, tensor_shapes):
         (

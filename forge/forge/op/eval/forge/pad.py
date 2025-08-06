@@ -7,7 +7,6 @@ import torch.nn.functional
 from ..interface import PyTM
 from forge._C import DataFormat
 from forge.tensor import forge_dataformat_to_pytorch_dtype
-from .nop import Nop
 
 
 class Pad(PyTM):
@@ -74,7 +73,7 @@ class Pad(PyTM):
     def decompose(self, dc, inputs):
         if all([x == 0 for x in self.padding]):
             # Pad size is 0
-            result = dc.op(Nop.create(), [inputs[0]])
+            result = dc.op("nop", [inputs[0]])
             dc.fuse(result)
             return
 
@@ -244,7 +243,7 @@ def extract_and_mirror(dc, input, dim_axis, start, stop):
     # Mirror patch
     indices = torch.arange(stop - start - 1, -1, -1)
     indices_tensor = dc.tensor(indices)
-    patch_mirrored = dc.op("adv_index", [patch, indices_tensor], (dim_axis,))
+    patch_mirrored = dc.op_with_named_attrs("adv_index", [patch, indices_tensor], {"dim": dim_axis})
 
     return patch_mirrored
 
@@ -285,4 +284,4 @@ def repeat_vector(dc, input, n_repeats, axis):
     repeats = [1] * len(input.shape)
     repeats[axis] = n_repeats
     repeats = tuple(repeats)
-    return dc.op_with_named_attrs("repeat", [input], {"repeats": repeats}, repeats)
+    return dc.op_with_named_attrs("repeat", [input], {"repeats": repeats})

@@ -9,6 +9,7 @@ from loguru import logger
 from PIL import Image
 from pytorchcv.model_provider import get_model as ptcv_get_model
 from third_party.tt_forge_models.tools.utils import get_file
+from third_party.tt_forge_models.vgg.pytorch import ModelLoader, ModelVariant
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from torchvision import transforms
@@ -231,61 +232,41 @@ def test_vgg_bn19_timm_pytorch():
     print_cls_results(fw_out[0], co_out[0])
 
 
-@pytest.mark.nightly
-def test_vgg_bn19_torchhub_pytorch():
+variants = [ModelVariant.VGG19_BN]
 
+
+@pytest.mark.nightly
+@pytest.mark.parametrize("variant", variants)
+def test_vgg_bn19_torchhub_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.VGG,
-        variant="vgg19_bn",
+        variant=variant,
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
     )
-
-    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True).to(
-        torch.bfloat16
-    )
-    framework_model.eval()
-
-    # Image preprocessing
-    try:
-        file_path = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
-        input_image = Image.open(file_path).convert("RGB")
-        preprocess = transforms.Compose(
-            [
-                transforms.Resize(256),
-                transforms.CenterCrop(224),
-                transforms.ToTensor(),
-                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-            ]
-        )
-        input_tensor = preprocess(input_image)
-        input_batch = input_tensor.unsqueeze(0)  # create a mini-batch as expected by the model
-    except:
-        logger.warning(
-            "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
-        )
-        input_batch = torch.rand(1, 3, 224, 224)
-
-    inputs = [input_batch.to(torch.bfloat16)]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model,
-        sample_inputs=inputs,
-        module_name=module_name,
-        compiler_cfg=compiler_cfg,
+        framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
     )
-
-    # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
-
-    # Run model on sample data and print results
-    print_cls_results(fw_out[0], co_out[0])
+    # Model Verification and Inference
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+    )
+    # Post processing
+    loader.print_cls_results(co_out)
 
 
 variants_with_weights = {

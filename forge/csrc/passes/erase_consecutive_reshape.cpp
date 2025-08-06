@@ -17,13 +17,13 @@ namespace tt::passes
 static bool is_reshape(graphlib::Node const *node)
 {
     graphlib::OpNode const *op = dynamic_cast<graphlib::OpNode const *>(node);
-    return op and op->op_name() == "reshape";
+    return op and op->new_op_type() == ops::OpType::Reshape;
 }
 
 static bool is_narrow(graphlib::Node const *node)
 {
     graphlib::OpNode const *op = dynamic_cast<graphlib::OpNode const *>(node);
-    return op and op->op_name() == "narrow";
+    return op and op->new_op_type() == ops::OpType::Narrow;
 }
 
 // A transpose with all dims but one dim equal to 1 is equavalent to a reshape
@@ -31,7 +31,7 @@ static bool is_narrow(graphlib::Node const *node)
 static bool is_reshape_transpose(graphlib::Node const *node)
 {
     graphlib::OpNode const *op = dynamic_cast<graphlib::OpNode const *>(node);
-    if (not op or op->op_name() != "transpose")
+    if (not op or op->new_op_type() != ops::OpType::Transpose)
         return false;
 
     auto shape = op->shape();
@@ -137,8 +137,8 @@ static void commute_eltwise_ops(graphlib::Graph *graph, std::vector<graphlib::No
                 {
                     if (op_type.type() == ops::OpType::Broadcast)
                     {
-                        int bcast_dim = std::get<int>(op_type.legacy_attrs_[0]);
-                        int volume = std::get<int>(op_type.legacy_attrs_[1]);
+                        int bcast_dim = op_type.attr_as<int>("dim");
+                        int volume = op_type.attr_as<int>("size");
                         if (bcast_dim < 0)
                             bcast_dim += commute_shape.size();
 
