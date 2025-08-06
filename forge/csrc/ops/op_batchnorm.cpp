@@ -27,11 +27,11 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
     TT_DBG_ASSERT(op.type() == OpType::Batchnorm, "Wrong op type.");
     TT_ASSERT(tensors.size() == 5, "Batchnorm should have five operands.");
 
-    const at::Tensor &input = tensors[0];
-    const at::Tensor &weight = tensors[1];
-    const at::Tensor &bias = tensors[2];
-    const at::Tensor &running_mean = tensors[3];
-    const at::Tensor &running_var = tensors[4];
+    at::Tensor input = tensors[0];
+    at::Tensor weight = tensors[1];
+    at::Tensor bias = tensors[2];
+    at::Tensor running_mean = tensors[3];
+    at::Tensor running_var = tensors[4];
     double epsilon = op.attr_as<float>("epsilon");
 
     // Clone running statistics without gradients (batch_norm requires no gradients for these)
