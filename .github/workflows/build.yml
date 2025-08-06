@@ -120,11 +120,58 @@ jobs:
       shell: bash
       run: |
         source env/activate
-        python3 setup.py bdist_wheel
+
+        # Ensure dist directory exists
+        mkdir -p dist
+
+        # Build tt-forge-fe wheel
+        echo "Building tt-forge-fe wheel..."
+        python3 setup.py bdist_wheel || {
+          echo "ERROR: Failed to build tt-forge-fe wheel"
+          exit 1
+        }
+
+        # Build TVM wheel
+        echo "Building TVM wheel..."
         cd third_party/tvm/python
-        python3 setup.py bdist_wheel
+        python3 setup.py bdist_wheel || {
+          echo "ERROR: Failed to build TVM wheel"
+          exit 1
+        }
         cd ../../..
-        cp third_party/tvm/python/dist/*.whl dist/
+
+        # Copy TVM wheel to main dist directory
+        echo "Copying TVM wheel to dist directory..."
+        TVM_WHEEL_PATH="third_party/tvm/python/dist"
+        if [ -d "$TVM_WHEEL_PATH" ] && [ "$(ls -A $TVM_WHEEL_PATH/*.whl 2>/dev/null)" ]; then
+          cp $TVM_WHEEL_PATH/*.whl dist/
+          echo "TVM wheel copied successfully"
+        else
+          echo "ERROR: TVM wheel not found in $TVM_WHEEL_PATH"
+          echo "Contents of TVM wheel directory:"
+          ls -la $TVM_WHEEL_PATH/ || echo "Directory does not exist"
+          exit 1
+        fi
+
+        echo "Final dist directory contents:"
+        ls -la dist/
+
+        # Verify both wheels exist
+        echo "Verifying wheels..."
+        TTFORGE_WHEEL_COUNT=$(ls dist/tt_forge_fe*.whl 2>/dev/null | wc -l)
+        TVM_WHEEL_COUNT=$(ls dist/tt_tvm*.whl 2>/dev/null | wc -l)
+
+        if [ "$TTFORGE_WHEEL_COUNT" -eq 0 ]; then
+          echo "ERROR: tt-forge-fe wheel not found in dist/"
+          exit 1
+        fi
+
+        if [ "$TVM_WHEEL_COUNT" -eq 0 ]; then
+          echo "ERROR: tt-tvm wheel not found in dist/"
+          exit 1
+        fi
+
+        echo "✅ Build successful: Found $TTFORGE_WHEEL_COUNT tt-forge-fe wheel(s) and $TVM_WHEEL_COUNT tt-tvm wheel(s)"
 
     - name: Upload Build
       uses: actions/upload-artifact@v4
