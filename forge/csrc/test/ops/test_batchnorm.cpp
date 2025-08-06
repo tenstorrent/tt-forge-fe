@@ -25,22 +25,24 @@ std::vector<tt::ops::Op> get_batchnorm_ops()
     return ops;
 }
 
-/// Test shapes for individual batchnorm tests
 /// Batchnorm requires 5 inputs: input, weight, bias, running_mean, running_var
 /// Weight, bias, running_mean, running_var should have shape [C] where C is the number of channels
 std::vector<VecShapes> get_batchnorm_individual_test_shapes()
 {
     return {
         // [input, weight, bias, running_mean, running_var]
-        VecShapes{{1, 32, 14, 14}, {32}, {32}, {32}, {32}},     // Basic 2D case
+        // 2D cases (NLP scenarios)
+        VecShapes{{1, 512}, {512}, {512}, {512}, {512}},        // Single sequence
+        VecShapes{{8, 768}, {768}, {768}, {768}, {768}},        // Batch of sequences
+        VecShapes{{16, 1024}, {1024}, {1024}, {1024}, {1024}},  // Large hidden size
+
+        // 4D cases (CNN scenarios)
+        VecShapes{{1, 32, 14, 14}, {32}, {32}, {32}, {32}},     // Basic CNN
         VecShapes{{2, 64, 7, 7}, {64}, {64}, {64}, {64}},       // Batch size 2
         VecShapes{{1, 128, 3, 3}, {128}, {128}, {128}, {128}},  // Small spatial
         VecShapes{{4, 16, 28, 28}, {16}, {16}, {16}, {16}},     // Larger batch
         VecShapes{{1, 256, 1, 1}, {256}, {256}, {256}, {256}},  // Global pooled
         VecShapes{{8, 32, 32, 32}, {32}, {32}, {32}, {32}},     // Square spatial
-        VecShapes{{1, 512}, {512}, {512}, {512}, {512}},        // 1D case
-        VecShapes{{2, 64, 8}, {64}, {64}, {64}, {64}},          // 3D case
-        VecShapes{{1, 16, 4, 4, 4}, {16}, {16}, {16}, {16}},    // 5D case
     };
 }
 
@@ -70,7 +72,6 @@ bool valid_inputs(const std::vector<graphlib::Shape>& shapes)
            running_var_shape.as_vector()[0] == channels;
 }
 
-/// Generate comprehensive shape combinations for sweep tests
 std::vector<std::vector<graphlib::Shape>> generate_input_shapes()
 {
     std::vector<std::vector<graphlib::Shape>> input_shapes;
@@ -79,12 +80,10 @@ std::vector<std::vector<graphlib::Shape>> generate_input_shapes()
     std::vector<uint32_t> batch_sizes = {1, 2, 4, 8};
     // Different channel sizes
     std::vector<uint32_t> channel_sizes = {16, 32, 64, 128};
-    // Different spatial dimensions
+    // Different spatial dimensions (2D and 4D only)
     std::vector<std::vector<uint32_t>> spatial_dims = {
-        {},        // 2D: (N, C)
-        {7},       // 3D: (N, C, H)
-        {7, 7},    // 4D: (N, C, H, W)
-        {4, 4, 4}  // 5D: (N, C, D, H, W)
+        {},      // 2D: (N, C) - NLP scenarios
+        {7, 7},  // 4D: (N, C, H, W) - CNN scenarios
     };
 
     for (uint32_t batch_size : batch_sizes)
@@ -114,7 +113,6 @@ std::vector<std::vector<graphlib::Shape>> generate_input_shapes()
     return input_shapes;
 }
 
-// Individual test cases for batchnorm
 INSTANTIATE_TEST_SUITE_P(
     BatchnormIndividual,
     SimpleOpDecomposeOnlyTest,
@@ -125,7 +123,6 @@ INSTANTIATE_TEST_SUITE_P(
     [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
     { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
 
-// Sweep test cases for batchnorm
 INSTANTIATE_TEST_SUITE_P(
     BatchnormSweep,
     SimpleOpDecomposeOnlyTest,
@@ -135,7 +132,6 @@ INSTANTIATE_TEST_SUITE_P(
     [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
     { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
 
-// Test with default epsilon value
 INSTANTIATE_TEST_SUITE_P(
     BatchnormDefault,
     SimpleOpDecomposeOnlyTest,

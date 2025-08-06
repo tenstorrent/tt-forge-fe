@@ -69,55 +69,6 @@ NodeContext backward(
     throw std::runtime_error("Back propagation for Batchnorm op is not implemented yet");
 }
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Batchnorm, "Wrong op type.");
-    TT_ASSERT(inputs.size() == 5, "Batchnorm should have five operands.");
-
-    const NodeContext &input = inputs[0];
-    const NodeContext &weight = inputs[1];
-    const NodeContext &bias = inputs[2];
-    const NodeContext &running_mean = inputs[3];
-    const NodeContext &running_var = inputs[4];
-    float epsilon = op.attr_as<float>("epsilon");
-
-    // Create constant tensors
-    std::vector<long> mean_var_shape;
-    for (int dim : running_var.shape.as_vector<int>())
-    {
-        mean_var_shape.push_back(static_cast<long>(dim));
-    }
-    std::vector<long> mean_shape;
-    for (int dim : running_mean.shape.as_vector<int>())
-    {
-        mean_shape.push_back(static_cast<long>(dim));
-    }
-    auto epsilon_tensor = dc.tensor(torch::zeros(mean_var_shape) + epsilon);
-    auto neg_one = dc.tensor(torch::zeros(mean_shape) - 1.0);
-
-    // Decompose: output = weight * (input - running_mean) / sqrt(running_var + epsilon) + bias
-    auto var_eps = dc.op(graphlib::OpType("add", {}, {}), {running_var, epsilon_tensor});
-    auto sqrt_result = dc.op(graphlib::OpType("sqrt", {}, {}), {var_eps});
-    auto reciprocal_result = dc.op(graphlib::OpType("reciprocal", {}, {}), {sqrt_result});
-    auto weighted = dc.op(graphlib::OpType("multiply", {}, {}), {reciprocal_result, weight});
-    auto neg_mean = dc.op(graphlib::OpType("multiply", {}, {}), {neg_one, running_mean});
-    auto weighted_mean = dc.op(graphlib::OpType("multiply", {}, {}), {weighted, neg_mean});
-    auto weighted_bias = dc.op(graphlib::OpType("add", {}, {}), {weighted_mean, bias});
-
-    // Unsqueeze to match input dimensions
-    auto weighted_bias_unsqueezed = dc.op(graphlib::OpType("unsqueeze", {}, {{"dim", 1}}), {weighted_bias});
-    weighted_bias_unsqueezed = dc.op(graphlib::OpType("unsqueeze", {}, {{"dim", 1}}), {weighted_bias_unsqueezed});
-
-    auto weighted_var_unsqueezed = dc.op(graphlib::OpType("unsqueeze", {}, {{"dim", 1}}), {weighted});
-    weighted_var_unsqueezed = dc.op(graphlib::OpType("unsqueeze", {}, {{"dim", 1}}), {weighted_var_unsqueezed});
-
-    auto scaled = dc.op(graphlib::OpType("multiply", {}, {}), {input, weighted_var_unsqueezed});
-    auto result = dc.op(graphlib::OpType("add", {}, {}), {scaled, weighted_bias_unsqueezed});
-
-    dc.fuse(result);
-}
-
 }  // namespace batchnorm
 }  // namespace ops
 }  // namespace tt

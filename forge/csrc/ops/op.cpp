@@ -694,7 +694,7 @@ void Op::decompose_initial(
         case OpType::Atan: return;
         case OpType::AvgPool1d: return avg_pool_1d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::AvgPool2d: return avg_pool_2d::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Batchnorm: return batchnorm::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Batchnorm: return;
         case OpType::Broadcast: return broadcast::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Cast: return;
         case OpType::Clip: return;
