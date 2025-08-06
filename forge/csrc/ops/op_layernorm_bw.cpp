@@ -155,7 +155,6 @@ void decompose_post_autograd(
         return;
     }
 
-    // Extract intermediate values from forward pass decomposition (matching Python implementation)
     // output = xhat_weighted + bias
     auto output_operands = dc.get_operands(output);
     TT_ASSERT(output_operands.size() == 2, "Expected output to have 2 operands: [xhat_weighted, bias]");
