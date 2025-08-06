@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+from third_party.tt_forge_models.xglm.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -12,7 +13,6 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
-from third_party.tt_forge_models.xglm.pytorch import ModelLoader, ModelVariant
 
 variants = [
     ModelVariant.XGLM_564M,
