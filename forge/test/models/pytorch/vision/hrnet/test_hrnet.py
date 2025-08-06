@@ -23,7 +23,6 @@ from forge.forge_property_utils import (
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
 
-
 from test.models.models_utils import print_cls_results
 from test.utils import download_model
 
