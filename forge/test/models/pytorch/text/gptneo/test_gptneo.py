@@ -2,16 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-
-import forge
-from forge.forge_property_utils import (
-    Framework,
-    ModelArch,
-    Source,
-    Task,
-    record_model_properties,
-)
-from forge.verify.verify import verify
 from third_party.tt_forge_models.gpt_neo.causal_lm.pytorch import (
     ModelLoader as CausalLMLoader,
 )
@@ -24,6 +14,16 @@ from third_party.tt_forge_models.gpt_neo.sequence_classification.pytorch import 
 from third_party.tt_forge_models.gpt_neo.sequence_classification.pytorch.loader import (
     ModelVariant as SequenceClassificationVariant,
 )
+
+import forge
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
+from forge.verify.verify import verify
 
 from test.models.models_utils import TextModelWrapper
 
