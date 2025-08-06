@@ -14,11 +14,17 @@ from loguru import logger
 from forge.forgeglobal import align_up_tile
 
 import torch
+import tensorflow as tf
+import paddle
+import jax
+import keras
 from forge.tensor import to_pt_tensors
 
 from ..tensor import (
     FrameworkTensor,
     Tensor,
+    TensorFromPytorch,
+    TensorFromTrace,
     pytorch_dtype_to_forge_dataformat,
     forge_dataformat_to_pytorch_dtype,
 )
@@ -37,6 +43,47 @@ from forge.forge_property_utils import (
     record_consistency_limits,
     record_emitc_status,
 )
+
+
+def clone_framework_tensors(inputs: List[FrameworkTensor]) -> List[FrameworkTensor]:
+    """
+    Clone framework tensors to avoid modifying original tensors during verification.
+
+    Args:
+        inputs: List of framework tensors to clone
+
+    Returns:
+        List of cloned framework tensors
+
+    Raises:
+        TypeError: If tensor type is not supported
+    """
+    cloned_inputs = []
+
+    for tensor in inputs:
+        if isinstance(tensor, TensorFromPytorch):
+            # Clone the underlying torch tensor and preserve the data format
+            cloned_torch_tensor = tensor._value.clone()
+            cloned_inputs.append(TensorFromPytorch(cloned_torch_tensor, tensor._data_format, tensor._constant))
+        elif isinstance(tensor, TensorFromTrace):
+            # Use the built-in clone method for TensorFromTrace
+            cloned_inputs.append(tensor.clone())
+        elif isinstance(tensor, torch.Tensor):
+            cloned_inputs.append(tensor.clone())
+        elif isinstance(tensor, tf.Tensor):
+            cloned_inputs.append(tf.identity(tensor))
+        elif isinstance(tensor, tf.Variable):
+            cloned_inputs.append(tf.Variable(tensor.value(), trainable=tensor.trainable))
+        elif isinstance(tensor, paddle.Tensor):
+            cloned_inputs.append(paddle.clone(tensor))
+        elif isinstance(tensor, jax.Array):
+            cloned_inputs.append(jax.numpy.copy(tensor))
+        elif isinstance(tensor, keras.src.backend.Variable):
+            cloned_inputs.append(keras.src.backend.Variable(tensor.value, trainable=tensor.trainable))
+        else:
+            raise TypeError(f"Unsupported tensor type: {type(tensor)}")
+
+    return cloned_inputs
 
 
 def _generate_random_losses(outputs):
@@ -401,8 +448,10 @@ def verify(
         raise TypeError(
             f"Compiled model must be of type {verify_cfg.compiled_model_types}, but got {type(compiled_model)}"
         )
-
-    fw_out = framework_model(*inputs)
+    # perform forward on copy of inputs in case you have inplace operations
+    fw_inputs = clone_framework_tensors(inputs)
+    fw_out = framework_model(*fw_inputs)
+    del fw_inputs
 
     record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
     co_out = compiled_model(*inputs)
