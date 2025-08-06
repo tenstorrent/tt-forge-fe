@@ -6,6 +6,8 @@ import pytest
 import timm
 import torch
 from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
+from third_party.tt_forge_models.wide_resnet.pytorch import ModelLoader, ModelVariant
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
@@ -22,8 +24,6 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
-from third_party.tt_forge_models.tools.utils import get_file
-from third_party.tt_forge_models.wide_resnet.pytorch import ModelLoader, ModelVariant
 
 from test.models.pytorch.vision.wideresnet.model_utils.utils import post_processing
 from test.utils import download_model
