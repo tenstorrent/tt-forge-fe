@@ -25,14 +25,35 @@ using namespace graphlib;
 at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Batchnorm, "Wrong op type.");
-    return op.base_eval(old_op_type, tensors);
+    TT_ASSERT(tensors.size() == 5, "Batchnorm should have five operands.");
+
+    const at::Tensor &input = tensors[0];
+    const at::Tensor &weight = tensors[1];
+    const at::Tensor &bias = tensors[2];
+    const at::Tensor &running_mean = tensors[3];
+    const at::Tensor &running_var = tensors[4];
+    double epsilon = op.attr_as<float>("epsilon");
+
+    // Clone running statistics without gradients (batch_norm requires no gradients for these)
+    at::Tensor running_mean_no_grad = running_mean.clone().detach();
+    at::Tensor running_var_no_grad = running_var.clone().detach();
+
+    return torch::nn::functional::batch_norm(
+        input,
+        running_mean_no_grad,
+        running_var_no_grad,
+        torch::nn::functional::BatchNormFuncOptions().weight(weight).bias(bias).training(false).momentum(0.0).eps(
+            epsilon));
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
     const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Batchnorm, "Wrong op type.");
-    return op.base_shape(old_op_type, in_shapes);
+    TT_ASSERT(in_shapes.size() == 5, "Batchnorm should have five input shapes.");
+
+    // Batchnorm output shape is the same as the input shape
+    return std::make_tuple(Shape::create(in_shapes[0]), std::vector<DimBroadcast>{});
 }
 
 NodeContext backward(
@@ -45,35 +66,86 @@ NodeContext backward(
     const NodeContext &gradient)
 {
     TT_DBG_ASSERT(op.type() == OpType::Batchnorm, "Wrong op type.");
-    return op.base_backward(old_op_type, ac, operand, inputs, output, gradient);
+    throw std::runtime_error("Back propagation for Batchnorm op is not implemented yet");
 }
 
 void decompose_initial(
     const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Batchnorm, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
+    TT_ASSERT(inputs.size() == 5, "Batchnorm should have five operands.");
+
+    const NodeContext &input = inputs[0];
+    const NodeContext &weight = inputs[1];
+    const NodeContext &bias = inputs[2];
+    const NodeContext &running_mean = inputs[3];
+    const NodeContext &running_var = inputs[4];
+    float epsilon = op.attr_as<float>("epsilon");
+
+    // Create constant tensors
+    std::vector<long> mean_var_shape;
+    for (int dim : running_var.shape.as_vector<int>())
+    {
+        mean_var_shape.push_back(static_cast<long>(dim));
+    }
+    std::vector<long> mean_shape;
+    for (int dim : running_mean.shape.as_vector<int>())
+    {
+        mean_shape.push_back(static_cast<long>(dim));
+    }
+    auto epsilon_tensor = dc.tensor(torch::zeros(mean_var_shape) + epsilon);
+    auto neg_one = dc.tensor(torch::zeros(mean_shape) - 1.0);
+
+    // Decompose: output = weight * (input - running_mean) / sqrt(running_var + epsilon) + bias
+    auto var_eps = dc.op(graphlib::OpType("add", {}, {}), {running_var, epsilon_tensor});
+    auto sqrt_result = dc.op(graphlib::OpType("sqrt", {}, {}), {var_eps});
+    auto reciprocal_result = dc.op(graphlib::OpType("reciprocal", {}, {}), {sqrt_result});
+    auto weighted = dc.op(graphlib::OpType("multiply", {}, {}), {reciprocal_result, weight});
+    auto neg_mean = dc.op(graphlib::OpType("multiply", {}, {}), {neg_one, running_mean});
+    auto weighted_mean = dc.op(graphlib::OpType("multiply", {}, {}), {weighted, neg_mean});
+    auto weighted_bias = dc.op(graphlib::OpType("add", {}, {}), {weighted_mean, bias});
+
+    // Unsqueeze to match input dimensions
+    auto weighted_bias_unsqueezed = dc.op(graphlib::OpType("unsqueeze", {}, {{"dim", 1}}), {weighted_bias});
+    weighted_bias_unsqueezed = dc.op(graphlib::OpType("unsqueeze", {}, {{"dim", 1}}), {weighted_bias_unsqueezed});
+
+    auto weighted_var_unsqueezed = dc.op(graphlib::OpType("unsqueeze", {}, {{"dim", 1}}), {weighted});
+    weighted_var_unsqueezed = dc.op(graphlib::OpType("unsqueeze", {}, {{"dim", 1}}), {weighted_var_unsqueezed});
+
+    auto scaled = dc.op(graphlib::OpType("multiply", {}, {}), {input, weighted_var_unsqueezed});
+    auto result = dc.op(graphlib::OpType("add", {}, {}), {scaled, weighted_bias_unsqueezed});
+
+    dc.fuse(result);
 }
 
 void decompose_post_optimize(
     const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Batchnorm, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
+    // No post-optimization decomposition needed
 }
 
 void decompose_post_autograd(
     const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Batchnorm, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
+    // No post-autograd decomposition needed
 }
 
 long initial_flops_estimate(
     const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Batchnorm, "Wrong op type.");
-    return op.base_initial_flops_estimate(old_op_type, inputs);
+    // Batchnorm FLOPS: normalize (5 ops per element) + scale and shift (2 ops per element) = 7 ops per element
+    if (inputs.empty())
+        return 0;
+
+    long flops = 7;  // Base operations per element
+    for (auto dim : inputs[0])
+    {
+        flops *= dim;
+    }
+    return flops;
 }
 
 }  // namespace batchnorm

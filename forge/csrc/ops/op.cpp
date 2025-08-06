@@ -804,7 +804,7 @@ void Op::decompose_post_optimize(
         case OpType::Atan: return;
         case OpType::AvgPool1d: return;
         case OpType::AvgPool2d: return;
-        case OpType::Batchnorm: return batchnorm::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Batchnorm: return;
         case OpType::Broadcast: return;
         case OpType::Cast: return;
         case OpType::Clip: return;
@@ -914,7 +914,7 @@ void Op::decompose_post_autograd(
         case OpType::Atan: return;
         case OpType::AvgPool1d: return;
         case OpType::AvgPool2d: return;
-        case OpType::Batchnorm: return batchnorm::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Batchnorm: return;
         case OpType::Broadcast: return;
         case OpType::Cast: return;
         case OpType::Clip: return;
