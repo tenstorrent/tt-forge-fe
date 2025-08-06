@@ -44,6 +44,37 @@ def test_conv2d_reflect_padding_mode(input_shape, in_channels, out_channels, ker
 
 
 @pytest.mark.parametrize(
+    "input_shape, in_channels, out_channels, kernel_size, padding",
+    [
+        # padding is in (height, width) format
+        ((1, 512, 6, 20), 512, 256, 3, (1, 2)),
+        ((1, 128, 32, 32), 128, 64, 5, (1, 1)),
+        ((1, 64, 64, 64), 64, 128, 3, (2, 1)),
+        ((1, 32, 128, 128), 32, 64, 7, (2, 2)),
+        ((1, 256, 16, 16), 256, 128, 5, (1, 1)),
+    ],
+)
+@pytest.mark.push
+def test_conv2d(input_shape, in_channels, out_channels, kernel_size, padding):
+    class Conv2d(nn.Module):
+        def __init__(self, in_channels, out_channels, kernel_size, padding):
+            super().__init__()
+            self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, padding=padding)
+
+        def forward(self, input):
+            return self.conv(input)
+
+    framework_model = Conv2d(in_channels, out_channels, kernel_size, padding)
+    framework_model.eval()
+
+    inputs = [torch.rand(input_shape)]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
     "input_shape, kernel_size, stride_size, padding, ceil_mode",
     [
         pytest.param(
