@@ -57,6 +57,11 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
     at::Tensor gamma_reshaped = gamma.reshape({gamma.size(-1)});
     at::Tensor beta_reshaped = beta.reshape({beta.size(-1)});
 
+    // Ensure all tensors have the same dtype
+    at::ScalarType target_dtype = input.scalar_type();
+    gamma_reshaped = gamma_reshaped.to(target_dtype);
+    beta_reshaped = beta_reshaped.to(target_dtype);
+
     return torch::nn::functional::layer_norm(
         input,
         torch::nn::functional::LayerNormFuncOptions(normalized_shape)
