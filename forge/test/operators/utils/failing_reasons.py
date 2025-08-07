@@ -181,10 +181,10 @@ class ComponentChecker(Enum):
                         M.last_line(M.contains("forge/verify/compare.py:")),
                         M.last_line(M.contains("forge/verify/value_checkers.py:")),
                         M.last_line(M.contains("forge/verify/verify.py:")),
+                        M.last_line(M.contains("forge/op/common.py:")),
                         M.last_line(M.contains("forge/op/eval/interface.py:")),
                         M.last_line(M.contains("forge/compile.py:")),
                         M.last_line(M.contains("forge/compiled_graph_state.py:")),
-                        M.last_line(M.contains("forge/op/eval/forge/clip.py:")),
                         M.last_line(M.contains("forge/op/eval/forge/convolution.py:")),
                         M.last_line(M.contains("forge/op/eval/forge/tm.py:")),
                         M.last_line(M.contains("forge/op/eval/forge/embedding.py:")),
@@ -1172,7 +1172,8 @@ class FailingReasons(Enum):
                 # E                   ValueError: Shape mismatch: framework_model.shape=torch.Size([1, 10000]), compiled_model.shape=torch.Size([10000, 1])
                 # forge/forge/verify/verify.py:481: ValueError
                 class_name="ValueError",
-                component=ComponentChecker.FORGE.value,
+                # component=ComponentChecker.FORGE.value,
+                component=ComponentChecker.NONE.value,
                 message=[
                     M.regex("Shape mismatch: framework_model.shape=torch.Size.*, compiled_model.shape=torch.Size.*"),
                 ],
@@ -1588,7 +1589,8 @@ class FailingReasons(Enum):
             # forge/compile.py:731: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.FORGE.value,
+                # component=ComponentChecker.FORGE.value,
+                component=ComponentChecker.NONE.value,
                 message=[
                     M.starts_with("TT_ASSERT"),
                     M.regex("forge/csrc/graph_lib/shape.cpp:\\d+: v.front\\(\\) == 1"),
@@ -1599,9 +1601,9 @@ class FailingReasons(Enum):
                 ],
             ),
             # clamp	RuntimeError: value cannot be converted to type at::BFloat16 without overflow
-            # >       ret = torch.clip(tensors[0], min=self.min, max=self.max)
+            # >       ref_output = self.cpp_op_type.eval(values)
             # E       RuntimeError: value cannot be converted to type at::BFloat16 without overflow
-            # forge/forge/op/eval/forge/clip.py:32: RuntimeError
+            # forge/op/common.py:61: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
                 component=ComponentChecker.FORGE.value,
@@ -1609,8 +1611,8 @@ class FailingReasons(Enum):
                     M.starts_with("value cannot be converted to type at::BFloat16 without overflow"),
                 ],
                 error_log=[
-                    M.contains(">       ret = torch.clip(tensors[0], min=self.min, max=self.max)"),
-                    M.last_line(M.contains("forge/op/eval/forge/clip.py:")),
+                    M.contains(">       ref_output = self.cpp_op_type.eval(values)"),
+                    M.last_line(M.contains("forge/op/common.py:")),
                 ],
             ),
         ],
