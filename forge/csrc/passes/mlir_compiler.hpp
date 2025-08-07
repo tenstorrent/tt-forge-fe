@@ -29,6 +29,7 @@ struct MLIRConfig
     std::optional<bool> enable_consteval = std::nullopt;
     std::optional<bool> enable_optimizer = std::nullopt;
     std::optional<bool> enable_memory_layout_analysis = std::nullopt;
+    std::optional<bool> enable_l1_interleaved_fallback_analysis = std::nullopt;
     std::optional<bool> enable_fusing = std::nullopt;
     std::optional<bool> enable_fusing_conv2d_with_multiply_pattern = std::nullopt;
 
@@ -50,6 +51,12 @@ struct MLIRConfig
     MLIRConfig& set_enable_memory_layout_analysis(bool enable)
     {
         enable_memory_layout_analysis = enable;
+        return *this;
+    }
+
+    MLIRConfig& set_enable_l1_interleaved_fallback_analysis(bool enable)
+    {
+        enable_l1_interleaved_fallback_analysis = enable;
         return *this;
     }
 

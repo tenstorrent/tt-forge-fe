@@ -190,6 +190,10 @@ PYBIND11_MODULE(_C, m)
             [](tt::passes::MLIRConfig &self, bool enable) { return self.set_enable_memory_layout_analysis(enable); },
             py::arg("enable"))
         .def(
+            "set_enable_l1_interleaved_fallback_analysis",
+            [](tt::passes::MLIRConfig &self, bool enable) { return self.set_enable_l1_interleaved_fallback_analysis(enable); },
+            py::arg("enable"))
+        .def(
             "set_enable_fusing",
             [](tt::passes::MLIRConfig &self, bool enable) { return self.set_enable_fusing(enable); },
             py::arg("enable"))
