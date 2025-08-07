@@ -4,8 +4,9 @@
 
 import torch
 from PIL import Image
-from third_party.tt_forge_models.tools.utils import get_file
 from torchvision import transforms
+
+from third_party.tt_forge_models.tools.utils import get_file
 
 from test.models.pytorch.vision.mobilenet.model_utils.mobilenet_v1 import MobileNetV1
 from test.utils import download_model
@@ -17,12 +18,20 @@ def load_mobilenet_model(model_name):
     if model_name == "mobilenet_v1":
         model = MobileNetV1(9)
     else:
-        model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", model_name, pretrained=True)
+        try:
+            model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", model_name, pretrained=True)
+        except Exception as e:
+            print(f"Error loading model {model_name}: {e}")
+            raise e
 
     model.eval()
 
     # Load data sample
-    input_image = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
+    try:
+        input_image = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
+    except Exception as e:
+        print(f"Error loading input image: {e}")
+        raise e
 
     # Preprocessing
     input_image = Image.open(str(input_image))
