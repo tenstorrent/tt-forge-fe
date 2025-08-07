@@ -1591,10 +1591,6 @@ tvm_to_forge_op_map = {
     "where": "where",
     "expand_dims": "unsqueeze",
     "squeeze": "squeeze",
-    # Quantization ops
-    "qnn.quantize": "quantize",
-    "qnn.dequantize": "dequantize",
-    "qnn.requantize": "requantize",
     "qnn.dense": "matmul",
     "atan": "atan",
     "upsample2d": "upsample2d",
@@ -1676,10 +1672,6 @@ forge_op_to_function_name = {
     "where": "forge.op.Where",
     "unsqueeze": "forge.op.Unsqueeze",
     "squeeze": "forge.op.Squeeze",
-    # Quantization ops
-    "quantize": "forge.op.Quantize",
-    "dequantize": "forge.op.Dequantize",
-    "requantize": "forge.op.Requantize",
     "atan": "forge.op.Atan",
     "upsample2d": "forge.op.Upsample2d",
 }
@@ -1725,10 +1717,6 @@ forge_ops_needing_arguments = {
     "unsqueeze": populate_unsqueeze_args,
     "squeeze": populate_squeeze_args,
     # "dropout"                      : populate_dropout_args,
-    # Quantization ops
-    "quantize": populate_quantize_args,
-    "dequantize": populate_dequantize_args,
-    "requantize": populate_requantize_args,
 }
 
 

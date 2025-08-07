@@ -28,7 +28,6 @@ add_library(ops
     op_conv_sum.cpp
     op_cosine.cpp
     op_cumulative_sum.cpp
-    op_dequantize.cpp
     op_depthwise.cpp
     op_divide.cpp
     op_downsample_2d.cpp
@@ -39,10 +38,7 @@ add_library(ops
     op_erf.cpp
     op_exp.cpp
     op_fill_cache.cpp
-    op_forge_dequantize.cpp
     op_forge_pad.cpp
-    op_forge_quantize.cpp
-    op_forge_requantize.cpp
     op_forge_unpad.cpp
     op_gather.cpp
     op_gelu.cpp
@@ -78,7 +74,6 @@ add_library(ops
     op_pixel_shuffle.cpp
     op_pow.cpp
     op_power.cpp
-    op_quantize.cpp
     op_reciprocal.cpp
     op_reduce_avg.cpp
     op_reduce_max.cpp
@@ -87,7 +82,6 @@ add_library(ops
     op_remainder.cpp
     op_repeat.cpp
     op_repeat_interleave.cpp
-    op_requantize.cpp
     op_reshape.cpp
     op_resize_2d.cpp
     op_select.cpp

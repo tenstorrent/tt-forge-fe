@@ -872,21 +872,6 @@ bool commute_through_eltwise(graphlib::OpNode *op, graphlib::Shape *commute_shap
     return true;
 }
 
-bool commute_through_quantization(
-    graphlib::OpNode *op, graphlib::Shape *commute_shape, graphlib::OpType *golden_transform)
-{
-    TT_ASSERT(is_quantization_ops(op), "op must be an quantization op");
-    op->set_shape(*commute_shape);
-    op->add_golden_transform(*golden_transform);
-    return true;
-}
-
-bool is_quantization_ops(graphlib::OpNode *op)
-{
-    return op->new_op_type() == ops::OpType::ForgeQuantize or op->new_op_type() == ops::OpType::ForgeDequantize or
-           op->new_op_type() == ops::OpType::ForgeRequantize;
-}
-
 bool can_commute_past_op(
     graphlib::OpNode *op,
     graphlib::OpNode *initial_op,
@@ -916,7 +901,7 @@ bool can_commute_past_op(
         return can_commute;
     }
 
-    return (op->is_eltwise() and op->new_op_type() != ops::OpType::Interleave) or is_quantization_ops(op);
+    return (op->is_eltwise() and op->new_op_type() != ops::OpType::Interleave);
 }
 
 /**

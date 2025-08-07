@@ -105,12 +105,6 @@ op_to_module_map = {
     "layernorm": "nn",
     "layernorm_bw": "nn",
     "batchnorm": "nn",
-    "quantize": "quantize",
-    "forge_quantize": "quantize",
-    "dequantize": "quantize",
-    "requantize": "quantize",
-    "forge_requantize": "quantize",
-    "forge_dequantize": "quantize",
     "update_cache": "misc",
     "fill_cache": "misc",
 }

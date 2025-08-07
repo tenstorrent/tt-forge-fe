@@ -67,7 +67,6 @@ class NewToOldOpType
         mapping_[OpType::Cosine] = "cosine";
         mapping_[OpType::CumulativeSum] = "cumsum";
         mapping_[OpType::Depthwise] = "depthwise";
-        mapping_[OpType::Dequantize] = "dequantize";
         mapping_[OpType::Divide] = "divide";
         mapping_[OpType::Downsample2d] = "downsample2d";
         mapping_[OpType::Dropout] = "dropout";
@@ -77,10 +76,7 @@ class NewToOldOpType
         mapping_[OpType::Erf] = "erf";
         mapping_[OpType::Exp] = "exp";
         mapping_[OpType::FillCache] = "fill_cache";
-        mapping_[OpType::ForgeDequantize] = "forge_dequantize";
         mapping_[OpType::ForgePad] = "forge_pad";
-        mapping_[OpType::ForgeQuantize] = "forge_quantize";
-        mapping_[OpType::ForgeRequantize] = "forge_requantize";
         mapping_[OpType::ForgeUnpad] = "forge_unpad";
         mapping_[OpType::Gather] = "gather";
         mapping_[OpType::Gelu] = "gelu";
@@ -116,7 +112,6 @@ class NewToOldOpType
         mapping_[OpType::PixelShuffle] = "pixel_shuffle";
         mapping_[OpType::Pow] = "pow";
         mapping_[OpType::Power] = "power";
-        mapping_[OpType::Quantize] = "quantize";
         mapping_[OpType::Reciprocal] = "reciprocal";
         mapping_[OpType::ReduceAvg] = "reduce_avg";
         mapping_[OpType::ReduceMax] = "reduce_max";
@@ -125,7 +120,6 @@ class NewToOldOpType
         mapping_[OpType::Remainder] = "remainder";
         mapping_[OpType::Repeat] = "repeat";
         mapping_[OpType::RepeatInterleave] = "repeat_interleave";
-        mapping_[OpType::Requantize] = "requantize";
         mapping_[OpType::Reshape] = "reshape";
         mapping_[OpType::Resize2d] = "resize2d";
         mapping_[OpType::Select] = "select";
@@ -189,7 +183,6 @@ class OldToNewOpType
         mapping_["cosine"] = OpType::Cosine;
         mapping_["cumsum"] = OpType::CumulativeSum;
         mapping_["depthwise"] = OpType::Depthwise;
-        mapping_["dequantize"] = OpType::Dequantize;
         mapping_["divide"] = OpType::Divide;
         mapping_["downsample2d"] = OpType::Downsample2d;
         mapping_["dropout"] = OpType::Dropout;
@@ -199,10 +192,7 @@ class OldToNewOpType
         mapping_["erf"] = OpType::Erf;
         mapping_["exp"] = OpType::Exp;
         mapping_["fill_cache"] = OpType::FillCache;
-        mapping_["forge_dequantize"] = OpType::ForgeDequantize;
         mapping_["forge_pad"] = OpType::ForgePad;
-        mapping_["forge_quantize"] = OpType::ForgeQuantize;
-        mapping_["forge_requantize"] = OpType::ForgeRequantize;
         mapping_["forge_unpad"] = OpType::ForgeUnpad;
         mapping_["gather"] = OpType::Gather;
         mapping_["gelu"] = OpType::Gelu;
@@ -238,7 +228,6 @@ class OldToNewOpType
         mapping_["pixel_shuffle"] = OpType::PixelShuffle;
         mapping_["pow"] = OpType::Pow;
         mapping_["power"] = OpType::Power;
-        mapping_["quantize"] = OpType::Quantize;
         mapping_["reciprocal"] = OpType::Reciprocal;
         mapping_["reduce_avg"] = OpType::ReduceAvg;
         mapping_["reduce_max"] = OpType::ReduceMax;
@@ -247,7 +236,6 @@ class OldToNewOpType
         mapping_["remainder"] = OpType::Remainder;
         mapping_["repeat"] = OpType::Repeat;
         mapping_["repeat_interleave"] = OpType::RepeatInterleave;
-        mapping_["requantize"] = OpType::Requantize;
         mapping_["reshape"] = OpType::Reshape;
         mapping_["resize2d"] = OpType::Resize2d;
         mapping_["select"] = OpType::Select;
@@ -376,7 +364,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Cosine: return cosine::eval(old_op_type, *this, tensors);
         case OpType::CumulativeSum: return cumulative_sum::eval(old_op_type, *this, tensors);
         case OpType::Depthwise: return depthwise::eval(old_op_type, *this, tensors);
-        case OpType::Dequantize: return dequantize::eval(old_op_type, *this, tensors);
         case OpType::Divide: return divide::eval(old_op_type, *this, tensors);
         case OpType::Downsample2d: return downsample_2d::eval(old_op_type, *this, tensors);
         case OpType::Dropout: return dropout::eval(old_op_type, *this, tensors);
@@ -386,10 +373,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Erf: return erf::eval(old_op_type, *this, tensors);
         case OpType::Exp: return exp::eval(old_op_type, *this, tensors);
         case OpType::FillCache: return fill_cache::eval(old_op_type, *this, tensors);
-        case OpType::ForgeDequantize: return forge_dequantize::eval(old_op_type, *this, tensors);
         case OpType::ForgePad: return forge_pad::eval(old_op_type, *this, tensors);
-        case OpType::ForgeQuantize: return forge_quantize::eval(old_op_type, *this, tensors);
-        case OpType::ForgeRequantize: return forge_requantize::eval(old_op_type, *this, tensors);
         case OpType::ForgeUnpad: return forge_unpad::eval(old_op_type, *this, tensors);
         case OpType::Gather: return gather::eval(old_op_type, *this, tensors);
         case OpType::Gelu: return gelu::eval(old_op_type, *this, tensors);
@@ -425,7 +409,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::PixelShuffle: return pixel_shuffle::eval(old_op_type, *this, tensors);
         case OpType::Pow: return pow::eval(old_op_type, *this, tensors);
         case OpType::Power: return power::eval(old_op_type, *this, tensors);
-        case OpType::Quantize: return quantize::eval(old_op_type, *this, tensors);
         case OpType::Reciprocal: return reciprocal::eval(old_op_type, *this, tensors);
         case OpType::ReduceAvg: return reduce_avg::eval(old_op_type, *this, tensors);
         case OpType::ReduceMax: return reduce_max::eval(old_op_type, *this, tensors);
@@ -434,7 +417,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Remainder: return remainder::eval(old_op_type, *this, tensors);
         case OpType::Repeat: return repeat::eval(old_op_type, *this, tensors);
         case OpType::RepeatInterleave: return repeat_interleave::eval(old_op_type, *this, tensors);
-        case OpType::Requantize: return requantize::eval(old_op_type, *this, tensors);
         case OpType::Reshape: return reshape::eval(old_op_type, *this, tensors);
         case OpType::Resize2d: return resize_2d::eval(old_op_type, *this, tensors);
         case OpType::Select: return select::eval(old_op_type, *this, tensors);
@@ -491,7 +473,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Cosine: return cosine::shape(old_op_type, *this, inputs);
         case OpType::CumulativeSum: return cumulative_sum::shape(old_op_type, *this, inputs);
         case OpType::Depthwise: return depthwise::shape(old_op_type, *this, inputs);
-        case OpType::Dequantize: return dequantize::shape(old_op_type, *this, inputs);
         case OpType::Divide: return divide::shape(old_op_type, *this, inputs);
         case OpType::Downsample2d: return downsample_2d::shape(old_op_type, *this, inputs);
         case OpType::Dropout: return dropout::shape(old_op_type, *this, inputs);
@@ -501,10 +482,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Erf: return erf::shape(old_op_type, *this, inputs);
         case OpType::Exp: return exp::shape(old_op_type, *this, inputs);
         case OpType::FillCache: return fill_cache::shape(old_op_type, *this, inputs);
-        case OpType::ForgeDequantize: return forge_dequantize::shape(old_op_type, *this, inputs);
         case OpType::ForgePad: return forge_pad::shape(old_op_type, *this, inputs);
-        case OpType::ForgeQuantize: return forge_quantize::shape(old_op_type, *this, inputs);
-        case OpType::ForgeRequantize: return forge_requantize::shape(old_op_type, *this, inputs);
         case OpType::ForgeUnpad: return forge_unpad::shape(old_op_type, *this, inputs);
         case OpType::Gather: return gather::shape(old_op_type, *this, inputs);
         case OpType::Gelu: return gelu::shape(old_op_type, *this, inputs);
@@ -540,7 +518,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::PixelShuffle: return pixel_shuffle::shape(old_op_type, *this, inputs);
         case OpType::Pow: return pow::shape(old_op_type, *this, inputs);
         case OpType::Power: return power::shape(old_op_type, *this, inputs);
-        case OpType::Quantize: return quantize::shape(old_op_type, *this, inputs);
         case OpType::Reciprocal: return reciprocal::shape(old_op_type, *this, inputs);
         case OpType::ReduceAvg: return reduce_avg::shape(old_op_type, *this, inputs);
         case OpType::ReduceMax: return reduce_max::shape(old_op_type, *this, inputs);
@@ -549,7 +526,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Remainder: return remainder::shape(old_op_type, *this, inputs);
         case OpType::Repeat: return repeat::shape(old_op_type, *this, inputs);
         case OpType::RepeatInterleave: return repeat_interleave::shape(old_op_type, *this, inputs);
-        case OpType::Requantize: return requantize::shape(old_op_type, *this, inputs);
         case OpType::Reshape: return reshape::shape(old_op_type, *this, inputs);
         case OpType::Resize2d: return resize_2d::shape(old_op_type, *this, inputs);
         case OpType::Select: return select::shape(old_op_type, *this, inputs);
@@ -611,7 +587,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Cosine: return cosine::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::CumulativeSum: return cumulative_sum::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Depthwise: return depthwise::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Dequantize: return dequantize::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Divide: return divide::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Downsample2d: return downsample_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Dropout: return dropout::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -621,10 +596,7 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Erf: return erf::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Exp: return exp::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::FillCache: return fill_cache::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::ForgeDequantize: return forge_dequantize::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::ForgePad: return forge_pad::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::ForgeQuantize: return forge_quantize::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::ForgeRequantize: return forge_requantize::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::ForgeUnpad: return forge_unpad::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Gather: return gather::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Gelu: return gelu::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -660,7 +632,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::PixelShuffle: return pixel_shuffle::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Pow: return pow::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Power: return power::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Quantize: return quantize::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Reciprocal: return reciprocal::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::ReduceAvg: return reduce_avg::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::ReduceMax: return reduce_max::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -669,7 +640,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Remainder: return remainder::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Repeat: return repeat::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::RepeatInterleave: return repeat_interleave::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Requantize: return requantize::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Reshape: return reshape::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Resize2d: return resize_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Select: return select::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -748,7 +718,6 @@ void Op::decompose_initial(
         case OpType::Cosine: return;
         case OpType::CumulativeSum: return;
         case OpType::Depthwise: return depthwise::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Dequantize: return dequantize::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
         case OpType::Downsample2d: return downsample_2d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Dropout: return;
@@ -758,10 +727,7 @@ void Op::decompose_initial(
         case OpType::Erf: return;
         case OpType::Exp: return;
         case OpType::FillCache: return;
-        case OpType::ForgeDequantize: return forge_dequantize::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::ForgePad: return forge_pad::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::ForgeQuantize: return forge_quantize::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::ForgeRequantize: return forge_requantize::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::ForgeUnpad: return forge_unpad::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Gather: return gather::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Gelu: return;
@@ -797,7 +763,6 @@ void Op::decompose_initial(
         case OpType::PixelShuffle: return pixel_shuffle::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Pow: return;
         case OpType::Power: return;
-        case OpType::Quantize: return quantize::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Reciprocal: return;
         case OpType::ReduceAvg: return reduce_avg::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::ReduceMax: return reduce_max::decompose_initial(old_op_type, *this, dc, inputs);
@@ -806,7 +771,6 @@ void Op::decompose_initial(
         case OpType::Remainder: return;
         case OpType::Repeat: return repeat::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::RepeatInterleave: return repeat_interleave::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Requantize: return requantize::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Reshape: return reshape::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Resize2d: return resize_2d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Select: return select::decompose_initial(old_op_type, *this, dc, inputs);
@@ -865,7 +829,6 @@ void Op::decompose_post_optimize(
         case OpType::Cosine: return;
         case OpType::CumulativeSum: return;
         case OpType::Depthwise: return depthwise::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Dequantize: return dequantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
         case OpType::Downsample2d: return downsample_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Dropout: return;
@@ -875,10 +838,7 @@ void Op::decompose_post_optimize(
         case OpType::Erf: return;
         case OpType::Exp: return;
         case OpType::FillCache: return;
-        case OpType::ForgeDequantize: return forge_dequantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::ForgePad: return forge_pad::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::ForgeQuantize: return forge_quantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::ForgeRequantize: return forge_requantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::ForgeUnpad: return forge_unpad::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Gather: return gather::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Gelu: return;
@@ -914,7 +874,6 @@ void Op::decompose_post_optimize(
         case OpType::PixelShuffle: return pixel_shuffle::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Pow: return;
         case OpType::Power: return;
-        case OpType::Quantize: return quantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Reciprocal: return;
         case OpType::ReduceAvg: return;
         case OpType::ReduceMax: return;
@@ -923,7 +882,6 @@ void Op::decompose_post_optimize(
         case OpType::Remainder: return;
         case OpType::Repeat: return;
         case OpType::RepeatInterleave: return repeat_interleave::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Requantize: return requantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Reshape: return;
         case OpType::Resize2d: return;
         case OpType::Select: return select::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -982,7 +940,6 @@ void Op::decompose_post_autograd(
         case OpType::Cosine: return;
         case OpType::CumulativeSum: return;
         case OpType::Depthwise: return depthwise::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Dequantize: return dequantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
         case OpType::Downsample2d: return downsample_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Dropout: return;
@@ -992,10 +949,7 @@ void Op::decompose_post_autograd(
         case OpType::Erf: return;
         case OpType::Exp: return;
         case OpType::FillCache: return;
-        case OpType::ForgeDequantize: return forge_dequantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::ForgePad: return forge_pad::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::ForgeQuantize: return forge_quantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::ForgeRequantize: return forge_requantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::ForgeUnpad: return forge_unpad::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Gather: return gather::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Gelu: return;
@@ -1031,7 +985,6 @@ void Op::decompose_post_autograd(
         case OpType::PixelShuffle: return pixel_shuffle::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Pow: return;
         case OpType::Power: return;
-        case OpType::Quantize: return quantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Reciprocal: return;
         case OpType::ReduceAvg: return;
         case OpType::ReduceMax: return;
@@ -1040,7 +993,6 @@ void Op::decompose_post_autograd(
         case OpType::Remainder: return;
         case OpType::Repeat: return;
         case OpType::RepeatInterleave: return repeat_interleave::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Requantize: return requantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Reshape: return reshape::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Resize2d: return;
         case OpType::Select: return select::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1097,7 +1049,6 @@ long Op::initial_flops_estimate(
         case OpType::Cosine: return 0;
         case OpType::CumulativeSum: return 0;
         case OpType::Depthwise: return depthwise::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Dequantize: return dequantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Divide: return 0;
         case OpType::Downsample2d: return downsample_2d::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Dropout: return 0;
@@ -1107,10 +1058,7 @@ long Op::initial_flops_estimate(
         case OpType::Erf: return 0;
         case OpType::Exp: return 0;
         case OpType::FillCache: return 0;
-        case OpType::ForgeDequantize: return forge_dequantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::ForgePad: return forge_pad::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::ForgeQuantize: return forge_quantize::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::ForgeRequantize: return forge_requantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::ForgeUnpad: return forge_unpad::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Gather: return gather::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Gelu: return 0;
@@ -1146,7 +1094,6 @@ long Op::initial_flops_estimate(
         case OpType::PixelShuffle: return pixel_shuffle::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Pow: return 0;
         case OpType::Power: return 0;
-        case OpType::Quantize: return quantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Reciprocal: return 0;
         case OpType::ReduceAvg: return 0;
         case OpType::ReduceMax: return 0;
@@ -1155,7 +1102,6 @@ long Op::initial_flops_estimate(
         case OpType::Remainder: return 0;
         case OpType::Repeat: return 0;
         case OpType::RepeatInterleave: return repeat_interleave::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Requantize: return requantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Reshape: return 0;
         case OpType::Resize2d: return 0;
         case OpType::Select: return select::initial_flops_estimate(old_op_type, *this, inputs);
@@ -1211,7 +1157,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Cosine: return false;
         case OpType::CumulativeSum: return false;
         case OpType::Depthwise: return false;
-        case OpType::Dequantize: return false;
         case OpType::Divide: return false;
         case OpType::Downsample2d: return false;
         case OpType::Dropout: return false;
@@ -1221,10 +1166,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Erf: return false;
         case OpType::Exp: return false;
         case OpType::FillCache: return false;
-        case OpType::ForgeDequantize: return false;
         case OpType::ForgePad: return true;
-        case OpType::ForgeQuantize: return false;
-        case OpType::ForgeRequantize: return false;
         case OpType::ForgeUnpad: return true;
         case OpType::Gather: return true;
         case OpType::Gelu: return false;
@@ -1260,7 +1202,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::PixelShuffle: return true;
         case OpType::Pow: return false;
         case OpType::Power: return false;
-        case OpType::Quantize: return false;
         case OpType::Reciprocal: return false;
         case OpType::ReduceAvg: return false;
         case OpType::ReduceMax: return false;
@@ -1269,7 +1210,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Remainder: return false;
         case OpType::Repeat: return true;
         case OpType::RepeatInterleave: return true;
-        case OpType::Requantize: return false;
         case OpType::Reshape: return true;
         case OpType::Resize2d: return false;
         case OpType::Select: return true;
@@ -1325,7 +1265,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Cosine: return true;
         case OpType::CumulativeSum: return false;
         case OpType::Depthwise: return false;
-        case OpType::Dequantize: return false;
         case OpType::Divide: return true;
         case OpType::Downsample2d: return false;
         case OpType::Dropout: return false;
@@ -1335,10 +1274,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Erf: return true;
         case OpType::Exp: return true;
         case OpType::FillCache: return false;
-        case OpType::ForgeDequantize: return false;
         case OpType::ForgePad: return false;
-        case OpType::ForgeQuantize: return false;
-        case OpType::ForgeRequantize: return false;
         case OpType::ForgeUnpad: return false;
         case OpType::Gather: return false;
         case OpType::Gelu: return true;
@@ -1374,7 +1310,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::PixelShuffle: return false;
         case OpType::Pow: return true;
         case OpType::Power: return true;
-        case OpType::Quantize: return false;
         case OpType::Reciprocal: return true;
         case OpType::ReduceAvg: return false;
         case OpType::ReduceMax: return false;
@@ -1383,7 +1318,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Remainder: return true;
         case OpType::Repeat: return false;
         case OpType::RepeatInterleave: return false;
-        case OpType::Requantize: return false;
         case OpType::Reshape: return false;
         case OpType::Resize2d: return false;
         case OpType::Select: return false;
@@ -1439,7 +1373,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Cosine: return true;
         case OpType::CumulativeSum: return false;
         case OpType::Depthwise: return false;
-        case OpType::Dequantize: return false;
         case OpType::Divide: return false;
         case OpType::Downsample2d: return false;
         case OpType::Dropout: return false;
@@ -1449,10 +1382,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Erf: return true;
         case OpType::Exp: return true;
         case OpType::FillCache: return false;
-        case OpType::ForgeDequantize: return false;
         case OpType::ForgePad: return false;
-        case OpType::ForgeQuantize: return false;
-        case OpType::ForgeRequantize: return false;
         case OpType::ForgeUnpad: return false;
         case OpType::Gather: return false;
         case OpType::Gelu: return true;
@@ -1488,7 +1418,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::PixelShuffle: return false;
         case OpType::Pow: return true;
         case OpType::Power: return false;
-        case OpType::Quantize: return false;
         case OpType::Reciprocal: return true;
         case OpType::ReduceAvg: return false;
         case OpType::ReduceMax: return false;
@@ -1497,7 +1426,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Remainder: return false;
         case OpType::Repeat: return false;
         case OpType::RepeatInterleave: return false;
-        case OpType::Requantize: return false;
         case OpType::Reshape: return false;
         case OpType::Resize2d: return false;
         case OpType::Select: return false;
@@ -1553,7 +1481,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Cosine: return false;
         case OpType::CumulativeSum: return false;
         case OpType::Depthwise: return false;
-        case OpType::Dequantize: return false;
         case OpType::Divide: return true;
         case OpType::Downsample2d: return false;
         case OpType::Dropout: return false;
@@ -1563,10 +1490,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Erf: return false;
         case OpType::Exp: return false;
         case OpType::FillCache: return false;
-        case OpType::ForgeDequantize: return false;
         case OpType::ForgePad: return false;
-        case OpType::ForgeQuantize: return false;
-        case OpType::ForgeRequantize: return false;
         case OpType::ForgeUnpad: return false;
         case OpType::Gather: return false;
         case OpType::Gelu: return false;
@@ -1602,7 +1526,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::PixelShuffle: return false;
         case OpType::Pow: return false;
         case OpType::Power: return true;
-        case OpType::Quantize: return false;
         case OpType::Reciprocal: return false;
         case OpType::ReduceAvg: return false;
         case OpType::ReduceMax: return false;
@@ -1611,7 +1534,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Remainder: return true;
         case OpType::Repeat: return false;
         case OpType::RepeatInterleave: return false;
-        case OpType::Requantize: return false;
         case OpType::Reshape: return false;
         case OpType::Resize2d: return false;
         case OpType::Select: return false;
@@ -1667,7 +1589,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Cosine: return false;
         case OpType::CumulativeSum: return false;
         case OpType::Depthwise: return false;
-        case OpType::Dequantize: return false;
         case OpType::Divide: return false;
         case OpType::Downsample2d: return false;
         case OpType::Dropout: return false;
@@ -1677,10 +1598,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Erf: return false;
         case OpType::Exp: return false;
         case OpType::FillCache: return false;
-        case OpType::ForgeDequantize: return false;
         case OpType::ForgePad: return false;
-        case OpType::ForgeQuantize: return false;
-        case OpType::ForgeRequantize: return false;
         case OpType::ForgeUnpad: return false;
         case OpType::Gather: return false;
         case OpType::Gelu: return false;
@@ -1716,7 +1634,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::PixelShuffle: return false;
         case OpType::Pow: return false;
         case OpType::Power: return false;
-        case OpType::Quantize: return false;
         case OpType::Reciprocal: return false;
         case OpType::ReduceAvg: return false;
         case OpType::ReduceMax: return false;
@@ -1725,7 +1642,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Remainder: return false;
         case OpType::Repeat: return false;
         case OpType::RepeatInterleave: return false;
-        case OpType::Requantize: return false;
         case OpType::Reshape: return false;
         case OpType::Resize2d: return false;
         case OpType::Select: return false;
