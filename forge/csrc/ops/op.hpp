@@ -79,7 +79,6 @@ enum class OpType : uint32_t
     FillCache,
     ForgePad,
     ForgeUnpad,
-    Gather,
     Gelu,
     Greater,
     GreaterEqual,

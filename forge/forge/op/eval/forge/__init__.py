@@ -62,7 +62,6 @@ op_to_module_map = {
     "reshape": "tm",
     "index": "tm",
     "select": "tm",
-    "gather": "tm",
     "hslice": "tm",
     "hstack": "tm",
     "vslice": "tm",

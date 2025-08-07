@@ -29,7 +29,6 @@
 #include "passes/mlir_compiler.hpp"
 #include "passes/pad_output_buffer.hpp"
 #include "passes/passes_utils.hpp"
-#include "passes/post_autograd_graph_passes.hpp"
 #include "passes/pre_lowering_passes.hpp"
 #include "passes/print_graph.hpp"
 #include "passes/remove_nops.hpp"
@@ -164,7 +163,6 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> run_post_autograd_gra
     std::shared_ptr<void> compiler_cfg = make_shared_py_object(compiler_cfg_object);
 
     passes::print_graph(graph, "POST_AUTOGRAD");
-    lower_bwd_gather_ops(graph);
     return decompose_tt_forge_graph<DecomposeEpoch::PostAutograd>(graph, compiler_cfg);
 }
 
