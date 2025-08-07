@@ -13,7 +13,7 @@
 
 namespace tt::test::ops::misc
 {
-std::vector<VecShapes> get_individual_test_shapes()
+std::vector<VecShapes> get_cumsum_individual_test_shapes()
 {
     return {
         VecShapes{{1, 1, 1, 32}},
@@ -27,7 +27,7 @@ std::vector<VecShapes> get_individual_test_shapes()
         VecShapes{{1}}};
 }
 
-std::vector<std::vector<graphlib::Shape>> generate_input_shapes()
+std::vector<std::vector<graphlib::Shape>> get_cumsum_sweeps_test_shapes()
 {
     std::vector<std::vector<graphlib::Shape>> input_shapes;
 
@@ -42,10 +42,7 @@ std::vector<std::vector<graphlib::Shape>> generate_input_shapes()
     shapes_range = shape_range({1, 1, 1, 1}, {5, 1, 1, 1});
     shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
 
-    for (size_t i = 0; i < shapes.size(); ++i)
-    {
-        input_shapes.push_back({shapes[i]});
-    }
+    for (size_t i = 0; i < shapes.size(); ++i) input_shapes.push_back({shapes[i]});
 
     return input_shapes;
 }
@@ -77,14 +74,81 @@ const std::vector<OpTestParam> get_cumsum_test_params(const std::vector<VecShape
 INSTANTIATE_TEST_SUITE_P(
     CumulativeSumOpNoBackwardIndividual,
     SimpleOpDecomposeOnlyTest,
-    testing::ValuesIn(get_cumsum_test_params(get_individual_test_shapes())),
+    testing::ValuesIn(get_cumsum_test_params(get_cumsum_individual_test_shapes())),
     [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
     { return SimpleOpTest::get_test_name(info); });
 
 INSTANTIATE_TEST_SUITE_P(
     CumulativeSumOpNoBackwardSweeps,
     SimpleOpDecomposeOnlyTest,
-    testing::ValuesIn(get_cumsum_test_params(generate_input_shapes())),
+    testing::ValuesIn(get_cumsum_test_params(get_cumsum_sweeps_test_shapes())),
+    [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
+    { return SimpleOpTest::get_test_name(info); });
+
+std::vector<VecShapes> get_mask_individual_test_shapes()
+{
+    return {
+        VecShapes{{1, 1, 1, 32}, {1, 1, 1, 32}},
+        VecShapes{{1, 1, 32, 1}, {1, 1, 32, 1}},
+        VecShapes{{1, 32, 1, 1}, {1, 32, 1, 1}},
+        VecShapes{{32, 1, 1, 1}, {32, 1, 1, 1}},
+        VecShapes{{1, 2, 3, 4}, {1, 2, 3, 4}},
+        VecShapes{{2, 3, 4}, {2, 3, 4}},
+        VecShapes{{3, 4}, {3, 4}},
+        VecShapes{{4}, {4}},
+        VecShapes{{1}, {1}}};
+}
+
+std::vector<std::vector<graphlib::Shape>> get_mask_sweeps_test_shapes()
+{
+    std::vector<std::vector<graphlib::Shape>> input_shapes;
+
+    std::vector<graphlib::Shape> shapes;
+
+    auto shapes_range = shape_range({1}, {16});
+    shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
+    shapes_range = shape_range({1, 1}, {16, 16});
+    shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
+    shapes_range = shape_range({1, 1, 1}, {5, 1, 1});
+    shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
+    shapes_range = shape_range({1, 1, 1, 1}, {5, 1, 1, 1});
+    shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
+
+    for (size_t i = 0; i < shapes.size(); ++i) input_shapes.push_back({shapes[i], shapes[i]});
+
+    return input_shapes;
+}
+
+/**
+ * Testing mask operation.
+ */
+const std::vector<OpTestParam> get_mask_test_params(const std::vector<VecShapes>& in_shapes)
+{
+    std::vector<OpTestParam> params;
+
+    for (const auto& shape_vec : in_shapes)
+    {
+        for (int dim = 0; dim < static_cast<int>(shape_vec[0].size()); ++dim)
+        {
+            tt::ops::Op op(tt::ops::OpType::Mask, {{"dim", static_cast<int>(dim)}});
+            params.emplace_back(op, shape_vec);
+        }
+    }
+
+    return params;
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    MaskNoBackwardIndividual,
+    SimpleOpDecomposeOnlyTest,
+    testing::ValuesIn(get_mask_test_params(get_mask_individual_test_shapes())),
+    [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
+    { return SimpleOpTest::get_test_name(info); });
+
+INSTANTIATE_TEST_SUITE_P(
+    MaskOpNoBackwardSweeps,
+    SimpleOpDecomposeOnlyTest,
+    testing::ValuesIn(get_mask_test_params(get_mask_sweeps_test_shapes())),
     [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
     { return SimpleOpTest::get_test_name(info); });
 

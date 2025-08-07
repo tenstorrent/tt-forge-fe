@@ -782,7 +782,7 @@ void Op::decompose_initial(
         case OpType::LogSoftmax: return log_softmax::decompose_initial(old_op_type, *this, dc, inputs);;
         case OpType::LogicalAnd: return;
         case OpType::LogicalNot: return;
-        case OpType::Mask: return mask::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Mask: return;
         case OpType::Matmul: return matmul::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::MaxPool1d: return;
         case OpType::MaxPool2d: return max_pool_2d::decompose_initial(old_op_type, *this, dc, inputs);
@@ -899,7 +899,7 @@ void Op::decompose_post_optimize(
         case OpType::LogSoftmax: return log_softmax::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::LogicalAnd: return;
         case OpType::LogicalNot: return;
-        case OpType::Mask: return mask::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Mask: return;
         case OpType::Matmul: return matmul::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::MaxPool1d: return;
         case OpType::MaxPool2d: return;
@@ -1016,7 +1016,7 @@ void Op::decompose_post_autograd(
         case OpType::LogSoftmax: return log_softmax::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::LogicalAnd: return;
         case OpType::LogicalNot: return;
-        case OpType::Mask: return mask::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Mask: return;
         case OpType::Matmul: return matmul::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::MaxPool1d: return;
         case OpType::MaxPool2d: return;
@@ -1131,7 +1131,7 @@ long Op::initial_flops_estimate(
         case OpType::LogSoftmax: return log_softmax::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::LogicalAnd: return 0;
         case OpType::LogicalNot: return 0;
-        case OpType::Mask: return mask::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Mask: return 0;
         case OpType::Matmul: return matmul::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::MaxPool1d: return 0;
         case OpType::MaxPool2d: return 0;
