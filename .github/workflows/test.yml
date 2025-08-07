@@ -187,6 +187,8 @@ jobs:
               exit 1
             fi
           fi
+          echo "Collected tests:"
+          cat .pytest_tests_to_run
 
       - name: Run Test
         env:
