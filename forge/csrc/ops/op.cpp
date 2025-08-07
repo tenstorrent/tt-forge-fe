@@ -856,7 +856,7 @@ void Op::decompose_post_optimize(
         case OpType::Less: return;
         case OpType::LessEqual: return;
         case OpType::Log: return;
-        case OpType::LogSoftmax: return log_softmax::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::LogSoftmax: return;
         case OpType::LogicalAnd: return;
         case OpType::LogicalNot: return;
         case OpType::Mask: return;
@@ -967,7 +967,7 @@ void Op::decompose_post_autograd(
         case OpType::Less: return;
         case OpType::LessEqual: return;
         case OpType::Log: return;
-        case OpType::LogSoftmax: return log_softmax::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::LogSoftmax: return;
         case OpType::LogicalAnd: return;
         case OpType::LogicalNot: return;
         case OpType::Mask: return;
@@ -1076,7 +1076,7 @@ long Op::initial_flops_estimate(
         case OpType::Less: return 0;
         case OpType::LessEqual: return 0;
         case OpType::Log: return 0;
-        case OpType::LogSoftmax: return log_softmax::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::LogSoftmax: return 0;
         case OpType::LogicalAnd: return 0;
         case OpType::LogicalNot: return 0;
         case OpType::Mask: return 0;
