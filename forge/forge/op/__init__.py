@@ -22,6 +22,7 @@ from .eltwise_binary import (
     Equal,
     NotEqual,
     LogicalAnd,
+    BitwiseAnd,
     Remainder,
 )
 from .eltwise_unary import (

@@ -56,6 +56,7 @@ add_library(ops
     op_log_softmax.cpp
     op_logical_and.cpp
     op_logical_not.cpp
+    op_bitwise_and.cpp
     op_mask.cpp
     op_matmul.cpp
     op_max_pool_1d.cpp
