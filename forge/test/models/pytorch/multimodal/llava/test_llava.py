@@ -1,11 +1,14 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-
-
 import pytest
 import torch
-from transformers import AutoProcessor, LlavaForConditionalGeneration
+from third_party.tt_forge_models.llava.pytorch import (
+    ModelLoader as ConditionalGenModelLoader,
+)
+from third_party.tt_forge_models.llava.pytorch import (
+    ModelVariant as ConditionalGenModelVariant,
+)
 
 import forge
 from forge.forge_property_utils import (
@@ -19,8 +22,6 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.multimodal.llava.model_utils.utils import load_inputs
-
 
 class Wrapper(torch.nn.Module):
     def __init__(self, model):
@@ -33,19 +34,15 @@ class Wrapper(torch.nn.Module):
         return output.logits
 
 
-def load_model(variant):
-    processor = AutoProcessor.from_pretrained(variant)
-    model = LlavaForConditionalGeneration.from_pretrained(variant)
-    model = Wrapper(model)
-    return model, processor
-
-
-variants = ["llava-hf/llava-1.5-7b-hf"]
+LLAVA_VARIANTS = [
+    ConditionalGenModelVariant.LLAVA_1_5_7B,
+]
 
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.xfail
+@pytest.mark.parametrize("variant", LLAVA_VARIANTS)
 def test_llava(variant):
 
     # Record Forge Property
@@ -59,15 +56,13 @@ def test_llava(variant):
         priority=ModelPriority.P1,
     )
 
-    pytest.xfail(reason="Requires multi-chip support")
-
-    framework_model, processor = load_model(variant)
-    image = "https://www.ilankelman.org/stopsigns/australia.jpg"
-    text = "What’s shown in this image?"
+    loader = ConditionalGenModelLoader()
+    framework_model = loader.load_model()
+    framework_model = Wrapper(framework_model)
 
     # Input sample
-    input_ids, attn_mask, pixel_values = load_inputs(image, text, processor)
-    inputs = [input_ids, attn_mask, pixel_values]
+    inputs = loader.load_inputs()
+    inputs = [inputs["input_ids"], inputs["attention_mask"], inputs["pixel_values"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
