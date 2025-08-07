@@ -1,7 +1,14 @@
 # SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
+import math
+from forge.config import CompilerConfig
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 import pytest
+from test.operators.utils.compat import create_torch_inputs, verify_module_for_inputs
+from test.operators.utils.datatypes import ValueRanges
+from test.operators.utils.utils import TensorUtils
 import torch
 from torch import nn
 import torch.nn.functional as F
@@ -899,3 +906,346 @@ def test_scaled_dot_product_attention():
     )
 
     verify(inputs, framework_model, compiled_model)
+
+
+# AVGPOOL2D TESTS THAT ARE TESTING PARAMETER 'PADDING' AS TUPLE ARE FAILING WITH ERROR:
+# E   RuntimeError: pad should be at most half of effective kernel size, but got pad=6, kernel_size=2 and dilation=1
+
+### run all `pytest -svv -rap 'tt-forge-fe/forge/test/mlir/operators/nn/test_nn.py::test_avg_pool_2d_with_padding_error'` ####
+## padding is tuple, stride = 1, count_include_pad = True
+# avg_pool_2d-FROM_ANOTHER_OP-{'kernel_size': (2, 21), 'stride': 1, 'padding': (0, 6), 'ceil_mode': False, 'count_include_pad': True, 'divisor_override': None}-(1, 1, 10, 1000)-None-None
+# avg_pool_2d-FROM_ANOTHER_OP-{'kernel_size': (2, 21), 'stride': 1, 'padding': (0, 6), 'ceil_mode': False, 'count_include_pad': True, 'divisor_override': None}-(1, 1, 10, 1000)-None-None
+# avg_pool_2d-CONST_EVAL_PASS-{'kernel_size': (2, 21), 'stride': 1, 'padding': (0, 6), 'ceil_mode': False, 'count_include_pad': True, 'divisor_override': None}-(1, 1, 10, 1000)-None-None
+
+## padding is tuple, stride = 1, count_include_pad = False
+# avg_pool_2d-FROM_HOST-{'kernel_size': (59, 4), 'stride': 1, 'padding': (21, 1), 'ceil_mode': False, 'count_include_pad': False, 'divisor_override': None}-(7, 10, 1000, 100)-None-None
+# avg_pool_2d-FROM_ANOTHER_OP-{'kernel_size': (59, 4), 'stride': 1, 'padding': (21, 1), 'ceil_mode': False, 'count_include_pad': False, 'divisor_override': None}-(7, 10, 1000, 100)-None-None
+# avg_pool_2d-CONST_EVAL_PASS-{'kernel_size': (59, 4), 'stride': 1, 'padding': (21, 1), 'ceil_mode': False, 'count_include_pad': False, 'divisor_override': None}-(7, 10, 1000, 100)-None-None
+
+## padding is tuple, stride <> 1, count_include_pad = True
+# avg_pool_2d-FROM_HOST-{'kernel_size': (1, 5), 'stride': (3, 5), 'padding': (0, 1), 'ceil_mode': False, 'count_include_pad': True, 'divisor_override': None}-(1, 11, 17, 41)-None-None
+# avg_pool_2d-FROM_ANOTHER_OP-{'kernel_size': (1, 5), 'stride': (3, 5), 'padding': (0, 1), 'ceil_mode': False, 'count_include_pad': True, 'divisor_override': None}-(1, 11, 17, 41)-None-None
+# avg_pool_2d-CONST_EVAL_PASS-{'kernel_size': (1, 5), 'stride': (3, 5), 'padding': (0, 1), 'ceil_mode': False, 'count_include_pad': True, 'divisor_override': None}-(1, 11, 17, 41)-None-None
+
+
+@pytest.mark.parametrize(
+    "kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override, input_shape",
+    [
+        pytest.param(
+            (2, 21),
+            1,
+            (0, 6),
+            False,
+            True,
+            None,
+            (1, 1, 10, 1000),
+            id="{'kernel_size': (2, 21), 'stride': 1, 'padding': (0, 6), 'ceil_mode': False, 'count_include_pad': True, 'divisor_override': None}-(1, 1, 10, 1000)",
+        ),
+        pytest.param(
+            (59, 4),
+            1,
+            (21, 1),
+            False,
+            False,
+            None,
+            (7, 10, 1000, 100),
+            id="{'kernel_size': (59, 4), 'stride': 1, 'padding': (21, 1), 'ceil_mode': False, 'count_include_pad': False, 'divisor_override': None}-(7, 10, 1000, 100)",
+        ),
+        pytest.param(
+            (1, 5),
+            (3, 5),
+            (0, 1),
+            False,
+            True,
+            None,
+            (1, 11, 17, 41),
+            id="{'kernel_size': (1, 5), 'stride': (3, 5), 'padding': (0, 1), 'ceil_mode': False, 'count_include_pad': True, 'divisor_override': None}-(1, 11, 17, 41)",
+        ),
+    ],
+)
+@pytest.mark.parametrize("model_type", ["ModelFromAnotherOp", "ModelDirect", "ModelConstEvalPass"])
+def test_avg_pool_2d_with_padding_error(
+    kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override, input_shape, model_type
+):
+
+    value_range = ValueRanges.SMALL  # [-1, 1]
+
+    class ModelFromAnotherOp(torch.nn.Module):
+        def __init__(self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override):
+            super().__init__()
+
+            self.ct1 = nn.AvgPool2d(
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                ceil_mode=ceil_mode,
+                count_include_pad=count_include_pad,
+                divisor_override=divisor_override,
+            )
+
+        def forward(self, x: torch.Tensor):
+            # we use Add operator to create one operands which is input for the AvgPool2d operator
+            add = torch.add(x, x)
+            output = self.ct1(add)
+            return output
+
+    class ModelDirect(torch.nn.Module):
+        def __init__(self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override):
+            super().__init__()
+
+            self.ct1 = nn.AvgPool2d(
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                ceil_mode=ceil_mode,
+                count_include_pad=count_include_pad,
+                divisor_override=divisor_override,
+            )
+
+        def forward(self, x: torch.Tensor):
+            output = self.ct1(x)
+            return output
+
+    class ModelConstEvalPass(torch.nn.Module):
+        def __init__(self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override, input_shape):
+            super().__init__()
+
+            self.ct1 = nn.AvgPool2d(
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                ceil_mode=ceil_mode,
+                count_include_pad=count_include_pad,
+                divisor_override=divisor_override,
+            )
+
+            self.constant = TensorUtils.create_torch_constant(
+                input_shape=input_shape,  # (1, 10, 10000, 1) or (10, 10, 10000, 1)
+                dev_data_format=None,  # torch.float32
+                value_range=value_range,  # [-1, 1],
+                random_seed=math.prod(input_shape),
+            )
+            self.register_buffer("constant1", self.constant)
+
+        def forward(self, x: torch.Tensor):
+            v1 = self.ct1(self.constant)
+            # v2 = torch.add(x, x)
+            v2 = self.ct1(x)
+            # add consume inputs
+            add = torch.add(v1, v2)
+            return add
+
+    # prepare model
+
+    if model_type == "ModelConstEvalPass":
+        framework_model = eval(model_type)(
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            ceil_mode=ceil_mode,
+            count_include_pad=count_include_pad,
+            divisor_override=divisor_override,
+            input_shape=input_shape,
+        )
+    else:
+        framework_model = eval(model_type)(
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            ceil_mode=ceil_mode,
+            count_include_pad=count_include_pad,
+            divisor_override=divisor_override,
+        )
+
+    # prepare inputs
+    inputs = create_torch_inputs(
+        input_shapes=[
+            input_shape,
+        ],
+        dev_data_format=None,  # torch.float32
+        value_range=value_range,  # [-1, 1]
+    )
+
+    verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99, rtol=1e-2, atol=1e-2))
+
+    # this 2 lines will be executed in method `verify_module_for_inputs`, need to be like this because of pcc error level handling logic that is writthen in `verify_module_for_inputs`
+    ## compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    ## verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+    verify_module_for_inputs(
+        model=framework_model,
+        inputs=inputs,
+        compiler_cfg=CompilerConfig(),
+        verify_config=verify_cfg,
+        convert_to_forge=False,
+    )
+
+
+# AVGPOOL2D TESTS THAT ARE FAILING WITH:
+# E       AssertionError: Setting a tensor value of incorrect shape: (12, 64, 157, 74) vs torch.Size([12, 64, 149, 82])
+
+### run all `pytest -svv -rap 'tt-forge-fe/forge/test/mlir/operators/nn/test_nn.py::test_avg_pool_2d_with_tensor_error'` ####
+
+## stride = 1, padding is tuple,  count_include_pad = True
+# avg_pool_2d-FROM_HOST-{'kernel_size': (16, 27), 'stride': 1, 'padding': (6, 2), 'ceil_mode': False, 'count_include_pad': True, 'divisor_override': None}-(12, 64, 160, 96)-None-None
+# avg_pool_2d-FROM_ANOTHER_OP-{'kernel_size': (16, 27), 'stride': 1, 'padding': (6, 2), 'ceil_mode': False, 'count_include_pad': True, 'divisor_override': None}-(12, 64, 160, 96)-None-None
+# avg_pool_2d-CONST_EVAL_PASS-{'kernel_size': (16, 27), 'stride': 1, 'padding': (6, 2), 'ceil_mode': False, 'count_include_pad': True, 'divisor_override': None}-(12, 64, 160, 96)-None-None
+
+## stride = 1, padding is tuple,  count_include_pad = False
+# avg_pool_2d-FROM_HOST-{'kernel_size': (10, 17), 'stride': 1, 'padding': (2, 0), 'ceil_mode': False, 'count_include_pad': False, 'divisor_override': None}-(1, 32, 32, 64)-None-None
+# avg_pool_2d-FROM_ANOTHER_OP-{'kernel_size': (10, 17), 'stride': 1, 'padding': (2, 0), 'ceil_mode': False, 'count_include_pad': False, 'divisor_override': None}-(1, 32, 32, 64)-None-None
+# avg_pool_2d-CONST_EVAL_PASS-{'kernel_size': (10, 17), 'stride': 1, 'padding': (2, 0), 'ceil_mode': False, 'count_include_pad': False, 'divisor_override': None}-(1, 32, 32, 64)-None-None
+
+## stride <> 1, padding is tuple,  count_include_pad = True
+# avg_pool_2d-FROM_HOST-{'kernel_size': (26, 32), 'stride': (10, 9), 'padding': (10, 7), 'ceil_mode': False, 'count_include_pad': True, 'divisor_override': None}-(1, 100, 100, 100)-None-None
+# avg_pool_2d-FROM_ANOTHER_OP-{'kernel_size': (26, 32), 'stride': (10, 9), 'padding': (10, 7), 'ceil_mode': False, 'count_include_pad': True, 'divisor_override': None}-(1, 100, 100, 100)-None-None
+# avg_pool_2d-CONST_EVAL_PASS-{'kernel_size': (26, 32), 'stride': (10, 9), 'padding': (10, 7), 'ceil_mode': False, 'count_include_pad': True, 'divisor_override': None}-(1, 100, 100, 100)-None-None
+@pytest.mark.parametrize(
+    "kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override, input_shape",
+    [
+        pytest.param(
+            (16, 27),
+            1,
+            (6, 2),
+            False,
+            True,
+            None,
+            (12, 64, 160, 96),
+            id="{'kernel_size': (16, 27), 'stride': 1, 'padding': (6, 2), 'ceil_mode': False, 'count_include_pad': True, 'divisor_override': None}-(12, 64, 160, 96)",
+        ),
+        pytest.param(
+            (10, 17),
+            1,
+            (2, 0),
+            False,
+            False,
+            None,
+            (1, 32, 32, 64),
+            id="{'kernel_size': (10, 17), 'stride': 1, 'padding': (2, 0), 'ceil_mode': False, 'count_include_pad': False, 'divisor_override': None}-(1, 32, 32, 64)",
+        ),
+        pytest.param(
+            (26, 32),
+            (10, 9),
+            (10, 7),
+            False,
+            True,
+            None,
+            (1, 100, 100, 100),
+            id="{'kernel_size': (26, 32), 'stride': (10, 9), 'padding': (10, 7), 'ceil_mode': False, 'count_include_pad': True, 'divisor_override': None}-(1, 100, 100, 100)",
+        ),
+    ],
+)
+@pytest.mark.parametrize("model_type", ["ModelFromAnotherOp", "ModelDirect", "ModelConstEvalPass"])
+def test_avg_pool_2d_with_tensor_error(
+    kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override, input_shape, model_type
+):
+
+    value_range = ValueRanges.SMALL  # [-1, 1]
+
+    class ModelFromAnotherOp(torch.nn.Module):
+        def __init__(self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override):
+            super().__init__()
+
+            self.ct1 = nn.AvgPool2d(
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                ceil_mode=ceil_mode,
+                count_include_pad=count_include_pad,
+                divisor_override=divisor_override,
+            )
+
+        def forward(self, x: torch.Tensor):
+            # we use Add operator to create one operands which is input for the AvgPool2d operator
+            add = torch.add(x, x)
+            output = self.ct1(add)
+            return output
+
+    class ModelDirect(torch.nn.Module):
+        def __init__(self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override):
+            super().__init__()
+
+            self.ct1 = nn.AvgPool2d(
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                ceil_mode=ceil_mode,
+                count_include_pad=count_include_pad,
+                divisor_override=divisor_override,
+            )
+
+        def forward(self, x: torch.Tensor):
+            output = self.ct1(x)
+            return output
+
+    class ModelConstEvalPass(torch.nn.Module):
+        def __init__(self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override, input_shape):
+            super().__init__()
+
+            self.ct1 = nn.AvgPool2d(
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                ceil_mode=ceil_mode,
+                count_include_pad=count_include_pad,
+                divisor_override=divisor_override,
+            )
+
+            self.constant = TensorUtils.create_torch_constant(
+                input_shape=input_shape,  # (1, 10, 10000, 1) or (10, 10, 10000, 1)
+                dev_data_format=None,  # torch.float32
+                value_range=value_range,  # [-1, 1],
+                random_seed=math.prod(input_shape),
+            )
+            self.register_buffer("constant1", self.constant)
+
+        def forward(self, x: torch.Tensor):
+            v1 = self.ct1(self.constant)
+            # v2 = torch.add(x, x)
+            v2 = self.ct1(x)
+            # add consume inputs
+            add = torch.add(v1, v2)
+            return add
+
+    # prepare model
+
+    if model_type == "ModelConstEvalPass":
+        framework_model = eval(model_type)(
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            ceil_mode=ceil_mode,
+            count_include_pad=count_include_pad,
+            divisor_override=divisor_override,
+            input_shape=input_shape,
+        )
+    else:
+        framework_model = eval(model_type)(
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            ceil_mode=ceil_mode,
+            count_include_pad=count_include_pad,
+            divisor_override=divisor_override,
+        )
+
+    # prepare inputs
+    inputs = create_torch_inputs(
+        input_shapes=[
+            input_shape,
+        ],
+        dev_data_format=None,  # torch.float32
+        value_range=value_range,  # [-1, 1]
+    )
+
+    verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99, rtol=1e-2, atol=1e-2))
+
+    # this 2 lines will be executed in method `verify_module_for_inputs`, need to be like this because of pcc error level handling logic that is writthen in `verify_module_for_inputs`
+    ## compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    ## verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+    verify_module_for_inputs(
+        model=framework_model,
+        inputs=inputs,
+        compiler_cfg=CompilerConfig(),
+        verify_config=verify_cfg,
+        convert_to_forge=False,
+    )
