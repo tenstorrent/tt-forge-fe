@@ -48,29 +48,6 @@ def eval(type, attr, ops):
                     result.append(zero_slice)
         return torch.stack(result, dim=dim)
 
-    if type == "gather":
-        assert len(attr) == 5, "Gather should have 5 attributes"
-        dim, begin, length, stride, orig_size = attr
-        x = t_ops[0]
-        result = []
-        zero_shape = list(x.shape)
-        if dim > 0:
-            dim -= 4
-        while len(zero_shape) <= abs(dim):
-            zero_shape = [1] + zero_shape
-            x = x.unsqueeze(0)
-        zero_shape[dim] = 1
-        zero_slice = torch.zeros(zero_shape, dtype=dtype).squeeze(dim)
-        offset = 0
-        for i in range(0, orig_size):
-            range_i = (i - begin) % stride
-            if i >= begin and range_i < length:
-                result.append(x.select(dim, offset))
-                offset += 1
-            else:
-                result.append(zero_slice)
-        return torch.stack(result, dim=dim)
-
     if type == "index":
         assert len(attr) == 4, "Index should have 4 attributes"
         dim, start, stop, stride = attr
@@ -307,17 +284,6 @@ def shape(type, attr, ops):
         shape = list(ops[0])
         shape[dim] = length * round_up_div(shape[dim] - begin, stride)
         return tuple(shape), []
-
-    if type == "gather":
-        assert len(attr) == 5, "Gather should have 5 attributes"
-        dim, begin, length, stride, orig_size = attr
-        orig_shape = list(ops[0])
-        if dim > 0:
-            dim -= 4
-        while len(orig_shape) <= abs(dim):
-            orig_shape = [1] + orig_shape
-        orig_shape[dim] = orig_size
-        return tuple(orig_shape), []
 
     if type == "hslice":
         assert len(attr) == 1, "HSlice should have one attribute, the slice size"
