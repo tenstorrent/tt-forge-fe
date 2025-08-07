@@ -731,7 +731,7 @@ void Op::decompose_initial(
         case OpType::AvgPool2d: return avg_pool_2d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Batchnorm: return batchnorm::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Broadcast: return broadcast::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Cast: return cast::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Cast: return;
         case OpType::Clip: return;
         case OpType::Concatenate: return concatenate::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Constant: return;
@@ -848,7 +848,7 @@ void Op::decompose_post_optimize(
         case OpType::AvgPool2d: return;
         case OpType::Batchnorm: return batchnorm::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Broadcast: return;
-        case OpType::Cast: return cast::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Cast: return;
         case OpType::Clip: return;
         case OpType::Concatenate: return;
         case OpType::Constant: return;
@@ -965,7 +965,7 @@ void Op::decompose_post_autograd(
         case OpType::AvgPool2d: return;
         case OpType::Batchnorm: return batchnorm::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Broadcast: return;
-        case OpType::Cast: return cast::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Cast: return;
         case OpType::Clip: return;
         case OpType::Concatenate: return;
         case OpType::Constant: return;
@@ -1080,7 +1080,7 @@ long Op::initial_flops_estimate(
         case OpType::AvgPool2d: return 0;
         case OpType::Batchnorm: return batchnorm::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Broadcast: return 0;
-        case OpType::Cast: return cast::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Cast: return 0;
         case OpType::Clip: return 0;
         case OpType::Concatenate: return 0;
         case OpType::Constant: return 0;

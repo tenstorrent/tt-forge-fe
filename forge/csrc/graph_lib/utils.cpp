@@ -659,10 +659,12 @@ DataFormat infer_data_format_from_py_tensor(const py::object &py_tensor)
     }
 }
 
-DataFormat scalar_type_to_data_format(const at::Tensor &tensor)
+/**
+ * Converts pytorch scalar type to data format.
+ * C++ equivalent of pytorch_dtype_to_forge_dataformat in forge/forge/tensor.py.
+ */
+DataFormat scalar_type_to_data_format(const at::ScalarType scalar_type)
 {
-    // C++ equivalent of pytorch_dtype_to_forge_dataformat in forge/forge/tensor.py
-    at::ScalarType scalar_type = tensor.scalar_type();
     switch (scalar_type)
     {
         case at::ScalarType::Float: return DataFormat::Float32;
@@ -683,6 +685,32 @@ DataFormat scalar_type_to_data_format(const at::Tensor &tensor)
             log_warning("Parameter is int64. Setting to int32, since int64 is not supported.");
             return DataFormat::Int32;
         default: throw std::runtime_error("Unsupported torch ScalarType: " + std::string(c10::toString(scalar_type)));
+    }
+}
+
+/**
+ * Converts data format to pytorch scalar type.
+ * C++ equivalent of forge_dataformat_to_pytorch_dtype in forge/forge/tensor.py.
+ */
+at::ScalarType data_format_to_scalar_type(const DataFormat data_format)
+{
+    switch (data_format)
+    {
+        case DataFormat::Float32: return at::ScalarType::Float;
+        case DataFormat::Float16:
+        case DataFormat::Bfp8:
+        case DataFormat::Bfp4:
+        case DataFormat::Bfp2: return at::ScalarType::Half;
+        case DataFormat::Float16_b:
+        case DataFormat::Bfp8_b:
+        case DataFormat::Bfp4_b: return at::ScalarType::BFloat16;
+        case DataFormat::RawUInt8: return at::ScalarType::Byte;
+        case DataFormat::RawUInt32:
+        case DataFormat::UInt16:
+        case DataFormat::Int32: return at::ScalarType::Int;
+        default:
+            TT_THROW("Unsupported DataFormat for casting: " + std::to_string(static_cast<int>(data_format)));
+            unreachable();
     }
 }
 
