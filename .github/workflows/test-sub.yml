@@ -182,13 +182,14 @@ jobs:
             exit 1
           fi
           echo "Collected tests."
+          cp .pytest_tests_to_run collected_test_list
 
       - name: Upload collected tests
         uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: collected-test-list-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
-          path: .pytest_tests_to_run
+          path: collected_test_list
 
       - name: Run Test
         env:
