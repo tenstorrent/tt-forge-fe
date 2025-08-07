@@ -27,7 +27,6 @@
 #include "passes/hoist_transforms_to_inputs.hpp"
 #include "passes/insert_inverse_on_io.hpp"
 #include "passes/mlir_compiler.hpp"
-#include "passes/move_requantize.hpp"
 #include "passes/pad_output_buffer.hpp"
 #include "passes/passes_utils.hpp"
 #include "passes/post_autograd_graph_passes.hpp"
@@ -131,7 +130,7 @@ void run_optimization_graph_passes(graphlib::Graph *graph)
             passes::bypass_nop_tms(graph);
         }
     }
-    passes::move_tm_through_requantize(graph);
+
     recalculate_shapes(graph);
 
     passes::hoist_transforms_to_inputs(graph);

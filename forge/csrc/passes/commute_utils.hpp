@@ -129,11 +129,6 @@ bool can_commute_through_reduce(
 bool commute_through_eltwise(
     graphlib::OpNode *op, graphlib::Shape *commute_shape = nullptr, graphlib::OpType *golden_transform = nullptr);
 
-bool commute_through_quantization(
-    graphlib::OpNode *op, graphlib::Shape *commute_shape = nullptr, graphlib::OpType *golden_transform = nullptr);
-
-bool is_quantization_ops(graphlib::OpNode *op);
-
 bool can_commute_past_op(
     graphlib::OpNode *op,
     graphlib::OpNode *initial_op,
