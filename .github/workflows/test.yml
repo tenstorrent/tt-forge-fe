@@ -177,12 +177,15 @@ jobs:
         run: |
           if [ -n "${{ inputs.test_list }}" ]; then
             echo "${{ inputs.test_list }}" > .test_list
-          fi
-          if [ -f .test_list ]; then
-            sed -n -E 's/^([^\ ]*\.py::[a-zA-Z0-9_]+(\[[^]]+\])?).*/\1/p' .test_list > .pytest_tests_to_run
+            echo "Found test patterns in .test_list:"
+            grep -oE '[^[:space:]]*\.py::[a-zA-Z0-9_]+(\[[^]]+\])?' .test_list > .pytest_tests_to_run
           else
-            echo "No test list provided. Exiting..."
-            exit 1
+            if [ -f .test_list ]; then
+              sed -n -E 's/^([^\ ]*\.py::[a-zA-Z0-9_]+(\[[^]]+\])?).*/\1/p' .test_list > .pytest_tests_to_run
+            else
+              echo "No test list provided. Exiting..."
+              exit 1
+            fi
           fi
 
       - name: Run Test
