@@ -44,10 +44,10 @@ LLAVA_VARIANTS = [
 ]
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="ONNX export or inference might fail due to model size or unsupported ops.")
 @pytest.mark.parametrize("variant", LLAVA_VARIANTS)
-def test_llava_onnx_export(variant, forge_tmp_path):
+def test_llava_onnx(variant, forge_tmp_path):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
@@ -68,6 +68,8 @@ def test_llava_onnx_export(variant, forge_tmp_path):
     input_ids = inputs_dict["input_ids"]
     attention_mask = inputs_dict["attention_mask"]
     pixel_values = inputs_dict["pixel_values"]
+
+    pytest.xfail(reason="Hangs at generate initial graph stage.")
 
     inputs = [input_ids, attention_mask, pixel_values]
 

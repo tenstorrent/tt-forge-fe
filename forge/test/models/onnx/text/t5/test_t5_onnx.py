@@ -31,7 +31,6 @@ class Wrapper(torch.nn.Module):
 variants = ["t5-small"]
 
 
-@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_t5_generation(variant, forge_tmp_path):

@@ -22,14 +22,12 @@ from test.models.pytorch.text.bart.test_bart import BartWrapper
 import onnx
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "facebook/bart-large-mnli",
-            marks=pytest.mark.skip(reason="Hangs at generate initial graph stage."),
-        ),
+        "facebook/bart-large-mnli",
     ],
 )
 def test_bart_classifier_onnx(variant, forge_tmp_path):
@@ -41,6 +39,8 @@ def test_bart_classifier_onnx(variant, forge_tmp_path):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
+
+    pytest.xfail(reason="Hang at generate initial graph stage.")
 
     model = download_model(BartForSequenceClassification.from_pretrained, variant, torchscript=True)
     model.eval()

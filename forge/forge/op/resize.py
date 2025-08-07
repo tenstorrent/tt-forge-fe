@@ -21,47 +21,6 @@ INT_TO_RESIZE2d_METHOD = {
 }
 
 
-def Resize1d(
-    name: str,
-    operandA: Tensor,
-    size: int,
-    method: str = "linear",
-    align_corners: bool = False,
-    channel_last: bool = False,
-) -> Tensor:
-    """
-    Resize input activations in 1D, with default method 'linear'
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        Input tensor to resize
-
-    size: int
-        Target size
-
-    method: str
-        Interpolation method: 'linear'
-
-    Returns
-    -------
-    Tensor
-        Forge tensor
-    """
-    assert method == "linear", f"Expected method to be 'linear', got {method}"
-    result: Tensor = op(
-        "resize1d",
-        name,
-        operandA,
-        attrs=(size, RESIZE2d_METHOD_TO_INT[method], int(align_corners), int(channel_last)),
-    ).get_tensor()
-
-    return result
-
-
 def Resize2d(
     name: str,
     operandA: Tensor,
@@ -95,11 +54,18 @@ def Resize2d(
     assert (
         method == "nearest_neighbor" or method == "linear" or method == "bilinear" or method == "cubic"
     ), "Only support nearest_neighbor, linear and cubic interpolation for now"
+
+    if isinstance(channel_last, int):
+        channel_last = bool(channel_last)
+
     result: Tensor = op(
         "resize2d",
         name,
         operandA,
-        attrs=(*sizes, RESIZE2d_METHOD_TO_INT[method], int(align_corners), int(channel_last)),
+        sizes=sizes,
+        method=RESIZE2d_METHOD_TO_INT[method],
+        align_corners=align_corners,
+        channel_last=channel_last,
     ).get_tensor()
 
     return result
@@ -134,7 +100,6 @@ def Upsample2d(
         "upsample2d",
         name,
         operandA,
-        attrs=(scale_factor, mode, channel_last),
         scale_factor=scale_factor,
         mode=mode,
         channel_last=channel_last,
@@ -179,48 +144,6 @@ def Downsample2d(
         scale_factor=scale_factor,
         mode=mode,
         channel_last=channel_last,
-    ).get_tensor()
-
-    return result
-
-
-def Resize3d(
-    name: str,
-    operandA: Tensor,
-    sizes: List[int],
-    method: str = "nearest_neighbor",
-    align_corners=False,
-    extrapolation_value: int = 0,
-    channel_last: bool = False,
-) -> Tensor:
-    """
-    Resize input activations, with default method 'nearest_neighbor'
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        Input operand A
-
-    sizes: List[int]
-        The target 2D sizes to extrapolate to
-
-    method: str
-        Extrapolation method
-
-    extrapolation_value: int
-
-    """
-    assert len(sizes) == 3
-    assert method == "nearest_neighbor", "Only support nearest_neighbor for now"
-    assert not channel_last, "Decomposition for channel-last Resize3d is not added yet"
-    result: Tensor = op(
-        "resize3d",
-        name,
-        operandA,
-        attrs=(*sizes, RESIZE2d_METHOD_TO_INT[method], int(align_corners), int(channel_last)),
     ).get_tensor()
 
     return result

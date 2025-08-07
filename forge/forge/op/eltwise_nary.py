@@ -117,7 +117,7 @@ def Stack(name: str, *operands: Tensor, axis: int) -> Tensor:
         Forge tensor
     """
 
-    result: Tensor = op("stack", name, *operands, attrs=(axis,)).get_tensor()
+    result: Tensor = op("stack", name, *operands, dim=axis).get_tensor()
     return result
 
 

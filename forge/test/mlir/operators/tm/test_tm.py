@@ -516,19 +516,14 @@ def test_broadcast_pytorch():
         pytest.param(
             [(1, 30, 30, 16), (1, 30, 30, 16)],
             -2,
-            marks=pytest.mark.xfail(reason="Trying to access element outside of dimensions: 4"),
         ),
         pytest.param(
             [(1, 30, 30, 16), (1, 30, 30, 16)],
             3,
-            marks=pytest.mark.xfail(reason="Trying to access element outside of dimensions: 4"),
         ),
         pytest.param(
             [(5, 64, 128, 128), (5, 64, 128, 128)],
             -1,
-            marks=pytest.mark.xfail(
-                reason="Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=7)] grow to 10584992 B which is beyond max L1 size of 1499136 B"
-            ),
         ),
         pytest.param(
             [(1, 256, 24, 24), (1, 256, 24, 24)],
