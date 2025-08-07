@@ -1,4 +1,4 @@
-name: Verbose Test Run
+name: Test
 
 on:
   workflow_dispatch:
@@ -8,6 +8,22 @@ on:
         required: false
         default: false
         type: boolean
+      preset:
+        description: 'Test preset to run'
+        required: false
+        default: 'Custom'
+        type: choice
+        options:
+          - Full Model Passing
+          - Full Model XFailing
+          - Models Ops
+          - Sweeps
+          - Custom
+      test_mark:
+        description: 'Test mark to run (custom preset)'
+        required: false
+        default: 'push'
+        type: string
       runs-on:
         description: 'Runs on'
         required: false
@@ -21,8 +37,31 @@ on:
         required: false
         default: true
         type: boolean
-      test_list:
-        description: 'List of tests to run'
+      test_group_cnt:
+        description: 'Test group count'
+        required: false
+        default: "2"
+        type: choice
+        options:
+          - "1"
+          - "2"
+          - "3"
+          - "4"
+          - "8"
+      on-crash:
+        description: 'If test crashes, continue or restart test suite'
+        required: false
+        default: "Continue"
+        type: choice
+        options:
+          - "Continue"
+          - "Restart"
+      operators:
+        description: 'Operators to test (comma separated)'
+        required: false
+        type: string
+      filters:
+        description: 'Filters for tests (comma separated)'
         required: false
         type: string
 
@@ -30,9 +69,34 @@ permissions:
   packages: write
   checks: write
 
-run-name: "Isolated Test (Rebuild: ${{ inputs.rebuild }} - ${{ inputs.sh-runner && format('{0}-shared', inputs.runs-on) || (inputs.runs-on) }})"
+run-name: "Test (Rebuild: ${{ inputs.rebuild }} - Preset: ${{ inputs.preset }} - Mark: ${{ inputs.test_mark }} - ${{ inputs.sh-runner && format('{0}-shared', inputs.runs-on) || (inputs.runs-on) }} - ${{ inputs.test_group_cnt }} - Ops: ${{ inputs.operators }} - Filters: ${{ inputs.filters }})"
 
 jobs:
+
+  save-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show input parameters
+        run: |
+          echo "## Input Parameters" >> $GITHUB_STEP_SUMMARY
+          echo "- Branch: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Rebuild: ${{ inputs.rebuild }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Preset: ${{ inputs.preset }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Test Mark: ${{ inputs.test_mark }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Runs On: ${{ inputs.runs-on }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Shared Runner: ${{ inputs.sh-runner }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Test Group Count: ${{ inputs.test_group_cnt }}" >> $GITHUB_STEP_SUMMARY
+          echo "- On Crash: ${{ inputs.on-crash }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Operators: ${{ inputs.operators }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Filters: ${{ inputs.filters }}" >> $GITHUB_STEP_SUMMARY
+      - name: Save inputs to file
+        run: |
+          echo '{ "branch_name": "${{ github.ref_name }}", "rebuild": "${{ inputs.rebuild }}", "preset": "${{ inputs.preset }}", "test_mark": "${{ inputs.test_mark }}", "runs-on": "${{ inputs.runs-on }}", "sh-runner": "$${{ inputs.sh-runner }}", "test_group_cnt": "${{ inputs.test_group_cnt }}", "on-crash": "${{ inputs.on-crash }}", "operators": "${{ inputs.operators }}", "filters": "${{ inputs.filters }}" }' > inputs.json
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: inputs
+          path: inputs.json
 
   docker-build:
     uses: ./.github/workflows/build-image.yml
@@ -43,26 +107,50 @@ jobs:
     needs: docker-build
     outputs:
       buildtype: ${{ steps.set-inputs.outputs.buildtype }}
+      test_group_cnt: ${{ steps.set-inputs.outputs.test_group_cnt }}
+      test_group_ids: ${{ steps.set-inputs.outputs.test_group_ids }}
+      test_mark: ${{ steps.set-inputs.outputs.test_mark }}
       runs-on: ${{ steps.set-inputs.outputs.runs-on }}
+      operators: ${{ steps.set-inputs.outputs.operators }}
+      filters: ${{ steps.set-inputs.outputs.filters }}
       run_id: ${{ steps.set-inputs.outputs.runid }}
+      continue_on_crash: ${{ inputs.on-crash == 'Continue' }}
     steps:
       - name: Inputs Management
         id: set-inputs
         run: |
-          echo "## Input Parameters" >> $GITHUB_STEP_SUMMARY
-          echo "- Branch: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Rebuild: ${{ inputs.rebuild }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Runs On: ${{ inputs.runs-on }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Shared Runner: ${{ inputs.sh-runner }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Test List: ${{ inputs.test_list }}" >> $GITHUB_STEP_SUMMARY
-
           if [ ${{ inputs.rebuild }} == 'true' ]; then
             echo "buildtype=Release" >> $GITHUB_OUTPUT
             echo "runid=${{ github.run_id }}" >> $GITHUB_OUTPUT
           else
             echo "buildtype=None" >> $GITHUB_OUTPUT
           fi
+          echo "test_group_cnt=${{ inputs.test_group_cnt }}" >> $GITHUB_OUTPUT
+          echo "test_group_ids=[$(seq -s ',' 1 ${{ inputs.test_group_cnt }})]" >> $GITHUB_OUTPUT
           echo "runs-on=[{\"runs-on\": \"${{ inputs.runs-on }}\"}]" >> $GITHUB_OUTPUT
+          echo "operators=${{ inputs.operators }}" >> $GITHUB_OUTPUT
+          echo "filters=${{ inputs.filters }}" >> $GITHUB_OUTPUT
+          case "${{ inputs.preset }}" in
+            "Full Model Passing")
+              echo "test_mark=nightly and not xfail" >> $GITHUB_OUTPUT
+              ;;
+            "Full Model XFailing")
+              echo "test_mark=nightly and xfail" >> $GITHUB_OUTPUT
+              ;;
+            "Models Ops")
+              echo "test_mark=nightly_models_ops" >> $GITHUB_OUTPUT
+              ;;
+            "Sweeps")
+              echo "test_mark=nightly_sweeps" >> $GITHUB_OUTPUT
+              ;;
+            "Custom")
+              echo "test_mark=${{ inputs.test_mark }}" >> $GITHUB_OUTPUT
+              ;;
+            *)
+              echo "Invalid preset"
+              exit 1
+              ;;
+          esac
 
   build:
     needs:
@@ -74,165 +162,22 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       build: ${{ needs.set-inputs.outputs.buildtype}}
 
+
   run-tests:
     if: success() || failure()
     needs:
       - docker-build
       - build
       - set-inputs
-
-    strategy:
-      fail-fast: false
-      matrix:
-        build: ${{ fromJson(needs.set-inputs.outputs.runs-on) }}
-
-    runs-on: ${{ inputs.sh-runner && format('tt-beta-ubuntu-2204-{0}-large-stable', matrix.build.runs-on) || fromJson(format('["{0}", "in-service"]', matrix.build.runs-on)) }}
-    container:
-      image: ${{ inputs.sh-runner && format('harbor.ci.tenstorrent.net/{0}', needs.docker-build.outputs.docker-image) || needs.docker-build.outputs.docker-image }}
-      options: --device /dev/tenstorrent/0
-      volumes:
-        - /dev/hugepages:/dev/hugepages
-        - /dev/hugepages-1G:/dev/hugepages-1G
-        - /etc/udev/rules.d:/etc/udev/rules.d
-        - /lib/modules:/lib/modules
-        - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
-        - /mnt/dockercache:/mnt/dockercache
-
-    name: "run-tests (${{ inputs.sh-runner && format('{0}-shared', matrix.build.runs-on) || (matrix.build.runs-on) }}, ${{ matrix.test_group_id }})"
-
-    steps:
-
-      - name: Fetch job id
-        id: fetch-job-id
-        uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
-        with:
-          job_name: "run-tests (${{ inputs.sh-runner && format('{0}-shared', matrix.build.runs-on) || (matrix.build.runs-on) }}, ${{ matrix.test_group_id }})"
-
-      - name: Set reusable strings
-        id: strings
-        shell: bash
-        env:
-          JOB_ID: ${{ steps.fetch-job-id.outputs.job_id }}
-        run: |
-          echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
-          echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
-          echo "test_report_path=reports/report_$JOB_ID.xml" >> "$GITHUB_OUTPUT"
-
-      - name: Git safe dir
-        run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
-
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            .github/workflows/
-            env/
-            forge/test
-            pytest.ini
-            conftest.py
-            .test_durations
-            .test_list
-
-      - name: Setup Forge Models repo
-        shell: bash
-        run: |
-          git submodule update --init --recursive -f third_party/tt_forge_models
-
-        # Clean everything from submodules (needed to avoid issues
-        # with cmake generated files leftover from previous builds)
-      - name: Cleanup submodules
-        run: |
-          git submodule foreach --recursive git clean -ffdx
-          git submodule foreach --recursive git reset --hard
-
-      - name: Download wheel
-        if: ${{ needs.set-inputs.outputs.run_id }}
-        continue-on-error: true
-        uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
-        with:
-          name: forge-wheel
-          run_id: ${{ needs.set-inputs.outputs.run_id }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Find and download forge wheel
-        if: ${{ !needs.set-inputs.outputs.run_id }}
-        uses: dawidd6/action-download-artifact@v9
-        with:
-          github_token: ${{secrets.GITHUB_TOKEN}}
-          workflow_conclusion: success
-          workflow_search: true
-          workflow: on-push.yml
-          name: forge-wheel
-          repo: tenstorrent/tt-forge-fe
-          check_artifacts: true
-          search_artifacts: true
-
-      - name: Install wheel
-        shell: bash
-        run: |
-          source env/activate
-          pip install tt_tvm*.whl --upgrade
-          pip install tt_forge_fe*.whl --upgrade
-
-      - name: Set test list
-        run: |
-          if [ -n "${{ inputs.test_list }}" ]; then
-            echo "${{ inputs.test_list }}" > .test_list
-            echo "Found test patterns in .test_list:"
-            grep -oE '[^[:space:]]*\.py::[a-zA-Z0-9_]+(\[[^]]+\])?' .test_list > .pytest_tests_to_run
-          else
-            if [ -f .test_list ]; then
-              sed -n -E 's/^([^\ ]*\.py::[a-zA-Z0-9_]+(\[[^]]+\])?).*/\1/p' .test_list > .pytest_tests_to_run
-            else
-              echo "No test list provided. Exiting..."
-              exit 1
-            fi
-          fi
-          echo "Collected tests:"
-          cat .pytest_tests_to_run
-
-      - name: Run Test
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          HF_HOME: /mnt/dockercache/huggingface
-          IRD_LF_CACHE: ${{ vars.IRD_LF_CACHE }}
-          FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
-          HF_HUB_DISABLE_PROGRESS_BARS: 1
-          FORGE_DISABLE_REPORTIFY_DUMP: 1
-        shell: bash
-        run: |
-          source env/activate
-          LOGGER_TYPES=All LOGGER_LEVEL=TRACE LOGURU_LEVEL=TRACE python .github/workflows/run_tests.py  \
-               --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-               --log-memory-usage -svv 2>&1 | tee pytest.log
-
-      - name: Upload Test Log
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: test-log-${{ matrix.build.runs-on }}-${{ steps.fetch-job-id.outputs.job_id }}
-          path: pytest.log
-
-      - name: Upload Memory Usage Log
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: memory-usage-${{ matrix.build.runs-on }}-${{ steps.fetch-job-id.outputs.job_id }}
-          path: pytest-memory-usage.csv
-
-      - name: Upload Test Report
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: test-reports-${{ matrix.build.runs-on }}-${{ steps.fetch-job-id.outputs.job_id }}
-          path: ${{ steps.strings.outputs.test_report_path }}
-
-      - name: Show Test Report
-        uses: mikepenz/action-junit-report@v5
-        if: success() || failure()
-        with:
-          report_paths: ${{ steps.strings.outputs.test_report_path }}
-          check_name: TT-Forge-FE Tests
-          comment: false
-          updateComment: false
-          detailed_summary: true
-          group_suite: true
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      test_mark: ${{ needs.set-inputs.outputs.test_mark }}
+      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
+      runs-on: ${{ needs.set-inputs.outputs.runs-on }}
+      sh-runner: ${{ inputs.sh-runner }}
+      operators: ${{ needs.set-inputs.outputs.operators }}
+      filters: ${{ needs.set-inputs.outputs.filters }}
+      run_id: ${{ needs.set-inputs.outputs.run_id }}

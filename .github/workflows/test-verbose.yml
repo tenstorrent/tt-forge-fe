@@ -30,7 +30,7 @@ permissions:
   packages: write
   checks: write
 
-run-name: "Isolated Test (Rebuild: ${{ inputs.rebuild }} - ${{ inputs.sh-runner && format('{0}-shared', inputs.runs-on) || (inputs.runs-on) }})"
+run-name: "Verbose Test (Rebuild: ${{ inputs.rebuild }} - ${{ inputs.sh-runner && format('{0}-shared', inputs.runs-on) || (inputs.runs-on) }})"
 
 jobs:
 
@@ -177,13 +177,17 @@ jobs:
         run: |
           if [ -n "${{ inputs.test_list }}" ]; then
             echo "${{ inputs.test_list }}" > .test_list
-          fi
-          if [ -f .test_list ]; then
-            sed -n -E 's/^([^\ ]*\.py::[a-zA-Z0-9_]+(\[[^]]+\])?).*/\1/p' .test_list > .pytest_tests_to_run
+            grep -oE '[^[:space:]]*\.py::[a-zA-Z0-9_]+(\[[^]]+\])?' .test_list > .pytest_tests_to_run
           else
-            echo "No test list provided. Exiting..."
-            exit 1
+            if [ -f .test_list ]; then
+              sed -n -E 's/^([^\ ]*\.py::[a-zA-Z0-9_]+(\[[^]]+\])?).*/\1/p' .test_list > .pytest_tests_to_run
+            else
+              echo "No test list provided. Exiting..."
+              exit 1
+            fi
           fi
+          echo "Collected tests:"
+          cat .pytest_tests_to_run
 
       - name: Run Test
         env:
