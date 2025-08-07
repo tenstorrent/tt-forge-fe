@@ -42,5 +42,5 @@ build_and_push $CI_IMAGE_NAME .github/Dockerfile.ci
 build_and_push $IRD_IMAGE_NAME .github/Dockerfile.ird ci
 
 echo "All images built and pushed successfully"
-echo "CI_IMAGE_NAME:"
+# Output just the CI image name as the last line for workflows to pick up
 echo $CI_IMAGE_NAME:$DOCKER_TAG

@@ -57,7 +57,7 @@ jobs:
       - ${{ matrix.build.runs-on }}
 
     container:
-      image: ${{ format('harbor.ci.tenstorrent.net/{0}', inputs.docker-image) }}
+      image: ${{ inputs.docker-image || 'ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ci-ubuntu-22-04:latest' }}
 
     steps:
 
@@ -148,7 +148,7 @@ jobs:
       - ${{ matrix.build.runs-on }}
 
     container:
-      image: harbor.ci.tenstorrent.net/ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ci-ubuntu-22-04:latest
+      image: ${{ inputs.docker-image || 'ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ci-ubuntu-22-04:latest' }}
 
     steps:
 
