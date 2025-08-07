@@ -436,7 +436,6 @@ def RepeatInterleave(name: str, operandA: Tensor, repeats: int, dim: int) -> Ten
         "repeat_interleave",
         name,
         operandA,
-        attrs=(repeats, dim),
         repeats=repeats,
         dim=dim,
     ).get_tensor()
