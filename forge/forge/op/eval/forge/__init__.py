@@ -8,8 +8,6 @@ from .convolution import Conv2d
 from .convolution import Conv2dTranspose
 from .cast import Cast
 from .pad import Pad
-from .kv_cache import UpdateCache
-from .kv_cache import FillCache
 
 op_to_module_map = {
     "add": "eltwise_binary",
@@ -113,8 +111,8 @@ op_to_module_map = {
     "requantize": "quantize",
     "forge_requantize": "quantize",
     "forge_dequantize": "quantize",
-    "update_cache": UpdateCache,
-    "fill_cache": FillCache,
+    "update_cache": "misc",
+    "fill_cache": "misc",
 }
 
 

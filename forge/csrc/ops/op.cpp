@@ -757,7 +757,7 @@ void Op::decompose_initial(
         case OpType::Equal: return;
         case OpType::Erf: return;
         case OpType::Exp: return;
-        case OpType::FillCache: return fill_cache::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::FillCache: return;
         case OpType::ForgeDequantize: return forge_dequantize::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::ForgePad: return forge_pad::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::ForgeQuantize: return forge_quantize::decompose_initial(old_op_type, *this, dc, inputs);
@@ -822,7 +822,7 @@ void Op::decompose_initial(
         case OpType::Tanh: return;
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
-        case OpType::UpdateCache: return update_cache::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
         case OpType::Vslice: return vslice::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Vstack: return vstack::decompose_initial(old_op_type, *this, dc, inputs);
@@ -874,7 +874,7 @@ void Op::decompose_post_optimize(
         case OpType::Equal: return;
         case OpType::Erf: return;
         case OpType::Exp: return;
-        case OpType::FillCache: return fill_cache::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::FillCache: return;
         case OpType::ForgeDequantize: return forge_dequantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::ForgePad: return forge_pad::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::ForgeQuantize: return forge_quantize::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -939,7 +939,7 @@ void Op::decompose_post_optimize(
         case OpType::Tanh: return;
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
-        case OpType::UpdateCache: return update_cache::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
         case OpType::Vslice: return vslice::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Vstack: return vstack::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -991,7 +991,7 @@ void Op::decompose_post_autograd(
         case OpType::Equal: return;
         case OpType::Erf: return;
         case OpType::Exp: return;
-        case OpType::FillCache: return fill_cache::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::FillCache: return;
         case OpType::ForgeDequantize: return forge_dequantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::ForgePad: return forge_pad::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::ForgeQuantize: return forge_quantize::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1056,7 +1056,7 @@ void Op::decompose_post_autograd(
         case OpType::Tanh: return;
         case OpType::Transpose: return;
         case OpType::Unsqueeze: return;
-        case OpType::UpdateCache: return update_cache::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
         case OpType::Vslice: return vslice::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Vstack: return vstack::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1106,7 +1106,7 @@ long Op::initial_flops_estimate(
         case OpType::Equal: return 0;
         case OpType::Erf: return 0;
         case OpType::Exp: return 0;
-        case OpType::FillCache: return fill_cache::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::FillCache: return 0;
         case OpType::ForgeDequantize: return forge_dequantize::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::ForgePad: return forge_pad::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::ForgeQuantize: return forge_quantize::initial_flops_estimate(old_op_type, *this, inputs);
@@ -1171,7 +1171,7 @@ long Op::initial_flops_estimate(
         case OpType::Tanh: return 0;
         case OpType::Transpose: return 0;
         case OpType::Unsqueeze: return 0;
-        case OpType::UpdateCache: return update_cache::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::UpdateCache: return 0;
         case OpType::Upsample2d: return 0;
         case OpType::Vslice: return vslice::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Vstack: return vstack::initial_flops_estimate(old_op_type, *this, inputs);
