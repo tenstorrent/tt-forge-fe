@@ -6,16 +6,20 @@
 
 #include <algorithm>
 #include <memory>
+#include <sstream>
+#include <unordered_map>
 #include <utils/assert.hpp>
 #include <utils/logger.hpp>
 
 #include "forge_graph_module.hpp"
 #include "graph_lib/defines.hpp"
+#include "graph_lib/edge.hpp"
 #include "graph_lib/graph.hpp"
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
 #include "reportify/reportify.hpp"
+#include "ops/op.hpp"
 
 using Graph = tt::graphlib::Graph;
 
@@ -335,6 +339,7 @@ std::unique_ptr<Graph> extract_backward_graph(
 std::unique_ptr<Graph> extract_optimizer_graph(
     const Graph *graph, const Graph *fwd_graph, const std::vector<graphlib::Node *> &topo)
 {
+    log_debug("OPT: Extracting optimizer graph");
     auto opt_graph = std::make_unique<Graph>(tt::graphlib::IRLevel::IR_TT_FORGE, "optimizer");
     opt_graph->set_training(graph->training());
 
@@ -386,11 +391,14 @@ std::unique_ptr<Graph> extract_optimizer_graph(
     std::vector<graphlib::NodeId> opt_module_inputs;
 
     // Add all parameter gradients used in the optimizer graph as input nodes.
-    for (auto grad_output : graph->nodes(
+    auto grad_nodes = graph->nodes(
              [](const graphlib::Node *node) {
                  return node->node_type() == graphlib::NodeType::kQueue &&
                         node->as<graphlib::QueueNode>()->is_grad_accumulator();
-             }))
+             });
+    log_debug("Found {} gradient accumulator nodes", grad_nodes.size());
+    
+    for (auto grad_output : grad_nodes)
     {
         if (!has_users_in_opt(graph, grad_output))
         {
@@ -453,12 +461,127 @@ std::unique_ptr<Graph> extract_optimizer_graph(
     opt_graph->register_module_inputs(opt_module_inputs);
     opt_graph->register_module_outputs(opt_module_outputs);
 
+    auto topo_graph = graphlib::topological_sort(*opt_graph);
+    // get df
+    auto df = DataFormat::Float16_b;
+    auto edges_to_remove = std::vector<graphlib::Edge>();
+
+    log_debug("OPT: Topological sort of optimizer graph");
+
+    for (auto node : topo_graph)
+    {
+        // if node is input
+        log_debug("OPT: Found node type {} with name {}", node->node_type(), node->name());
+        if (node->node_type() == graphlib::NodeType::kInput)
+        {
+            log_debug("OPT: Found input node {}", node->name());
+            if (node->output_df() == DataFormat::Float32)
+            {
+                continue;
+            }
+
+            df = node->output_df();
+            // create cast node
+            graphlib::OpType::Attrs named_attr = graphlib::OpType::Attrs{{"dtype", "Float32"}};
+            graphlib::OpType cast_op("cast", {}, named_attr);
+            auto cast_node = graphlib::create_node<graphlib::PyOpNode>(node->name() + "_cast", cast_op);
+            cast_node->set_shape(node->shape());
+            cast_node->set_output_df(df);
+            cast_node->set_epoch_type(graphlib::NodeEpochType::Optimizer);
+            auto cast_node_ptr = cast_node.get();
+            opt_graph->add_node(std::move(cast_node), 0 /*subgraph_id=*/);
+
+            opt_graph->add_edge(
+                graphlib::Edge(node->id(), 0, cast_node_ptr->id(), 0, graphlib::EdgeType::kData)
+            );
+            // get all users of node
+            auto edges = opt_graph->edges(node, [](graphlib::Edge edge) { return true; });
+            for (auto edge : edges)
+            {
+                // except for cast edge
+                if (edge.consumer_node_id == cast_node_ptr->id() || edge.producer_node_id == cast_node_ptr->id())
+                {
+                    continue;
+                }
+                opt_graph->add_edge(
+                    graphlib::Edge(cast_node_ptr->id(), 0, edge.consumer_node_id, edge.consumer_input_port_id, edge.edge_type)
+                );
+                edges_to_remove.push_back(edge);
+            }
+        }
+
+        // if node is output
+        else if (node->node_type() == graphlib::NodeType::kOutput)
+        {
+            // get all users of node
+            log_debug("OPT: Found output node {} with df {}", node->name(), node->output_df());
+            auto users = opt_graph->operands(node);
+            // if weight in name
+            if (node->name().find("_updated") == std::string::npos)
+            {
+                log_debug("OPT: Found weight output node {}", node->name());
+                continue;
+            }
+            
+            for (auto user : users)
+            {
+                // if there is a mismatch in df, create a cast node
+                log_debug("OPT: Found user node {} with df {} and df {}", user->name(), user->output_df(), df);
+                if (user->output_df() != df)
+                {
+                    std::stringstream ss;
+                    ss << df;
+                    std::string dtype_str = ss.str();
+                    graphlib::OpType::Attrs named_attr = graphlib::OpType::Attrs{{"dtype", dtype_str}};
+                    graphlib::OpType cast_op("cast", {}, named_attr);
+                    auto cast_node = graphlib::create_node<graphlib::PyOpNode>(user->name() + "_cast", cast_op);
+                    auto py_cast_node = opt_graph->add_node(std::move(cast_node), 0 /*subgraph_id=*/);
+                    py_cast_node->set_shape(user->shape());
+                    py_cast_node->set_output_df(df);
+                    opt_graph->add_edge(
+                        graphlib::Edge(user->id(), 0, py_cast_node->id(), 0, graphlib::EdgeType::kData)
+                    );
+                    opt_graph->add_edge(
+                        graphlib::Edge(py_cast_node->id(), 0,  node->id(), 0, graphlib::EdgeType::kData)
+                    );
+                    auto edges = opt_graph->edges(node, [](graphlib::Edge edge) { return true; });
+                    for (auto edge : edges)
+                    {
+                        // remove all except the cast edge
+                        if (edge.consumer_node_id == py_cast_node->id() || edge.producer_node_id == py_cast_node->id())
+                        {
+                            continue;
+                        }
+                        edges_to_remove.push_back(edge);
+                    }
+                }
+            }
+        }
+        else
+        {
+            node->set_output_df(DataFormat::Float32);
+        }
+    }
+    // deduplicate edges_to_remove
+    std::sort(edges_to_remove.begin(), edges_to_remove.end());
+    edges_to_remove.erase(std::unique(edges_to_remove.begin(), edges_to_remove.end()), edges_to_remove.end());
+
+    for (auto edge : edges_to_remove)
+    {
+        // see if in
+        log_debug("OPT: Removing edge {} from {}", edge.producer_node_id, edge.consumer_node_id);
+        opt_graph->remove_edge(edge);
+    }
+
+
+
     return opt_graph;
 }
 
 // Splits the graph into multiple graphs which will be lowered to MLIR as different functions.
 ForgeGraphModule split_graph(graphlib::Graph *graph)
 {
+    log_debug("OPT: Splitting graph");
     auto topo = graphlib::topological_sort(*graph);
 
     auto fwd_graph = extract_forward_graph(graph, topo);
