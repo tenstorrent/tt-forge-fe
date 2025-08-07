@@ -74,6 +74,10 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
         cast_result_to_original = true;
     }
 
+    // torch requires bias to be in shape (C_out,) so we need to take only channel dimension
+    if (bias.has_value())
+        bias = bias->view({bias->size(-1)});
+
     at::Tensor result = at::_ops::conv2d::call(
         padded_activations,
         weights,
