@@ -151,7 +151,7 @@ jobs:
           pip install tt_tvm*.whl --upgrade
           pip install tt_forge_fe*.whl --upgrade
 
-      - name: Run Test
+      - name: Collect Test
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_HOME: /mnt/dockercache/huggingface
@@ -182,9 +182,27 @@ jobs:
             exit 1
           fi
           echo "Collected tests."
-          # enable next line for debugging
-          # cat .pytest_tests_to_run
 
+      - name: Upload collected tests
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: collected-test-list-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: .pytest_tests_to_run
+
+      - name: Run Test
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HOME: /mnt/dockercache/huggingface
+          IRD_LF_CACHE: ${{ vars.IRD_LF_CACHE }}
+          FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
+          HF_HUB_DISABLE_PROGRESS_BARS: 1
+          FORGE_DISABLE_REPORTIFY_DUMP: 1
+          OPERATORS: ${{ inputs.operators }}
+          FILTERS: ${{ inputs.filters }}
+        shell: bash
+        run: |
+          source env/activate
           python .github/workflows/test_runner.py  \
                --junit-xml=${{ steps.strings.outputs.test_report_path }} \
                --log-memory-usage \
