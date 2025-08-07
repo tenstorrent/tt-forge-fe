@@ -70,7 +70,8 @@ NodeContext backward(
     const NodeContext &gradient)
 {
     TT_DBG_ASSERT(op.type() == OpType::Repeat, "Wrong op type.");
-    return op.base_backward(old_op_type, ac, operand, inputs, output, gradient);
+    TT_THROW("Repeat backward is not implemented");
+    unreachable();
 }
 
 void decompose_initial(

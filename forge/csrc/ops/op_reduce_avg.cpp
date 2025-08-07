@@ -60,6 +60,8 @@ tt::graphlib::NodeContext backward(
     // with scale factor 1 / size
     std::vector<int> dims = op.attr_as<std::vector<int>>("dim_arg");
     int dim = dims[0];
+    if (dim < 0)
+        dim += inputs[0].shape.size();
     std::uint32_t size = inputs[0].shape[dim];
 
     NodeContext unsqueeze = gradient;
@@ -69,12 +71,14 @@ tt::graphlib::NodeContext backward(
         unsqueeze = ac.autograd->create_op(ac, graphlib::OpType("unsqueeze", {}, {{"dim", dim}}), {gradient});
     }
 
-    NodeContext broadcast = ac.autograd->create_op(
-        ac, graphlib::OpType("broadcast", {}, {{"dim", dim}, {"size", static_cast<int>(size)}}), {unsqueeze});
+    std::vector<int> repeats(unsqueeze.shape.size(), 1);
+    repeats[dim] = size;
+    NodeContext repeat =
+        ac.autograd->create_op(ac, graphlib::OpType("repeat", {}, {{"repeats", repeats}}), {unsqueeze});
 
     NodeContext consts = ac.autograd->create_constant(ac, 1.0 / size);
 
-    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {broadcast, consts});
+    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {repeat, consts});
 }
 
 void decompose_initial(
