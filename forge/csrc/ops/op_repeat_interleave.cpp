@@ -84,14 +84,18 @@ NodeContext backward(
     TT_ASSERT(dim >= 0 && dim < static_cast<int>(input_shape.size()), "Given dimension is out of the shape");
 
     std::vector<int> shape = input_shape;
-    shape.insert(shape.begin() + dim, repeats);
+    std::vector<int> grad_shape = gradient.shape.as_vector<int>();
+    shape[dim] = repeats;
+    shape.insert(shape.begin() + dim, grad_shape[dim] / repeats);
 
     NodeContext reshaped = ac.autograd->create_op(ac, graphlib::OpType("reshape", {}, {{"shape", shape}}), {gradient});
 
     NodeContext reduced = ac.autograd->create_op(
-        ac, graphlib::OpType("reduce_sum", {}, {{"dim", std::vector<int>{dim}}, {"keep_dim", true}}), {reshaped});
+        ac,
+        graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{dim + 1}}, {"keep_dim", true}}),
+        {reshaped});
 
-    NodeContext squeezed = ac.autograd->create_op(ac, graphlib::OpType("squeeze", {}, {{"dim", dim}}), {reduced});
+    NodeContext squeezed = ac.autograd->create_op(ac, graphlib::OpType("squeeze", {}, {{"dim", dim + 1}}), {reduced});
 
     return squeezed;
 }
