@@ -447,3 +447,36 @@ INSTANTIATE_TEST_SUITE_P(
     [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
     { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
 }  // namespace tt::test::ops::logical_unary
+
+namespace tt::test::ops::bitwise_binary
+{
+
+std::vector<tt::ops::Op> get_bitwise_binary_ops()
+{
+    return {
+        tt::ops::OpType::BitwiseAnd,
+    };
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    BitwiseBinaryOpsIndividual,
+    SimpleOpDecomposeOnlyTest,
+    testing::ConvertGenerator(
+        testing::Combine(
+            testing::ValuesIn(get_bitwise_binary_ops()),
+            testing::ValuesIn(eltwise_binary::get_binary_individual_test_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
+    { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
+
+INSTANTIATE_TEST_SUITE_P(
+    BitwiseBinaryOpsSweep,
+    SimpleOpDecomposeOnlyTest,
+    testing::ConvertGenerator(
+        testing::Combine(
+            testing::ValuesIn(get_bitwise_binary_ops()), testing::ValuesIn(eltwise_binary::generate_input_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
+    { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
+
+}  // namespace tt::test::ops::bitwise_binary

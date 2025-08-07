@@ -96,6 +96,7 @@ class NewToOldOpType
         mapping_[OpType::LogSoftmax] = "log_softmax";
         mapping_[OpType::LogicalAnd] = "logical_and";
         mapping_[OpType::LogicalNot] = "logical_not";
+        mapping_[OpType::BitwiseAnd] = "bitwise_and";
         mapping_[OpType::Mask] = "mask";
         mapping_[OpType::Matmul] = "matmul";
         mapping_[OpType::MaxPool1d] = "max_pool1d";
@@ -211,6 +212,7 @@ class OldToNewOpType
         mapping_["log_softmax"] = OpType::LogSoftmax;
         mapping_["logical_and"] = OpType::LogicalAnd;
         mapping_["logical_not"] = OpType::LogicalNot;
+        mapping_["bitwise_and"] = OpType::BitwiseAnd;
         mapping_["mask"] = OpType::Mask;
         mapping_["matmul"] = OpType::Matmul;
         mapping_["max_pool1d"] = OpType::MaxPool1d;
@@ -391,6 +393,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::LogSoftmax: return log_softmax::eval(old_op_type, *this, tensors);
         case OpType::LogicalAnd: return logical_and::eval(old_op_type, *this, tensors);
         case OpType::LogicalNot: return logical_not::eval(old_op_type, *this, tensors);
+        case OpType::BitwiseAnd: return bitwise_and::eval(old_op_type, *this, tensors);
         case OpType::Mask: return mask::eval(old_op_type, *this, tensors);
         case OpType::Matmul: return matmul::eval(old_op_type, *this, tensors);
         case OpType::MaxPool1d: return max_pool_1d::eval(old_op_type, *this, tensors);
@@ -499,6 +502,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::LogSoftmax: return log_softmax::shape(old_op_type, *this, inputs);
         case OpType::LogicalAnd: return logical_and::shape(old_op_type, *this, inputs);
         case OpType::LogicalNot: return logical_not::shape(old_op_type, *this, inputs);
+        case OpType::BitwiseAnd: return bitwise_and::shape(old_op_type, *this, inputs);
         case OpType::Mask: return mask::shape(old_op_type, *this, inputs);
         case OpType::Matmul: return matmul::shape(old_op_type, *this, inputs);
         case OpType::MaxPool1d: return max_pool_1d::shape(old_op_type, *this, inputs);
@@ -612,6 +616,7 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::LogSoftmax: return log_softmax::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::LogicalAnd: return logical_and::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::LogicalNot: return logical_not::backward(old_op_type, *this, context, operand, inputs, output, gradient);
+        case OpType::BitwiseAnd: return bitwise_and::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Mask: return mask::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Matmul: return matmul::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::MaxPool1d: return max_pool_1d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -742,6 +747,7 @@ void Op::decompose_initial(
         case OpType::LogSoftmax: return log_softmax::decompose_initial(old_op_type, *this, dc, inputs);;
         case OpType::LogicalAnd: return;
         case OpType::LogicalNot: return;
+        case OpType::BitwiseAnd: return;
         case OpType::Mask: return;
         case OpType::Matmul: return matmul::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::MaxPool1d: return;
@@ -852,6 +858,7 @@ void Op::decompose_post_optimize(
         case OpType::LogSoftmax: return;
         case OpType::LogicalAnd: return;
         case OpType::LogicalNot: return;
+        case OpType::BitwiseAnd: return;
         case OpType::Mask: return;
         case OpType::Matmul: return matmul::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::MaxPool1d: return;
@@ -962,6 +969,7 @@ void Op::decompose_post_autograd(
         case OpType::LogSoftmax: return;
         case OpType::LogicalAnd: return;
         case OpType::LogicalNot: return;
+        case OpType::BitwiseAnd: return;
         case OpType::Mask: return;
         case OpType::Matmul: return matmul::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::MaxPool1d: return;
@@ -1070,6 +1078,7 @@ long Op::initial_flops_estimate(
         case OpType::LogSoftmax: return 0;
         case OpType::LogicalAnd: return 0;
         case OpType::LogicalNot: return 0;
+        case OpType::BitwiseAnd: return 0;
         case OpType::Mask: return 0;
         case OpType::Matmul: return matmul::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::MaxPool1d: return 0;
@@ -1177,6 +1186,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::LogSoftmax: return false;
         case OpType::LogicalAnd: return false;
         case OpType::LogicalNot: return false;
+        case OpType::BitwiseAnd: return false;
         case OpType::Mask: return false;
         case OpType::Matmul: return false;
         case OpType::MaxPool1d: return false;
@@ -1284,6 +1294,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::LogSoftmax: return false;
         case OpType::LogicalAnd: return true;
         case OpType::LogicalNot: return true;
+        case OpType::BitwiseAnd: return true;
         case OpType::Mask: return false;
         case OpType::Matmul: return false;
         case OpType::MaxPool1d: return false;
@@ -1391,6 +1402,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::LogSoftmax: return false;
         case OpType::LogicalAnd: return false;
         case OpType::LogicalNot: return true;
+        case OpType::BitwiseAnd: return false;
         case OpType::Mask: return false;
         case OpType::Matmul: return false;
         case OpType::MaxPool1d: return false;
@@ -1498,6 +1510,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::LogSoftmax: return false;
         case OpType::LogicalAnd: return true;
         case OpType::LogicalNot: return false;
+        case OpType::BitwiseAnd: return true;
         case OpType::Mask: return false;
         case OpType::Matmul: return false;
         case OpType::MaxPool1d: return false;

@@ -97,6 +97,7 @@ enum class OpType : uint32_t
     LogSoftmax,
     LogicalAnd,
     LogicalNot,
+    BitwiseAnd,
     Mask,
     Matmul,
     MaxPool1d,
