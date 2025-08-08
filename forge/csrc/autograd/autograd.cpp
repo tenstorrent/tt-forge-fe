@@ -604,25 +604,27 @@ NodeContext autograd_engine::create_optimizer_op(
 {
     // Create cast nodes for non-fp32 operands to ensure fp32 computation
     std::vector<NodeContext> casted_operands;
-    for (const NodeContext &operand : operands) {
-        if (operand.output_df == DataFormat::Float32 || !is_float_data_format(operand.output_df)) {
+    for (const NodeContext &operand : operands)
+    {
+        if (operand.output_df == DataFormat::Float32 || !is_float_data_format(operand.output_df))
+        {
             casted_operands.push_back(operand);
             continue;
         }
         // Create cast node to fp32
-        std::string cast_name = "opt_cast_to_fp32_" + current_fwd_op->name() + "_" + 
-                                std::to_string(operand_index) + "_" + std::to_string(created_op_index) + "_" + 
-                                std::to_string(casted_operands.size()) + "_" + std::to_string(operand.id);
+        std::string cast_name = "opt_cast_to_fp32_" + current_fwd_op->name() + "_" + std::to_string(operand_index) +
+                                "_" + std::to_string(created_op_index) + "_" + std::to_string(casted_operands.size()) +
+                                "_" + std::to_string(operand.id);
         auto cast_node = graph->add_node(
-            graphlib::create_node<graphlib::PyOpNode>(cast_name, 
-                graphlib::OpType("cast", {}, {{"dtype", static_cast<int>(DataFormat::Float32)}})),
+            graphlib::create_node<graphlib::PyOpNode>(
+                cast_name, graphlib::OpType("cast", {}, {{"dtype", static_cast<int>(DataFormat::Float32)}})),
             graph->get_subgraph_id_for_node(current_fwd_op->id()));
-        
+
         graph->add_edge(Edge(operand.id, operand.output_index, cast_node->id(), 0, graphlib::EdgeType::kData));
         cast_node->set_shape(graph->node_by_id(operand.id)->shape());
         cast_node->set_optimizer();
         cast_node->set_output_df(DataFormat::Float32);
-        
+
         casted_operands.push_back(NodeContext(cast_node));
     }
 
@@ -762,7 +764,6 @@ NodeContext autograd_engine::create_input(
 
     return NodeContext(node);
 }
-
 
 // From the node in the forward graph, create a recompute node for the backward graph.
 // This will also connect the newly created recompute node to its operands (based on the operands of the fwd node).
