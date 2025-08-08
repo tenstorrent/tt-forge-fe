@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from .matmul import Matmul, SparseMatmul
+from .matmul import Matmul
 
 from .convolution import Conv2d, Conv2dTranspose, Conv3d
 from .pooling import MaxPool1d, MaxPool2d, AvgPool1d, AvgPool2d
@@ -57,7 +57,6 @@ from .tm import (
     Repeat,
     RepeatInterleave,
     AdvIndex,
-    Narrow,
     Unsqueeze,
     Squeeze,
     PixelShuffle,

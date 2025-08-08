@@ -955,16 +955,7 @@ void update_concat_attr(graphlib::OpNode *concatenate, int dim)
     concatenate->set_op_attr("dim", dim);
     log_trace(LogGraphCompiler, "Concatenate operation updated with new dim: {}", dim);
 }
-/**
- * @brief Updates the attributes and named attributes of vstack operation with new slice_size.
- */
-void update_vstack_attr(graphlib::OpNode *vstack, int slice_size)
-{
-    TT_ASSERT(vstack->new_op_type() == ops::OpType::Vstack, "update_vstack_attr called for a non-vstack operation");
 
-    vstack->set_op_attr("slice_size", slice_size);
-    log_trace(LogGraphCompiler, "Vstack operation updated with new slice_size: {}", slice_size);
-}
 /**
  * @brief Updates the attributes and named attributes of reduce operation(reduce_sum, reduce_avg, reduce_max) with new
  * reduction dimension.

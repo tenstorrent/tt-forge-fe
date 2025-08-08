@@ -353,3 +353,59 @@ class Conv2dTranspose(PyOp):
 
     def is_eltwise_nary(self) -> bool:
         return False
+
+
+def conv2d_padding_to_canonical(padding, kernel_size):
+    # current implementation is without dilation
+
+    assert isinstance(kernel_size, int) or isinstance(kernel_size, tuple), "Unsupported kernel size"
+    kH, kW = kernel_size if isinstance(kernel_size, tuple) else (kernel_size, kernel_size)
+
+    if isinstance(padding, int):
+        return [padding] * 4
+    elif isinstance(padding, str):
+        assert padding == "same", "Unsupported padding"
+        padding = [kW // 2] * 2 + [kH // 2] * 2
+        if kW % 2 == 0:
+            padding[1] -= 1
+        if kH % 2 == 0:
+            padding[3] -= 1
+        return padding
+    elif isinstance(padding, tuple) or isinstance(padding, list):
+        if len(padding) == 2:
+            return [padding[1]] * 2 + [padding[0]] * 2
+        elif len(padding) == 4:
+            return list(padding)
+        else:
+            raise AssertionError("Unsupported padding")
+    else:
+        raise AssertionError("Unsupported padding")
+
+
+def conv3d_padding_to_canonical(padding, kernel_size):
+    # current implementation is without dilation
+
+    assert isinstance(kernel_size, int) or isinstance(kernel_size, tuple), "Unsupported kernel size"
+    kD, kH, kW = kernel_size if isinstance(kernel_size, tuple) else (kernel_size, kernel_size, kernel_size)
+
+    if isinstance(padding, int):
+        return [padding] * 6
+    elif isinstance(padding, str):
+        assert padding == "same", "Unsupported padding"
+        padding = [kW // 2] * 2 + [kH // 2] * 2 + [kD // 2] * 2
+        if kW % 2 == 0:
+            padding[1] -= 1
+        if kH % 2 == 0:
+            padding[3] -= 1
+        if kD % 2 == 0:
+            padding[5] -= 1
+        return padding
+    elif isinstance(padding, tuple) or isinstance(padding, list):
+        if len(padding) == 2:
+            return [padding[1]] * 3 + [padding[0]] * 3
+        elif len(padding) == 6:
+            return list(padding)
+        else:
+            raise AssertionError("Unsupported padding")
+    else:
+        raise AssertionError("Unsupported padding")

@@ -187,25 +187,7 @@ class Pad(PyTM):
             return
 
     def backward(self, ac, operand, inputs, output, grad):
-        # TODO: Check whether this is valid backward
-        assert len(self.padding) == 2 or len(self.padding) == 4, "Not supported padding type"
-
-        height_dim, width_dim = -2 - int(self.channel_last), -1 - int(self.channel_last)
-        original_height, original_width = grad.shape[height_dim], grad.shape[width_dim]
-
-        if len(self.padding) == 4:
-            pad_left, pad_right, pad_top, pad_bottom = self.padding
-            grad = ac.op(
-                "narrow", (grad,), (height_dim, pad_top, original_height - pad_top - pad_bottom, original_height)
-            )
-            return ac.op(
-                "narrow", (grad,), (width_dim, pad_left, original_width - pad_left - pad_right, original_width)
-            )
-        else:
-            pad_left, pad_right = self.padding
-            return ac.op(
-                "narrow", (grad,), (width_dim, pad_left, original_width - pad_left - pad_right, original_width)
-            )
+        pass
 
     def decompose_constant_mode(dc, input, value, left, right, top, bottom, c_dim_axis, r_dim_axis):
         result = input

@@ -2,7 +2,6 @@ add_library(shared_utils
     STATIC
     placement_printer.cpp
     pretty_table.cpp
-    sparse_matmul_utils.cpp
     string_extension.cpp)
 
 target_link_libraries(shared_utils PUBLIC coverage_config)
