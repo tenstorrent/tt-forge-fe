@@ -39,35 +39,6 @@ def conv2d_padding_to_canonical(padding, kernel_size):
         raise AssertionError("Unsupported padding")
 
 
-def conv3d_padding_to_canonical(padding, kernel_size):
-    # current implementation is without dilation
-
-    assert isinstance(kernel_size, int) or isinstance(kernel_size, tuple), "Unsupported kernel size"
-    kD, kH, kW = kernel_size if isinstance(kernel_size, tuple) else (kernel_size, kernel_size, kernel_size)
-
-    if isinstance(padding, int):
-        return [padding] * 6
-    elif isinstance(padding, str):
-        assert padding == "same", "Unsupported padding"
-        padding = [kW // 2] * 2 + [kH // 2] * 2 + [kD // 2] * 2
-        if kW % 2 == 0:
-            padding[1] -= 1
-        if kH % 2 == 0:
-            padding[3] -= 1
-        if kD % 2 == 0:
-            padding[5] -= 1
-        return padding
-    elif isinstance(padding, tuple) or isinstance(padding, list):
-        if len(padding) == 2:
-            return [padding[1]] * 3 + [padding[0]] * 3
-        elif len(padding) == 6:
-            return list(padding)
-        else:
-            raise AssertionError("Unsupported padding")
-    else:
-        raise AssertionError("Unsupported padding")
-
-
 def calculate_conv2d_output_dimensions(
     original_y, original_x, kernel_size, stride, padding, dilation=1, ceil_mode=False
 ):
@@ -90,30 +61,6 @@ def calculate_conv2d_output_dimensions(
     return y, x
 
 
-def calculate_conv3d_output_dimensions(
-    original_z, original_y, original_x, kernel_size, stride, padding, dilation=1, ceil_mode=False
-):
-    if isinstance(stride, int):
-        stride = [stride] * 3
-
-    assert len(padding) == 6 and all(isinstance(x, int) for x in padding), "Padding should be list of six ints"
-
-    # Pooling layers (max, avg)
-    if isinstance(kernel_size, int):
-        kernel_size = (kernel_size, kernel_size)
-
-    # Padding is [left, right, top, bottom]
-    if ceil_mode:
-        z = math.ceil((original_z + padding[4] + padding[5] - dilation * (kernel_size[0] - 1) - 1) / stride[0]) + 1
-        y = math.ceil((original_y + padding[2] + padding[3] - dilation * (kernel_size[1] - 1) - 1) / stride[1]) + 1
-        x = math.ceil((original_x + padding[0] + padding[1] - dilation * (kernel_size[2] - 1) - 1) / stride[2]) + 1
-    else:
-        z = (original_z + padding[4] + padding[5] - dilation * (kernel_size[0] - 1) - 1) // stride[0] + 1
-        y = (original_y + padding[2] + padding[3] - dilation * (kernel_size[1] - 1) - 1) // stride[1] + 1
-        x = (original_x + padding[0] + padding[1] - dilation * (kernel_size[2] - 1) - 1) // stride[2] + 1
-    return z, y, x
-
-
 def calculate_conv2d_transpose_output_dimensions(
     original_y, original_x, kernel_size, stride, padding, dilation=1, output_padding=0
 ):
@@ -123,77 +70,6 @@ def calculate_conv2d_transpose_output_dimensions(
     y = (original_y - 1) * stride - (padding[2] + padding[3]) + dilation * (kernel_size[0] - 1) + 1 + output_padding
     x = (original_x - 1) * stride - (padding[0] + padding[1]) + dilation * (kernel_size[1] - 1) + 1 + output_padding
     return y, x
-
-
-def calculate_conv2d_prestride_weights_and_padding(weights, original_y, original_x, stride, padding):
-    shape_only = isinstance(weights, list) or isinstance(weights, tuple)
-
-    if isinstance(padding, int):
-        padding = [padding] * 4
-    if isinstance(stride, int):
-        stride = [stride] * 2
-    if shape_only:
-        weights = torch.zeros(weights, requires_grad=False)
-
-    kernel_size = (weights.shape[-2], weights.shape[-1])
-
-    pre_strided_weights = []
-    weights_left_pad = padding[0] % stride[1]
-    weights_left_pad = stride[1] if weights_left_pad == 0 else weights_left_pad
-    weights_top_pad = padding[2] % stride[0]
-    weights_top_pad = stride[0] if weights_top_pad == 0 else weights_top_pad
-    for y in range(stride[0]):
-        for x in range(stride[1]):
-            pre_strided_weights.append(
-                torch.nn.functional.pad(weights, (stride[1] - weights_left_pad, x, stride[0] - weights_top_pad, y))[
-                    :, :, y :: stride[0], x :: stride[1]
-                ]
-            )
-
-    pre_strided_weights = torch.cat(pre_strided_weights, dim=-3)
-
-    def pad_right_bottom(padding, stride, original_shape, output_shape, kernel_size):
-        # Output height (width) for convolution can be calculated as:
-        #     y = (original_y + padding[2] + padding[3] - dilation * (kernel_size[0] - 1) - 1) // stride[0] + 1
-        #
-        # If we know all the parameters of the prestrided conv (except the right/bottom padding), we can solve for right/bottom padding
-        #
-        # First we remove dilation as it's always 1:
-        #     y = (original_y + padding[2] + padding[3] - (kernel_size[0] - 1) - 1) // stride[0] + 1
-        # Simplify:
-        #     y = (original_y + padding[2] + padding[3] - kernel_size[0]) // stride[0] + 1
-        #     (y - 1) * stride = original_y + padding[2] + padding[3] - kernel_size[0]
-        #     (y - 1) * stride - original_y - padding[2] + kernel_size[0] = padding[3]
-        return (output_shape - 1) * stride - original_shape - padding + kernel_size
-
-    output_shape = calculate_conv2d_output_dimensions(
-        original_y=original_y,
-        original_x=original_x,
-        kernel_size=kernel_size,
-        stride=stride,
-        padding=padding,
-        dilation=1,
-    )
-
-    pad_left = round_up_div(padding[0], stride[1])
-    pad_top = round_up_div(padding[2], stride[0])
-    pad_right = pad_right_bottom(
-        pad_left, 1, round_up_div(original_x, stride[1]), output_shape[1], pre_strided_weights.shape[-1]
-    )
-    pad_bottom = pad_right_bottom(
-        pad_top, 1, round_up_div(original_y, stride[0]), output_shape[0], pre_strided_weights.shape[-2]
-    )
-
-    pre_strided_padding = (
-        pad_left,
-        pad_right,
-        pad_top,
-        pad_bottom,
-    )
-
-    if shape_only:
-        pre_strided_weights = tuple(pre_strided_weights.shape)
-    return pre_strided_weights, pre_strided_padding
 
 
 def _calculate_pad_for_ceil_mode_single_dim(
@@ -1229,37 +1105,6 @@ def is_kernel_fracturing_candidate(operands, z_bcast_factor):
     return cin_tiles == 1 and (z_bcast_factor == 16 or z_bcast_factor == 49)
 
 
-def can_conv2d_prestride(act_shape, weight_shape, stride, dilation, groups, padding, channel_last, graph_input):
-    if not graph_input:
-        return False
-
-    stride_height, stride_width = stride
-    cout, cin, kH, kW = weight_shape
-
-    # Only support square stride
-    # Non-square strides do work in terms of math, but backend would need to add support as well
-    # tenstorrent/forgebackend#1519
-    if stride_height != stride_width:
-        return False
-
-    # stride <= 1 can't be prestrided
-    if stride_height <= 1 and stride_width <= 1:
-        return False
-
-    # Skip for now
-    if channel_last:
-        return False
-
-    # Dilation unsupported
-    if dilation > 1:
-        return False
-
-    if groups > 1:
-        return False
-
-    return True
-
-
 def does_prestriding_improve_perf(act_shape, weights_shape, ps_weights, stride):
     assert len(act_shape) == 4
     assert len(weights_shape) == 4
@@ -1567,33 +1412,3 @@ def conv2d_out_shape(type, attr, ops):
             return (activations[0], y, x, weights[1] * groups), []
         else:
             return (activations[0], weights[1] * groups, y, x), []
-
-
-def conv3d_out_shape(type, attr, ops):
-    assert len(ops) <= 3, "Conv3d should have three inputs"
-    assert len(attr) == 12, f"Conv3d invalid num attributes: {len(attr)}"
-
-    activations = ops[0]
-    weights = ops[1]
-    kernel_size = [weights[2], weights[3], weights[4]]
-    stride = [attr[0], attr[1], attr[2]]
-    dilation = attr[3]
-    groups = attr[4]
-    padding = [attr[5], attr[6], attr[7], attr[8], attr[9], attr[10]]
-
-    if attr[-1] == 1:
-        # Channel last
-        in_z = activations[1]
-        in_y = activations[2]
-        in_x = activations[3]
-    else:
-        in_z = activations[2]
-        in_y = activations[3]
-        in_x = activations[4]
-
-    if type == "conv3d":
-        z, y, x = calculate_conv3d_output_dimensions(in_z, in_y, in_x, kernel_size, stride, padding, dilation)
-        if attr[-1] == 1:
-            return (activations[0], z, y, x, weights[0]), []
-        else:
-            return (activations[0], weights[0], z, y, x), []
