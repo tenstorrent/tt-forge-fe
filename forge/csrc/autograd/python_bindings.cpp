@@ -118,7 +118,8 @@ void AutogradModule(py::module &m_autograd)
                std::string input_name,
                const std::vector<std::uint32_t> &tensor_shape,
                bool copy_consteval_operations,
-               bool disable_consteval)
+               bool disable_consteval,
+               std::optional<DataFormat> dtype)
             {
                 // Note requires_grad = False
                 return self.autograd->create_input(
@@ -129,13 +130,15 @@ void AutogradModule(py::module &m_autograd)
                     input_name,
                     tensor_shape,
                     copy_consteval_operations,
-                    disable_consteval);
+                    disable_consteval,
+                    dtype);
             },
             py::arg("input_name"),
             py::arg("tensor_shape"),
             py::kw_only(),
             py::arg("copy_consteval_operations") = false,
-            py::arg("disable_consteval") = false)
+            py::arg("disable_consteval") = false,
+            py::arg("dtype") = std::nullopt)
         .def(
             "loopback",
             [](tt::autograd::autograd_context &self,
