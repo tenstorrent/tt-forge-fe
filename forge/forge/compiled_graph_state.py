@@ -384,10 +384,7 @@ class CompiledModel:
                     for idx, grad_output_name in enumerate(self.bwd_compiled_graph_state.ordered_output_names):
                         if name in grad_output_name:
                             grad_tensor = grads[idx].to_torch()
-                            if param.shape != grad_tensor.shape:
-                                # Our gradients have additional dimensions which PyTorch not expects (e.g. [1, 1, N, M] -> [N, M])
-                                assert (torch.squeeze(grad_tensor)).shape == param.shape
-                                grad_tensor = torch.squeeze(grad_tensor)
+                            assert grad_tensor.shape == param.shape
 
                             if param.grad is not None:
                                 param.grad += grad_tensor
