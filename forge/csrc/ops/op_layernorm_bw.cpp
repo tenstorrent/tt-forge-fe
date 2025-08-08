@@ -192,8 +192,6 @@ void decompose_post_autograd(
     // operand == 0: Gradient w.r.t. input
     NodeContext dxhat = dc.op(graphlib::OpType("multiply", {}, {}), {grad, gamma});
 
-    int N = input_shape[dim];
-
     // sum_1 = reduce_sum(dxhat, dim, keep_dim=True)
     NodeContext sum_1 =
         dc.op(graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {dxhat});
