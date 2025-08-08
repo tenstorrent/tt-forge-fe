@@ -35,6 +35,7 @@ def test_ssdlite320_mobilenetv3(variant, forge_tmp_path):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
+    pytest.xfail(reason="Hang at RemoveRedundantTake TVM callback")
 
     # Load model and input
     weight_name = variants_with_weights[variant]
