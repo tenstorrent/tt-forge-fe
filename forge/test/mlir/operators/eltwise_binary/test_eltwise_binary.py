@@ -113,6 +113,34 @@ def test_atan2(shape):
 
 
 @pytest.mark.parametrize(
+    "shape, dim, descending",
+    [
+        # ((10,), 0, False),
+        # ((5, 5), 1, False),
+        ((4, 3), 0, True),
+        # ((2, 3, 4), -1, True),
+        # ((1, 256, 6, 6), 2, False),
+    ],
+)
+@pytest.mark.push
+def test_argsort(shape, dim, descending):
+    class ArgSort(nn.Module):
+        def __init__(self, dim, descending):
+            super().__init__()
+            self.dim = dim
+            self.descending = descending
+
+        def forward(self, x):
+            return torch.argsort(x, dim=self.dim, descending=self.descending)
+
+    input_tensor = torch.randn(shape)
+    framework_model = ArgSort(dim=dim, descending=descending)
+    compiled_model = forge.compile(framework_model, sample_inputs=[input_tensor])
+
+    verify([input_tensor], framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
     "shape_x, shape_y",
     [
         ((1, 128, 28, 28), (1, 128, 28, 28)),

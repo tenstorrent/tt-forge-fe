@@ -7,6 +7,7 @@ add_library(ops
     op_add.cpp
     op_adv_index.cpp
     op_argmax.cpp
+    op_argsort.cpp
     op_atan.cpp
     op_avg_pool_1d.cpp
     op_avg_pool_2d.cpp
@@ -39,6 +40,7 @@ add_library(ops
     op_exp.cpp
     op_fill_cache.cpp
     op_forge_pad.cpp
+    op_gather.cpp
     op_forge_unpad.cpp
     op_gelu.cpp
     op_greater.cpp
@@ -86,6 +88,7 @@ add_library(ops
     op_softmax.cpp
     op_softmax_bw.cpp
     op_sqrt.cpp
+    op_sort.cpp
     op_stack.cpp
     op_subtract.cpp
     op_squeeze.cpp

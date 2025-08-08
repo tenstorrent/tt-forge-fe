@@ -34,14 +34,33 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 
     int dim = op.attr_as<int>("dim");
 
-    // Convert indices to long tensor and reshape if needed
+    // Convert indices to long tensor
     at::Tensor indices_long = indices.to(torch::kLong);
+
     if (indices_long.dim() == 2)
     {
-        indices_long = indices_long.reshape(-1);
-    }
+        // For 2D indices, use gather semantics to preserve shape structure
+        // This handles the relay.gather -> forge.AdvIndex conversion correctly
+        auto data = tensors[0];
+        auto result_shape = indices_long.sizes().vec();
+        std::vector<at::Tensor> gathered_slices;
 
-    return torch::index_select(tensors[0], dim, indices_long);
+        // Process each "row" of indices to maintain 2D structure
+        for (int i = 0; i < indices_long.size(0); i++)
+        {
+            auto row_indices = indices_long.select(0, i);                           // Get i-th row: shape [4]
+            auto data_slice = data.select(0, i);                                    // Get i-th data slice: shape [32]
+            auto gathered = torch::index_select(data_slice, dim - 1, row_indices);  // Result: shape [4]
+            gathered_slices.push_back(gathered.unsqueeze(0));                       // Add batch dim back: shape [1, 4]
+        }
+
+        return torch::cat(gathered_slices, 0);  // Concatenate to get final shape [10, 4]
+    }
+    else
+    {
+        // For 1D indices, use original index_select semantics
+        return torch::index_select(tensors[0], dim, indices_long);
+    }
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
@@ -64,16 +83,21 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
         dim < static_cast<int>(data_shape.size()),
         "dim is out of bound, got " + std::to_string(dim) + " for data shape " + std::to_string(data_shape.size()));
 
-    std::vector<uint32_t> output_shape = data_shape;
-    // Replace the indexed dimension with the total number of indices
-    // For 1D indices: use the size directly
-    // For 2D indices: use the product of dimensions (total indices)
-    uint32_t total_indices = 1;
-    for (uint32_t idx_dim : indices_shape)
+    std::vector<uint32_t> output_shape;
+
+    if (indices_shape.size() == 2)
     {
-        total_indices *= idx_dim;
+        // For 2D indices, preserve the indices shape structure (relay.gather semantics)
+        // This matches the eval function behavior for 2D indices
+        output_shape = indices_shape;  // Result shape matches indices shape: [10, 4]
     }
-    output_shape[dim] = total_indices;
+    else
+    {
+        // For 1D indices, use original index_select semantics
+        output_shape = data_shape;
+        // Replace the indexed dimension with the number of indices
+        output_shape[dim] = indices_shape[0];
+    }
 
     return std::make_tuple(Shape::create(output_shape), std::vector<DimBroadcast>{});
 }

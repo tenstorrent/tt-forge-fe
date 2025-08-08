@@ -45,7 +45,7 @@ from .eltwise_unary import (
     Cast,
     Erf,
 )
-from .reduce import ReduceSum, ReduceAvg, ReduceMax, Argmax
+from .reduce import ReduceSum, ReduceAvg, ReduceMax, Argmax, Argsort, Sort
 from .tm import (
     Transpose,
     Reshape,

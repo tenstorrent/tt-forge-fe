@@ -4711,6 +4711,51 @@ class DecomposeFloor(DFPatternCallback):
         return floor_result
 
 
+class DecomposeTopK(DFPatternCallback):
+    def __init__(self):
+        super().__init__(rewrite_once=True, require_type=True)
+
+        # Pattern: topk(data) - match topk operation with attributes
+        self.data = wildcard()
+        self.topk = is_op("topk")(self.data)
+        self.pattern = self.topk
+
+    def callback(self, pre, post, node_map):
+        # Get the original topk call
+        topk_call = post
+        data = topk_call.args[0]
+
+        attrs = topk_call.attrs
+
+        k_value = int(attrs.k) if hasattr(attrs, "k") else 1
+
+        axis = int(attrs.axis) if hasattr(attrs, "axis") else -1
+        is_ascend = bool(attrs.is_ascend) if hasattr(attrs, "is_ascend") else False
+        dtype = str(attrs.dtype) if hasattr(attrs, "dtype") else "int64"
+        sorted_indices = relay.argsort(data, axis=axis, is_ascend=False, dtype=dtype)
+
+        data_shape = data.checked_type.shape
+        ndim = len(data_shape)
+        positive_axis = axis if axis >= 0 else ndim + axis
+
+        begin = [0] * ndim
+        end = []
+        strides = [1] * ndim
+
+        for i, dim_size in enumerate(data_shape):
+            if i == positive_axis:
+                end.append(k_value)  # Slice to k elements on the target axis
+            else:
+                if hasattr(dim_size, "value"):
+                    end.append(int(dim_size.value))
+                else:
+                    end.append(int(dim_size))
+        topk_indices = relay.strided_slice(sorted_indices, begin=begin, end=end, strides=strides)
+
+        topk_values = relay.gather(data, axis=positive_axis, indices=topk_indices)
+        return relay.Tuple([topk_values, topk_indices])
+
+
 class DecomposeZerosToFull(DFPatternCallback):
     def __init__(self):
         super().__init__()
@@ -4720,6 +4765,48 @@ class DecomposeZerosToFull(DFPatternCallback):
         shape = pre.attrs.shape
         dtype = pre.attrs.dtype
         return tvm.relay.full(tvm.relay.const(0, dtype=dtype), shape=shape, dtype=dtype)
+
+
+class DecomposeArgsort(DFPatternCallback):
+    def __init__(self, descending=False):
+        super().__init__(rewrite_once=True, require_type=True)
+
+        # Pattern: match argsort(data, axis, descending)
+        self.data = wildcard()
+        self.argsort = is_op("argsort")(self.data)
+        self.descending = descending
+        self.pattern = self.argsort
+
+    def callback(self, pre, post, node_map):
+        from tvm.relay.frontend.common import infer_shape
+
+        data = node_map[self.data][0]
+        shape = list(infer_shape(data))
+        axis = int(pre.attrs.axis)
+
+        # ---- Step 1: Create an index tensor ----
+        shape_of_data = relay.shape_of(data)
+        arange_1d = relay.arange(
+            relay.const(0, "int32"), relay.const(shape[axis], "int32"), relay.const(1, "int32"), dtype="int32"
+        )
+
+        # ---- Step 2: Reshape for broadcasting ----
+        rank = len(infer_shape(data))
+        reshape_shape = [1] * rank
+        reshape_shape[axis] = -1
+        idx = relay.reshape(arange_1d, reshape_shape)
+        idx = relay.broadcast_to(idx, shape_of_data)
+
+        # ---- Step 3: Stack values & indices and sort ----
+        stacked = relay.stack([data, relay.cast(idx, "float32")], axis=0)
+        sorted_pair = relay.sort(stacked, axis=axis + 1, is_ascend=not self.descending)
+
+        # ---- Step 4: Extract indices ----
+        sorted_indices = relay.strided_slice(sorted_pair, begin=[1], end=[2])
+        sorted_indices = relay.squeeze(sorted_indices, axis=[0])
+        sorted_indices = relay.cast(sorted_indices, "int32")
+
+        return sorted_indices
 
 
 class DecomposeMeshgrid(DFPatternCallback):
@@ -4893,6 +4980,8 @@ def run_forge_compile_passes(
     return run_pattern_callbacks(
         relay_module,
         [
+            DecomposeTopK(),
+            DecomposeArgsort(),
             DecomposeDepthToSpace(),
             DecomposeZerosToFull(),
             DecomposeMeshgrid(),

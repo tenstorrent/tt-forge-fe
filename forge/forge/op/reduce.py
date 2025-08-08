@@ -119,3 +119,66 @@ def Argmax(name: str, operandA: Tensor, dim: int = None, keep_dim=False) -> Tens
         kwargs["dim_arg"] = [dim]
 
     return op("argmax", name, operandA, **kwargs).get_tensor()
+
+
+def Argsort(name: str, operandA: Tensor, axis: int = -1, is_ascend: bool = True, dtype: str = "int32") -> Tensor:
+    """
+    Argsort
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+        First operand
+
+    axis: int
+        The axis along which to sort
+
+    is_ascend: bool
+        Whether to sort in ascending order (True) or descending order (False)
+
+    dtype: str
+        The dtype of the output indices
+
+    Returns
+    -------
+    Tensor
+        Forge tensor
+    """
+
+    if axis < 0:
+        axis += len(operandA.shape)
+
+    return op("argsort", name, operandA, axis=axis, is_ascend=is_ascend, dtype=dtype).get_tensor()
+
+
+def Sort(name: str, operandA: Tensor, axis: int = -1, is_ascend: bool = True) -> Tensor:
+    """
+    Sort
+
+    Parameters
+    ----------
+    name: str
+            Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+            Tensor to sort
+
+    axis: int
+            The axis along which to sort
+
+    is_ascend: bool
+            Whether to sort in ascending order (True) or descending order (False)
+
+    Returns
+    -------
+    Tensor
+            Forge tensor with values sorted along the specified axis
+    """
+
+    if axis < 0:
+        axis += len(operandA.shape)
+
+    return op("sort", name, operandA, axis=axis, is_ascend=is_ascend).get_tensor()

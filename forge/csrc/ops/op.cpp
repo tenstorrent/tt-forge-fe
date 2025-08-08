@@ -45,6 +45,7 @@ class NewToOldOpType
         mapping_[OpType::Add] = "add";
         mapping_[OpType::AdvIndex] = "adv_index";
         mapping_[OpType::Argmax] = "argmax";
+        mapping_[OpType::Argsort] = "argsort";
         mapping_[OpType::Atan] = "atan";
         mapping_[OpType::AvgPool1d] = "avg_pool1d";
         mapping_[OpType::AvgPool2d] = "avg_pool2d";
@@ -78,6 +79,7 @@ class NewToOldOpType
         mapping_[OpType::FillCache] = "fill_cache";
         mapping_[OpType::ForgePad] = "forge_pad";
         mapping_[OpType::ForgeUnpad] = "forge_unpad";
+        mapping_[OpType::Gather] = "gather";
         mapping_[OpType::Gelu] = "gelu";
         mapping_[OpType::Greater] = "greater";
         mapping_[OpType::GreaterEqual] = "greater_equal";
@@ -133,6 +135,7 @@ class NewToOldOpType
         mapping_[OpType::UpdateCache] = "update_cache";
         mapping_[OpType::Upsample2d] = "upsample2d";
         mapping_[OpType::Where] = "where";
+        mapping_[OpType::Sort] = "sort";
     }
 
     const std::string &operator[](OpType op_type) const { return mapping_.at(op_type); }
@@ -154,6 +157,7 @@ class OldToNewOpType
         mapping_["add"] = OpType::Add;
         mapping_["adv_index"] = OpType::AdvIndex;
         mapping_["argmax"] = OpType::Argmax;
+        mapping_["argsort"] = OpType::Argsort;
         mapping_["atan"] = OpType::Atan;
         mapping_["avg_pool1d"] = OpType::AvgPool1d;
         mapping_["avg_pool2d"] = OpType::AvgPool2d;
@@ -190,6 +194,7 @@ class OldToNewOpType
         mapping_["gelu"] = OpType::Gelu;
         mapping_["greater"] = OpType::Greater;
         mapping_["greater_equal"] = OpType::GreaterEqual;
+        mapping_["gather"] = OpType::Gather;
         mapping_["heaviside"] = OpType::Heaviside;
         mapping_["index"] = OpType::Index;
         mapping_["index_copy"] = OpType::IndexCopy;
@@ -242,6 +247,7 @@ class OldToNewOpType
         mapping_["update_cache"] = OpType::UpdateCache;
         mapping_["upsample2d"] = OpType::Upsample2d;
         mapping_["where"] = OpType::Where;
+        mapping_["sort"] = OpType::Sort;
     }
 
     OpType operator[](const std::string &old_op_type) const { return mapping_.at(old_op_type); }
@@ -328,6 +334,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Add: return add::eval(old_op_type, *this, tensors);
         case OpType::AdvIndex: return adv_index::eval(old_op_type, *this, tensors);
         case OpType::Argmax: return argmax::eval(old_op_type, *this, tensors);
+        case OpType::Argsort: return argsort::eval(old_op_type, *this, tensors);
         case OpType::Atan: return atan::eval(old_op_type, *this, tensors);
         case OpType::AvgPool1d: return avg_pool_1d::eval(old_op_type, *this, tensors);
         case OpType::AvgPool2d: return avg_pool_2d::eval(old_op_type, *this, tensors);
@@ -361,6 +368,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::FillCache: return fill_cache::eval(old_op_type, *this, tensors);
         case OpType::ForgePad: return forge_pad::eval(old_op_type, *this, tensors);
         case OpType::ForgeUnpad: return forge_unpad::eval(old_op_type, *this, tensors);
+        case OpType::Gather: return gather::eval(old_op_type, *this, tensors);
         case OpType::Gelu: return gelu::eval(old_op_type, *this, tensors);
         case OpType::Greater: return greater::eval(old_op_type, *this, tensors);
         case OpType::GreaterEqual: return greater_equal::eval(old_op_type, *this, tensors);
@@ -416,6 +424,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::UpdateCache: return update_cache::eval(old_op_type, *this, tensors);
         case OpType::Upsample2d: return upsample_2d::eval(old_op_type, *this, tensors);
         case OpType::Where: return where::eval(old_op_type, *this, tensors);
+        case OpType::Sort: return sort::eval(old_op_type, *this, tensors);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
@@ -430,6 +439,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Add: return add::shape(old_op_type, *this, inputs);
         case OpType::AdvIndex: return adv_index::shape(old_op_type, *this, inputs);
         case OpType::Argmax: return argmax::shape(old_op_type, *this, inputs);
+        case OpType::Argsort: return argsort::shape(old_op_type, *this, inputs);
         case OpType::Atan: return atan::shape(old_op_type, *this, inputs);
         case OpType::AvgPool1d: return avg_pool_1d::shape(old_op_type, *this, inputs);
         case OpType::AvgPool2d: return avg_pool_2d::shape(old_op_type, *this, inputs);
@@ -463,6 +473,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::FillCache: return fill_cache::shape(old_op_type, *this, inputs);
         case OpType::ForgePad: return forge_pad::shape(old_op_type, *this, inputs);
         case OpType::ForgeUnpad: return forge_unpad::shape(old_op_type, *this, inputs);
+        case OpType::Gather: return gather::shape(old_op_type, *this, inputs);
         case OpType::Gelu: return gelu::shape(old_op_type, *this, inputs);
         case OpType::Greater: return greater::shape(old_op_type, *this, inputs);
         case OpType::GreaterEqual: return greater_equal::shape(old_op_type, *this, inputs);
@@ -518,6 +529,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::UpdateCache: return update_cache::shape(old_op_type, *this, inputs);
         case OpType::Upsample2d: return upsample_2d::shape(old_op_type, *this, inputs);
         case OpType::Where: return where::shape(old_op_type, *this, inputs);
+        case OpType::Sort: return sort::shape(old_op_type, *this, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
@@ -537,6 +549,7 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Add: return add::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::AdvIndex: return adv_index::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Argmax: return argmax::backward(old_op_type, *this, context, operand, inputs, output, gradient);
+        case OpType::Argsort: return argsort::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Atan: return atan::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::AvgPool1d: return avg_pool_1d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::AvgPool2d: return avg_pool_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -570,6 +583,7 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::FillCache: return fill_cache::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::ForgePad: return forge_pad::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::ForgeUnpad: return forge_unpad::backward(old_op_type, *this, context, operand, inputs, output, gradient);
+        case OpType::Gather: return gather::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Gelu: return gelu::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Greater: return greater::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::GreaterEqual: return greater_equal::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -625,6 +639,7 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::UpdateCache: return update_cache::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Upsample2d: return upsample_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Where: return where::backward(old_op_type, *this, context, operand, inputs, output, gradient);
+        case OpType::Sort: return sort::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
@@ -661,6 +676,7 @@ void Op::decompose_initial(
         case OpType::Add: return;
         case OpType::AdvIndex: return adv_index::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Argmax: return;
+        case OpType::Argsort: return argsort::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Atan: return;
         case OpType::AvgPool1d: return avg_pool_1d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::AvgPool2d: return avg_pool_2d::decompose_initial(old_op_type, *this, dc, inputs);
@@ -694,6 +710,7 @@ void Op::decompose_initial(
         case OpType::FillCache: return;
         case OpType::ForgePad: return forge_pad::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::ForgeUnpad: return forge_unpad::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Gather: return gather::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Gelu: return;
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
@@ -749,6 +766,7 @@ void Op::decompose_initial(
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
         case OpType::Where: return where::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Sort: return;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
@@ -765,6 +783,7 @@ void Op::decompose_post_optimize(
         case OpType::Add: return;
         case OpType::AdvIndex: return;
         case OpType::Argmax: return;
+        case OpType::Argsort: return argsort::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Atan: return;
         case OpType::AvgPool1d: return;
         case OpType::AvgPool2d: return;
@@ -798,6 +817,7 @@ void Op::decompose_post_optimize(
         case OpType::FillCache: return;
         case OpType::ForgePad: return forge_pad::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::ForgeUnpad: return forge_unpad::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Gather: return gather::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Gelu: return;
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
@@ -853,6 +873,7 @@ void Op::decompose_post_optimize(
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
         case OpType::Where: return where::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Sort: return;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
@@ -869,6 +890,7 @@ void Op::decompose_post_autograd(
         case OpType::Add: return;
         case OpType::AdvIndex: return;
         case OpType::Argmax: return;
+        case OpType::Argsort: return argsort::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Atan: return;
         case OpType::AvgPool1d: return;
         case OpType::AvgPool2d: return;
@@ -902,6 +924,7 @@ void Op::decompose_post_autograd(
         case OpType::FillCache: return;
         case OpType::ForgePad: return forge_pad::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::ForgeUnpad: return forge_unpad::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Gather: return gather::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Gelu: return;
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
@@ -957,6 +980,7 @@ void Op::decompose_post_autograd(
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
         case OpType::Where: return where::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Sort: return;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
@@ -971,6 +995,7 @@ long Op::initial_flops_estimate(
         case OpType::Add: return 0;
         case OpType::AdvIndex: return 0;
         case OpType::Argmax: return 0;
+        case OpType::Argsort: return argsort::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Atan: return 0;
         case OpType::AvgPool1d: return 0;
         case OpType::AvgPool2d: return 0;
@@ -1004,6 +1029,7 @@ long Op::initial_flops_estimate(
         case OpType::FillCache: return 0;
         case OpType::ForgePad: return forge_pad::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::ForgeUnpad: return forge_unpad::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Gather: return gather::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Gelu: return 0;
         case OpType::Greater: return 0;
         case OpType::GreaterEqual: return 0;
@@ -1059,6 +1085,7 @@ long Op::initial_flops_estimate(
         case OpType::UpdateCache: return 0;
         case OpType::Upsample2d: return 0;
         case OpType::Where: return where::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Sort: return 0;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
@@ -1072,6 +1099,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Add: return false;
         case OpType::AdvIndex: return true;
         case OpType::Argmax: return false;
+        case OpType::Argsort: return false;
         case OpType::Atan: return false;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;
@@ -1105,6 +1133,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::FillCache: return false;
         case OpType::ForgePad: return true;
         case OpType::ForgeUnpad: return true;
+        case OpType::Gather: return true;
         case OpType::Gelu: return false;
         case OpType::Greater: return false;
         case OpType::GreaterEqual: return false;
@@ -1160,6 +1189,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
         case OpType::Where: return false;
+        case OpType::Sort: return false;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }
 }
@@ -1173,6 +1203,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Add: return true;
         case OpType::AdvIndex: return false;
         case OpType::Argmax: return false;
+        case OpType::Argsort: return false;
         case OpType::Atan: return true;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;
@@ -1206,6 +1237,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::FillCache: return false;
         case OpType::ForgePad: return false;
         case OpType::ForgeUnpad: return false;
+        case OpType::Gather: return false;
         case OpType::Gelu: return true;
         case OpType::Greater: return true;
         case OpType::GreaterEqual: return true;
@@ -1261,6 +1293,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
         case OpType::Where: return true;
+        case OpType::Sort: return false;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }
 }
@@ -1274,6 +1307,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Add: return false;
         case OpType::AdvIndex: return false;
         case OpType::Argmax: return false;
+        case OpType::Argsort: return false;
         case OpType::Atan: return true;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;
@@ -1307,6 +1341,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::FillCache: return false;
         case OpType::ForgePad: return false;
         case OpType::ForgeUnpad: return false;
+        case OpType::Gather: return false;
         case OpType::Gelu: return true;
         case OpType::Greater: return false;
         case OpType::GreaterEqual: return false;
@@ -1362,6 +1397,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
         case OpType::Where: return false;
+        case OpType::Sort: return false;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }
 }
@@ -1375,6 +1411,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Add: return true;
         case OpType::AdvIndex: return false;
         case OpType::Argmax: return false;
+        case OpType::Argsort: return false;
         case OpType::Atan: return false;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;
@@ -1408,6 +1445,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::FillCache: return false;
         case OpType::ForgePad: return false;
         case OpType::ForgeUnpad: return false;
+        case OpType::Gather: return false;
         case OpType::Gelu: return false;
         case OpType::Greater: return true;
         case OpType::GreaterEqual: return true;
@@ -1463,6 +1501,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
         case OpType::Where: return false;
+        case OpType::Sort: return false;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }
 }
@@ -1476,6 +1515,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Add: return false;
         case OpType::AdvIndex: return false;
         case OpType::Argmax: return false;
+        case OpType::Argsort: return false;
         case OpType::Atan: return false;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;
@@ -1509,6 +1549,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::FillCache: return false;
         case OpType::ForgePad: return false;
         case OpType::ForgeUnpad: return false;
+        case OpType::Gather: return false;
         case OpType::Gelu: return false;
         case OpType::Greater: return false;
         case OpType::GreaterEqual: return false;
@@ -1564,6 +1605,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
         case OpType::Where: return true;
+        case OpType::Sort: return false;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }
 }
