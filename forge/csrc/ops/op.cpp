@@ -439,7 +439,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Clip: return clip::shape(old_op_type, *this, inputs);
         case OpType::Concatenate: return concatenate::shape(old_op_type, *this, inputs);
         case OpType::Constant: return constant::shape(old_op_type, *this, inputs);
-        case OpType::Conv2d: return conv_2d::shape( old_op_type, *this, inputs);
+        case OpType::Conv2d: return conv_2d::shape(old_op_type, *this, inputs);
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::shape(old_op_type, *this, inputs);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::shape(old_op_type, *this, inputs);
         case OpType::Conv2dGroupedWeights: return conv_2d_grouped_weights::shape(old_op_type, *this, inputs);
