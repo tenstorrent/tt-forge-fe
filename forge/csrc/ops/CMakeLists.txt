@@ -88,7 +88,6 @@ add_library(ops
     op_sine.cpp
     op_softmax.cpp
     op_softmax_bw.cpp
-    op_sparse_matmul.cpp
     op_sqrt.cpp
     op_stack.cpp
     op_subtract.cpp

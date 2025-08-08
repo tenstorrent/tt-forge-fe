@@ -121,7 +121,6 @@ _OPERATORS = [
         ],
     ),
     OperatorDefinition("matmul", "forge.op.Matmul", 2),
-    # OperatorDefinition("sparse_matmul", "forge.op.SparseMatmul", 2),
     # TM operators
     OperatorDefinition("repeat_interleave", "forge.op.RepeatInterleave", 1),
     OperatorDefinition("reshape", "forge.op.Reshape", 1),
