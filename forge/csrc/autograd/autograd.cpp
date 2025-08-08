@@ -704,7 +704,8 @@ NodeContext autograd_engine::create_input(
     std::string &suffix_identifier,
     const std::vector<std::uint32_t> &tensor_shape,
     bool copy_consteval_operations,
-    bool disable_consteval)
+    bool disable_consteval,
+    std::optional<DataFormat> dtype)
 {
     std::string base_string = (epoch_type == graphlib::NodeEpochType::Backward) ? "bwd" : "opt";
 
@@ -721,7 +722,7 @@ NodeContext autograd_engine::create_input(
     }
 
     node->set_shape(Shape::create(tensor_shape));
-    node->set_output_df(current_fwd_op->output_df());
+    node->set_output_df(dtype.value_or(current_fwd_op->output_df()));
 
     if (epoch_type == graphlib::NodeEpochType::Backward)
     {
