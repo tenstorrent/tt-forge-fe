@@ -44,7 +44,7 @@ jobs:
   docker-build:
     uses: ./.github/workflows/build-image.yml
     secrets: inherit
-      
+
   set-inputs:
     runs-on: ubuntu-latest
     outputs:
