@@ -35,8 +35,9 @@ def test_vgg19_unet():
     )
 
     # Load model and input
-    framework_model = ModelLoader.load_model(dtype_override=torch.bfloat16)
-    input_sample = ModelLoader.load_inputs(dtype_override=torch.bfloat16)
+    loader = ModelLoader()
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_sample = loader.load_inputs(dtype_override=torch.bfloat16)
 
     # Configurations
     compiler_cfg = CompilerConfig()
