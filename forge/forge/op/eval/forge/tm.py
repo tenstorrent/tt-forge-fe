@@ -4,28 +4,14 @@
 from argparse import ArgumentError
 from ..common import to_torch_operands
 from ..sparse_utils import (
-    create_index_sparse_picker_matrix,
-    create_all_around_padding_picker_matrix,
-    create_padding_shift_sparse_picker_matrix,
-    create_real_row_sparse_picker_matrix,
     create_reshape_flatten_sparse_picker_matrix,
     create_flattened_padding_removal_sparse_picker_matrix,
-    create_sparse_interleave_picker_matrix,
-    create_reshape_flatten_sparse_picker_matrix_narrower,
-    create_repeat_sparse_picker_matrix,
     calculate_conv2d_prestride_weights_and_padding,
-    create_pad_replicate_sparse_picker,
-    create_pad_reflect_sparse_picker,
 )
-import numpy as np
 import torch
 import math
-from loguru import logger
-import forge
-from forge.tensor import change_rank
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div, align_up
-from .pad import Pad
 
 
 def eval(type, attr, ops):
@@ -47,25 +33,6 @@ def eval(type, attr, ops):
                 else:
                     result.append(zero_slice)
         return torch.stack(result, dim=dim)
-
-    if type == "index":
-        assert len(attr) == 4, "Index should have 4 attributes"
-        dim, start, stop, stride = attr
-        if dim >= 0:
-            dim -= len(ops[0].shape)
-
-        if dim == -5:
-            return t_ops[0][..., start:stop:stride, :, :, :, :]
-        elif dim == -4:
-            return t_ops[0][..., start:stop:stride, :, :, :]
-        elif dim == -3:
-            return t_ops[0][..., start:stop:stride, :, :]
-        elif dim == -2:
-            return t_ops[0][..., start:stop:stride, :]
-        elif dim == -1:
-            return t_ops[0][..., start:stop:stride]
-        else:
-            raise NotImplementedError(f"Dim={dim}")
 
     if type == "conv2d_depthwise_weights":
         weights = t_ops[0]
@@ -260,17 +227,6 @@ def eval(type, attr, ops):
 
 def shape(type, attr, ops):
     assert len(ops) == 1, f"Tensor manipulation ops should have one input, has {len(ops)} input instead"
-
-    if type == "index":
-        assert len(attr) == 4, "Index should have 4 attributes"
-        dim, start, stop, stride = attr
-        shape = list(ops[0])
-
-        if start < 0:
-            start = shape[dim] + start
-
-        shape[dim] = round_up_div(stop - start, stride)
-        return tuple(shape), []
 
     if type == "select":
         assert len(attr) == 4, "Select should have 4 attributes"
@@ -537,11 +493,10 @@ def backward(type, attr, ac, operand, inputs, output, grad):
                     (grad,),
                     {
                         "padding": [start, original_length - length - start],
-                        "mode": 0,
-                        "value": 0,
+                        "mode": 0,  # constant mode
+                        "value": 0.0,
                         "channel_last": False,
                     },
-                    (start, original_length - length - start, 0, False),
                 )
             elif dim == -2:
                 return ac.op_with_named_attrs(
@@ -549,32 +504,14 @@ def backward(type, attr, ac, operand, inputs, output, grad):
                     (grad,),
                     {
                         "padding": [0, 0, start, original_length - length - start],
-                        "mode": 0,
-                        "value": 0,
+                        "mode": 0,  # constant mode
+                        "value": 0.0,
                         "channel_last": False,
                     },
-                    (0, 0, start, original_length - length - start, 0, False),
                 )
             raise ArgumentError("Only dim == 2 and dim == 3 are supported.")
         else:
             raise NotImplementedError("Unimplemented narrow in forge")
-
-    elif type == "index":
-        assert len(attr) == 4
-        dim, start, stop, stride = attr
-
-        if stride != 1:
-            raise NotImplementedError("Only stride == 1 is supported for index op backward")
-        shape = inputs[0].shape.as_list()
-
-        if dim >= 0:
-            dim -= len(shape)
-
-        left = start
-        right = shape[dim] - stop
-        value = 0.0
-
-        return Pad.decompose_constant_mode(ac, grad, value, left, right, 0, 0, dim, 0)
 
     raise NotImplementedError(f"{type}")
 

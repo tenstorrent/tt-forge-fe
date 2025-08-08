@@ -311,6 +311,53 @@ def Pad(
     ).get_tensor()
 
 
+def ConstantPad(
+    name: str,
+    operandA: Tensor,
+    padding: List[int],
+    value: float = 0.0,
+) -> Tensor:
+    """
+    TM - Direct TTIR constant padding operation.
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+        Input operand A to which padding will be applied.
+
+    padding: List[int]
+        Padding values in TTIR format: [dim0_low, dim0_high, dim1_low, dim1_high, ...]
+        Length must be 2 * rank of input tensor.
+
+    value: float, optional
+        The constant value to use for padding. Default is 0.0.
+
+    Returns
+    -------
+    Tensor
+        A tensor with the specified constant padding applied to the input tensor.
+    """
+    assert len(padding) == 2 * len(
+        operandA.shape
+    ), f"Padding length {len(padding)} must be 2 * rank {len(operandA.shape)}"
+
+    named_attrs = {
+        "padding": padding,
+        "value": value,
+    }
+
+    return op(
+        "constant_pad",
+        name,
+        operandA,
+        attrs=[],
+        **named_attrs,
+    ).get_tensor()
+
+
 def PadTile(name: str, operandA: Tensor, dim: int, original_length: int) -> Tensor:
     """
     TM

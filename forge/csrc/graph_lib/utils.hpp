@@ -18,6 +18,11 @@
 #include "graph_lib/defines.hpp"
 
 // Forward declarations
+namespace c10
+{
+enum class ScalarType : int8_t;
+}
+
 namespace at
 {
 class Tensor;
@@ -87,6 +92,8 @@ DataFormat infer_data_format_from_py_tensor(const py::object &py_tensor);
 
 // Conversion functions for types at::ScalarType and DataFormat.
 DataFormat scalar_type_to_data_format(const c10::ScalarType scalar_type);
+
+// Convert DataFormat to at::ScalarType directly (C++ equivalent of forge_dataformat_to_pytorch_dtype)
 c10::ScalarType data_format_to_scalar_type(const DataFormat data_format);
 
 // Insert new node on the given edge. Node attributes will be picked up from consumer node.
