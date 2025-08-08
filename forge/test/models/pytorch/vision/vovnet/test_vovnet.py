@@ -103,7 +103,7 @@ def test_vovnet_v1_39_stigma_pytorch():
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
     )
-    
+
     framework_model, inputs, _ = generate_model_vovnet39_imgcls_stigma_pytorch()
 
     data_format_override = DataFormat.Float16_b
