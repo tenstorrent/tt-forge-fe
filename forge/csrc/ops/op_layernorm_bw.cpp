@@ -210,7 +210,7 @@ void decompose_post_autograd(
     // N_recip = 1.0 / N
     std::vector<uint32_t> sum_shape = sum_1_sum_2_add.shape.as_vector<uint32_t>();
     std::vector<int64_t> sum_shape_int64(sum_shape.begin(), sum_shape.end());
-    at::Tensor N_recip_tensor = torch::zeros(sum_shape_int64) + (1.0f / static_cast<float>(N));
+    at::Tensor N_recip_tensor = torch::zeros(sum_shape_int64) + (1.0f / static_cast<float>(input_shape[dim]));
     NodeContext N_recip_node = dc.tensor(N_recip_tensor);
 
     // N_recip_add = N_recip * sum_1_sum_2_add
