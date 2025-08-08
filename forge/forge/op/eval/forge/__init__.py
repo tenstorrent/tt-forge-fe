@@ -6,14 +6,11 @@ from types import ModuleType
 from functools import lru_cache
 from .convolution import Conv2d
 from .convolution import Conv2dTranspose
-from .cast import Cast
 from .pad import Pad
-from .kv_cache import UpdateCache
-from .kv_cache import FillCache
 
 op_to_module_map = {
     "add": "eltwise_binary",
-    "cast": Cast,
+    "cast": "eltwise_unary",
     "divide": "eltwise_binary",
     "remainder": "eltwise_binary",
     "subtract": "eltwise_binary",
@@ -65,7 +62,6 @@ op_to_module_map = {
     "reshape": "tm",
     "index": "tm",
     "select": "tm",
-    "gather": "tm",
     "hslice": "tm",
     "hstack": "tm",
     "vslice": "tm",
@@ -103,18 +99,12 @@ op_to_module_map = {
     "softmax": "nn",
     "log_softmax": "nn",
     "softmax_bw": "nn",
-    "mask": "mask",
+    "mask": "misc",
     "layernorm": "nn",
     "layernorm_bw": "nn",
     "batchnorm": "nn",
-    "quantize": "quantize",
-    "forge_quantize": "quantize",
-    "dequantize": "quantize",
-    "requantize": "quantize",
-    "forge_requantize": "quantize",
-    "forge_dequantize": "quantize",
-    "update_cache": UpdateCache,
-    "fill_cache": FillCache,
+    "update_cache": "misc",
+    "fill_cache": "misc",
 }
 
 

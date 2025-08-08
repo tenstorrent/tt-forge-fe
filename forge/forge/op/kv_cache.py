@@ -73,6 +73,5 @@ def UpdateCache(
         cache,
         input,
         update_index,
-        attrs=(batch_offset,),
         batch_offset=batch_offset,
     ).get_tensor()

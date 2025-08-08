@@ -10,7 +10,6 @@ from forge.forgeglobal import TILE_DIM, align_up_tile, is_tile_dim_aligned
 from ..sparse_utils import (
     create_flattened_padding_removal_sparse_picker_matrix,
 )
-from .kv_cache import FillCache, UpdateCache
 from loguru import logger
 
 
@@ -215,16 +214,10 @@ def decompose(type, attr, dc, inputs):
                     "If the index operand in index_copy contains values that are not contiguous starting from 0, decomposing to FillCache will result in incorrect behavior. This is because FillCache fills continuously starting from index 0."
                 )
                 # FillCache is used to fill operandA from the beginning
-                result = dc.op(
-                    FillCache.create(),
-                    [operandA, value],
-                )
+                result = dc.op_with_named_attrs("fill_cache", [operandA, value], {"batch_offset": 0})
             else:
                 # Single index case -> decompose to UpdateCache
-                result = dc.op(
-                    UpdateCache.create(),
-                    [operandA, value, index],
-                )
+                result = dc.op_with_named_attrs("update_cache", [operandA, value, index], {"batch_offset": 0})
         else:
             # Only index_copy with dim -2, and tensors of shape 4D can be decomposed to FillCache or UpdateCache
             # Leave index_copy as is

@@ -3,13 +3,17 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from PIL import Image
-from third_party.tt_forge_models.tools.utils import get_file
-from transformers import (
-    ViltConfig,
-    ViltForMaskedLM,
-    ViltForQuestionAnswering,
-    ViltProcessor,
+from third_party.tt_forge_models.vilt.masked_lm.pytorch import (
+    ModelLoader as MaskedLMLoader,
+)
+from third_party.tt_forge_models.vilt.masked_lm.pytorch import (
+    ModelVariant as MaskedLMVariant,
+)
+from third_party.tt_forge_models.vilt.question_answering.pytorch import (
+    ModelLoader as QuestionAnsweringLoader,
+)
+from third_party.tt_forge_models.vilt.question_answering.pytorch import (
+    ModelVariant as QuestionAnsweringVariant,
 )
 
 import forge
@@ -29,30 +33,15 @@ from test.models.pytorch.multimodal.vilt.model_utils.model import (
     ViLtEmbeddingWrapper,
     ViltModelWrapper,
 )
-from test.utils import download_model
-
-text1 = "How many cats are there?"
-text2 = "a bunch of cats laying on a [MASK]."
-
-
-def get_image():
-    input_image = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
-    return Image.open(str(input_image))
 
 
 def generate_model_vilt_question_answering_hf_pytorch(variant):
-    # Set model configurations
-    config = ViltConfig.from_pretrained(variant)
-    config_dict = config.to_dict()
-    config_dict["return_dict"] = False
-    config = ViltConfig(**config_dict)
 
-    # Load model and processor from HuggingFace
-    processor = download_model(ViltProcessor.from_pretrained, variant)
-    model = download_model(ViltForQuestionAnswering.from_pretrained, variant, config=config)
-    model.eval()
-
-    encoding = processor(get_image(), text1, return_tensors="pt")
+    # Load model and inputs
+    loader = QuestionAnsweringLoader(variant=variant)
+    model = loader.load_model(dtype_override=torch.bfloat16)
+    encoding = loader.load_inputs(dtype_override=torch.bfloat16)
+    model.config.return_dict = False
 
     # Wrapper
     text_vision_embedding_model = ViLtEmbeddingWrapper(model)
@@ -60,22 +49,22 @@ def generate_model_vilt_question_answering_hf_pytorch(variant):
 
     embedding_output, attention_mask = text_vision_embedding_model(**encoding)
 
-    return vilt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], model
+    return vilt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], loader
 
 
-variants = ["dandelin/vilt-b32-finetuned-vqa"]
+qa_variants = [QuestionAnsweringVariant.VQA]
 
 
 @pytest.mark.nightly
 @pytest.mark.push
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", qa_variants)
 def test_vilt_question_answering_hf_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH, model=ModelArch.VILT, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
-    framework_model, inputs, model = generate_model_vilt_question_answering_hf_pytorch(variant)
+    framework_model, inputs, loader = generate_model_vilt_question_answering_hf_pytorch(variant)
 
     framework_model.to(torch.bfloat16)
     inputs = [inputs[0].to(torch.bfloat16), inputs[1].to(torch.bfloat16)]
@@ -97,40 +86,31 @@ def test_vilt_question_answering_hf_pytorch(variant):
     )
 
     # Post processing
-    logits = co_out[0]
-    idx = logits.argmax(-1).item()
-    print("Predicted answer:", model.config.id2label[idx])
+    print("Predicted answer:", loader.decode_output(co_out))
 
 
 def generate_model_vilt_maskedlm_hf_pytorch(variant):
-    # Set model configurations
-    config = ViltConfig.from_pretrained(variant)
-    config_dict = config.to_dict()
-    config_dict["return_dict"] = False
-    config = ViltConfig(**config_dict)
 
-    # Load model and processor from HuggingFace
-    processor = download_model(ViltProcessor.from_pretrained, variant)
-    model = download_model(ViltForMaskedLM.from_pretrained, variant, config=config)
-    model.eval()
+    # Load model and inputs
+    loader = MaskedLMLoader(variant=variant)
+    model = loader.load_model(dtype_override=torch.bfloat16)
+    encoding = loader.load_inputs(dtype_override=torch.bfloat16)
 
-    # prepare inputs
-    encoding = processor(get_image(), text2, return_tensors="pt")
-
-    # Wrapper
+    # prepare model and input
+    model.config.return_dict = False
     text_vision_embedding_model = ViLtEmbeddingWrapper(model)
-    vilt_model = ViltModelWrapper(model=model, task=Task.MASKED_LM, text_seq_len=encoding["input_ids"].shape[1])
+    vilt_model = ViltModelWrapper(model=model, task=Task.MASKED_LM.short, text_seq_len=encoding["input_ids"].shape[1])
 
     embedding_output, attention_mask = text_vision_embedding_model(**encoding)
 
     return vilt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], {}
 
 
-variants = ["dandelin/vilt-b32-mlm"]
+mlm_variants = [MaskedLMVariant.MLM]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", mlm_variants)
 def test_vilt_maskedlm_hf_pytorch(variant):
 
     # Record Forge Property

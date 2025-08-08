@@ -69,7 +69,6 @@ from .nn import Softmax, Layernorm, LogSoftmax, Batchnorm, Dropout, MaxPool2dMod
 from .eltwise_nary import Concatenate, Where, IndexCopy, Stack, Interleave
 from .resize import Resize2d, Upsample2d, Downsample2d
 from .embedding import Embedding
-from .quantize import Quantize, Dequantize, Requantize, ForgeRequantize
 from .kv_cache import FillCache, UpdateCache
 from .misc import CumSum
 import forge.op.loss

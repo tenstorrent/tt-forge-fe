@@ -170,7 +170,6 @@ tm_cpu_fallback_ops_of_interest = [
     "full_like",
     "full",
     "gather_nd",
-    "gather",
     "matrix_set_diag",
     "meshgrid",
     "one_hot",

@@ -190,17 +190,14 @@ class TestCollectionData:
             "reciprocal",
             "sigmoid",
             "abs",
-            # "absolute",     # alias for abs
             "cos",
             "exp",
             "neg",
-            # "negative",     # alias for neg
             "rsqrt",
             "sin",
             "square",
             "pow",
             "clamp",
-            # "clip",         # alias for clamp
             "log",
             "log1p",
             "cumsum",
@@ -217,18 +214,12 @@ class TestCollectionData:
     not_implemented = TestCollection(
         operators=[
             "acos",
-            "arccos",
             "acosh",
-            "arccosh",
             "angle",
             "asin",
-            "arcsin",
             "asinh",
-            "arcsinh",
             "atan",
-            "arctan",
             "atanh",
-            "arctanh",
             "bitwise_not",
             "ceil",
             "conj_physical",
@@ -240,7 +231,6 @@ class TestCollectionData:
             "erfinv",
             "exp2",
             "expm1",
-            "fix",
             "floor",
             "frac",
             "lgamma",
@@ -337,32 +327,6 @@ TestParamsData.test_plan_implemented = TestPlan(
     failing_rules=[
         *TestIdsDataLoader.build_failing_rules(
             operators=TestCollectionData.implemented.operators,
-        ),
-        # ValueError: Dtype mismatch: framework_model.dtype=torch.float32, compiled_model.dtype=torch.int32
-        TestCollection(
-            operators=["sqrt", "exp", "reciprocal", "rsqrt", "log", "sigmoid", "tanh"],
-            input_sources=TestCollectionCommon.single.input_sources,
-            input_shapes=TestCollectionCommon.single.input_shapes,
-            dev_data_formats=[
-                torch.int8,
-                torch.int32,
-                torch.int64,
-            ],
-            math_fidelities=TestCollectionCommon.single.math_fidelities,
-            failing_reason=FailingReasons.DTYPE_MISMATCH,
-        ),
-        # ************ square failing rules ***********
-        TestCollection(
-            operators=["square"],
-            input_sources=TestCollectionCommon.single.input_sources,
-            input_shapes=TestCollectionCommon.single.input_shapes,
-            dev_data_formats=[
-                torch.int8,
-                torch.int32,
-                torch.int64,
-            ],
-            math_fidelities=TestCollectionCommon.single.math_fidelities,
-            failing_reason=FailingReasons.ATTRIBUTE_ERROR,
         ),
         TestCollectionData.common_to_skip,
     ],

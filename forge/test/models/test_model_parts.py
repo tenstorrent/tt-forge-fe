@@ -65,20 +65,8 @@ def test_inplace_updation():
         ((45, 2, 45, 45), None, 5.0, torch.float32),
         ((3, 21, 3, 3), None, math.log(50.0), torch.float32),
         ((12, 6, 12, 12), -103.0, None, torch.float32),
-        pytest.param(
-            (18, 11, 18, 18),
-            -50,
-            None,
-            torch.int32,
-            marks=pytest.mark.xfail(reason="AssertionError: Data mismatch PCC=0.86"),
-        ),
-        pytest.param(
-            (8, 1, 8, 8),
-            None,
-            876,
-            torch.int32,
-            marks=pytest.mark.xfail(reason="AssertionError: Data mismatch PCC=0.86"),
-        ),
+        ((18, 11, 18, 18), -50, None, torch.int32),
+        ((8, 1, 8, 8), None, 876, torch.int32),
     ],
 )
 @pytest.mark.skip_model_analysis

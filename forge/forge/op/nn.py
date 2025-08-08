@@ -73,7 +73,7 @@ def LogSoftmax(name: str, operandA: Tensor, *, dim: int, stable: bool = True) ->
     Tensor
         Forge tensor
     """
-    return op("log_softmax", name, operandA, attrs=(dim, stable), dimension=dim, stable=stable).get_tensor()
+    return op("log_softmax", name, operandA, dim=dim, stable=stable).get_tensor()
 
 
 def Layernorm(

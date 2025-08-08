@@ -31,21 +31,6 @@ def eval(op_type, attr, ops):
 
     """
 
-    if op_type == "log_softmax":
-
-        assert len(ops) == 1, "LogSoftmax should have one operand."
-        assert len(attr) == 2, "LogSoftmax should have two attributes."
-
-        t_ops = to_torch_operands(*ops)
-        input_ = t_ops[0]
-        dim = attr[0]
-
-        assert input_.dim() > dim, "Given dimension is out of the shape"
-
-        result = F.log_softmax(input_, dim=dim)
-
-        return result
-
     if op_type == "layernorm":
 
         assert len(ops) == 3, "Layernorm should have three operands."
@@ -173,13 +158,6 @@ def shape(op_type, attr, ops):
 
     """
 
-    if op_type == "log_softmax":
-
-        assert len(ops) == 1, "LogSoftmax should have one operand."
-        assert len(attr) == 2, "LogSoftmax should have two attributes."
-
-        return ops[0], []
-
     if op_type == "layernorm":
 
         assert len(ops) == 3, "Layernorm should have three operands."
@@ -293,17 +271,6 @@ def decompose(op_type, attr, dc, inputs):
         Result of the operation.
 
     """
-
-    if op_type == "log_softmax":
-        assert len(inputs) == 1, "Softmax should have one operand."
-        assert len(attr) == 2, "Softmax should have two attributes."
-        x = inputs[0]
-        dim = attr[0]
-        stable = attr[1]
-        result = dc.op_with_named_attrs("softmax", (x,), {"dim": dim, "stable": stable})
-        result = dc.op("log", (result,))
-        dc.fuse(result)
-        return
 
     if op_type == "batchnorm":
         assert len(inputs) == 5, "Batchnorm should have five operands."

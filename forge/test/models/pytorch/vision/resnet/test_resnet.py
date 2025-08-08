@@ -7,8 +7,7 @@ import pytest
 import timm
 import torch
 from datasets import load_dataset
-from tabulate import tabulate
-from transformers import AutoImageProcessor, ResNetForImageClassification
+from third_party.tt_forge_models.resnet.pytorch import ModelLoader
 
 import forge
 from forge._C import DataFormat
@@ -30,15 +29,10 @@ from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
 from test.utils import download_model
 
-variants = [
-    "microsoft/resnet-50",
-]
-
 
 @pytest.mark.push
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
-def test_resnet_hf(variant):
+def test_resnet_hf():
     random.seed(0)
 
     # Record model details
@@ -56,13 +50,11 @@ def test_resnet_hf(variant):
     dataset = load_dataset("zh-plus/tiny-imagenet")
     images = random.sample(dataset["valid"]["image"], 10)
 
-    # Load framework model
-    framework_model = download_model(ResNetForImageClassification.from_pretrained, variant, return_dict=False).to(
-        torch.bfloat16
-    )
-
-    # Compile model
-    input_sample = [torch.rand(1, 3, 224, 224).to(torch.bfloat16)]
+    # Load model and inputs
+    loader = ModelLoader()
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    input_sample = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -83,43 +75,7 @@ def test_resnet_hf(variant):
     )
 
     # Run model on sample data and print results
-    run_and_print_results(framework_model, compiled_model, images)
-
-
-def run_and_print_results(framework_model, compiled_model, inputs):
-    """
-    Runs inference using both a framework model and a compiled model on a list of input images,
-    then prints the results in a formatted table.
-
-    Args:
-        framework_model: The original framework-based model.
-        compiled_model: The compiled version of the model.
-        inputs: A list of images to process and classify.
-    """
-    label_dict = framework_model.config.id2label
-    processor = AutoImageProcessor.from_pretrained("microsoft/resnet-50")
-
-    results = []
-    for i, image in enumerate(inputs):
-        processed_inputs = processor(image, return_tensors="pt")["pixel_values"].to(torch.bfloat16)
-
-        cpu_logits = framework_model(processed_inputs)[0]
-        cpu_conf, cpu_idx = cpu_logits.softmax(-1).max(-1)
-        cpu_pred = label_dict.get(cpu_idx.item(), "Unknown")
-
-        tt_logits = compiled_model(processed_inputs)[0]
-        tt_conf, tt_idx = tt_logits.softmax(-1).max(-1)
-        tt_pred = label_dict.get(tt_idx.item(), "Unknown")
-
-        results.append([i + 1, cpu_pred, cpu_conf.item(), tt_pred, tt_conf.item()])
-
-    print(
-        tabulate(
-            results,
-            headers=["Example", "CPU Prediction", "CPU Confidence", "Compiled Prediction", "Compiled Confidence"],
-            tablefmt="grid",
-        )
-    )
+    loader.run_and_print_results(framework_model, compiled_model, images)
 
 
 @pytest.mark.nightly

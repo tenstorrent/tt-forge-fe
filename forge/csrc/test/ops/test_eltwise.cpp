@@ -8,6 +8,7 @@
 
 #include "graph_lib/shape.hpp"
 #include "gtest/gtest.h"
+#include "lower_to_forge/common.hpp"
 #include "ops/op.hpp"
 #include "test/ops/test_ops.hpp"
 
@@ -136,6 +137,7 @@ std::vector<tt::ops::Op> get_unary_eltwise_ops()
         // tt::ops::OpType::Clip, // Tested separately.
         // tt::ops::OpType::CumulativeSum, // Tested separately.
         tt::ops::OpType::Sine,
+        // tt::ops::OpType::Cast, // Tested separately.
         tt::ops::OpType::Cosine,
         tt::ops::OpType::Relu,
         tt::ops::OpType::Log,
@@ -295,6 +297,49 @@ INSTANTIATE_TEST_SUITE_P(
     SimpleOpTest,
     testing::ConvertGenerator(
         testing::Combine(testing::ValuesIn(get_pow_ops()), testing::ValuesIn(generate_input_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
+
+/**
+ * Testing cast operation.
+ */
+std::vector<tt::ops::Op> get_cast_ops()
+{
+    std::vector<tt::ops::Op> ops;
+    for (const DataFormat& df : {
+             DataFormat::Float32,
+             DataFormat::Float16,
+             DataFormat::Bfp8,
+             DataFormat::Bfp4,
+             DataFormat::Bfp2,
+             DataFormat::Float16_b,
+             DataFormat::Bfp8_b,
+             DataFormat::Bfp4_b,
+             DataFormat::RawUInt8,
+             DataFormat::RawUInt32,
+             DataFormat::UInt16,
+             DataFormat::Int32,
+         })
+    {
+        ops.push_back(tt::ops::Op(tt::ops::OpType::Cast, {{"dtype", static_cast<int>(df)}}));
+    }
+
+    return ops;
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    CastOpIndividual,
+    SimpleOpDecomposeOnlyTest,
+    testing::ConvertGenerator(
+        testing::Combine(testing::ValuesIn(get_cast_ops()), testing::ValuesIn(get_unary_individual_test_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
+
+INSTANTIATE_TEST_SUITE_P(
+    CastOpSweeps,
+    SimpleOpDecomposeOnlyTest,
+    testing::ConvertGenerator(
+        testing::Combine(testing::ValuesIn(get_cast_ops()), testing::ValuesIn(generate_input_shapes())),
         [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
     [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
 
