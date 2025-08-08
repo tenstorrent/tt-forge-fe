@@ -781,7 +781,7 @@ void Op::decompose_post_optimize(
         case OpType::Conv2dGroupedWeightsBw: return conv_2d_grouped_weights_bw::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Conv2dPrestrideAct: return conv_2d_prestride_act::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Conv2dPrestrideWeights: return conv_2d_prestride_weights::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Conv2dTranspose: return conv_2d_transpose::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Conv2dTranspose: return;
         case OpType::Conv3d: return conv_3d::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::ConvSum: return conv_sum::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Cosine: return;
@@ -885,7 +885,7 @@ void Op::decompose_post_autograd(
         case OpType::Conv2dGroupedWeightsBw: return conv_2d_grouped_weights_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Conv2dPrestrideAct: return conv_2d_prestride_act::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Conv2dPrestrideWeights: return conv_2d_prestride_weights::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Conv2dTranspose: return conv_2d_transpose::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Conv2dTranspose: return;
         case OpType::Conv3d: return conv_3d::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::ConvSum: return conv_sum::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Cosine: return;
@@ -987,7 +987,7 @@ long Op::initial_flops_estimate(
         case OpType::Conv2dGroupedWeightsBw: return conv_2d_grouped_weights_bw::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Conv2dPrestrideAct: return conv_2d_prestride_act::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Conv2dPrestrideWeights: return conv_2d_prestride_weights::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Conv2dTranspose: return conv_2d_transpose::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Conv2dTranspose: return 0;
         case OpType::Conv3d: return conv_3d::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::ConvSum: return conv_sum::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Cosine: return 0;

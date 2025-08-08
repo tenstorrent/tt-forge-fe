@@ -708,7 +708,7 @@ def populate_conv2d_transpose_args(graph, nid, compiler_cfg):
     )
 
     kernel_size = [int(kernel) for kernel in node["attrs"]["kernel_size"][0]]
-    channel_last = int(node["attrs"]["data_layout"][0][0] == "NHWC")
+    channel_last = node["attrs"]["data_layout"][0][0] == "NHWC"
     args.append(("channel_last", f"{channel_last}"))
 
     output_padding = [int(opad) for opad in node["attrs"]["output_padding"][0]]
