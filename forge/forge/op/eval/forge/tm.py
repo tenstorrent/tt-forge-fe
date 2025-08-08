@@ -67,12 +67,6 @@ def eval(type, attr, ops):
         else:
             raise NotImplementedError(f"Dim={dim}")
 
-    if type == "repeat_interleave":
-        assert len(attr) == 2, "repeat_interleave should have two attributes - repeats and dim"
-        repeats = attr[0]
-        dim = attr[1]
-        return t_ops[0].repeat_interleave(repeats=repeats, dim=dim)
-
     if type == "conv2d_depthwise_weights":
         weights = t_ops[0]
         assert len(weights.shape) == 4, "Weights should have rank 4"
@@ -330,17 +324,6 @@ def shape(type, attr, ops):
         shape[-3] //= slice_size
         return tuple(shape), []
 
-    if type == "repeat_interleave":
-        assert len(attr) <= 3, "repeat_interleave should have two attributes - repeats and dim"
-        repeats = attr[0]
-        dim = attr[1]
-
-        if dim < 0:
-            dim += len(ops[0])
-        target_shape = list(ops[0])
-        target_shape[dim] *= repeats
-        return tuple(target_shape), []
-
     if type == "conv2d_depthwise_weights":
         shape = list(ops[0])
 
@@ -575,21 +558,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
             raise ArgumentError("Only dim == 2 and dim == 3 are supported.")
         else:
             raise NotImplementedError("Unimplemented narrow in forge")
-
-    elif type == "repeat_interleave":
-        assert len(attr) == 2, "repeat_interleave should have two attributes - repeats and dim"
-        repeats = attr[0]
-        dim = attr[1]
-        shape = inputs[0].shape.as_list()
-        if dim < 0:
-            dim += len(shape)
-
-        shape.insert(dim, repeats)
-
-        ret = ac.op_with_named_attrs("reshape", (grad,), {"shape": shape})
-        ret = ac.op_with_named_attrs("reduce_sum", (ret,), {"dim_arg": [dim], "keep_dim": True})
-        ret = ac.op_with_named_attrs("squeeze", (ret,), {"dim": dim})
-        return ret
 
     elif type == "index":
         assert len(attr) == 4

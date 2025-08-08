@@ -764,7 +764,7 @@ void Op::decompose_initial(
         case OpType::Relu: return;
         case OpType::Remainder: return;
         case OpType::Repeat: return repeat::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::RepeatInterleave: return repeat_interleave::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::RepeatInterleave: return;
         case OpType::Reshape: return reshape::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Resize2d: return resize_2d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Select: return select::decompose_initial(old_op_type, *this, dc, inputs);
@@ -874,7 +874,7 @@ void Op::decompose_post_optimize(
         case OpType::Relu: return;
         case OpType::Remainder: return;
         case OpType::Repeat: return;
-        case OpType::RepeatInterleave: return repeat_interleave::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::RepeatInterleave: return;
         case OpType::Reshape: return;
         case OpType::Resize2d: return;
         case OpType::Select: return select::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -984,7 +984,7 @@ void Op::decompose_post_autograd(
         case OpType::Relu: return;
         case OpType::Remainder: return;
         case OpType::Repeat: return;
-        case OpType::RepeatInterleave: return repeat_interleave::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::RepeatInterleave: return;
         case OpType::Reshape: return reshape::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Resize2d: return;
         case OpType::Select: return select::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -1092,7 +1092,7 @@ long Op::initial_flops_estimate(
         case OpType::Relu: return 0;
         case OpType::Remainder: return 0;
         case OpType::Repeat: return 0;
-        case OpType::RepeatInterleave: return repeat_interleave::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::RepeatInterleave: return 0;
         case OpType::Reshape: return 0;
         case OpType::Resize2d: return 0;
         case OpType::Select: return select::initial_flops_estimate(old_op_type, *this, inputs);
