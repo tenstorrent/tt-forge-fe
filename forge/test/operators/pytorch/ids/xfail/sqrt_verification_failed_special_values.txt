@@ -1,4 +1,4 @@
-# xfail_sqrt_SPECIAL_VALUES ids
+# xfail_sqrt_VERIFICATION_FAILED_SPECIAL_VALUES ids
 
 sqrt-FROM_ANOTHER_OP-None-(1, 4)-None-None
 sqrt-FROM_ANOTHER_OP-None-(1, 17)-None-None

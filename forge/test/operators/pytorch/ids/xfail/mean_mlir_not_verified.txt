@@ -1,4 +1,4 @@
-# xfail_mean_COMPILATION_FAILED ids
+# xfail_mean_MLIR_NOT_VERIFIED ids
 
 mean-FROM_ANOTHER_OP-None-(1, 3, 4)-None-None
 mean-FROM_ANOTHER_OP-None-(1, 45, 17)-None-None

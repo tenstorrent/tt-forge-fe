@@ -1,4 +1,4 @@
-# xfail_squeeze_INTERNAL_TVM_ERROR ids
+# xfail_squeeze_CANNOT_SQUEEZE_AXIS_NOT_ONE ids
 
 squeeze-FROM_ANOTHER_OP-{'dim': 0}-(2, 1, 2, 1, 2)-None-None
 squeeze-FROM_ANOTHER_OP-{'dim': 2}-(100, 1, 100, 1)-None-None

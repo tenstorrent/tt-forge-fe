@@ -1,4 +1,4 @@
-# xfail_repeat_interleave_SPECIAL_VALUES ids
+# xfail_repeat_interleave_VERIFICATION_FAILED_PCC_NAN ids
 
 repeat_interleave-FROM_ANOTHER_OP-{'repeats': 3, 'dim': 1}-(1, 1)-None-None
 repeat_interleave-FROM_HOST-{'repeats': 3, 'dim': 1}-(1, 1)-None-None

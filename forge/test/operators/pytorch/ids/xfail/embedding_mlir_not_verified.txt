@@ -1,4 +1,4 @@
-# xfail_embedding_COMPILATION_FAILED ids
+# xfail_embedding_MLIR_NOT_VERIFIED ids
 
 embedding-FROM_ANOTHER_OP-{'num_embeddings': 12354, 'embedding_dim': 1000, 'weight_dtype': torch.float32, 'input_dtype': torch.int32}-(1, 2, 3, 4)-torch.int32-None
 embedding-FROM_ANOTHER_OP-{'num_embeddings': 12354, 'embedding_dim': 3200, 'weight_dtype': torch.float32, 'input_dtype': torch.int32}-(1, 2, 3, 4)-torch.int32-None
