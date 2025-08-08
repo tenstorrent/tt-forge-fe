@@ -11,13 +11,11 @@ embedding-CONST_EVAL_PASS-{'num_embeddings': 12354, 'embedding_dim': 3200, 'weig
 embedding-CONST_EVAL_PASS-{'num_embeddings': 12354, 'embedding_dim': 10000, 'weight_dtype': torch.float32, 'input_dtype': torch.int32}-(1, 2, 3, 4)-torch.int32-None
 embedding-FROM_ANOTHER_OP-{'num_embeddings': 229636, 'embedding_dim': 1000, 'weight_dtype': None, 'input_dtype': torch.int32}-(1, 2, 3, 4)-torch.int32-None
 embedding-FROM_ANOTHER_OP-{'num_embeddings': 229636, 'embedding_dim': 3200, 'weight_dtype': None, 'input_dtype': torch.int32}-(1, 2, 3, 4)-torch.int32-None
-embedding-FROM_ANOTHER_OP-{'num_embeddings': 229636, 'embedding_dim': 10000, 'weight_dtype': None, 'input_dtype': torch.int32}-(1, 2, 3, 4)-torch.int32-None
 embedding-FROM_HOST-{'num_embeddings': 229636, 'embedding_dim': 1000, 'weight_dtype': None, 'input_dtype': torch.int32}-(1, 2, 3, 4)-torch.int32-None
 embedding-FROM_HOST-{'num_embeddings': 229636, 'embedding_dim': 3200, 'weight_dtype': None, 'input_dtype': torch.int32}-(1, 2, 3, 4)-torch.int32-None
 embedding-FROM_HOST-{'num_embeddings': 229636, 'embedding_dim': 10000, 'weight_dtype': None, 'input_dtype': torch.int32}-(1, 2, 3, 4)-torch.int32-None
 embedding-CONST_EVAL_PASS-{'num_embeddings': 229636, 'embedding_dim': 1000, 'weight_dtype': None, 'input_dtype': torch.int32}-(1, 2, 3, 4)-torch.int32-None
 embedding-CONST_EVAL_PASS-{'num_embeddings': 229636, 'embedding_dim': 3200, 'weight_dtype': None, 'input_dtype': torch.int32}-(1, 2, 3, 4)-torch.int32-None
-embedding-CONST_EVAL_PASS-{'num_embeddings': 229636, 'embedding_dim': 10000, 'weight_dtype': None, 'input_dtype': torch.int32}-(1, 2, 3, 4)-torch.int32-None
 embedding-FROM_ANOTHER_OP-{'num_embeddings': 8489, 'embedding_dim': 1000, 'weight_dtype': torch.bfloat16, 'input_dtype': torch.int32}-(1, 3, 4)-torch.int32-None
 embedding-FROM_ANOTHER_OP-{'num_embeddings': 8489, 'embedding_dim': 3200, 'weight_dtype': torch.bfloat16, 'input_dtype': torch.int32}-(1, 3, 4)-torch.int32-None
 embedding-FROM_ANOTHER_OP-{'num_embeddings': 8489, 'embedding_dim': 10000, 'weight_dtype': torch.bfloat16, 'input_dtype': torch.int32}-(1, 3, 4)-torch.int32-None

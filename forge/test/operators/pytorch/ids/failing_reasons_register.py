@@ -93,7 +93,6 @@ class FailingReasonsRegister:
         ("sum", FailingReasons.DATA_MISMATCH),
         ("sum", FailingReasons.NOT_IMPLEMENTED),
         ("tanh", FailingReasons.DATA_MISMATCH),
-        ("tanh", FailingReasons.DTYPE_MISMATCH),
     ]
 
     # List of skip reasons for each operator
