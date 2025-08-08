@@ -28,7 +28,7 @@ using namespace graphlib;
 // Formats of attributes:
 // stride: [sH, sW]
 // dilation: [dH, dW]
-// padding: [pT, pL, pB, pR]
+// padding: [pH, pW]
 // output_padding: [opH, opW]
 // groups: int
 // channel_last: bool
@@ -43,6 +43,10 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
     at::Tensor weights = tensors[1];
     std::optional<at::Tensor> bias = tensors.size() == 3 ? std::make_optional(tensors[2]) : std::nullopt;
 
+    // Reshape bias to 1D if needed (PyTorch expects 1D bias for conv_transpose2d)
+    if (bias.has_value() && bias->dim() > 1)
+        bias = bias->view({-1});
+
     // Extract attributes
     std::vector<int> stride = op.attr_as<std::vector<int>>("stride");
     std::vector<int> dilation = op.attr_as<std::vector<int>>("dilation");
@@ -52,8 +56,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
     bool channel_last = op.attr_as<bool>("channel_last");
 
     // Convert to torch formats
-    // Convert padding from [pT, pL, pB, pR] to [pL, pR, pT, pB] for torch.nn.functional.pad
-    std::vector<int64_t> torch_padding = {padding[1], padding[3], padding[0], padding[2]};
+    std::vector<int64_t> torch_padding = {static_cast<int64_t>(padding[0]), static_cast<int64_t>(padding[1])};
     std::vector<int64_t> torch_stride = {static_cast<int64_t>(stride[0]), static_cast<int64_t>(stride[1])};
     std::vector<int64_t> torch_dilation = {static_cast<int64_t>(dilation[0]), static_cast<int64_t>(dilation[1])};
     std::vector<int64_t> torch_output_padding = {
@@ -62,16 +65,14 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
     if (channel_last)
         activations = activations.permute({0, 3, 1, 2});
 
-    at::Tensor padded_activations = torch::nn::functional::pad(activations, torch_padding);
-
     // Remember original dtype for result casting
-    at::ScalarType original_dtype = padded_activations.scalar_type();
+    at::ScalarType original_dtype = activations.scalar_type();
     bool cast_result_to_int32 = false;
     bool cast_result_to_original = false;
 
     if (weights.dtype() == torch::kInt8)
     {
-        padded_activations = padded_activations.to(torch::kFloat);
+        activations = activations.to(torch::kFloat);
         weights = weights.to(torch::kFloat);
 
         if (bias.has_value())
@@ -79,23 +80,16 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 
         cast_result_to_int32 = true;
     }
-    else if (padded_activations.dtype() != weights.dtype())
+    else if (activations.dtype() != weights.dtype())
     {
         // Handle dtype mismatches - cast activations to weights dtype
         // we assume here that bias is already same dtype as weights
-        padded_activations = padded_activations.to(weights.dtype());
+        activations = activations.to(weights.dtype());
         cast_result_to_original = true;
     }
 
     at::Tensor result = at::conv_transpose2d(
-        padded_activations,
-        weights,
-        bias,
-        torch_stride,
-        c10::IntArrayRef({0, 0}),  // padding already applied
-        torch_output_padding,
-        groups,
-        torch_dilation);
+        activations, weights, bias, torch_stride, torch_padding, torch_output_padding, groups, torch_dilation);
 
     if (channel_last)
         result = result.permute({0, 2, 3, 1});
@@ -130,17 +124,16 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 
     std::uint32_t stride_height = stride[0], stride_width = stride[1];
     std::uint32_t dilation_height = dilation[0], dilation_width = dilation[1];
-    std::uint32_t padding_top = padding[0], padding_left = padding[1], padding_bottom = padding[2],
-                  padding_right = padding[3];
+    std::uint32_t padding_height = padding[0], padding_width = padding[1];
 
     std::uint32_t h_in = channel_last ? act_shape[act_shape.size() - 3] : act_shape[act_shape.size() - 2];
     std::uint32_t w_in = channel_last ? act_shape[act_shape.size() - 2] : act_shape[act_shape.size() - 1];
 
     std::uint32_t output_padding_height = output_padding[0], output_padding_width = output_padding[1];
 
-    std::uint32_t h_out = (h_in - 1) * stride_height - (padding_top + padding_bottom) +
+    std::uint32_t h_out = (h_in - 1) * stride_height - 2 * padding_height +
                           dilation_height * (weight_shape[weight_shape.size() - 2] - 1) + output_padding_height + 1;
-    std::uint32_t w_out = (w_in - 1) * stride_width - (padding_left + padding_right) +
+    std::uint32_t w_out = (w_in - 1) * stride_width - 2 * padding_width +
                           dilation_width * (weight_shape[weight_shape.size() - 1] - 1) + output_padding_width + 1;
 
     std::vector<std::uint32_t> out_shape;

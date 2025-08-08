@@ -107,10 +107,15 @@ def Conv2dTranspose(
         padding = [weights.shape[3] // 2] * 2 + [weights.shape[2] // 2] * 2
 
     if isinstance(padding, int):
-        padding = [padding] * 4  # [left, right, top, bottom]
+        padding = [padding] * 2
 
     if isinstance(padding, tuple):
-        padding = list(padding)
+        # padding is tuple (top, left, bottom, right)
+        top, left, bottom, right = padding
+        assert (
+            left == right and top == bottom
+        ), "padding must be a tuple of (top, left, bottom, right) where left == right and top == bottom"
+        padding = [top, left]
 
     if isinstance(dilation, int):
         dilation = [dilation] * 2
@@ -129,7 +134,7 @@ def Conv2dTranspose(
         stride=stride,  # [sH, sW]
         dilation=dilation,  # [dH, dW]
         groups=groups,
-        padding=padding,  # [pT, pL, pB, pR]
+        padding=padding,  # [pH, pW]
         output_padding=output_padding,  # [opH, opW]
         channel_last=channel_last,
     ).get_tensor()
