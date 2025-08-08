@@ -1,4 +1,4 @@
-# xfail_reshape_INTERNAL_TVM_ERROR ids
+# xfail_reshape_TENSOR_TRANSFORM_SHAPE_CHECK ids
 
 reshape-FROM_ANOTHER_OP-{'shape': (0, 0, 1)}-(0,)-None-None
 reshape-FROM_ANOTHER_OP-{'shape': (0, 1, 0)}-(0,)-None-None

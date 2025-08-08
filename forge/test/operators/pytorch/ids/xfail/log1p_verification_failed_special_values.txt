@@ -1,4 +1,4 @@
-# xfail_log1p_SPECIAL_VALUES ids
+# xfail_log1p_VERIFICATION_FAILED_SPECIAL_VALUES ids
 
 log1p-FROM_ANOTHER_OP-None-(1, 17)-None-None
 log1p-FROM_ANOTHER_OP-None-(1, 23)-None-None

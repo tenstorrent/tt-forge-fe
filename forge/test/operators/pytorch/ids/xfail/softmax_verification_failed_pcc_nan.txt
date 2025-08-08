@@ -1,4 +1,4 @@
-# xfail_softmax_SPECIAL_VALUES ids
+# xfail_softmax_VERIFICATION_FAILED_PCC_NAN ids
 
 softmax-FROM_ANOTHER_OP-{'dim': 1}-(64, 1)-None-None
 softmax-FROM_ANOTHER_OP-{'dim': 1}-(9920, 1)-None-None

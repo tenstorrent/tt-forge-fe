@@ -1,4 +1,4 @@
-# xfail_squeeze_COMPILATION_FAILED ids
+# xfail_squeeze_MLIR_NOT_VERIFIED ids
 
 squeeze-FROM_ANOTHER_OP-None-(1, 1)-None-None
 squeeze-FROM_HOST-None-(1, 1)-None-None

@@ -1,4 +1,4 @@
-# xfail_rsqrt_SPECIAL_VALUES ids
+# xfail_rsqrt_VERIFICATION_FAILED_SPECIAL_VALUES ids
 
 rsqrt-FROM_ANOTHER_OP-None-(1, 4)-None-None
 rsqrt-FROM_ANOTHER_OP-None-(1, 17)-None-None

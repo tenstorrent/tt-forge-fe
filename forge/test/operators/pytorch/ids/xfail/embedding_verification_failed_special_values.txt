@@ -1,4 +1,4 @@
-# xfail_embedding_SPECIAL_VALUES ids
+# xfail_embedding_VERIFICATION_FAILED_SPECIAL_VALUES ids
 
 embedding-FROM_ANOTHER_OP-{'num_embeddings': 9125, 'embedding_dim': 1000, 'weight_dtype': torch.bfloat16, 'input_dtype': torch.int32}-(45, 17)-torch.int32-None
 embedding-FROM_ANOTHER_OP-{'num_embeddings': 9125, 'embedding_dim': 3200, 'weight_dtype': torch.bfloat16, 'input_dtype': torch.int32}-(45, 17)-torch.int32-None

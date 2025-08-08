@@ -1,4 +1,4 @@
-# xfail_pow_UNSUPPORTED_SPECIAL_CASE ids
+# xfail_pow_UNSUPPORTED_EXPONENT_VALUE ids
 
 pow-FROM_ANOTHER_OP-{'exponent': -1.26}-(1, 45, 17)-torch.float32-HiFi4
 pow-FROM_ANOTHER_OP-{'exponent': 1.52}-(1, 45, 17)-torch.float32-HiFi4
