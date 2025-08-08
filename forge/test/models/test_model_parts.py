@@ -10,6 +10,7 @@ import forge
 from forge.verify.verify import verify
 import math
 import onnx
+from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
 
 
 @pytest.mark.skip_model_analysis
@@ -206,3 +207,96 @@ def test_flip(input_shape, flip_dim):
         framework_model,
         compiled_model,
     )
+
+
+@pytest.mark.skip_model_analysis
+@pytest.mark.push
+def test_stack_and_reshape_onnx():
+    class stack_reshape(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.boxes_shape = (3234, 4)
+
+        def forward(self, boxes_x, boxes_y):
+            clipped_boxes = torch.stack((boxes_x, boxes_y), dim=2)
+            return clipped_boxes.reshape(self.boxes_shape)
+
+    torch_model = stack_reshape()
+    x = torch.randn(3234, 2)
+    y = torch.randn(3234, 2)
+    inputs = [x, y]
+
+    onnx_path = "stack_reshape.onnx"
+    torch.onnx.export(
+        torch_model,
+        (inputs[0], inputs[1]),
+        onnx_path,
+        opset_version=17,
+    )
+
+    module_name = "stack_reshape"
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule(module_name, onnx_model)
+
+    compiled_model = forge.compile(
+        onnx_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+    )
+
+    verify(inputs, framework_model, compiled_model)
+
+
+variants_with_weights = {
+    "ssdlite320_mobilenet_v3_large": "SSDLite320_MobileNet_V3_Large_Weights",
+}
+
+
+@pytest.mark.nightly
+@pytest.mark.skip_model_analysis
+@pytest.mark.parametrize("variant", variants_with_weights.keys())
+def test_ssdlite320_mobilenet_v3_large_problematic_block(variant):
+    class postprocess_detections(nn.Module):
+        def __init__(self, model):
+            super().__init__()
+            self.model = model
+            self.image_sizes = [(320, 320)]
+
+        def forward(self, input1, input2, input3):
+
+            head_outputs = {"bbox_regression": input1, "cls_logits": input2}
+            anchors = [input3]
+
+            op = self.model.postprocess_detections(head_outputs, anchors, self.image_sizes)
+            return op
+
+    # Load model
+    weight_name = variants_with_weights[variant]
+    framework_model, _ = load_vision_model_and_input(variant, "detection", weight_name)
+    framework_model = postprocess_detections(framework_model)
+
+    bbox_regression = torch.randn(1, 3234, 4)
+    cls_logits = torch.randn(1, 3234, 91)
+    anchors = torch.randn(3234, 4)
+    inputs = [bbox_regression, cls_logits, anchors]
+
+    onnx_path = "problematic_block.onnx"
+    torch.onnx.export(
+        framework_model,
+        (inputs[0], inputs[1], inputs[2]),
+        onnx_path,
+        opset_version=17,
+    )
+
+    module_name = "problematic_block"
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule(module_name, onnx_model)
+
+    compiled_model = forge.compile(
+        onnx_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+    )
+    verify(inputs, framework_model, compiled_model)
