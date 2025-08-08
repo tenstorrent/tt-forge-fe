@@ -4905,6 +4905,51 @@ class DecomposeFloor(DFPatternCallback):
         return floor_result
 
 
+class DecomposeTopK(DFPatternCallback):
+    def __init__(self):
+        super().__init__(rewrite_once=True, require_type=True)
+
+        # Pattern: topk(data) - match topk operation with attributes
+        self.data = wildcard()
+        self.topk = is_op("topk")(self.data)
+        self.pattern = self.topk
+
+    def callback(self, pre, post, node_map):
+        # Get the original topk call
+        topk_call = post
+        data = topk_call.args[0]
+
+        attrs = topk_call.attrs
+
+        k_value = int(attrs.k) if hasattr(attrs, "k") else 1
+
+        axis = int(attrs.axis) if hasattr(attrs, "axis") else -1
+        is_ascend = bool(attrs.is_ascend) if hasattr(attrs, "is_ascend") else False
+        dtype = str(attrs.dtype) if hasattr(attrs, "dtype") else "int64"
+        sorted_indices = relay.argsort(data, axis=axis, is_ascend=False, dtype=dtype)
+
+        data_shape = data.checked_type.shape
+        ndim = len(data_shape)
+        positive_axis = axis if axis >= 0 else ndim + axis
+
+        begin = [0] * ndim
+        end = []
+        strides = [1] * ndim
+
+        for i, dim_size in enumerate(data_shape):
+            if i == positive_axis:
+                end.append(k_value)  # Slice to k elements on the target axis
+            else:
+                if hasattr(dim_size, "value"):
+                    end.append(int(dim_size.value))
+                else:
+                    end.append(int(dim_size))
+        topk_indices = relay.strided_slice(sorted_indices, begin=begin, end=end, strides=strides)
+
+        topk_values = relay.gather(data, axis=positive_axis, indices=topk_indices)
+        return relay.Tuple([topk_values, topk_indices])
+
+
 class DecomposeZerosToFull(DFPatternCallback):
     def __init__(self):
         super().__init__()
@@ -5087,6 +5132,7 @@ def run_forge_compile_passes(
     return run_pattern_callbacks(
         relay_module,
         [
+            DecomposeTopK(),
             DecomposeDepthToSpace(),
             DecomposeZerosToFull(),
             DecomposeMeshgrid(),

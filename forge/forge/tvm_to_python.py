@@ -1511,6 +1511,36 @@ def populate_requantize_args(graph, nid, compiler_cfg):
     return args
 
 
+def populate_argsort_args(graph, nid, compiler_cfg):
+    node = graph["nodes"][nid]
+    args = []
+
+    if "axis" in node["attrs"] and node["attrs"]["axis"][0][0] != "":
+        axis = int(node["attrs"]["axis"][0][0])
+        args.append(("axis", f"{axis}"))
+
+    if "is_ascend" in node["attrs"] and node["attrs"]["is_ascend"][0][0] != "":
+        is_ascend = bool(int(node["attrs"]["is_ascend"][0][0]))
+        args.append(("is_ascend", f"{is_ascend}"))
+
+    if "dtype" in node["attrs"] and node["attrs"]["dtype"][0][0] != "":
+        dtype = node["attrs"]["dtype"][0][0]
+        args.append(("dtype", f'"{dtype}"'))
+
+    return args
+
+
+def populate_gather_args(graph, nid, compiler_cfg):
+    node = graph["nodes"][nid]
+    args = []
+
+    if "axis" in node["attrs"] and node["attrs"]["axis"][0][0] != "":
+        axis = int(node["attrs"]["axis"][0][0])
+        args.append(("dim", f"{axis}"))
+
+    return args
+
+
 # keep sorted
 tvm_to_forge_op_map = {
     "abs": "abs",
@@ -1598,6 +1628,8 @@ tvm_to_forge_op_map = {
     "qnn.dense": "matmul",
     "atan": "atan",
     "upsample2d": "upsample2d",
+    "argsort": "argsort",
+    "gather": "gather",
 }
 
 forge_op_to_function_name = {
@@ -1682,6 +1714,8 @@ forge_op_to_function_name = {
     "requantize": "forge.op.Requantize",
     "atan": "forge.op.Atan",
     "upsample2d": "forge.op.Upsample2d",
+    "argsort": "forge.op.Argsort",
+    "gather": "forge.op.AdvIndex",
 }
 forge_ops_needing_arguments = {
     "argmax": populate_argmax_args,
@@ -1729,6 +1763,8 @@ forge_ops_needing_arguments = {
     "quantize": populate_quantize_args,
     "dequantize": populate_dequantize_args,
     "requantize": populate_requantize_args,
+    "argsort": populate_argsort_args,
+    "gather": populate_gather_args,
 }
 
 
@@ -1783,11 +1819,41 @@ def get_forge_outputs(forge_mods, devices, forge_inputs):
             forge_inputs = to_pt_tensors(forge_inputs)
         else:
             forge_inputs = to_forge_tensors(to_pt_tensors(forge_inputs))
+
+        # DEBUG: Print inputs before forward call
+        if isinstance(forge_inputs, (list, tuple)):
+            print(f"DEBUG: get_forge_outputs - inputs before forward: {len(forge_inputs)} tensors")
+            for j, inp in enumerate(forge_inputs):
+                print(f"DEBUG: Input {j} shape: {inp.shape}")
+        else:
+            print(f"DEBUG: get_forge_outputs - single input shape: {forge_inputs.shape}")
+
         forge_inputs = mod.forward(*forge_inputs)
+
+        # DEBUG: Print outputs after forward call
+        if isinstance(forge_inputs, (list, tuple)):
+            print(f"DEBUG: get_forge_outputs - outputs after forward: {len(forge_inputs)} tensors")
+            for j, out in enumerate(forge_inputs):
+                print(f"DEBUG: Output {j} shape: {out.shape}")
+        else:
+            print(f"DEBUG: get_forge_outputs - single output shape: {forge_inputs.shape}")
 
     if not isinstance(forge_inputs, (list, tuple)):
         forge_inputs = [forge_inputs]
-    return to_forge_tensors(forge_inputs)
+
+    # DEBUG: Print before to_forge_tensors conversion
+    print(f"DEBUG: Before to_forge_tensors conversion: {len(forge_inputs)} tensors")
+    for j, out in enumerate(forge_inputs):
+        print(f"DEBUG: Tensor {j} shape before conversion: {out.shape}")
+
+    result = to_forge_tensors(forge_inputs)
+
+    # DEBUG: Print after to_forge_tensors conversion
+    print(f"DEBUG: After to_forge_tensors conversion: {len(result)} tensors")
+    for j, out in enumerate(result):
+        print(f"DEBUG: Tensor {j} shape after conversion: {out.value().shape}")
+
+    return result
 
 
 def verify_framework_vs_forge_codegen(frame_outputs, forge_outputs, verify_cfg):
@@ -2091,6 +2157,8 @@ def compile_tvm_to_python(
             node["nid"] = nid
             node["users"] = []
             shape = node["attrs"]["shape"][0][0]
+            # if 'topk' in node.get("forge_name", ""):
+            logger.info(f"DEBUG: Node {node['forge_name']} has shape {shape}")
             node["forge_shape"] = tuple(shape)
             if node["op"] == "input":
                 if node["name"] not in weights:

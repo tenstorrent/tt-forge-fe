@@ -43,6 +43,7 @@ op_to_module_map = {
     "tanh": "eltwise_unary",
     "cumsum": "misc",
     "argmax": "reduce",
+    "argsort": "reduce",
     "logical_not": "eltwise_unary",
     "dropout": "eltwise_unary",
     "pow": "eltwise_unary",

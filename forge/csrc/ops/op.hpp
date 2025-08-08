@@ -46,6 +46,7 @@ enum class OpType : uint32_t
     Add,
     AdvIndex,
     Argmax,
+    Argsort,
     Atan,
     AvgPool1d,
     AvgPool2d,

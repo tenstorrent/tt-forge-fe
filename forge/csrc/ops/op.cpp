@@ -45,6 +45,7 @@ class NewToOldOpType
         mapping_[OpType::Add] = "add";
         mapping_[OpType::AdvIndex] = "adv_index";
         mapping_[OpType::Argmax] = "argmax";
+        mapping_[OpType::Argsort] = "argsort";
         mapping_[OpType::Atan] = "atan";
         mapping_[OpType::AvgPool1d] = "avg_pool1d";
         mapping_[OpType::AvgPool2d] = "avg_pool2d";
@@ -167,6 +168,7 @@ class OldToNewOpType
         mapping_["add"] = OpType::Add;
         mapping_["adv_index"] = OpType::AdvIndex;
         mapping_["argmax"] = OpType::Argmax;
+        mapping_["argsort"] = OpType::Argsort;
         mapping_["atan"] = OpType::Atan;
         mapping_["avg_pool1d"] = OpType::AvgPool1d;
         mapping_["avg_pool2d"] = OpType::AvgPool2d;
@@ -354,6 +356,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Add: return add::eval(old_op_type, *this, tensors);
         case OpType::AdvIndex: return adv_index::eval(old_op_type, *this, tensors);
         case OpType::Argmax: return argmax::eval(old_op_type, *this, tensors);
+        case OpType::Argsort: return argsort::eval(old_op_type, *this, tensors);
         case OpType::Atan: return atan::eval(old_op_type, *this, tensors);
         case OpType::AvgPool1d: return avg_pool_1d::eval(old_op_type, *this, tensors);
         case OpType::AvgPool2d: return avg_pool_2d::eval(old_op_type, *this, tensors);
@@ -469,6 +472,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Add: return add::shape(old_op_type, *this, inputs);
         case OpType::AdvIndex: return adv_index::shape(old_op_type, *this, inputs);
         case OpType::Argmax: return argmax::shape(old_op_type, *this, inputs);
+        case OpType::Argsort: return argsort::shape(old_op_type, *this, inputs);
         case OpType::Atan: return atan::shape(old_op_type, *this, inputs);
         case OpType::AvgPool1d: return avg_pool_1d::shape(old_op_type, *this, inputs);
         case OpType::AvgPool2d: return avg_pool_2d::shape(old_op_type, *this, inputs);
@@ -589,6 +593,7 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Add: return add::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::AdvIndex: return adv_index::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Argmax: return argmax::backward(old_op_type, *this, context, operand, inputs, output, gradient);
+        case OpType::Argsort: return argsort::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Atan: return atan::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::AvgPool1d: return avg_pool_1d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::AvgPool2d: return avg_pool_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -726,6 +731,7 @@ void Op::decompose_initial(
         case OpType::Add: return;
         case OpType::AdvIndex: return adv_index::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Argmax: return;
+        case OpType::Argsort: return argsort::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Atan: return;
         case OpType::AvgPool1d: return avg_pool_1d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::AvgPool2d: return avg_pool_2d::decompose_initial(old_op_type, *this, dc, inputs);
@@ -843,6 +849,7 @@ void Op::decompose_post_optimize(
         case OpType::Add: return;
         case OpType::AdvIndex: return;
         case OpType::Argmax: return;
+        case OpType::Argsort: return argsort::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Atan: return;
         case OpType::AvgPool1d: return;
         case OpType::AvgPool2d: return;
@@ -960,6 +967,7 @@ void Op::decompose_post_autograd(
         case OpType::Add: return;
         case OpType::AdvIndex: return;
         case OpType::Argmax: return;
+        case OpType::Argsort: return argsort::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Atan: return;
         case OpType::AvgPool1d: return;
         case OpType::AvgPool2d: return;
@@ -1075,6 +1083,7 @@ long Op::initial_flops_estimate(
         case OpType::Add: return 0;
         case OpType::AdvIndex: return 0;
         case OpType::Argmax: return 0;
+        case OpType::Argsort: return argsort::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Atan: return 0;
         case OpType::AvgPool1d: return 0;
         case OpType::AvgPool2d: return 0;
@@ -1189,6 +1198,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Add: return false;
         case OpType::AdvIndex: return true;
         case OpType::Argmax: return false;
+        case OpType::Argsort: return false;
         case OpType::Atan: return false;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;
@@ -1303,6 +1313,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Add: return true;
         case OpType::AdvIndex: return false;
         case OpType::Argmax: return false;
+        case OpType::Argsort: return false;
         case OpType::Atan: return true;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;
@@ -1417,6 +1428,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Add: return false;
         case OpType::AdvIndex: return false;
         case OpType::Argmax: return false;
+        case OpType::Argsort: return false;
         case OpType::Atan: return true;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;
@@ -1531,6 +1543,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Add: return true;
         case OpType::AdvIndex: return false;
         case OpType::Argmax: return false;
+        case OpType::Argsort: return false;
         case OpType::Atan: return false;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;
@@ -1645,6 +1658,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Add: return false;
         case OpType::AdvIndex: return false;
         case OpType::Argmax: return false;
+        case OpType::Argsort: return false;
         case OpType::Atan: return false;
         case OpType::AvgPool1d: return false;
         case OpType::AvgPool2d: return false;

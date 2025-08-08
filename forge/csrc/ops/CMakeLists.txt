@@ -7,6 +7,7 @@ add_library(ops
     op_add.cpp
     op_adv_index.cpp
     op_argmax.cpp
+    op_argsort.cpp
     op_atan.cpp
     op_avg_pool_1d.cpp
     op_avg_pool_2d.cpp
