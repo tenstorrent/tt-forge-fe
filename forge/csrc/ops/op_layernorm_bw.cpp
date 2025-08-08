@@ -223,7 +223,6 @@ void decompose_post_autograd(
     NodeContext dx = dc.op(graphlib::OpType("multiply", {}, {}), {ivar, dxhat_add_sub});
 
     dc.fuse(dx);
-    return;
 }
 
 }  // namespace layernorm_bw
