@@ -6,8 +6,6 @@ import pathlib
 import subprocess
 from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
-from pathlib import Path
-import re
 
 
 class TTExtension(Extension):
@@ -58,104 +56,16 @@ class CMakeBuild(build_ext):
 with open("README.md", "r") as f:
     long_description = f.read()
 
-# Compute requirements
+# Compute core requirements (minimal dependencies for the main package)
 with open("env/core_requirements.txt", "r") as f:
     core_requirements = f.read().splitlines()
 
 with open("env/linux_requirements.txt", "r") as f:
     linux_requirements = [r for r in f.read().splitlines() if not r.startswith("-r")]
 
-
-def collect_model_requirements(requirements_root: str) -> list[str]:
-    """
-    Collect and deduplicate model-specific Python package requirements from all `requirements.txt` files
-    under the given root directory.
-
-    Handles version conflicts as follows:
-    - If the same package appears with different versions, an error is raised.
-    - If one occurrence has a version and another does not, the no-version spec (latest) is preferred.
-    - Duplicate entries with the same version are ignored.
-
-    Args:
-        requirements_root (str): Path to the directory to search for requirements.txt files.
-
-    Returns:
-        List[str]: A sorted list of unique requirement strings (e.g., ["numpy>=1.21", "torch"]).
-    """
-
-    # Regex to capture package name and optional version specifier
-    # e.g., "torch>=2.1.0" → ("torch", ">=2.1.0")
-    version_pattern = re.compile(r"^([a-zA-Z0-9_\-]+)([<>=!~]+.+)?$")
-
-    # Tracks source of each package → {package_name: (version_str, file_path)}
-    requirement_map = {}
-
-    # Final deduplicated output → {package_name: version_str}
-    # This ensures no duplicates and consistent overwrite behavior
-    final_requirements = {}
-
-    # Find all requirements.txt files under the given root directory
-    for req_file in Path(requirements_root).rglob("requirements.txt"):
-
-        # Open and read each requirements.txt file
-        with open(req_file, "r") as f:
-            for line in f:
-                line = line.strip()  # Remove whitespace at start/end
-
-                # Skip empty lines or comments
-                if not line or line.startswith("#"):
-                    continue
-
-                # Extract package name and version using regex
-                match = version_pattern.match(line)
-                if not match:
-                    raise ValueError(f"Unrecognized requirement format: '{line}' in {req_file}")
-
-                # Extract matched groups
-                pkg_name, version = match.groups()
-
-                # If version is None (e.g., just "torch"), treat it as empty string
-                version = version or ""
-
-                if pkg_name in requirement_map:
-                    # We've already seen this package in another file
-                    prev_version, prev_file = requirement_map[pkg_name]
-
-                    if prev_version != version:
-                        # Conflict: one has version, other has a different version or none
-
-                        if version == "":
-                            # Current one has no version → prefer this (more general)
-                            requirement_map[pkg_name] = ("", req_file)
-                            final_requirements[pkg_name] = ""
-
-                        elif prev_version == "":
-                            # Previous one was no version → keep it, ignore current versioned one
-                            continue
-
-                        else:
-                            # Actual version mismatch → raise an error
-                            raise AssertionError(
-                                f"Conflicting versions for '{pkg_name}':\n"
-                                f"- {prev_version} in {prev_file}\n"
-                                f"- {version} in {req_file}"
-                            )
-
-                    # else: same version → ignore duplicate
-                else:
-                    # First time seeing this package → record it
-                    requirement_map[pkg_name] = (version, req_file)
-                    final_requirements[pkg_name] = version
-
-    # Convert the final dictionary to a list of strings
-    # e.g., {"torch": "==2.1.0", "numpy": ""} → ["torch==2.1.0", "numpy"]
-    return [pkg + ver if ver else pkg for pkg, ver in sorted(final_requirements.items())]
-
-
-model_requirements_root = "forge/test/models"
-model_requirements = collect_model_requirements(model_requirements_root)
-
-requirements = core_requirements + linux_requirements + model_requirements
+# Only include core and linux requirements in the main package installation
+# Model-specific requirements are now handled separately via scripts/install_model_deps.py
+requirements = core_requirements + linux_requirements
 
 # Compute a dynamic version from git
 short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
