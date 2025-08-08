@@ -25,6 +25,13 @@ namespace conv_2d
 {
 using namespace graphlib;
 
+// Formats of attributes:
+// stride: [sH, sW]
+// dilation: [dH, dW]
+// padding: [pT, pL, pB, pR]
+// groups: int
+// channel_last: bool
+
 at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Conv2d, "Wrong op type.");
@@ -70,6 +77,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
     else if (padded_activations.dtype() != weights.dtype())
     {
         // Handle dtype mismatches - cast activations to weights dtype
+        // we assume here that bias is already same dtype as weights
         padded_activations = padded_activations.to(weights.dtype());
         cast_result_to_original = true;
     }

@@ -38,7 +38,7 @@ class Conv2D0(ForgeModule):
             padding=[3, 3, 3, 3],
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
         )
         return conv2d_output_1
 
