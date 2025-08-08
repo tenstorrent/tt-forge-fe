@@ -51,7 +51,7 @@ def Cast(name: str, operandA: Tensor, dtype: Union[torch.dtype, DataFormat]) -> 
         Forge tensor
     """
     dtype = pytorch_dtype_to_forge_dataformat(dtype)
-    return op("cast", name, operandA, dtype=dtype.to_json()).get_tensor(out_df=dtype)
+    return op("cast", name, operandA, dtype=dtype).get_tensor(out_df=dtype)
 
 
 def Exp(name: str, operandA: Tensor) -> Tensor:
@@ -119,7 +119,7 @@ def Pow(name: str, operandA: Tensor, exponent: Union[int, float]) -> Tensor:
         Forge tensor
     """
 
-    return op("pow", name, operandA, attrs=(exponent,), exponent=exponent).get_tensor()
+    return op("pow", name, operandA, exponent=exponent).get_tensor()
 
 
 def Identity(name: str, operandA: Tensor, unsqueeze: str = None, unsqueeze_dim: int = None) -> Tensor:

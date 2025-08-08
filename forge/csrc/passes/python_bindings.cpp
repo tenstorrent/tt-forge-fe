@@ -121,18 +121,7 @@ void PassesModule(py::module &m_passes)
             })
         .def(
             "get_operands",
-            [](tt::DecomposingContext &self, graphlib::NodeContext const &node)
-            {
-                graphlib::Graph *graph = self.get_graph();
-                std::vector<graphlib::Node *> operands = graph->data_operands(graph->node_by_id(node.id));
-                std::vector<graphlib::NodeContext *> operand_contexts;
-                for (auto it = operands.begin(); it != operands.end(); ++it)
-                {
-                    graphlib::NodeContext *op_context = new graphlib::NodeContext(*it);
-                    operand_contexts.push_back(op_context);
-                }
-                return operand_contexts;
-            })
+            [](tt::DecomposingContext &self, graphlib::NodeContext const &node) { return self.get_operands(node); })
         .def(
             "get_compiler_cfg",
             [](tt::DecomposingContext &self) { return borrow_shared_py_object(self.get_compiler_cfg()); });

@@ -48,29 +48,6 @@ def eval(type, attr, ops):
                     result.append(zero_slice)
         return torch.stack(result, dim=dim)
 
-    if type == "gather":
-        assert len(attr) == 5, "Gather should have 5 attributes"
-        dim, begin, length, stride, orig_size = attr
-        x = t_ops[0]
-        result = []
-        zero_shape = list(x.shape)
-        if dim > 0:
-            dim -= 4
-        while len(zero_shape) <= abs(dim):
-            zero_shape = [1] + zero_shape
-            x = x.unsqueeze(0)
-        zero_shape[dim] = 1
-        zero_slice = torch.zeros(zero_shape, dtype=dtype).squeeze(dim)
-        offset = 0
-        for i in range(0, orig_size):
-            range_i = (i - begin) % stride
-            if i >= begin and range_i < length:
-                result.append(x.select(dim, offset))
-                offset += 1
-            else:
-                result.append(zero_slice)
-        return torch.stack(result, dim=dim)
-
     if type == "index":
         assert len(attr) == 4, "Index should have 4 attributes"
         dim, start, stop, stride = attr
@@ -89,16 +66,6 @@ def eval(type, attr, ops):
             return t_ops[0][..., start:stop:stride]
         else:
             raise NotImplementedError(f"Dim={dim}")
-
-    if type == "repeat":
-        sizes = attr
-        return t_ops[0].repeat(*sizes)
-
-    if type == "repeat_interleave":
-        assert len(attr) == 2, "repeat_interleave should have two attributes - repeats and dim"
-        repeats = attr[0]
-        dim = attr[1]
-        return t_ops[0].repeat_interleave(repeats=repeats, dim=dim)
 
     if type == "conv2d_depthwise_weights":
         weights = t_ops[0]
@@ -312,17 +279,6 @@ def shape(type, attr, ops):
         shape[dim] = length * round_up_div(shape[dim] - begin, stride)
         return tuple(shape), []
 
-    if type == "gather":
-        assert len(attr) == 5, "Gather should have 5 attributes"
-        dim, begin, length, stride, orig_size = attr
-        orig_shape = list(ops[0])
-        if dim > 0:
-            dim -= 4
-        while len(orig_shape) <= abs(dim):
-            orig_shape = [1] + orig_shape
-        orig_shape[dim] = orig_size
-        return tuple(orig_shape), []
-
     if type == "hslice":
         assert len(attr) == 1, "HSlice should have one attribute, the slice size"
         slice_size = attr[0]
@@ -367,29 +323,6 @@ def shape(type, attr, ops):
         shape[-2] *= slice_size
         shape[-3] //= slice_size
         return tuple(shape), []
-
-    if type == "repeat":
-        sizes = attr
-        if len(ops[0]) < len(sizes):
-            # Scenario: When the input is a 1D tensor and needs to be repeated in 2D,
-            # `ttir.repeat` does not currently support this directly,
-            # so we are calculating the new shape by expanding the dimensions
-            # to match repeat attr dimensions and calculate the output shape
-            shape = (1,) * (len(sizes) - len(ops[0])) + tuple(ops[0])
-        else:
-            shape = ops[0]
-        return tuple(dim * size for dim, size in zip(list(shape), sizes)), []
-
-    if type == "repeat_interleave":
-        assert len(attr) <= 3, "repeat_interleave should have two attributes - repeats and dim"
-        repeats = attr[0]
-        dim = attr[1]
-
-        if dim < 0:
-            dim += len(ops[0])
-        target_shape = list(ops[0])
-        target_shape[dim] *= repeats
-        return tuple(target_shape), []
 
     if type == "conv2d_depthwise_weights":
         shape = list(ops[0])
@@ -626,21 +559,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         else:
             raise NotImplementedError("Unimplemented narrow in forge")
 
-    elif type == "repeat_interleave":
-        assert len(attr) == 2, "repeat_interleave should have two attributes - repeats and dim"
-        repeats = attr[0]
-        dim = attr[1]
-        shape = inputs[0].shape.as_list()
-        if dim < 0:
-            dim += len(shape)
-
-        shape.insert(dim, repeats)
-
-        ret = ac.op_with_named_attrs("reshape", (grad,), {"shape": shape})
-        ret = ac.op_with_named_attrs("reduce_sum", (ret,), {"dim_arg": [dim], "keep_dim": True})
-        ret = ac.op_with_named_attrs("squeeze", (ret,), {"dim": dim})
-        return ret
-
     elif type == "index":
         assert len(attr) == 4
         dim, start, stop, stride = attr
@@ -704,20 +622,6 @@ def decompose(type, attr, dc, inputs):
         x = dc.op_with_named_attrs("reshape", [x], {"shape": reshape_dims})
 
         dc.fuse(x)
-
-    if type == "repeat":
-        input_shape = inputs[0].shape.as_list()
-        target_shape = attr
-        result = inputs[0]
-
-        if len(input_shape) < len(target_shape):
-            # Scenario: When the input is a 1D tensor and needs to be repeated in 2D,
-            # `ttir.repeat` does not currently support this directly.
-            # To handle this, we first reshape the input to ensure both the input and the repeats have the same dimensions
-            new_shape = (1,) * (len(target_shape) - len(input_shape)) + tuple(input_shape)
-            result = dc.op_with_named_attrs("reshape", [result], {"shape": new_shape})
-            result = dc.op_with_named_attrs("repeat", [result], {"repeats": target_shape}, target_shape)
-            dc.fuse(result)
 
 
 def create_row_picker_matrix(col_indices, lhs_num_cols, lhs_num_channels=None, lhs_batch_size=None):

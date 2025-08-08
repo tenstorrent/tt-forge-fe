@@ -21,9 +21,6 @@ from test.models.models_utils import generate_no_cache, pad_inputs
 variants = [
     pytest.param(
         ModelVariant.MAMBA_790M,
-        marks=pytest.mark.skip(
-            reason="Segmentation fault. Issue Link: https://github.com/tenstorrent/tt-forge-fe/issues/2586"
-        ),
     ),
     pytest.param(
         ModelVariant.MAMBA_2_8B,
@@ -39,13 +36,11 @@ variants = [
     ),
     pytest.param(
         ModelVariant.MAMBA_370M,
-        marks=pytest.mark.skip(
-            reason="Segmentation fault. Issue Link: https://github.com/tenstorrent/tt-forge-fe/issues/2586"
-        ),
     ),
 ]
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_mamba(variant):
@@ -60,6 +55,8 @@ def test_mamba(variant):
     )
     if variant in [ModelVariant.MAMBA_2_8B, ModelVariant.MAMBA_1_4B]:
         pytest.xfail(reason="Requires multi-chip support")
+    elif variant in [ModelVariant.MAMBA_790M, ModelVariant.MAMBA_370M]:
+        pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2586")
 
     # Load model and inputs using model loader
     model_loader = ModelLoader(variant)

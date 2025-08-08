@@ -35,13 +35,8 @@ variants = [
     "openai/whisper-tiny",
     "openai/whisper-base",
     "openai/whisper-small",
-    "openai/whisper-medium",
-    pytest.param(
-        "openai/whisper-large",
-        marks=[
-            pytest.mark.xfail(reason="Fatal Python error: Aborted"),
-        ],
-    ),
+    pytest.param("openai/whisper-medium", marks=pytest.mark.xfail),
+    pytest.param("openai/whisper-large", marks=pytest.mark.xfail),
 ]
 
 
@@ -57,6 +52,9 @@ def test_whisper_onnx(variant, forge_tmp_path):
         task=Task.SPEECH_RECOGNITION,
         source=Source.HUGGINGFACE,
     )
+
+    if variant in ["openai/whisper-large", "openai/whisper-medium"]:
+        pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2767")
 
     # Load model (with tokenizer and feature extractor)
     processor = download_model(AutoProcessor.from_pretrained, variant)

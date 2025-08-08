@@ -607,10 +607,6 @@ class OpNode : public TaggedNode
     }
     bool is_add() const { return new_op_type() == ops::OpType::Add; }
     bool is_maximum() const { return new_op_type() == ops::OpType::Maximum; }
-    bool is_quantization() const { return new_op_type() == ops::OpType::Quantize; }
-    bool is_dequantization() const { return new_op_type() == ops::OpType::Dequantize; }
-    bool is_requantization() const { return new_op_type() == ops::OpType::Requantize; }
-    bool is_quantization_related_op() const { return is_quantization() or is_dequantization() or is_requantization(); }
     bool is_dense_matmul() const { return is_matmul() and not is_sparse_matmul() and not is_depthwise_matmul(); }
     bool is_sparse_matmul() const { return is_matmul() and new_op().has_attr("identity"); }
     // Check whether this is needed, because it makes no sence.

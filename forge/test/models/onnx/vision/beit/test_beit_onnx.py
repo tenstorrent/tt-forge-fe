@@ -18,12 +18,11 @@ import torch
 import onnx
 
 variants = [
-    "microsoft/beit-base-patch16-224",
+    pytest.param("microsoft/beit-base-patch16-224", marks=[pytest.mark.xfail]),
     "microsoft/beit-large-patch16-224",
 ]
 
 
-@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_beit_onnx(variant, forge_tmp_path):

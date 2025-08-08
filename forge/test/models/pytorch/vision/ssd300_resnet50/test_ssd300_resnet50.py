@@ -22,7 +22,6 @@ from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_pytorch_ssd300_resnet50():
     # Record Forge Property
     module_name = record_model_properties(
