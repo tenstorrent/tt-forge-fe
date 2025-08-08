@@ -182,8 +182,7 @@ void decompose_initial(
     NodeContext activations = inputs[0];
     NodeContext weight = inputs[1];
 
-    bool has_bias = inputs.size() == 3;
-    std::optional<NodeContext> bias = has_bias ? std::make_optional(inputs[2]) : std::nullopt;
+    std::optional<NodeContext> bias = inputs.size() == 3 ? std::make_optional(inputs[2]) : std::nullopt;
 
     std::vector<int> stride = op.attr_as<std::vector<int>>("stride");
     std::vector<int> dilation = op.attr_as<std::vector<int>>("dilation");
@@ -192,14 +191,14 @@ void decompose_initial(
     int groups = op.attr_as<int>("groups");
     bool channel_last = op.attr_as<bool>("channel_last");
 
-    std::size_t bias_shape_size = has_bias ? bias->shape.as_vector().size() : 0;
+    std::size_t bias_shape_size = bias.has_value() ? bias->shape.as_vector().size() : 0;
     std::size_t activations_shape_size = activations.shape.as_vector().size();
 
     bool is_channel_last = channel_last;
 
     // Unsqueeze bias to match the number of dimensions of the activations
     bool is_bias_unchanged = true;
-    if (has_bias && bias_shape_size < activations_shape_size)
+    if (bias.has_value() && bias_shape_size < activations_shape_size)
     {
         while (bias_shape_size < activations_shape_size)
         {
@@ -218,7 +217,8 @@ void decompose_initial(
 
     // Check if bias needs transpose for channel alignment:
     // weight shape: [C_in, C_out, kernel_h, kernel_w], bias shape: [..., C_out]
-    if (has_bias && bias->shape.as_vector()[bias_shape_size - 1] != weight.shape.as_vector()[1] && !is_channel_last)
+    if (bias.has_value() && bias->shape.as_vector()[bias_shape_size - 1] != weight.shape.as_vector()[1] &&
+        !is_channel_last)
     {
         *bias = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {*bias});
         *bias = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {*bias});
@@ -239,7 +239,7 @@ void decompose_initial(
             {"channel_last", true}};
 
         std::vector<NodeContext> new_inputs = {activations, weight};
-        if (has_bias)
+        if (bias.has_value())
             new_inputs.push_back(*bias);
 
         NodeContext result = dc.op(graphlib::OpType("conv2d_transpose", {}, conv_transpose_attrs), new_inputs);
