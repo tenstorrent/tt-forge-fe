@@ -29,125 +29,6 @@ def eval(type, attr, ops):
                     result.append(zero_slice)
         return torch.stack(result, dim=dim)
 
-    if type == "conv2d_depthwise_weights":
-        weights = t_ops[0]
-        assert len(weights.shape) == 4, "Weights should have rank 4"
-
-        w, z, cin, cout = weights.shape
-
-        assert cin == 1, "Depthwise weights should always have cin == 1"
-
-        # [1, 9, 1, 65] -> [1, 9, 1, 96]
-        weights = torch.nn.functional.pad(weights, (0, align_up_tile(cout) - cout))
-        # [1, 9, 1, 96] -> [1, 9, 32, 96]
-        weights = torch.nn.functional.pad(weights, (0, 0, 0, align_up_tile(cin) - cin))
-
-        # Diagonally embed weights
-        weights_diag = torch.zeros_like(weights, requires_grad=False)
-
-        cnt_kernels = z
-        ct = weights.shape[-1] // TILE_DIM
-        for idx_kernel in range(cnt_kernels):
-            for idx_ct in range(ct):
-                weights_diag[:, idx_kernel, :, idx_ct * TILE_DIM : (idx_ct + 1) * TILE_DIM] = torch.diag_embed(
-                    weights[:, idx_kernel, 0, idx_ct * TILE_DIM : (idx_ct + 1) * TILE_DIM]
-                )
-
-        # [1, 9, 32, 96] -> [1, 1, 9 * 32, 96]
-        weights_diag = weights_diag.reshape(w, 1, -1, weights.shape[-1])
-
-        return weights_diag
-
-    if type == "conv2d_depthwise_weights_bw":
-        assert False, "not implemented yet"
-
-    if type == "conv2d_grouped_weights":
-        weights = t_ops[0]
-        w = weights.shape[0]
-        z = weights.shape[1]
-        cin = weights.shape[2]
-        cout = weights.shape[3]
-        output_group = cout // attr[0]
-
-        weights = torch.nn.functional.pad(weights, (0, align_up_tile(cout) - cout))
-        weights = weights.reshape(w, z, -1, weights.shape[-1])
-
-        weights_sections = torch.split(weights, output_group, dim=-1)
-        new_weights = torch.zeros(w, z, align_up_tile(attr[0] * cin), align_up_tile(cout))
-        for i, section in enumerate(weights_sections):
-            new_weights[
-                :,
-                :,
-                i * section.shape[-2] : (i + 1) * section.shape[-2],
-                i * section.shape[-1] : (i + 1) * section.shape[-1],
-            ] = section
-
-        weights = new_weights.unsqueeze(-3)
-
-        if len(attr) == 4:
-            weights = weights.transpose(2, 3)
-            weights = weights.reshape(w, z, TILE_DIM, -1)
-        elif len(attr) == 5:
-            weights = weights.transpose(1, 2)
-            weights = weights.transpose(2, 3)
-            weights = weights.reshape(w, 1, align_up_tile(attr[0] * cin), -1)
-        return weights
-
-    if type == "conv2d_grouped_weights_bw":
-        weights = t_ops[0]
-        groups = attr[0]
-        w = 1
-        z = attr[1]
-        cin = attr[2]
-        cout = attr[3]
-        output_group = cout // groups
-
-        if len(attr) == 4:
-            assert weights.shape[0] == w
-            assert weights.shape[1] == z
-            assert weights.shape[2] == TILE_DIM
-            weights = weights.transpose(2, 3)
-            weights = weights.reshape(w, z, -1, TILE_DIM, TILE_DIM)
-        elif len(attr) == 5:
-            weights = weights.reshape(w, 1, align_up_tile(groups * cin), -1)
-            weights = weights.transpose(2, 3)
-            weights = weights.transpose(1, 2)
-            weights = weights.reshape(w, z, align_up_tile(groups * cin), align_up_tile(cout))
-
-        sections = []
-        for i in range(groups):
-            section = weights[:, :, i * cin : (i + 1) * cin, i * output_group : (i + 1) * output_group]
-            sections.append(section)
-
-        new_weights = torch.concat(sections, dim=-1)
-
-        weights = new_weights.reshape(w, z, cin, -1)[:, :, :, :cout]
-        return weights
-
-    if type == "conv2d_prestride_act":
-        assert len(attr) == 6, "conv2d_prestride_act should have 6 attributes"
-        stride_height, stride_width, kernel_height, kernel_width, original_y, original_x = attr
-
-        act = t_ops[0]
-
-        act = torch.nn.functional.pad(
-            act,
-            (0, align_up(original_x, stride_width) - original_x, 0, align_up(original_y, stride_height) - original_y),
-        )
-
-        prestrided_activations = []
-        for y in range(stride_height):
-            for x in range(stride_width):
-                prestrided_activations.append(act[:, :, y::stride_height, x::stride_width])
-
-        prestrided_activations = torch.cat(prestrided_activations, dim=-3)
-
-        w, z, r, c = prestrided_activations.shape
-        prestrided_activations = prestrided_activations.view(w, 1, z, r * c)
-        # prestrided_activations = prestrided_activations.transpose(-1, -2)
-
-        return prestrided_activations
-
     if type == "pixel_shuffle":
         assert len(ops) == 1, "Pixel shuffle should have one operand."
         assert len(attr) == 1, "Pixel shuffle should have one attribute."
@@ -197,62 +78,6 @@ def shape(type, attr, ops):
         shape = list(ops[0])
         shape[dim] = length * round_up_div(shape[dim] - begin, stride)
         return tuple(shape), []
-
-    if type == "conv2d_depthwise_weights":
-        shape = list(ops[0])
-
-        w, k, _, cout = shape
-        shape = [w, 1, k * TILE_DIM, align_up_tile(cout)]
-
-        return tuple(shape), []
-
-    if type == "conv2d_depthwise_weights_bw":
-        assert False, "not yet implemented"
-
-    if type == "conv2d_grouped_weights":
-        shape = list(ops[0])
-        if len(attr) == 4:
-            shape[2] = TILE_DIM
-        elif len(attr) == 5:
-            _, k, cin, cout = shape
-            shape[1] = 1
-            shape[2] = align_up_tile(attr[0] * cin)
-            shape[3] = k * align_up_tile(cout)
-        return tuple(shape), []
-
-    if type == "conv2d_grouped_weights_bw":
-        shape = list(ops[0])
-        if len(attr) == 4:
-            assert shape[2] == TILE_DIM
-            shape[2] = 1
-        elif len(attr) == 5:
-            w, k, cin, cout, _ = attr
-            shape[1] = k
-            shape[2] = cin
-            shape[3] = cout
-        return tuple(shape), []
-
-    if type == "conv2d_prestride_act":
-        assert len(attr) == 6, "conv2d_prestride_act should have 6 attributes"
-        stride_height, stride_width, kernel_height, kernel_width, original_y, original_x = attr
-
-        shape = list(ops[0])
-        assert len(shape) == 4
-
-        shape[-2] = (shape[-2] + stride_height - 1) // stride_height
-        shape[-1] = (shape[-1] + stride_width - 1) // stride_width
-
-        shape[-3] *= stride_height * stride_width
-
-        # reshape (no transpose in Prestride transform in BE tilize)
-        reshape_shape = [
-            shape[0],
-            1,
-            shape[1],
-            shape[2] * shape[3],
-        ]
-
-        return tuple(reshape_shape), []
 
     if type == "pixel_shuffle":
         assert len(ops) == 1, "Pixel shuffle should have one operand."
@@ -306,13 +131,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     assert operand == 0, "Invalid operand index"
 
-    if type == "conv2d_depthwise_weights":
-        return ac.op_with_named_attrs("conv2d_depthwise_weights_bw", (grad,), {}, attr)
-
-    elif type == "conv2d_grouped_weights":
-        return ac.op_with_named_attrs("conv2d_grouped_weights_bw", (grad,), {}, attr)
-
-    elif type == "select":
+    if type == "select":
         assert len(attr) == 4
         dim, begin, length, stride = attr
         orig_size = inputs[0].shape[dim]
