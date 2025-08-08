@@ -6,20 +6,16 @@
 
 #include <algorithm>
 #include <memory>
-#include <sstream>
-#include <unordered_map>
 #include <utils/assert.hpp>
 #include <utils/logger.hpp>
 
 #include "forge_graph_module.hpp"
 #include "graph_lib/defines.hpp"
-#include "graph_lib/edge.hpp"
 #include "graph_lib/graph.hpp"
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
 #include "reportify/reportify.hpp"
-#include "ops/op.hpp"
 
 using Graph = tt::graphlib::Graph;
 
@@ -459,133 +455,40 @@ std::unique_ptr<Graph> extract_optimizer_graph(
         "Expect all inputs to the optimizer graph to be Gradient inputs");
 
     opt_graph->register_module_inputs(opt_module_inputs);
+    
+    // Insert cast nodes for weight outputs to convert from fp32 back to original parameter dtype
+    for (auto output_id : opt_module_outputs) {
+        auto output_node = opt_graph->node_by_id(output_id);
+        if (output_node->name().find("_updated") == std::string::npos) continue;
+        
+        // Get original parameter name and node
+        std::string param_name = output_node->name().substr(0, output_node->name().find("_updated"));
+        auto param_node = opt_graph->get_node_by_name(param_name);
+        if (!param_node || param_node->output_df() == DataFormat::Float32 || 
+            !is_float_data_format(param_node->output_df())) continue;
+        
+        // Get producer and insert cast node
+        auto producers = opt_graph->operands(output_node);
+        if (producers.empty()) continue;
+        
+        auto producer = producers[0];
+        auto cast_node = opt_graph->add_node(
+            graphlib::create_node<graphlib::PyOpNode>(
+                param_name + "_cast_to_original",
+                graphlib::OpType("cast", {}, {{"dtype", static_cast<int>(param_node->output_df())}})),
+            0);
+        
+        cast_node->set_shape(producer->shape());
+        cast_node->set_output_df(param_node->output_df());
+        cast_node->set_optimizer();
+        
+        // Rewire: producer -> cast -> output
+        opt_graph->remove_edge(opt_graph->operand_data_edges(output_node)[0]);
+        opt_graph->add_edge(graphlib::Edge(producer->id(), 0, cast_node->id(), 0, graphlib::EdgeType::kData));
+        opt_graph->add_edge(graphlib::Edge(cast_node->id(), 0, output_node->id(), 0, graphlib::EdgeType::kData));
+    }
+    
     opt_graph->register_module_outputs(opt_module_outputs);
-
-    auto topo_graph = graphlib::topological_sort(*opt_graph);
-    // get df
-    auto df = DataFormat::Float16_b;
-    auto edges_to_remove = std::vector<graphlib::Edge>();
-
-    log_debug("OPT: Topological sort of optimizer graph");
-
-    for (auto node : topo_graph)
-    {
-        // if node is input
-        log_debug("OPT: Found node type {} with name {}", node->node_type(), node->name());
-        if (node->node_type() == graphlib::NodeType::kInput)
-        {
-            log_debug("OPT: Found input node {}", node->name());
-            if (node->output_df() == DataFormat::Float32)
-            {
-                continue;
-            }
-
-            df = node->output_df();
-            // create cast node
-            graphlib::OpType::Attrs named_attr = graphlib::OpType::Attrs{{"dtype", "Float32"}};
-            graphlib::OpType cast_op("cast", {}, named_attr);
-            auto cast_node = graphlib::create_node<graphlib::PyOpNode>(node->name() + "_cast", cast_op);
-            cast_node->set_shape(node->shape());
-            cast_node->set_output_df(df);
-            cast_node->set_epoch_type(graphlib::NodeEpochType::Optimizer);
-            auto cast_node_ptr = cast_node.get();
-            opt_graph->add_node(std::move(cast_node), 0 /*subgraph_id=*/);
-
-            opt_graph->add_edge(
-                graphlib::Edge(node->id(), 0, cast_node_ptr->id(), 0, graphlib::EdgeType::kData)
-            );
-            // get all users of node
-            auto edges = opt_graph->edges(node, [](graphlib::Edge edge) { return true; });
-            for (auto edge : edges)
-            {
-                // except for cast edge
-                if (edge.consumer_node_id == cast_node_ptr->id() || edge.producer_node_id == cast_node_ptr->id())
-                {
-                    continue;
-                }
-                opt_graph->add_edge(
-                    graphlib::Edge(cast_node_ptr->id(), 0, edge.consumer_node_id, edge.consumer_input_port_id, edge.edge_type)
-                );
-                edges_to_remove.push_back(edge);
-            }
-        }
-
-        // if node is output
-        else if (node->node_type() == graphlib::NodeType::kOutput)
-        {
-            // get all users of node
-            log_debug("OPT: Found output node {} with df {}", node->name(), node->output_df());
-            auto users = opt_graph->operands(node);
-            // if weight in name
-            if (node->name().find("_updated") == std::string::npos)
-            {
-                log_debug("OPT: Found weight output node {}", node->name());
-                continue;
-            }
-            // get name without _updated
-            std::string name = node->name().substr(0, node->name().find("_updated"));
-            // get node by name
-            auto node_ptr = opt_graph->get_node_by_name(name);
-            // if node is input
-            df = node_ptr->output_df();
-
-            if (df == DataFormat::Float32)
-            {
-                continue;
-            }
-            
-            for (auto user : users)
-            {
-                // if there is a mismatch in df, create a cast node
-                log_debug("OPT: Found user node {} with df {} and df {}", user->name(), user->output_df(), df);
-                if (user->output_df() == df)
-                {
-                    continue;
-                }
-                
-                std::stringstream ss;
-                ss << df;
-                std::string dtype_str = ss.str();
-                graphlib::OpType::Attrs named_attr = graphlib::OpType::Attrs{{"dtype", dtype_str}};
-                graphlib::OpType cast_op("cast", {}, named_attr);
-                auto cast_node = graphlib::create_node<graphlib::PyOpNode>(user->name() + "_cast", cast_op);
-                auto py_cast_node = opt_graph->add_node(std::move(cast_node), 0 /*subgraph_id=*/);
-                py_cast_node->set_shape(user->shape());
-                py_cast_node->set_output_df(df);
-                opt_graph->add_edge(
-                    graphlib::Edge(user->id(), 0, py_cast_node->id(), 0, graphlib::EdgeType::kData)
-                );
-                opt_graph->add_edge(
-                    graphlib::Edge(py_cast_node->id(), 0,  node->id(), 0, graphlib::EdgeType::kData)
-                );
-                auto edges = opt_graph->edges(node, [](graphlib::Edge edge) { return true; });
-                for (auto edge : edges)
-                {
-                    // remove all except the cast edge
-                    if (edge.consumer_node_id == py_cast_node->id() || edge.producer_node_id == py_cast_node->id())
-                    {
-                        continue;
-                    }
-                    edges_to_remove.push_back(edge);
-                }
-            
-            }
-        }
-        else
-        {
-            node->set_output_df(DataFormat::Float32);
-        }
-    }
-    // deduplicate edges_to_remove
-    std::sort(edges_to_remove.begin(), edges_to_remove.end());
-    edges_to_remove.erase(std::unique(edges_to_remove.begin(), edges_to_remove.end()), edges_to_remove.end());
-
-    for (auto edge : edges_to_remove)
-    {
-        // see if in
-        log_debug("OPT: Removing edge {} from {}", edge.producer_node_id, edge.consumer_node_id);
-        opt_graph->remove_edge(edge);
-    }
 
 
 
