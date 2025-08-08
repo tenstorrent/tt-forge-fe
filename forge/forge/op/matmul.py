@@ -39,24 +39,3 @@ def Matmul(
         result = op("add", name + ".bias", result, bias).get_tensor()
 
     return result
-
-
-def SparseMatmul(name: str, sparseA: Tensor, denseB: Tensor) -> Tensor:
-    """
-    Sparse matrix multiplication transformation on input activations. y = ab
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    sparseA: Tensor
-        Input operand A sparse tensor
-
-    denseB: Tensor
-        Input operand B dense tensor
-    """
-    assert sparseA.has_value()
-    assert sparseA.value().is_sparse
-
-    return op("sparse_matmul", name, sparseA, denseB).get_tensor()

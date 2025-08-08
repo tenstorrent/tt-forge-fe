@@ -126,7 +126,6 @@ class NewToOldOpType
         mapping_[OpType::Sine] = "sine";
         mapping_[OpType::Softmax] = "softmax";
         mapping_[OpType::SoftmaxBw] = "softmax_bw";
-        mapping_[OpType::SparseMatmul] = "sparse_matmul";
         mapping_[OpType::Sqrt] = "sqrt";
         mapping_[OpType::Squeeze] = "squeeze";
         mapping_[OpType::Stack] = "stack";
@@ -241,7 +240,6 @@ class OldToNewOpType
         mapping_["sine"] = OpType::Sine;
         mapping_["softmax"] = OpType::Softmax;
         mapping_["softmax_bw"] = OpType::SoftmaxBw;
-        mapping_["sparse_matmul"] = OpType::SparseMatmul;
         mapping_["sqrt"] = OpType::Sqrt;
         mapping_["squeeze"] = OpType::Squeeze;
         mapping_["stack"] = OpType::Stack;
@@ -421,7 +419,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Sine: return sine::eval(old_op_type, *this, tensors);
         case OpType::Softmax: return softmax::eval(old_op_type, *this, tensors);
         case OpType::SoftmaxBw: return softmax_bw::eval(old_op_type, *this, tensors);
-        case OpType::SparseMatmul: return sparse_matmul::eval(old_op_type, *this, tensors);
         case OpType::Sqrt: return sqrt::eval(old_op_type, *this, tensors);
         case OpType::Squeeze: return squeeze::eval(old_op_type, *this, tensors);
         case OpType::Stack: return stack::eval(old_op_type, *this, tensors);
@@ -529,7 +526,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Sine: return sine::shape(old_op_type, *this, inputs);
         case OpType::Softmax: return softmax::shape(old_op_type, *this, inputs);
         case OpType::SoftmaxBw: return softmax_bw::shape(old_op_type, *this, inputs);
-        case OpType::SparseMatmul: return sparse_matmul::shape(old_op_type, *this, inputs);
         case OpType::Sqrt: return sqrt::shape(old_op_type, *this, inputs);
         case OpType::Squeeze: return squeeze::shape(old_op_type, *this, inputs);
         case OpType::Stack: return stack::shape(old_op_type, *this, inputs);
@@ -642,7 +638,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Sine: return sine::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Softmax: return softmax::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::SoftmaxBw: return softmax_bw::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::SparseMatmul: return sparse_matmul::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Sqrt: return sqrt::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Squeeze: return squeeze::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Stack: return stack::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -743,7 +738,7 @@ void Op::decompose_initial(
         case OpType::LogicalAnd: return;
         case OpType::LogicalNot: return;
         case OpType::Mask: return;
-        case OpType::Matmul: return matmul::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Matmul: return;
         case OpType::MaxPool1d: return;
         case OpType::MaxPool2d: return max_pool_2d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Maximum: return;
@@ -772,7 +767,6 @@ void Op::decompose_initial(
         case OpType::Sine: return;
         case OpType::Softmax: return;
         case OpType::SoftmaxBw: return;
-        case OpType::SparseMatmul: return sparse_matmul::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Sqrt: return;
         case OpType::Squeeze: return;
         case OpType::Stack: return stack::decompose_initial(old_op_type, *this, dc, inputs);
@@ -853,7 +847,7 @@ void Op::decompose_post_optimize(
         case OpType::LogicalAnd: return;
         case OpType::LogicalNot: return;
         case OpType::Mask: return;
-        case OpType::Matmul: return matmul::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Matmul: return;
         case OpType::MaxPool1d: return;
         case OpType::MaxPool2d: return;
         case OpType::Maximum: return;
@@ -882,7 +876,6 @@ void Op::decompose_post_optimize(
         case OpType::Sine: return;
         case OpType::Softmax: return;
         case OpType::SoftmaxBw: return;
-        case OpType::SparseMatmul: return sparse_matmul::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Sqrt: return;
         case OpType::Squeeze: return;
         case OpType::Stack: return;
@@ -963,7 +956,7 @@ void Op::decompose_post_autograd(
         case OpType::LogicalAnd: return;
         case OpType::LogicalNot: return;
         case OpType::Mask: return;
-        case OpType::Matmul: return matmul::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Matmul: return;
         case OpType::MaxPool1d: return;
         case OpType::MaxPool2d: return;
         case OpType::Maximum: return;
@@ -992,7 +985,6 @@ void Op::decompose_post_autograd(
         case OpType::Sine: return;
         case OpType::Softmax: return;
         case OpType::SoftmaxBw: return softmax_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::SparseMatmul: return sparse_matmul::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Sqrt: return;
         case OpType::Squeeze: return;
         case OpType::Stack: return;
@@ -1071,7 +1063,7 @@ long Op::initial_flops_estimate(
         case OpType::LogicalAnd: return 0;
         case OpType::LogicalNot: return 0;
         case OpType::Mask: return 0;
-        case OpType::Matmul: return matmul::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Matmul: return 0;
         case OpType::MaxPool1d: return 0;
         case OpType::MaxPool2d: return 0;
         case OpType::Maximum: return 0;
@@ -1100,7 +1092,6 @@ long Op::initial_flops_estimate(
         case OpType::Sine: return 0;
         case OpType::Softmax: return 0;
         case OpType::SoftmaxBw: return 0;
-        case OpType::SparseMatmul: return sparse_matmul::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Sqrt: return 0;
         case OpType::Squeeze: return 0;
         case OpType::Stack: return 0;
@@ -1207,7 +1198,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return false;
         case OpType::Softmax: return false;
         case OpType::SoftmaxBw: return false;
-        case OpType::SparseMatmul: return false;
         case OpType::Sqrt: return false;
         case OpType::Squeeze: return true;
         case OpType::Stack: return false;
@@ -1314,7 +1304,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return true;
         case OpType::Softmax: return false;
         case OpType::SoftmaxBw: return false;
-        case OpType::SparseMatmul: return false;
         case OpType::Sqrt: return true;
         case OpType::Squeeze: return false;
         case OpType::Stack: return true;
@@ -1421,7 +1410,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return true;
         case OpType::Softmax: return false;
         case OpType::SoftmaxBw: return false;
-        case OpType::SparseMatmul: return false;
         case OpType::Sqrt: return true;
         case OpType::Squeeze: return false;
         case OpType::Stack: return false;
@@ -1528,7 +1516,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return false;
         case OpType::Softmax: return false;
         case OpType::SoftmaxBw: return false;
-        case OpType::SparseMatmul: return false;
         case OpType::Sqrt: return false;
         case OpType::Squeeze: return false;
         case OpType::Stack: return false;
@@ -1635,7 +1622,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return false;
         case OpType::Softmax: return false;
         case OpType::SoftmaxBw: return false;
-        case OpType::SparseMatmul: return false;
         case OpType::Sqrt: return false;
         case OpType::Squeeze: return false;
         case OpType::Stack: return true;
