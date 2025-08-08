@@ -53,65 +53,6 @@ def calculate_output_dimensions(original_x, original_y, stride, padding):
     return math.ceil(original_x / stride), math.ceil(original_y / stride)
 
 
-# def generate_conv2d_inputs(input_channels, act_r_dim, act_c_dim, r0_rows_per_iteration=0):
-#    padded_inp_channels = math.ceil(input_channels / TILE_HEIGHT) * TILE_HEIGHT
-#    padded_r_dim = math.ceil(act_r_dim / TILE_HEIGHT) * TILE_HEIGHT
-#    padded_c_dim = math.ceil(act_c_dim / TILE_WIDTH) * TILE_WIDTH
-#
-#    activations = np.random.uniform(low=0, high=0.1, size=(1, input_channels, act_r_dim, act_c_dim)).astype("float32")
-#
-#    # Transpose for forge, leaving the original activations for pytorch expected_result
-#    npad = ( (0, 0), (0, padded_inp_channels - input_channels), (0, padded_r_dim - act_r_dim), (0, padded_c_dim - act_c_dim) )
-#    act_padded = np.pad(activations, pad_width=npad, mode='constant', constant_values=0)
-#    act_transposed = np.transpose(act_padded, (0, 2, 1, 3))
-#    act_transposed = np.transpose(act_transposed, (0, 1, 3, 2))
-#    act_transposed = np.copy(act_transposed, order='C') # settle the order before sending it to C
-#    activation_rows = get_conv_tensor_row_count(act_r_dim, act_c_dim, r0_rows_per_iteration)
-#    tt_act_transposed = flatten_for_conv(act_transposed, act_c_dim, act_r_dim, output_rows=activation_rows, shape_only=True)
-#    tt_act_transposed_with_values = flatten_for_conv(act_transposed, act_c_dim, act_r_dim, output_rows=activation_rows, shape_only=False) # did not want to reimplement for python
-#    act_transposed = tt_tensor_wrapper_to_numpy(tt_act_transposed_with_values)
-#
-#    return torch.tensor(activations), torch.tensor(act_transposed)
-#
-#
-# def transform_forge_conv2d_output(result, act_c_dim, act_r_dim, stride, channel_size=None):
-#    # Re-transpose back
-#    act_c_dim = math.ceil(act_c_dim / stride)
-#    act_r_dim = math.ceil(act_r_dim / stride)
-#    result_as_tt_tensor_wrapper = tt_tensor_to_tt_tensor_wrapper(numpy_to_tt_tensor(result.numpy(), TensorType.Activation, False))
-#    unflattened_result_as_tt_tensor_wrapper = unflatten_from_conv(result_as_tt_tensor_wrapper, act_c_dim, act_r_dim, False)
-#    result = tt_tensor_wrapper_to_numpy(unflattened_result_as_tt_tensor_wrapper) # unflatted into 3d
-#    result = np.transpose(result, (0, 1, 3, 2))
-#    result = np.transpose(result, (0, 2, 1, 3))
-#
-#    if channel_size == None:
-#        channel_size = result.shape[1]
-#    result = result[:, :channel_size, :act_r_dim, :act_c_dim] # unpad
-#    return result
-#
-# def extract_reduce_outputs(result, dim, keepdims):
-#    dim_param_to_int = {
-#        forge.Dim.R : (-2,),
-#        forge.Dim.C : (-1,),
-#        forge.Dim.Z : (-3,),
-#        forge.Dim.RC : (-2, -1),
-#        forge.Dim.ZR : (-3, -2),
-#    }
-#
-#    operate_dim = dim_param_to_int[dim]
-#    pick_index = torch.tensor([0,])
-#
-#    for i in operate_dim:
-#        result = torch.index_select(result, i, pick_index)
-#
-#    if not keepdims:
-#        for i in operate_dim:
-#            result = torch.squeeze(result, i)
-#
-#    return result
-#
-
-
 def as_json(t):
     return dataclasses_json.config(encoder=t.to_json, decoder=t.from_json)
 
