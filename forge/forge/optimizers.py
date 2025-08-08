@@ -325,7 +325,7 @@ class Adam(Optimizer):
     def generate_op_trace(self, ac, parameter, gradient):
         parameter_shape = parameter.shape.as_list()
         if self.weight_decay > 0.0:
-            weight_decay = ac.tensor(torch.full(parameter_shape, self.weight_decay))
+            weight_decay = ac.tensor(torch.full(parameter_shape, self.weight_decay, dtype=self.torch_dtype))
         else:
             weight_decay = None
 
@@ -352,14 +352,18 @@ class Adam(Optimizer):
         if self.bias_correction:
             # bias_correction1 = 1 - beta1 ** step
             beta1_one = ac.tensor(torch.full(parameter_shape, 1.0, dtype=self.torch_dtype))
-            beta1_pow = ac.input("beta1_pow", parameter.shape, disable_consteval=True, dtype=self.forge_dtype)  # stores beta1 ** step
+            beta1_pow = ac.input(
+                "beta1_pow", parameter.shape, disable_consteval=True, dtype=self.forge_dtype
+            )  # stores beta1 ** step
             updated_beta1_pow = ac.op("multiply", (beta1_pow, beta1))
             bias_correction1 = ac.op("subtract", (beta1_one, updated_beta1_pow))
             reciprocal_bias_correction1 = ac.op("reciprocal", (bias_correction1,))
 
             # bias_correction2 = 1 - beta2 ** step
             beta2_one = ac.tensor(torch.full(parameter_shape, 1.0, dtype=self.torch_dtype))
-            beta2_pow = ac.input("beta2_pow", parameter.shape, disable_consteval=True, dtype=self.forge_dtype)  # stores beta2 ** step
+            beta2_pow = ac.input(
+                "beta2_pow", parameter.shape, disable_consteval=True, dtype=self.forge_dtype
+            )  # stores beta2 ** step
             updated_beta2_pow = ac.op("multiply", (beta2_pow, beta2))
             bias_correction2 = ac.op("subtract", (beta2_one, updated_beta2_pow))
             sqrt_bias_correction2 = ac.op("sqrt", (bias_correction2,))
