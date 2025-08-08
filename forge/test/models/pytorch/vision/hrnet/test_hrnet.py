@@ -95,7 +95,7 @@ def test_hrnet_osmr_pytorch(variant):
     pcc = 0.99
     if variant == "hrnetv2_w44":
         pcc = 0.97
-    if variant in ["hrnetv2_w64", "hrnetv2_w40", "hrnetv2_w30"]:
+    if variant in ["hrnetv2_w64", "hrnetv2_w40"]:
         pcc = 0.95
 
     # Record Forge Property

@@ -585,7 +585,7 @@ def populate_conv2d_args(graph, nid, compiler_cfg):
         )
     )
 
-    channel_last = node["attrs"]["data_layout"][0][0] == "NHWC"
+    channel_last = int(node["attrs"]["data_layout"][0][0] == "NHWC")
     args.append(("channel_last", f"{channel_last}"))
 
     return args
@@ -708,7 +708,7 @@ def populate_conv2d_transpose_args(graph, nid, compiler_cfg):
     )
 
     kernel_size = [int(kernel) for kernel in node["attrs"]["kernel_size"][0]]
-    channel_last = node["attrs"]["data_layout"][0][0] == "NHWC"
+    channel_last = int(node["attrs"]["data_layout"][0][0] == "NHWC")
     args.append(("channel_last", f"{channel_last}"))
 
     output_padding = [int(opad) for opad in node["attrs"]["output_padding"][0]]
@@ -947,6 +947,19 @@ def populate_maxpool2d_args(graph, nid, compiler_cfg):
     return args
 
 
+def populate_vstack_args(graph, nid, compiler_cfg):
+    node = graph["nodes"][nid]
+    output_shape = node["attrs"]["shape"][0][0]
+
+    assert int(node["attrs"]["num_inputs"]) == 1
+    input_nid = node["inputs"][0][0]
+    input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
+
+    slice_size = input_shape[-3] // output_shape[-3]
+    args = [("slices", f"{slice_size}")]
+    return args
+
+
 def populate_unsqueeze_args(graph, nid, compiler_cfg):
     dim = graph["nodes"][nid]["attrs"]["axis"][0][0]
     args = [("dim", f"{dim}")]
@@ -956,6 +969,41 @@ def populate_unsqueeze_args(graph, nid, compiler_cfg):
 def populate_squeeze_args(graph, nid, compiler_cfg):
     dim = graph["nodes"][nid]["attrs"]["axis"][0][0]
     args = [("dim", f"{dim}")]
+    return args
+
+
+def populate_vslice_args(graph, nid, compiler_cfg):
+    node = graph["nodes"][nid]
+    output_shape = node["attrs"]["shape"][0][0]
+
+    assert int(node["attrs"]["num_inputs"]) == 1
+    input_nid = node["inputs"][0][0]
+    input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
+
+    slice_size = output_shape[-3] // input_shape[-3]
+    args = [("slices", f"{slice_size}")]
+    return args
+
+
+def populate_hslice_args(graph, nid, compiler_cfg):
+    slices = graph["nodes"][nid]["forge_shape"][-3]
+
+    args = [
+        ("slices", f"{slices}"),
+    ]
+    return args
+
+
+def populate_hstack_args(graph, nid, compiler_cfg):
+    node = graph["nodes"][nid]
+
+    assert int(node["attrs"]["num_inputs"]) == 1
+    input_nid = node["inputs"][0][0]
+    input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
+
+    args = [
+        ("slices", f"{input_shape[-3]}"),
+    ]
     return args
 
 
@@ -1313,18 +1361,14 @@ def populate_resize2d_args(graph, nid, compiler_cfg):
 
     sizes = [int(x) for x in node["attrs"]["size"][0]]
     assert len(sizes) == 2
-
     method = node["attrs"]["method"][0][0]
-    if method == "nearest_neighbor":
-        mode = "nearest"
-    elif method == "linear":
-        mode = "bilinear"
-    else:
-        mode = method
 
-    assert mode in ["nearest", "bilinear"], "Resize2d op only support nearest and bilinear mode for now"
-
+    assert (
+        method == "nearest_neighbor" or method == "linear" or method == "bilinear" or method == "cubic"
+    ), "Only support nearest neighbor, linear and cubic for now"
     assert int(node["attrs"]["num_inputs"]) == 1
+    input_nid = node["inputs"][0][0]
+    input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
 
     args.append(
         (
@@ -1334,8 +1378,8 @@ def populate_resize2d_args(graph, nid, compiler_cfg):
     )
     args.append(
         (
-            "mode",
-            f'"{mode}"',
+            "method",
+            f'"{method}"',
         )
     )
 
@@ -1348,7 +1392,7 @@ def populate_resize2d_args(graph, nid, compiler_cfg):
         )
     )
 
-    channel_last = bool(int(node["attrs"]["layout"][0][0] == "NHWC"))
+    channel_last = int(node["attrs"]["layout"][0][0] == "NHWC")
     args.append(("channel_last", f"{channel_last}"))
 
     return args
@@ -1495,7 +1539,6 @@ tvm_to_forge_op_map = {
     "log": "log",
     "logical_and": "logical_and",
     "logical_not": "logical_not",
-    "bitwise_and": "bitwise_and",
     "max": "reduce_max",
     "maximum": "maximum",
     "mean": "reduce_avg",
@@ -1524,7 +1567,11 @@ tvm_to_forge_op_map = {
     "forge.forge_conv2d_with_bias": "conv2d",
     "forge.concatenate": "concatenate",
     "forge.dropout": "dropout",
+    "forge.hslice": "hslice",
+    "forge.hstack": "hstack",
     "forge.matmul": "matmul",
+    "forge.vslice": "vslice",
+    "forge.vstack": "vstack",
     "reciprocal": "reciprocal",
     "reshape": "reshape",
     "scatter_elements": "index_copy",
@@ -1546,6 +1593,7 @@ tvm_to_forge_op_map = {
     "squeeze": "squeeze",
     "qnn.dense": "matmul",
     "atan": "atan",
+    "upsample2d": "upsample2d",
 }
 
 forge_op_to_function_name = {
@@ -1574,6 +1622,8 @@ forge_op_to_function_name = {
     "gelu": "forge.op.Gelu",
     "greater_equal": "forge.op.GreaterEqual",
     "greater": "forge.op.Greater",
+    "hslice": "forge.op.HSlice",
+    "hstack": "forge.op.HStack",
     "identity": "forge.op.Identity",
     "index_copy": "forge.op.IndexCopy",
     "index": "forge.op.Index",
@@ -1585,7 +1635,6 @@ forge_op_to_function_name = {
     "log": "forge.op.Log",
     "logical_and": "forge.op.LogicalAnd",
     "logical_not": "forge.op.LogicalNot",
-    "bitwise_and": "forge.op.BitwiseAnd",
     "matmul": "forge.op.Matmul",
     "max_pool1d": "forge.op.MaxPool1d",
     "max_pool2d": "forge.op.MaxPool2d",
@@ -1618,10 +1667,13 @@ forge_op_to_function_name = {
     "tanh": "forge.op.Tanh",
     "transpose": "forge.op.Transpose",
     "unsupported": "Unsupported",
+    "vslice": "forge.op.VSlice",
+    "vstack": "forge.op.VStack",
     "where": "forge.op.Where",
     "unsqueeze": "forge.op.Unsqueeze",
     "squeeze": "forge.op.Squeeze",
     "atan": "forge.op.Atan",
+    "upsample2d": "forge.op.Upsample2d",
 }
 forge_ops_needing_arguments = {
     "argmax": populate_argmax_args,
@@ -1636,6 +1688,8 @@ forge_ops_needing_arguments = {
     "conv3d": populate_conv3d_args,
     "cumsum": populate_cumsum_args,
     "gelu": populate_gelu_args,
+    "hslice": populate_hslice_args,
+    "hstack": populate_hstack_args,
     "index_copy": populate_index_copy_args,
     "index": populate_index_args,
     "layernorm": populate_layernorm_args,
@@ -1658,6 +1712,8 @@ forge_ops_needing_arguments = {
     "stack": populate_stack_args,
     "transpose": populate_transpose_args,
     "unsupported": populate_unsupported_args,
+    "vslice": populate_vslice_args,
+    "vstack": populate_vstack_args,
     "unsqueeze": populate_unsqueeze_args,
     "squeeze": populate_squeeze_args,
     # "dropout"                      : populate_dropout_args,

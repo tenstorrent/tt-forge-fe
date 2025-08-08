@@ -54,7 +54,6 @@ class NewToOldOpType
         mapping_[OpType::Clip] = "clip";
         mapping_[OpType::Concatenate] = "concatenate";
         mapping_[OpType::Constant] = "constant";
-        mapping_[OpType::ConstantPad] = "constant_pad";
         mapping_[OpType::Conv2d] = "conv2d";
         mapping_[OpType::Conv2dDepthwiseWeights] = "conv2d_depthwise_weights";
         mapping_[OpType::Conv2dDepthwiseWeightsBw] = "conv2d_depthwise_weights_bw";
@@ -83,6 +82,8 @@ class NewToOldOpType
         mapping_[OpType::Greater] = "greater";
         mapping_[OpType::GreaterEqual] = "greater_equal";
         mapping_[OpType::Heaviside] = "heaviside";
+        mapping_[OpType::Hslice] = "hslice";
+        mapping_[OpType::Hstack] = "hstack";
         mapping_[OpType::Index] = "index";
         mapping_[OpType::IndexCopy] = "index_copy";
         mapping_[OpType::Interleave] = "interleave";
@@ -95,7 +96,6 @@ class NewToOldOpType
         mapping_[OpType::LogSoftmax] = "log_softmax";
         mapping_[OpType::LogicalAnd] = "logical_and";
         mapping_[OpType::LogicalNot] = "logical_not";
-        mapping_[OpType::BitwiseAnd] = "bitwise_and";
         mapping_[OpType::Mask] = "mask";
         mapping_[OpType::Matmul] = "matmul";
         mapping_[OpType::MaxPool1d] = "max_pool1d";
@@ -103,9 +103,11 @@ class NewToOldOpType
         mapping_[OpType::Maximum] = "maximum";
         mapping_[OpType::Minimum] = "minimum";
         mapping_[OpType::Multiply] = "multiply";
+        mapping_[OpType::Narrow] = "narrow";
         mapping_[OpType::Nop] = "nop";
         mapping_[OpType::NotEqual] = "not_equal";
         mapping_[OpType::Pad] = "pad";
+        mapping_[OpType::PadTile] = "pad_tile";
         mapping_[OpType::PixelShuffle] = "pixel_shuffle";
         mapping_[OpType::Pow] = "pow";
         mapping_[OpType::Power] = "power";
@@ -124,6 +126,7 @@ class NewToOldOpType
         mapping_[OpType::Sine] = "sine";
         mapping_[OpType::Softmax] = "softmax";
         mapping_[OpType::SoftmaxBw] = "softmax_bw";
+        mapping_[OpType::SparseMatmul] = "sparse_matmul";
         mapping_[OpType::Sqrt] = "sqrt";
         mapping_[OpType::Squeeze] = "squeeze";
         mapping_[OpType::Stack] = "stack";
@@ -133,6 +136,8 @@ class NewToOldOpType
         mapping_[OpType::Unsqueeze] = "unsqueeze";
         mapping_[OpType::UpdateCache] = "update_cache";
         mapping_[OpType::Upsample2d] = "upsample2d";
+        mapping_[OpType::Vslice] = "vslice";
+        mapping_[OpType::Vstack] = "vstack";
         mapping_[OpType::Where] = "where";
     }
 
@@ -164,7 +169,6 @@ class OldToNewOpType
         mapping_["clip"] = OpType::Clip;
         mapping_["concatenate"] = OpType::Concatenate;
         mapping_["constant"] = OpType::Constant;
-        mapping_["constant_pad"] = OpType::ConstantPad;
         mapping_["conv2d"] = OpType::Conv2d;
         mapping_["conv2d_depthwise_weights"] = OpType::Conv2dDepthwiseWeights;
         mapping_["conv2d_depthwise_weights_bw"] = OpType::Conv2dDepthwiseWeightsBw;
@@ -193,6 +197,8 @@ class OldToNewOpType
         mapping_["greater"] = OpType::Greater;
         mapping_["greater_equal"] = OpType::GreaterEqual;
         mapping_["heaviside"] = OpType::Heaviside;
+        mapping_["hslice"] = OpType::Hslice;
+        mapping_["hstack"] = OpType::Hstack;
         mapping_["index"] = OpType::Index;
         mapping_["index_copy"] = OpType::IndexCopy;
         mapping_["interleave"] = OpType::Interleave;
@@ -205,7 +211,6 @@ class OldToNewOpType
         mapping_["log_softmax"] = OpType::LogSoftmax;
         mapping_["logical_and"] = OpType::LogicalAnd;
         mapping_["logical_not"] = OpType::LogicalNot;
-        mapping_["bitwise_and"] = OpType::BitwiseAnd;
         mapping_["mask"] = OpType::Mask;
         mapping_["matmul"] = OpType::Matmul;
         mapping_["max_pool1d"] = OpType::MaxPool1d;
@@ -213,9 +218,11 @@ class OldToNewOpType
         mapping_["maximum"] = OpType::Maximum;
         mapping_["minimum"] = OpType::Minimum;
         mapping_["multiply"] = OpType::Multiply;
+        mapping_["narrow"] = OpType::Narrow;
         mapping_["nop"] = OpType::Nop;
         mapping_["not_equal"] = OpType::NotEqual;
         mapping_["pad"] = OpType::Pad;
+        mapping_["pad_tile"] = OpType::PadTile;
         mapping_["pixel_shuffle"] = OpType::PixelShuffle;
         mapping_["pow"] = OpType::Pow;
         mapping_["power"] = OpType::Power;
@@ -234,6 +241,7 @@ class OldToNewOpType
         mapping_["sine"] = OpType::Sine;
         mapping_["softmax"] = OpType::Softmax;
         mapping_["softmax_bw"] = OpType::SoftmaxBw;
+        mapping_["sparse_matmul"] = OpType::SparseMatmul;
         mapping_["sqrt"] = OpType::Sqrt;
         mapping_["squeeze"] = OpType::Squeeze;
         mapping_["stack"] = OpType::Stack;
@@ -243,6 +251,8 @@ class OldToNewOpType
         mapping_["unsqueeze"] = OpType::Unsqueeze;
         mapping_["update_cache"] = OpType::UpdateCache;
         mapping_["upsample2d"] = OpType::Upsample2d;
+        mapping_["vslice"] = OpType::Vslice;
+        mapping_["vstack"] = OpType::Vstack;
         mapping_["where"] = OpType::Where;
     }
 
@@ -339,7 +349,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Clip: return clip::eval(old_op_type, *this, tensors);
         case OpType::Concatenate: return concatenate::eval(old_op_type, *this, tensors);
         case OpType::Constant: return constant::eval(old_op_type, *this, tensors);
-        case OpType::ConstantPad: return constant_pad::eval(old_op_type, *this, tensors);
         case OpType::Conv2d: return conv_2d::eval(old_op_type, *this, tensors);
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::eval(old_op_type, *this, tensors);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::eval(old_op_type, *this, tensors);
@@ -368,6 +377,8 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Greater: return greater::eval(old_op_type, *this, tensors);
         case OpType::GreaterEqual: return greater_equal::eval(old_op_type, *this, tensors);
         case OpType::Heaviside: return heaviside::eval(old_op_type, *this, tensors);
+        case OpType::Hslice: return hslice::eval(old_op_type, *this, tensors);
+        case OpType::Hstack: return hstack::eval(old_op_type, *this, tensors);
         case OpType::Index: return index::eval(old_op_type, *this, tensors);
         case OpType::IndexCopy: return index_copy::eval(old_op_type, *this, tensors);
         case OpType::Interleave: return interleave::eval(old_op_type, *this, tensors);
@@ -380,7 +391,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::LogSoftmax: return log_softmax::eval(old_op_type, *this, tensors);
         case OpType::LogicalAnd: return logical_and::eval(old_op_type, *this, tensors);
         case OpType::LogicalNot: return logical_not::eval(old_op_type, *this, tensors);
-        case OpType::BitwiseAnd: return bitwise_and::eval(old_op_type, *this, tensors);
         case OpType::Mask: return mask::eval(old_op_type, *this, tensors);
         case OpType::Matmul: return matmul::eval(old_op_type, *this, tensors);
         case OpType::MaxPool1d: return max_pool_1d::eval(old_op_type, *this, tensors);
@@ -388,9 +398,11 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Maximum: return maximum::eval(old_op_type, *this, tensors);
         case OpType::Minimum: return minimum::eval(old_op_type, *this, tensors);
         case OpType::Multiply: return multiply::eval(old_op_type, *this, tensors);
+        case OpType::Narrow: return narrow::eval(old_op_type, *this, tensors);
         case OpType::Nop: return nop::eval(old_op_type, *this, tensors);
         case OpType::NotEqual: return not_equal::eval(old_op_type, *this, tensors);
         case OpType::Pad: return pad::eval(old_op_type, *this, tensors);
+        case OpType::PadTile: return pad_tile::eval(old_op_type, *this, tensors);
         case OpType::PixelShuffle: return pixel_shuffle::eval(old_op_type, *this, tensors);
         case OpType::Pow: return pow::eval(old_op_type, *this, tensors);
         case OpType::Power: return power::eval(old_op_type, *this, tensors);
@@ -409,6 +421,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Sine: return sine::eval(old_op_type, *this, tensors);
         case OpType::Softmax: return softmax::eval(old_op_type, *this, tensors);
         case OpType::SoftmaxBw: return softmax_bw::eval(old_op_type, *this, tensors);
+        case OpType::SparseMatmul: return sparse_matmul::eval(old_op_type, *this, tensors);
         case OpType::Sqrt: return sqrt::eval(old_op_type, *this, tensors);
         case OpType::Squeeze: return squeeze::eval(old_op_type, *this, tensors);
         case OpType::Stack: return stack::eval(old_op_type, *this, tensors);
@@ -418,6 +431,8 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Unsqueeze: return unsqueeze::eval(old_op_type, *this, tensors);
         case OpType::UpdateCache: return update_cache::eval(old_op_type, *this, tensors);
         case OpType::Upsample2d: return upsample_2d::eval(old_op_type, *this, tensors);
+        case OpType::Vslice: return vslice::eval(old_op_type, *this, tensors);
+        case OpType::Vstack: return vstack::eval(old_op_type, *this, tensors);
         case OpType::Where: return where::eval(old_op_type, *this, tensors);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
@@ -442,7 +457,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Clip: return clip::shape(old_op_type, *this, inputs);
         case OpType::Concatenate: return concatenate::shape(old_op_type, *this, inputs);
         case OpType::Constant: return constant::shape(old_op_type, *this, inputs);
-        case OpType::ConstantPad: return constant_pad::shape(old_op_type, *this, inputs);
         case OpType::Conv2d: return conv_2d::shape(old_op_type, *this, inputs);
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::shape(old_op_type, *this, inputs);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::shape(old_op_type, *this, inputs);
@@ -471,6 +485,8 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Greater: return greater::shape(old_op_type, *this, inputs);
         case OpType::GreaterEqual: return greater_equal::shape(old_op_type, *this, inputs);
         case OpType::Heaviside: return heaviside::shape(old_op_type, *this, inputs);
+        case OpType::Hslice: return hslice::shape(old_op_type, *this, inputs);
+        case OpType::Hstack: return hstack::shape(old_op_type, *this, inputs);
         case OpType::Index: return index::shape(old_op_type, *this, inputs);
         case OpType::IndexCopy: return index_copy::shape(old_op_type, *this, inputs);
         case OpType::Interleave: return interleave::shape(old_op_type, *this, inputs);
@@ -483,7 +499,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::LogSoftmax: return log_softmax::shape(old_op_type, *this, inputs);
         case OpType::LogicalAnd: return logical_and::shape(old_op_type, *this, inputs);
         case OpType::LogicalNot: return logical_not::shape(old_op_type, *this, inputs);
-        case OpType::BitwiseAnd: return bitwise_and::shape(old_op_type, *this, inputs);
         case OpType::Mask: return mask::shape(old_op_type, *this, inputs);
         case OpType::Matmul: return matmul::shape(old_op_type, *this, inputs);
         case OpType::MaxPool1d: return max_pool_1d::shape(old_op_type, *this, inputs);
@@ -491,9 +506,11 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Maximum: return maximum::shape(old_op_type, *this, inputs);
         case OpType::Minimum: return minimum::shape(old_op_type, *this, inputs);
         case OpType::Multiply: return multiply::shape(old_op_type, *this, inputs);
+        case OpType::Narrow: return narrow::shape(old_op_type, *this, inputs);
         case OpType::Nop: return nop::shape(old_op_type, *this, inputs);
         case OpType::NotEqual: return not_equal::shape(old_op_type, *this, inputs);
         case OpType::Pad: return pad::shape(old_op_type, *this, inputs);
+        case OpType::PadTile: return pad_tile::shape(old_op_type, *this, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::shape(old_op_type, *this, inputs);
         case OpType::Pow: return pow::shape(old_op_type, *this, inputs);
         case OpType::Power: return power::shape(old_op_type, *this, inputs);
@@ -512,6 +529,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Sine: return sine::shape(old_op_type, *this, inputs);
         case OpType::Softmax: return softmax::shape(old_op_type, *this, inputs);
         case OpType::SoftmaxBw: return softmax_bw::shape(old_op_type, *this, inputs);
+        case OpType::SparseMatmul: return sparse_matmul::shape(old_op_type, *this, inputs);
         case OpType::Sqrt: return sqrt::shape(old_op_type, *this, inputs);
         case OpType::Squeeze: return squeeze::shape(old_op_type, *this, inputs);
         case OpType::Stack: return stack::shape(old_op_type, *this, inputs);
@@ -521,6 +539,8 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Unsqueeze: return unsqueeze::shape(old_op_type, *this, inputs);
         case OpType::UpdateCache: return update_cache::shape(old_op_type, *this, inputs);
         case OpType::Upsample2d: return upsample_2d::shape(old_op_type, *this, inputs);
+        case OpType::Vslice: return vslice::shape(old_op_type, *this, inputs);
+        case OpType::Vstack: return vstack::shape(old_op_type, *this, inputs);
         case OpType::Where: return where::shape(old_op_type, *this, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
@@ -550,7 +570,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Clip: return clip::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Concatenate: return concatenate::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Constant: return constant::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::ConstantPad: return constant_pad::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Conv2d: return conv_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -579,6 +598,8 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Greater: return greater::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::GreaterEqual: return greater_equal::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Heaviside: return heaviside::backward(old_op_type, *this, context, operand, inputs, output, gradient);
+        case OpType::Hslice: return hslice::backward(old_op_type, *this, context, operand, inputs, output, gradient);
+        case OpType::Hstack: return hstack::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Index: return index::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::IndexCopy: return index_copy::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Interleave: return interleave::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -591,7 +612,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::LogSoftmax: return log_softmax::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::LogicalAnd: return logical_and::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::LogicalNot: return logical_not::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::BitwiseAnd: return bitwise_and::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Mask: return mask::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Matmul: return matmul::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::MaxPool1d: return max_pool_1d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -599,9 +619,11 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Maximum: return maximum::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Minimum: return minimum::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Multiply: return multiply::backward(old_op_type, *this, context, operand, inputs, output, gradient);
+        case OpType::Narrow: return narrow::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Nop: return nop::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::NotEqual: return not_equal::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Pad: return pad::backward(old_op_type, *this, context, operand, inputs, output, gradient);
+        case OpType::PadTile: return pad_tile::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::PixelShuffle: return pixel_shuffle::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Pow: return pow::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Power: return power::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -620,6 +642,7 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Sine: return sine::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Softmax: return softmax::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::SoftmaxBw: return softmax_bw::backward(old_op_type, *this, context, operand, inputs, output, gradient);
+        case OpType::SparseMatmul: return sparse_matmul::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Sqrt: return sqrt::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Squeeze: return squeeze::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Stack: return stack::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -629,6 +652,8 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Unsqueeze: return unsqueeze::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::UpdateCache: return update_cache::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Upsample2d: return upsample_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
+        case OpType::Vslice: return vslice::backward(old_op_type, *this, context, operand, inputs, output, gradient);
+        case OpType::Vstack: return vstack::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Where: return where::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
@@ -675,7 +700,6 @@ void Op::decompose_initial(
         case OpType::Clip: return;
         case OpType::Concatenate: return concatenate::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Constant: return;
-        case OpType::ConstantPad: return;
         case OpType::Conv2d: return conv_2d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::decompose_initial(old_op_type, *this, dc, inputs);
@@ -704,7 +728,9 @@ void Op::decompose_initial(
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
         case OpType::Heaviside: return;
-        case OpType::Index: return;
+        case OpType::Hslice: return hslice::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Hstack: return hstack::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Index: return index::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::IndexCopy: return index_copy::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Interleave: return interleave::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Layernorm: return;
@@ -716,7 +742,6 @@ void Op::decompose_initial(
         case OpType::LogSoftmax: return log_softmax::decompose_initial(old_op_type, *this, dc, inputs);;
         case OpType::LogicalAnd: return;
         case OpType::LogicalNot: return;
-        case OpType::BitwiseAnd: return;
         case OpType::Mask: return;
         case OpType::Matmul: return matmul::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::MaxPool1d: return;
@@ -724,9 +749,11 @@ void Op::decompose_initial(
         case OpType::Maximum: return;
         case OpType::Minimum: return;
         case OpType::Multiply: return;
+        case OpType::Narrow: return narrow::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Nop: return;
         case OpType::NotEqual: return;
         case OpType::Pad: return pad::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::PadTile: return pad_tile::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Pow: return;
         case OpType::Power: return;
@@ -745,6 +772,7 @@ void Op::decompose_initial(
         case OpType::Sine: return;
         case OpType::Softmax: return;
         case OpType::SoftmaxBw: return;
+        case OpType::SparseMatmul: return sparse_matmul::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Sqrt: return;
         case OpType::Squeeze: return;
         case OpType::Stack: return stack::decompose_initial(old_op_type, *this, dc, inputs);
@@ -754,6 +782,8 @@ void Op::decompose_initial(
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
+        case OpType::Vslice: return vslice::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Vstack: return vstack::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Where: return where::decompose_initial(old_op_type, *this, dc, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
@@ -780,15 +810,14 @@ void Op::decompose_post_optimize(
         case OpType::Clip: return;
         case OpType::Concatenate: return;
         case OpType::Constant: return;
-        case OpType::ConstantPad: return;
-        case OpType::Conv2d: return;
+        case OpType::Conv2d: return conv_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Conv2dGroupedWeights: return conv_2d_grouped_weights::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Conv2dGroupedWeightsBw: return conv_2d_grouped_weights_bw::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Conv2dPrestrideAct: return conv_2d_prestride_act::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Conv2dPrestrideWeights: return conv_2d_prestride_weights::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Conv2dTranspose: return;
+        case OpType::Conv2dTranspose: return conv_2d_transpose::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Conv3d: return conv_3d::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::ConvSum: return conv_sum::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Cosine: return;
@@ -809,7 +838,9 @@ void Op::decompose_post_optimize(
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
         case OpType::Heaviside: return;
-        case OpType::Index: return;
+        case OpType::Hslice: return hslice::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Hstack: return hstack::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Index: return index::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::IndexCopy: return index_copy::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Interleave: return interleave::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Layernorm: return;
@@ -821,7 +852,6 @@ void Op::decompose_post_optimize(
         case OpType::LogSoftmax: return;
         case OpType::LogicalAnd: return;
         case OpType::LogicalNot: return;
-        case OpType::BitwiseAnd: return;
         case OpType::Mask: return;
         case OpType::Matmul: return matmul::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::MaxPool1d: return;
@@ -829,9 +859,11 @@ void Op::decompose_post_optimize(
         case OpType::Maximum: return;
         case OpType::Minimum: return;
         case OpType::Multiply: return;
+        case OpType::Narrow: return narrow::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Nop: return;
         case OpType::NotEqual: return;
-        case OpType::Pad: return;
+        case OpType::Pad: return pad::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::PadTile: return pad_tile::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Pow: return;
         case OpType::Power: return;
@@ -850,6 +882,7 @@ void Op::decompose_post_optimize(
         case OpType::Sine: return;
         case OpType::Softmax: return;
         case OpType::SoftmaxBw: return;
+        case OpType::SparseMatmul: return sparse_matmul::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Sqrt: return;
         case OpType::Squeeze: return;
         case OpType::Stack: return;
@@ -859,6 +892,8 @@ void Op::decompose_post_optimize(
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
+        case OpType::Vslice: return vslice::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Vstack: return vstack::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Where: return where::decompose_post_optimize(old_op_type, *this, dc, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
@@ -885,15 +920,14 @@ void Op::decompose_post_autograd(
         case OpType::Clip: return;
         case OpType::Concatenate: return;
         case OpType::Constant: return;
-        case OpType::ConstantPad: return;
-        case OpType::Conv2d: return;
+        case OpType::Conv2d: return conv_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Conv2dGroupedWeights: return conv_2d_grouped_weights::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Conv2dGroupedWeightsBw: return conv_2d_grouped_weights_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Conv2dPrestrideAct: return conv_2d_prestride_act::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Conv2dPrestrideWeights: return conv_2d_prestride_weights::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Conv2dTranspose: return;
+        case OpType::Conv2dTranspose: return conv_2d_transpose::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Conv3d: return conv_3d::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::ConvSum: return conv_sum::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Cosine: return;
@@ -914,7 +948,9 @@ void Op::decompose_post_autograd(
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
         case OpType::Heaviside: return heaviside::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Index: return;
+        case OpType::Hslice: return hslice::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Hstack: return hstack::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Index: return index::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::IndexCopy: return index_copy::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Interleave: return interleave::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Layernorm: return layernorm::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -926,7 +962,6 @@ void Op::decompose_post_autograd(
         case OpType::LogSoftmax: return;
         case OpType::LogicalAnd: return;
         case OpType::LogicalNot: return;
-        case OpType::BitwiseAnd: return;
         case OpType::Mask: return;
         case OpType::Matmul: return matmul::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::MaxPool1d: return;
@@ -934,9 +969,11 @@ void Op::decompose_post_autograd(
         case OpType::Maximum: return;
         case OpType::Minimum: return;
         case OpType::Multiply: return;
+        case OpType::Narrow: return narrow::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Nop: return;
         case OpType::NotEqual: return;
-        case OpType::Pad: return;
+        case OpType::Pad: return pad::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::PadTile: return pad_tile::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Pow: return;
         case OpType::Power: return;
@@ -955,6 +992,7 @@ void Op::decompose_post_autograd(
         case OpType::Sine: return;
         case OpType::Softmax: return;
         case OpType::SoftmaxBw: return softmax_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::SparseMatmul: return sparse_matmul::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Sqrt: return;
         case OpType::Squeeze: return;
         case OpType::Stack: return;
@@ -964,6 +1002,8 @@ void Op::decompose_post_autograd(
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
+        case OpType::Vslice: return vslice::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Vstack: return vstack::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Where: return where::decompose_post_autograd(old_op_type, *this, dc, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
@@ -988,15 +1028,14 @@ long Op::initial_flops_estimate(
         case OpType::Clip: return 0;
         case OpType::Concatenate: return 0;
         case OpType::Constant: return 0;
-        case OpType::ConstantPad: return 0;
-        case OpType::Conv2d: return 0;
+        case OpType::Conv2d: return conv_2d::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Conv2dGroupedWeights: return conv_2d_grouped_weights::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Conv2dGroupedWeightsBw: return conv_2d_grouped_weights_bw::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Conv2dPrestrideAct: return conv_2d_prestride_act::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Conv2dPrestrideWeights: return conv_2d_prestride_weights::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Conv2dTranspose: return 0;
+        case OpType::Conv2dTranspose: return conv_2d_transpose::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Conv3d: return conv_3d::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::ConvSum: return conv_sum::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Cosine: return 0;
@@ -1017,7 +1056,9 @@ long Op::initial_flops_estimate(
         case OpType::Greater: return 0;
         case OpType::GreaterEqual: return 0;
         case OpType::Heaviside: return 0;
-        case OpType::Index: return 0;
+        case OpType::Hslice: return hslice::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Hstack: return hstack::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Index: return index::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::IndexCopy: return index_copy::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Interleave: return interleave::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Layernorm: return 0;
@@ -1029,7 +1070,6 @@ long Op::initial_flops_estimate(
         case OpType::LogSoftmax: return 0;
         case OpType::LogicalAnd: return 0;
         case OpType::LogicalNot: return 0;
-        case OpType::BitwiseAnd: return 0;
         case OpType::Mask: return 0;
         case OpType::Matmul: return matmul::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::MaxPool1d: return 0;
@@ -1037,9 +1077,11 @@ long Op::initial_flops_estimate(
         case OpType::Maximum: return 0;
         case OpType::Minimum: return 0;
         case OpType::Multiply: return 0;
+        case OpType::Narrow: return narrow::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Nop: return 0;
         case OpType::NotEqual: return 0;
-        case OpType::Pad: return 0;
+        case OpType::Pad: return pad::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::PadTile: return pad_tile::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Pow: return 0;
         case OpType::Power: return 0;
@@ -1058,6 +1100,7 @@ long Op::initial_flops_estimate(
         case OpType::Sine: return 0;
         case OpType::Softmax: return 0;
         case OpType::SoftmaxBw: return 0;
+        case OpType::SparseMatmul: return sparse_matmul::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Sqrt: return 0;
         case OpType::Squeeze: return 0;
         case OpType::Stack: return 0;
@@ -1067,6 +1110,8 @@ long Op::initial_flops_estimate(
         case OpType::Unsqueeze: return 0;
         case OpType::UpdateCache: return 0;
         case OpType::Upsample2d: return 0;
+        case OpType::Vslice: return vslice::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Vstack: return vstack::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Where: return where::initial_flops_estimate(old_op_type, *this, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
@@ -1090,7 +1135,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Clip: return false;
         case OpType::Concatenate: return false;
         case OpType::Constant: return false;
-        case OpType::ConstantPad: return true;
         case OpType::Conv2d: return false;
         case OpType::Conv2dDepthwiseWeights: return true;
         case OpType::Conv2dDepthwiseWeightsBw: return true;
@@ -1119,6 +1163,8 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Greater: return false;
         case OpType::GreaterEqual: return false;
         case OpType::Heaviside: return false;
+        case OpType::Hslice: return true;
+        case OpType::Hstack: return true;
         case OpType::Index: return true;
         case OpType::IndexCopy: return false;
         case OpType::Interleave: return false;
@@ -1131,7 +1177,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::LogSoftmax: return false;
         case OpType::LogicalAnd: return false;
         case OpType::LogicalNot: return false;
-        case OpType::BitwiseAnd: return false;
         case OpType::Mask: return false;
         case OpType::Matmul: return false;
         case OpType::MaxPool1d: return false;
@@ -1139,9 +1184,11 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Maximum: return false;
         case OpType::Minimum: return false;
         case OpType::Multiply: return false;
+        case OpType::Narrow: return true;
         case OpType::Nop: return false;
         case OpType::NotEqual: return false;
         case OpType::Pad: return true;
+        case OpType::PadTile: return true;
         case OpType::PixelShuffle: return true;
         case OpType::Pow: return false;
         case OpType::Power: return false;
@@ -1160,6 +1207,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return false;
         case OpType::Softmax: return false;
         case OpType::SoftmaxBw: return false;
+        case OpType::SparseMatmul: return false;
         case OpType::Sqrt: return false;
         case OpType::Squeeze: return true;
         case OpType::Stack: return false;
@@ -1169,6 +1217,8 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Unsqueeze: return true;
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
+        case OpType::Vslice: return true;
+        case OpType::Vstack: return true;
         case OpType::Where: return false;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }
@@ -1192,7 +1242,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Clip: return true;
         case OpType::Concatenate: return true;
         case OpType::Constant: return false;
-        case OpType::ConstantPad: return false;
         case OpType::Conv2d: return false;
         case OpType::Conv2dDepthwiseWeights: return false;
         case OpType::Conv2dDepthwiseWeightsBw: return false;
@@ -1221,6 +1270,8 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Greater: return true;
         case OpType::GreaterEqual: return true;
         case OpType::Heaviside: return true;
+        case OpType::Hslice: return false;
+        case OpType::Hstack: return false;
         case OpType::Index: return false;
         case OpType::IndexCopy: return true;
         case OpType::Interleave: return true;
@@ -1233,7 +1284,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::LogSoftmax: return false;
         case OpType::LogicalAnd: return true;
         case OpType::LogicalNot: return true;
-        case OpType::BitwiseAnd: return true;
         case OpType::Mask: return false;
         case OpType::Matmul: return false;
         case OpType::MaxPool1d: return false;
@@ -1241,9 +1291,11 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Maximum: return true;
         case OpType::Minimum: return true;
         case OpType::Multiply: return true;
+        case OpType::Narrow: return false;
         case OpType::Nop: return true;
         case OpType::NotEqual: return true;
         case OpType::Pad: return false;
+        case OpType::PadTile: return false;
         case OpType::PixelShuffle: return false;
         case OpType::Pow: return true;
         case OpType::Power: return true;
@@ -1262,6 +1314,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return true;
         case OpType::Softmax: return false;
         case OpType::SoftmaxBw: return false;
+        case OpType::SparseMatmul: return false;
         case OpType::Sqrt: return true;
         case OpType::Squeeze: return false;
         case OpType::Stack: return true;
@@ -1271,6 +1324,8 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Unsqueeze: return false;
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
+        case OpType::Vslice: return false;
+        case OpType::Vstack: return false;
         case OpType::Where: return true;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }
@@ -1294,7 +1349,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Clip: return true;
         case OpType::Concatenate: return false;
         case OpType::Constant: return false;
-        case OpType::ConstantPad: return false;
         case OpType::Conv2d: return false;
         case OpType::Conv2dDepthwiseWeights: return false;
         case OpType::Conv2dDepthwiseWeightsBw: return false;
@@ -1323,6 +1377,8 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Greater: return false;
         case OpType::GreaterEqual: return false;
         case OpType::Heaviside: return false;
+        case OpType::Hslice: return false;
+        case OpType::Hstack: return false;
         case OpType::Index: return false;
         case OpType::IndexCopy: return false;
         case OpType::Interleave: return false;
@@ -1335,7 +1391,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::LogSoftmax: return false;
         case OpType::LogicalAnd: return false;
         case OpType::LogicalNot: return true;
-        case OpType::BitwiseAnd: return false;
         case OpType::Mask: return false;
         case OpType::Matmul: return false;
         case OpType::MaxPool1d: return false;
@@ -1343,9 +1398,11 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Maximum: return false;
         case OpType::Minimum: return false;
         case OpType::Multiply: return false;
+        case OpType::Narrow: return false;
         case OpType::Nop: return true;
         case OpType::NotEqual: return false;
         case OpType::Pad: return false;
+        case OpType::PadTile: return false;
         case OpType::PixelShuffle: return false;
         case OpType::Pow: return true;
         case OpType::Power: return false;
@@ -1364,6 +1421,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return true;
         case OpType::Softmax: return false;
         case OpType::SoftmaxBw: return false;
+        case OpType::SparseMatmul: return false;
         case OpType::Sqrt: return true;
         case OpType::Squeeze: return false;
         case OpType::Stack: return false;
@@ -1373,6 +1431,8 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Unsqueeze: return false;
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
+        case OpType::Vslice: return false;
+        case OpType::Vstack: return false;
         case OpType::Where: return false;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }
@@ -1396,7 +1456,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Clip: return false;
         case OpType::Concatenate: return false;
         case OpType::Constant: return false;
-        case OpType::ConstantPad: return false;
         case OpType::Conv2d: return false;
         case OpType::Conv2dDepthwiseWeights: return false;
         case OpType::Conv2dDepthwiseWeightsBw: return false;
@@ -1425,6 +1484,8 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Greater: return true;
         case OpType::GreaterEqual: return true;
         case OpType::Heaviside: return true;
+        case OpType::Hslice: return false;
+        case OpType::Hstack: return false;
         case OpType::Index: return false;
         case OpType::IndexCopy: return false;
         case OpType::Interleave: return false;
@@ -1437,7 +1498,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::LogSoftmax: return false;
         case OpType::LogicalAnd: return true;
         case OpType::LogicalNot: return false;
-        case OpType::BitwiseAnd: return true;
         case OpType::Mask: return false;
         case OpType::Matmul: return false;
         case OpType::MaxPool1d: return false;
@@ -1445,9 +1505,11 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Maximum: return true;
         case OpType::Minimum: return true;
         case OpType::Multiply: return true;
+        case OpType::Narrow: return false;
         case OpType::Nop: return false;
         case OpType::NotEqual: return true;
         case OpType::Pad: return false;
+        case OpType::PadTile: return false;
         case OpType::PixelShuffle: return false;
         case OpType::Pow: return false;
         case OpType::Power: return true;
@@ -1466,6 +1528,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return false;
         case OpType::Softmax: return false;
         case OpType::SoftmaxBw: return false;
+        case OpType::SparseMatmul: return false;
         case OpType::Sqrt: return false;
         case OpType::Squeeze: return false;
         case OpType::Stack: return false;
@@ -1475,6 +1538,8 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Unsqueeze: return false;
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
+        case OpType::Vslice: return false;
+        case OpType::Vstack: return false;
         case OpType::Where: return false;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }
@@ -1498,7 +1563,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Clip: return false;
         case OpType::Concatenate: return true;
         case OpType::Constant: return false;
-        case OpType::ConstantPad: return false;
         case OpType::Conv2d: return false;
         case OpType::Conv2dDepthwiseWeights: return false;
         case OpType::Conv2dDepthwiseWeightsBw: return false;
@@ -1527,6 +1591,8 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Greater: return false;
         case OpType::GreaterEqual: return false;
         case OpType::Heaviside: return false;
+        case OpType::Hslice: return false;
+        case OpType::Hstack: return false;
         case OpType::Index: return false;
         case OpType::IndexCopy: return true;
         case OpType::Interleave: return true;
@@ -1546,9 +1612,11 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Maximum: return false;
         case OpType::Minimum: return false;
         case OpType::Multiply: return false;
+        case OpType::Narrow: return false;
         case OpType::Nop: return false;
         case OpType::NotEqual: return false;
         case OpType::Pad: return false;
+        case OpType::PadTile: return false;
         case OpType::PixelShuffle: return false;
         case OpType::Pow: return false;
         case OpType::Power: return false;
@@ -1567,6 +1635,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Sine: return false;
         case OpType::Softmax: return false;
         case OpType::SoftmaxBw: return false;
+        case OpType::SparseMatmul: return false;
         case OpType::Sqrt: return false;
         case OpType::Squeeze: return false;
         case OpType::Stack: return true;
@@ -1576,6 +1645,8 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Unsqueeze: return false;
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
+        case OpType::Vslice: return false;
+        case OpType::Vstack: return false;
         case OpType::Where: return true;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }

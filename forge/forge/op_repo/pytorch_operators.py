@@ -49,13 +49,6 @@ _OPERATORS = [
         instantiate=True,
         constructor_params=[],
     ),
-    OperatorDefinition(
-        "avg_pool_2d",
-        "torch.nn.AvgPool2d",
-        1,
-        instantiate=True,
-        constructor_params=[],
-    ),
     # Unary operators (implemented)
     OperatorDefinition("relu", "torch.relu", 1),
     OperatorDefinition("sqrt", "torch.sqrt", 1),

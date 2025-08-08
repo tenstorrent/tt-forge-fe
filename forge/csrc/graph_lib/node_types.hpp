@@ -17,6 +17,7 @@
 #include "graph_lib/utils.hpp"
 #include "lower_to_forge/common.hpp"
 #include "ops/op.hpp"
+#include "shared_utils/sparse_matmul_utils.hpp"
 
 namespace tt
 {
@@ -231,6 +232,7 @@ class ConstantInputNode : public InputNode
     float constant_value_;
     std::shared_ptr<void> tensor_handle_;
     Shape tensor_shape_;
+    sparse::SparseFORGE sparse_forge{};  // TODO: This should be a void pointer
 
     int dim_r_;
     int dim_c_;
@@ -283,6 +285,8 @@ class ConstantInputNode : public InputNode
         TT_ASSERT(is_tensor());
         return tensor_shape_;
     }
+    void set_sparse_forge(sparse::SparseFORGE sparse_forge) { this->sparse_forge = sparse_forge; }
+    sparse::SparseFORGE &get_sparse_forge() { return sparse_forge; }
 
     bool equivalent(const ConstantInputNode *other) const;
 };
@@ -603,8 +607,11 @@ class OpNode : public TaggedNode
     }
     bool is_add() const { return new_op_type() == ops::OpType::Add; }
     bool is_maximum() const { return new_op_type() == ops::OpType::Maximum; }
+    bool is_dense_matmul() const { return is_matmul() and not is_sparse_matmul() and not is_depthwise_matmul(); }
+    bool is_sparse_matmul() const { return is_matmul() and new_op().has_attr("identity"); }
     // Check whether this is needed, because it makes no sence.
     bool is_depthwise_matmul() const { return new_op_type() == ops::OpType::Depthwise; }
+    bool is_matmul_not_sparse() const { return is_matmul() and new_op().has_attr("identity"); }
 
     bool is_tm() const { return op_type_.is_tm(); };
     bool is_eltwise() const { return op_type_.is_eltwise(); };

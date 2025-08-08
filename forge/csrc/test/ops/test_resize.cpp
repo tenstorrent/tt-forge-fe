@@ -15,15 +15,15 @@ namespace tt::test::ops::resize
 
 // Helper function to create resize2d operations
 tt::ops::Op create_resize2d(
-    std::vector<int> sizes, std::string mode = "nearest", bool align_corners = false, bool channel_last = false)
+    std::vector<int> sizes, int method = 0, bool align_corners = false, bool channel_last = false)
 {
     return tt::ops::Op(
         tt::ops::OpType::Resize2d,
-        {{"sizes", sizes}, {"mode", mode}, {"align_corners", align_corners}, {"channel_last", channel_last}});
+        {{"sizes", sizes}, {"method", method}, {"align_corners", align_corners}, {"channel_last", channel_last}});
 }
 
 // Helper function to create upsample2d operations
-tt::ops::Op create_upsample2d(std::vector<int> scale_factor, std::string mode = "nearest", bool channel_last = false)
+tt::ops::Op create_upsample2d(int scale_factor, std::string mode = "nearest", bool channel_last = false)
 {
     return tt::ops::Op(
         tt::ops::OpType::Upsample2d, {{"scale_factor", scale_factor}, {"mode", mode}, {"channel_last", channel_last}});
@@ -32,14 +32,14 @@ tt::ops::Op create_upsample2d(std::vector<int> scale_factor, std::string mode = 
 // Validation functions
 
 bool valid_resize2d_inputs(
-    const std::vector<graphlib::Shape>& shapes,
-    const std::vector<int>& sizes,
-    bool align_corners = false,
-    bool channel_last = false)
+    const std::vector<graphlib::Shape>& shapes, const std::vector<int>& sizes, bool channel_last = false)
 {
     // Check input dimensions
     uint32_t input_h = channel_last ? shapes[0][shapes[0].size() - 3] : shapes[0][shapes[0].size() - 2];
     uint32_t input_w = channel_last ? shapes[0][shapes[0].size() - 2] : shapes[0][shapes[0].size() - 1];
+
+    if (input_h != input_w)
+        return false;
 
     // For integer scale factors, check divisibility
     bool upsample_h = sizes[0] >= static_cast<int>(input_h);
@@ -47,11 +47,9 @@ bool valid_resize2d_inputs(
 
     if (upsample_h && upsample_w)
     {
-        if (align_corners)
-            return false;  // align_corners argument not supported in post init decomposition of resize2d to upsample2d
-
         // Upsampling: check integer scale factors
-        return (sizes[0] % input_h == 0) && (sizes[1] % input_w == 0);
+        return (sizes[0] % input_h == 0) && (sizes[1] % input_w == 0) &&
+               (sizes[0] / input_h == sizes[1] / input_w);  // Same scale factor
     }
     else if (!upsample_h && !upsample_w)
     {
@@ -63,6 +61,18 @@ bool valid_resize2d_inputs(
     }
 
     return false;  // Mixed up/down scaling not supported
+}
+
+bool valid_upsample2d_inputs(const std::vector<graphlib::Shape>& shapes, bool channel_last)
+{
+    if (channel_last)
+    {
+        return shapes[0][shapes[0].size() - 3] == shapes[0][shapes[0].size() - 2];
+    }
+    else
+    {
+        return shapes[0][shapes[0].size() - 2] == shapes[0][shapes[0].size() - 1];
+    }
 }
 
 // Test shape generators
@@ -99,18 +109,16 @@ std::vector<VecShapes> get_resize2d_individual_test_shapes()
         VecShapes{{2, 4, 4, 4}},    // Multiple batch/channels
         VecShapes{{1, 3, 8, 8}},    // RGB-like
         VecShapes{{1, 1, 16, 16}},  // Larger spatial
-        VecShapes{{1, 3, 9, 16}},   // different height and width
     };
 }
 
 std::vector<VecShapes> get_upsample2d_individual_test_shapes()
 {
     return {
-        VecShapes{{1, 1, 4, 4}},   // Minimal 4D
-        VecShapes{{1, 2, 4, 4}},   // Small channels
-        VecShapes{{2, 4, 4, 4}},   // Multiple batch/channels
-        VecShapes{{1, 3, 8, 8}},   // RGB-like
-        VecShapes{{1, 3, 9, 16}},  // different height and width
+        VecShapes{{1, 1, 4, 4}},  // Minimal 4D
+        VecShapes{{1, 2, 4, 4}},  // Small channels
+        VecShapes{{2, 4, 4, 4}},  // Multiple batch/channels
+        VecShapes{{1, 3, 8, 8}},  // RGB-like
     };
 }
 
@@ -119,21 +127,21 @@ std::vector<tt::ops::Op> get_resize2d_ops()
 {
     std::vector<tt::ops::Op> ops;
 
-    // Different target sizes and modes
-    std::vector<std::vector<int>> sizes = {{8, 8}, {16, 16}, {4, 4}, {12, 12}, {8, 12}, {9, 16}, {15, 21}};
-    std::vector<std::string> modes = {"nearest", "bilinear"};
+    // Different target sizes and methods
+    std::vector<std::vector<int>> sizes = {{8, 8}, {16, 16}, {4, 4}, {12, 12}};
+    std::vector<int> methods = {0, 1};  // nearest, bilinear
     std::vector<bool> channel_last_options = {false, true};
     std::vector<bool> align_corners_options = {false, true};
 
     for (const auto& size : sizes)
     {
-        for (const std::string& mode : modes)
+        for (int method : methods)
         {
             for (bool channel_last : channel_last_options)
             {
                 for (bool align_corners : align_corners_options)
                 {
-                    ops.push_back(create_resize2d(size, mode, align_corners, channel_last));
+                    ops.push_back(create_resize2d(size, method, align_corners, channel_last));
                 }
             }
         }
@@ -147,11 +155,11 @@ std::vector<tt::ops::Op> get_upsample2d_ops()
 {
     std::vector<tt::ops::Op> ops;
 
-    std::vector<std::vector<int>> scale_factors = {{2, 2}, {2, 3}, {8, 4}, {3, 9}};
+    std::vector<int> scale_factors = {2, 3, 4};
     std::vector<std::string> modes = {"nearest", "bilinear"};
     std::vector<bool> channel_last_options = {false, true};
 
-    for (const auto& scale_factor : scale_factors)
+    for (int scale_factor : scale_factors)
     {
         for (const std::string& mode : modes)
         {
@@ -176,11 +184,10 @@ std::vector<OpTestParam> generate_resize2d_individual_combinations()
     {
         auto sizes = op.attr_as<std::vector<int>>("sizes");
         bool channel_last = op.attr_as<bool>("channel_last");
-        bool align_corners = op.attr_as<bool>("align_corners");
 
         for (const auto& shape_vec : shapes)
         {
-            if (valid_resize2d_inputs(shape_vec, sizes, align_corners, channel_last))
+            if (valid_resize2d_inputs(shape_vec, sizes, channel_last))
             {
                 combinations.push_back({op, shape_vec});
             }
@@ -201,12 +208,11 @@ std::vector<OpTestParam> generate_resize2d_sweep_combinations()
     {
         auto sizes = op.attr_as<std::vector<int>>("sizes");
         bool channel_last = op.attr_as<bool>("channel_last");
-        bool align_corners = op.attr_as<bool>("align_corners");
 
         for (const auto& shape : shapes)
         {
             VecShapes shape_vec = {shape};
-            if (valid_resize2d_inputs(shape_vec, sizes, align_corners, channel_last))
+            if (valid_resize2d_inputs(shape_vec, sizes, channel_last))
             {
                 valid_combinations.push_back({op, shape_vec});
             }
@@ -225,9 +231,13 @@ std::vector<OpTestParam> generate_upsample2d_individual_combinations()
 
     for (const auto& op : ops)
     {
+        bool channel_last = op.attr_as<bool>("channel_last");
         for (const auto& shape_vec : shapes)
         {
-            combinations.push_back({op, shape_vec});
+            if (valid_upsample2d_inputs(shape_vec, channel_last))
+            {
+                combinations.push_back({op, shape_vec});
+            }
         }
     }
 
@@ -243,10 +253,14 @@ std::vector<OpTestParam> generate_upsample2d_sweep_combinations()
 
     for (const auto& op : ops)
     {
+        bool channel_last = op.attr_as<bool>("channel_last");
         for (const auto& shape : shapes)
         {
             VecShapes shape_vec = {shape};
-            valid_combinations.push_back({op, shape_vec});
+            if (valid_upsample2d_inputs(shape_vec, channel_last))
+            {
+                valid_combinations.push_back({op, shape_vec});
+            }
         }
     }
 

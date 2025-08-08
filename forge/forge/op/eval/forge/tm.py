@@ -1,12 +1,31 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+from argparse import ArgumentError
 from ..common import to_torch_operands
+from ..sparse_utils import (
+    create_index_sparse_picker_matrix,
+    create_all_around_padding_picker_matrix,
+    create_padding_shift_sparse_picker_matrix,
+    create_real_row_sparse_picker_matrix,
+    create_reshape_flatten_sparse_picker_matrix,
+    create_flattened_padding_removal_sparse_picker_matrix,
+    create_sparse_interleave_picker_matrix,
+    create_reshape_flatten_sparse_picker_matrix_narrower,
+    create_repeat_sparse_picker_matrix,
+    calculate_conv2d_prestride_weights_and_padding,
+    create_pad_replicate_sparse_picker,
+    create_pad_reflect_sparse_picker,
+)
+import numpy as np
 import torch
+import math
 from loguru import logger
 import forge
+from forge.tensor import change_rank
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div, align_up
+from .pad import Pad
 
 
 def eval(type, attr, ops):
@@ -28,6 +47,25 @@ def eval(type, attr, ops):
                 else:
                     result.append(zero_slice)
         return torch.stack(result, dim=dim)
+
+    if type == "index":
+        assert len(attr) == 4, "Index should have 4 attributes"
+        dim, start, stop, stride = attr
+        if dim >= 0:
+            dim -= len(ops[0].shape)
+
+        if dim == -5:
+            return t_ops[0][..., start:stop:stride, :, :, :, :]
+        elif dim == -4:
+            return t_ops[0][..., start:stop:stride, :, :, :]
+        elif dim == -3:
+            return t_ops[0][..., start:stop:stride, :, :]
+        elif dim == -2:
+            return t_ops[0][..., start:stop:stride, :]
+        elif dim == -1:
+            return t_ops[0][..., start:stop:stride]
+        else:
+            raise NotImplementedError(f"Dim={dim}")
 
     if type == "conv2d_depthwise_weights":
         weights = t_ops[0]
@@ -148,6 +186,38 @@ def eval(type, attr, ops):
 
         return prestrided_activations
 
+    if type == "conv2d_prestride_weights":
+        assert len(attr) == 8, "conv2d_prestride_weights should have 8 attributes"
+        y, x = attr[0], attr[1]
+        stride_height, stride_width = attr[2], attr[3]
+        padding = [attr[4], attr[5], attr[6], attr[7]]
+
+        weights = t_ops[0]
+        assert len(weights.shape) == 4, "weights should have 4 dims"
+
+        ps_weights, _ = calculate_conv2d_prestride_weights_and_padding(weights, y, x, stride_width, padding)
+        return ps_weights
+
+    if type == "pad_tile":
+        assert len(attr) == 2
+        dim, original_length = attr
+        act = t_ops[0]
+        if dim >= 0:
+            dim -= len(act.shape)
+        assert dim == -2 or dim == -1
+        padding = align_up_tile(act.shape[dim]) - act.shape[dim]
+        if dim == -2:
+            act = torch.nn.functional.pad(act, (0, 0, 0, padding))
+        if dim == -1:
+            act = torch.nn.functional.pad(act, (0, padding))
+        return act
+
+    if type == "narrow":
+        assert len(attr) == 4
+        dim, start, length, original_length = attr
+        act = t_ops[0]
+        return act.narrow(dim, start, length)
+
     if type == "pixel_shuffle":
         assert len(ops) == 1, "Pixel shuffle should have one operand."
         assert len(attr) == 1, "Pixel shuffle should have one attribute."
@@ -191,11 +261,67 @@ def eval(type, attr, ops):
 def shape(type, attr, ops):
     assert len(ops) == 1, f"Tensor manipulation ops should have one input, has {len(ops)} input instead"
 
+    if type == "index":
+        assert len(attr) == 4, "Index should have 4 attributes"
+        dim, start, stop, stride = attr
+        shape = list(ops[0])
+
+        if start < 0:
+            start = shape[dim] + start
+
+        shape[dim] = round_up_div(stop - start, stride)
+        return tuple(shape), []
+
     if type == "select":
         assert len(attr) == 4, "Select should have 4 attributes"
         dim, begin, length, stride = attr
         shape = list(ops[0])
         shape[dim] = length * round_up_div(shape[dim] - begin, stride)
+        return tuple(shape), []
+
+    if type == "hslice":
+        assert len(attr) == 1, "HSlice should have one attribute, the slice size"
+        slice_size = attr[0]
+        shape = list(ops[0])
+        assert shape[-1] % slice_size == 0
+        while len(shape) < 4:
+            shape = [1] + shape
+        shape[-1] //= slice_size
+        shape[-3] *= slice_size
+        return tuple(shape), []
+
+    if type == "hstack":
+        assert len(ops[0]) >= 3, "HStack should at least have 3 dims"
+        assert len(attr) == 1, "hstack should have one attribute, equal to number of stacks of Z dim to create"
+        slice_size = attr[0]
+        assert (
+            ops[0][-3] % slice_size == 0
+        ), f"HStack requires Z: {ops[0][-3]} to be a multiple of slice_size: {slice_size},"
+        shape = list(ops[0])
+        shape[-1] *= slice_size
+        shape[-3] //= slice_size
+        return tuple(shape), []
+
+    if type == "vslice":
+        assert len(attr) == 1, "VSlice should have one attribute, the slice size"
+        slice_size = attr[0]
+        shape = list(ops[0])
+        assert len(shape) >= 2, "VSlice should at least have 2 dims"
+        assert shape[-2] % slice_size == 0
+        while len(shape) < 3:
+            shape = [1] + shape
+        shape[-2] //= slice_size
+        shape[-3] *= slice_size
+        return tuple(shape), []
+
+    if type == "vstack":
+        assert len(ops[0]) >= 3, "VStack should at least have 3 dims"
+        assert len(attr) == 1, "vstack should have one attribute, equal to number of stacks of Z dim to create"
+        slice_size = attr[0]
+        assert ops[0][-3] % slice_size == 0, f"VStack requires Z to be a multiple of slice_size"
+        shape = list(ops[0])
+        shape[-2] *= slice_size
+        shape[-3] //= slice_size
         return tuple(shape), []
 
     if type == "conv2d_depthwise_weights":
@@ -253,6 +379,36 @@ def shape(type, attr, ops):
         ]
 
         return tuple(reshape_shape), []
+
+    if type == "conv2d_prestride_weights":
+        assert len(attr) == 8, "conv2d_prestride_weights should have 8 attributes"
+        y, x = attr[0], attr[1]
+        stride_height, stride_width = attr[2], attr[3]
+        padding = [attr[4], attr[5], attr[6], attr[7]]
+
+        shape = list(ops[0])
+        assert len(shape) == 4
+        shape, _ = calculate_conv2d_prestride_weights_and_padding(shape, y, x, stride_width, padding)
+        return tuple(shape), []
+
+    if type == "pad_tile":
+        assert len(attr) == 2
+        dim, original_length = attr
+        if dim >= 0:
+            dim -= len(ops[0])
+        if not (dim == -2 or dim == -1):
+            x = 2
+        assert dim == -2 or dim == -1
+        shape = list(ops[0])
+        shape[dim] = align_up_tile(shape[dim])
+        return tuple(shape), []
+
+    if type == "narrow":
+        assert len(attr) == 4
+        dim, start, length, original_length = attr
+        shape = list(ops[0])
+        shape[dim] = length
+        return tuple(shape), []
 
     if type == "pixel_shuffle":
         assert len(ops) == 1, "Pixel shuffle should have one operand."
@@ -360,6 +516,49 @@ def backward(type, attr, ac, operand, inputs, output, grad):
                 grad_return = ac.op_with_named_attrs("concatenate", (grad_return, zero_slice), {"dim": dim})
         return grad_return
 
+    elif type == "pad_tile":
+        assert len(attr) == 2
+        dim, original_length = attr
+        return ac.op(
+            "narrow",
+            (grad,),
+            attributes=(dim, 0, inputs[0].shape[dim], original_length),
+        )
+
+    elif type == "narrow":
+        assert len(attr) == 4
+        dim, start, length, original_length = attr
+        if dim >= 0:
+            dim -= len(inputs[0].shape)
+        if dim in [-1, -2] and align_up_tile(length) == align_up_tile(inputs[0].shape[dim]):
+            if dim == -1:
+                return ac.op_with_named_attrs(
+                    "pad",
+                    (grad,),
+                    {
+                        "padding": [start, original_length - length - start],
+                        "mode": 0,
+                        "value": 0,
+                        "channel_last": False,
+                    },
+                    (start, original_length - length - start, 0, False),
+                )
+            elif dim == -2:
+                return ac.op_with_named_attrs(
+                    "pad",
+                    (grad,),
+                    {
+                        "padding": [0, 0, start, original_length - length - start],
+                        "mode": 0,
+                        "value": 0,
+                        "channel_last": False,
+                    },
+                    (0, 0, start, original_length - length - start, 0, False),
+                )
+            raise ArgumentError("Only dim == 2 and dim == 3 are supported.")
+        else:
+            raise NotImplementedError("Unimplemented narrow in forge")
+
     elif type == "index":
         assert len(attr) == 4
         dim, start, stop, stride = attr
@@ -375,13 +574,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         right = shape[dim] - stop
         value = 0.0
 
-        # constant pad op expects padding in the following format: [dim0_low, dim0_high, dim1_low, dim1_high, ...]
-        # which means we need to create padding for all dimensions zero except the one we are indexing into
-        padding = [0] * (len(shape) * 2)
-        padding[dim * 2] = left
-        padding[dim * 2 + 1] = right
-
-        return ac.op_with_named_attrs("constant_pad", (grad,), {"padding": padding, "value": value})
+        return Pad.decompose_constant_mode(ac, grad, value, left, right, 0, 0, dim, 0)
 
     raise NotImplementedError(f"{type}")
 
@@ -431,5 +624,689 @@ def decompose(type, attr, dc, inputs):
         dc.fuse(x)
 
 
+def create_row_picker_matrix(col_indices, lhs_num_cols, lhs_num_channels=None, lhs_batch_size=None):
+    """
+    Create a sparse matrix that picks rows from a matrix.
+    col_indices: indices of columns from the matrix to pick. Create picker matrix based on this.
+    lhs_num_cols: number of columns in the picker matrix (which is on the left hand side of the matmul)
+    lhs_num_channels: number of channels in the picker matrix
+    lhs_batch_size: batch size of the picker matrix
+
+
+    Example:
+    col_indices = [1, 3, 5]
+    lhs_num_cols = 6
+    lhs_num_channels = 1
+    lhs_batch_size = 1
+    Picker matrix:
+    [
+    [
+        [0, 1, 0, 0, 0, 0],
+        [0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 0, 1]
+    ],
+    ]
+    """
+    # assert that col_indices is not empty
+    assert len(col_indices) > 0
+
+    new_num_rows = len(col_indices)
+    # this picker matrix has to have the same number of dimensions as the input matrix.
+    # depending on the input matrix, we need to create a 2D, 3D and 4D picker matrix
+    if lhs_batch_size is not None:
+        # if lhs_batch_size is not none - we have a 4D input matrix
+        B_left = torch.zeros((lhs_batch_size, lhs_num_channels, new_num_rows, lhs_num_cols))
+        for i, index in enumerate(col_indices):
+            B_left[:, :, i, index] = 1.0
+    elif lhs_num_channels is not None:
+        # if lhs_batch_size is none but lhs_num_channels is not none - we have a 3D input matrix
+        B_left = torch.zeros((lhs_num_channels, new_num_rows, lhs_num_cols))
+        for i, index in enumerate(col_indices):
+            B_left[:, i, index] = 1.0
+    else:
+        # if lhs_batch_size and lhs_num_channels are none - we have a 2D input matrix
+        B_left = torch.zeros((new_num_rows, lhs_num_cols))
+        for i, index in enumerate(col_indices):
+            B_left[i, index] = 1.0
+
+    return B_left
+
+
+def picker_matmul(use_sparse_mm, dc, s, result):
+    if use_sparse_mm:
+        lhs = dc.tensor(s)
+        result = dc.op("sparse_matmul", [lhs, result])
+    else:
+        lhs = dc.tensor(s.to_dense())
+        result = dc.op("matmul", [lhs, result])
+
+    return result
+
+
+def pad_to_tile_dim(n):
+    if n % TILE_DIM == 0:
+        return n
+    return n + TILE_DIM - (n % TILE_DIM)
+
+
+def decompose_select(attr, dc, inputs):
+    orig_shape = inputs[0].shape
+    dim, index, length, stride = attr
+    if dim >= 0:
+        dim -= len(orig_shape)
+
+    result = inputs[0]
+    if orig_shape[dim] == length:
+        result = dc.op("nop", [result])
+        dc.fuse(result)
+
+    # select on z dim is supported via splice
+    elif dim == -3:
+        return
+
+    # At least one of index, length, or stride is not tile dim aligned, and we are operating on either the x or y dim
+    # For example selecting rows 30-35 from tensor of shape (1, 1, 64, 128)
+    elif (
+        not (index % TILE_DIM == length % TILE_DIM == stride % TILE_DIM == 0)
+        and dim in [-2, -1]
+        and stride == orig_shape[dim]
+    ):
+        assert len(attr) == 4, "Select should have 4 attributes"
+        x = result
+        x = dc.op_with_named_attrs(
+            "pad_tile", [x], {"dim": -2, "original_length": orig_shape[-2]}, attrs=(-2, orig_shape[-2])
+        )
+        x = dc.op_with_named_attrs(
+            "pad_tile", [x], {"dim": -1, "original_length": orig_shape[-1]}, attrs=(-1, orig_shape[-1])
+        )
+
+        cols = []
+        size = len(range(index, orig_shape[dim], stride)) * len(range(index, index + length))
+        for offset in range(0, orig_shape[dim], stride):
+            for i in range(index, index + length):
+                if offset + i < orig_shape[dim] or stride == orig_shape[dim]:
+                    cols.append(offset + i)
+
+        rows = list(range(len(cols)))
+        vals = [1.0] * len(cols)
+
+        spm = torch.sparse_coo_tensor((rows, cols), vals, (align_up_tile(size), x.shape[dim]))
+        if len(result.shape) > 2 and result.shape[-3] > 1:
+            spm = torch.stack([spm] * result.shape[-3], -3).unsqueeze(0)
+        spm = dc.tensor(spm)
+
+        is_x_select = dim == -1
+        if is_x_select:
+            x = dc.op_with_named_attrs("transpose", [x], {"dim0": -2, "dim1": -1})
+
+        result = dc.op("sparse_matmul", [spm, x])
+
+        if is_x_select:
+            result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
+
+        if is_x_select:
+            result = dc.op_with_named_attrs(
+                "narrow",
+                [result],
+                {"dim": -1, "start": 0, "length": size, "original_length": result.shape[-1]},
+                attrs=(-1, 0, size, result.shape[-1]),
+            )
+            result = dc.op_with_named_attrs(
+                "narrow",
+                [result],
+                {"dim": -2, "start": 0, "length": orig_shape[-2], "original_length": result.shape[-2]},
+                attrs=(-2, 0, orig_shape[-2], result.shape[-2]),
+            )
+        else:
+
+            result = dc.op_with_named_attrs(
+                "narrow",
+                [result],
+                {"dim": -1, "start": 0, "length": orig_shape[-1], "original_length": result.shape[-1]},
+                attrs=(-1, 0, orig_shape[-1], result.shape[-1]),
+            )
+            result = dc.op_with_named_attrs(
+                "narrow",
+                [result],
+                {"dim": -2, "start": 0, "length": size, "original_length": result.shape[-2]},
+                attrs=(-2, 0, size, result.shape[-2]),
+            )
+
+        dc.fuse(result)
+
+        return
+
+
+def decompose_xy_unflatten(inputs, dc, orig_shape, attr):
+    result = inputs[0]
+    use_sparse_mm = True
+    # Pick out Z dim values from Y and expand the X dimension result matrix by TILE_DIM times
+    # Original matrix:
+    #               |   0   |   1   |  ...  | LY=len(Y) - 1
+    #               -------------------------------------
+    #       0       | A0,0  | A0,1  |  ...  |   A0,LY   |
+    #       1       | A1,0  | A1,1  |  ...  |   A1,LY   |
+    #      ...      |  ...  |  ...  |  ...  |    ...    |
+    #  LX=len(X)-1  | ALX,0 | ALX,1 |  ...  |   ALX,LY  |
+    #
+    # Picker matrix is in the following format:
+    #                       |   0   |   1   |   2   |  ...  |   LX  |
+    #                       ----------------------------------------|
+    #        0              |   1   |   0   |   0   |  ...  |   0   |
+    #        1              |   0   |   0   |   0   |   0   |   0   |
+    #       ...             |   0   |   0   |   0   |   0   |   0   |
+    #     TILE_DIM          |   0   |   1   |   0   |   0   |   0   |
+    #       ...             |   0   |   0   |   0   |   0   |   0   |
+    #    2*TILE_DIM         |   0   |   0   |   1   |   0   |   0   |
+    #       ...             |   0   |   0   |   0   |   0   |   0   |
+    #    LX*TILE_DIM        |   0   |   0   |   0   |   0   |   1   |
+    # LX*TILE_DIM+TILE_DIM-1|   0   |   0   |   0   |   0   |   0   |
+
+    s_pick_z = create_reshape_flatten_sparse_picker_matrix(orig_shape[-2], orig_shape[-2] * TILE_DIM)
+    result = picker_matmul(use_sparse_mm, dc, s_pick_z, result)
+
+    # Result matrix is in the following format:
+    #                       |   0   |   1   |  ...  |   LY  |
+    #                       ---------------------------------
+    #           0           | A0,0  | A0,1  |  ...  | A0,LY |
+    #           ...         |   0   |   0   |   0   |   0   |
+    #       TILE_DIM        | A1,0  | A1,1  |  ...  | A1,LY |
+    #           ...         |   0   |   0   |   0   |   0   |
+    #       2*TILE_DIM      | A2,0  | A2,1  |  ...  | A2,LY |
+    #           ...         |   0   |   0   |   0   |   0   |
+    #       LX*TILE_DIM     | ALX,0 | ALX,1 |   0   | ALX,LY|
+    #           ...         |   0   |   0   |   0   |   0   |
+    # LX*TILE_DIM+TILE_DIM-1|   0   |   0   |   0   |   0   |
+
+    _orig_shape = result.shape
+    # Pad X dimension to TILE_DIM size
+    if _orig_shape[-2] % TILE_DIM != 0:
+        result = dc.op_with_named_attrs(
+            "pad_tile", [result], {"dim": -2, "original_length": _orig_shape[-2]}, attrs=(-2, _orig_shape[-2])
+        )
+
+    # Pad Y dimension to TILE_DIM size
+    if _orig_shape[-1] % TILE_DIM != 0:
+        result = dc.op_with_named_attrs(
+            "pad_tile", [result], {"dim": -1, "original_length": _orig_shape[-1]}, attrs=(-1, _orig_shape[-1])
+        )
+
+    # Transpose the result matrix
+    result = dc.op(TransposeTM.create(-2, -1), [result])
+    slice_factor = _orig_shape[-1] // attr[-1]
+
+    # After matrix transpose, the result is in the following format:
+    #       |   0   |  ...  |  TILE_DIM |  ...  |   2*TILE_DIM  |  ...  |  LX*TILE_DIM  |  ...  |LX*TILE_DIM+TILE_DIM-1 |
+    #       --------------------------------------------------------------------------------------------------------------
+    #   0   | A0,0  |   0   |   A1,0    |  ...  |   A2,0        |  ...  |   ALX,0       |  ...  |           0           |
+    #   1   | A0,1  |   0   |   A1,1    |  ...  |   A2,1        |  ...  |   ALX,1       |  ...  |           0           |
+    #  ...  |  ...  |   0   |   ...     |  ...  |   ...         |  ...  |   ...         |  ...  |           0           |
+    #  LY   | A0,LY |   0   |   A1,LY   |  ...  |   A2,LY       |  ...  |   ALX,LY      |  ...  |           0           |
+
+    # If new X\Y dimensions aren't divisible by TILE_DIM, we need to padd the resulting matrix
+    if attr[-1] % TILE_DIM != 0 or attr[-2] % TILE_DIM != 0:
+        padded_dim = math.ceil(attr[-1] / TILE_DIM) * TILE_DIM
+        num_tiles = attr[-2] if attr[-1] < TILE_DIM else (math.ceil(attr[-2] / TILE_DIM) * TILE_DIM)
+        new_size = num_tiles * padded_dim
+
+        cols = torch.arange(orig_shape[-1]).tolist()
+        rows = []
+        for i in range(attr[-2]):
+            rows.extend((torch.arange(attr[-1]) + (i * padded_dim)).tolist())
+
+        # For example, picker matrix is in the following format, where LNY represents new Y dimension:
+        #                   |   0   |   1   |  ...  |   LNY | LNY+1 | LNY+2 | ... |
+        #                   -------------------------------------------------------
+        #      0            |   1   |   0   |   0   |  ...  |   0   |   0   | ... |
+        #      1            |   0   |   1   |   0   |  ...  |   0   |   0   | ... |
+        #     ...           |   0   |   0   |   1   |  ...  |   0   |   0   | ... |
+        #     LNY           |   0   |   0   |   0   |   1   |   0   |   0   | ... |
+        #     ...           |   0   |   0   |   0   |   0   |   0   |   0   | ... |
+        #   padded_dim      |   0   |   0   |   0   |   0   |   1   |   0   | ... |
+        #  padded_dim+1     |   0   |   0   |   0   |   0   |   0   |   1   | ... |
+        #     ...           |   0   |   0   |   0   |   0   |   0   |   0   | ... |
+        s_pad_with_zero = torch.sparse_coo_tensor(
+            [rows, cols],
+            torch.ones(len(cols)),
+            (new_size, result.shape[-2]),
+            dtype=torch.float32,
+        )
+        result = picker_matmul(use_sparse_mm, dc, s_pad_with_zero, result)
+
+    # Slice out Z dim
+    result = dc.op(TransposeTM.create(-2, -1), [result])
+    if orig_shape[-2] > 1:
+        result = dc.op("vslice", [result], (orig_shape[-2],))
+    elif len(result.shape) == 2:
+        result = dc.op_with_named_attrs(
+            "unsqueeze",
+            [result],
+            {"dim": 0},
+        )
+    _orig_shape = result.shape
+    slice_factor = attr[-2] if attr[-1] < TILE_DIM else (math.ceil(attr[-2] / TILE_DIM) * TILE_DIM)
+    result = dc.op(TransposeTM.create(-2, -1), [result])
+
+    # Slice out row size
+    result = dc.op("vslice", [result], (slice_factor,))
+    result = dc.op(TransposeTM.create(-2, -1), [result])
+    result = dc.op("vstack", [result], (slice_factor * _orig_shape[-3],))
+
+    # Pick out mulitple rows and pack them into tiles
+    s = create_reshape_flatten_sparse_picker_matrix(slice_factor * attr[-3], result.shape[-2]).transpose(-1, -2)
+    result = picker_matmul(use_sparse_mm, dc, s, result)
+
+    if (_orig_shape[-3] > 1) and (attr[-3] > 1):
+        result = dc.op("vslice", [result], (attr[-3],))
+
+    if attr[-1] % TILE_DIM != 0:
+        result = dc.op_with_named_attrs(
+            "narrow",
+            [result],
+            {"dim": -1, "start": 0, "length": attr[-1], "original_length": result.shape[-1]},
+            (-1, 0, attr[-1], result.shape[-1]),
+        )
+    if attr[-2] % TILE_DIM != 0:
+        result = dc.op_with_named_attrs(
+            "narrow",
+            [result],
+            {"dim": -2, "start": 0, "length": attr[-2], "original_length": result.shape[-2]},
+            (-2, 0, attr[-2], result.shape[-2]),
+        )
+    return result
+
+
+def decompose_non_tile_dim_aligned_vslice(inputs, dc, orig_shape, attr):
+    result = unsqueeze_input_for_reshape_decomp(dc, inputs[0])
+    use_sparse_mm = True
+
+    slice_factor = attr[-3]
+    result = dc.op_with_named_attrs(
+        "pad_tile", [result], {"dim": -2, "original_length": orig_shape[-2]}, (-2, orig_shape[-2])
+    )
+    result = dc.op_with_named_attrs(
+        "pad_tile", [result], {"dim": -1, "original_length": orig_shape[-1]}, (-1, orig_shape[-1])
+    )
+    if attr[-2] % TILE_DIM != 0 or orig_shape[-2] % TILE_DIM != 0:
+        padded_dim = math.ceil(attr[-2] / TILE_DIM) * TILE_DIM
+        num_tiles = attr[-3] if attr[-2] < TILE_DIM else (math.ceil(attr[-3] / TILE_DIM) * TILE_DIM)
+        new_size = num_tiles * padded_dim
+
+        cols = torch.arange(orig_shape[-2]).tolist()
+        rows = []
+        for i in range(attr[-3]):
+            rows.extend((torch.arange(attr[-2]) + (i * padded_dim)).tolist())
+
+        spm = torch.sparse_coo_tensor(
+            [rows, cols],
+            torch.ones(len(cols)),
+            (new_size, result.shape[-2]),
+            dtype=torch.float32,
+        )
+        if attr[-2] >= TILE_DIM:
+            spm1 = create_flattened_padding_removal_sparse_picker_matrix(
+                spm.shape[-2], 0, slice_factor * padded_dim, spm.shape[-2]
+            )
+            spm = torch.sparse.mm(spm1, spm)
+
+        result = picker_matmul(use_sparse_mm, dc, spm, result)
+
+    result = dc.op("vslice", [result], (slice_factor,))
+    if attr[-1] % TILE_DIM != 0:
+        result = dc.op_with_named_attrs(
+            "narrow",
+            [result],
+            {"dim": -1, "start": 0, "length": attr[-1], "original_length": result.shape[-1]},
+            (-1, 0, attr[-1], result.shape[-1]),
+        )
+    if attr[-2] % TILE_DIM != 0:
+        result = dc.op_with_named_attrs(
+            "narrow",
+            [result],
+            {"dim": -2, "start": 0, "length": attr[-2], "original_length": result.shape[-2]},
+            (-2, 0, attr[-2], result.shape[-2]),
+        )
+
+    return result
+
+
 def decompose_post_optimize(type, attr, dc, inputs):
-    pass
+    # TODO: remove once backend support is available
+    if type == "select":
+        decompose_select(attr, dc, inputs)
+
+    elif type == "hslice":
+        input_shape = inputs[0].shape.as_list()
+        post_dim = input_shape[-1] // attr[0]
+        result = inputs[0]
+        if post_dim % TILE_DIM != 0:
+            if input_shape[-2] % TILE_DIM != 0:
+                result = dc.op_with_named_attrs(
+                    "pad_tile",
+                    [
+                        result,
+                    ],
+                    {"dim": -2, "original_length": input_shape[-2]},
+                    (-2, input_shape[-2]),
+                )
+            cols = []
+            pad_post_dim = align_up_tile(post_dim)
+            pad_input_dim = pad_post_dim * attr[0]
+            for i in range(attr[0]):
+                cols.extend(torch.arange(i * pad_post_dim, i * pad_post_dim + post_dim).tolist())
+            spm = torch.sparse_coo_tensor(
+                [cols, torch.arange(input_shape[-1]).tolist()],
+                torch.ones(input_shape[-1]),
+                (pad_input_dim, input_shape[-1]),
+                dtype=torch.float32,
+            )
+
+            while len(result.shape) < 3:
+                result = dc.op_with_named_attrs(
+                    "unsqueeze",
+                    [
+                        result,
+                    ],
+                    {"dim": 0},
+                )
+
+            spm = torch.stack([spm] * result.shape[-3], -3).unsqueeze(0)
+            result = dc.op_with_named_attrs(
+                "transpose",
+                [
+                    result,
+                ],
+                {"dim0": -2, "dim1": -1},
+            )
+            result = picker_matmul(True, dc, spm, result)
+            result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
+            result = dc.op(
+                "hslice",
+                [
+                    result,
+                ],
+                attr,
+            )
+            result = dc.op_with_named_attrs(
+                "narrow",
+                [
+                    result,
+                ],
+                {"dim": -1, "start": 0, "length": post_dim, "original_length": result.shape[-1]},
+                (-1, 0, post_dim, result.shape[-1]),
+            )
+            if input_shape[-2] % TILE_DIM != 0:
+                result = dc.op_with_named_attrs(
+                    "narrow",
+                    [
+                        result,
+                    ],
+                    {"dim": -2, "start": 0, "length": input_shape[-2], "original_length": result.shape[-2]},
+                    (-2, 0, input_shape[-2], result.shape[-2]),
+                )
+            dc.fuse(result)
+        elif input_shape[-2] % TILE_DIM != 0:
+            result = dc.op_with_named_attrs(
+                "pad_tile",
+                [
+                    result,
+                ],
+                {"dim": -2, "original_length": input_shape[-2]},
+                (-2, input_shape[-2]),
+            )
+            result = dc.op(
+                "hslice",
+                [
+                    result,
+                ],
+                attr,
+            )
+            result = dc.op_with_named_attrs(
+                "narrow",
+                [
+                    result,
+                ],
+                {"dim": -2, "start": 0, "length": input_shape[-2], "original_length": result.shape[-2]},
+                (-2, 0, input_shape[-2], result.shape[-2]),
+            )
+            dc.fuse(result)
+
+    elif type == "hstack":
+        input_shape = inputs[0].shape.as_list()
+        result = inputs[0]
+        if input_shape[-1] % TILE_DIM != 0:
+            if input_shape[-2] % TILE_DIM != 0:
+                result = dc.op_with_named_attrs(
+                    "pad_tile",
+                    [
+                        result,
+                    ],
+                    {"dim": -2, "original_length": input_shape[-2]},
+                    (-2, input_shape[-2]),
+                )
+            output_dim = input_shape[-1] * attr[0]
+            pad_output_dim = align_up_tile(input_shape[-1]) * attr[0]
+            result = dc.op_with_named_attrs(
+                "pad_tile",
+                [
+                    result,
+                ],
+                {"dim": -1, "original_length": input_shape[-1]},
+                (-1, input_shape[-1]),
+            )
+            result = dc.op(
+                "hstack",
+                [
+                    result,
+                ],
+                attr,
+            )
+            rows = []
+            pad_input_dim = align_up_tile(input_shape[-1])
+            for i in range(attr[0]):
+                rows.extend(torch.arange(i * pad_input_dim, i * pad_input_dim + input_shape[-1]).tolist())
+            spm = torch.sparse_coo_tensor(
+                [torch.arange(output_dim).tolist(), rows],
+                torch.ones(output_dim),
+                (output_dim, pad_output_dim),
+                dtype=torch.float32,
+            )
+            spm = torch.stack([spm] * result.shape[-3], -3).unsqueeze(0)
+            result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
+            result = picker_matmul(True, dc, spm, result)
+            result = dc.op_with_named_attrs("transpose", [result], {"dim0": -2, "dim1": -1})
+            if input_shape[-2] % TILE_DIM != 0:
+                result = dc.op_with_named_attrs(
+                    "narrow",
+                    [
+                        result,
+                    ],
+                    {"dim": -2, "start": 0, "length": input_shape[-2], "original_length": result.shape[-2]},
+                    (-2, 0, input_shape[-2], result.shape[-2]),
+                )
+            dc.fuse(result)
+        elif input_shape[-2] % TILE_DIM != 0:
+            result = dc.op_with_named_attrs(
+                "pad_tile",
+                [
+                    result,
+                ],
+                {"dim": -2, "original_length": input_shape[-2]},
+                (-2, input_shape[-2]),
+            )
+            result = dc.op(
+                "hstack",
+                [
+                    result,
+                ],
+                attr,
+            )
+            result = dc.op_with_named_attrs(
+                "narrow",
+                [
+                    result,
+                ],
+                {"dim": -2, "start": 0, "length": input_shape[-2], "original_length": result.shape[-2]},
+                (-2, 0, input_shape[-2], result.shape[-2]),
+            )
+            dc.fuse(result)
+
+    elif type == "vslice":
+        input_shape = inputs[0].shape.as_list()
+        post_dim = input_shape[-2] // attr[0]
+        result = inputs[0]
+        if post_dim % TILE_DIM != 0:
+            if input_shape[-1] % TILE_DIM != 0:
+                result = dc.op_with_named_attrs(
+                    "pad_tile",
+                    [
+                        result,
+                    ],
+                    {"dim": -1, "original_length": input_shape[-1]},
+                    (-1, input_shape[-1]),
+                )
+            cols = []
+            pad_post_dim = align_up_tile(post_dim)
+            pad_input_dim = pad_post_dim * attr[0]
+            for i in range(attr[0]):
+                cols.extend(torch.arange(i * pad_post_dim, i * pad_post_dim + post_dim).tolist())
+            spm = (
+                torch.sparse_coo_tensor(
+                    [cols, torch.arange(input_shape[-2]).tolist()],
+                    torch.ones(input_shape[-2]),
+                    (pad_input_dim, input_shape[-2]),
+                    dtype=torch.float32,
+                )
+                .unsqueeze(0)
+                .unsqueeze(0)
+            )
+            spm = torch.cat([spm] * result.shape[-3], -3)
+            result = picker_matmul(True, dc, spm, result)
+            result = dc.op(
+                "vslice",
+                [
+                    result,
+                ],
+                attr,
+            )
+            result = dc.op_with_named_attrs(
+                "narrow",
+                [
+                    result,
+                ],
+                {"dim": -2, "start": 0, "length": post_dim, "original_length": result.shape[-2]},
+                (-2, 0, post_dim, result.shape[-2]),
+            )
+            if input_shape[-1] % TILE_DIM != 0:
+                result = dc.op_with_named_attrs(
+                    "narrow",
+                    [
+                        result,
+                    ],
+                    {"dim": -1, "start": 0, "length": input_shape[-1], "original_length": result.shape[-1]},
+                    (-1, 0, input_shape[-1], result.shape[-1]),
+                )
+            dc.fuse(result)
+        elif input_shape[-1] % TILE_DIM != 0:
+            result = dc.op(
+                "pad_tile",
+                [
+                    result,
+                ],
+                (-1, input_shape[-1]),
+            )
+            result = dc.op(
+                "vslice",
+                [
+                    result,
+                ],
+                attr,
+            )
+            result = dc.op(
+                "narrow",
+                [
+                    result,
+                ],
+                (-1, 0, input_shape[-1], result.shape[-1]),
+            )
+            dc.fuse(result)
+
+    elif type == "vstack":
+        input_shape = inputs[0].shape.as_list()
+        result = inputs[0]
+        if input_shape[-2] % TILE_DIM != 0:
+            if input_shape[-1] % TILE_DIM != 0:
+                result = dc.op(
+                    "pad_tile",
+                    [
+                        result,
+                    ],
+                    (-1, input_shape[-1]),
+                )
+            output_dim = input_shape[-2] * attr[0]
+            pad_output_dim = align_up_tile(input_shape[-2]) * attr[0]
+            result = dc.op(
+                "pad_tile",
+                [
+                    result,
+                ],
+                (-2, input_shape[-2]),
+            )
+            result = dc.op(
+                "vstack",
+                [
+                    result,
+                ],
+                attr,
+            )
+            rows = []
+            pad_input_dim = align_up_tile(input_shape[-2])
+            for i in range(attr[0]):
+                rows.extend(torch.arange(i * pad_input_dim, i * pad_input_dim + input_shape[-2]).tolist())
+            spm = (
+                torch.sparse_coo_tensor(
+                    [torch.arange(output_dim).tolist(), rows],
+                    torch.ones(output_dim),
+                    (output_dim, pad_output_dim),
+                    dtype=torch.float32,
+                )
+                .coalesce()
+                .unsqueeze(0)
+                .unsqueeze(0)
+            )
+            spm = torch.cat([spm] * result.shape[-3], -3)
+            result = picker_matmul(True, dc, spm, result)
+            if input_shape[-1] % TILE_DIM != 0:
+                result = dc.op(
+                    "narrow",
+                    [
+                        result,
+                    ],
+                    (-1, 0, input_shape[-1], result.shape[-1]),
+                )
+            dc.fuse(result)
+        elif input_shape[-1] % TILE_DIM != 0:
+            result = dc.op(
+                "pad_tile",
+                [
+                    result,
+                ],
+                (-1, input_shape[-1]),
+            )
+            result = dc.op(
+                "vstack",
+                [
+                    result,
+                ],
+                attr,
+            )
+            result = dc.op(
+                "narrow",
+                [
+                    result,
+                ],
+                (-1, 0, input_shape[-1], result.shape[-1]),
+            )
+            dc.fuse(result)
+
+    return
