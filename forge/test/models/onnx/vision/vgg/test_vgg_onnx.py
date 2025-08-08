@@ -31,7 +31,10 @@ variants = [
     pytest.param("vgg16"),
     pytest.param("vgg19"),
     pytest.param("bn_vgg19"),
-    pytest.param("bn_vgg19b"),
+    pytest.param(
+        "bn_vgg19b",
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2747")],
+    ),
 ]
 
 

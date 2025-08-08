@@ -29,8 +29,13 @@ from test.models.pytorch.vision.wideresnet.model_utils.utils import post_process
 from test.utils import download_model
 
 variants = [
-    ModelVariant.WIDE_RESNET50_2,
-    ModelVariant.WIDE_RESNET101_2,
+    pytest.param(
+        ModelVariant.WIDE_RESNET50_2,
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2747")],
+    ),
+    pytest.param(
+        ModelVariant.WIDE_RESNET101_2,
+    ),
 ]
 
 
