@@ -30,6 +30,11 @@ def set_home_paths():
     in_wheel_path = forge_path / "forge/tt-metal"
     in_source_path = (forge_path.parent.resolve() / "third_party/tt-mlir/third_party/tt-metal/src/tt-metal").resolve()
 
+    # tt_metal_home = os.environ["TT_METAL_HOME"]
+    # print(f"TT_METAL_HOME is set to: {tt_metal_home}")
+    # print(f"Current working directory: {pathlib.Path.cwd()}")
+    # print(f"Current sys.path: {sys.path}")
+
     if "TT_METAL_HOME" not in os.environ:
         if in_wheel_path.exists():
             os.environ["TT_METAL_HOME"] = str(in_wheel_path)
