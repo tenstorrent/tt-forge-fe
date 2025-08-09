@@ -1,4 +1,4 @@
-# xfail_div_SPECIAL_VALUES ids
+# xfail_div_VERIFICATION_FAILED_SPECIAL_VALUES ids
 
 div-FROM_ANOTHER_OP-{'rounding_mode': 'trunc'}-(7, 10, 1000, 100)-None-None
 div-FROM_ANOTHER_OP-{'rounding_mode': 'floor'}-(7, 10, 1000, 100)-None-None

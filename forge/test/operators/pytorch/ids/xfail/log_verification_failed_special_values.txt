@@ -1,4 +1,4 @@
-# xfail_log_SPECIAL_VALUES ids
+# xfail_log_VERIFICATION_FAILED_SPECIAL_VALUES ids
 
 log-FROM_ANOTHER_OP-None-(1, 4)-None-None
 log-FROM_ANOTHER_OP-None-(1, 17)-None-None

@@ -1,4 +1,4 @@
-# xfail_conv2d_UNSUPPORTED_SPECIAL_CASE ids
+# xfail_conv2d_WEIGHT_BIAS_SHAPE_MISMATCH ids
 
 conv2d-CONST_EVAL_PASS-{'in_channels': 2, 'out_channels': 10, 'kernel_size': (1, 1), 'stride': 1, 'padding': 0, 'dilation': 1, 'groups': 1, 'bias': True, 'padding_mode': 'zeros', 'dtype': None}-(1, 2, 3, 4)-None-None
 conv2d-CONST_EVAL_PASS-{'in_channels': 11, 'out_channels': 20, 'kernel_size': (9, 1), 'stride': 1, 'padding': 0, 'dilation': 1, 'groups': 1, 'bias': True, 'padding_mode': 'zeros', 'dtype': None}-(1, 11, 45, 17)-None-None
