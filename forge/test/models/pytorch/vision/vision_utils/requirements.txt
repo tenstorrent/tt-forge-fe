@@ -1,2 +1,2 @@
-pillow==11.3.0
-timm==1.0.9
+pillow
+timm
