@@ -106,7 +106,6 @@ class NewToOldOpType
         mapping_[OpType::Nop] = "nop";
         mapping_[OpType::NotEqual] = "not_equal";
         mapping_[OpType::Pad] = "pad";
-        mapping_[OpType::PadTile] = "pad_tile";
         mapping_[OpType::PixelShuffle] = "pixel_shuffle";
         mapping_[OpType::Pow] = "pow";
         mapping_[OpType::Power] = "power";
@@ -217,7 +216,6 @@ class OldToNewOpType
         mapping_["nop"] = OpType::Nop;
         mapping_["not_equal"] = OpType::NotEqual;
         mapping_["pad"] = OpType::Pad;
-        mapping_["pad_tile"] = OpType::PadTile;
         mapping_["pixel_shuffle"] = OpType::PixelShuffle;
         mapping_["pow"] = OpType::Pow;
         mapping_["power"] = OpType::Power;
@@ -393,7 +391,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Nop: return nop::eval(old_op_type, *this, tensors);
         case OpType::NotEqual: return not_equal::eval(old_op_type, *this, tensors);
         case OpType::Pad: return pad::eval(old_op_type, *this, tensors);
-        case OpType::PadTile: return pad_tile::eval(old_op_type, *this, tensors);
         case OpType::PixelShuffle: return pixel_shuffle::eval(old_op_type, *this, tensors);
         case OpType::Pow: return pow::eval(old_op_type, *this, tensors);
         case OpType::Power: return power::eval(old_op_type, *this, tensors);
@@ -497,7 +494,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Nop: return nop::shape(old_op_type, *this, inputs);
         case OpType::NotEqual: return not_equal::shape(old_op_type, *this, inputs);
         case OpType::Pad: return pad::shape(old_op_type, *this, inputs);
-        case OpType::PadTile: return pad_tile::shape(old_op_type, *this, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::shape(old_op_type, *this, inputs);
         case OpType::Pow: return pow::shape(old_op_type, *this, inputs);
         case OpType::Power: return power::shape(old_op_type, *this, inputs);
@@ -606,7 +602,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Nop: return nop::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::NotEqual: return not_equal::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Pad: return pad::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::PadTile: return pad_tile::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::PixelShuffle: return pixel_shuffle::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Pow: return pow::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Power: return power::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -732,7 +727,6 @@ void Op::decompose_initial(
         case OpType::Nop: return;
         case OpType::NotEqual: return;
         case OpType::Pad: return pad::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::PadTile: return pad_tile::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Pow: return;
         case OpType::Power: return;
@@ -838,7 +832,6 @@ void Op::decompose_post_optimize(
         case OpType::Nop: return;
         case OpType::NotEqual: return;
         case OpType::Pad: return;
-        case OpType::PadTile: return pad_tile::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Pow: return;
         case OpType::Power: return;
@@ -944,7 +937,6 @@ void Op::decompose_post_autograd(
         case OpType::Nop: return;
         case OpType::NotEqual: return;
         case OpType::Pad: return;
-        case OpType::PadTile: return pad_tile::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Pow: return;
         case OpType::Power: return;
@@ -1048,7 +1040,6 @@ long Op::initial_flops_estimate(
         case OpType::Nop: return 0;
         case OpType::NotEqual: return 0;
         case OpType::Pad: return 0;
-        case OpType::PadTile: return pad_tile::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Pow: return 0;
         case OpType::Power: return 0;
@@ -1151,7 +1142,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Nop: return false;
         case OpType::NotEqual: return false;
         case OpType::Pad: return true;
-        case OpType::PadTile: return true;
         case OpType::PixelShuffle: return true;
         case OpType::Pow: return false;
         case OpType::Power: return false;
@@ -1254,7 +1244,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Nop: return true;
         case OpType::NotEqual: return true;
         case OpType::Pad: return false;
-        case OpType::PadTile: return false;
         case OpType::PixelShuffle: return false;
         case OpType::Pow: return true;
         case OpType::Power: return true;
@@ -1357,7 +1346,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Nop: return true;
         case OpType::NotEqual: return false;
         case OpType::Pad: return false;
-        case OpType::PadTile: return false;
         case OpType::PixelShuffle: return false;
         case OpType::Pow: return true;
         case OpType::Power: return false;
@@ -1460,7 +1448,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Nop: return false;
         case OpType::NotEqual: return true;
         case OpType::Pad: return false;
-        case OpType::PadTile: return false;
         case OpType::PixelShuffle: return false;
         case OpType::Pow: return false;
         case OpType::Power: return true;
@@ -1562,7 +1549,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Nop: return false;
         case OpType::NotEqual: return false;
         case OpType::Pad: return false;
-        case OpType::PadTile: return false;
         case OpType::PixelShuffle: return false;
         case OpType::Pow: return false;
         case OpType::Power: return false;

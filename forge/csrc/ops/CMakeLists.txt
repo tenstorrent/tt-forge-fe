@@ -68,7 +68,6 @@ add_library(ops
     op_nop.cpp
     op_not_equal.cpp
     op_pad.cpp
-    op_pad_tile.cpp
     op_pixel_shuffle.cpp
     op_pow.cpp
     op_power.cpp

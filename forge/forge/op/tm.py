@@ -358,35 +358,6 @@ def ConstantPad(
     ).get_tensor()
 
 
-def PadTile(name: str, operandA: Tensor, dim: int, original_length: int) -> Tensor:
-    """
-    TM
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        Input operand A
-
-    dim: int
-        Dimension which to pad to tile dim
-
-    original_length: int
-        Original length of the dimension before calling this function
-
-    Returns
-    -------
-    Tensor
-        Forge tensor
-    """
-
-    return op(
-        "pad_tile", name, operandA, attrs=(dim, original_length), dim=dim, original_length=original_length
-    ).get_tensor()
-
-
 def Broadcast(name: str, operandA: Tensor, dim: int, shape: int) -> Tensor:
     """
     TM

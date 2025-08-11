@@ -148,20 +148,6 @@ def eval(type, attr, ops):
 
         return prestrided_activations
 
-    if type == "pad_tile":
-        assert len(attr) == 2
-        dim, original_length = attr
-        act = t_ops[0]
-        if dim >= 0:
-            dim -= len(act.shape)
-        assert dim == -2 or dim == -1
-        padding = align_up_tile(act.shape[dim]) - act.shape[dim]
-        if dim == -2:
-            act = torch.nn.functional.pad(act, (0, 0, 0, padding))
-        if dim == -1:
-            act = torch.nn.functional.pad(act, (0, padding))
-        return act
-
     if type == "pixel_shuffle":
         assert len(ops) == 1, "Pixel shuffle should have one operand."
         assert len(attr) == 1, "Pixel shuffle should have one attribute."
@@ -268,18 +254,6 @@ def shape(type, attr, ops):
 
         return tuple(reshape_shape), []
 
-    if type == "pad_tile":
-        assert len(attr) == 2
-        dim, original_length = attr
-        if dim >= 0:
-            dim -= len(ops[0])
-        if not (dim == -2 or dim == -1):
-            x = 2
-        assert dim == -2 or dim == -1
-        shape = list(ops[0])
-        shape[dim] = align_up_tile(shape[dim])
-        return tuple(shape), []
-
     if type == "pixel_shuffle":
         assert len(ops) == 1, "Pixel shuffle should have one operand."
         assert len(attr) == 1, "Pixel shuffle should have one attribute."
@@ -385,11 +359,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
                 zero_slice = ac.tensor(torch.zeros(zero_post_pad_shape))
                 grad_return = ac.op_with_named_attrs("concatenate", (grad_return, zero_slice), {"dim": dim})
         return grad_return
-
-    elif type == "pad_tile":
-        assert len(attr) == 2
-        dim, original_length = attr
-        return ac.op_with_named_attrs("index", (grad,), {"dim": dim, "start": 0, "stop": original_length, "stride": 1})
 
     elif type == "index":
         assert len(attr) == 4

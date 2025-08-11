@@ -54,7 +54,6 @@ from .tm import (
     Select,
     Pad,
     ConstantPad,
-    PadTile,
     Broadcast,
     Repeat,
     RepeatInterleave,

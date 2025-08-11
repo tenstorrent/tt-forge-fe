@@ -67,7 +67,6 @@ op_to_module_map = {
     "conv2d_grouped_weights_bw": "tm",
     "conv2d_prestride_act": "tm",
     "conv2d_prestride_weights": "tm",
-    "pad_tile": "tm",
     "pad": "tm",
     "constant_pad": "tm",
     "unsqueeze": "tm",

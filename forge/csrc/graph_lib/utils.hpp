@@ -264,7 +264,6 @@ class ConstEvalGraph
     std::unique_ptr<Node> promote_node(std::unique_ptr<Node> &&consteval_node);
     std::unique_ptr<Node> promote_node(Graph *runtime_graph, Node *runtime_node);
     std::unique_ptr<ConstEvalGraph> clone(Node *runtime_input, std::string const &new_input_node_name = "");
-    void pad_output_to_forge_dims(std::string const &name_prefix);
     void set_needs_autograd(bool new_needs_autograd) { needs_autograd = new_needs_autograd; }
     void autograd();
 
