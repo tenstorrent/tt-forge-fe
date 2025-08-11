@@ -68,7 +68,6 @@ def test_vilt_question_answering_onnx(variant, forge_tmp_path):
     module_name = record_model_properties(
         framework=Framework.ONNX, model=ModelArch.VILT, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
-
     torch_model, inputs, model = generate_model_vilt_question_answering_hf_pytorch(variant)
 
     # Export model to ONNX
