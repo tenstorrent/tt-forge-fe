@@ -1,16 +1,10 @@
 # SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
-#
+
 # SPDX-License-Identifier: Apache-2.0
 
-import os
 
-os.environ["HIPPYNN_USE_CUSTOM_KERNELS"] = "False"
-
-import ase.build
-import ase.units
 import pytest
 import torch
-from hippynn.graphs import inputs
 
 import forge
 from forge.forge_property_utils import (
@@ -21,8 +15,10 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
-
-from test.models.pytorch.atomic.hippynn.model_utils.model import load_model
+from third_party.tt_forge_models.hippynn.pytorch import ModelLoader as AtomicModelLoader
+from third_party.tt_forge_models.hippynn.pytorch import (
+    ModelVariant as AtomicModelVariant,
+)
 
 
 class HippynWrapper(torch.nn.Module):
@@ -38,33 +34,37 @@ class HippynWrapper(torch.nn.Module):
         return output_dict
 
 
-@pytest.mark.xfail
+HIPPYNN_VARIANTS = [
+    AtomicModelVariant.BASE,
+]
+
+
 @pytest.mark.nightly
-def test_hippynn():
+@pytest.mark.xfail
+@pytest.mark.parametrize("variant", HIPPYNN_VARIANTS)
+def test_hippynn(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.HIPPYNN,
-        variant="default",
+        variant=variant,
         task=Task.ATOMIC_ML,
         source=Source.GITHUB,
     )
 
     # Load model
-    framework_model, output_key = load_model()
-    framework_model.eval()
+    loader = AtomicModelLoader()
+    framework_model, output_key = loader.load_model()
     framework_model = HippynWrapper(framework_model, output_key=output_key)
 
     # Load inputs
-    atoms = ase.build.molecule("H2O")
-    pos = torch.as_tensor(atoms.positions / ase.units.Bohr).unsqueeze(0).to(torch.get_default_dtype())
-    sp = torch.as_tensor(atoms.get_atomic_numbers()).unsqueeze(0)
+    inputs = loader.load_inputs()
 
     # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,
-        sample_inputs=(sp, pos),
+        sample_inputs=inputs,
         module_name=module_name,
     )
     # Model Verification
