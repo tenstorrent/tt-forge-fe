@@ -21,11 +21,11 @@ from transformers import (
     ViltConfig,
     ViltForQuestionAnswering,
     ViltProcessor,
-    )
+)
 from test.models.pytorch.multimodal.vilt.model_utils.model import (
     ViLtEmbeddingWrapper,
     ViltModelWrapper,
-    )
+)
 from test.utils import download_model
 
 text1 = "How many cats are there?"
