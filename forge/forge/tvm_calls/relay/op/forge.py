@@ -64,16 +64,6 @@ def dense_to_matmul():
     return is_op("nn.dense")(data, weight_t)
 
 
-def reshape_to_vstack():
-    act = wildcard()
-    return is_op("reshape")(act)
-
-
-def reshape_to_vslice():
-    act = wildcard()
-    return is_op("reshape")(act)
-
-
 def decompose_adv_index_input_tuple():
     act = wildcard()
     indices = wildcard()
@@ -181,7 +171,6 @@ tm_cpu_fallback_ops_of_interest = [
     "reverse",
     "sequence_mask",
     "slice_like",
-    "sparse_to_dense",
     "split",
     "squeeze",
     "stack",
@@ -217,8 +206,6 @@ tm_cpu_fallback_ops_to_not_include = [
     "nn.matmul",
     "nn.max_pool1d",
     "nn.max_pool2d",
-    "nn.sparse_conv2d",
-    "nn.sparse_dense",
     "nn.upsampling",
     "nn.upsampling3d",
     # Forge

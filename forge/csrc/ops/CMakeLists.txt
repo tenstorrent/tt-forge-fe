@@ -44,8 +44,6 @@ add_library(ops
     op_greater.cpp
     op_greater_equal.cpp
     op_heaviside.cpp
-    op_hslice.cpp
-    op_hstack.cpp
     op_index.cpp
     op_index_copy.cpp
     op_interleave.cpp
@@ -58,6 +56,7 @@ add_library(ops
     op_log_softmax.cpp
     op_logical_and.cpp
     op_logical_not.cpp
+    op_bitwise_and.cpp
     op_mask.cpp
     op_matmul.cpp
     op_max_pool_1d.cpp
@@ -67,7 +66,6 @@ add_library(ops
     op_multiply.cpp
     op_nop.cpp
     op_not_equal.cpp
-    op_narrow.cpp
     op_pad.cpp
     op_pad_tile.cpp
     op_pixel_shuffle.cpp
@@ -88,7 +86,6 @@ add_library(ops
     op_sine.cpp
     op_softmax.cpp
     op_softmax_bw.cpp
-    op_sparse_matmul.cpp
     op_sqrt.cpp
     op_stack.cpp
     op_subtract.cpp
@@ -98,8 +95,6 @@ add_library(ops
     op_unsqueeze.cpp
     op_update_cache.cpp
     op_upsample_2d.cpp
-    op_vslice.cpp
-    op_vstack.cpp
     op_where.cpp
     python_bindings.cpp)
 

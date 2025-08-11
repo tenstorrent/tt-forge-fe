@@ -176,17 +176,7 @@ void AutogradModule(py::module &m_autograd)
         .def(
             "get_operands",
             [](tt::autograd::autograd_context &self, tt::autograd::NodeContext const &node)
-            {
-                graphlib::Graph *graph = self.autograd->get_graph();
-                std::vector<tt::autograd::Node *> operands = graph->data_operands(graph->node_by_id(node.id));
-                std::vector<tt::autograd::NodeContext *> operand_contexts;
-                for (auto it = operands.begin(); it != operands.end(); ++it)
-                {
-                    tt::autograd::NodeContext *op_context = new tt::autograd::NodeContext(*it);
-                    operand_contexts.push_back(op_context);
-                }
-                return operand_contexts;
-            })
+            { return self.get_operands(node); })
         .def(
             "set_output_df",
             [](tt::autograd::autograd_context &self, tt::autograd::NodeContext &node, DataFormat df)

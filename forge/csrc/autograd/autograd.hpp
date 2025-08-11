@@ -11,6 +11,11 @@
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
 
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wgnu-anonymous-struct"
+#pragma clang diagnostic ignored "-Wc99-extensions"
+#endif
+
 namespace at
 {
 class Tensor;
@@ -165,6 +170,20 @@ struct __attribute__((visibility("hidden"))) autograd_context
     int operand;
     graphlib::NodeEpochType epoch_type = graphlib::NodeEpochType::Backward;
     int created_op_index = 0;  // Incremented to ensure unique names when multiple ops are created
+
+    // Get operands of a node
+    std::vector<NodeContext> get_operands(const NodeContext &node) const
+    {
+        graphlib::Graph *graph = autograd->get_graph();
+        std::vector<Node *> operands = graph->data_operands(graph->node_by_id(node.id));
+        std::vector<NodeContext> operand_contexts;
+        for (auto it = operands.begin(); it != operands.end(); ++it)
+        {
+            NodeContext op_context(*it);
+            operand_contexts.push_back(op_context);
+        }
+        return operand_contexts;
+    }
 };
 
 template <typename T>

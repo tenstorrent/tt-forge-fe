@@ -4,8 +4,6 @@
 import importlib
 from types import ModuleType
 from functools import lru_cache
-from .convolution import Conv2d
-from .convolution import Conv2dTranspose
 from .pad import Pad
 
 op_to_module_map = {
@@ -53,7 +51,6 @@ op_to_module_map = {
     "interleave": "eltwise_nary",
     "stack": "eltwise_nary",
     "matmul": "matmul",
-    "sparse_matmul": "matmul",
     "depthwise": "depthwise",
     "embedding": "embedding",
     "embedding_bw": "embedding_bw",
@@ -62,10 +59,6 @@ op_to_module_map = {
     "reshape": "tm",
     "index": "tm",
     "select": "tm",
-    "hslice": "tm",
-    "hstack": "tm",
-    "vslice": "tm",
-    "vstack": "tm",
     "broadcast": "tm",
     "repeat": "tm",
     "repeat_interleave": "tm",
@@ -76,7 +69,6 @@ op_to_module_map = {
     "conv2d_prestride_act": "tm",
     "conv2d_prestride_weights": "tm",
     "pad_tile": "tm",
-    "narrow": "tm",
     "pad": Pad,
     "unsqueeze": "tm",
     "squeeze": "tm",
@@ -86,8 +78,8 @@ op_to_module_map = {
     "reduce_avg": "reduce",
     "reduce_sum": "reduce",
     "reduce_max": "reduce",
-    "conv2d": Conv2d,
-    "conv2d_transpose": Conv2dTranspose,
+    "conv2d": "misc",
+    "conv2d_transpose": "misc",
     "conv3d": "convolution",
     "max_pool1d": "pooling",
     "max_pool2d": "pooling",

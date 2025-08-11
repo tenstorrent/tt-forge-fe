@@ -83,8 +83,6 @@ enum class OpType : uint32_t
     Greater,
     GreaterEqual,
     Heaviside,
-    Hslice,
-    Hstack,
     Index,
     IndexCopy,
     Interleave,
@@ -97,6 +95,7 @@ enum class OpType : uint32_t
     LogSoftmax,
     LogicalAnd,
     LogicalNot,
+    BitwiseAnd,
     Mask,
     Matmul,
     MaxPool1d,
@@ -137,8 +136,6 @@ enum class OpType : uint32_t
     Unsqueeze,
     UpdateCache,
     Upsample2d,
-    Vslice,
-    Vstack,
     Where,
 };
 

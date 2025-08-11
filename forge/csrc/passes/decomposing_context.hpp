@@ -65,6 +65,19 @@ class DecomposingContext
 
     Graph* get_graph() { return graph; }
 
+    // Get operands of a node
+    std::vector<NodeContext> get_operands(const NodeContext& node) const
+    {
+        std::vector<graphlib::Node*> operands = graph->data_operands(graph->node_by_id(node.id));
+        std::vector<NodeContext> operand_contexts;
+        for (auto it = operands.begin(); it != operands.end(); ++it)
+        {
+            NodeContext op_context(*it);
+            operand_contexts.push_back(op_context);
+        }
+        return operand_contexts;
+    }
+
     inline int get_op_index() { return op_index; }
 
     inline graphlib::NodeId get_output_node_id() { return output_node_id; }

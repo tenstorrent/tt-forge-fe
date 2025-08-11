@@ -7,9 +7,6 @@ import torch
 from ..common import to_torch_operands
 from forge.forgeglobal import TILE_DIM, align_up_tile
 from forge.forgeglobal import TILE_DIM, align_up_tile, is_tile_dim_aligned
-from ..sparse_utils import (
-    create_flattened_padding_removal_sparse_picker_matrix,
-)
 from loguru import logger
 
 
@@ -151,48 +148,6 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
             {"y": y, "x": x, "shift_y": -shifts[operand * 2], "shift_x": -shifts[operand * 2 + 1]},
             [y, x, -shifts[operand * 2], -shifts[operand * 2 + 1]],
         )
-
-    elif op_type == "interleave":
-        axis = attr[0]
-        stride = attr[1]
-        assert axis == -3 and stride == 1
-
-        num_operands = len(inputs)
-        result = grad
-        if grad.shape[-1] % TILE_DIM != 0:
-            result = ac.op_with_named_attrs(
-                "pad_tile", (result,), {"dim": -1, "original_length": grad.shape[-1]}, (-1, grad.shape[-1])
-            )
-        if grad.shape[-2] % TILE_DIM != 0:
-            result = ac.op_with_named_attrs(
-                "pad_tile", (result,), {"dim": -2, "original_length": grad.shape[-2]}, (-2, grad.shape[-2])
-            )
-        result = ac.op("hstack", (result,), (num_operands,))
-        if grad.shape[-2] % TILE_DIM != 0:
-            result = ac.op_with_named_attrs(
-                "narrow",
-                (result,),
-                {"dim": -2, "start": 0, "length": grad.shape[-2], "original_length": result.shape[-2]},
-                (-2, 0, grad.shape[-2], result.shape[-2]),
-            )
-        result = ac.op(
-            "select",
-            (result,),
-            (
-                -1,
-                operand * align_up_tile(grad.shape[-1]),
-                align_up_tile(grad.shape[-1]),
-                result.shape[-1],
-            ),
-        )
-        if grad.shape[-1] % TILE_DIM != 0:
-            result = ac.op_with_named_attrs(
-                "narrow",
-                (result,),
-                {"dim": -1, "start": 0, "length": grad.shape[-1], "original_length": result.shape[-1]},
-                (-1, 0, grad.shape[-1], result.shape[-1]),
-            )
-        return result
 
     assert False, f"{op_type} not defined in eltwise_nary"
 
