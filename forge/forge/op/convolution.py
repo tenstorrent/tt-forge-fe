@@ -15,9 +15,9 @@ def Conv2d(
     activations: Tensor,
     weights: Union[Tensor, Parameter],
     bias: Optional[Union[Tensor, Parameter]] = None,
-    stride: int = 1,
-    padding: Union[int, str, List] = "same",
-    dilation: Union[int, List] = 1,
+    stride: Union[int, List[int]] = 1,
+    padding: Union[int, str, List[int]] = "same",
+    dilation: Union[int, List[int]] = 1,
     groups: int = 1,
     channel_last: bool = False,
 ) -> Tensor:
@@ -58,8 +58,8 @@ def Conv2d(
         "conv2d",
         name,
         *inputs,
-        stride=stride,
-        dilation=dilation,
+        stride=stride,  # [sH, sW]
+        dilation=dilation,  # [dH, dW]
         groups=groups,
         padding=padding,  # [pT, pL, pB, pR]
         channel_last=channel_last,
@@ -107,13 +107,21 @@ def Conv2dTranspose(
         padding = [weights.shape[3] // 2] * 2 + [weights.shape[2] // 2] * 2
 
     if isinstance(padding, int):
-        padding = [padding] * 4  # [left, right, top, bottom]
+        padding = [padding] * 2
 
     if isinstance(padding, tuple):
-        padding = list(padding)
+        # padding is tuple (top, left, bottom, right)
+        top, left, bottom, right = padding
+        assert (
+            left == right and top == bottom
+        ), "padding must be a tuple of (top, left, bottom, right) where left == right and top == bottom"
+        padding = [top, left]
 
     if isinstance(dilation, int):
         dilation = [dilation] * 2
+
+    if isinstance(output_padding, int):
+        output_padding = [output_padding] * 2
 
     inputs = [activations, weights]
     if bias is not None:
@@ -126,7 +134,7 @@ def Conv2dTranspose(
         stride=stride,  # [sH, sW]
         dilation=dilation,  # [dH, dW]
         groups=groups,
-        padding=padding,  # [pT, pL, pB, pR]
+        padding=padding,  # [pH, pW]
         output_padding=output_padding,  # [opH, opW]
         channel_last=channel_last,
     ).get_tensor()
