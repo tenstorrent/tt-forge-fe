@@ -151,6 +151,39 @@ def test_less(shape_x, shape_y):
 
 
 @pytest.mark.parametrize(
+    "shape",
+    [
+        (888,),
+        (1, 7, 256),
+        (3, 128, 128),
+        (1, 10),
+        (2, 2, 2),
+        (5, 5),
+        (1, 3, 224, 224),
+        (8, 16, 32),
+        (1, 3, 2, 544, 544),
+    ],
+)
+def test_bitwise_and(shape):
+    class BitwiseAnd(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x1, x2):
+            return torch.bitwise_and(x1, x2)
+
+    inputs = [
+        torch.randint(0, 256, shape, dtype=torch.int32),
+        torch.randint(0, 256, shape, dtype=torch.int32),
+    ]
+
+    framework_model = BitwiseAnd()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
     "shape_x, shape_y",
     [
         ((1, 128, 28, 28), (1, 128, 28, 28)),
