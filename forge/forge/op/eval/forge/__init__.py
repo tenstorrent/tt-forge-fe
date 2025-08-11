@@ -4,16 +4,11 @@
 import importlib
 from types import ModuleType
 from functools import lru_cache
-from .convolution import Conv2d
-from .convolution import Conv2dTranspose
-from .cast import Cast
 from .pad import Pad
-from .kv_cache import UpdateCache
-from .kv_cache import FillCache
 
 op_to_module_map = {
     "add": "eltwise_binary",
-    "cast": Cast,
+    "cast": "eltwise_unary",
     "divide": "eltwise_binary",
     "remainder": "eltwise_binary",
     "subtract": "eltwise_binary",
@@ -56,7 +51,6 @@ op_to_module_map = {
     "interleave": "eltwise_nary",
     "stack": "eltwise_nary",
     "matmul": "matmul",
-    "sparse_matmul": "matmul",
     "depthwise": "depthwise",
     "embedding": "embedding",
     "embedding_bw": "embedding_bw",
@@ -65,11 +59,6 @@ op_to_module_map = {
     "reshape": "tm",
     "index": "tm",
     "select": "tm",
-    "gather": "tm",
-    "hslice": "tm",
-    "hstack": "tm",
-    "vslice": "tm",
-    "vstack": "tm",
     "broadcast": "tm",
     "repeat": "tm",
     "repeat_interleave": "tm",
@@ -80,7 +69,6 @@ op_to_module_map = {
     "conv2d_prestride_act": "tm",
     "conv2d_prestride_weights": "tm",
     "pad_tile": "tm",
-    "narrow": "tm",
     "pad": Pad,
     "unsqueeze": "tm",
     "squeeze": "tm",
@@ -90,8 +78,8 @@ op_to_module_map = {
     "reduce_avg": "reduce",
     "reduce_sum": "reduce",
     "reduce_max": "reduce",
-    "conv2d": Conv2d,
-    "conv2d_transpose": Conv2dTranspose,
+    "conv2d": "misc",
+    "conv2d_transpose": "misc",
     "conv3d": "convolution",
     "max_pool1d": "pooling",
     "max_pool2d": "pooling",
@@ -103,18 +91,12 @@ op_to_module_map = {
     "softmax": "nn",
     "log_softmax": "nn",
     "softmax_bw": "nn",
-    "mask": "mask",
+    "mask": "misc",
     "layernorm": "nn",
     "layernorm_bw": "nn",
     "batchnorm": "nn",
-    "quantize": "quantize",
-    "forge_quantize": "quantize",
-    "dequantize": "quantize",
-    "requantize": "quantize",
-    "forge_requantize": "quantize",
-    "forge_dequantize": "quantize",
-    "update_cache": UpdateCache,
-    "fill_cache": FillCache,
+    "update_cache": "misc",
+    "fill_cache": "misc",
 }
 
 

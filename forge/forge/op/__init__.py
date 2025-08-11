@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from .matmul import Matmul, SparseMatmul
+from .matmul import Matmul
 
 from .convolution import Conv2d, Conv2dTranspose, Conv3d
 from .pooling import MaxPool1d, MaxPool2d, AvgPool1d, AvgPool2d
@@ -22,6 +22,7 @@ from .eltwise_binary import (
     Equal,
     NotEqual,
     LogicalAnd,
+    BitwiseAnd,
     Remainder,
 )
 from .eltwise_unary import (
@@ -57,7 +58,6 @@ from .tm import (
     Repeat,
     RepeatInterleave,
     AdvIndex,
-    Narrow,
     Unsqueeze,
     Squeeze,
     PixelShuffle,
@@ -69,7 +69,6 @@ from .nn import Softmax, Layernorm, LogSoftmax, Batchnorm, Dropout, MaxPool2dMod
 from .eltwise_nary import Concatenate, Where, IndexCopy, Stack, Interleave
 from .resize import Resize2d, Upsample2d, Downsample2d
 from .embedding import Embedding
-from .quantize import Quantize, Dequantize, Requantize, ForgeRequantize
 from .kv_cache import FillCache, UpdateCache
 from .misc import CumSum
 import forge.op.loss

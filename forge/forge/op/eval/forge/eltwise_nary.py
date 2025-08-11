@@ -7,10 +7,6 @@ import torch
 from ..common import to_torch_operands
 from forge.forgeglobal import TILE_DIM, align_up_tile
 from forge.forgeglobal import TILE_DIM, align_up_tile, is_tile_dim_aligned
-from ..sparse_utils import (
-    create_flattened_padding_removal_sparse_picker_matrix,
-)
-from .kv_cache import FillCache, UpdateCache
 from loguru import logger
 
 
@@ -153,48 +149,6 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
             [y, x, -shifts[operand * 2], -shifts[operand * 2 + 1]],
         )
 
-    elif op_type == "interleave":
-        axis = attr[0]
-        stride = attr[1]
-        assert axis == -3 and stride == 1
-
-        num_operands = len(inputs)
-        result = grad
-        if grad.shape[-1] % TILE_DIM != 0:
-            result = ac.op_with_named_attrs(
-                "pad_tile", (result,), {"dim": -1, "original_length": grad.shape[-1]}, (-1, grad.shape[-1])
-            )
-        if grad.shape[-2] % TILE_DIM != 0:
-            result = ac.op_with_named_attrs(
-                "pad_tile", (result,), {"dim": -2, "original_length": grad.shape[-2]}, (-2, grad.shape[-2])
-            )
-        result = ac.op("hstack", (result,), (num_operands,))
-        if grad.shape[-2] % TILE_DIM != 0:
-            result = ac.op_with_named_attrs(
-                "narrow",
-                (result,),
-                {"dim": -2, "start": 0, "length": grad.shape[-2], "original_length": result.shape[-2]},
-                (-2, 0, grad.shape[-2], result.shape[-2]),
-            )
-        result = ac.op(
-            "select",
-            (result,),
-            (
-                -1,
-                operand * align_up_tile(grad.shape[-1]),
-                align_up_tile(grad.shape[-1]),
-                result.shape[-1],
-            ),
-        )
-        if grad.shape[-1] % TILE_DIM != 0:
-            result = ac.op_with_named_attrs(
-                "narrow",
-                (result,),
-                {"dim": -1, "start": 0, "length": grad.shape[-1], "original_length": result.shape[-1]},
-                (-1, 0, grad.shape[-1], result.shape[-1]),
-            )
-        return result
-
     assert False, f"{op_type} not defined in eltwise_nary"
 
 
@@ -215,16 +169,10 @@ def decompose(type, attr, dc, inputs):
                     "If the index operand in index_copy contains values that are not contiguous starting from 0, decomposing to FillCache will result in incorrect behavior. This is because FillCache fills continuously starting from index 0."
                 )
                 # FillCache is used to fill operandA from the beginning
-                result = dc.op(
-                    FillCache.create(),
-                    [operandA, value],
-                )
+                result = dc.op_with_named_attrs("fill_cache", [operandA, value], {"batch_offset": 0})
             else:
                 # Single index case -> decompose to UpdateCache
-                result = dc.op(
-                    UpdateCache.create(),
-                    [operandA, value, index],
-                )
+                result = dc.op_with_named_attrs("update_cache", [operandA, value, index], {"batch_offset": 0})
         else:
             # Only index_copy with dim -2, and tensors of shape 4D can be decomposed to FillCache or UpdateCache
             # Leave index_copy as is

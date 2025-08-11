@@ -3,8 +3,18 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-import torch.nn.functional as F
-from transformers import AutoModel, AutoModelForCausalLM, AutoTokenizer
+from third_party.tt_forge_models.qwen_3.causal_lm.pytorch import (
+    ModelLoader as CausalLMLoader,
+)
+from third_party.tt_forge_models.qwen_3.causal_lm.pytorch import (
+    ModelVariant as CausalLMVariant,
+)
+from third_party.tt_forge_models.qwen_3.embedding.pytorch import (
+    ModelLoader as EmbeddingLoader,
+)
+from third_party.tt_forge_models.qwen_3.embedding.pytorch import (
+    ModelVariant as EmbeddingVariant,
+)
 
 import forge
 from forge._C import DataFormat
@@ -20,26 +30,21 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.models_utils import (
-    TextModelWrapper,
-    get_detailed_instruct,
-    last_token_pool,
-)
-from test.utils import download_model
+from test.models.models_utils import TextModelWrapper
 
-variants = [
-    "Qwen/Qwen3-32B",
-    "Qwen/Qwen3-30B-A3B",
-    "Qwen/QwQ-32B",
-    "Qwen/Qwen3-14B",
-    "Qwen/Qwen3-0.6B",
-    "Qwen/Qwen3-1.7B",
-    "Qwen/Qwen3-4B",
-    "Qwen/Qwen3-8B",
+causal_lm_variants = [
+    CausalLMVariant.QWEN_3_32B,
+    CausalLMVariant.QWEN_3_30B_A3B,
+    CausalLMVariant.QWQ_32B,
+    CausalLMVariant.QWEN_3_14B,
+    CausalLMVariant.QWEN_3_0_6B,
+    CausalLMVariant.QWEN_3_1_7B,
+    CausalLMVariant.QWEN_3_4B,
+    CausalLMVariant.QWEN_3_8B,
 ]
 
 
-@pytest.mark.parametrize("variant", variants)
+@pytest.mark.parametrize("variant", causal_lm_variants)
 @pytest.mark.nightly
 @pytest.mark.xfail
 def test_qwen3_clm_pytorch(variant):
@@ -56,41 +61,40 @@ def test_qwen3_clm_pytorch(variant):
     )
 
     if variant in [
-        "Qwen/Qwen3-4B",
-        "Qwen/Qwen3-8B",
-        "Qwen/Qwen3-14B",
-        "Qwen/Qwen3-32B",
-        "Qwen/Qwen3-30B-A3B",
-        "Qwen/QwQ-32B",
+        CausalLMVariant.QWEN_3_4B,
+        CausalLMVariant.QWEN_3_8B,
+        CausalLMVariant.QWEN_3_14B,
+        CausalLMVariant.QWEN_3_32B,
+        CausalLMVariant.QWEN_3_30B_A3B,
+        CausalLMVariant.QWQ_32B,
     ]:
         pytest.xfail(reason="Requires multi-chip support")
 
-    # Load the tokenizer and  model
-    tokenizer = AutoTokenizer.from_pretrained(variant)
-    model = AutoModelForCausalLM.from_pretrained(variant, use_cache=False)
+    # Load Model and inputs using loader
+    loader = CausalLMLoader(variant=variant)
+    model = loader.load_model()
+    model.config.use_cache = False
     framework_model = TextModelWrapper(model=model, text_embedding=model.model.embed_tokens)
     framework_model.eval()
-
-    # prepare model input
-    prompt = "Give me a short introduction to large language model."
-    messages = [{"role": "user", "content": prompt}]
-    text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True, enable_thinking=True)
-    inputs = tokenizer([text], return_tensors="pt", padding="max_length", truncation=True, max_length=128)
-
-    # Get input_ids and attention_mask
-    sample_inputs = [inputs["input_ids"], inputs["attention_mask"]]
+    input_dict = loader.load_inputs()
+    sample_inputs = [input_dict["input_ids"], input_dict["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs, module_name=module_name)
 
-    # Model Verification
-    verify(sample_inputs, framework_model, compiled_model)
+    # Model Verification and Inference
+    _, co_out = verify(sample_inputs, framework_model, compiled_model)
 
 
-variants = ["Qwen/Qwen3-Embedding-0.6B", "Qwen/Qwen3-Embedding-4B", "Qwen/Qwen3-Embedding-8B"]
+embedding_variants = [
+    EmbeddingVariant.QWEN_3_EMBEDDING_0_6B,
+    EmbeddingVariant.QWEN_3_EMBEDDING_4B,
+    EmbeddingVariant.QWEN_3_EMBEDDING_8B,
+]
 
 
-@pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
+@pytest.mark.parametrize("variant", embedding_variants)
 def test_qwen3_embedding(variant):
 
     # Record Forge Property
@@ -102,38 +106,16 @@ def test_qwen3_embedding(variant):
         source=Source.HUGGINGFACE,
     )
 
-    if variant == "Qwen/Qwen3-Embedding-8B":
+    if variant == EmbeddingVariant.QWEN_3_EMBEDDING_8B:
         pytest.xfail(reason="Requires multi-chip support")
 
-    # Load model and tokenizer
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    framework_model = download_model(AutoModel.from_pretrained, variant, return_dict=False, use_cache=False)
-    framework_model.eval()
-    framework_model.to(torch.bfloat16)
-
-    # prepare input
-    task = "Given a web search query, retrieve relevant passages that answer the query"
-
-    queries = [
-        get_detailed_instruct(task, "What is the capital of China?"),
-        get_detailed_instruct(task, "Explain gravity"),
-    ]
-    documents = [
-        "The capital of China is Beijing.",
-        "Gravity is a force that attracts two bodies towards each other. It gives weight to physical objects and is responsible for the movement of planets around the sun.",
-    ]
-    input_texts = queries + documents
-
-    # Tokenize the input texts
-    input_tokens = tokenizer(
-        input_texts,
-        padding=True,
-        truncation=True,
-        max_length=128,
-        return_tensors="pt",
-    )
-
-    inputs = [input_tokens["input_ids"]]
+    # Load Model and inputs using loader
+    loader = EmbeddingLoader(variant=variant)
+    framework_model = loader.load_model(torch.bfloat16)
+    framework_model.config.use_cache = False
+    framework_model.config.return_dict = False
+    input_dict = loader.load_inputs()
+    inputs = [input_dict["input_ids"]]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -143,14 +125,9 @@ def test_qwen3_embedding(variant):
         framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
     )
 
-    # Model Verification
+    # Model Verification and Inference
     _, co_out = verify(inputs, framework_model, compiled_model)
 
-    # Compute similarity between query and document embeddings
+    # Post processing
     outputs = co_out[0]
-    embeddings = last_token_pool(outputs, input_tokens["attention_mask"])
-
-    # normalize embeddings
-    embeddings = F.normalize(embeddings, p=2, dim=1)
-    scores = embeddings[:2] @ embeddings[2:].T
-    print("Similarity scores:", scores.tolist())
+    print("Similarity scores:", loader.decode_output(outputs, input_dict))

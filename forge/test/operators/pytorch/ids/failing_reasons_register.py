@@ -13,7 +13,7 @@ class FailingReasonsRegister:
     # Format: (operator, failing_reason)
     xfail = [
         ("add", FailingReasons.DATA_MISMATCH),
-        ("clamp", FailingReasons.DTYPE_MISMATCH),
+        ("clamp", FailingReasons.COMPILATION_FAILED),
         ("clamp", FailingReasons.FORGE_RUNTIME),
         ("concatenate", FailingReasons.ALLOCATION_CIRCULAR_BUFFER),
         ("conv2d", FailingReasons.ALLOCATION_CIRCULAR_BUFFER),
@@ -50,6 +50,7 @@ class FailingReasonsRegister:
         ("layer_norm", FailingReasons.UNSUPPORTED_DIMENSION),
         ("linear", FailingReasons.ALLOCATION_FAILED),
         ("linear", FailingReasons.DATA_MISMATCH),
+        ("log", FailingReasons.DATA_MISMATCH),
         ("log", FailingReasons.SPECIAL_VALUES),
         ("log1p", FailingReasons.DATA_MISMATCH),
         ("log1p", FailingReasons.DTYPE_MISMATCH),
@@ -60,8 +61,6 @@ class FailingReasonsRegister:
         ("matmul", FailingReasons.INTERNAL_TVM_ERROR),
         ("matmul", FailingReasons.TTNN_RUNTIME),
         ("matmul", FailingReasons.UNSUPPORTED_DATA_FORMAT),
-        ("max", FailingReasons.BUGGY_SHAPE),
-        ("max", FailingReasons.FORGE_RUNTIME),
         ("maximum", FailingReasons.DATA_MISMATCH),
         ("mean", FailingReasons.COMPILATION_FAILED),
         ("minimum", FailingReasons.DATA_MISMATCH),
@@ -79,12 +78,14 @@ class FailingReasonsRegister:
         ("repeat_interleave", FailingReasons.INFERENCE_FAILED),
         ("repeat_interleave", FailingReasons.SPECIAL_VALUES),
         ("reshape", FailingReasons.INTERNAL_TVM_ERROR),
+        ("rsqrt", FailingReasons.DATA_MISMATCH),
         ("rsqrt", FailingReasons.SPECIAL_VALUES),
         ("sin", FailingReasons.DATA_MISMATCH),
         ("softmax", FailingReasons.DATA_MISMATCH),
         ("softmax", FailingReasons.SPECIAL_VALUES),
         ("softmax", FailingReasons.UNSUPPORTED_AXIS),
         ("sqrt", FailingReasons.SPECIAL_VALUES),
+        ("square", FailingReasons.ATTRIBUTE_ERROR),
         ("squeeze", FailingReasons.COMPILATION_FAILED),
         ("squeeze", FailingReasons.INTERNAL_TVM_ERROR),
         ("sub", FailingReasons.DATA_MISMATCH),
@@ -92,7 +93,7 @@ class FailingReasonsRegister:
         ("sum", FailingReasons.DATA_MISMATCH),
         ("sum", FailingReasons.NOT_IMPLEMENTED),
         ("tanh", FailingReasons.DATA_MISMATCH),
-        ("where", FailingReasons.DATA_MISMATCH),
+        ("tanh", FailingReasons.DTYPE_MISMATCH),
     ]
 
     # List of skip reasons for each operator

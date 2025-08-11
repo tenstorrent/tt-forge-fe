@@ -230,30 +230,22 @@ class TestCollectionData:
         operators=[
             "add",  #                   #00
             "div",  #                   #01
-            # "divide",  #              #02     - Alias for div.
             "remainder",  #             #12
             "mul",  #                   #03
-            # "multiply",  #            #04     - Alias for mul.
             "sub",  #                   #05
-            # "subtract",  #            #06     - Alias for sub.
             # "true_divide",  #         #07     - Alias for div with rounding_mode=None.
             "ge",  #                    #08
-            # "greater_equal",  #       #09    - Alias for ge.
             "ne",  #                    #16                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: not_equal      # working with model const
-            # "greater",  #             #18    - Alias for gt.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: greater
             "gt",  #                    #19                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: greater        # working with model const
             "lt",  #                    #21                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less           # working with model const
-            # "less",  #                #22    - Alias for lt.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less
             "maximum",  #               #23                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: maximum        # working with model const
             "minimum",  #               #24                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: minimum        # working with model const
-            # "not_equal",  #           #25    - Alias for ne.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: not_equal
         ],
     )
 
     not_implemented = TestCollection(
         operators=[
             "atan2",  #                 #00                         - NotImplementedError: The following operators are not implemented: ['aten::atan2']
-            "arctan2",  #               #01                         - NotImplementedError: The following operators are not implemented: ['aten::atan2']
             "bitwise_and",  #           #02                         - RuntimeError: "bitwise_and_cpu" not implemented for 'Float'
             "bitwise_or",  #            #03                         - RuntimeError: "bitwise_or_cpu" not implemented for 'Float'
             "bitwise_xor",  #           #04                         - RuntimeError: "bitwise_xor_cpu" not implemented for 'Float'
@@ -268,7 +260,6 @@ class TestCollectionData:
             "fmin",  #                  #14                         - NotImplementedError: The following operators are not implemented: ['aten::fmin']
             "eq",  #                    #15                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: equal          # working with model const
             "le",  #                    #17                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less_equal     # working with model const
-            # "less_equal",  #          #20    - Alias for le.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less_equal
         ],
     )
 
