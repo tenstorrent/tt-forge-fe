@@ -15,6 +15,11 @@
 #include "nlohmann/json.hpp"
 #include "shared_utils/json_extension.hpp"
 
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wgnu-anonymous-struct"
+#pragma clang diagnostic ignored "-Wc99-extensions"
+#endif
+
 namespace tt
 {
 

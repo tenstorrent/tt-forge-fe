@@ -246,10 +246,6 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
             {
                 commute_through_eltwise(op, &commute_shape, &golden_transform);
             }
-            else if (is_quantization_ops(op))
-            {
-                commute_through_quantization(op, &commute_shape, &golden_transform);
-            }
             log_trace(LogGraphCompiler, "  Op node: {} -> shape set to {}", consumer->name(), commute_shape);
         }
 

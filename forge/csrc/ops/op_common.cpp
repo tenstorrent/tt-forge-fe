@@ -7,6 +7,9 @@
 #include "autograd/autograd.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
+#include "lower_to_forge/common.hpp"
+#include "torch/extension.h"  // Needed for c++ to/from python type conversion.
+#include "torch/torch.h"
 #include "utils/assert.hpp"
 
 namespace tt
@@ -142,6 +145,18 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> reduce_ops_shap
         ret.erase(ret.begin() + dim);
 
     return {graphlib::Shape::create(ret), {}};
+}
+
+std::string get_resize_method(int method)
+{
+    TT_ASSERT(method >= 0 && method <= 2, "Unsupported resize method: " + std::to_string(method));
+    if (method == 0)
+        return "nearest";
+    else if (method == 1)
+        return "bilinear";
+    else if (method == 2)
+        return "cubic";
+    unreachable();
 }
 
 }  // namespace op_common

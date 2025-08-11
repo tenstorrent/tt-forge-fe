@@ -19,14 +19,12 @@ from test.models.pytorch.text.bloom.test_bloom import Wrapper
 import onnx
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "bigscience/bloom-1b1",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB"),
-        ),
+        "bigscience/bloom-1b1",
     ],
 )
 def test_bloom_onnx(variant, forge_tmp_path):
@@ -39,6 +37,8 @@ def test_bloom_onnx(variant, forge_tmp_path):
         source=Source.HUGGINGFACE,
         task=Task.CAUSAL_LM,
     )
+
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, padding_side="left")

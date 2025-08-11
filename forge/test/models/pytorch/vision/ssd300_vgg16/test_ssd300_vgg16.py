@@ -6,6 +6,7 @@ from typing import Optional
 
 import pytest
 import torch
+from third_party.tt_forge_models.ssd300_vgg16.pytorch import ModelLoader, ModelVariant
 from torch import Tensor
 
 import forge
@@ -20,15 +21,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.models_utils import print_cls_results
-from test.models.pytorch.vision.ssd300_vgg16.model_utils.model_utils import (
-    Postprocessor,
-)
-from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
-
-variants_with_weights = {
-    "ssd300_vgg16": "SSD300_VGG16_Weights",
-}
+variants = [ModelVariant.BASE]
 
 
 class SSDWrapper(torch.nn.Module):
@@ -60,7 +53,7 @@ class SSDWrapper(torch.nn.Module):
 
 @pytest.mark.nightly
 @pytest.mark.xfail
-@pytest.mark.parametrize("variant", variants_with_weights.keys())
+@pytest.mark.parametrize("variant", variants)
 def test_ssd300_vgg16(variant):
 
     # Record Forge Property
@@ -72,12 +65,12 @@ def test_ssd300_vgg16(variant):
         source=Source.TORCHVISION,
     )
 
-    # Load model and input
-    weight_name = variants_with_weights[variant]
-    framework_model, inputs = load_vision_model_and_input(variant, "detection", weight_name)
-    model = SSDWrapper(framework_model)
-    model.to(torch.bfloat16)
-    inputs = [inputs[0].to(torch.bfloat16)]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    model = loader.load_model(dtype_override=torch.bfloat16)
+    framework_model = SSDWrapper(model)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -91,11 +84,7 @@ def test_ssd300_vgg16(variant):
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post Processing
-    postprocessor = Postprocessor(model)
-    detection_fw, detection_co = postprocessor.process(fw_out, co_out, inputs)
-
-    # Run model on sample data and print results
-    print_cls_results(detection_fw[0], detection_co[0])
+    loader.postprocess_results(model, fw_out, co_out, inputs)

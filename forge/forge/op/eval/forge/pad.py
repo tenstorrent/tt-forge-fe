@@ -7,7 +7,6 @@ import torch.nn.functional
 from ..interface import PyTM
 from forge._C import DataFormat
 from forge.tensor import forge_dataformat_to_pytorch_dtype
-from .nop import Nop
 
 
 class Pad(PyTM):
@@ -74,7 +73,7 @@ class Pad(PyTM):
     def decompose(self, dc, inputs):
         if all([x == 0 for x in self.padding]):
             # Pad size is 0
-            result = dc.op(Nop.create(), [inputs[0]])
+            result = dc.op("nop", [inputs[0]])
             dc.fuse(result)
             return
 
@@ -188,25 +187,7 @@ class Pad(PyTM):
             return
 
     def backward(self, ac, operand, inputs, output, grad):
-        # TODO: Check whether this is valid backward
-        assert len(self.padding) == 2 or len(self.padding) == 4, "Not supported padding type"
-
-        height_dim, width_dim = -2 - int(self.channel_last), -1 - int(self.channel_last)
-        original_height, original_width = grad.shape[height_dim], grad.shape[width_dim]
-
-        if len(self.padding) == 4:
-            pad_left, pad_right, pad_top, pad_bottom = self.padding
-            grad = ac.op(
-                "narrow", (grad,), (height_dim, pad_top, original_height - pad_top - pad_bottom, original_height)
-            )
-            return ac.op(
-                "narrow", (grad,), (width_dim, pad_left, original_width - pad_left - pad_right, original_width)
-            )
-        else:
-            pad_left, pad_right = self.padding
-            return ac.op(
-                "narrow", (grad,), (width_dim, pad_left, original_width - pad_left - pad_right, original_width)
-            )
+        pass
 
     def decompose_constant_mode(dc, input, value, left, right, top, bottom, c_dim_axis, r_dim_axis):
         result = input
@@ -285,4 +266,4 @@ def repeat_vector(dc, input, n_repeats, axis):
     repeats = [1] * len(input.shape)
     repeats[axis] = n_repeats
     repeats = tuple(repeats)
-    return dc.op_with_named_attrs("repeat", [input], {"repeats": repeats}, repeats)
+    return dc.op_with_named_attrs("repeat", [input], {"repeats": repeats})

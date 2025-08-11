@@ -7,6 +7,8 @@
 #include <vector>
 
 #include "graph_lib/shape.hpp"
+#include "gtest/gtest.h"
+#include "lower_to_forge/common.hpp"
 #include "ops/op.hpp"
 #include "test/ops/test_ops.hpp"
 
@@ -133,7 +135,9 @@ std::vector<tt::ops::Op> get_unary_eltwise_ops()
     return {
         tt::ops::OpType::Abs,
         // tt::ops::OpType::Clip, // Tested separately.
+        // tt::ops::OpType::CumulativeSum, // Tested separately.
         tt::ops::OpType::Sine,
+        // tt::ops::OpType::Cast, // Tested separately.
         tt::ops::OpType::Cosine,
         tt::ops::OpType::Relu,
         tt::ops::OpType::Log,
@@ -143,7 +147,11 @@ std::vector<tt::ops::Op> get_unary_eltwise_ops()
         // tt::ops::OpType::Gelu,  // Has decompose bugs
         tt::ops::OpType::Exp,
         tt::ops::OpType::Reciprocal,
+        tt::ops::OpType::Nop,
         // tt::ops::OpType::LeakyRelu,  // Has decompose bugs
+        tt::ops::OpType::Erf,
+        tt::ops::OpType::Tanh,
+        // tt::ops::OpType::Pow, // Tested separately.
     };
 }
 
@@ -264,6 +272,77 @@ INSTANTIATE_TEST_SUITE_P(
         [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
     [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
 
+/**
+ * Testing pow operation.
+ */
+std::vector<tt::ops::Op> get_pow_ops()
+{
+    std::vector<tt::ops::Op> ops;
+    for (float exp : {0.0f, 0.1f, 2.0f, 3.0f, 3.5f, 12.5f, 20.01f})
+        ops.push_back(tt::ops::Op(tt::ops::OpType::Pow, {{"exponent", exp}}));
+
+    return ops;
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    PowOpIndividual,
+    SimpleOpTest,
+    testing::ConvertGenerator(
+        testing::Combine(testing::ValuesIn(get_pow_ops()), testing::ValuesIn(get_unary_individual_test_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
+
+INSTANTIATE_TEST_SUITE_P(
+    PowOpSweeps,
+    SimpleOpTest,
+    testing::ConvertGenerator(
+        testing::Combine(testing::ValuesIn(get_pow_ops()), testing::ValuesIn(generate_input_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
+
+/**
+ * Testing cast operation.
+ */
+std::vector<tt::ops::Op> get_cast_ops()
+{
+    std::vector<tt::ops::Op> ops;
+    for (const DataFormat& df : {
+             DataFormat::Float32,
+             DataFormat::Float16,
+             DataFormat::Bfp8,
+             DataFormat::Bfp4,
+             DataFormat::Bfp2,
+             DataFormat::Float16_b,
+             DataFormat::Bfp8_b,
+             DataFormat::Bfp4_b,
+             DataFormat::RawUInt8,
+             DataFormat::RawUInt32,
+             DataFormat::UInt16,
+             DataFormat::Int32,
+         })
+    {
+        ops.push_back(tt::ops::Op(tt::ops::OpType::Cast, {{"dtype", static_cast<int>(df)}}));
+    }
+
+    return ops;
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    CastOpIndividual,
+    SimpleOpDecomposeOnlyTest,
+    testing::ConvertGenerator(
+        testing::Combine(testing::ValuesIn(get_cast_ops()), testing::ValuesIn(get_unary_individual_test_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
+
+INSTANTIATE_TEST_SUITE_P(
+    CastOpSweeps,
+    SimpleOpDecomposeOnlyTest,
+    testing::ConvertGenerator(
+        testing::Combine(testing::ValuesIn(get_cast_ops()), testing::ValuesIn(generate_input_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
+
 }  // namespace tt::test::ops::eltwise_unary
 
 namespace tt::test::ops::comparison
@@ -368,3 +447,36 @@ INSTANTIATE_TEST_SUITE_P(
     [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
     { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
 }  // namespace tt::test::ops::logical_unary
+
+namespace tt::test::ops::bitwise_binary
+{
+
+std::vector<tt::ops::Op> get_bitwise_binary_ops()
+{
+    return {
+        tt::ops::OpType::BitwiseAnd,
+    };
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    BitwiseBinaryOpsIndividual,
+    SimpleOpDecomposeOnlyTest,
+    testing::ConvertGenerator(
+        testing::Combine(
+            testing::ValuesIn(get_bitwise_binary_ops()),
+            testing::ValuesIn(eltwise_binary::get_binary_individual_test_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
+    { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
+
+INSTANTIATE_TEST_SUITE_P(
+    BitwiseBinaryOpsSweep,
+    SimpleOpDecomposeOnlyTest,
+    testing::ConvertGenerator(
+        testing::Combine(
+            testing::ValuesIn(get_bitwise_binary_ops()), testing::ValuesIn(eltwise_binary::generate_input_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
+    { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
+
+}  // namespace tt::test::ops::bitwise_binary

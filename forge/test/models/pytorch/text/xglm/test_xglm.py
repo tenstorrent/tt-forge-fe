@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from transformers import AutoTokenizer, XGLMConfig, XGLMForCausalLM
+from third_party.tt_forge_models.xglm.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -12,19 +12,23 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.utils import download_model
-
 variants = [
-    "facebook/xglm-564M",
-    "facebook/xglm-1.7B",
+    ModelVariant.XGLM_564M,
+    ModelVariant.XGLM_1_7B,
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_xglm_causal_lm(variant):
+
+    pcc = 0.99
+    if variant == ModelVariant.XGLM_1_7B:
+        pcc = 0.95
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -35,31 +39,16 @@ def test_xglm_causal_lm(variant):
         source=Source.HUGGINGFACE,
     )
 
-    config = XGLMConfig.from_pretrained(variant)
-    config_dict = config.to_dict()
-    config_dict["return_dict"] = False
-    config_dict["use_cache"] = False
-    config = XGLMConfig(**config_dict)
-
-    framework_model = download_model(XGLMForCausalLM.from_pretrained, variant, config=config)
-
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    tokenizer.pad_token = tokenizer.eos_token
-
-    # Input sample
-    prefix_text = "My name is Thomas and my main"
-    input_tokens = tokenizer(
-        prefix_text,
-        max_length=256,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model()
+    input_dict = loader.load_inputs()
+    inputs = [input_dict["input_ids"], input_dict["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(
+        inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc))
+    )

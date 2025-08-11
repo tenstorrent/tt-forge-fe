@@ -51,7 +51,7 @@ def Cast(name: str, operandA: Tensor, dtype: Union[torch.dtype, DataFormat]) -> 
         Forge tensor
     """
     dtype = pytorch_dtype_to_forge_dataformat(dtype)
-    return op("cast", name, operandA, dtype=dtype.to_json()).get_tensor(out_df=dtype)
+    return op("cast", name, operandA, dtype=dtype).get_tensor(out_df=dtype)
 
 
 def Exp(name: str, operandA: Tensor) -> Tensor:
@@ -119,7 +119,7 @@ def Pow(name: str, operandA: Tensor, exponent: Union[int, float]) -> Tensor:
         Forge tensor
     """
 
-    return op("pow", name, operandA, attrs=(exponent,), exponent=exponent).get_tensor()
+    return op("pow", name, operandA, exponent=exponent).get_tensor()
 
 
 def Identity(name: str, operandA: Tensor, unsqueeze: str = None, unsqueeze_dim: int = None) -> Tensor:
@@ -291,41 +291,6 @@ def Sigmoid(name: str, operandA: Tensor) -> Tensor:
     return op("sigmoid", name, operandA).get_tensor()
 
 
-def Argmax(name: str, operandA: Tensor, dim: int = None, keep_dim=False) -> Tensor:
-    """
-    Argmax
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        First operand
-
-    dim: int
-        The dimension to reduce (if None, the output is the argmax of the whole tensor)
-
-    keep_dim: bool
-        If True, retains the dimension that is reduced, with size 1.
-        If False (default), the dimension is removed from the output shape.
-
-    Returns
-    -------
-    Tensor
-        Forge tensor
-    """
-
-    kwargs = {"keep_dim": keep_dim}
-
-    if dim is not None:
-        if dim < 0:
-            dim += len(operandA.shape)
-        kwargs["dim_arg"] = [dim]
-
-    return op("argmax", name, operandA, **kwargs).get_tensor()
-
-
 def Clip(name: str, operandA: Tensor, min: float, max: float) -> Tensor:
     """
     Clips tensor values between min and max
@@ -438,41 +403,6 @@ def Tanh(name: str, operandA: Tensor) -> Tensor:
     return op("tanh", name, operandA).get_tensor()
 
 
-def CumSum(name: str, operandA: Tensor, dim: int) -> Tensor:
-
-    """
-    Cumulative sum operation.
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        First operand
-
-    exclusive: bool
-        Perform exclusive cumulative sum which includes (or not) the
-        first operand. For example:
-        x: [2, 4, 6, 8]
-
-        cumsum(x, exclusive=False)
-        [2, 6, 12, 20]
-
-        cumsum(x, exclusive=True)
-        [0,  2,  6, 12]
-
-    Returns
-    -------
-    Tensor
-        Forge tensor
-    """
-    if dim < 0:
-        dim += len(operandA.shape)
-
-    return op("cumsum", name, operandA, dim=dim).get_tensor()
-
-
 def LogicalNot(name: str, operandA: Tensor) -> Tensor:
 
     """
@@ -493,28 +423,6 @@ def LogicalNot(name: str, operandA: Tensor) -> Tensor:
     """
 
     return op("logical_not", name, operandA).get_tensor()
-
-
-def Tilize(name: str, operandA: Tensor) -> Tensor:
-
-    """
-    Tilize operation.
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        First operand
-
-    Returns
-    -------
-    Tensor
-        Forge tensor
-    """
-
-    return op("tilizer", name, operandA).get_tensor()
 
 
 def Erf(name: str, operandA: Tensor) -> Tensor:

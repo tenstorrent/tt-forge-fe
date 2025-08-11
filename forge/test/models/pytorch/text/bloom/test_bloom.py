@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer, BloomModel
+from third_party.tt_forge_models.bloom import ModelLoader
+from transformers import BloomModel
 
 import forge
 from forge.forge_property_utils import (
@@ -18,7 +19,6 @@ from forge.verify.verify import verify
 from test.models.models_utils import (
     _prepare_4d_causal_attention_mask_with_cache_position,
 )
-from test.utils import download_model
 
 BloomModel._prepare_4d_causal_attention_mask_with_cache_position = _prepare_4d_causal_attention_mask_with_cache_position
 
@@ -35,43 +35,27 @@ class Wrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize(
-    "variant",
-    [
-        pytest.param(
-            "bigscience/bloom-1b1",
-            marks=[pytest.mark.xfail],
-        ),
-    ],
-)
-def test_bloom(variant):
+@pytest.mark.xfail
+def test_bloom():
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.BLOOM,
-        variant=variant,
+        variant="default",
         source=Source.HUGGINGFACE,
         task=Task.CAUSAL_LM,
     )
 
-    # Load tokenizer and model from HuggingFace
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant, padding_side="left")
-    model = download_model(AutoModelForCausalLM.from_pretrained, variant, use_cache=False, return_dict=False)
+    # Load model and input
+    loader = ModelLoader()
+    model = loader.load_model()
     model.eval()
+    model.config.use_cache = False
+    model.config.return_dict = False
     framework_model = Wrapper(model)
-
-    # Prepare input
-    test_input = "This is a sample text from "
-    input_tokens = tokenizer.encode_plus(
-        test_input,
-        return_tensors="pt",
-        max_length=32,
-        padding="max_length",
-        add_special_tokens=True,
-        truncation=True,
-    )
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    input_dict = loader.load_inputs()
+    inputs = [input_dict["input_ids"], input_dict["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)

@@ -398,7 +398,7 @@ def Repeat(name: str, operandA: Tensor, repeats: List[int]) -> Tensor:
     Tensor
         Forge tensor
     """
-    return op("repeat", name, operandA, attrs=repeats, repeats=repeats).get_tensor()
+    return op("repeat", name, operandA, repeats=repeats).get_tensor()
 
 
 def RepeatInterleave(name: str, operandA: Tensor, repeats: int, dim: int) -> Tensor:
@@ -436,7 +436,6 @@ def RepeatInterleave(name: str, operandA: Tensor, repeats: int, dim: int) -> Ten
         "repeat_interleave",
         name,
         operandA,
-        attrs=(repeats, dim),
         repeats=repeats,
         dim=dim,
     ).get_tensor()
@@ -488,48 +487,6 @@ def Squeeze(name: str, operandA: Tensor, dim: int) -> Tensor:
     """
 
     return op("squeeze", name, operandA, attrs=(dim,), dim=dim).get_tensor()
-
-
-def Narrow(name: str, operandA: Tensor, dim: int, start: int, length: int, original_length: int) -> Tensor:
-    """
-    TM
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        Input operand A
-
-    dim: int
-        Dimension which to pad to tile dim
-
-    start: int
-        Start index in the dimension to be narrowed
-
-    length: int
-        Number of items to take from start
-
-    original_length: int
-        Original length of the dimension before calling this function
-
-    Returns
-    -------
-    Tensor
-        Forge tensor
-    """
-
-    return op(
-        "narrow",
-        name,
-        operandA,
-        attrs=(dim, start, length, original_length),
-        dim=dim,
-        start=start,
-        length=length,
-        original_length=original_length,
-    ).get_tensor()
 
 
 def PixelShuffle(name: str, operandA: Tensor, upscale_factor: int) -> Tensor:

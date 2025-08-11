@@ -11,6 +11,19 @@ from .datatypes import OperatorParamNumber
 
 # TODO describe operand and shapes
 _OPERATORS = [
+    # Convolution functions
+    OperatorDefinition(
+        "conv2d",
+        "forge.op.Conv2d",
+        3,
+        forward_params=[],
+    ),
+    OperatorDefinition(
+        "conv_transpose_2d",
+        "forge.op.Conv2dTranspose",
+        3,
+        forward_params=[],
+    ),
     # Unary operators
     OperatorDefinition("exp", "forge.op.Exp", 1),
     OperatorDefinition("reciprocal", "forge.op.Reciprocal", 1),
@@ -37,11 +50,19 @@ _OPERATORS = [
             OperatorParamNumber("max", float, 0, 100),
         ],
     ),
+    OperatorDefinition("atan", "forge.op.Atan", 1),
     OperatorDefinition("sine", "forge.op.Sine", 1),
     OperatorDefinition("cosine", "forge.op.Cosine", 1),
     OperatorDefinition("abs", "forge.op.Abs", 1),
     OperatorDefinition("tanh", "forge.op.Tanh", 1),
-    OperatorDefinition("cumsum", "forge.op.CumSum", 1),
+    OperatorDefinition(
+        "cumsum",
+        "forge.op.CumSum",
+        1,
+        forward_params=[
+            OperatorParamNumber("dim", int, -3, 3),
+        ],
+    ),
     OperatorDefinition("argmax", "forge.op.Argmax", 1),
     OperatorDefinition("logical_not", "forge.op.LogicalNot", 1),
     OperatorDefinition("dropout", "forge.op.Dropout", 1),
@@ -53,10 +74,11 @@ _OPERATORS = [
             OperatorParamNumber("exponent", float, 0, 100),
         ],
     ),
-    OperatorDefinition("tilizer", "forge.op.Tilize", 1),
+    OperatorDefinition("erf", "forge.op.Erf", 1),
     # Binary operators
     OperatorDefinition("add", "forge.op.Add", 2),
     OperatorDefinition("divide", "forge.op.Divide", 2),
+    OperatorDefinition("remainder", "forge.op.Remainder", 2),
     OperatorDefinition("subtract", "forge.op.Subtract", 2),
     OperatorDefinition("multiply", "forge.op.Multiply", 2),
     OperatorDefinition("maximum", "forge.op.Max", 2),
@@ -100,6 +122,28 @@ _OPERATORS = [
     ),
     OperatorDefinition("matmul", "forge.op.Matmul", 2),
     # OperatorDefinition("sparse_matmul", "forge.op.SparseMatmul", 2),
+    # TM operators
+    OperatorDefinition("repeat_interleave", "forge.op.RepeatInterleave", 1),
+    OperatorDefinition("reshape", "forge.op.Reshape", 1),
+    OperatorDefinition(
+        "squeeze",
+        "forge.op.Squeeze",
+        1,
+        forward_params=[
+            OperatorParamNumber("dim", int, -3, 3),
+        ],
+    ),
+    OperatorDefinition(
+        "unsqueeze",
+        "forge.op.Unsqueeze",
+        1,
+        forward_params=[
+            OperatorParamNumber("dim", int, -3, 3),
+        ],
+    ),
+    OperatorDefinition("transpose", "forge.op.Transpose", 1),
+    # Activation functions
+    OperatorDefinition("layer_norm", "forge.op.Layernorm", 1),
 ]
 
 

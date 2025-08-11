@@ -4,22 +4,11 @@
 import importlib
 from types import ModuleType
 from functools import lru_cache
-from .cosine import Cosine
-from .ethernet_datacopy import EthernetDatacopy
-from .tanh import Tanh
-from .nop import Nop
-from .tilizer import Tilizer
-from .cumulativesum import CumulativeSum
-from .convolution import Conv2d
-from .convolution import Conv2dTranspose
-from .cast import Cast
 from .pad import Pad
-from .kv_cache import UpdateCache
-from .kv_cache import FillCache
 
 op_to_module_map = {
     "add": "eltwise_binary",
-    "cast": Cast,
+    "cast": "eltwise_unary",
     "divide": "eltwise_binary",
     "remainder": "eltwise_binary",
     "subtract": "eltwise_binary",
@@ -37,7 +26,7 @@ op_to_module_map = {
     "logical_and": "eltwise_binary",
     "exp": "eltwise_unary",
     "reciprocal": "eltwise_unary",
-    "nop": Nop,
+    "nop": "eltwise_unary",
     "sqrt": "eltwise_unary",
     "relu": "eltwise_unary",
     "leaky_relu": "eltwise_unary",
@@ -45,16 +34,15 @@ op_to_module_map = {
     "log": "eltwise_unary",
     "sigmoid": "eltwise_unary",
     "clip": "eltwise_unary",
-    "cosine": Cosine,
+    "cosine": "eltwise_unary",
     "sine": "eltwise_unary",
     "atan": "eltwise_unary",
-    "tanh": Tanh,
-    "cumsum": CumulativeSum,
-    "argmax": "eltwise_unary",
+    "tanh": "eltwise_unary",
+    "cumsum": "misc",
+    "argmax": "reduce",
     "logical_not": "eltwise_unary",
     "dropout": "eltwise_unary",
     "pow": "eltwise_unary",
-    "tilizer": Tilizer,
     "erf": "eltwise_unary",
     "conv_sum": "eltwise_nary",
     "concatenate": "eltwise_nary",
@@ -63,21 +51,14 @@ op_to_module_map = {
     "interleave": "eltwise_nary",
     "stack": "eltwise_nary",
     "matmul": "matmul",
-    "sparse_matmul": "matmul",
     "depthwise": "depthwise",
     "embedding": "embedding",
     "embedding_bw": "embedding_bw",
-    "ethernet_datacopy": EthernetDatacopy,
     "transpose": "tm",
     "adv_index": "tm",
     "reshape": "tm",
     "index": "tm",
     "select": "tm",
-    "gather": "tm",
-    "hslice": "tm",
-    "hstack": "tm",
-    "vslice": "tm",
-    "vstack": "tm",
     "broadcast": "tm",
     "repeat": "tm",
     "repeat_interleave": "tm",
@@ -88,7 +69,6 @@ op_to_module_map = {
     "conv2d_prestride_act": "tm",
     "conv2d_prestride_weights": "tm",
     "pad_tile": "tm",
-    "narrow": "tm",
     "pad": Pad,
     "unsqueeze": "tm",
     "squeeze": "tm",
@@ -98,33 +78,25 @@ op_to_module_map = {
     "reduce_avg": "reduce",
     "reduce_sum": "reduce",
     "reduce_max": "reduce",
-    "conv2d": Conv2d,
-    "conv2d_transpose": Conv2dTranspose,
+    "conv2d": "misc",
+    "conv2d_transpose": "misc",
     "conv3d": "convolution",
     "max_pool1d": "pooling",
     "max_pool2d": "pooling",
     "avg_pool1d": "pooling",
     "avg_pool2d": "pooling",
-    "resize1d": "resize",
     "resize2d": "resize",
-    "resize3d": "resize",
     "upsample2d": "resize",
     "downsample2d": "resize",
     "softmax": "nn",
     "log_softmax": "nn",
     "softmax_bw": "nn",
-    "mask": "mask",
+    "mask": "misc",
     "layernorm": "nn",
     "layernorm_bw": "nn",
     "batchnorm": "nn",
-    "quantize": "quantize",
-    "forge_quantize": "quantize",
-    "dequantize": "quantize",
-    "requantize": "quantize",
-    "forge_requantize": "quantize",
-    "forge_dequantize": "quantize",
-    "update_cache": UpdateCache,
-    "fill_cache": FillCache,
+    "update_cache": "misc",
+    "fill_cache": "misc",
 }
 
 

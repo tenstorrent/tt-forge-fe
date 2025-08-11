@@ -44,6 +44,37 @@ def test_conv2d_reflect_padding_mode(input_shape, in_channels, out_channels, ker
 
 
 @pytest.mark.parametrize(
+    "input_shape, in_channels, out_channels, kernel_size, padding",
+    [
+        # padding is in (height, width) format
+        ((1, 512, 6, 20), 512, 256, 3, (1, 2)),
+        ((1, 128, 32, 32), 128, 64, 5, (1, 1)),
+        ((1, 64, 64, 64), 64, 128, 3, (2, 1)),
+        ((1, 32, 128, 128), 32, 64, 7, (2, 2)),
+        ((1, 256, 16, 16), 256, 128, 5, (1, 1)),
+    ],
+)
+@pytest.mark.push
+def test_conv2d(input_shape, in_channels, out_channels, kernel_size, padding):
+    class Conv2d(nn.Module):
+        def __init__(self, in_channels, out_channels, kernel_size, padding):
+            super().__init__()
+            self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, padding=padding)
+
+        def forward(self, input):
+            return self.conv(input)
+
+    framework_model = Conv2d(in_channels, out_channels, kernel_size, padding)
+    framework_model.eval()
+
+    inputs = [torch.rand(input_shape)]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
     "input_shape, kernel_size, stride_size, padding, ceil_mode",
     [
         pytest.param(
@@ -790,50 +821,6 @@ def test_adaptive_maxpool2d(input_shape, output_size):
 
 
 import onnx
-
-
-@pytest.mark.parametrize(
-    "data, output_size",
-    [
-        ((1, 3, 64), 128),
-        ((1, 3, 128), 64),
-        ((1, 1, 32), 32),
-        ((2, 3, 50), 100),
-        ((4, 3, 75), 150),
-    ],
-)
-@pytest.mark.xfail
-@pytest.mark.parametrize("align_corners", [True, False])
-def test_resize1d(data, output_size, align_corners, forge_tmp_path):
-    class Resize1DModule(nn.Module):
-        def __init__(self, output_size, mode="linear", align_corners=True):
-            super(Resize1DModule, self).__init__()
-            self.output_size = output_size
-            self.mode = mode
-            self.align_corners = align_corners
-
-        def forward(self, x):
-            # x shape: (N, C, W)
-            return F.interpolate(x, size=self.output_size, mode=self.mode, align_corners=self.align_corners)
-
-    x = torch.randn(data)
-    model = Resize1DModule(mode="linear", align_corners=align_corners, output_size=output_size)
-    onnx_path = f"{forge_tmp_path}/reize_1d.onnx"
-    torch.onnx.export(
-        model,
-        x,
-        onnx_path,
-        input_names=["input"],
-        output_names=["output"],
-        opset_version=17,
-    )
-    onnx_model = onnx.load(onnx_path)
-    onnx.checker.check_model(onnx_model)
-    framework_model = forge.OnnxModule("resize_1d", onnx_model, onnx_path)
-
-    compiled_model = forge.compile(framework_model, sample_inputs=[x])
-
-    verify([x], framework_model, compiled_model)
 
 
 @pytest.mark.push

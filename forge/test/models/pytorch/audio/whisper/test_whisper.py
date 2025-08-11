@@ -7,7 +7,12 @@
 
 import pytest
 import torch
-from transformers import AutoProcessor, WhisperConfig, WhisperForConditionalGeneration
+from third_party.tt_forge_models.whisper.pytorch.loader import (
+    ModelLoader as WhisperLoader,
+)
+from third_party.tt_forge_models.whisper.pytorch.loader import (
+    ModelVariant as WhisperVariant,
+)
 
 import forge
 from forge.forge_property_utils import (
@@ -24,26 +29,34 @@ from test.models.models_utils import (
     generate_no_cache_for_encoder_decoder_model,
     pad_inputs,
 )
-from test.utils import download_model
 
 variants = [
     pytest.param(
-        "openai/whisper-tiny",
+        WhisperVariant.WHISPER_TINY,
+        marks=[
+            pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2746"),
+        ],
     ),
     pytest.param(
-        "openai/whisper-base",
+        WhisperVariant.WHISPER_BASE,
+        marks=[
+            pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2746"),
+        ],
     ),
     pytest.param(
-        "openai/whisper-small",
-        marks=pytest.mark.xfail(
-            reason="Data mismatch. PCC = 0.9498597935454118, but required = 0.99. Issue link: https://github.com/tenstorrent/tt-forge-fe/issues/2587"
-        ),
+        WhisperVariant.WHISPER_SMALL,
+        marks=[
+            pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2746"),
+        ],
     ),
     pytest.param(
-        "openai/whisper-medium",
+        WhisperVariant.WHISPER_MEDIUM,
+        marks=[
+            pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2746"),
+        ],
     ),
     pytest.param(
-        "openai/whisper-large",
+        WhisperVariant.WHISPER_LARGE,
         marks=[
             pytest.mark.out_of_memory,
         ],
@@ -59,38 +72,24 @@ def test_whisper(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.WHISPER,
-        variant=variant,
+        variant=variant.value,
         task=Task.SPEECH_RECOGNITION,
         source=Source.HUGGINGFACE,
     )
-    if variant == "openai/whisper-large":
+    if variant == WhisperVariant.WHISPER_LARGE:
         pytest.xfail(reason="Requires multi-chip support")
 
-    # Load model (with tokenizer and feature extractor)
-    processor = download_model(AutoProcessor.from_pretrained, variant)
-    model_config = WhisperConfig.from_pretrained(variant)
-    model = download_model(
-        WhisperForConditionalGeneration.from_pretrained,
-        variant,
-        config=model_config,
-    )
-    model.config.use_cache = False
-
-    # Load and preprocess sample audio
-    sample = torch.load("forge/test/models/files/samples/audio/1272-128104-0000.pt", weights_only=False)
-    sample_audio = sample["audio"]["array"]
-
-    inputs = processor(sample_audio, return_tensors="pt")
-    input_features = inputs.input_features
+    # Load model and inputs using loader
+    loader = WhisperLoader(variant=variant)
+    model = loader.load_model()
+    inputs = loader.load_inputs()
 
     # Get decoder inputs
     decoder_start_token_tensor = torch.tensor(model.generation_config.decoder_start_token_id, dtype=torch.long)
     decoder_input_ids = torch.ones((1, 1), dtype=torch.long) * decoder_start_token_tensor
-    padded_decoder_input_ids, seq_len = pad_inputs(
-        decoder_input_ids, max_new_tokens=100
-    )  # Whisper only supports up to 448 decoder positions.
+    padded_decoder_input_ids, seq_len = pad_inputs(decoder_input_ids, max_new_tokens=100)
 
-    inputs = [input_features, padded_decoder_input_ids]
+    inputs = [inputs, padded_decoder_input_ids]
 
     class Wrapper(torch.nn.Module):
         def __init__(self, model):
@@ -108,7 +107,7 @@ def test_whisper(variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     pcc = 0.99
-    if variant == "openai/whisper-base":
+    if variant in [WhisperVariant.WHISPER_BASE, WhisperVariant.WHISPER_SMALL]:
         pcc = 0.95
 
     # Model Verification
@@ -122,6 +121,6 @@ def test_whisper(variant):
         input_ids=inputs[0],
         decoder_input_ids=padded_decoder_input_ids,
         seq_len=seq_len,
-        tokenizer=processor.tokenizer,
+        tokenizer=loader.processor.tokenizer,
     )
     print(generated_text)

@@ -2,9 +2,9 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-
 import pytest
 import torch
+from third_party.tt_forge_models.yolov8.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -20,19 +20,19 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.yolo.model_utils.yolo_utils import (
-    YoloWrapper,
-    load_yolo_model_and_image,
-)
+from test.models.pytorch.vision.yolo.model_utils.yolo_utils import YoloWrapper
 
-variants = ["yolov8x", "yolov8n"]
+variants = [
+    ModelVariant.YOLOV8X,
+    ModelVariant.YOLOV8N,
+]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_yolov8(variant):
-
-    if variant in ["yolov8x"]:
+    # Set group and priority based on variant
+    if variant == ModelVariant.YOLOV8X:
         group = ModelGroup.RED
         priority = ModelPriority.P1
     else:
@@ -50,23 +50,20 @@ def test_yolov8(variant):
         priority=priority,
     )
 
-    # Load  model and input
-    model, image_tensor = load_yolo_model_and_image(
-        f"https://github.com/ultralytics/assets/releases/download/v8.2.0/{variant}.pt"
-    )
-    framework_model = YoloWrapper(model).to(torch.bfloat16)
-    input = [image_tensor.to(torch.bfloat16)]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    model = loader.load_model(dtype_override=torch.bfloat16)
+    framework_model = YoloWrapper(model)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
-
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model,
-        sample_inputs=input,
-        module_name=module_name,
-        compiler_cfg=compiler_cfg,
+        framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
     )
 
-    # Model Verification
-    verify(input, framework_model, compiled_model)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model)

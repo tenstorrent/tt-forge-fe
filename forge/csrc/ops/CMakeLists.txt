@@ -28,7 +28,6 @@ add_library(ops
     op_conv_sum.cpp
     op_cosine.cpp
     op_cumulative_sum.cpp
-    op_dequantize.cpp
     op_depthwise.cpp
     op_divide.cpp
     op_downsample_2d.cpp
@@ -37,21 +36,14 @@ add_library(ops
     op_embedding_bw.cpp
     op_equal.cpp
     op_erf.cpp
-    op_ethernet_data_copy.cpp
     op_exp.cpp
     op_fill_cache.cpp
-    op_forge_dequantize.cpp
     op_forge_pad.cpp
-    op_forge_quantize.cpp
-    op_forge_requantize.cpp
     op_forge_unpad.cpp
-    op_gather.cpp
     op_gelu.cpp
     op_greater.cpp
     op_greater_equal.cpp
     op_heaviside.cpp
-    op_hslice.cpp
-    op_hstack.cpp
     op_index.cpp
     op_index_copy.cpp
     op_interleave.cpp
@@ -64,6 +56,7 @@ add_library(ops
     op_log_softmax.cpp
     op_logical_and.cpp
     op_logical_not.cpp
+    op_bitwise_and.cpp
     op_mask.cpp
     op_matmul.cpp
     op_max_pool_1d.cpp
@@ -73,13 +66,11 @@ add_library(ops
     op_multiply.cpp
     op_nop.cpp
     op_not_equal.cpp
-    op_narrow.cpp
     op_pad.cpp
     op_pad_tile.cpp
     op_pixel_shuffle.cpp
     op_pow.cpp
     op_power.cpp
-    op_quantize.cpp
     op_reciprocal.cpp
     op_reduce_avg.cpp
     op_reduce_max.cpp
@@ -88,29 +79,22 @@ add_library(ops
     op_remainder.cpp
     op_repeat.cpp
     op_repeat_interleave.cpp
-    op_requantize.cpp
     op_reshape.cpp
-    op_resize_1d.cpp
     op_resize_2d.cpp
-    op_resize_3d.cpp
     op_select.cpp
     op_sigmoid.cpp
     op_sine.cpp
     op_softmax.cpp
     op_softmax_bw.cpp
-    op_sparse_matmul.cpp
     op_sqrt.cpp
     op_stack.cpp
     op_subtract.cpp
     op_squeeze.cpp
     op_tanh.cpp
-    op_tilizer.cpp
     op_transpose.cpp
     op_unsqueeze.cpp
     op_update_cache.cpp
     op_upsample_2d.cpp
-    op_vslice.cpp
-    op_vstack.cpp
     op_where.cpp
     python_bindings.cpp)
 

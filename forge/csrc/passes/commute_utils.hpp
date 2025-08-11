@@ -129,11 +129,6 @@ bool can_commute_through_reduce(
 bool commute_through_eltwise(
     graphlib::OpNode *op, graphlib::Shape *commute_shape = nullptr, graphlib::OpType *golden_transform = nullptr);
 
-bool commute_through_quantization(
-    graphlib::OpNode *op, graphlib::Shape *commute_shape = nullptr, graphlib::OpType *golden_transform = nullptr);
-
-bool is_quantization_ops(graphlib::OpNode *op);
-
 bool can_commute_past_op(
     graphlib::OpNode *op,
     graphlib::OpNode *initial_op,
@@ -154,7 +149,6 @@ void update_concat_attr(graphlib::OpNode *op, int new_dim);
 void update_reduce_attr(graphlib::OpNode *reduce, int reduce_dim, bool keep_dim);
 void update_matmul_attr(graphlib::OpNode *matmul, int requant_zp);
 void update_conv_attr(graphlib::OpNode *conv, const std::vector<int> &pad_attrs);
-void update_vstack_attr(graphlib::OpNode *vstack, int new_value);
 
 std::pair<bool, std::pair<std::vector<int>, std::vector<int>>> handle_shape_change_through_bcast(
     graphlib::Graph *graph,
