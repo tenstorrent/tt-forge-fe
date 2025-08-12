@@ -359,7 +359,7 @@ def verify_backward(
 
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
-        record_execution(ExecutionStage.PASSED)
+        record_execution(ExecutionStage.PASSED_BACKWARD)
 
 
 def verify(
@@ -481,7 +481,7 @@ def verify(
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
 
-    record_execution(ExecutionStage.PASSED_BACKWARD)
+    record_execution(ExecutionStage.PASSED)
 
     # Return both the framework and compiled model outputs
     return fw_out, co_out
