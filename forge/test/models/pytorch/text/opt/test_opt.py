@@ -131,12 +131,23 @@ def test_opt_qa(variant):
     framework_model = OptModelWrapper(framework_model, framework_model.model.decoder.embed_tokens)
     inputs = model_loader.load_inputs()
 
-    # Forge compile framework model
+    from forge._C import MLIRConfig
+    from forge.config import (
+        CompilerConfig
+    )
+    compiler_config = CompilerConfig()
+    compiler_config.mlir_config = MLIRConfig().set_enable_consteval(False)
+
+    # Forge compile framework model``
     compiled_model = forge.compile(
         framework_model,
         inputs,
         module_name,
+        compiler_cfg=compiler_config
     )
+
+    # compiled_model.dump_forward(inputs[0], inputs[1], "/localdev/jserbedzija/repos/tt-forge-fe/tt_forge_forward_inputs")
+    compiled_model.dump_forward("/localdev/jserbedzija/repos/tt-forge-fe/tt_forge_forward_inputs_dracula")
 
     pcc = 0.99
     if variant in [QAVariant.OPT_125M, QAVariant.OPT_1_3B]:

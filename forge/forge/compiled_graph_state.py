@@ -524,3 +524,21 @@ class CompiledModel:
         for name, param in self.framework_module.module.named_parameters():
             if param.requires_grad:
                 self.tensor_pool.get_tensor(name).detach_from_device()
+    def dump_forward(self, tensor_dump_dir):
+        # Get names of the input tensors in the forward pass
+        input_names = list(self.fwd_compiled_graph_state.ordered_input_names)
+
+        input_names += self.fwd_compiled_graph_state.ordered_constant_node_names
+        input_names += self.fwd_compiled_graph_state.ordered_parameter_node_names
+
+        persisten_inputs = self.runtime_model_state.get_program_state(ProgramType.Forward).get_inputs()
+
+        for id in range(len(input_names)):
+            if id >= len(self.fwd_compiled_graph_state.ordered_input_names):
+                input_tensor = persisten_inputs[id - len(self.fwd_compiled_graph_state.ordered_input_names)]
+            else:
+                input_tensor = self.inputs[id]
+
+            torch.save(input_tensor.to_torch(), f"{tensor_dump_dir}/{id}.pt")
+
+        return input_names

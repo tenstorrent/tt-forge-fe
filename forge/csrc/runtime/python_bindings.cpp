@@ -31,6 +31,7 @@ void RuntimeModule(py::module &m_runtime)
     py::class_<TensorPool>(m_runtime, "TensorPool")
         .def(py::init<>())
         .def("get_tensor", &TensorPool::get_tensor)
+        .def("print", &TensorPool::print)
         .def(
             "insert",
             [](TensorPool &self, const std::string &name, torch::Tensor &tensor) { self.insert(name, tensor); })
@@ -43,7 +44,8 @@ void RuntimeModule(py::module &m_runtime)
         .export_values();
 
     py::class_<ProgramState>(m_runtime, "ProgramState")
-        .def(py::init<ProgramType, std::vector<Tensor>, std::vector<Tensor>>());
+        .def(py::init<ProgramType, std::vector<Tensor>, std::vector<Tensor>>())
+        .def("get_inputs", &ProgramState::get_inputs);;
 
     py::class_<ModelState>(m_runtime, "ModelState")
         .def(py::init<runtime::Binary>())
@@ -51,6 +53,7 @@ void RuntimeModule(py::module &m_runtime)
         .def(
             "init_program_state",
             [](ModelState &self, ProgramState &program_state) { self.add_program_state(program_state); })
+        .def("get_program_state", &ModelState::get_program_state)
         .def(
             "run_program",
             [](ModelState &self, ProgramType program_type, std::vector<tt::Tensor> &act_inputs)
