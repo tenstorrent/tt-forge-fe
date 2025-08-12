@@ -275,10 +275,11 @@ class Tensor(TensorBase):
         dtype: Optional[torch.dtype] = None,
         min_int: int = 0,
         max_int: int = 1000,
+        requires_grad: bool = False,
     ) -> torch.Tensor:
 
         if dtype in [torch.float16, torch.bfloat16, torch.float32, torch.float64]:
-            torch_tensor = torch.rand(shape, dtype=dtype)
+            torch_tensor = torch.rand(shape, dtype=dtype, requires_grad=requires_grad)
         elif dtype in [torch.int8, torch.uint8, torch.int16, torch.int32, torch.int64]:
             if min_int == max_int:
                 torch_tensor = torch.full(size=shape, fill_value=max_int, dtype=dtype)
@@ -287,7 +288,7 @@ class Tensor(TensorBase):
         elif dtype == torch.bool:
             torch_tensor = torch.randint(low=0, high=2, size=shape, dtype=dtype)  # this will create boolean tensor
         elif dtype is None:
-            torch_tensor = torch.rand(shape, dtype=torch.float32)
+            torch_tensor = torch.rand(shape, dtype=torch.float32, requires_grad=requires_grad)
         else:
             raise RuntimeError(f"[create_torch_tensor] - Unsupported dtype {dtype}")
 
@@ -301,10 +302,11 @@ class Tensor(TensorBase):
         min_int: int = 0,
         max_int: int = 1000,
         constant: bool = False,
+        requires_grad: bool = False,
     ) -> "TensorFromPytorch":
 
         torch_tensor = Tensor.create_torch_tensor(
-            shape=tensor_shape, dtype=torch_dtype, min_int=min_int, max_int=max_int
+            shape=tensor_shape, dtype=torch_dtype, min_int=min_int, max_int=max_int, requires_grad=requires_grad
         )
 
         return TensorFromPytorch(
@@ -351,6 +353,10 @@ class TensorFromPytorch(Tensor):
     @property
     def requires_grad(self) -> bool:
         return self._value.requires_grad
+
+    @property
+    def grad(self) -> torch.Tensor:
+        return self._value.grad
 
     def set_requires_grad(self, requires_grad: bool):
         self._value.requires_grad = requires_grad

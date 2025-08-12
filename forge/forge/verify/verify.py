@@ -297,8 +297,10 @@ def verify_backward(
     if not isinstance(compiled_output, torch.Tensor):
         raise TypeError(f"Compiled output tensor must be of type {torch.Tensor}, but got {type(compiled_output)}")
 
-    if not isinstance(framework_model, torch.nn.Module):
-        raise TypeError(f"Framework model must be of type {torch.nn.Module}, but got {type(framework_model)}")
+    if not isinstance(framework_model, verify_cfg.framework_model_types):
+        raise TypeError(
+            f"Framework model must be of type {verify_cfg.framework_model_types}, but got {type(framework_model)}"
+        )
     if not isinstance(compiled_model, verify_cfg.compiled_model_types):
         raise TypeError(
             f"Compiled model must be of type {verify_cfg.compiled_model_types}, but got {type(compiled_model)}"
@@ -306,8 +308,11 @@ def verify_backward(
 
     # Zero out gradients
     [input.grad.zero_() for input in inputs if input.grad is not None]
-    framework_model.zero_grad()
+    # This test is currently used only for torch.nn.Module and model_ops tests which use ForgeModule's (which do not require zero_grad)
+    if isinstance(framework_model, torch.nn.Module):
+        framework_model.zero_grad()
 
+    record_execution(ExecutionStage.FAILED_TTNN_BINARY_BACKWARD_EXECUTION)
     # 1st step: run backward pass for the networks and get gradients
     compiled_model.gradient_inputs = [CTensor(output_grad)]
     co_gradient_outputs = compiled_model.backward()
@@ -318,9 +323,12 @@ def verify_backward(
         co_gradients[name] = grad.to_torch().clone() if name.startswith("grad_acc_") else grad.to_torch()
 
     # Run backward on framework model
-    framework_model.zero_grad()
+    # This test is currently used only for torch.nn.Module and model_ops tests which use ForgeModule's (which do not require zero_grad)
+    if isinstance(framework_model, torch.nn.Module):
+        framework_model.zero_grad()
     framework_output.backward(gradient=output_grad)
 
+    record_execution(ExecutionStage.FAILED_BACKWARD_VERIFICATION)
     # 2nd step: verify gradients
     for name in co_gradients:
         co_grad = co_gradients[name]
@@ -328,7 +336,10 @@ def verify_backward(
         if name.startswith("grad_acc_"):
             name = name.replace("grad_acc_", "")
             name = name.replace("_grad_accumulator", "")
-            fw_grad = framework_model.get_parameter(name).grad
+            if isinstance(framework_model, torch.nn.Module):
+                fw_grad = framework_model.get_parameter(name).grad
+            else:
+                fw_grad = framework_model.get_parameter(name).value().grad
         elif name.startswith("output_grad_"):
             name = name.replace("output_grad_", "")
             fw_grad = inputs[compiled_model.fwd_compiled_graph_state.ordered_input_names.index(name)].grad
@@ -348,6 +359,7 @@ def verify_backward(
 
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
+        record_execution(ExecutionStage.PASSED)
 
 
 def verify(
@@ -469,7 +481,7 @@ def verify(
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
 
-    record_execution(ExecutionStage.PASSED)
+    record_execution(ExecutionStage.PASSED_BACKWARD)
 
     # Return both the framework and compiled model outputs
     return fw_out, co_out

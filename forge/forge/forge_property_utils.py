@@ -278,7 +278,10 @@ class ExecutionStage(Enum):
     FAILED_FORGE_MLIR_COMPILATION = auto()
     FAILED_TTNN_BINARY_EXECUTION = auto()
     FAILED_VERIFICATION = auto()
+    FAILED_TTNN_BINARY_BACKWARD_EXECUTION = auto()
+    FAILED_BACKWARD_VERIFICATION = auto()
     PASSED = auto()
+    PASSED_BACKWARD = auto()
 
     @classmethod
     def to_str(cls, value):
@@ -318,11 +321,11 @@ class ExecutionDepth(Enum):
                 return ExecutionDepth.FAILED_FE_COMPILATION
             case ExecutionStage.FAILED_FORGE_MLIR_COMPILATION:
                 return ExecutionDepth.FAILED_TTMLIR_COMPILATION
-            case ExecutionStage.FAILED_TTNN_BINARY_EXECUTION:
+            case ExecutionStage.FAILED_TTNN_BINARY_EXECUTION | ExecutionStage.FAILED_TTNN_BINARY_BACKWARD_EXECUTION:
                 return ExecutionDepth.FAILED_RUNTIME
-            case ExecutionStage.FAILED_VERIFICATION:
+            case ExecutionStage.FAILED_VERIFICATION | ExecutionStage.FAILED_BACKWARD_VERIFICATION:
                 return ExecutionDepth.INCORRECT_RESULT
-            case ExecutionStage.PASSED:
+            case ExecutionStage.PASSED | ExecutionStage.PASSED_BACKWARD:
                 return ExecutionDepth.PASSED
             case _:
                 raise ValueError("Invalid ExecutionStage passed.")
