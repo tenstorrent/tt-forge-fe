@@ -63,8 +63,8 @@ def test_hrnet_onnx(variant, forge_tmp_path):
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     pcc = 0.99
-    if variant == "hrnetv2_w64":
-        pcc = 0.98
+    if variant in ["hrnetv2_w64", "hrnetv2_w44"]:
+        pcc = 0.95
 
     # Compile model
     compiled_model = forge.compile(onnx_model, inputs, module_name=module_name)

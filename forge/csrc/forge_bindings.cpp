@@ -34,7 +34,6 @@ namespace py = pybind11;
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
 #include "runtime/python_bindings.hpp"
-#include "shared_utils/sparse_matmul_utils.hpp"
 #include "utils/ordered_associative_containers/ordered_map.hpp"
 #include "utils/signal_handlers.hpp"
 #include "verif/python_bindings.hpp"
@@ -269,36 +268,6 @@ PYBIND11_MODULE(_C, m)
         .value("Backward", tt::graphlib::NodeEpochType::Backward)
         .value("Optimizer", tt::graphlib::NodeEpochType::Optimizer)
         .export_values();
-
-    py::class_<tt::sparse::SparseCOO>(m, "SparseCOO")
-        .def(
-            py::init<
-                std::vector<std::int64_t>,
-                std::vector<std::int64_t>,
-                std::vector<float>,
-                std::vector<std::int64_t>>(),
-            py::arg("rows"),
-            py::arg("cols"),
-            py::arg("vals"),
-            py::arg("shape"))
-        .def_readonly("shape", &sparse::SparseCOO::shape)
-        .def_readonly("rows", &sparse::SparseCOO::rows)
-        .def_readonly("cols", &sparse::SparseCOO::cols)
-        .def_readonly("vals", &sparse::SparseCOO::vals);
-
-    py::class_<tt::sparse::SparseFORGE>(m, "SparseFORGE")
-        .def_readonly("sparse_indices", &sparse::SparseFORGE::sparse_indices)
-        .def_readonly("sparse_shape", &sparse::SparseFORGE::sparse_shape)
-        .def_readonly("zdim", &sparse::SparseFORGE::zdim)
-        .def_readonly("bcast_factor", &sparse::SparseFORGE::bcast_factor)
-        .def("get_sparse_tile_ptr_bits", &sparse::SparseFORGE::get_sparse_tile_ptr_bits)
-        .def("get_sparse_ublock_idx_bits", &sparse::SparseFORGE::get_sparse_ublock_idx_bits)
-        .def(
-            "get_sparse_tiles_and_encodings",
-            [](tt::sparse::SparseFORGE &self, int grid_r) { return self.get_sparse_tiles_and_encodings(grid_r); });
-
-    // m.def("compress_sparse_tensor", &sparse::compress_sparse_tensor);
-    m.def("compress_sparse_tensor_and_strip_info", &sparse::compress_sparse_tensor_and_strip_info);
 
     py::class_<tt::passes::AMPNodeProperties>(m, "AMPNodeProperties")
         .def(

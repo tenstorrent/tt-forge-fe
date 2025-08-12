@@ -95,11 +95,14 @@ class TestVerification:
         value_range = ValueRanges.SMALL
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
+        dev_data_format = test_vector.dev_data_format
+        if dev_data_format is None and test_vector.operator in TestCollectionData.bitwise.operators:
+            # For bitwise operators, use int data format
+            dev_data_format = TestCollectionData.single_int.dev_data_formats[0]
+
         model_type = cls.MODEL_TYPES[test_vector.input_source]
         pytorch_model = (
-            model_type(
-                operator, test_vector.input_shape, kwargs, dtype=test_vector.dev_data_format, value_range=value_range
-            )
+            model_type(operator, test_vector.input_shape, kwargs, dtype=dev_data_format, value_range=value_range)
             if test_vector.input_source in (InputSource.CONST_EVAL_PASS,)
             else model_type(operator, kwargs)
         )
@@ -110,7 +113,7 @@ class TestVerification:
 
         # Using AllCloseValueChecker in all cases except for integer data formats
         verify_config: VerifyConfig
-        if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
+        if dev_data_format in TestCollectionTorch.int.dev_data_formats:
             verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
         else:
             verify_config = VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2))
@@ -120,7 +123,7 @@ class TestVerification:
             test_device=test_device,
             input_shapes=input_shapes,
             input_params=input_params,
-            dev_data_format=test_vector.dev_data_format,
+            dev_data_format=dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             value_range=value_range,
             warm_reset=warm_reset,
@@ -190,17 +193,14 @@ class TestCollectionData:
             "reciprocal",
             "sigmoid",
             "abs",
-            # "absolute",     # alias for abs
             "cos",
             "exp",
             "neg",
-            # "negative",     # alias for neg
             "rsqrt",
             "sin",
             "square",
             "pow",
             "clamp",
-            # "clip",         # alias for clamp
             "log",
             "log1p",
             "cumsum",
@@ -217,18 +217,12 @@ class TestCollectionData:
     not_implemented = TestCollection(
         operators=[
             "acos",
-            "arccos",
             "acosh",
-            "arccosh",
             "angle",
             "asin",
-            "arcsin",
             "asinh",
-            "arcsinh",
             "atan",
-            "arctan",
             "atanh",
-            "arctanh",
             "bitwise_not",
             "ceil",
             "conj_physical",
@@ -240,7 +234,6 @@ class TestCollectionData:
             "erfinv",
             "exp2",
             "expm1",
-            "fix",
             "floor",
             "frac",
             "lgamma",
@@ -268,6 +261,13 @@ class TestCollectionData:
         ],
     )
 
+    all_int = TestCollection(
+        dev_data_formats=TestCollectionTorch.int.dev_data_formats,
+    )
+
+    single_int = TestCollection(
+        dev_data_formats=TestCollectionTorch.int.dev_data_formats[0:1],
+    )
     # torch.float16 is not supported well - python crashes
     common_to_skip = TestCollection(
         dev_data_formats=[torch.float16],
@@ -338,32 +338,6 @@ TestParamsData.test_plan_implemented = TestPlan(
         *TestIdsDataLoader.build_failing_rules(
             operators=TestCollectionData.implemented.operators,
         ),
-        # ValueError: Dtype mismatch: framework_model.dtype=torch.float32, compiled_model.dtype=torch.int32
-        TestCollection(
-            operators=["sqrt", "exp", "reciprocal", "rsqrt", "log", "sigmoid", "tanh"],
-            input_sources=TestCollectionCommon.single.input_sources,
-            input_shapes=TestCollectionCommon.single.input_shapes,
-            dev_data_formats=[
-                torch.int8,
-                torch.int32,
-                torch.int64,
-            ],
-            math_fidelities=TestCollectionCommon.single.math_fidelities,
-            failing_reason=FailingReasons.DTYPE_MISMATCH,
-        ),
-        # ************ square failing rules ***********
-        TestCollection(
-            operators=["square"],
-            input_sources=TestCollectionCommon.single.input_sources,
-            input_shapes=TestCollectionCommon.single.input_shapes,
-            dev_data_formats=[
-                torch.int8,
-                torch.int32,
-                torch.int64,
-            ],
-            math_fidelities=TestCollectionCommon.single.math_fidelities,
-            failing_reason=FailingReasons.ATTRIBUTE_ERROR,
-        ),
         TestCollectionData.common_to_skip,
     ],
 )
@@ -432,13 +406,31 @@ TestParamsData.test_plan_not_implemented = TestPlan(
             operators=TestCollectionData.not_implemented.operators,
             input_sources=TestCollectionCommon.single.input_sources,
             input_shapes=TestCollectionCommon.single.input_shapes,
-            failing_reason=FailingReasons.NOT_IMPLEMENTED,
+            failing_reason=FailingReasons.NOT_IMPLEMENTED_ATEN,
+        ),
+        TestCollection(
+            operators=[
+                "acos",
+                "asin",
+                "ceil",
+                "cosh",
+                "log10",
+                "log2",
+                "round",
+                "sign",
+                "sinh",
+                "tan",
+                "trunc",
+            ],
+            input_sources=TestCollectionCommon.single.input_sources,
+            input_shapes=TestCollectionCommon.single.input_shapes,
+            failing_reason=FailingReasons.UNSUPPORTED_OP_TYPES,
         ),
         TestCollection(
             operators=TestCollectionData.bitwise.operators,
             input_sources=TestCollectionCommon.single.input_sources,
             input_shapes=TestCollectionCommon.single.input_shapes,
-            failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+            failing_reason=FailingReasons.UNSUPPORTED_OP_TYPES,
         ),
         TestCollectionData.common_to_skip,
     ],

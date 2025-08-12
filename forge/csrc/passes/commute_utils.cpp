@@ -872,21 +872,6 @@ bool commute_through_eltwise(graphlib::OpNode *op, graphlib::Shape *commute_shap
     return true;
 }
 
-bool commute_through_quantization(
-    graphlib::OpNode *op, graphlib::Shape *commute_shape, graphlib::OpType *golden_transform)
-{
-    TT_ASSERT(is_quantization_ops(op), "op must be an quantization op");
-    op->set_shape(*commute_shape);
-    op->add_golden_transform(*golden_transform);
-    return true;
-}
-
-bool is_quantization_ops(graphlib::OpNode *op)
-{
-    return op->new_op_type() == ops::OpType::ForgeQuantize or op->new_op_type() == ops::OpType::ForgeDequantize or
-           op->new_op_type() == ops::OpType::ForgeRequantize;
-}
-
 bool can_commute_past_op(
     graphlib::OpNode *op,
     graphlib::OpNode *initial_op,
@@ -916,7 +901,7 @@ bool can_commute_past_op(
         return can_commute;
     }
 
-    return (op->is_eltwise() and op->new_op_type() != ops::OpType::Interleave) or is_quantization_ops(op);
+    return (op->is_eltwise() and op->new_op_type() != ops::OpType::Interleave);
 }
 
 /**
@@ -970,16 +955,7 @@ void update_concat_attr(graphlib::OpNode *concatenate, int dim)
     concatenate->set_op_attr("dim", dim);
     log_trace(LogGraphCompiler, "Concatenate operation updated with new dim: {}", dim);
 }
-/**
- * @brief Updates the attributes and named attributes of vstack operation with new slice_size.
- */
-void update_vstack_attr(graphlib::OpNode *vstack, int slice_size)
-{
-    TT_ASSERT(vstack->new_op_type() == ops::OpType::Vstack, "update_vstack_attr called for a non-vstack operation");
 
-    vstack->set_op_attr("slice_size", slice_size);
-    log_trace(LogGraphCompiler, "Vstack operation updated with new slice_size: {}", slice_size);
-}
 /**
  * @brief Updates the attributes and named attributes of reduce operation(reduce_sum, reduce_avg, reduce_max) with new
  * reduction dimension.

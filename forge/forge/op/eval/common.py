@@ -65,8 +65,7 @@ def cast_for_cpu_eval(t_ops, op_name=None):
             t_ops[index] = op.to(torch.float32)
             if op_name == "matmul" or op_name == "depthwise":
                 original_type = torch.int32
-            elif op_name == "sparse_matmul":
-                original_type = torch.int8
+
     return t_ops, original_type
 
 
@@ -178,134 +177,6 @@ def data_format_to_int(df: DataFormat) -> int:
     if df == DataFormat.Lf8:
         return 11
     raise RuntimeError(f"Unknown data format {df}")
-
-
-# def op_model_to_desc(
-#     type: str,
-#     arch_name: str,
-#     op_model: OpModel,
-#     sub_op_model: FusedSubOpModel = None,
-#     sparse_grid_row=-1,
-# ) -> OpModelDesc:
-
-#     desc = OpModelDesc()
-#     desc.arch = arch_name
-#     desc.data_format = op_model.data_format
-#     desc.math_fidelity = op_model.math_fidelity()
-#     desc.t = op_model.output_buffers[0].block_shape.t
-#     desc.approx_mode = False
-
-#     if op_model.op_type() == "fused_op":
-#         desc.type = sub_op_model.type
-#         desc.mblock_m = sub_op_model.mblock_m
-#         desc.mblock_n = sub_op_model.mblock_n
-#         desc.ublock_rt = sub_op_model.ublock_rt
-#         desc.ublock_ct = sub_op_model.ublock_ct
-
-#         if (desc.type == "matmul"):
-#             desc.mblock_k = sub_op_model.mblock_k
-#             desc.ublock_kt = sub_op_model.ublock_kt
-#         elif (desc.type == "reduce"):
-#             desc.op_attr = sub_op_model.reduce_dim
-
-#         desc.approx_mode = "FORGE_EXP_APPROX" in os.environ
-#     else:
-#         desc.type = type
-#         desc.mblock_m = op_model.output_buffers[0].block_shape.mblock_m
-#         desc.mblock_n = op_model.output_buffers[0].block_shape.mblock_n
-#         desc.ublock_rt = op_model.output_buffers[0].block_shape.ublock.rt
-#         desc.ublock_ct = op_model.output_buffers[0].block_shape.ublock.ct
-
-#         if type == "matmul":
-#             if op_model.is_sparse_matmul:
-#                 desc.ublock_kt = op_model.input_buffers[1].block_shape.ublock.rt
-#                 desc.mblock_k = op_model.op_shape.inputs[1].rt // desc.ublock_kt
-#                 desc.sparse_indices = op_model.sparse_indices
-#                 scale_sparse_args = bool(int(os.environ.get("FORGE_TEMP_SCALE_SPARSE_ESTIMATE_ARGS", True)))
-#                 if bool(int(os.environ.get("FORGE_TEMP_ENABLE_NEW_SPARSE_ESTIMATES", True))):
-#                     sparse_metadata = op_model.get_sparse_metadata()
-#                     desc.sparse_indices = sum(sparse_metadata.nz_tiles)
-#                     desc.sparse_nz_ublocks = sum(sparse_metadata.nz_ublocks)
-#                     desc.sparse_nz_strips = sum(sparse_metadata.nz_strips)
-
-#                     # Op model descriptor assumes grid_size [1, 1], so we need to scale down the parameters to what is
-#                     # expected to end up on a single core. Initially, we did this by averaging the parameters with the
-#                     # number of cores. However, not all the cores perform the same amount of work, so we need to
-#                     # calculate parameters per core. We keep both of these modes in this transition period.
-#                     #
-#                     # FORGE_TEMP_SCALE_SPARSE_ESTIMATE_ARGS (scale_sparse_args) must be set to true to enable any of
-#                     # the mentioned modes.
-#                     #
-#                     # Mode 1:
-#                     #   Average the parameters (by default)
-#                     # Mode 2:
-#                     #   Scale the parameters by the number of cores (needs the env var
-#                     #   "FORGE_TEMP_SPARSE_ESTIMATE_ARGS_PER_CORE" to be set to true)
-#                     #
-#                     if scale_sparse_args:
-#                         per_core_mode = os.environ.get("FORGE_TEMP_SPARSE_ESTIMATE_ARGS_PER_CORE", False)
-#                         if not per_core_mode:
-#                             # Average mode
-#                             #
-#                             nz_tiles = sum(sparse_metadata.nz_tiles)
-#                             nz_ublocks = sum(sparse_metadata.nz_ublocks)
-#                             nz_strips = sum(sparse_metadata.nz_strips)
-
-#                             if nz_tiles > 1:
-#                                 desc.sparse_indices = max(nz_tiles // op_model.grid_shape.r, 1)
-#                             else:
-#                                 desc.sparse_indices = nz_tiles
-
-#                             if nz_ublocks > 1:
-#                                 desc.sparse_nz_ublocks = max(nz_ublocks // op_model.grid_shape.r, 1)
-
-#                             if nz_strips > 1:
-#                                 desc.sparse_nz_strips = max(nz_strips // op_model.grid_shape.r, 1)
-#                         else:
-#                             # Per core mode
-#                             #
-#                             assert sparse_grid_row != -1  # Must provide which row of cores we're fetching the estimates for
-#                             desc.sparse_indices = sparse_metadata.nz_tiles[sparse_grid_row]
-#                             desc.sparse_nz_ublocks = sparse_metadata.nz_ublocks[sparse_grid_row]
-#                             desc.sparse_nz_strips = sparse_metadata.nz_strips[sparse_grid_row]
-#                 else:
-#                     # old sparse estimates
-#                     if scale_sparse_args:
-#                         if op_model.sparse_indices > 1:
-#                             desc.sparse_indices = max(op_model.sparse_indices // op_model.grid_shape.r, 1)
-#             else:
-#                 desc.ublock_kt = op_model.input_buffers[0].block_shape.ublock.ct
-#                 desc.mblock_k = op_model.op_shape.inputs[0].ct // desc.ublock_kt
-
-#                 # requant/dequant part of matmul is calculated separately for now, and we need to pass
-#                 # matmul output format here
-#                 if "requant" in op_model.forge_op_attrs() or "dequant" in op_model.forge_op_attrs():
-#                     desc.data_format = DataFormat.Int32
-
-#         if type == "depthwise":
-#             desc.mblock_k = op_model.op_shape.inputs[1].rt
-#             desc.ublock_kt = 1
-#         if type == "maximum":
-#             if arch_name == "blackhole":
-#                 desc.version = 1
-#             else:
-#                 desc.version = 2
-
-#         desc.op_attr = op_model.get_reduce_dim()
-#         # desc.op_attr is only used to capture the dim of reduce - ideally, we should support tt::ForgeOpAttrs in
-#         # tt_op_model_desc - when we do, uncomment the line below
-#         # desc.op_attr = op_model.forge_op_attrs()
-
-#         # If reduce_z, we manually copy the "z" param to special field in tt_op_model_desc - we should pass all forge attrs
-#         if type == "reduce" and op_model.forge_op_attrs()["dim"] == "z":
-#             desc.reduce_z = op_model.forge_op_attrs()["z"]
-
-#     attrs = op_model.forge_op_attrs()
-#     # If the attributes contain approximate mode set it.
-#     if 'approximate_mode' in attrs:
-#         desc.approx_mode = attrs['approximate_mode'] == 'true'
-
-#     return desc
 
 
 def calculate_tile_size(val):

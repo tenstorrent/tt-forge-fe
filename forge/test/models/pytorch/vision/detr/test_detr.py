@@ -6,13 +6,17 @@
 
 import pytest
 import torch
-from PIL import Image
-from third_party.tt_forge_models.tools.utils import get_file
-from transformers import (
-    DetrFeatureExtractor,
-    DetrForObjectDetection,
-    DetrForSegmentation,
-    DetrImageProcessor,
+from third_party.tt_forge_models.detr.object_detection.pytorch import (
+    ModelLoader as ObjectDetectionLoader,
+)
+from third_party.tt_forge_models.detr.object_detection.pytorch import (
+    ModelVariant as ObjectDetectionVariant,
+)
+from third_party.tt_forge_models.detr.segmentation.pytorch import (
+    ModelLoader as SegmentationLoader,
+)
+from third_party.tt_forge_models.detr.segmentation.pytorch import (
+    ModelVariant as SegmentationVariant,
 )
 
 import forge
@@ -43,14 +47,14 @@ class DetrWrapper(torch.nn.Module):
         if self.task == "detection":
             return (output.logits, output.pred_boxes)
         else:
-            return (output.logits, output.pred_masks, output.pred_boxes)
+            return (output.logits, output.pred_masks)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param("facebook/detr-resnet-50", marks=[pytest.mark.xfail]),
+        pytest.param(ObjectDetectionVariant.RESNET_50, marks=[pytest.mark.xfail]),
     ],
 )
 def test_detr_detection(variant):
@@ -65,16 +69,12 @@ def test_detr_detection(variant):
         priority=ModelPriority.P1,
     )
 
-    # Load the model
-    model = DetrForObjectDetection.from_pretrained(variant).to(torch.bfloat16)
+    # Load model and inputs
+    loader = ObjectDetectionLoader(variant=variant)
+    model = loader.load_model(dtype_override=torch.bfloat16)
     framework_model = DetrWrapper(model, task="detection")
-
-    # Preprocess the image for the model
-    input_image = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
-    image = Image.open(str(input_image))
-    processor = DetrImageProcessor.from_pretrained("facebook/detr-resnet-50")
-    input = processor(images=image, return_tensors="pt")
-    inputs = [input["pixel_values"].to(torch.bfloat16), input["pixel_mask"].to(torch.bfloat16)]
+    input_dict = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_dict["pixel_values"], input_dict["pixel_mask"]]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -101,7 +101,7 @@ def test_detr_detection(variant):
     "variant",
     [
         pytest.param(
-            "facebook/detr-resnet-50-panoptic",
+            SegmentationVariant.RESNET_50_PANOPTIC,
             marks=[pytest.mark.xfail],
         )
     ],
@@ -117,16 +117,12 @@ def test_detr_segmentation(variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Load the model
-    framework_model = DetrForSegmentation.from_pretrained(variant).to(torch.bfloat16)
-    framework_model = DetrWrapper(framework_model, task="segmentation")
-
-    # Preprocess the image for the model
-    input_image = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
-    image = Image.open(str(input_image))
-    feature_extractor = DetrFeatureExtractor.from_pretrained("facebook/detr-resnet-50-panoptic")
-    input = feature_extractor(images=image, return_tensors="pt")
-    inputs = [input["pixel_values"].to(torch.bfloat16), input["pixel_mask"].to(torch.bfloat16)]
+    # Load the model and inputs
+    loader = SegmentationLoader(variant=variant)
+    model = loader.load_model(dtype_override=torch.bfloat16)
+    framework_model = DetrWrapper(model, task="segmentation")
+    input_dict = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_dict["pixel_values"], input_dict["pixel_mask"]]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
