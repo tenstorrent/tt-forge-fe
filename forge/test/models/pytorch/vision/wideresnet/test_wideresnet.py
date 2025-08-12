@@ -65,7 +65,7 @@ def test_wideresnet_pytorch(variant):
     )
 
     verify_cfg = VerifyConfig()
-    if variant == "wide_resnet50_2":
+    if variant == ModelVariant.WIDE_RESNET50_2:
         verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
 
     # Model Verification and Inference
