@@ -501,7 +501,21 @@ class TestPlansData:
             # Not implemented operators
             TestCollection(
                 operators=TestCollectionData.not_implemented.operators,
-                failing_reason=FailingReasons.NOT_IMPLEMENTED,
+                failing_reason=FailingReasons.NOT_IMPLEMENTED_ATEN,
+            ),
+            TestCollection(
+                operators=[
+                    "floor_divide",
+                    "fmod",
+                    "bitwise_xor",
+                ],
+                failing_reason=FailingReasons.UNSUPPORTED_OP_TYPES,
+            ),
+            TestCollection(
+                operators=[
+                    "le",
+                ],
+                failing_reason=FailingReasons.LOWERING_UNSUPPORTED_OPERATION,
             ),
             TestCollection(
                 operators=[
