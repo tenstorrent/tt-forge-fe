@@ -7,6 +7,7 @@
 #include "autograd/autograd.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
+#include "lower_to_forge/common.hpp"
 #include "op.hpp"
 #include "op_interface.hpp"
 #include "passes/decomposing_context.hpp"
@@ -25,14 +26,39 @@ using namespace graphlib;
 at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::RepeatInterleave, "Wrong op type.");
-    return op.base_eval(old_op_type, tensors);
+    TT_ASSERT(tensors.size() == 1, "RepeatInterleave should have one operand.");
+
+    int repeats = op.attr_as<int>("repeats");
+    int dim = op.attr_as<int>("dim");
+
+    if (dim < 0)
+    {
+        dim += static_cast<int>(tensors[0].dim());
+    }
+    TT_ASSERT(dim >= 0 && dim < static_cast<int>(tensors[0].dim()), "Given dimension is out of the shape");
+
+    return torch::repeat_interleave(tensors[0], repeats, dim);
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
     const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::RepeatInterleave, "Wrong op type.");
-    return op.base_shape(old_op_type, in_shapes);
+    TT_ASSERT(in_shapes.size() == 1, "RepeatInterleave should have one operand.");
+
+    int repeats = op.attr_as<int>("repeats");
+    int dim = op.attr_as<int>("dim");
+
+    if (dim < 0)
+    {
+        dim += static_cast<int>(in_shapes[0].size());
+    }
+    TT_ASSERT(dim >= 0 && dim < static_cast<int>(in_shapes[0].size()), "Given dimension is out of the shape");
+
+    std::vector<std::uint32_t> output_shape = in_shapes[0];
+    output_shape[dim] *= repeats;
+
+    return std::make_tuple(Shape::create(output_shape), std::vector<DimBroadcast>{});
 }
 
 NodeContext backward(
@@ -45,35 +71,33 @@ NodeContext backward(
     const NodeContext &gradient)
 {
     TT_DBG_ASSERT(op.type() == OpType::RepeatInterleave, "Wrong op type.");
-    return op.base_backward(old_op_type, ac, operand, inputs, output, gradient);
-}
+    TT_ASSERT(inputs.size() == 1, "RepeatInterleave should have one operand.");
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::RepeatInterleave, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
-}
+    int repeats = op.attr_as<int>("repeats");
+    int dim = op.attr_as<int>("dim");
 
-void decompose_post_optimize(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::RepeatInterleave, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
-}
+    std::vector<int> input_shape = inputs[0].shape.as_vector<int>();
+    if (dim < 0)
+    {
+        dim += static_cast<int>(input_shape.size());
+    }
+    TT_ASSERT(dim >= 0 && dim < static_cast<int>(input_shape.size()), "Given dimension is out of the shape");
 
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::RepeatInterleave, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
-}
+    std::vector<int> shape = input_shape;
+    std::vector<int> grad_shape = gradient.shape.as_vector<int>();
+    shape[dim] = repeats;
+    shape.insert(shape.begin() + dim, grad_shape[dim] / repeats);
 
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::RepeatInterleave, "Wrong op type.");
-    return op.base_initial_flops_estimate(old_op_type, inputs);
+    NodeContext reshaped = ac.autograd->create_op(ac, graphlib::OpType("reshape", {}, {{"shape", shape}}), {gradient});
+
+    NodeContext reduced = ac.autograd->create_op(
+        ac,
+        graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{dim + 1}}, {"keep_dim", true}}),
+        {reshaped});
+
+    NodeContext squeezed = ac.autograd->create_op(ac, graphlib::OpType("squeeze", {}, {{"dim", dim + 1}}), {reduced});
+
+    return squeezed;
 }
 
 }  // namespace repeat_interleave

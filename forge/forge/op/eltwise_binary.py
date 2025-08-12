@@ -416,5 +416,29 @@ def LogicalAnd(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) 
     return op("logical_and", name, operandA, operandA).get_tensor()
 
 
+def BitwiseAnd(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
+    """
+    Bitwise and operation.
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+        First operand
+
+    operandB: Tensor
+        Second operand
+
+    Returns
+    -------
+    Tensor
+        Forge tensor
+    """
+
+    return _Eltwise(name, operandA, operandB, "bitwise_and")
+
+
 def Remainder(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
     return _Eltwise(name, operandA, operandB, "remainder")

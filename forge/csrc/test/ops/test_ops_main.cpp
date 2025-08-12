@@ -34,7 +34,10 @@ TEST_P(SimpleOpTest, test_backward)
     compare_with_golden(outputs);
 
     auto computed_grads = eval_graph(graphlib::NodeEpochType::Backward);
-    verify_bwd_gradients(computed_grads);
+    {
+        pybind11::gil_scoped_release gil_release;  // release GIL for PyTorch backward evaluation
+        verify_bwd_gradients(computed_grads);
+    }
 }
 
 // Only test decompose for ops without backward support
