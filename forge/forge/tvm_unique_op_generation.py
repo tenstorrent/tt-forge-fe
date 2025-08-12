@@ -880,4 +880,18 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
             pytest_markers_with_reasons=pytest_markers_with_reasons,
         )
 
+        # Generate pytest function for the operation with pytest parameter containing list of tuple
+        # and each tuple constaints module name, tuple of operand shape/name and dtype
+        writer.write_pytest_function(
+            forge_module_names=forge_module_names,
+            pytest_input_shapes_and_dtypes_list=pytest_input_shapes_and_dtypes_list,
+            markers=markers,
+            module_metadata=module_metadata,
+            pytest_metadata_list=pytest_metadata_list,
+            use_ids_function=True,
+            exclude_record_property=exclude_record_property,
+            pytest_markers_with_reasons=pytest_markers_with_reasons,
+            training=True,
+        )
+
         writer.close_file()
