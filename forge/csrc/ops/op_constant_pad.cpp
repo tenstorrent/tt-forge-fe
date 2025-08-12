@@ -92,7 +92,7 @@ graphlib::NodeContext backward(
 
     int padding_dims = static_cast<int>(padding.size() / 2);
 
-    // Remove padding by applying narrow operations for each dimension
+    // Remove padding by applying index operations for each dimension
     for (int dim = 0; dim < padding_dims; dim++)
     {
         int low_pad = padding[dim * 2];
@@ -102,14 +102,15 @@ graphlib::NodeContext backward(
         {
             int original_size = grad.shape[dim];
             int new_size = original_size - low_pad - high_pad;
+            int stop = low_pad + new_size;
 
-            graphlib::OpType narrow_op("narrow", {dim, low_pad, new_size, original_size});
-            narrow_op.set_attr("dim", dim);
-            narrow_op.set_attr("start", low_pad);
-            narrow_op.set_attr("length", new_size);
-            narrow_op.set_attr("original_length", original_size);
+            graphlib::OpType index_op("index");
+            index_op.set_attr("dim", dim);
+            index_op.set_attr("start", low_pad);
+            index_op.set_attr("stop", stop);
+            index_op.set_attr("stride", 1);
 
-            grad = ac.autograd->create_op(ac, narrow_op, {grad});
+            grad = ac.autograd->create_op(ac, index_op, {grad});
         }
     }
 

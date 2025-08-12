@@ -106,7 +106,6 @@ enum class OpType : uint32_t
     Multiply,
     Nop,
     NotEqual,
-    Narrow,
     Pad,
     PixelShuffle,
     Pow,
