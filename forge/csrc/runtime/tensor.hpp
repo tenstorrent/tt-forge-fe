@@ -232,6 +232,18 @@ class TensorPool
     TensorPool(TensorPool&&) = default;
     TensorPool(const TensorPool&) = delete;
 
+    void print()
+    {
+        for (const auto& [name, tensor] : tensor_name_to_value)
+        {
+            const auto& tensor_desc = tensor.tensor_desc();
+            std::cout << "Tensor name: " << name
+                    << ", shape: [";
+            std::cout << tensor_desc.shape;
+            std::cout << "]\n";
+        }
+    }
+
     void insert(const std::string& name, torch::Tensor& tensor)
     {
         auto t = Tensor(tensor);

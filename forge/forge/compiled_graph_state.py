@@ -520,3 +520,39 @@ class CompiledModel:
         for name, param in self.framework_module.module.named_parameters():
             if param.requires_grad:
                 self.tensor_pool.get_tensor(name).detach_from_device()
+
+    # def dump_forward(self, input, attention_mask, tensor_dump_dir):
+    #     state = self.fwd_compiled_graph_state
+    #     input_names = (
+    #         list(state.ordered_input_names)
+    #         + state.ordered_constant_node_names
+    #         + state.ordered_parameter_node_names
+    #     )
+
+    #     torch.save(input, f"{tensor_dump_dir}/{0}.pt")
+    #     torch.save(attention_mask, f"{tensor_dump_dir}/{1}.pt")
+    #     for idx, name in enumerate(input_names):
+    #         if name == "input_1" or name == "attention_mask_1":
+    #             continue
+    #         torch.save(self.tensor_pool.get_tensor(name).to_torch(), f"{tensor_dump_dir}/{idx}.pt")
+
+    #     return input_names
+    
+    def dump_forward(self, tensor_dump_dir):
+        # Get names of the input tensors in the forward pass
+        input_names = list(self.fwd_compiled_graph_state.ordered_input_names)
+
+        input_names += self.fwd_compiled_graph_state.ordered_constant_node_names
+        input_names += self.fwd_compiled_graph_state.ordered_parameter_node_names
+
+        persisten_inptus = self.runtime_model_state.get_program_state(ProgramType.Forward).get_inputs()
+
+        for id in range(len(input_names)):
+            if id >= len(self.fwd_compiled_graph_state.ordered_input_names):
+                input_tensor = persisten_inptus[id - len(self.fwd_compiled_graph_state.ordered_input_names)]
+            else:
+                input_tensor = self.inputs[id]
+
+            torch.save(input_tensor.to_torch(), f"{tensor_dump_dir}/{id}.pt")
+
+        return input_names

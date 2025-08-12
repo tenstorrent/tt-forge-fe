@@ -38,6 +38,8 @@ struct ProgramState
     ProgramType program_type;
     std::vector<tt::Tensor> persistent_inputs;
     std::vector<tt::Tensor> outputs;
+
+    std::vector<tt::Tensor>& get_inputs() { return persistent_inputs; }
 };
 
 // Encapsulates execution context for a model.
@@ -72,6 +74,15 @@ struct ModelState
         auto pidx = program_idx(program_type);
 
         program_states[pidx] = program_state;
+    }
+
+    ProgramState& get_program_state(ProgramType program_type)
+    {
+        if (!program_states[program_idx(program_type)].has_value())
+        {
+            throw std::runtime_error("Program state for not initialized");
+        }
+        return program_states[program_idx(program_type)].value();
     }
 
     void run_program(ProgramType program_type, std::vector<tt::Tensor> act_inputs);
