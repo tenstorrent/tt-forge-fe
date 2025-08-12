@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from third_party.tt_forge_models.bloom import ModelLoader
+from third_party.tt_forge_models.bloom.pytorch import ModelLoader
 from transformers import BloomModel
 
 import forge

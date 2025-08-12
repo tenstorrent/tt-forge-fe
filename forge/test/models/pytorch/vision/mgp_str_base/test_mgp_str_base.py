@@ -5,7 +5,7 @@
 # From: https://huggingface.co/alibaba-damo/mgp-str-base
 import pytest
 import torch
-from third_party.tt_forge_models.mgp_str_base import ModelLoader
+from third_party.tt_forge_models.mgp_str_base.pytorch import ModelLoader
 
 import forge
 from forge._C import DataFormat

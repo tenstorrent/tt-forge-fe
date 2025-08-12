@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from third_party.tt_forge_models.glpn_kitti import ModelLoader
+from third_party.tt_forge_models.glpn_kitti.pytorch import ModelLoader
 
 import forge
 from forge._C import DataFormat

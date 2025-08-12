@@ -21,9 +21,6 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.models_utils import print_cls_results
-from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
-
 variants = [
     pytest.param(ModelVariant.BASE, marks=pytest.mark.push),
     ModelVariant.LARGE,
@@ -56,6 +53,7 @@ def test_vit_classify_224_hf_pytorch(variant):
     # Load model and inputs
     loader = ModelLoader(variant=variant)
     framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    framework_model.config.return_dict = False
     inputs = loader.load_inputs(dtype_override=torch.bfloat16)
     inputs = [inputs]
 
@@ -77,20 +75,12 @@ def test_vit_classify_224_hf_pytorch(variant):
     loader.post_processing(co_out)
 
 
-variants_with_weights = {
-    "vit_b_16": "ViT_B_16_Weights",
-    "vit_b_32": "ViT_B_32_Weights",
-    "vit_l_16": "ViT_L_16_Weights",
-    "vit_l_32": "ViT_L_32_Weights",
-    "vit_h_14": "ViT_H_14_Weights",
-}
-
 variants = [
-    "vit_b_16",
-    "vit_b_32",
-    "vit_l_16",
-    "vit_l_32",
-    "vit_h_14",
+    ModelVariant.VIT_B_16,
+    ModelVariant.VIT_B_32,
+    ModelVariant.VIT_L_16,
+    ModelVariant.VIT_L_32,
+    ModelVariant.VIT_H_14,
 ]
 
 
@@ -108,19 +98,19 @@ def test_vit_torchvision(variant):
     )
 
     # Load model and input
-    weight_name = variants_with_weights[variant]
-    framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
-    framework_model.to(torch.bfloat16)
-    inputs = [inputs[0].to(torch.bfloat16)]
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    inputs = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [inputs]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     pcc = 0.99
 
-    if variant in ["vit_b_32", "vit_l_32"]:
+    if variant in [ModelVariant.VIT_B_32, ModelVariant.VIT_L_32]:
         pcc = 0.98
-    elif variant == "vit_h_14":
+    elif variant == ModelVariant.VIT_H_14:
         pcc = 0.93
 
     # Forge compile framework model
@@ -132,7 +122,7 @@ def test_vit_torchvision(variant):
     )
 
     # Model Verification
-    fw_out, co_out = verify(
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
@@ -140,4 +130,4 @@ def test_vit_torchvision(variant):
     )
 
     # Run model on sample data and print results
-    print_cls_results(fw_out[0], co_out[0])
+    loader.post_processing(co_out)

@@ -16,7 +16,7 @@ from forge.verify.verify import verify
 from test.models.pytorch.multimodal.clip.model_utils.clip_model import CLIPTextWrapper
 import onnx
 import torch
-from third_party.tt_forge_models.clip import ModelLoader
+from third_party.tt_forge_models.clip.pytorch import ModelLoader
 
 
 @pytest.mark.nightly

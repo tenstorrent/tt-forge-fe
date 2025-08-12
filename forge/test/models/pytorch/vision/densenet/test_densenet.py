@@ -1,14 +1,12 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
 
 import pytest
 import torch
 import torch.nn as nn
-import torchxrayvision as xrv
 from third_party.tt_forge_models.densenet.pytorch import ModelLoader, ModelVariant
-from torchxrayvision.models import fix_resolution, op_norm
+from torchxrayvision.models import fix_resolution
 
 import forge
 from forge._C import DataFormat
@@ -24,15 +22,8 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.densenet.model_utils.densenet_utils import (
-    get_input_img_hf_xray,
-)
-from test.utils import download_model
-
 variants = [
-    pytest.param(
-        "densenet121_hf_xray",
-    ),
+    ModelVariant.DENSENET121_XRAY,
 ]
 
 
@@ -62,18 +53,12 @@ def test_densenet_121_hf_xray_pytorch(variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # STEP 2: Create Forge module from PyTorch model
-    op_threshs = None
-    os.environ["TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD"] = "1"
-    model_name = "densenet121-res224-all"
-    model = download_model(xrv.models.get_model, model_name)
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
     framework_model = densenet_xray_wrapper(model)
-    img_tensor = get_input_img_hf_xray()
-    op_threshs = model.op_threshs
-
-    # STEP 3: Run inference on Tenstorrent device
-    inputs = [img_tensor.to(torch.bfloat16)]
-    framework_model.to(torch.bfloat16)
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -87,7 +72,7 @@ def test_densenet_121_hf_xray_pytorch(variant):
     )
 
     # Model Verification and Inference
-    fw_out, co_out = verify(
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
@@ -95,7 +80,7 @@ def test_densenet_121_hf_xray_pytorch(variant):
     )
 
     # post processing
-    op_norm(co_out[0].to(torch.float32), op_threshs.to(torch.float32))
+    loader.post_process(co_out)
 
 
 variants = [
@@ -147,4 +132,4 @@ def test_densenet_pytorch(variant):
     )
 
     # Post Processing
-    loader.print_cls_results(co_out)
+    loader.post_process(co_out)
