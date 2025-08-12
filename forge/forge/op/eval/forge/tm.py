@@ -2,14 +2,11 @@
 
 # SPDX-License-Identifier: Apache-2.0
 from ..common import to_torch_operands
-import numpy as np
 import torch
 from loguru import logger
 import forge
-from forge.tensor import change_rank
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div, align_up
-from .pad import Pad
 
 
 def eval(type, attr, ops):
@@ -31,25 +28,6 @@ def eval(type, attr, ops):
                 else:
                     result.append(zero_slice)
         return torch.stack(result, dim=dim)
-
-    if type == "index":
-        assert len(attr) == 4, "Index should have 4 attributes"
-        dim, start, stop, stride = attr
-        if dim >= 0:
-            dim -= len(ops[0].shape)
-
-        if dim == -5:
-            return t_ops[0][..., start:stop:stride, :, :, :, :]
-        elif dim == -4:
-            return t_ops[0][..., start:stop:stride, :, :, :]
-        elif dim == -3:
-            return t_ops[0][..., start:stop:stride, :, :]
-        elif dim == -2:
-            return t_ops[0][..., start:stop:stride, :]
-        elif dim == -1:
-            return t_ops[0][..., start:stop:stride]
-        else:
-            raise NotImplementedError(f"Dim={dim}")
 
     if type == "conv2d_depthwise_weights":
         weights = t_ops[0]
@@ -170,20 +148,6 @@ def eval(type, attr, ops):
 
         return prestrided_activations
 
-    if type == "pad_tile":
-        assert len(attr) == 2
-        dim, original_length = attr
-        act = t_ops[0]
-        if dim >= 0:
-            dim -= len(act.shape)
-        assert dim == -2 or dim == -1
-        padding = align_up_tile(act.shape[dim]) - act.shape[dim]
-        if dim == -2:
-            act = torch.nn.functional.pad(act, (0, 0, 0, padding))
-        if dim == -1:
-            act = torch.nn.functional.pad(act, (0, padding))
-        return act
-
     if type == "pixel_shuffle":
         assert len(ops) == 1, "Pixel shuffle should have one operand."
         assert len(attr) == 1, "Pixel shuffle should have one attribute."
@@ -226,17 +190,6 @@ def eval(type, attr, ops):
 
 def shape(type, attr, ops):
     assert len(ops) == 1, f"Tensor manipulation ops should have one input, has {len(ops)} input instead"
-
-    if type == "index":
-        assert len(attr) == 4, "Index should have 4 attributes"
-        dim, start, stop, stride = attr
-        shape = list(ops[0])
-
-        if start < 0:
-            start = shape[dim] + start
-
-        shape[dim] = round_up_div(stop - start, stride)
-        return tuple(shape), []
 
     if type == "select":
         assert len(attr) == 4, "Select should have 4 attributes"
@@ -300,18 +253,6 @@ def shape(type, attr, ops):
         ]
 
         return tuple(reshape_shape), []
-
-    if type == "pad_tile":
-        assert len(attr) == 2
-        dim, original_length = attr
-        if dim >= 0:
-            dim -= len(ops[0])
-        if not (dim == -2 or dim == -1):
-            x = 2
-        assert dim == -2 or dim == -1
-        shape = list(ops[0])
-        shape[dim] = align_up_tile(shape[dim])
-        return tuple(shape), []
 
     if type == "pixel_shuffle":
         assert len(ops) == 1, "Pixel shuffle should have one operand."
@@ -419,11 +360,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
                 grad_return = ac.op_with_named_attrs("concatenate", (grad_return, zero_slice), {"dim": dim})
         return grad_return
 
-    elif type == "pad_tile":
-        assert len(attr) == 2
-        dim, original_length = attr
-        return ac.op_with_named_attrs("index", (grad,), {"dim": dim, "start": 0, "stop": original_length, "stride": 1})
-
     elif type == "index":
         assert len(attr) == 4
         dim, start, stop, stride = attr
@@ -439,7 +375,13 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         right = shape[dim] - stop
         value = 0.0
 
-        return Pad.decompose_constant_mode(ac, grad, value, left, right, 0, 0, dim, 0)
+        # constant pad op expects padding in the following format: [dim0_low, dim0_high, dim1_low, dim1_high, ...]
+        # which means we need to create padding for all dimensions zero except the one we are indexing into
+        padding = [0] * (len(shape) * 2)
+        padding[dim * 2] = left
+        padding[dim * 2 + 1] = right
+
+        return ac.op_with_named_attrs("constant_pad", (grad,), {"padding": padding, "value": value})
 
     raise NotImplementedError(f"{type}")
 

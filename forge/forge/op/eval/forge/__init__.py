@@ -4,7 +4,6 @@
 import importlib
 from types import ModuleType
 from functools import lru_cache
-from .pad import Pad
 
 op_to_module_map = {
     "add": "eltwise_binary",
@@ -68,8 +67,8 @@ op_to_module_map = {
     "conv2d_grouped_weights_bw": "tm",
     "conv2d_prestride_act": "tm",
     "conv2d_prestride_weights": "tm",
-    "pad_tile": "tm",
-    "pad": Pad,
+    "pad": "tm",
+    "constant_pad": "tm",
     "unsqueeze": "tm",
     "squeeze": "tm",
     "pixel_shuffle": "tm",
