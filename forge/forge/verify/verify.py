@@ -406,7 +406,7 @@ def verify_backward(
 
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
-        record_execution(ExecutionStage.PASSED_BACKWARD)
+    record_execution(ExecutionStage.PASSED_BACKWARD)
 
 
 def verify(
