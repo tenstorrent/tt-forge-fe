@@ -231,6 +231,8 @@ def compare_tensor_to_golden(
     relative_atol=None,
     verify_cfg=None,
 ):
+    logger.info(f"Golden: {golden}")
+    logger.info(f"Calculated: {calculated}")
     # Convert golden to pytorch tensor for comparisons
     if isinstance(golden, (tf.Tensor, tf.Variable)):
         golden = torch.from_numpy(golden.numpy())

@@ -115,11 +115,9 @@ def test_atan2(shape):
 @pytest.mark.parametrize(
     "shape, dim, descending",
     [
-        # ((10,), 0, False),
-        # ((5, 5), 1, False),
+        ((10,), 0, False),
+        ((5, 5), 1, False),
         ((4, 3), 0, True),
-        # ((2, 3, 4), -1, True),
-        # ((1, 256, 6, 6), 2, False),
     ],
 )
 @pytest.mark.push
@@ -135,7 +133,43 @@ def test_argsort(shape, dim, descending):
 
     input_tensor = torch.randn(shape)
     framework_model = ArgSort(dim=dim, descending=descending)
-    compiled_model = forge.compile(framework_model, sample_inputs=[input_tensor])
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=[input_tensor],
+        verify_cfg=DeprecatedVerifyConfig(verify_forge_codegen_vs_framework=True),
+    )
+
+    verify([input_tensor], framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "shape, k, dim, largest",
+    [
+        ((10,), 3, 0, True),
+        ((5, 5), 2, 1, False),
+    ],
+)
+@pytest.mark.push
+def test_topk(shape, k, dim, largest):
+    class TopK(nn.Module):
+        def __init__(self, k, dim, largest):
+            super().__init__()
+            self.k = k
+            self.dim = dim
+            self.largest = largest
+
+        def forward(self, x):
+            # Return both values and indices like torch.topk does
+            values, indices = torch.topk(x, k=self.k, dim=self.dim, largest=self.largest)
+            return values, indices
+
+    input_tensor = torch.randn(shape)
+    framework_model = TopK(k=k, dim=dim, largest=largest)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=[input_tensor],
+        verify_cfg=DeprecatedVerifyConfig(verify_forge_codegen_vs_framework=True),
+    )
 
     verify([input_tensor], framework_model, compiled_model)
 

@@ -1769,41 +1769,11 @@ def get_forge_outputs(forge_mods, devices, forge_inputs):
             forge_inputs = to_pt_tensors(forge_inputs)
         else:
             forge_inputs = to_forge_tensors(to_pt_tensors(forge_inputs))
-
-        # DEBUG: Print inputs before forward call
-        if isinstance(forge_inputs, (list, tuple)):
-            print(f"DEBUG: get_forge_outputs - inputs before forward: {len(forge_inputs)} tensors")
-            for j, inp in enumerate(forge_inputs):
-                print(f"DEBUG: Input {j} shape: {inp.shape}")
-        else:
-            print(f"DEBUG: get_forge_outputs - single input shape: {forge_inputs.shape}")
-
         forge_inputs = mod.forward(*forge_inputs)
-
-        # DEBUG: Print outputs after forward call
-        if isinstance(forge_inputs, (list, tuple)):
-            print(f"DEBUG: get_forge_outputs - outputs after forward: {len(forge_inputs)} tensors")
-            for j, out in enumerate(forge_inputs):
-                print(f"DEBUG: Output {j} shape: {out.shape}")
-        else:
-            print(f"DEBUG: get_forge_outputs - single output shape: {forge_inputs.shape}")
 
     if not isinstance(forge_inputs, (list, tuple)):
         forge_inputs = [forge_inputs]
-
-    # DEBUG: Print before to_forge_tensors conversion
-    print(f"DEBUG: Before to_forge_tensors conversion: {len(forge_inputs)} tensors")
-    for j, out in enumerate(forge_inputs):
-        print(f"DEBUG: Tensor {j} shape before conversion: {out.shape}")
-
-    result = to_forge_tensors(forge_inputs)
-
-    # DEBUG: Print after to_forge_tensors conversion
-    print(f"DEBUG: After to_forge_tensors conversion: {len(result)} tensors")
-    for j, out in enumerate(result):
-        print(f"DEBUG: Tensor {j} shape after conversion: {out.value().shape}")
-
-    return result
+    return to_forge_tensors(forge_inputs)
 
 
 def verify_framework_vs_forge_codegen(frame_outputs, forge_outputs, verify_cfg):

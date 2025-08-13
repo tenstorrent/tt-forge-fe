@@ -4499,9 +4499,9 @@ class DecomposeGridSample(DFPatternCallback):
         im (torch.Tensor): Input feature map, shape (N, C, H, W)
         grid (torch.Tensor): Point coordinates, shape (N, Hg, Wg, 2)
         align_corners (bool): If set to True, the extrema (-1 and 1) are
-            considered as referring to the center points of the input’s
+            considered as referring to the center points of the input's
             corner pixels. If set to False, they are instead considered as
-            referring to the corner points of the input’s corner pixels,
+            referring to the corner points of the input's corner pixels,
             making the sampling more resolution agnostic.
 
     This decomposition handles the following main cases:
@@ -4783,28 +4783,39 @@ class DecomposeArgsort(DFPatternCallback):
         data = node_map[self.data][0]
         shape = list(infer_shape(data))
         axis = int(pre.attrs.axis)
+        rank = len(shape)
+        pos_axis = axis if axis >= 0 else axis + rank
 
         # ---- Step 1: Create an index tensor ----
-        shape_of_data = relay.shape_of(data)
         arange_1d = relay.arange(
-            relay.const(0, "int32"), relay.const(shape[axis], "int32"), relay.const(1, "int32"), dtype="int32"
+            relay.const(0, "int32"), relay.const(shape[pos_axis], "int32"), relay.const(1, "int32"), dtype="int32"
         )
 
-        # ---- Step 2: Reshape for broadcasting ----
+        # ---- Step 2: Sort values along the requested axis ----
+        is_ascend = bool(pre.attrs.is_ascend) if hasattr(pre.attrs, "is_ascend") else True
+        values_sorted = relay.sort(data, axis=pos_axis, is_ascend=is_ascend)
+
+        # ---- Step 3: Build equality mask between unsorted and sorted values ----
+        # Expand dims to create a broadcastable [.., N(j), N(i), ..] comparison along the target axis
+        unsorted_expanded = relay.expand_dims(data, axis=pos_axis)  # [.., 1, N, ..]
+        sorted_expanded = relay.expand_dims(values_sorted, axis=pos_axis + 1)  # [.., N, 1, ..]
+        equal_mask = relay.equal(unsorted_expanded, sorted_expanded)  # [.., N, N, ..]
+
+        # ---- Step 4: Reduce over original index dimension to recover indices ----
+        # Prepare index tensor shaped to broadcast over equal_mask, located on the original index axis (axis+1)
         rank = len(infer_shape(data))
-        reshape_shape = [1] * rank
-        reshape_shape[axis] = -1
-        idx = relay.reshape(arange_1d, reshape_shape)
-        idx = relay.broadcast_to(idx, shape_of_data)
+        idx_reshape = [1] * (rank + 1)
+        idx_reshape[pos_axis + 1] = -1
+        idx_for_broadcast = relay.reshape(arange_1d, idx_reshape)
+        idx_for_broadcast = relay.broadcast_to(idx_for_broadcast, relay.shape_of(equal_mask))
 
-        # ---- Step 3: Stack values & indices and sort ----
-        stacked = relay.stack([data, relay.cast(idx, "float32")], axis=0)
-        sorted_pair = relay.sort(stacked, axis=axis + 1, is_ascend=not self.descending)
+        # Multiply mask by indices and sum over the original index dimension (axis+1)
+        masked_indices = relay.multiply(relay.cast(equal_mask, "int32"), idx_for_broadcast)
+        sorted_indices = relay.sum(masked_indices, axis=[pos_axis + 1], keepdims=False)
 
-        # ---- Step 4: Extract indices ----
-        sorted_indices = relay.strided_slice(sorted_pair, begin=[1], end=[2])
-        sorted_indices = relay.squeeze(sorted_indices, axis=[0])
-        sorted_indices = relay.cast(sorted_indices, "int32")
+        # Cast to requested dtype if provided
+        out_dtype = str(pre.attrs.dtype) if hasattr(pre.attrs, "dtype") and pre.attrs.dtype is not None else "int32"
+        sorted_indices = relay.cast(sorted_indices, out_dtype)
 
         return sorted_indices
 
