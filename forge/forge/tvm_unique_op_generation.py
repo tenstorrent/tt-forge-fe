@@ -636,7 +636,7 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
             framework="pytorch",  # Currently unique operation extraction is supported for pytorch framework so explicitly specifying the framework as pytorch
             module_directory=models_ops_test_output_directory_path,
         )
-        writer.write_header(include_pytest_imports=True)
+        writer.write_header(include_pytest_imports=True, with_backward=True)
 
         # Get the unique operands and operation arguments associated with the operation metadata
         unique_operands_and_opargs_opmetadata = unique_operations[
@@ -889,7 +889,7 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
             use_ids_function=True,
             exclude_record_property=exclude_record_property,
             pytest_markers_with_reasons=pytest_markers_with_reasons,
-            training=True,
+            is_backward=True,
         )
 
         writer.close_file()
