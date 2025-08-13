@@ -930,7 +930,10 @@ class ForgeWriter(PythonWriter):
             if pytest_markers_with_reasons is None:
                 pytest_markers_with_reasons = [None] * len(pytest_input_shapes_and_dtypes_list)
             for forge_module_name, pytest_input_shapes_and_dtypes, pytest_metadata, markers_with_reasons in zip(
-                forge_module_names, pytest_input_shapes_and_dtypes_list, pytest_metadata_list, pytest_markers_with_reasons
+                forge_module_names,
+                pytest_input_shapes_and_dtypes_list,
+                pytest_metadata_list,
+                pytest_markers_with_reasons,
             ):
                 pytest_input_shapes_and_dtypes = [
                     (shape, pytorch_df_from_str(dtype, "", return_as_str=False))
@@ -1047,7 +1050,9 @@ class ForgeWriter(PythonWriter):
         self.indent -= 1
         self.wl("")
         if is_backward:
-            self.wl("compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, training=True)")
+            self.wl(
+                "compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, training=True)"
+            )
             self.wl("")
             self.wl(
                 "fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
@@ -1055,7 +1060,9 @@ class ForgeWriter(PythonWriter):
             self.wl("")
             self.wl("grad = torch.rand_like(fw_out[0])")
             self.wl("")
-            self.wl("verify_backward(inputs,grad,fw_out[0],co_out[0],framework_model,compiled_model,verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)))")
+            self.wl(
+                "verify_backward(inputs,grad,fw_out[0],co_out[0],framework_model,compiled_model,verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)))"
+            )
         else:
             self.wl("compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)")
             self.wl("")
