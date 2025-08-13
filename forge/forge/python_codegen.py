@@ -139,7 +139,7 @@ class ForgeWriter(PythonWriter):
         self.delete_inputs = delete_inputs
         self.dev = "TTDevice"
 
-    def write_header(self, include_pytest_imports=False):
+    def write_header(self, include_pytest_imports=False, with_backward=False):
         self.wl("import forge")
         self.wl("import forge.op")
         self.wl("from forge import ForgeModule")
@@ -151,7 +151,9 @@ class ForgeWriter(PythonWriter):
 
         if include_pytest_imports:
             self.wl("")
-            self.wl("import forge.verify.verify")
+            self.wl("from forge.verify.verify import verify")
+            if with_backward:
+                self.wl("from forge.verify.verify import verify, verify_backward")
             self.wl("from forge import Tensor, compile")
             self.wl("from forge.verify.value_checkers import AutomaticValueChecker")
             self.wl("from forge.verify.config import VerifyConfig")
