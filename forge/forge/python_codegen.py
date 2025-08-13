@@ -151,9 +151,10 @@ class ForgeWriter(PythonWriter):
 
         if include_pytest_imports:
             self.wl("")
-            self.wl("from forge.verify.verify import verify")
             if with_backward:
                 self.wl("from forge.verify.verify import verify, verify_backward")
+            else:
+                self.wl("from forge.verify.verify import verify")
             self.wl("from forge import Tensor, compile")
             self.wl("from forge.verify.value_checkers import AutomaticValueChecker")
             self.wl("from forge.verify.config import VerifyConfig")
