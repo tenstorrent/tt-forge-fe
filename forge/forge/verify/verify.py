@@ -465,7 +465,7 @@ def verify(
     fw_out = framework_model(*fw_inputs)
     del fw_inputs
 
-    record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
+    record_execution(ExecutionStage.FAILED_TTNN_BINARY_FORWARD_EXECUTION)
     co_out = compiled_model(*inputs)
     record_execution(ExecutionStage.FAILED_FORWARD_VERIFICATION)
 
