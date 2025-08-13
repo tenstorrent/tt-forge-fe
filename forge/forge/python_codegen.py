@@ -151,8 +151,8 @@ class ForgeWriter(PythonWriter):
 
         if include_pytest_imports:
             self.wl("")
+            self.wl("import forge.verify.verify")
             self.wl("from forge import Tensor, compile")
-            self.wl("from forge.verify.verify import verify")
             self.wl("from forge.verify.value_checkers import AutomaticValueChecker")
             self.wl("from forge.verify.config import VerifyConfig")
             self.wl(
@@ -883,6 +883,7 @@ class ForgeWriter(PythonWriter):
         use_ids_function: bool = False,
         exclude_record_property: Optional[List[str]] = None,
         pytest_markers_with_reasons: Optional[List[List[Dict[str, Any]]]] = None,
+        is_backward: bool = False,
     ):
         """
         Generates a pytest function that tests modules with input shapes and data types.
@@ -961,7 +962,10 @@ class ForgeWriter(PythonWriter):
             )
         else:
             self.wl('@pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list)')
-        self.wl("def test_module(forge_module_and_shapes_dtypes):")
+        if is_backward:
+            self.wl("def test_module_backward(forge_module_and_shapes_dtypes):")
+        else:
+            self.wl("def test_module(forge_module_and_shapes_dtypes):")
         self.indent += 1
         if module_metadata is not None:
             for metadata_name, metadata_value in module_metadata.items():
@@ -1007,8 +1011,9 @@ class ForgeWriter(PythonWriter):
             and "max_int" not in exclude_record_property
         ):
             self.wl("max_int = 1000")
+        requires_grad = ", requires_grad=True" if is_backward else ""
         self.wl(
-            "inputs = [Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int) for operand_shape, operand_dtype in operand_shapes_dtypes]"
+            f"inputs = [Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int{requires_grad}) for operand_shape, operand_dtype in operand_shapes_dtypes]"
         )
         self.wl("")
         self.wl(f"framework_model = forge_module(forge_module.__name__)")
@@ -1016,7 +1021,7 @@ class ForgeWriter(PythonWriter):
         self.wl("for name, parameter in framework_model._parameters.items():")
         self.indent += 1
         self.wl(
-            "parameter_tensor = Tensor.create_torch_tensor(shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int)"
+            f"parameter_tensor = Tensor.create_torch_tensor(shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int{requires_grad})"
         )
         self.wl("framework_model.set_parameter(name, parameter_tensor)")
         self.indent -= 1
@@ -1024,7 +1029,7 @@ class ForgeWriter(PythonWriter):
         self.wl("for name, constant in framework_model._constants.items():")
         self.indent += 1
         self.wl(
-            "constant_tensor = Tensor.create_torch_tensor(shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int)"
+            f"constant_tensor = Tensor.create_torch_tensor(shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int{requires_grad})"
         )
         self.wl("framework_model.set_constant(name, constant_tensor)")
         self.indent -= 1
@@ -1038,11 +1043,22 @@ class ForgeWriter(PythonWriter):
         self.wl('compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])')
         self.indent -= 1
         self.wl("")
-        self.wl("compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)")
-        self.wl("")
-        self.wl(
-            "verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
-        )
+        if is_backward:
+            self.wl("compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, training=True)")
+            self.wl("")
+            self.wl(
+                "fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
+            )
+            self.wl("")
+            self.wl("grad = torch.rand_like(fw_out[0])")
+            self.wl("")
+            self.wl("verify_backward(inputs,grad,fw_out[0],co_out[0],framework_model,compiled_model,verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)))")
+        else:
+            self.wl("compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)")
+            self.wl("")
+            self.wl(
+                "verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
+            )
         self.wl("")
         self.wl("")
         self.indent -= 1

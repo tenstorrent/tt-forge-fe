@@ -467,7 +467,7 @@ def verify(
 
     record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
     co_out = compiled_model(*inputs)
-    record_execution(ExecutionStage.FAILED_VERIFICATION)
+    record_execution(ExecutionStage.FAILED_FORWARD_VERIFICATION)
 
     # EmitC verification
     if verify_cfg.verify_emitc_correctness:
@@ -530,7 +530,7 @@ def verify(
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
 
-    record_execution(ExecutionStage.PASSED)
+    record_execution(ExecutionStage.PASSED_FORWARD)
 
     # Return both the framework and compiled model outputs
     return fw_out, co_out

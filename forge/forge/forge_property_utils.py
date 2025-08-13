@@ -323,9 +323,9 @@ class ExecutionDepth(Enum):
                 return ExecutionDepth.FAILED_TTMLIR_COMPILATION
             case ExecutionStage.FAILED_TTNN_BINARY_EXECUTION | ExecutionStage.FAILED_TTNN_BINARY_BACKWARD_EXECUTION:
                 return ExecutionDepth.FAILED_RUNTIME
-            case ExecutionStage.FAILED_VERIFICATION | ExecutionStage.FAILED_BACKWARD_VERIFICATION:
+            case ExecutionStage.FAILED_FORWARD_VERIFICATION | ExecutionStage.FAILED_BACKWARD_VERIFICATION:
                 return ExecutionDepth.INCORRECT_RESULT
-            case ExecutionStage.PASSED | ExecutionStage.PASSED_BACKWARD:
+            case ExecutionStage.PASSED_FORWARD | ExecutionStage.PASSED_BACKWARD:
                 return ExecutionDepth.PASSED
             case _:
                 raise ValueError("Invalid ExecutionStage passed.")
