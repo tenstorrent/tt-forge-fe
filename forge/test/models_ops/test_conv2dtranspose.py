@@ -38,7 +38,7 @@ class Conv2Dtranspose0(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -61,7 +61,7 @@ class Conv2Dtranspose1(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -84,7 +84,7 @@ class Conv2Dtranspose2(ForgeModule):
             padding=1,
             dilation=1,
             groups=64,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -107,7 +107,7 @@ class Conv2Dtranspose3(ForgeModule):
             padding=1,
             dilation=1,
             groups=128,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -130,7 +130,7 @@ class Conv2Dtranspose4(ForgeModule):
             padding=1,
             dilation=1,
             groups=256,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -153,7 +153,7 @@ class Conv2Dtranspose5(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -176,7 +176,7 @@ class Conv2Dtranspose6(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -199,7 +199,7 @@ class Conv2Dtranspose7(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -222,7 +222,7 @@ class Conv2Dtranspose8(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -245,7 +245,7 @@ class Conv2Dtranspose9(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -265,7 +265,7 @@ class Conv2Dtranspose10(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -285,7 +285,7 @@ class Conv2Dtranspose11(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -305,7 +305,7 @@ class Conv2Dtranspose12(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -325,7 +325,7 @@ class Conv2Dtranspose13(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -345,7 +345,7 @@ class Conv2Dtranspose14(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -365,7 +365,7 @@ class Conv2Dtranspose15(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -388,7 +388,7 @@ class Conv2Dtranspose16(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -411,7 +411,7 @@ class Conv2Dtranspose17(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -434,7 +434,7 @@ class Conv2Dtranspose18(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -457,7 +457,7 @@ class Conv2Dtranspose19(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -480,7 +480,7 @@ class Conv2Dtranspose20(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -503,7 +503,7 @@ class Conv2Dtranspose21(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -526,7 +526,7 @@ class Conv2Dtranspose22(ForgeModule):
             padding=0,
             dilation=1,
             groups=1,
-            channel_last=0,
+            channel_last=False,
             output_padding=[0, 0],
         )
         return conv2dtranspose_output_1
@@ -551,7 +551,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -568,7 +568,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -586,7 +586,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "padding": "1",
                     "dilation": "1",
                     "groups": "64",
-                    "channel_last": "0",
+                    "channel_last": "False",
                     "output_padding": "[0, 0]",
                 },
             },
@@ -606,7 +606,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "padding": "1",
                     "dilation": "1",
                     "groups": "128",
-                    "channel_last": "0",
+                    "channel_last": "False",
                     "output_padding": "[0, 0]",
                 },
             },
@@ -626,7 +626,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "padding": "1",
                     "dilation": "1",
                     "groups": "256",
-                    "channel_last": "0",
+                    "channel_last": "False",
                     "output_padding": "[0, 0]",
                 },
             },
@@ -645,7 +645,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -662,7 +662,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -679,7 +679,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -696,7 +696,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -714,7 +714,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "padding": "0",
                     "dilation": "1",
                     "groups": "1",
-                    "channel_last": "0",
+                    "channel_last": "False",
                     "output_padding": "[0, 0]",
                 },
             },
@@ -734,7 +734,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "padding": "0",
                     "dilation": "1",
                     "groups": "1",
-                    "channel_last": "0",
+                    "channel_last": "False",
                     "output_padding": "[0, 0]",
                 },
             },
@@ -753,7 +753,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -770,7 +770,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -787,7 +787,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -804,7 +804,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -821,7 +821,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -838,7 +838,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -855,7 +855,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -872,7 +872,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -889,7 +889,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -906,7 +906,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -924,7 +924,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "padding": "0",
                     "dilation": "1",
                     "groups": "1",
-                    "channel_last": "0",
+                    "channel_last": "False",
                     "output_padding": "[0, 0]",
                 },
             },
@@ -944,7 +944,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "padding": "0",
                     "dilation": "1",
                     "groups": "1",
-                    "channel_last": "0",
+                    "channel_last": "False",
                     "output_padding": "[0, 0]",
                 },
             },
@@ -964,7 +964,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "padding": "0",
                     "dilation": "1",
                     "groups": "1",
-                    "channel_last": "0",
+                    "channel_last": "False",
                     "output_padding": "[0, 0]",
                 },
             },
@@ -988,7 +988,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "padding": "0",
                     "dilation": "1",
                     "groups": "1",
-                    "channel_last": "0",
+                    "channel_last": "False",
                     "output_padding": "[0, 0]",
                 },
             },
@@ -1011,7 +1011,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "padding": "0",
                     "dilation": "1",
                     "groups": "1",
-                    "channel_last": "0",
+                    "channel_last": "False",
                     "output_padding": "[0, 0]",
                 },
             },
@@ -1029,7 +1029,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -1045,7 +1045,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -1061,7 +1061,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -1077,7 +1077,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
@@ -1093,7 +1093,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "padding": "0",
                 "dilation": "1",
                 "groups": "1",
-                "channel_last": "0",
+                "channel_last": "False",
                 "output_padding": "[0, 0]",
             },
         },
