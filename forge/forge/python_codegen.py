@@ -913,6 +913,7 @@ class ForgeWriter(PythonWriter):
         """
         self.wl("")
         self.wl("")
+        is_pytest_metadata_list_empty = pytest_metadata_list is None or len(pytest_metadata_list) == 0
         if not is_backward:
             if use_ids_function:
                 self.wl("def ids_func(param):")
@@ -924,10 +925,8 @@ class ForgeWriter(PythonWriter):
                 self.wl("")
             self.wl("forge_modules_and_shapes_dtypes_list = [")
             self.indent += 1
-            is_pytest_metadata_list_empty = False
-            if pytest_metadata_list is None or len(pytest_metadata_list) == 0:
+            if is_pytest_metadata_list_empty:
                 pytest_metadata_list = [None] * len(pytest_input_shapes_and_dtypes_list)
-                is_pytest_metadata_list_empty = True
             if pytest_markers_with_reasons is None:
                 pytest_markers_with_reasons = [None] * len(pytest_input_shapes_and_dtypes_list)
             for forge_module_name, pytest_input_shapes_and_dtypes, pytest_metadata, markers_with_reasons in zip(
@@ -957,11 +956,6 @@ class ForgeWriter(PythonWriter):
 
             self.indent -= 1
             self.wl("]")
-        else:
-            is_pytest_metadata_list_empty = False
-            if pytest_metadata_list is None or len(pytest_metadata_list) == 0:
-                pytest_metadata_list = [None] * len(pytest_input_shapes_and_dtypes_list)
-                is_pytest_metadata_list_empty = True
         if markers is not None:
             for marker in markers:
                 self.wl(f"@pytest.mark.{marker}")
