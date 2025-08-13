@@ -12,10 +12,50 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 
-from test.models.pytorch.multimodal.vilt.test_vilt import generate_model_vilt_question_answering_hf_pytorch
 import forge
 import onnx
 from forge.verify.verify import verify
+from PIL import Image
+from third_party.tt_forge_models.tools.utils import get_file
+from transformers import (
+    ViltConfig,
+    ViltForQuestionAnswering,
+    ViltProcessor,
+)
+from test.models.pytorch.multimodal.vilt.model_utils.model import (
+    ViLtEmbeddingWrapper,
+    ViltModelWrapper,
+)
+from test.utils import download_model
+
+text1 = "How many cats are there?"
+
+
+def get_image():
+    input_image = get_file("http://images.cocodataset.org/val2017/000000039769.jpg")
+    return Image.open(str(input_image))
+
+
+def generate_model_vilt_question_answering_hf_pytorch(variant):
+
+    # Set model configurations
+    config = ViltConfig.from_pretrained(variant)
+    config_dict = config.to_dict()
+    config_dict["return_dict"] = False
+    config = ViltConfig(**config_dict)
+
+    # Load model and processor from HuggingFace
+    processor = download_model(ViltProcessor.from_pretrained, variant)
+    model = download_model(ViltForQuestionAnswering.from_pretrained, variant, config=config)
+    model.eval()
+    encoding = processor(get_image(), text1, return_tensors="pt")
+
+    # Wrapper
+    text_vision_embedding_model = ViLtEmbeddingWrapper(model)
+    vilt_model = ViltModelWrapper(model, task=Task.QA.short)
+    embedding_output, attention_mask = text_vision_embedding_model(**encoding)
+    return vilt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], model
+
 
 variants = ["dandelin/vilt-b32-finetuned-vqa"]
 
