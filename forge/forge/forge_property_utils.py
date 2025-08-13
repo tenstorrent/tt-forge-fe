@@ -321,7 +321,7 @@ class ExecutionDepth(Enum):
                 return ExecutionDepth.FAILED_FE_COMPILATION
             case ExecutionStage.FAILED_FORGE_MLIR_COMPILATION:
                 return ExecutionDepth.FAILED_TTMLIR_COMPILATION
-            case ExecutionStage.FAILED_TTNN_BINARY_EXECUTION | ExecutionStage.FAILED_TTNN_BINARY_BACKWARD_EXECUTION:
+            case ExecutionStage.FAILED_TTNN_BINARY_EXECUTION | ExecutionStage.FAILED_TTNN_BINARY_FORWARD_EXECUTION | ExecutionStage.FAILED_TTNN_BINARY_BACKWARD_EXECUTION:
                 return ExecutionDepth.FAILED_RUNTIME
             case ExecutionStage.FAILED_FORWARD_VERIFICATION | ExecutionStage.FAILED_BACKWARD_VERIFICATION:
                 return ExecutionDepth.INCORRECT_RESULT
