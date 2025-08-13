@@ -914,51 +914,48 @@ class ForgeWriter(PythonWriter):
         self.wl("")
         self.wl("")
         is_pytest_metadata_list_empty = pytest_metadata_list is None or len(pytest_metadata_list) == 0
-        if not is_backward:
-            if use_ids_function:
-                self.wl("def ids_func(param):")
-                self.indent += 1
-                self.wl("forge_module = param[0]")
-                self.wl("shapes_dtypes = param[1]")
-                self.wl('return str(forge_module.__name__) + "-" + str(shapes_dtypes)')
-                self.indent -= 1
-                self.wl("")
-            self.wl("forge_modules_and_shapes_dtypes_list = [")
+        if use_ids_function:
+            self.wl("def ids_func(param):")
             self.indent += 1
-            if is_pytest_metadata_list_empty:
-                pytest_metadata_list = [None] * len(pytest_input_shapes_and_dtypes_list)
-            if pytest_markers_with_reasons is None:
-                pytest_markers_with_reasons = [None] * len(pytest_input_shapes_and_dtypes_list)
-            for forge_module_name, pytest_input_shapes_and_dtypes, pytest_metadata, markers_with_reasons in zip(
-                forge_module_names,
-                pytest_input_shapes_and_dtypes_list,
-                pytest_metadata_list,
-                pytest_markers_with_reasons,
-            ):
-                pytest_input_shapes_and_dtypes = [
-                    (shape, pytorch_df_from_str(dtype, "", return_as_str=False))
-                    for shape, dtype in pytest_input_shapes_and_dtypes
-                ]
-                if pytest_metadata is None:
-                    test_param = f"({forge_module_name}, {pytest_input_shapes_and_dtypes})"
-                else:
-                    test_param = f"({forge_module_name}, {pytest_input_shapes_and_dtypes}, {pytest_metadata})"
-
-                if markers_with_reasons is not None:
-                    marker_str_list = []
-                    for marker_with_reason in markers_with_reasons:
-                        marker_str = f'pytest.mark.{marker_with_reason["marker_name"]}'
-                        marker_reason = marker_with_reason["reason"]
-                        if marker_reason is not None:
-                            marker_str += f'(reason="{marker_reason}")'
-                        marker_str_list.append(marker_str)
-                    marker_str = ", ".join(marker_str_list)
-                    self.wl(f"pytest.param({test_param}, marks=[{marker_str}]), ")
-                else:
-                    self.wl(f"{test_param}, ")
-
+            self.wl("forge_module = param[0]")
+            self.wl("shapes_dtypes = param[1]")
+            self.wl('return str(forge_module.__name__) + "-" + str(shapes_dtypes)')
             self.indent -= 1
-            self.wl("]")
+            self.wl("")
+        self.wl("forge_modules_and_shapes_dtypes_list = [")
+        self.indent += 1
+        is_pytest_metadata_list_empty = False
+        if pytest_metadata_list is None or len(pytest_metadata_list) == 0:
+            pytest_metadata_list = [None] * len(pytest_input_shapes_and_dtypes_list)
+            is_pytest_metadata_list_empty = True
+        if pytest_markers_with_reasons is None:
+            pytest_markers_with_reasons = [None] * len(pytest_input_shapes_and_dtypes_list)
+        for forge_module_name, pytest_input_shapes_and_dtypes, pytest_metadata, markers_with_reasons in zip(
+            forge_module_names, pytest_input_shapes_and_dtypes_list, pytest_metadata_list, pytest_markers_with_reasons
+        ):
+            pytest_input_shapes_and_dtypes = [
+                (shape, pytorch_df_from_str(dtype, "", return_as_str=False))
+                for shape, dtype in pytest_input_shapes_and_dtypes
+            ]
+            if pytest_metadata is None:
+                test_param = f"({forge_module_name}, {pytest_input_shapes_and_dtypes})"
+            else:
+                test_param = f"({forge_module_name}, {pytest_input_shapes_and_dtypes}, {pytest_metadata})"
+
+            if markers_with_reasons is not None:
+                marker_str_list = []
+                for marker_with_reason in markers_with_reasons:
+                    marker_str = f'pytest.mark.{marker_with_reason["marker_name"]}'
+                    marker_reason = marker_with_reason["reason"]
+                    if marker_reason is not None:
+                        marker_str += f'(reason="{marker_reason}")'
+                    marker_str_list.append(marker_str)
+                marker_str = ", ".join(marker_str_list)
+                self.wl(f"pytest.param({test_param}, marks=[{marker_str}]), ")
+            else:
+                self.wl(f"{test_param}, ")
+        self.indent -= 1
+        self.wl("]")
         if markers is not None:
             for marker in markers:
                 self.wl(f"@pytest.mark.{marker}")

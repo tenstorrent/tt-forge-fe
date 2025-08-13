@@ -636,7 +636,13 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
             framework="pytorch",  # Currently unique operation extraction is supported for pytorch framework so explicitly specifying the framework as pytorch
             module_directory=models_ops_test_output_directory_path,
         )
-        writer.write_header(include_pytest_imports=True, with_backward=True)
+        writer_backward = ForgeWriter(
+            module_name + "_backward",
+            framework="pytorch",  # Currently unique operation extraction is supported for pytorch framework so explicitly specifying the framework as pytorch
+            module_directory=models_ops_test_output_directory_path,
+        )
+        writer.write_header(include_pytest_imports=True)
+        writer_backward.write_header(include_pytest_imports=True, with_backward=True)
 
         # Get the unique operands and operation arguments associated with the operation metadata
         unique_operands_and_opargs_opmetadata = unique_operations[
@@ -769,6 +775,9 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
 
                     # Generate the class definition with the collected parameters and constants.
                     writer.write_class_definition(params=needed_params, constants=needed_consts, class_name=class_name)
+                    writer_backward.write_class_definition(
+                        params=needed_params, constants=needed_consts, class_name=class_name
+                    )
 
                     # Create a single operation with the function name, output name,
                     # input operand names, and arguments and use it for generating forward method
@@ -785,6 +794,7 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
 
                     # Generate forge module forward function
                     writer.write_forward(single_op, forward_method_inputs, forward_method_returns)
+                    writer_backward.write_forward(single_op, forward_method_inputs, forward_method_returns)
 
                     module_idx += 1
                     forge_module_list.append(
@@ -880,7 +890,7 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
             pytest_markers_with_reasons=pytest_markers_with_reasons,
         )
 
-        writer.write_pytest_function(
+        writer_backward.write_pytest_function(
             forge_module_names=forge_module_names,
             pytest_input_shapes_and_dtypes_list=pytest_input_shapes_and_dtypes_list,
             markers=markers,
@@ -893,3 +903,4 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
         )
 
         writer.close_file()
+        writer_backward.close_file()
