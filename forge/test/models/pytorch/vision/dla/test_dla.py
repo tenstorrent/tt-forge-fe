@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from third_party.tt_forge_models.dla.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -18,9 +17,7 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
-
-from test.models.models_utils import print_cls_results
-from test.models.pytorch.vision.vision_utils.utils import load_timm_model_and_input
+from third_party.tt_forge_models.dla.pytorch import ModelLoader, ModelVariant
 
 variants = [
     ModelVariant.DLA34,
@@ -70,26 +67,29 @@ def test_dla_pytorch(variant):
     loader.print_cls_results(co_out)
 
 
-variants = ["dla34.in1k"]
+timm_variants = [
+    ModelVariant.DLA34_IN1K,
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants)
+@pytest.mark.parametrize("variant", timm_variants)
 def test_dla_timm(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.DLA,
-        variant=variant,
+        variant=variant.value,
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Load the model and inputs
-    framework_model, inputs = load_timm_model_and_input(variant)
-    framework_model.to(torch.bfloat16)
-    inputs = [inp.to(torch.bfloat16) for inp in inputs]
+    # Load model and inputs using ModelLoader
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -99,11 +99,11 @@ def test_dla_timm(variant):
         framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
     )
     verify_cfg = VerifyConfig()
-    if variant == "dla34.in1k":
+    if variant == ModelVariant.DLA34_IN1K:
         verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
 
     # Model Verification and Inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+    _, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
 
     # Post processing
-    print_cls_results(fw_out[0], co_out[0])
+    loader.print_cls_results(co_out)

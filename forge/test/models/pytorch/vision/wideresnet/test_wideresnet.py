@@ -3,13 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-import timm
 import torch
-from PIL import Image
-from third_party.tt_forge_models.tools.utils import get_file
-from third_party.tt_forge_models.wide_resnet.pytorch import ModelLoader, ModelVariant
-from timm.data import resolve_data_config
-from timm.data.transforms_factory import create_transform
 
 import forge
 from forge._C import DataFormat
@@ -24,9 +18,9 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
+from third_party.tt_forge_models.wide_resnet.pytorch import ModelLoader, ModelVariant
 
 from test.models.pytorch.vision.wideresnet.model_utils.utils import post_processing
-from test.utils import download_model
 
 variants = [
     ModelVariant.WIDE_RESNET50_2,
@@ -75,27 +69,12 @@ def test_wideresnet_pytorch(variant):
     loader.post_processing(co_out)
 
 
-def generate_model_wideresnet_imgcls_timm(variant):
-    # STEP 2: Create Forge module from PyTorch model
-    framework_model = download_model(timm.create_model, variant, pretrained=True)
-    framework_model.eval()
-
-    # STEP 3: Prepare input
-    config = resolve_data_config({}, model=framework_model)
-    transform = create_transform(**config)
-
-    input_image = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
-    img = Image.open(str(input_image)).convert("RGB")
-    img_tensor = transform(img).unsqueeze(0)
-
-    return framework_model.to(torch.bfloat16), [img_tensor.to(torch.bfloat16)]
-
-
-variants = ["wide_resnet50_2", "wide_resnet101_2"]
+# TIMM variants to test via loader
+variants = [ModelVariant.TIMM_WIDE_RESNET50_2, ModelVariant.TIMM_WIDE_RESNET101_2]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants, ids=[v.value for v in variants])
 def test_wideresnet_timm(variant):
 
     # Record Forge Property
@@ -107,7 +86,11 @@ def test_wideresnet_timm(variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    (framework_model, inputs) = generate_model_wideresnet_imgcls_timm(variant)
+    # Load model and inputs via loader (TIMM source)
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -121,7 +104,7 @@ def test_wideresnet_timm(variant):
     )
 
     verify_cfg = VerifyConfig()
-    if variant == "wide_resnet50_2":
+    if variant == ModelVariant.TIMM_WIDE_RESNET50_2:
         verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
 
     # Model Verification
