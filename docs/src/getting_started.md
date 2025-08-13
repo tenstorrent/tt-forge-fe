@@ -27,7 +27,7 @@ Before setup can happen, you must configure your hardware. You can skip this sec
 
 2. Reboot your machine.
 
-3. Make sure **hugepages** is enabled: 
+3. Make sure **hugepages** is enabled:
 
 ```bash
 sudo systemctl enable --now 'dev-hugepages\x2d1G.mount'
@@ -64,7 +64,7 @@ pip install tt_tvm  --extra-index-url https://pypi.eng.aws.tenstorrent.com/
 ```bash
 wget -q https://github.com/dmakoviichuk-tt/mpi-ulfm/releases/download/v5.0.7-ulfm/openmpi-ulfm_5.0.7-1_amd64.deb -O /tmp/openmpi-ulfm.deb && \
 sudo apt install -y /tmp/openmpi-ulfm.deb
-``` 
+```
 
 4. To test that everything is running correctly, try an example model. You can use nano or another text editor to paste this code into a file named **forge_example.py** and then run it from the terminal. You should still have your virtual environment running after installing the wheels when running this example:
 

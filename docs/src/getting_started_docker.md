@@ -20,7 +20,7 @@ Before setup can happen, you must configure your hardware. You can skip this sec
 
 2. Reboot your machine.
 
-3. Make sure **hugepages** is enabled: 
+3. Make sure **hugepages** is enabled:
 
 ```bash
 sudo systemctl enable --now 'dev-hugepages\x2d1G.mount'
@@ -141,7 +141,7 @@ git submodule update --init --recursive
 python demos/tt-forge-fe/cnn/mobile_netv2_demo.py
 ```
 
-6. If all goes well you will get a prediction stating the best guess for what the image is, and the probability that the model identified the image correctly. 
+6. If all goes well you will get a prediction stating the best guess for what the image is, and the probability that the model identified the image correctly.
 
 ## Where to Go Next
 
