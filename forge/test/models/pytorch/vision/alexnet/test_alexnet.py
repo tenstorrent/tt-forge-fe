@@ -4,10 +4,7 @@
 
 import pytest
 import torch
-from datasets import load_dataset
-from loguru import logger
-from pytorchcv.model_provider import get_model as ptcv_get_model
-from torchvision import transforms
+from third_party.tt_forge_models.alexnet.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -21,9 +18,6 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.models_utils import print_cls_results
-from test.utils import download_model
-
 
 @pytest.mark.nightly
 def test_alexnet_torchhub():
@@ -35,33 +29,11 @@ def test_alexnet_torchhub():
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Load model
-    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "alexnet", pretrained=True).to(
-        torch.bfloat16
-    )
-    framework_model.eval()
-
-    # Load and pre-process image
-    try:
-
-        dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
-        input_image = next(iter(dataset.skip(10)))["image"]
-        preprocess = transforms.Compose(
-            [
-                transforms.Resize(256),
-                transforms.CenterCrop(224),
-                transforms.ToTensor(),
-                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-            ]
-        )
-        img_tensor = preprocess(input_image).unsqueeze(0)
-    except:
-        logger.warning(
-            "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
-        )
-        img_tensor = torch.rand(1, 3, 224, 224)
-
-    inputs = [img_tensor.to(torch.bfloat16)]
+    # Load model and inputs via loader
+    loader = ModelLoader(variant=ModelVariant.ALEXNET_TORCH_HUB)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -75,10 +47,10 @@ def test_alexnet_torchhub():
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post processing
-    print_cls_results(fw_out[0], co_out[0])
+    loader.print_cls_results(co_out)
 
 
 @pytest.mark.nightly
@@ -89,33 +61,11 @@ def test_alexnet_osmr():
         framework=Framework.PYTORCH, model=ModelArch.ALEXNET, source=Source.OSMR, task=Task.IMAGE_CLASSIFICATION
     )
 
-    # Load model
-
-    # Using AlexNet-b instead of AlexNet-a to avoid LocalResponseNorm,
-    # which internally uses avgpool3d — currently unsupported for bfloat16.
-    framework_model = download_model(ptcv_get_model, "alexnetb", pretrained=True).to(torch.bfloat16)
-    framework_model.eval()
-
-    # Load and pre-process image
-    try:
-        dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
-        input_image = next(iter(dataset.skip(10)))["image"]
-        preprocess = transforms.Compose(
-            [
-                transforms.Resize(256),
-                transforms.CenterCrop(224),
-                transforms.ToTensor(),
-                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-            ]
-        )
-        img_tensor = preprocess(input_image).unsqueeze(0)
-    except:
-        logger.warning(
-            "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
-        )
-        img_tensor = torch.rand(1, 3, 224, 224)
-
-    inputs = [img_tensor.to(torch.bfloat16)]
+    # Load model and inputs via loader (alexnetb to avoid LRN bf16 issues)
+    loader = ModelLoader(variant=ModelVariant.ALEXNET_OSMR_B)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -129,7 +79,7 @@ def test_alexnet_osmr():
     )
 
     # Model Verification and inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
     # post processing
-    print_cls_results(fw_out[0], co_out[0])
+    loader.print_cls_results(co_out)
