@@ -27,9 +27,16 @@ Before setup can happen, you must configure your hardware. You can skip this sec
 
 2. Reboot your machine.
 
-3. Please ensure that after you run this script, after you complete reboot, you activate the virtual environment it sets up - ```source ~/.tenstorrent-venv/bin/activate```.
+3. Make sure **hugepages** is enabled:
 
-4. After your environment is running, to check that everything is configured, type the following:
+```bash
+sudo systemctl enable --now 'dev-hugepages\x2d1G.mount'
+sudo systemctl enable --now tenstorrent-hugepages.service
+```
+
+4. Please ensure that after you run the TT-Installer script, after you complete reboot and set up hugepages, you activate the virtual environment it sets up - ```source ~/.tenstorrent-venv/bin/activate```.
+
+5. After your environment is running, to check that everything is configured, type the following:
 
 ```bash
 tt-smi
@@ -52,7 +59,14 @@ pip install tt_forge_fe --extra-index-url https://pypi.eng.aws.tenstorrent.com/
 pip install tt_tvm  --extra-index-url https://pypi.eng.aws.tenstorrent.com/
 ```
 
-3. To test that everything is running correctly, try an example model. You can use nano or another text editor to paste this code into a file named **forge_example.py** and then run it from the terminal. You should still have your virtual environment running after installing the wheels when running this example:
+3. Before you run a model, download and install the **MPI implementation**:
+
+```bash
+wget -q https://github.com/dmakoviichuk-tt/mpi-ulfm/releases/download/v5.0.7-ulfm/openmpi-ulfm_5.0.7-1_amd64.deb -O /tmp/openmpi-ulfm.deb && \
+sudo apt install -y /tmp/openmpi-ulfm.deb
+```
+
+4. To test that everything is running correctly, try an example model. You can use nano or another text editor to paste this code into a file named **forge_example.py** and then run it from the terminal. You should still have your virtual environment running after installing the wheels when running this example:
 
 ```python
 import torch
@@ -76,7 +90,7 @@ out = compiled_model(a, b)
 print("compiled output:", out)
 ```
 
-4. You have now set up the latest wheels for TT-Forge-FE, and can run any models you want inside your virtual environment.
+5. You have now set up the latest wheels for TT-Forge-FE, and can run any models you want inside your virtual environment.
 
 ## Other Set up Options
 If you want to keep your environment completely separate in a Docker container, or you want to develop TT-Forge-FE further, this section links you to the pages with those options:
