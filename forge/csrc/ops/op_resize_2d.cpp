@@ -75,51 +75,35 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     int size_w = sizes[1];
     bool channel_last = op.attr_as<bool>("channel_last");
 
-    std::vector<uint32_t> output_shape = input_shape;
+    const size_t rank = input_shape.size();
+    size_t h_idx = channel_last ? rank - 3 : rank - 2;
+    size_t w_idx = channel_last ? rank - 2 : rank - 1;
+
+    int input_h = static_cast<int>(input_shape[h_idx]);
+    int input_w = static_cast<int>(input_shape[w_idx]);
 
     // Determine whether to use upsample or downsample
-    bool upsample_h = channel_last ? sizes[0] >= static_cast<int>(input_shape[input_shape.size() - 3])
-                                   : sizes[0] >= static_cast<int>(input_shape[input_shape.size() - 2]);
-    bool upsample_w = channel_last ? sizes[1] >= static_cast<int>(input_shape[input_shape.size() - 2])
-                                   : sizes[1] >= static_cast<int>(input_shape[input_shape.size() - 1]);
+    bool upsample_h = (size_h >= input_h);
+    bool upsample_w = (size_w >= input_w);
 
-    if ((upsample_h and (!upsample_w)) or ((!upsample_h) and upsample_w))
+    // Mixed up/downsample not allowed
+    if (upsample_h != upsample_w)
+    {
         TT_THROW(
             "OpType::Resize2d does not support one spatial dimension as upsample and another spatial dimension as "
             "downsample");
+    }
 
-    if (channel_last)
-    {
-        if (upsample_h and upsample_w)
-            TT_ASSERT(
-                (size_h % static_cast<int>(input_shape[input_shape.size() - 3]) == 0) and
-                    (size_w % static_cast<int>(input_shape[input_shape.size() - 2]) == 0),
-                "Only support upsample with integer scale factor");
-        else
-            TT_ASSERT(
-                (static_cast<int>(input_shape[input_shape.size() - 3]) % size_h == 0) and
-                    (static_cast<int>(input_shape[input_shape.size() - 2]) % size_w == 0),
-                "Only support downsample with integer scale factor");
-        // Input: [N, ..., H, W, C], output: [N, ..., new_H, new_W, C]
-        output_shape[output_shape.size() - 3] = static_cast<uint32_t>(size_h);
-        output_shape[output_shape.size() - 2] = static_cast<uint32_t>(size_w);
-    }
+    if (upsample_h && upsample_w)
+        TT_ASSERT(
+            (size_h % input_h == 0) && (size_w % input_w == 0), "Only support upsample with integer scale factor");
     else
-    {
-        if (upsample_h and upsample_w)
-            TT_ASSERT(
-                (size_h % static_cast<int>(input_shape[input_shape.size() - 2]) == 0) and
-                    (size_w % static_cast<int>(input_shape[input_shape.size() - 1]) == 0),
-                "Only support upsample with integer scale factor");
-        else
-            TT_ASSERT(
-                (static_cast<int>(input_shape[input_shape.size() - 2]) % size_h == 0) and
-                    (static_cast<int>(input_shape[input_shape.size() - 1]) % size_w == 0),
-                "Only support downsample with integer scale factor");
-        // Input: [N, C, ..., H, W], output: [N, C, ..., new_H, new_W]
-        output_shape[output_shape.size() - 2] = static_cast<uint32_t>(size_h);
-        output_shape[output_shape.size() - 1] = static_cast<uint32_t>(size_w);
-    }
+        TT_ASSERT(
+            (input_h % size_h == 0) && (input_w % size_w == 0), "Only support downsample with integer scale factor");
+
+    std::vector<uint32_t> output_shape = input_shape;
+    output_shape[h_idx] = static_cast<uint32_t>(size_h);
+    output_shape[w_idx] = static_cast<uint32_t>(size_w);
 
     return std::make_tuple(Shape::create(output_shape), std::vector<DimBroadcast>{});
 }
@@ -144,8 +128,10 @@ void decompose_initial(
     TT_DBG_ASSERT(op.type() == OpType::Resize2d, "Wrong op type.");
     TT_ASSERT(inputs.size() == 1, "Resize2d expects 1 input");
 
-    auto sizes = op.attr_as<std::vector<int32_t>>("sizes");
+    auto sizes = op.attr_as<std::vector<int>>("sizes");
     TT_ASSERT(sizes.size() == 2, "Resize2d sizes must have 2 elements");
+    int size_h = sizes[0];
+    int size_w = sizes[1];
     std::string mode = op.attr_as<std::string>("mode");
     bool channel_last = op.attr_as<bool>("channel_last");
     bool align_corners = op.attr_as<bool>("align_corners");
@@ -153,16 +139,24 @@ void decompose_initial(
     NodeContext result = inputs[0];
     Shape input_shape = result.shape;
 
-    // Determine whether to use upsample or downsample
-    bool upsample_h = channel_last ? sizes[0] >= static_cast<int>(input_shape[input_shape.size() - 3])
-                                   : sizes[0] >= static_cast<int>(input_shape[input_shape.size() - 2]);
-    bool upsample_w = channel_last ? sizes[1] >= static_cast<int>(input_shape[input_shape.size() - 2])
-                                   : sizes[1] >= static_cast<int>(input_shape[input_shape.size() - 1]);
+    const size_t rank = input_shape.size();
+    size_t h_idx = channel_last ? rank - 3 : rank - 2;
+    size_t w_idx = channel_last ? rank - 2 : rank - 1;
 
-    if ((upsample_h and (!upsample_w)) or ((!upsample_h) and upsample_w))
+    int input_h = static_cast<int>(input_shape[h_idx]);
+    int input_w = static_cast<int>(input_shape[w_idx]);
+
+    // Determine whether to use upsample or downsample
+    bool upsample_h = (size_h >= input_h);
+    bool upsample_w = (size_w >= input_w);
+
+    // Mixed up/downsample not allowed
+    if (upsample_h != upsample_w)
+    {
         TT_THROW(
             "OpType::Resize2d does not support one spatial dimension as upsample and another spatial dimension as "
             "downsample");
+    }
 
     if (!channel_last)
     {
@@ -173,23 +167,13 @@ void decompose_initial(
 
     if (upsample_h && upsample_w)
     {
-        std::vector<int> scale_factor;
-        if (channel_last)
-        {
-            scale_factor.push_back(sizes[0] / static_cast<int>(input_shape[input_shape.size() - 3]));
-            scale_factor.push_back(sizes[1] / static_cast<int>(input_shape[input_shape.size() - 2]));
-        }
-        else
-        {
-            scale_factor.push_back(sizes[0] / static_cast<int>(input_shape[input_shape.size() - 2]));
-            scale_factor.push_back(sizes[1] / static_cast<int>(input_shape[input_shape.size() - 1]));
-        }
-
         if (align_corners)
         {
             TT_THROW("align_corners argument not supported in upsample2d op");
         }
-
+        std::vector<int> scale_factor;
+        scale_factor.push_back(size_h / input_h);
+        scale_factor.push_back(size_w / input_w);
         result = dc.op(
             graphlib::OpType(
                 "upsample2d",

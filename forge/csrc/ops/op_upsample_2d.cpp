@@ -40,26 +40,19 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 
     std::vector<double> scale_factor;
 
-    std::visit(
-        [&](auto &&v)
-        {
-            using U = std::decay_t<decltype(v)>;
-
-            if constexpr (std::is_same_v<U, int>)
-            {
-                scale_factor = {static_cast<double>(v), static_cast<double>(v)};
-            }
-            else if constexpr (std::is_same_v<U, std::vector<int>>)
-            {
-                scale_factor.reserve(v.size());
-                for (int x : v) scale_factor.push_back(static_cast<double>(x));
-            }
-            else
-            {
-                TT_THROW("Unsupported scale_factor type");
-            }
-        },
-        attr);
+    if (auto p = std::get_if<int>(&attr))
+    {
+        scale_factor = {static_cast<double>(*p), static_cast<double>(*p)};
+    }
+    else if (auto p = std::get_if<std::vector<int>>(&attr))
+    {
+        scale_factor.reserve(p->size());
+        for (int x : *p) scale_factor.push_back(static_cast<double>(x));
+    }
+    else
+    {
+        TT_THROW("Unsupported scale_factor type");
+    }
 
     options.scale_factor(scale_factor);
 
@@ -91,30 +84,19 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 
     std::vector<uint32_t> scale_factor_vec;
 
-    std::visit(
-        [&](auto &&v)
-        {
-            using U = std::decay_t<decltype(v)>;
-
-            if constexpr (std::is_same_v<U, int> || std::is_same_v<U, unsigned int>)
-            {
-                scale_factor_vec = {static_cast<uint32_t>(v), static_cast<uint32_t>(v)};
-            }
-            else if constexpr (std::is_same_v<U, std::vector<int>>)
-            {
-                scale_factor_vec.reserve(v.size());
-                for (int x : v) scale_factor_vec.push_back(static_cast<uint32_t>(x));
-            }
-            else if constexpr (std::is_same_v<U, std::vector<uint32_t>>)
-            {
-                scale_factor_vec = v;
-            }
-            else
-            {
-                TT_THROW("Unsupported scale_factor type");
-            }
-        },
-        attr);
+    if (auto p = std::get_if<int>(&attr))
+    {
+        scale_factor_vec = {static_cast<uint32_t>(*p), static_cast<uint32_t>(*p)};
+    }
+    else if (auto p = std::get_if<std::vector<int>>(&attr))
+    {
+        scale_factor_vec.reserve(p->size());
+        for (int x : *p) scale_factor_vec.push_back(static_cast<uint32_t>(x));
+    }
+    else
+    {
+        TT_THROW("Unsupported scale_factor type");
+    }
 
     bool channel_last = op.attr_as<bool>("channel_last");
 

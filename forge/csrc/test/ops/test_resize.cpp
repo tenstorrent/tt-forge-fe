@@ -99,16 +99,18 @@ std::vector<VecShapes> get_resize2d_individual_test_shapes()
         VecShapes{{2, 4, 4, 4}},    // Multiple batch/channels
         VecShapes{{1, 3, 8, 8}},    // RGB-like
         VecShapes{{1, 1, 16, 16}},  // Larger spatial
+        VecShapes{{1, 3, 9, 16}},   // different height and width
     };
 }
 
 std::vector<VecShapes> get_upsample2d_individual_test_shapes()
 {
     return {
-        VecShapes{{1, 1, 4, 4}},  // Minimal 4D
-        VecShapes{{1, 2, 4, 4}},  // Small channels
-        VecShapes{{2, 4, 4, 4}},  // Multiple batch/channels
-        VecShapes{{1, 3, 8, 8}},  // RGB-like
+        VecShapes{{1, 1, 4, 4}},   // Minimal 4D
+        VecShapes{{1, 2, 4, 4}},   // Small channels
+        VecShapes{{2, 4, 4, 4}},   // Multiple batch/channels
+        VecShapes{{1, 3, 8, 8}},   // RGB-like
+        VecShapes{{1, 3, 9, 16}},  // different height and width
     };
 }
 
