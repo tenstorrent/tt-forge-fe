@@ -300,3 +300,47 @@ def test_ssdlite320_mobilenet_v3_large_problematic_block(variant):
         module_name=module_name,
     )
     verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.skip_model_analysis
+def test_gather_to_take_onnx():
+    class take(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, boxes, score):
+
+            keep_idxs = score > 0.001
+            score = score[keep_idxs]
+            box = boxes[keep_idxs]
+            _, idxs = score.topk(300)
+            box = box[idxs]
+
+            return box
+
+    torch_model = take()
+    boxes = torch.rand(3234, 4)
+    scores = torch.rand(3234)
+    inputs = [boxes, scores]
+
+    onnx_path = "take.onnx"
+    torch.onnx.export(
+        torch_model,
+        (inputs[0], inputs[1]),
+        onnx_path,
+        opset_version=17,
+        verbose=True,
+    )
+
+    module_name = "gather_to_take_onnx"
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+
+    framework_model = forge.OnnxModule(module_name, onnx_model)
+    compiled_model = forge.compile(
+        onnx_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+    )
+
+    verify(inputs, framework_model, compiled_model)
