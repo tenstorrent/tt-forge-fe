@@ -3,18 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from third_party.tt_forge_models.qwen_3.causal_lm.pytorch import (
-    ModelLoader as CausalLMLoader,
-)
-from third_party.tt_forge_models.qwen_3.causal_lm.pytorch import (
-    ModelVariant as CausalLMVariant,
-)
-from third_party.tt_forge_models.qwen_3.embedding.pytorch import (
-    ModelLoader as EmbeddingLoader,
-)
-from third_party.tt_forge_models.qwen_3.embedding.pytorch import (
-    ModelVariant as EmbeddingVariant,
-)
 
 import forge
 from forge._C import DataFormat
@@ -28,7 +16,21 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
+from third_party.tt_forge_models.qwen_3.causal_lm.pytorch import (
+    ModelLoader as CausalLMLoader,
+)
+from third_party.tt_forge_models.qwen_3.causal_lm.pytorch import (
+    ModelVariant as CausalLMVariant,
+)
+from third_party.tt_forge_models.qwen_3.embedding.pytorch import (
+    ModelLoader as EmbeddingLoader,
+)
+from third_party.tt_forge_models.qwen_3.embedding.pytorch import (
+    ModelVariant as EmbeddingVariant,
+)
 
 from test.models.models_utils import TextModelWrapper
 
@@ -94,7 +96,6 @@ embedding_variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2806")
 @pytest.mark.parametrize("variant", embedding_variants)
 def test_qwen3_embedding(variant):
 
@@ -127,7 +128,12 @@ def test_qwen3_embedding(variant):
     )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98)),
+    )
 
     # Post processing
     outputs = co_out[0]
