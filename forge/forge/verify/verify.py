@@ -9,7 +9,7 @@ Verify by evaluating the forge graph
 import os
 from typing import Tuple, Dict, List, Any
 
-from forge.module import FrameworkModule
+from forge.module import ForgeModule, FrameworkModule
 from loguru import logger
 from forge.forgeglobal import align_up_tile
 
@@ -344,9 +344,9 @@ def verify_backward(
     if not isinstance(compiled_output, torch.Tensor):
         raise TypeError(f"Compiled output tensor must be of type {torch.Tensor}, but got {type(compiled_output)}")
 
-    if not isinstance(framework_model, verify_cfg.framework_model_types):
+    if not isinstance(framework_model, torch.nn.Module) and not isinstance(framework_model, ForgeModule):
         raise TypeError(
-            f"Framework model must be of type {verify_cfg.framework_model_types}, but got {type(framework_model)}"
+            f"Framework model must be of type {[torch.nn.Module, ForgeModule]}, but got {type(framework_model)}"
         )
     if not isinstance(compiled_model, verify_cfg.compiled_model_types):
         raise TypeError(
@@ -355,7 +355,7 @@ def verify_backward(
 
     # Zero out gradients
     [input.grad.zero_() for input in inputs if input.grad is not None]
-    # This test is currently used only for torch.nn.Module and model_ops tests which use ForgeModule's (which do not require zero_grad)
+    # For torch.nn.Module gradient accumulation can happen and we need to make sure to remove initial values of gradient values
     if isinstance(framework_model, torch.nn.Module):
         framework_model.zero_grad()
 
@@ -370,7 +370,7 @@ def verify_backward(
         co_gradients[name] = grad.to_torch().clone() if name.startswith("grad_acc_") else grad.to_torch()
 
     # Run backward on framework model
-    # This test is currently used only for torch.nn.Module and model_ops tests which use ForgeModule's (which do not require zero_grad)
+    # Parameter tensors should be shared between framework and compiled model, so we need to make sure to zero out gradients for modules that have accumulation
     if isinstance(framework_model, torch.nn.Module):
         framework_model.zero_grad()
     framework_output.backward(gradient=output_grad)
@@ -385,8 +385,10 @@ def verify_backward(
             name = name.replace("_grad_accumulator", "")
             if isinstance(framework_model, torch.nn.Module):
                 fw_grad = framework_model.get_parameter(name).grad
-            else:
+            elif isinstance(framework_model, ForgeModule):
                 fw_grad = framework_model.get_parameter(name).value().grad
+            else:
+                raise TypeError(f"Unknown framework model type: {type(framework_model)}")
         elif name.startswith("output_grad_"):
             name = name.replace("output_grad_", "")
             fw_grad = inputs[compiled_model.fwd_compiled_graph_state.ordered_input_names.index(name)].grad

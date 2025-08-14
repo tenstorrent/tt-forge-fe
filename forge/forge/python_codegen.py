@@ -139,7 +139,7 @@ class ForgeWriter(PythonWriter):
         self.delete_inputs = delete_inputs
         self.dev = "TTDevice"
 
-    def write_header(self, include_pytest_imports=False, with_backward=False):
+    def write_header(self, include_pytest_imports=False):
         self.wl("import forge")
         self.wl("import forge.op")
         self.wl("from forge import ForgeModule")
@@ -152,10 +152,7 @@ class ForgeWriter(PythonWriter):
         if include_pytest_imports:
             self.wl("")
             self.wl("from forge import Tensor, compile")
-            if with_backward:
-                self.wl("from forge.verify.verify import verify, verify_backward")
-            else:
-                self.wl("from forge.verify.verify import verify")
+            self.wl("from forge.verify.verify import verify, verify_backward")
             self.wl("from forge.verify.value_checkers import AutomaticValueChecker")
             self.wl("from forge.verify.config import VerifyConfig")
             self.wl(
@@ -886,7 +883,6 @@ class ForgeWriter(PythonWriter):
         use_ids_function: bool = False,
         exclude_record_property: Optional[List[str]] = None,
         pytest_markers_with_reasons: Optional[List[List[Dict[str, Any]]]] = None,
-        is_backward: bool = False,
     ):
         """
         Generates a pytest function that tests modules with input shapes and data types.
@@ -913,7 +909,6 @@ class ForgeWriter(PythonWriter):
         """
         self.wl("")
         self.wl("")
-        is_pytest_metadata_list_empty = pytest_metadata_list is None or len(pytest_metadata_list) == 0
         if use_ids_function:
             self.wl("def ids_func(param):")
             self.indent += 1
@@ -954,6 +949,7 @@ class ForgeWriter(PythonWriter):
                 self.wl(f"pytest.param({test_param}, marks=[{marker_str}]), ")
             else:
                 self.wl(f"{test_param}, ")
+
         self.indent -= 1
         self.wl("]")
         if markers is not None:
@@ -965,10 +961,8 @@ class ForgeWriter(PythonWriter):
             )
         else:
             self.wl('@pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list)')
-        if is_backward:
-            self.wl("def test_module_backward(forge_module_and_shapes_dtypes):")
-        else:
-            self.wl("def test_module(forge_module_and_shapes_dtypes):")
+        self.wl('@pytest.mark.parametrize("enable_training", [False, True], ids=["inference", "training"])')
+        self.wl("def test_module(forge_module_and_shapes_dtypes, enable_training):")
         self.indent += 1
         if module_metadata is not None:
             for metadata_name, metadata_value in module_metadata.items():
@@ -983,11 +977,18 @@ class ForgeWriter(PythonWriter):
             if exclude_record_property is not None and len(exclude_record_property) != 0:
                 self.wl("")
                 for exclude_metadata in exclude_record_property:
-                    self.wl(f'{exclude_metadata} = metadata.pop("{exclude_metadata}")')
+                    self.wl(f'{exclude_metadata} = metadata.get("{exclude_metadata}")')
             self.wl("")
             self.wl("for metadata_name, metadata_value in metadata.items():")
             self.indent += 1
-            self.wl('if metadata_name == "model_names":')
+            if exclude_record_property is not None and len(exclude_record_property) != 0:
+                self.wl(f"if metadata_name in {exclude_record_property}:")
+                self.indent += 1
+                self.wl("continue")
+                self.indent -= 1
+                self.wl('elif metadata_name == "model_names":')
+            else:
+                self.wl('if metadata_name == "model_names":')
             self.indent += 1
             self.wl("record_op_model_names(metadata_value)")
             self.indent -= 1
@@ -1014,9 +1015,8 @@ class ForgeWriter(PythonWriter):
             and "max_int" not in exclude_record_property
         ):
             self.wl("max_int = 1000")
-        requires_grad = ", requires_grad=True" if is_backward else ""
         self.wl(
-            f"inputs = [Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int{requires_grad}) for operand_shape, operand_dtype in operand_shapes_dtypes]"
+            "inputs = [Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int, requires_grad = enable_training) for operand_shape, operand_dtype in operand_shapes_dtypes]"
         )
         self.wl("")
         self.wl(f"framework_model = forge_module(forge_module.__name__)")
@@ -1024,7 +1024,7 @@ class ForgeWriter(PythonWriter):
         self.wl("for name, parameter in framework_model._parameters.items():")
         self.indent += 1
         self.wl(
-            f"parameter_tensor = Tensor.create_torch_tensor(shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int{requires_grad})"
+            f"parameter_tensor = Tensor.create_torch_tensor(shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int, requires_grad = enable_training)"
         )
         self.wl("framework_model.set_parameter(name, parameter_tensor)")
         self.indent -= 1
@@ -1032,7 +1032,7 @@ class ForgeWriter(PythonWriter):
         self.wl("for name, constant in framework_model._constants.items():")
         self.indent += 1
         self.wl(
-            f"constant_tensor = Tensor.create_torch_tensor(shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int{requires_grad})"
+            f"constant_tensor = Tensor.create_torch_tensor(shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int, requires_grad = enable_training)"
         )
         self.wl("framework_model.set_constant(name, constant_tensor)")
         self.indent -= 1
@@ -1046,26 +1046,22 @@ class ForgeWriter(PythonWriter):
         self.wl('compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])')
         self.indent -= 1
         self.wl("")
-        if is_backward:
-            self.wl(
-                "compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, training=True)"
-            )
-            self.wl("")
-            self.wl(
-                "fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
-            )
-            self.wl("")
-            self.wl("grad = torch.rand_like(fw_out[0])")
-            self.wl("")
-            self.wl(
-                "verify_backward(inputs,grad,fw_out[0],co_out[0],framework_model,compiled_model,verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)))"
-            )
-        else:
-            self.wl("compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)")
-            self.wl("")
-            self.wl(
-                "verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
-            )
+        self.wl(
+            "compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, training=enable_training)"
+        )
+        self.wl("")
+        self.wl(
+            "fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
+        )
+        self.wl("")
+        self.wl("if enable_training:")
+        self.indent += 1
+        self.wl("grad = torch.rand_like(fw_out[0])")
+        self.wl("")
+        self.wl(
+            "verify_backward(inputs,grad,fw_out[0],co_out[0],framework_model,compiled_model,verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)))"
+        )
+        self.indent -= 1
         self.wl("")
         self.wl("")
         self.indent -= 1
