@@ -164,3 +164,45 @@ def test_remove_concat_pass(dim):
 
     compiled_model = forge.compile(model, sample_inputs=inputs)
     verify(inputs, model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "input_shape, flip_dim",
+    [
+        ((1, 1, 1024, 72), 0),
+        ((1, 1, 104, 72), 1),
+        ((1, 12, 1, 92), 2),
+        ((1, 33, 11, 1), 3),
+        ((1, 1, 17, 16), 1),
+    ],
+)
+def test_flip(input_shape, flip_dim):
+    class Flip(nn.Module):
+        def __init__(self, dim):
+            super().__init__()
+            self.dim = dim
+
+        def forward(self, x):
+            return x.flip(dims=(self.dim,))
+
+    torch_model = Flip(dim=flip_dim)
+    inputs = [torch.rand(*input_shape)]
+
+    # Export model to ONNX
+    onnx_path = "flip.onnx"
+    torch.onnx.export(torch_model, (inputs[0],), onnx_path, opset_version=17)
+
+    # Load framework model
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule("sanity", onnx_model)
+
+    # Compile model
+    compiled_model = forge.compile(onnx_model, inputs)
+
+    # Model Verification
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+    )
