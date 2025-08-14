@@ -95,10 +95,7 @@ variants = [
     "regnet_y_8gf",
     "regnet_y_16gf",
     "regnet_y_32gf",
-    pytest.param(
-        "regnet_y_128gf",
-        marks=[pytest.mark.out_of_memory, pytest.mark.xfail(reason="Cannot fit in L1")]
-    ),
+    pytest.param("regnet_y_128gf", marks=[pytest.mark.out_of_memory, pytest.mark.xfail(reason="Cannot fit in L1")]),
     "regnet_x_400mf",
     "regnet_x_800mf",
     "regnet_x_1_6gf",
