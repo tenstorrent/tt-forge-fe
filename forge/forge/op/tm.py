@@ -122,6 +122,25 @@ def Index(name: str, operandA: Tensor, dim: int, start: int, stop: int = None, s
     if stop < 0:
         stop += operandA.shape[dim]
 
+    # Handle negative stride by converting it to a positive value (simple case)
+    if stride < 0:
+        # NOTE: This simplified conversion is only valid when the size of the dimension is 1.
+        # For dimensions with size larger than 1, proper flipping logic needs to be implemented.
+        assert operandA.shape[dim] == 1, (
+            f"Negative stride conversion is only supported for dimensions of size 1. "
+            f"Got size {operandA.shape[dim]} for dim {dim}"
+        )
+
+        # Convert the negative stride to its absolute value
+        stride = abs(stride)
+
+        # Handle special case for flip-like operations: (start = -1, stop = very large negative value)
+        # This pattern typically represents a full reverse slice from end to beginning.
+        # Convert it to a standard forward slice: start = 0, stop = operandA.shape[dim]
+        if start == -1 and stop >= torch.iinfo(torch.int64).min:
+            start = 0
+            stop = operandA.shape[dim]
+
     assert stride > 0
 
     assert start < operandA.shape[dim]
