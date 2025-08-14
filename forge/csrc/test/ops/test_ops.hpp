@@ -29,15 +29,22 @@ struct OpTestParam
 {
     tt::ops::Op op;
     std::vector<graphlib::Shape> input_shapes;
+    std::vector<torch::Dtype> input_dtypes;
+    std::vector<torch::Tensor> override_tensors; // Optional override tensors
 
     OpTestParam(const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& param_tuple) :
-        op{std::move(std::get<0>(param_tuple))}, input_shapes{std::move(std::get<1>(param_tuple))}
+        op{std::move(std::get<0>(param_tuple))}, input_shapes{std::move(std::get<1>(param_tuple))}, input_dtypes{}, override_tensors{}
     {
     }
 
-    OpTestParam(tt::ops::Op op, std::vector<graphlib::Shape> input_shapes) :
-        op{std::move(op)}, input_shapes{std::move(input_shapes)}
+    OpTestParam(tt::ops::Op op, std::vector<graphlib::Shape> input_shapes, std::vector<torch::Dtype> dtypes = {}, std::vector<torch::Tensor> override_tensors = {}) :
+        op{std::move(op)}, input_shapes{std::move(input_shapes)}, input_dtypes{std::move(dtypes)}, override_tensors{std::move(override_tensors)}
     {
+        // Assert that override_tensors size matches input_shapes size (if override_tensors is not empty)
+        if (!override_tensors.empty()) {
+            TT_ASSERT(override_tensors.size() == input_shapes.size() && 
+                   "override_tensors size must match input_shapes size");
+        }
     }
 };
 
@@ -83,13 +90,17 @@ inline void assert_equal(const torch::Tensor& golden, const torch::Tensor& outpu
 class BaseOpTest : public ForgeGraphTest
 {
    public:
-    BaseOpTest(tt::ops::Op op, std::vector<graphlib::Shape> input_shapes) :
-        op_{std::move(op)}, input_shapes_{std::move(input_shapes)}, input_tensors_{}, generated_grads_{}
+    BaseOpTest(tt::ops::Op op, std::vector<graphlib::Shape> input_shapes, std::vector<torch::Dtype> dtypes = {}, std::vector<torch::Tensor> override_tensors = {}) :
+        op_{std::move(op)}, input_shapes_{std::move(input_shapes)}, input_tensors_{}, generated_grads_{}, input_dtypes_{std::move(dtypes)}, override_tensors_{std::move(override_tensors)}
     {
         torch::manual_seed(27);
+        // If no dtypes specified, default to float for all inputs
+        if (input_dtypes_.empty()) {
+            input_dtypes_.resize(input_shapes_.size(), torch::kFloat);
+        }
     }
 
-    BaseOpTest(const OpTestParam& param) : BaseOpTest(param.op, param.input_shapes) {}
+    BaseOpTest(const OpTestParam& param) : BaseOpTest(param.op, param.input_shapes, param.input_dtypes, param.override_tensors) {}
 
     void SetUp() override
     {
@@ -104,13 +115,40 @@ class BaseOpTest : public ForgeGraphTest
     std::vector<OpType*> create_graph() override
     {
         std::vector<graphlib::Node*> inputs;
-        for (const auto& shape : input_shapes_)
+        for (size_t i = 0; i < input_shapes_.size(); ++i)
         {
+            const auto& shape = input_shapes_[i];
+            const auto& dtype = input_dtypes_[i];
+            
             inputs.push_back(create_activation(shape));
-            inputs.back()->as<graphlib::InputNode>()->set_requires_grad(true);
-
-            torch::Tensor tensor = torch::rand(torch_shape(shape));
-            tensor.set_requires_grad(true);
+            
+            torch::Tensor tensor;
+            
+            // Check if we have an override tensor for this input
+            if (i < override_tensors_.size() && override_tensors_[i].defined())
+            {
+                // Use the provided override tensor
+                tensor = override_tensors_[i];
+                // Set requires_grad based on tensor type
+                bool needs_grad = tensor.dtype() == torch::kFloat || tensor.dtype() == torch::kDouble;
+                inputs.back()->as<graphlib::InputNode>()->set_requires_grad(needs_grad);
+                if (needs_grad) {
+                    tensor.set_requires_grad(true);
+                }
+            }
+            else if (dtype == torch::kLong || dtype == torch::kInt)
+            {
+                // Generate integer tensor for index-like inputs
+                tensor = torch::randint(0, 3, torch_shape(shape), dtype);
+                inputs.back()->as<graphlib::InputNode>()->set_requires_grad(false);
+            }
+            else
+            {
+                // Generate float tensor for regular inputs
+                tensor = torch::rand(torch_shape(shape), dtype);
+                tensor.set_requires_grad(true);
+                inputs.back()->as<graphlib::InputNode>()->set_requires_grad(true);
+            }
             input_tensors_[inputs.back()->name()] = tensor;
         }
 
@@ -371,6 +409,8 @@ class BaseOpTest : public ForgeGraphTest
     std::unordered_map<std::string, torch::Tensor> input_tensors_;
     std::unordered_map<std::string, torch::Tensor> generated_grads_;
     std::unordered_map<std::string, torch::Tensor> golden_tensors_;
+    std::vector<torch::Dtype> input_dtypes_;
+    std::vector<torch::Tensor> override_tensors_;
 };
 
 struct SimpleOpTest : public BaseOpTest, testing::WithParamInterface<OpTestParam>
