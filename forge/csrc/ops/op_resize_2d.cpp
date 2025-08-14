@@ -43,6 +43,8 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
     bool upsample = channel_last ? sizes[0] >= shape[shape.size() - 3] : sizes[0] >= shape[shape.size() - 2];
     int scale_factor = channel_last ? sizes[0] / shape[shape.size() - 3] : sizes[0] / shape[shape.size() - 2];
 
+    std::cout << "scale_factor " << scale_factor << std::endl;
+
     if (channel_last)
     {
         activations = activations.permute({0, 3, 1, 2});
