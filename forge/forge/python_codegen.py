@@ -1024,7 +1024,7 @@ class ForgeWriter(PythonWriter):
         self.wl("for name, parameter in framework_model._parameters.items():")
         self.indent += 1
         self.wl(
-            f"parameter_tensor = Tensor.create_torch_tensor(shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int, requires_grad = enable_training)"
+            "parameter_tensor = Tensor.create_torch_tensor(shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int, requires_grad = enable_training)"
         )
         self.wl("framework_model.set_parameter(name, parameter_tensor)")
         self.indent -= 1
@@ -1032,7 +1032,7 @@ class ForgeWriter(PythonWriter):
         self.wl("for name, constant in framework_model._constants.items():")
         self.indent += 1
         self.wl(
-            f"constant_tensor = Tensor.create_torch_tensor(shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int, requires_grad = enable_training)"
+            "constant_tensor = Tensor.create_torch_tensor(shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int, requires_grad = enable_training)"
         )
         self.wl("framework_model.set_constant(name, constant_tensor)")
         self.indent -= 1
