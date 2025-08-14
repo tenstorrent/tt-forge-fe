@@ -1,3 +1,0 @@
-# xfail_reciprocal_SPECIAL_VALUES ids
-
-reciprocal-CONST_EVAL_PASS-None-(12, 64, 160, 96)-None-None

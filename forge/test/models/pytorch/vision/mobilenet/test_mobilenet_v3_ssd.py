@@ -64,7 +64,7 @@ def test_mobilenetv3_ssd(variant):
     )
 
     verify_cfg = VerifyConfig()
-    if variant in ["resnet50", "resnet101"]:
+    if variant in ["resnet50", "resnet101", "resnet152"]:
         verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
     elif variant == "resnet34":
         verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))

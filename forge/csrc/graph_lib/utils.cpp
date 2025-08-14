@@ -1768,28 +1768,6 @@ std::unique_ptr<ConstEvalGraph> ConstEvalGraph::clone(Node *new_runtime_input, c
     return cloned;
 }
 
-void ConstEvalGraph::pad_output_to_forge_dims(std::string const &name_prefix)
-{
-    graphlib::Node *output = get_output();
-    graphlib::Shape shape = output->shape();
-
-    for (int dim : {-1, -2})
-    {
-        if (shape[dim] % graphlib::Shape::FORGE_TILE_DIM != 0)
-        {
-            graphlib::OpType pad_tile(
-                "pad_tile", {dim, (int)shape[dim]}, {{"dim", dim}, {"original_length", (int)shape[dim]}});
-            auto consteval_pad_tile = graphlib::create_node<graphlib::PyOpNode>(
-                name_prefix + "_pad_tile_" + ((dim == -1) ? "c_" : "r_") + output->name(), pad_tile);
-            shape[dim] = align_up_tile(shape[dim]);
-            consteval_pad_tile->set_output_df(output->output_df());
-            consteval_pad_tile->set_epoch_type(output->get_epoch_type());
-            consteval_pad_tile->set_shape(shape);
-            promote_node(std::move(consteval_pad_tile));
-        }
-    }
-}
-
 void ConstEvalGraph::autograd()
 {
     if (not needs_autograd)

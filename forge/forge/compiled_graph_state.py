@@ -286,11 +286,15 @@ class CompiledModel:
         List[Tensor]
             Output tensors
         """
-        torch_inputs = [*to_pt_tensors(inputs)]
-        # After tensors are transformed to pt tensors, we have to cast them to dtypes that are actually supported by our hardware.
-        torch_inputs = [cast_unsupported_torch_dtype(input_tensor) for input_tensor in torch_inputs]
-
-        assert all([isinstance(t, torch.Tensor) for t in torch_inputs]), "All inputs should be torch tensors by now."
+        # Handle mixed inputs: torch tensors and CTensors
+        inputs_runtime = []
+        for t in inputs:
+            if isinstance(t, CTensor):
+                inputs_runtime.append(t)
+            else:
+                torch_tensor = to_pt_tensors([t])[0]
+                torch_tensor = cast_unsupported_torch_dtype(torch_tensor)
+                inputs_runtime.append(CTensor(torch_tensor))
 
         if self.training() and isinstance(self.framework_module, PyTorchModule):
             for name, param in self.framework_module.module.named_parameters():
@@ -312,7 +316,7 @@ class CompiledModel:
             f"Running model {self.framework_module.get_name()} {self.fwd_compiled_graph_state.graph.get_name()} on device..."
         )
 
-        self.inputs = [CTensor(t) for t in torch_inputs]
+        self.inputs = inputs_runtime
         self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
 
         all_outputs = self.runtime_model_state.get_outputs(ProgramType.Forward)

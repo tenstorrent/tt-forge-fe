@@ -122,6 +122,25 @@ def Index(name: str, operandA: Tensor, dim: int, start: int, stop: int = None, s
     if stop < 0:
         stop += operandA.shape[dim]
 
+    # Handle negative stride by converting it to a positive value (simple case)
+    if stride < 0:
+        # NOTE: This simplified conversion is only valid when the size of the dimension is 1.
+        # For dimensions with size larger than 1, proper flipping logic needs to be implemented.
+        assert operandA.shape[dim] == 1, (
+            f"Negative stride conversion is only supported for dimensions of size 1. "
+            f"Got size {operandA.shape[dim]} for dim {dim}"
+        )
+
+        # Convert the negative stride to its absolute value
+        stride = abs(stride)
+
+        # Handle special case for flip-like operations: (start = -1, stop = very large negative value)
+        # This pattern typically represents a full reverse slice from end to beginning.
+        # Convert it to a standard forward slice: start = 0, stop = operandA.shape[dim]
+        if start == -1 and stop >= torch.iinfo(torch.int64).min:
+            start = 0
+            stop = operandA.shape[dim]
+
     assert stride > 0
 
     assert start < operandA.shape[dim]
@@ -311,9 +330,14 @@ def Pad(
     ).get_tensor()
 
 
-def PadTile(name: str, operandA: Tensor, dim: int, original_length: int) -> Tensor:
+def ConstantPad(
+    name: str,
+    operandA: Tensor,
+    padding: List[int],
+    value: float = 0.0,
+) -> Tensor:
     """
-    TM
+    TM - Direct TTIR constant padding operation.
 
     Parameters
     ----------
@@ -321,22 +345,35 @@ def PadTile(name: str, operandA: Tensor, dim: int, original_length: int) -> Tens
         Op name, unique to the module, or leave blank to autoset
 
     operandA: Tensor
-        Input operand A
+        Input operand A to which padding will be applied.
 
-    dim: int
-        Dimension which to pad to tile dim
+    padding: List[int]
+        Padding values in TTIR format: [dim0_low, dim0_high, dim1_low, dim1_high, ...]
+        Length must be 2 * rank of input tensor.
 
-    original_length: int
-        Original length of the dimension before calling this function
+    value: float, optional
+        The constant value to use for padding. Default is 0.0.
 
     Returns
     -------
     Tensor
-        Forge tensor
+        A tensor with the specified constant padding applied to the input tensor.
     """
+    assert len(padding) == 2 * len(
+        operandA.shape
+    ), f"Padding length {len(padding)} must be 2 * rank {len(operandA.shape)}"
+
+    named_attrs = {
+        "padding": padding,
+        "value": value,
+    }
 
     return op(
-        "pad_tile", name, operandA, attrs=(dim, original_length), dim=dim, original_length=original_length
+        "constant_pad",
+        name,
+        operandA,
+        attrs=[],
+        **named_attrs,
     ).get_tensor()
 
 

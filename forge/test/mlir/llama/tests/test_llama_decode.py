@@ -5,16 +5,21 @@ import pytest
 
 import torch
 from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_mask
-from transformers.cache_utils import DynamicCache
+from transformers.cache_utils import DynamicCache, StaticCache
 
 import forge
 from forge.verify.verify import verify
 from forge.config import CompilerConfig
 from forge._C import DataFormat
+from forge._C.runtime import Tensor as CTensor
 from test.mlir.llama.utils.utils import load_model
 from typing import List, Tuple
 from loguru import logger
 import time
+
+
+MAX_POSITION_EMBEDDINGS = 2048
+MAX_NEW_TOKENS = 20
 
 
 def flatten_pastkv(past_key_values_list: List[Tuple[torch.Tensor, torch.Tensor]]) -> List[torch.Tensor]:
@@ -127,6 +132,69 @@ class LlamaModelWrapper(torch.nn.Module):
         return model_outputs
 
 
+class LlamaModelStaticCacheWrapper(torch.nn.Module):
+    """
+    Wrapper for decode pass of full Llama model using StaticCache.
+    Similar to LlamaDecodeStaticCacheAttentionWrapper but for the entire model.
+
+    Forward contains:
+    - initialization of StaticCache for all layers
+    - Filling the cache with past key and value tensors
+    - Calling model forward for one token with past key and value tensors (decode style).
+    """
+
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+        self.embed_tokens = model.model.embed_tokens
+        self.config = model.config
+
+    def forward(self, input_ids, attention_mask, position_ids, cache_position, *args):
+        """
+        Args:
+            input_ids: Token ids for decode step (batch_size, 1)
+            attention_mask: Attention mask (batch_size, seq_len)
+            position_ids: Position ids (batch_size, 1)
+            cache_position: Cache position indices (seq_len,) - avoids get_seq_length() call
+            *args: k_cache, v_cache for each layer [k_cache0, v_cache0, k_cache1, v_cache1, ...]
+                   Each cache tensor should be pre-populated with past key/value data
+        """
+        batch_size = input_ids.shape[0]
+        inputs_embeds = self.embed_tokens(input_ids)
+
+        # Parse args: every 2 tensors represent (k_cache, v_cache) for one layer
+        num_layers = len(args) // 2
+        assert len(args) % 2 == 0, f"Expected 2 tensors per layer, got {len(args)} tensors for {num_layers} layers"
+
+        # Initialize StaticCache with proper config
+        cache = StaticCache(config=self.config, max_batch_size=batch_size, dtype=inputs_embeds.dtype)
+
+        # Set up cache for each layer
+        for layer_idx in range(num_layers):
+            base_idx = layer_idx * 2
+            k_cache = args[base_idx]
+            v_cache = args[base_idx + 1]
+
+            # Set cache tensors to input tensors to bypass TVM constraint
+            # This makes StaticCache effectively an input to the forward pass
+            # k_cache and v_cache should already contain the past key/value data
+            cache.key_cache[layer_idx] = k_cache
+            cache.value_cache[layer_idx] = v_cache
+
+        # Run model forward with StaticCache
+        outputs = self.model(
+            attention_mask=attention_mask,
+            position_ids=position_ids,
+            cache_position=cache_position,
+            past_key_values=cache,
+            inputs_embeds=inputs_embeds,
+        )
+
+        # Return only logits since StaticCache doesn't have to_legacy_cache()
+        # and cache tensors will be managed externally with CTensor wrappers
+        return outputs.logits
+
+
 def calculate_attention_mask_and_postion_ids(
     padded_past_key_values_seq_length, non_padding_past_key_values_seq_length, input_seq_length
 ):
@@ -169,12 +237,13 @@ def calculate_attention_mask_and_postion_ids(
         ),
     ],
 )
-def test_llama_prefill_on_cpu_decode_on_tt_no_cache(model_path, run_on_tt_device):
+def test_decode_on_device_no_cache(model_path, run_on_tt_device):
 
     use_fast = False if model_path == "openlm-research/open_llama_3b" else True
 
     # Load Llama model and tokenizer
     model, tokenizer = load_model(model_path, use_cache=False, use_fast=use_fast)
+    model.config.max_position_embeddings = MAX_POSITION_EMBEDDINGS
     framework_model = LlamaModelWrapper(model)
     framework_model.eval()
 
@@ -184,7 +253,7 @@ def test_llama_prefill_on_cpu_decode_on_tt_no_cache(model_path, run_on_tt_device
         tokenizer.pad_token = tokenizer.eos_token
 
     # Prepare input sentence
-    max_sequence_length = 58
+    max_sequence_length = model.config.max_position_embeddings
     prompt = "Q: What is the largest animal?\nA:"
     inputs = tokenizer(
         prompt,
@@ -222,7 +291,7 @@ def test_llama_prefill_on_cpu_decode_on_tt_no_cache(model_path, run_on_tt_device
 
     # Run decode stage on TT device and generate tokens by appending predicted token into sequence of input tokens
     # untill the a specified maximum number of new tokens is reached or an end-of-sequence token is encountered.
-    max_new_tokens = padding_seq_len
+    max_new_tokens = MAX_NEW_TOKENS
     for idx in range(max_new_tokens):
 
         if run_on_tt_device:
@@ -276,7 +345,7 @@ def test_llama_prefill_on_cpu_decode_on_tt_no_cache(model_path, run_on_tt_device
             None,
             marks=[
                 pytest.mark.push,
-                pytest.mark.skip(reason="Temporarily skipping this push test because it breaks push CI"),
+                # pytest.mark.skip(reason="Temporarily skipping this push test because it breaks push CI"),
             ],
         ),
         # Minimal 1-layer config for TT CI
@@ -291,7 +360,7 @@ def test_llama_prefill_on_cpu_decode_on_tt_no_cache(model_path, run_on_tt_device
         ),
     ],
 )
-def test_llama_prefill_on_cpu_decode_on_tt_cache(model_path, run_on_tt_device, num_hidden_layers):
+def test_decode_on_device_cache_on_host(model_path, run_on_tt_device, num_hidden_layers):
     use_fast = False if model_path == "openlm-research/open_llama_3b" else True
 
     # Load model with optional override for num_hidden_layers
@@ -302,6 +371,8 @@ def test_llama_prefill_on_cpu_decode_on_tt_cache(model_path, run_on_tt_device, n
         num_hidden_layers=num_hidden_layers,
     )
 
+    model.config.max_position_embeddings = MAX_POSITION_EMBEDDINGS
+    max_sequence_length = model.config.max_position_embeddings
     framework_model = LlamaModelWrapper(model)
     framework_model = framework_model.to(torch.bfloat16)
     framework_model.eval()
@@ -328,8 +399,7 @@ def test_llama_prefill_on_cpu_decode_on_tt_cache(model_path, run_on_tt_device, n
 
     # Zero Pad past key values in key_value_seq_len(i.e -2) dimension
     # Before padding past key values tensor shape -> (batch_size, num_of_key_values_heads, key_value_seq_len, head_dim)
-    # After Padding Past key value tensor shape -> (batch_size, num_of_key_values_heads, key_value_seq_len + max_new_tokens, head_dim)
-    max_new_tokens = 46
+    # After Padding Past key value tensor shape -> (batch_size, num_of_key_values_heads, max_sequence_length, head_dim)
     non_padding_seq_length = prefill_output[1].shape[-2]
     for idx, past_key_or_values_states in enumerate(model_inputs[1:]):
         model_inputs[idx + 1] = torch.cat(
@@ -338,7 +408,7 @@ def test_llama_prefill_on_cpu_decode_on_tt_cache(model_path, run_on_tt_device, n
                 torch.zeros(
                     past_key_or_values_states.shape[-4],
                     past_key_or_values_states.shape[-3],
-                    max_new_tokens,
+                    max_sequence_length - non_padding_seq_length,
                     past_key_or_values_states.shape[-1],
                 ).to(past_key_or_values_states.dtype),
             ],
@@ -371,7 +441,7 @@ def test_llama_prefill_on_cpu_decode_on_tt_cache(model_path, run_on_tt_device, n
 
     # Run decode stage on TT device and generate tokens by passing the last predicted token and the past key values.
     # untill the a specified maximum number of new tokens is reached or an end-of-sequence token is encountered.
-    start = time.perf_counter()
+    max_new_tokens = MAX_NEW_TOKENS
     for max_new_tokens_idx in range(max_new_tokens):
 
         non_padding_past_key_values_seq_length = non_padding_seq_length + max_new_tokens_idx
@@ -385,7 +455,7 @@ def test_llama_prefill_on_cpu_decode_on_tt_cache(model_path, run_on_tt_device, n
             tt_inputs = [model_inputs[0], attention_mask, position_ids, *model_inputs[1:]]
 
             # Run on TT device and validate TT result with Framework
-            framework_output, tt_output = verify(tt_inputs, framework_model, compiled_model)
+            _, tt_output = verify(tt_inputs, framework_model, compiled_model)
 
             logits = tt_output[0]
             past_key_values = tt_output[1:]
@@ -416,10 +486,180 @@ def test_llama_prefill_on_cpu_decode_on_tt_cache(model_path, run_on_tt_device, n
         generated_tokens = torch.cat([generated_tokens, next_token.unsqueeze(0)], dim=-1)
 
     # Generated text
+    generated_text = tokenizer.decode(generated_tokens[0], skip_special_tokens=True)
+    print("generated_text=", generated_text)
+
+
+@pytest.mark.parametrize(
+    "model_path",
+    [
+        "openlm-research/open_llama_3b",
+        "meta-llama/Llama-3.2-1B",
+    ],
+)
+@pytest.mark.push
+def test_decode_cache_on_device(model_path):
+    """
+    Test Llama decode with KV cache update on device using StaticCache.
+
+    This test:
+    1. Mocks prefill on CPU to get initial past key/values
+    2. Creates StaticCache wrapper for full model
+    3. Tests decode step with KV cache update happening on device
+    """
+
+    if model_path == "openlm-research/open_llama_3b":
+        # skip test for open_llama_3b model
+        pytest.skip("Temporarily skipping, because it takes 30GB of host memory during compile")
+
+    use_fast = False if model_path == "openlm-research/open_llama_3b" else True
+
+    # Load model with cache enabled
+    model, tokenizer = load_model(model_path, use_cache=True, use_fast=use_fast)
+
+    # Convert to bfloat16
+    dtype = torch.bfloat16
+    model = model.to(dtype)
+    model.eval()
+
+    # Set up tokenizer
+    if model_path == "openlm-research/open_llama_3b":
+        tokenizer.pad_token_id = model.config.pad_token_id
+    elif model_path == "meta-llama/Llama-3.2-1B":
+        tokenizer.pad_token = tokenizer.eos_token
+
+    # Create StaticCache wrapper
+    framework_model = LlamaModelStaticCacheWrapper(model)
+
+    # Prepare input for decode (single token)
+    prompt = "Q: What is the largest animal?\nA:"
+    inputs = tokenizer(prompt, return_tensors="pt")
+
+    print(f"Prompt: {prompt}")
+    print(f"Prompt tokens: {inputs.input_ids}")
+    print(f"Decoded prompt: {tokenizer.decode(inputs.input_ids[0])}")
+
+    # Mock prefill on CPU to get past key/values
+    prefil_model_wrapper = LlamaModelWrapper(model)
+    prefill_output = prefil_model_wrapper(input_ids=inputs.input_ids, attention_mask=inputs.attention_mask)
+    next_token_logits = prefill_output[0][:, -1, :]
+    next_token = torch.argmax(next_token_logits, dim=-1)
+
+    # Get past key/values from prefill (in legacy format)
+    past_key_values_legacy = prefill_output[1:]
+    past_key_values_pairs = unflatten_pastkv(past_key_values_legacy)
+
+    # Set up decode inputs
+    batch_size = 1
+    seq_len = 1
+    past_seq_len = inputs.input_ids.shape[1]
+
+    # Prepare decode inputs
+    decode_input_ids = next_token.unsqueeze(0)  # (1, 1)
+    model.config.max_position_embeddings = MAX_POSITION_EMBEDDINGS
+    max_seq_len = model.config.max_position_embeddings
+    current_seq_len = past_seq_len + seq_len  # Total actual sequence length
+
+    # Create attention mask for current sequence length
+    decode_attention_mask = torch.zeros(batch_size, current_seq_len, dtype=dtype)
+
+    # Expand to 4D: [batch_size, 1, 1, seq_len]
+    decode_attention_mask = decode_attention_mask.unsqueeze(1).unsqueeze(2)
+
+    # Pad attention mask to max_seq_len
+    pad_len = max_seq_len - current_seq_len
+    if pad_len > 0:
+        pad_tensor = torch.full(
+            (batch_size, 1, 1, pad_len),
+            -1e9,
+            dtype=decode_attention_mask.dtype,
+            device=decode_attention_mask.device,
+        )
+        decode_attention_mask = torch.cat([decode_attention_mask, pad_tensor], dim=-1)
+
+    decode_position_ids = torch.tensor([[past_seq_len]], dtype=dtype)
+
+    num_layers = model.config.num_hidden_layers
+    num_key_value_heads = getattr(model.config, "num_key_value_heads", model.config.num_attention_heads)
+    head_dim = model.config.hidden_size // model.config.num_attention_heads
+
+    # Create initial cache_position (for the first decode step after prefill)
+    decode_cache_position = torch.tensor([past_seq_len], dtype=torch.long)
+
+    decode_inputs = [decode_input_ids, decode_attention_mask, decode_position_ids, decode_cache_position]
+
+    # Add k_cache, v_cache for each layer (pre-populated with past key/value data)
+    for layer_idx in range(num_layers):
+        past_key, past_value = past_key_values_pairs[layer_idx]
+
+        # Convert past key/values to proper dtype
+        past_key = past_key.to(dtype)
+        past_value = past_value.to(dtype)
+
+        # Create cache tensors (max sequence length) and populate with past data
+        k_cache = torch.zeros(batch_size, num_key_value_heads, max_seq_len, head_dim, dtype=dtype)
+        v_cache = torch.zeros(batch_size, num_key_value_heads, max_seq_len, head_dim, dtype=dtype)
+
+        # Copy past key/value data into the cache tensors at the beginning
+        past_seq_len = past_key.size(-2)
+        k_cache[:, :, :past_seq_len, :] = past_key
+        v_cache[:, :, :past_seq_len, :] = past_value
+
+        decode_inputs.extend([k_cache, v_cache])
+
+    # Compile model
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    compiled_model = forge.compile(framework_model, decode_inputs, compiler_cfg=compiler_cfg)
+
+    # For debugging: Keep all tensors as torch tensors to test framework model directly
+    # Skip CTensor conversion if testing with framework_model instead of compiled_model
+    cache_start_idx = 4  # input_ids, attention_mask, position_ids, cache_position
+    for i in range(cache_start_idx, len(decode_inputs)):
+        decode_inputs[i] = CTensor(decode_inputs[i])
+
+    # Initialize generated tokens with input + first predicted token
+    generated_tokens = torch.cat([inputs.input_ids, next_token.unsqueeze(0)], dim=-1)
+
+    # Run decode loop
+    max_new_tokens = MAX_NEW_TOKENS  # Generate up to max_new_tokens more tokens
+    current_seq_len = current_seq_len + 1
+
+    start = time.perf_counter()
+
+    for decode_step in range(max_new_tokens):
+        logits = compiled_model(*decode_inputs)
+
+        # Get next token
+        logits_tensor = logits if not isinstance(logits, list) else logits[0]
+        next_token_logits = logits_tensor[:, -1, :]
+        next_token = torch.argmax(next_token_logits, dim=-1)
+
+        # Check for end of sequence
+        if next_token.item() == tokenizer.eos_token_id:
+            break
+
+        # Append generated token
+        generated_tokens = torch.cat([generated_tokens, next_token.unsqueeze(0)], dim=-1)
+        current_seq_len += 1
+        # Stop if we reach max sequence length
+        if current_seq_len >= max_seq_len:
+            break
+        # Update decode inputs for next step
+        decode_inputs[0] = next_token.unsqueeze(0)
+        # update mask with 0 at new cache position
+        decode_attention_mask[:, :, :, current_seq_len] = 0  # Update attention mask
+        decode_inputs[1] = decode_attention_mask
+        decode_inputs[2] = torch.tensor([[current_seq_len - 1]], dtype=dtype)  # Update position ids
+        decode_inputs[3] = torch.tensor([current_seq_len - 1], dtype=torch.long)  # Update cache position
+
     end = time.perf_counter()
     duration = end - start
     minutes = int(duration // 60)
     seconds = duration % 60
     print(f"DECODE LOOP Block took {minutes} min {seconds:.2f} sec")
+    # Decode and print generated text
+    print(f"Time per token: {duration / (decode_step + 1):.4f} seconds")
+    print(f" Num tokens generated: {decode_step + 1}")
     generated_text = tokenizer.decode(generated_tokens[0], skip_special_tokens=True)
-    print("generated_text=", generated_text)
+    print(f"Generated text: {generated_text}")

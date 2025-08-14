@@ -9,7 +9,6 @@ import forge.tensor
 import pytest
 
 import torch
-import os
 
 import forge
 import forge.op
@@ -79,47 +78,3 @@ def test_concat(test_kind, test_device, dim, aligned):
         a = Tensor.create_from_torch(torch.randn((1, 3, 128, 6), requires_grad=test_kind.is_training()))
     b = Tensor.create_from_torch(torch.randn(shapes[dim], requires_grad=test_kind.is_training()))
     c = simple_concat(a, b)
-
-
-def test_concat_two_kinds_pad(test_device):
-    class Module(ForgeModule):
-        def __init__(self, name):
-            super().__init__(name)
-            self.add_parameter("w", forge.Parameter(*(1, 1, 352, 192), requires_grad=True))
-
-        def forward(self, in0, in1, in2, in3, in4, in5, y):
-            in0 = forge.op.Multiply("m0", in0, in0)
-            in1 = forge.op.Multiply("m1", in1, in2)
-            in2 = forge.op.Multiply("m2", in2, in3)
-            in3 = forge.op.Multiply("m3", in3, in4)
-            in4 = forge.op.Multiply("m4", in4, in4)
-            in5 = forge.op.Multiply("m5", in5, in1)
-            x = forge.op.Concatenate("", in0, in1, in2, in3, in4, in5, axis=-1)
-            x = forge.op.Multiply("m6", x, y)
-            x = forge.op.PadTile("p0", x, -1, 336)
-            x = forge.op.Matmul("mm0", x, self.get_parameter("w"))
-            return x
-
-    # input shape
-    common_len = 3136
-    input_shapes = (
-        (1, 1, common_len, 96),
-        (1, 1, common_len, 48),
-        (1, 1, common_len, 48),
-        (1, 1, common_len, 48),
-        (1, 1, common_len, 48),
-        (1, 1, common_len, 48),
-        (1, 1, common_len, 336),
-    )
-    mod = Module("test_concat_two_kinds_pad")
-    verify_module(
-        mod,
-        input_shapes,
-        verify_cfg=DeprecatedVerifyConfig(
-            test_kind=TestKind.INFERENCE,
-            devtype=test_device.devtype,
-            arch=test_device.arch,
-        ),
-    )
-
-    os.environ["FORGE_PAD_SPARSE_MM"] = "{}"

@@ -53,7 +53,7 @@ from .tm import (
     Index,
     Select,
     Pad,
-    PadTile,
+    ConstantPad,
     Broadcast,
     Repeat,
     RepeatInterleave,

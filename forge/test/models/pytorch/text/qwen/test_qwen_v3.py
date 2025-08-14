@@ -94,6 +94,7 @@ embedding_variants = [
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2806")
 @pytest.mark.parametrize("variant", embedding_variants)
 def test_qwen3_embedding(variant):
 

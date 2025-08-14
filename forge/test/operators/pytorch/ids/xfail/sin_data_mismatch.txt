@@ -1,5 +1,0 @@
-# xfail_sin_DATA_MISMATCH ids
-
-sin-FROM_HOST-None-(1, 2, 3, 4)-torch.int8-HiFi4
-sin-FROM_HOST-None-(1, 2, 3, 4)-torch.int32-HiFi4
-sin-FROM_HOST-None-(1, 2, 3, 4)-torch.int64-HiFi4

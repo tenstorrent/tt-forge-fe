@@ -1,3 +1,0 @@
-# xfail_layer_norm_INTERNAL_TVM_ERROR ids
-
-layer_norm-FROM_HOST-{'normalized_shape': (4,), 'bias': False}-(1, 2, 3, 4)-None-None
