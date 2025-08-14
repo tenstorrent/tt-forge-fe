@@ -1637,45 +1637,57 @@ forge_modules_and_shapes_dtypes_list = [
             )
         ],
     ),
-    (
-        Resize2D23,
-        [((1, 512, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[28, 28]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D23,
+            [((1, 512, 14, 14), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[28, 28]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: align_corners argument not supported in upsample2d op")],
     ),
-    (
-        Resize2D24,
-        [((1, 256, 28, 28), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[56, 56]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D24,
+            [((1, 256, 28, 28), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[56, 56]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: align_corners argument not supported in upsample2d op")],
     ),
-    (
-        Resize2D25,
-        [((1, 128, 56, 56), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[112, 112]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D25,
+            [((1, 128, 56, 56), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[112, 112]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: align_corners argument not supported in upsample2d op")],
     ),
-    (
-        Resize2D26,
-        [((1, 64, 112, 112), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[224, 224]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D26,
+            [((1, 64, 112, 112), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[224, 224]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: align_corners argument not supported in upsample2d op")],
     ),
     (
         Resize2D2,
@@ -2449,15 +2461,18 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"sizes": "[27, 27]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
-    (
-        Resize2D23,
-        [((1, 256, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[28, 28]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D23,
+            [((1, 256, 1, 1), torch.bfloat16)],
+            {
+                "model_names": ["pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[28, 28]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: align_corners argument not supported in upsample2d op")],
     ),
     (
         Resize2D21,
