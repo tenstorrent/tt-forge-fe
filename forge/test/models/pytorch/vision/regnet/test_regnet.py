@@ -19,9 +19,6 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.models_utils import print_cls_results
-from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
-
 variants = [
     ModelVariant.Y_040,
     ModelVariant.Y_064,
@@ -47,6 +44,7 @@ def test_regnet_img_classification(variant):
     # Load model and inputs
     loader = ModelLoader(variant=variant)
     framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    framework_model.config.return_dict = False
     input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
     inputs = [input_tensor]
 
@@ -69,40 +67,22 @@ def test_regnet_img_classification(variant):
     loader.post_processing(co_out)
 
 
-variants_with_weights = {
-    "regnet_y_400mf": "RegNet_Y_400MF_Weights",
-    "regnet_y_800mf": "RegNet_Y_800MF_Weights",
-    "regnet_y_1_6gf": "RegNet_Y_1_6GF_Weights",
-    "regnet_y_3_2gf": "RegNet_Y_3_2GF_Weights",
-    "regnet_y_8gf": "RegNet_Y_8GF_Weights",
-    "regnet_y_16gf": "RegNet_Y_16GF_Weights",
-    "regnet_y_32gf": "RegNet_Y_32GF_Weights",
-    "regnet_y_128gf": "RegNet_Y_128GF_Weights",
-    "regnet_x_400mf": "RegNet_X_400MF_Weights",
-    "regnet_x_800mf": "RegNet_X_800MF_Weights",
-    "regnet_x_1_6gf": "RegNet_X_1_6GF_Weights",
-    "regnet_x_3_2gf": "RegNet_X_3_2GF_Weights",
-    "regnet_x_8gf": "RegNet_X_8GF_Weights",
-    "regnet_x_16gf": "RegNet_X_16GF_Weights",
-    "regnet_x_32gf": "RegNet_X_32GF_Weights",
-}
-
 variants = [
-    "regnet_y_400mf",
-    "regnet_y_800mf",
-    "regnet_y_1_6gf",
-    "regnet_y_3_2gf",
-    "regnet_y_8gf",
-    "regnet_y_16gf",
-    "regnet_y_32gf",
-    pytest.param("regnet_y_128gf", marks=[pytest.mark.out_of_memory, pytest.mark.xfail(reason="Cannot fit in L1")]),
-    "regnet_x_400mf",
-    "regnet_x_800mf",
-    "regnet_x_1_6gf",
-    "regnet_x_3_2gf",
-    "regnet_x_8gf",
-    "regnet_x_16gf",
-    "regnet_x_32gf",
+    ModelVariant.Y_400MF,
+    ModelVariant.Y_800MF,
+    ModelVariant.Y_1_6GF,
+    ModelVariant.Y_3_2GF,
+    ModelVariant.Y_8GF,
+    ModelVariant.Y_16GF,
+    ModelVariant.Y_32GF,
+    pytest.param(ModelVariant.Y_128GF, marks=[pytest.mark.out_of_memory, pytest.mark.xfail(reason="Cannot fit in L1")]),
+    ModelVariant.X_400MF,
+    ModelVariant.X_800MF,
+    ModelVariant.X_1_6GF,
+    ModelVariant.X_3_2GF,
+    ModelVariant.X_8GF,
+    ModelVariant.X_16GF,
+    ModelVariant.X_32GF,
 ]
 
 
@@ -119,11 +99,11 @@ def test_regnet_torchvision(variant):
         source=Source.TORCHVISION,
     )
 
-    # Load model and input
-    weight_name = variants_with_weights[variant]
-    framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
-    framework_model.to(torch.bfloat16)
-    inputs = [inputs[0].to(torch.bfloat16)]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -137,11 +117,11 @@ def test_regnet_torchvision(variant):
     )
 
     verify_cfg = VerifyConfig()
-    if variant == "regnet_x_8gf":
+    if variant == ModelVariant.X_8GF:
         verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
 
     # Model Verification and inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+    _, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
 
     # Run model on sample data and print results
-    print_cls_results(fw_out[0], co_out[0])
+    loader.post_processing(co_out)

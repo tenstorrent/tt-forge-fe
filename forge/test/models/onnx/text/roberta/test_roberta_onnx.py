@@ -12,7 +12,7 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
-from third_party.tt_forge_models.roberta import ModelLoader
+from third_party.tt_forge_models.roberta.pytorch import ModelLoader
 import onnx
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker

@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from mlp_mixer_pytorch import MLPMixer
 from third_party.tt_forge_models.mlp_mixer.pytorch import ModelLoader, ModelVariant
 
 import forge
@@ -88,7 +87,8 @@ def test_mlp_mixer_timm_pytorch(variant):
 
 
 @pytest.mark.nightly
-def test_mlp_mixer_pytorch():
+@pytest.mark.parametrize("variant", [ModelVariant.MIXER_GITHUB])
+def test_mlp_mixer_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -99,17 +99,10 @@ def test_mlp_mixer_pytorch():
     )
 
     # Load model and input
-    framework_model = MLPMixer(
-        image_size=256,
-        channels=3,
-        patch_size=16,
-        dim=512,
-        depth=12,
-        num_classes=1000,
-    ).to(torch.bfloat16)
-    framework_model.eval()
-
-    inputs = [torch.randn(1, 3, 256, 256).to(torch.bfloat16)]
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)

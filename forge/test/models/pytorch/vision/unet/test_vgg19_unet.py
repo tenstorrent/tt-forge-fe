@@ -19,7 +19,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from third_party.tt_forge_models.vgg19_unet import ModelLoader  # isort:skip
+from third_party.tt_forge_models.vgg19_unet.pytorch import ModelLoader  # isort:skip
 
 
 @pytest.mark.nightly
