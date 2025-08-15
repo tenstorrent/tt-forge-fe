@@ -16,13 +16,16 @@ from .forge import to_pt_tensors
 from .forge import TensorShape
 from .forge import CompilerConfig
 from .forge import to_forge_tensors
-from .forge import compile
-from .forge import verify
+
+# from .forge import compile
+# from .forge import verify
 from .forge import VerifyConfig
 from .forge import forge_property_handler_var
 
 from .datatypes import OperatorParameterTypes, ValueRanges, ValueRange
 from .datatypes import FrameworkDataFormat
+
+from .frontend import SweepsFrontend
 
 
 # TODO - Remove this class once TestDevice is available in Forge
@@ -303,10 +306,14 @@ def verify_module_for_inputs(
     else:
         forge_inputs = inputs
 
-    compiled_model = compile(model, sample_inputs=forge_inputs, compiler_cfg=compiler_cfg)
     error_raised = None
     try:
-        verify(forge_inputs, model, compiled_model, verify_config)
+        SweepsFrontend.verify(
+            model=model,
+            inputs=forge_inputs,
+            compiler_cfg=compiler_cfg,
+            verify_config=verify_config,
+        )
     except Exception as e:
         error_raised = e
         check_pcc_error_level(error_raised)
