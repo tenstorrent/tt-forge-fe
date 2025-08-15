@@ -7,7 +7,13 @@ import _pytest
 import _pytest.python
 import _pytest.reports
 import _pytest.runner
-import pluggy.callers
+
+from ..utils.frontend import XLA_MODE
+
+if XLA_MODE:
+    import pluggy
+else:
+    import pluggy.callers
 
 from loguru import logger
 
@@ -21,7 +27,10 @@ from ..utils import TestPlanUtils
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item: _pytest.python.Function, call: _pytest.runner.CallInfo):
-    outcome: pluggy.callers._Result = yield
+    if XLA_MODE:
+        outcome: pluggy.Result = yield
+    else:
+        outcome: pluggy.callers._Result = yield
     report: _pytest.reports.TestReport = outcome.get_result()
 
     xfail_reason = None
