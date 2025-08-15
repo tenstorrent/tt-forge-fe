@@ -4,7 +4,7 @@
 #
 # Register of all detected failing reasons by operator
 
-from test.operators.utils import FailingReasons
+from ...utils import FailingReasons
 
 
 class FailingReasonsRegister:

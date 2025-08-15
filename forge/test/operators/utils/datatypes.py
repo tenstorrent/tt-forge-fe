@@ -9,10 +9,15 @@ from enum import Enum
 from typing import Optional, Dict, Union, Tuple, TypeAlias
 
 import torch
-import forge
+from .forge import DataFormat
 
+# from .forge import MathFidelity
+# from .forge import ForgeTensor
 
-FrameworkDataFormat = Union[forge.DataFormat, torch.dtype]
+# ForgeDataFormat = DataFormat
+# ForgeMathFidelity = MathFidelity
+
+FrameworkDataFormat = Union[DataFormat, torch.dtype]
 
 
 class OperatorParameterTypes:
