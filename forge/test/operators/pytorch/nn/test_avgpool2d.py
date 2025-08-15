@@ -14,23 +14,21 @@ from loguru import logger
 
 import torch
 
-from forge.verify.config import VerifyConfig
-from forge.verify.value_checkers import AutomaticValueChecker
-
-from test.operators.utils import (
-    TensorUtils,
-    VerifyUtils,
-    ValueRanges,
+from ...utils import (
     InputSource,
-    TestVector,
-    TestPlan,
+    PytorchUtils,
+    TensorUtils,
     TestCollection,
     TestCollectionCommon,
+    TestCollectionTorch,
+    TestDevice,
+    TestPlan,
+    TestVector,
+    ValueCheckerUtils,
+    ValueRanges,
+    VerifyUtils,
 )
-from test.operators.utils.compat import TestDevice
-from test.operators.utils.test_data import TestCollectionTorch
-from test.operators.utils.utils import PytorchUtils
-from test.operators.pytorch.ids.loader import TestIdsDataLoader
+from ..ids import TestIdsDataLoader
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -147,7 +145,7 @@ class TestVerification:
         input_shapes = tuple([test_vector.input_shape for _ in range(number_of_operands)])
         logger.trace(f"***input_shapes: {input_shapes}")
 
-        verify_config = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99, rtol=1e-2, atol=1e-2))
+        value_checker = ValueCheckerUtils.automatic(pcc=0.99, rtol=1e-2, atol=1e-2)
 
         VerifyUtils.verify(
             model=pytorch_model,
@@ -158,7 +156,7 @@ class TestVerification:
             math_fidelity=test_vector.math_fidelity,
             pcc=test_vector.pcc,
             warm_reset=warm_reset,
-            verify_config=verify_config,
+            value_checker=value_checker,
             value_range=value_range,
         )
 

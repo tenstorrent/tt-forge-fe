@@ -55,27 +55,24 @@
 from typing import Callable, List, Dict, Union, Optional
 from loguru import logger
 
-import forge
 import torch
 
-from forge.verify.config import VerifyConfig
-from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
-
-from test.operators.utils import ValueRanges
-from test.operators.utils import VerifyUtils
-from test.operators.utils import InputSource
-from test.operators.utils import TestVector
-from test.operators.utils import TestCollection
-from test.operators.utils import TestPlan
-from test.operators.utils import TestSuite
-from test.operators.utils import FailingRulesConverter
-from test.operators.utils import TestCollectionCommon
-from test.operators.utils import TestCollectionTorch
-from test.operators.utils import FailingReasons
-from test.operators.utils.compat import TestDevice
-from test.operators.utils.utils import PytorchUtils
-
-from forge.op_repo import TensorShape
+from ...utils import (
+    FailingReasons,
+    FailingRulesConverter,
+    InputSource,
+    PytorchUtils,
+    TestCollection,
+    TestCollectionCommon,
+    TestCollectionTorch,
+    TestDevice,
+    TestPlan,
+    TestSuite,
+    TestVector,
+    ValueCheckerUtils,
+    ValueRanges,
+    VerifyUtils,
+)
 
 from .models import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 from .failing_rules import FailingRulesData
@@ -168,11 +165,10 @@ class TestVerification:
 
         # Using AllCloseValueChecker in all cases except for integer data formats
         # and logical operators ge, ne, gt, lt:
-        verify_config: VerifyConfig
         if dev_data_format in TestCollectionTorch.int.dev_data_formats:
-            verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
+            value_checker = ValueCheckerUtils.automatic()
         else:
-            verify_config = VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2))
+            value_checker = ValueCheckerUtils.all_close(rtol=1e-2, atol=1e-2)
 
         VerifyUtils.verify(
             model=pytorch_model,
@@ -183,7 +179,7 @@ class TestVerification:
             math_fidelity=test_vector.math_fidelity,
             value_range=value_range,
             warm_reset=warm_reset,
-            verify_config=verify_config,
+            value_checker=value_checker,
         )
 
 
