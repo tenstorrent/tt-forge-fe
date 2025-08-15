@@ -11,10 +11,10 @@ import pluggy.callers
 
 from loguru import logger
 
-from test.operators.utils import PyTestUtils
-from test.operators.utils import SweepsTagsLogger
-from test.operators.utils import FailingReasonsFinder
-from test.operators.utils import FailingReasonsValidation
+from ..utils import PyTestUtils
+from ..utils import SweepsTagsLogger
+from ..utils import FailingReasonsFinder
+from ..utils import FailingReasonsValidation
 
 from ..utils import TestPlanUtils
 

@@ -11,6 +11,7 @@ from .utils import TensorUtils
 from .utils import InputSourceFlag, InputSourceFlags
 from .utils import CompilerUtils
 from .utils import DeviceUtils
+from .utils import ValueCheckerUtils
 from .utils import VerifyUtils
 from .utils import LoggerUtils
 from .utils import RateLimiter
@@ -49,6 +50,7 @@ __all__ = [
     "InputSourceFlags",
     "CompilerUtils",
     "DeviceUtils",
+    "ValueCheckerUtils",
     "VerifyUtils",
     "LoggerUtils",
     "RateLimiter",

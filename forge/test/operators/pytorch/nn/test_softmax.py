@@ -7,22 +7,20 @@ import torch
 from typing import List, Dict
 from loguru import logger
 
-from forge.verify.config import VerifyConfig
-from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
+from ...utils import ValueCheckerUtils
+from ...utils import VerifyUtils
+from ...utils import ValueRanges
+from ...utils import InputSource
+from ...utils import TestVector
+from ...utils import TestPlan
+from ...utils import TestCollection
+from ...utils import TestCollectionCommon
+from ...utils import TestCollectionTorch
+from ...utils import PytorchUtils
+from ...utils.utils import TestDevice
+from ..ids.loader import TestIdsDataLoader
 
-from test.operators.utils import VerifyUtils
-from test.operators.utils import ValueRanges
-from test.operators.utils import InputSource
-from test.operators.utils import TestVector
-from test.operators.utils import TestPlan
-from test.operators.utils import TestCollection
-from test.operators.utils import TestCollectionCommon
-from test.operators.utils import TestCollectionTorch
-from test.operators.utils import PytorchUtils
-from test.operators.utils.utils import TestDevice
-from test.operators.pytorch.ids.loader import TestIdsDataLoader
-
-from test.operators.pytorch.eltwise_unary import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
+from ..eltwise_unary import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 
 
 class TestVerification:
@@ -60,7 +58,7 @@ class TestVerification:
         logger.trace(f"***input_shapes: {input_shapes}")
 
         # We use AllCloseValueChecker in all cases except for integer data formats(softmax doesn't support integer data formats):
-        verify_config = VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2))
+        value_checker = ValueCheckerUtils.all_close(rtol=1e-2, atol=1e-2)
 
         VerifyUtils.verify(
             model=pytorch_model,
@@ -71,7 +69,7 @@ class TestVerification:
             math_fidelity=test_vector.math_fidelity,
             warm_reset=warm_reset,
             value_range=value_range,
-            verify_config=verify_config,
+            value_checker=value_checker,
         )
 
 
