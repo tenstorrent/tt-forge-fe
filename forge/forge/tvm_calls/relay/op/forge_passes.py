@@ -1045,8 +1045,10 @@ class RemoveRedundantReshape(DFPatternCallback):
     def callback(self, pre, post, node_map):
         act = node_map[self.input_tensor][0]
         reshape_op = node_map[self.reshape][0]
+        input_shape = list(act.checked_type.shape)
         new_shape = list(reshape_op.attrs.newshape)
-        if len(new_shape) == 0:
+        # Remove the reshape if the input and target shapes are identical
+        if input_shape == new_shape:
             return act
         else:
             return post

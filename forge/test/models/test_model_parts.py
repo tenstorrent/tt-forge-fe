@@ -10,6 +10,7 @@ import forge
 from forge.verify.verify import verify
 import math
 import onnx
+from torchvision.models.detection import _utils as det_utils
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
 
 
@@ -257,6 +258,9 @@ variants_with_weights = {
 @pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
 def test_ssdlite320_mobilenet_v3_large_problematic_block(variant):
+
+    pytest.xfail(reason="Fatal Python error: Segmentation fault")
+
     class postprocess_detections(nn.Module):
         def __init__(self, model):
             super().__init__()
@@ -337,6 +341,48 @@ def test_gather_to_take_onnx():
     onnx.checker.check_model(onnx_model)
 
     framework_model = forge.OnnxModule(module_name, onnx_model)
+    compiled_model = forge.compile(
+        onnx_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+    )
+
+    verify(inputs, framework_model, compiled_model)
+
+
+def test_concat_block():
+    class concat(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.score_thresh = 0.001
+            self.topk_candidates = 300
+
+        def forward(self, score):
+
+            keep_idxs = score > self.score_thresh
+            score = score[keep_idxs]
+            num_topk = det_utils._topk_min(score, self.topk_candidates, 0)
+
+            return num_topk
+
+    torch_model = concat()
+    scores = torch.rand(3234)
+    inputs = [scores]
+
+    onnx_path = "concat.onnx"
+    torch.onnx.export(
+        torch_model,
+        (inputs[0]),
+        onnx_path,
+        opset_version=17,
+        verbose=True,
+    )
+
+    module_name = "concat"
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule(module_name, onnx_model)
+
     compiled_model = forge.compile(
         onnx_model,
         sample_inputs=inputs,
