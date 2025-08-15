@@ -7,7 +7,6 @@
 from random import Random
 import types
 import pytest
-import forge
 
 import os
 import importlib
@@ -24,8 +23,8 @@ from enum import Enum
 from loguru import logger
 from typing import Callable, Generator, Optional, List, Set, Dict, Union, Tuple
 
-from forge import MathFidelity, DataFormat
-from forge.op_repo import TensorShape
+from .forge import MathFidelity, DataFormat
+from .forge import TensorShape
 
 from .datatypes import OperatorParameterTypes
 from .datatypes import FrameworkDataFormat
@@ -513,8 +512,8 @@ class TestPlanUtils:
             return None
         dev_data_format_str = dev_data_format_str.replace("forge.", "")
         dev_data_format_str = dev_data_format_str.replace("torch.", "")
-        if hasattr(forge.DataFormat, dev_data_format_str):
-            dev_data_format = getattr(forge.DataFormat, dev_data_format_str)
+        if hasattr(DataFormat, dev_data_format_str):
+            dev_data_format = getattr(DataFormat, dev_data_format_str)
         elif hasattr(torch, dev_data_format_str):
             dev_data_format = getattr(torch, dev_data_format_str)
         else:
@@ -732,7 +731,7 @@ class FailingRulesConverter:
                     Union[Optional[TensorShape], List[TensorShape]],
                     Union[Optional[OperatorParameterTypes.Kwargs], List[OperatorParameterTypes.Kwargs]],
                     Union[Optional[FrameworkDataFormat], List[FrameworkDataFormat]],
-                    Union[Optional[forge.MathFidelity], List[forge.MathFidelity]],
+                    Union[Optional[MathFidelity], List[MathFidelity]],
                     Optional[TestResultFailing],
                 ],
                 TestCollection,
@@ -777,7 +776,7 @@ class FailingRulesConverter:
         input_shape: Optional[Union[TensorShape, List[TensorShape]]],
         kwargs: Optional[Union[OperatorParameterTypes.Kwargs, List[OperatorParameterTypes.Kwargs]]],
         dev_data_format: Optional[Union[FrameworkDataFormat, List[FrameworkDataFormat]]],
-        math_fidelity: Optional[Union[forge.MathFidelity, List[forge.MathFidelity]]],
+        math_fidelity: Optional[Union[MathFidelity, List[MathFidelity]]],
         result_failing: Optional[TestResultFailing],
     ) -> TestCollection:
         """Convert failing rule tuple to TestCollection"""

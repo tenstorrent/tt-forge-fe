@@ -8,11 +8,9 @@ from loguru import logger
 
 import torch
 
-from forge.verify.config import VerifyConfig
-from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
-
-from test.operators.utils import (
+from ...utils import (
     TensorUtils,
+    ValueCheckerUtils,
     VerifyUtils,
     InputSource,
     TestVector,
@@ -23,9 +21,9 @@ from test.operators.utils import (
     TestCollectionTorch,
     ValueRanges,
 )
-from test.operators.utils.compat import TestDevice
-from test.operators.utils.utils import PytorchUtils
-from test.operators.pytorch.ids.loader import TestIdsDataLoader
+from ...utils.compat import TestDevice
+from ...utils.utils import PytorchUtils
+from ..ids.loader import TestIdsDataLoader
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -157,9 +155,9 @@ class TestVerification:
         logger.trace(f"***input_shapes: {input_shapes}")
 
         # Using AllCloseValueChecker in all cases except for integer data formats:
-        verify_config = VerifyConfig(value_checker=AllCloseValueChecker(atol=1e-2))
+        value_checker = ValueCheckerUtils.all_close(atol=1e-2)
         if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
-            verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
+            value_checker = ValueCheckerUtils.automatic()
 
         VerifyUtils.verify(
             model=pytorch_model,
@@ -170,7 +168,7 @@ class TestVerification:
             math_fidelity=test_vector.math_fidelity,
             warm_reset=warm_reset,
             value_range=value_range,
-            verify_config=verify_config,
+            value_checker=value_checker,
         )
 
 

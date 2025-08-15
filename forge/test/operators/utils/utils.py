@@ -7,7 +7,6 @@
 import random
 import os
 import sys
-import forge
 import torch
 import pytest
 
@@ -17,14 +16,17 @@ from dataclasses import dataclass
 from loguru import logger
 from typing import Optional, List, Dict, Type, Union
 
-from forge import ForgeModule, Module, DeprecatedVerifyConfig
-from forge.op_repo import TensorShape
-from forge.op_repo.pytorch_operators import pytorch_operator_repository
-from forge.verify import TestKind  # , verify_module
-from forge._C import MathFidelity
+from .forge import ForgeModule, Module
+from .forge import DataFormat
+from .forge import TensorShape
+from .forge import pytorch_operator_repository
+from .forge import MathFidelity
 
-from forge.config import CompilerConfig
-from forge.verify.config import VerifyConfig
+from .forge import CompilerConfig
+from .forge import VerifyConfig
+from .forge import ValueChecker
+from .forge import AutomaticValueChecker
+from .forge import AllCloseValueChecker
 
 from .compat import TestDevice
 from .compat import (
@@ -136,6 +138,20 @@ class DeviceUtils:
         os.system(reset_command)
 
 
+class ValueCheckerUtils:
+    """Utility functions for value checking"""
+
+    @staticmethod
+    def automatic(
+        pcc: float = 0.99, rtol: float = 1e-05, atol: float = 1e-08, dissimilarity_threshold: float = 1e-03
+    ):
+        return AutomaticValueChecker(pcc=pcc, rtol=rtol, atol=atol, dissimilarity_threshold=dissimilarity_threshold)
+
+    @staticmethod
+    def all_close(rtol: float = 1e-05, atol: float = 1e-08):
+        return AllCloseValueChecker(rtol=rtol, atol=atol)
+
+
 class VerifyUtils:
     """Utility functions for Forge verification"""
 
@@ -146,16 +162,18 @@ class VerifyUtils:
         test_device: TestDevice,
         input_shapes: List[TensorShape],
         input_params: List[Dict] = [],
-        compiler_cfg: CompilerConfig = CompilerConfig(),
+        model_dtype: Optional[torch.dtype] = None,
+        compiler_cfg: Optional[CompilerConfig] = None,  # TODO Remove obsoleted
         pcc: Optional[float] = None,
         input_source_flag: InputSourceFlags = None,
-        dev_data_format: forge.DataFormat = None,
+        dev_data_format: DataFormat = None,
         convert_to_forge: Optional[bool] = None,
-        math_fidelity: forge.MathFidelity = None,
+        math_fidelity: MathFidelity = None,
         value_range: Optional[ValueRanges] = None,
         random_seed: Optional[int] = None,
         warm_reset: bool = False,
-        verify_config: Optional[VerifyConfig] = VerifyConfig(),
+        value_checker: Optional[ValueChecker] = None,
+        verify_config: Optional[VerifyConfig] = None,  # TODO Remove obsoleted
         skip_forge_verification: bool = TestSweepsFeatures.params.skip_forge_verification,
     ):
         """Perform Forge verification on the model
@@ -165,6 +183,7 @@ class VerifyUtils:
             test_device: TestDevice
             input_shapes: List of input shapes
             input_params: List of input parameters
+            model_dtype: Model data type to transfer model to
             compiler_cfg: Compiler configuration
             pcc: PCC value for verification
             input_source_flag: Input source flag
@@ -174,9 +193,26 @@ class VerifyUtils:
             value_range: Value range of input tensors
             random_seed: Random seed
             warm_reset: Warm reset the device before verification
+            value_checker: Value checker for verification
             verify_config: Verification configuration
             skip_forge_verification: Skip verification with Forge module
         """
+
+        if not compiler_cfg:
+            compiler_cfg = CompilerConfig()
+        
+        if not verify_config:
+            verify_config = VerifyConfig()
+
+        if value_checker:
+            verify_config.value_checker = value_checker
+
+        if model_dtype:
+            # Transfer model to model_dtype if specified
+            model.to(model_dtype)
+            if model_dtype is torch.bfloat16:
+                # Override default data format for bfloat16
+                compiler_cfg.default_df_override = DataFormat.Float16_b
 
         # Conclude if we should convert to forge data format
         if convert_to_forge is None and isinstance(model, ForgeModule):
@@ -212,7 +248,7 @@ class VerifyUtils:
         cls,
         compiler_cfg: CompilerConfig,
         input_source_flag: InputSourceFlags = None,
-        math_fidelity: forge.MathFidelity = None,
+        math_fidelity: MathFidelity = None,
         warm_reset: bool = False,
     ):
         if warm_reset:
@@ -231,7 +267,7 @@ class VerifyUtils:
     def create_torch_inputs(
         cls,
         input_shapes: List[TensorShape],
-        dev_data_format: forge.DataFormat = None,
+        dev_data_format: DataFormat = None,
         value_range: Optional[ValueRanges] = None,
         random_seed: Optional[int] = None,
     ) -> List[torch.Tensor]:
@@ -253,7 +289,7 @@ class VerifyUtils:
         compiler_cfg: CompilerConfig,
         pcc: Optional[float] = None,
         verify_config: Optional[VerifyConfig] = None,
-        dev_data_format: forge.DataFormat = None,
+        dev_data_format: DataFormat = None,
         convert_to_forge: bool = True,  # explicit conversion to forge data format
         skip_forge_verification: bool = TestSweepsFeatures.params.skip_forge_verification,
     ):

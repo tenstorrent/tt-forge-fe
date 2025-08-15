@@ -6,31 +6,25 @@
 #
 # In this test we test pytorch transpose operator
 
-import pytest
-
 from typing import List, Dict
 from loguru import logger
 
 import torch
-import forge
-import forge.op
 
-from forge.verify.config import VerifyConfig
+from ...utils import ValueCheckerUtils
+from ...utils import VerifyUtils
+from ...utils import InputSource
+from ...utils import TestVector
+from ...utils import TestPlan
+from ...utils import FailingReasons
+from ...utils.compat import TestDevice
+from ...utils import TestCollection
+from ...utils import TestCollectionCommon
+from ...utils import ValueRanges
+from ...utils.utils import PytorchUtils, TensorUtils
+from ...utils.test_data import TestCollectionTorch
 
-from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
-
-from test.operators.utils import VerifyUtils
-from test.operators.utils import InputSource
-from test.operators.utils import TestVector
-from test.operators.utils import TestPlan
-from test.operators.utils import FailingReasons
-from test.operators.utils.compat import TestDevice
-from test.operators.utils import TestCollection
-from test.operators.utils import TestCollectionCommon
-from test.operators.utils import ValueRanges
-from test.operators.utils.utils import PytorchUtils, TensorUtils
-from test.operators.pytorch.ids.loader import TestIdsDataLoader
-from test.operators.utils.test_data import TestCollectionTorch
+from ..ids.loader import TestIdsDataLoader
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -143,11 +137,9 @@ class TestVerification:
         logger.trace(f"***input_shapes: {input_shapes}")
 
         # We use AllCloseValueChecker in all cases except for integer data formats:
-        verify_config = VerifyConfig(
-            value_checker=AllCloseValueChecker(atol=1e-2, rtol=1e-2)
-        )  # todo: check if this is correct ValueError: Data mismatch -> AllCloseValueChecker (all_close):	rtol=0.000965	atol=1.597266e+01
+        value_checker = ValueCheckerUtils.all_close(atol=1e-2, rtol=1e-2)
         if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
-            verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
+            value_checker = ValueCheckerUtils.automatic()
 
         VerifyUtils.verify(
             model=pytorch_model,
@@ -158,7 +150,7 @@ class TestVerification:
             math_fidelity=test_vector.math_fidelity,
             warm_reset=warm_reset,
             value_range=value_range,
-            verify_config=verify_config,
+            value_checker=value_checker,
         )
 
 

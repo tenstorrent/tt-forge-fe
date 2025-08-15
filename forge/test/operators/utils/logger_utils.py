@@ -5,8 +5,8 @@
 # Logger utils for sweeps tags properties
 
 
-from forge.forge_property_utils import record_sweeps_test_tags, record_sweeps_expected_failing_reason
-from forge.forge_property_utils import record_sweeps_detected_failing_reason
+from .forge import record_sweeps_test_tags, record_sweeps_expected_failing_reason
+from .forge import record_sweeps_detected_failing_reason
 
 from .plan import TestPlanUtils
 

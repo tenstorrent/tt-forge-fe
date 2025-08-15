@@ -4,7 +4,6 @@
 
 # TODO: Add test plan header here
 
-import forge
 import math
 import torch
 import pytest
@@ -16,22 +15,23 @@ from loguru import logger
 from forge.verify.config import VerifyConfig
 
 from forge.verify.value_checkers import AllCloseValueChecker
-from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify as forge_verify
 
-from test.operators.utils import VerifyUtils
-from test.operators.utils import InputSource
-from test.operators.utils import TestVector
-from test.operators.utils import TestPlan
-from test.operators.utils.compat import TestDevice
-from test.operators.utils import TestCollection
-from test.operators.utils import TestCollectionCommon
-from test.operators.utils import ValueRanges
-from test.operators.utils.utils import PytorchUtils
-from test.operators.pytorch.ids.loader import TestIdsDataLoader
-from test.operators.utils.test_data import TestCollectionTorch
+from ...utils import ValueCheckerUtils
+from ...utils import VerifyUtils
+from ...utils import InputSource
+from ...utils import TestVector
+from ...utils import TestPlan
+from ...utils.compat import TestDevice
+from ...utils import TestCollection
+from ...utils import TestCollectionCommon
+from ...utils import ValueRanges
+from ...utils.utils import PytorchUtils
+from ...utils.test_data import TestCollectionTorch
 
-from test.operators.pytorch.eltwise_unary import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
+from ..ids.loader import TestIdsDataLoader
+
+from ..eltwise_unary import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 
 
 def prime_factors(n):
@@ -136,9 +136,9 @@ class TestVerification:
         logger.trace(f"***input_shapes: {input_shapes}")
 
         # We use AllCloseValueChecker in all cases except for integer data formats:
-        verify_config = VerifyConfig(value_checker=AllCloseValueChecker(atol=1e-2, rtol=1e-8))
+        value_checker = ValueCheckerUtils.all_close(atol=1e-2, rtol=1e-8)
         if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
-            verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
+            value_checker = ValueCheckerUtils.automatic()
 
         VerifyUtils.verify(
             model=pytorch_model,
@@ -149,7 +149,7 @@ class TestVerification:
             math_fidelity=test_vector.math_fidelity,
             warm_reset=warm_reset,
             value_range=value_range,
-            verify_config=verify_config,
+            value_checker=value_checker,
         )
 
 
