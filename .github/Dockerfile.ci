@@ -17,6 +17,10 @@ RUN mkdir -p $BUILD_DIR && \
 # Copy the project to the container
 ADD . $BUILD_DIR/$PROJECT_NAME
 
+# Install model dependencies as part of the Docker image
+WORKDIR $BUILD_DIR/$PROJECT_NAME
+RUN python scripts/install_model_deps.py
+
 # Build the toolchain
 WORKDIR $BUILD_DIR/$PROJECT_NAME
 
