@@ -65,6 +65,7 @@ def test_phi_4_causal_lm_pytorch(variant):
     verify(sample_inputs, framework_model, compiled_model)
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.xfail
@@ -98,6 +99,7 @@ def test_phi_4_token_classification_pytorch(variant):
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)

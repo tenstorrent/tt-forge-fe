@@ -587,7 +587,7 @@ def extract_and_export_unique_ops_config(
             named_parameters = flatten_params(named_parameters)
     elif framework == "tensorflow":
         for weight in framework_mod.module.weights:
-            named_parameters[weight.name] = weight.value()
+            named_parameters[weight.path] = weight
     if param_file_name is not None:
         serialized_params = torch.load(param_file_name)
         named_parameters.update(serialized_params)

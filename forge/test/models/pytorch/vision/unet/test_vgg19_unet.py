@@ -69,4 +69,4 @@ def test_vgg19_unet_brain_tumor_segmentation():
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Test is currently not executable due to model code dependency.")
+    pytest.xfail(reason="Test is currently not executable due to model code dependency.")
