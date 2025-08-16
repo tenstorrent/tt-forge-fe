@@ -1,0 +1,3 @@
+pytorchcv==0.0.67
+pillow
+timm
