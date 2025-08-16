@@ -25,7 +25,6 @@ class FailingReasonsRegister:
         ("conv2d", FailingReasons.DATA_MISMATCH_PCC_LOW_RANGE),
         ("conv2d", FailingReasons.NOT_IMPLEMENTED_ATEN),
         ("conv2d", FailingReasons.OUT_OF_MEMORY),
-        ("conv2d", FailingReasons.WEIGHT_BIAS_SHAPE_MISMATCH),
         ("conv_transpose_2d", FailingReasons.ASSERT_DIM),
         ("conv_transpose_2d", FailingReasons.ASSERT_GROUPS),
         ("conv_transpose_2d", FailingReasons.ASSERT_STRIDE),
@@ -102,7 +101,6 @@ class FailingReasonsRegister:
         ("sum", FailingReasons.DATA_MISMATCH_ALL_CLOSE),
         ("sum", FailingReasons.NOT_IMPLEMENTED),
         ("tanh", FailingReasons.DATA_MISMATCH_ALL_CLOSE),
-        ("tanh", FailingReasons.DTYPE_MISMATCH),
     ]
 
     # List of skip reasons for each operator
