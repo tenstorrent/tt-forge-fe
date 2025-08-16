@@ -66,6 +66,7 @@ variants = [
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2747")
 @pytest.mark.parametrize("variant", variants)
 def test_inception_v4_timm_pytorch(variant):
 

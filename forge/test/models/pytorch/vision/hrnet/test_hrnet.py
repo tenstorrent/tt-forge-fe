@@ -73,18 +73,25 @@ variants = [
     pytest.param("hrnet_w18_small_v1", marks=pytest.mark.push),
     pytest.param("hrnet_w18_small_v2"),
     pytest.param("hrnetv2_w18"),
-    pytest.param("hrnetv2_w30"),
+    pytest.param(
+        "hrnetv2_w30",
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2747")],
+    ),
     pytest.param(
         "hrnetv2_w32",
     ),
     pytest.param(
         "hrnetv2_w40",
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2747")],
     ),
     pytest.param("hrnetv2_w44"),
     pytest.param(
         "hrnetv2_w48",
     ),
-    pytest.param("hrnetv2_w64"),
+    pytest.param(
+        "hrnetv2_w64",
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2747")],
+    ),
 ]
 
 

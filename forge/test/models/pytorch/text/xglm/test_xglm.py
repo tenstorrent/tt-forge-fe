@@ -18,7 +18,10 @@ from forge.verify.verify import verify
 
 variants = [
     ModelVariant.XGLM_564M,
-    ModelVariant.XGLM_1_7B,
+    pytest.param(
+        ModelVariant.XGLM_1_7B,
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2747")],
+    ),
 ]
 
 
