@@ -386,26 +386,29 @@ std::unique_ptr<Graph> extract_optimizer_graph(
     std::vector<graphlib::NodeId> opt_module_inputs;
 
     // Add all parameter gradients used in the optimizer graph as input nodes.
-    for (auto grad_output : graph->nodes(
-             [](const graphlib::Node *node) {
-                 return node->node_type() == graphlib::NodeType::kQueue &&
-                        node->as<graphlib::QueueNode>()->is_grad_accumulator();
-             }))
+    auto grad_nodes = graph->nodes(
+        [](const graphlib::Node *node) {
+            return node->node_type() == graphlib::NodeType::kQueue &&
+                   node->as<graphlib::QueueNode>()->is_grad_accumulator();
+        });
+    log_debug("Found {} gradient accumulator nodes", grad_nodes.size());
+
+    for (auto grad_node : grad_nodes)
     {
-        if (!has_users_in_opt(graph, grad_output))
+        if (!has_users_in_opt(graph, grad_node))
         {
             continue;
         }
 
-        log_debug("Adding gradient input node {} as input to opt graph", grad_output->name());
-        auto grad_output_node =
-            graphlib::create_node<graphlib::InputNode>(grad_output->name(), graphlib::InputNodeType::Gradient, false);
-        grad_output_node->set_shape(grad_output->shape());
-        grad_output_node->set_output_df(grad_output->output_df());
-        grad_output_node->set_epoch_type(graphlib::NodeEpochType::Optimizer);
+        log_debug("Adding gradient input node {} as input to opt graph", grad_node->name());
+        auto grad_input_node =
+            graphlib::create_node<graphlib::InputNode>(grad_node->name(), graphlib::InputNodeType::Gradient, false);
+        grad_input_node->set_shape(grad_node->shape());
+        grad_input_node->set_output_df(grad_node->output_df());
+        grad_input_node->set_epoch_type(graphlib::NodeEpochType::Optimizer);
 
-        opt_graph->add_node(std::move(grad_output_node), 0 /*subgraph_id=*/);
-        opt_module_inputs.push_back(opt_graph->get_node_by_name(grad_output->name())->id());
+        opt_graph->add_node(std::move(grad_input_node), 0 /*subgraph_id=*/);
+        opt_module_inputs.push_back(opt_graph->get_node_by_name(grad_node->name())->id());
     }
 
     // Until this point, we have created all the inputs/outputs of the optimizer graph. Extract the rest of the
@@ -451,6 +454,43 @@ std::unique_ptr<Graph> extract_optimizer_graph(
         "Expect all inputs to the optimizer graph to be Gradient inputs");
 
     opt_graph->register_module_inputs(opt_module_inputs);
+
+    // Insert cast nodes for weight outputs to convert from fp32 back to original parameter dtype
+    for (auto output_id : opt_module_outputs)
+    {
+        auto output_node = opt_graph->node_by_id(output_id);
+        if (output_node->name().find("_updated") == std::string::npos)
+            continue;
+
+        // Get original parameter name and node
+        std::string param_name = output_node->name().substr(0, output_node->name().find("_updated"));
+        auto param_node = opt_graph->get_node_by_name(param_name);
+        if (!param_node || param_node->output_df() == DataFormat::Float32 ||
+            !is_float_data_format(param_node->output_df()))
+            continue;
+
+        // Get producer and insert cast node
+        auto producers = opt_graph->operands(output_node);
+        if (producers.empty())
+            continue;
+
+        auto producer = producers[0];
+        auto cast_node = opt_graph->add_node(
+            graphlib::create_node<graphlib::PyOpNode>(
+                param_name + "_cast_to_original",
+                graphlib::OpType("cast", {}, {{"dtype", static_cast<int>(param_node->output_df())}})),
+            0);
+
+        cast_node->set_shape(producer->shape());
+        cast_node->set_output_df(param_node->output_df());
+        cast_node->set_optimizer();
+
+        // Rewire: producer -> cast -> output
+        opt_graph->remove_edge(opt_graph->operand_data_edges(output_node)[0]);
+        opt_graph->add_edge(graphlib::Edge(producer->id(), 0, cast_node->id(), 0, graphlib::EdgeType::kData));
+        opt_graph->add_edge(graphlib::Edge(cast_node->id(), 0, output_node->id(), 0, graphlib::EdgeType::kData));
+    }
+
     opt_graph->register_module_outputs(opt_module_outputs);
 
     return opt_graph;

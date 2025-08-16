@@ -127,7 +127,8 @@ class autograd_engine
         std::string &suffix_identifier,
         const std::vector<std::uint32_t> &tensor_shape,
         bool copy_consteval_operations,
-        bool disable_consteval = false);
+        bool disable_consteval = false,
+        std::optional<DataFormat> dtype = std::nullopt);
 
     bool contains_bwd_nodes() const;
     const std::map<int, std::vector<Node *>> &get_bwd_nodes(Node *fwd) const;

@@ -160,6 +160,23 @@ inline bool is_a_data_format(DataFormat df)
     }
 }
 
+inline bool is_float_data_format(DataFormat df)
+{
+    switch (df)
+    {
+        case DataFormat::Float32:
+        case DataFormat::Float16:
+        case DataFormat::Float16_b:
+        case DataFormat::Bfp8:
+        case DataFormat::Bfp4:
+        case DataFormat::Bfp2:
+        case DataFormat::Bfp8_b:
+        case DataFormat::Bfp4_b:
+        case DataFormat::Lf8: return true;
+        default: return false;
+    }
+}
+
 inline DataFormat to_a_data_format(DataFormat df)
 {
     switch (df)
