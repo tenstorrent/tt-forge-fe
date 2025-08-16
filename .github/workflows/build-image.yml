@@ -26,7 +26,7 @@ permissions:
 jobs:
 
   build-image:
-    runs-on: tt-beta-ubuntu-2204-large
+    runs-on: tt-ubuntu-2204-large-stable
     outputs:
       docker-image: ${{ steps.build.outputs.docker-image }}
     steps:
