@@ -41,7 +41,6 @@ class FailingReasonsRegister:
         ("div", FailingReasons.VERIFICATION_FAILED_SPECIAL_VALUES),
         ("embedding", FailingReasons.FAILED_MLIR_VERIFICATION),
         ("embedding", FailingReasons.OUT_OF_MEMORY),
-        ("embedding", FailingReasons.VERIFICATION_FAILED_SPECIAL_VALUES),
         ("exp", FailingReasons.DATA_MISMATCH_ALL_CLOSE),
         ("ge", FailingReasons.DATA_MISMATCH_PCC_LOW_RANGE),
         ("ge", FailingReasons.DTYPE_MISMATCH),
