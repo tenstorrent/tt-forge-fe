@@ -99,7 +99,7 @@ class FailingReasonsRegister:
         ("sub", FailingReasons.DATA_MISMATCH_PCC_LOW_RANGE),
         ("sub", FailingReasons.DTYPE_MISMATCH),
         ("sum", FailingReasons.DATA_MISMATCH_ALL_CLOSE),
-        ("sum", FailingReasons.NOT_IMPLEMENTED),
+        ("sum", FailingReasons.SOURCE_MAPS_NOT_POPULATED),
         ("tanh", FailingReasons.DATA_MISMATCH_ALL_CLOSE),
     ]
 
