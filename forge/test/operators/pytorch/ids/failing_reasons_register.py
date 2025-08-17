@@ -98,7 +98,7 @@ class FailingReasonsRegister:
         ("sub", FailingReasons.DATA_MISMATCH_PCC_LOW_RANGE),
         ("sub", FailingReasons.DTYPE_MISMATCH),
         ("sum", FailingReasons.DATA_MISMATCH_ALL_CLOSE),
-        ("sum", FailingReasons.SOURCE_MAPS_NOT_POPULATED),
+        ("sum", FailingReasons.FAILED_MLIR_VERIFICATION),
         ("tanh", FailingReasons.DATA_MISMATCH_ALL_CLOSE),
     ]
 
