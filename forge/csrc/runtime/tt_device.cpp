@@ -67,7 +67,7 @@ void TTDevice::open_device(const DeviceSettings& settings)
     runtime::MeshDeviceOptions options;
     options.numHWCQs = num_hw_cqs;
     options.enableProgramCache = settings.enable_program_cache;
-    rt_device = runtime::openMeshDevice({1, 1}, options);
+    rt_device = runtime::openMeshDevice(options);
 }
 
 void TTDevice::close_device()
