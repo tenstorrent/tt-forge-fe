@@ -975,8 +975,8 @@ class FailingReasons(Enum):
         ],
     )
 
-    NOT_IMPLEMENTED = FailingReason(
-        description="Not implemented operator",
+    NOT_IMPLEMENTED_OLD = FailingReason(
+        description="Not implemented operator old",
         checks=[
             ExceptionCheck(
                 class_name="RuntimeError",
@@ -1516,6 +1516,10 @@ class FailingReasons(Enum):
 
     UNSUPPORTED_DIMENSION = FailingReason(
         description="Unsupported dimension",
+    )
+
+    NORMALIZATION_ONLY_LAST_DIM = FailingReason(
+        description="Normalization only over last dimension",
         checks=[
             # layer_norm	AssertionError: Support only normalization over last one dimension.
             # >       assert ndims == 1, "Support only normalization over last one dimension."
