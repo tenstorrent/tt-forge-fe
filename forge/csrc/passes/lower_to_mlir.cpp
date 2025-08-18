@@ -167,6 +167,8 @@ class AttributeMapper
         add_op_mapping("update_cache", "batch_offset", AttributeRemap(std::nullopt, TargetType::I32Attr));
         add_op_mapping("fill_cache", "batch_offset", AttributeRemap(std::nullopt, TargetType::I32Attr));
 
+        add_op_mapping("upsample2d", "scale_factor", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+
         // Add more default mappings here
     }
 };

@@ -24,7 +24,6 @@
 #include "passes/fuse_per_channel_ops.hpp"
 #include "passes/fuse_redundant_tm_sequence.hpp"
 #include "passes/generate_initial_flops_estimate.hpp"
-#include "passes/hoist_transforms_to_inputs.hpp"
 #include "passes/insert_inverse_on_io.hpp"
 #include "passes/mlir_compiler.hpp"
 #include "passes/pad_output_buffer.hpp"
@@ -132,7 +131,6 @@ void run_optimization_graph_passes(graphlib::Graph *graph)
 
     recalculate_shapes(graph);
 
-    passes::hoist_transforms_to_inputs(graph);
     passes::erase_consecutive_reshape(graph, true);
 
     passes::fuse_per_channel_ops(graph);
