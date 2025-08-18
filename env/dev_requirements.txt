@@ -74,11 +74,11 @@ peft==0.15.1
 patool
 
 #framework requirements - dev ML frameworks (CPU-only)
-onnx>=1.15.0
-onnxruntime>=1.16.3
-tf2onnx==1.15.1
-tensorflow-cpu==2.19.0
-tflite==2.10.0
-torch @ https://download.pytorch.org/whl/cpu/torch-2.7.0%2Bcpu-cp310-cp310-manylinux_2_28_x86_64.whl ; python_version == "3.10"
+#onnx>=1.15.0
+#onnxruntime>=1.16.3
+#tf2onnx==1.15.1
+#tensorflow-cpu==2.19.0
+#tflite==2.10.0
+#torch @ https://download.pytorch.org/whl/cpu/torch-2.7.0%2Bcpu-cp310-cp310-manylinux_2_28_x86_64.whl ; python_version == "3.10"
 #adding this here as torch internally installs the cuda version
-torchvision @ https://download.pytorch.org/whl/cpu/torchvision-0.22.0%2Bcpu-cp310-cp310-manylinux_2_28_x86_64.whl ; python_version == "3.10"
+#torchvision @ https://download.pytorch.org/whl/cpu/torchvision-0.22.0%2Bcpu-cp310-cp310-manylinux_2_28_x86_64.whl ; python_version == "3.10"
