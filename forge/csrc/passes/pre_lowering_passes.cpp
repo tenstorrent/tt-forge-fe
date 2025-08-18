@@ -16,10 +16,54 @@ using NodeType = graphlib::NodeType;
 using Edge = graphlib::Edge;
 using EdgeType = graphlib::EdgeType;
 
+// Helper function to determine if a node is user-defined or compiler-defined
+bool is_user_defined_node(const graphlib::Node *node)
+{
+    if (!node)
+        return false;
+
+    const graphlib::TaggedNode *tagged_node = node->as<graphlib::TaggedNode>();
+
+    // Check for compiler decomposition tags
+    if (tagged_node->has_tag("dont_decompose") || tagged_node->has_tag("optimize_hoist"))
+    {
+        return false;  // Compiler-defined due to decomposition tags
+    }
+
+    // Check naming pattern for compiler-generated nodes with .dc. suffix
+    std::string node_name = node->name();
+    if (node_name.find(".dc.") != std::string::npos)
+    {
+        return false;  // Compiler-defined due to naming pattern
+    }
+
+    // Check for frontend transformation using layer tag
+    if (tagged_node->has_tag("layer"))
+    {
+        std::string layer_name = std::get<std::string>(tagged_node->tag_value("layer"));
+
+        // if the prefix is / the node is Transformed from Frontend
+        if (!layer_name.empty() && layer_name[0] == '/')
+        {
+            return false;  // Frontend transformation
+        }
+    }
+
+    return true;
+}
 void convert_broadcast_ops_to_tms(Graph *graph)
 {
-    std::vector<Node *> broadcast_ops = graph->nodes(
-        [](Node *node) -> bool
+    // Determines if the consumer node is unary and if the broadcast is user-defined
+    // to decide whether to bypass the broadcast node.
+    //
+    // Bypass logic:
+    // - is_consumer_unary(True) && user_defined(True) -> Don't bypass
+    // - is_consumer_unary(False) && user_defined(True) -> Don't bypass
+    // - is_consumer_unary(False) && user_defined(False) -> Bypass
+    // - is_consumer_unary(True) && user_defined(False) -> Don't bypass
+
+    std::vector<graphlib::Node *> broadcast_ops = graph->nodes(
+        [](graphlib::Node *node) -> bool
         {
             graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(node);
             return op and op->op_type() == ops::OpType::Broadcast;
@@ -27,8 +71,32 @@ void convert_broadcast_ops_to_tms(Graph *graph)
 
     for (Node *node : broadcast_ops)
     {
-        graphlib::OpNode *op = node->as<graphlib::OpNode>();
-        ops::Op op_type = op->op();
+        graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(node);
+        if (not op)
+            continue;
+
+        auto op_type = op->op_type();
+        bool has_unary_consumer = false;
+        bool is_broadcast_user_defined = is_user_defined_node(node);
+
+        // Check if any consumer is unary
+        for (graphlib::Edge user_edge : graph->user_data_edges(node))
+        {
+            graphlib::OpNode *consumer_op =
+                dynamic_cast<graphlib::OpNode *>(graph->node_by_id(user_edge.consumer_node_id));
+            if (consumer_op && consumer_op->is_eltwise_unary())
+            {
+                has_unary_consumer = true;
+                break;
+            }
+        }
+
+        // Only bypass when: is_consumer_unary(False) && user_defined(False)
+        bool should_bypass = !has_unary_consumer && !is_broadcast_user_defined;
+
+        if (!should_bypass)
+            continue;
+
         constexpr bool remove_node = true;
         graphlib::bypass_node(
             graph,
