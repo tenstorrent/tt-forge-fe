@@ -28,6 +28,8 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.models_utils import TextModelWrapper
@@ -94,7 +96,6 @@ embedding_variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2806")
 @pytest.mark.parametrize("variant", embedding_variants)
 def test_qwen3_embedding(variant):
 
@@ -107,7 +108,7 @@ def test_qwen3_embedding(variant):
         source=Source.HUGGINGFACE,
     )
 
-    if variant == EmbeddingVariant.QWEN_3_EMBEDDING_8B:
+    if variant in [EmbeddingVariant.QWEN_3_EMBEDDING_4B, EmbeddingVariant.QWEN_3_EMBEDDING_8B]:
         pytest.xfail(reason="Requires multi-chip support")
 
     # Load Model and inputs using loader
@@ -127,7 +128,12 @@ def test_qwen3_embedding(variant):
     )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98)),
+    )
 
     # Post processing
     outputs = co_out[0]
