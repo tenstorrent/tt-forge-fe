@@ -198,8 +198,6 @@ tm_cpu_fallback_ops_to_not_include = [
     "nn.conv1d",
     "nn.conv2d_transpose",
     "nn.conv2d",
-    "nn.conv3d_transpose",
-    "nn.conv3d",
     "nn.dense",
     "nn.global_avg_pool2d",
     "nn.global_max_pool2d",
