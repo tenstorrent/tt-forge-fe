@@ -1268,14 +1268,18 @@ def populate_resize2d_args(graph, nid, compiler_cfg):
 
     sizes = [int(x) for x in node["attrs"]["size"][0]]
     assert len(sizes) == 2
-    method = node["attrs"]["method"][0][0]
 
-    assert (
-        method == "nearest_neighbor" or method == "linear" or method == "bilinear" or method == "cubic"
-    ), "Only support nearest neighbor, linear and cubic for now"
+    method = node["attrs"]["method"][0][0]
+    if method == "nearest_neighbor":
+        mode = "nearest"
+    elif method == "linear":
+        mode = "bilinear"
+    else:
+        mode = method
+
+    assert mode in ["nearest", "bilinear"], "Resize2d op only support nearest and bilinear mode for now"
+
     assert int(node["attrs"]["num_inputs"]) == 1
-    input_nid = node["inputs"][0][0]
-    input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
 
     args.append(
         (
@@ -1285,8 +1289,8 @@ def populate_resize2d_args(graph, nid, compiler_cfg):
     )
     args.append(
         (
-            "method",
-            f'"{method}"',
+            "mode",
+            f'"{mode}"',
         )
     )
 
@@ -1299,7 +1303,7 @@ def populate_resize2d_args(graph, nid, compiler_cfg):
         )
     )
 
-    channel_last = int(node["attrs"]["layout"][0][0] == "NHWC")
+    channel_last = bool(int(node["attrs"]["layout"][0][0] == "NHWC"))
     args.append(("channel_last", f"{channel_last}"))
 
     return args
@@ -1496,7 +1500,6 @@ tvm_to_forge_op_map = {
     "squeeze": "squeeze",
     "qnn.dense": "matmul",
     "atan": "atan",
-    "upsample2d": "upsample2d",
 }
 
 forge_op_to_function_name = {
@@ -1572,7 +1575,6 @@ forge_op_to_function_name = {
     "unsqueeze": "forge.op.Unsqueeze",
     "squeeze": "forge.op.Squeeze",
     "atan": "forge.op.Atan",
-    "upsample2d": "forge.op.Upsample2d",
 }
 forge_ops_needing_arguments = {
     "argmax": populate_argmax_args,
