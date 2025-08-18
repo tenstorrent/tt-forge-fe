@@ -82,19 +82,19 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     int input_h = static_cast<int>(input_shape[h_idx]);
     int input_w = static_cast<int>(input_shape[w_idx]);
 
-    // Determine whether to use upsample or downsample
-    bool upsample_h = (size_h >= input_h);
-    bool upsample_w = (size_w >= input_w);
+    // Determine whether each spatial dimension will be upsampling (increasing size)
+    bool is_upsampling_height = (size_h >= input_h);
+    bool is_upsampling_width = (size_w >= input_w);
 
     // Mixed up/downsample not allowed
-    if (upsample_h != upsample_w)
+    if (is_upsampling_height != is_upsampling_width)
     {
         TT_THROW(
             "OpType::Resize2d does not support one spatial dimension as upsample and another spatial dimension as "
             "downsample");
     }
 
-    if (upsample_h && upsample_w)
+    if (is_upsampling_height && is_upsampling_width)
         TT_ASSERT(
             (size_h % input_h == 0) && (size_w % input_w == 0), "Only support upsample with integer scale factor");
     else
@@ -146,12 +146,12 @@ void decompose_initial(
     int input_h = static_cast<int>(input_shape[h_idx]);
     int input_w = static_cast<int>(input_shape[w_idx]);
 
-    // Determine whether to use upsample or downsample
-    bool upsample_h = (size_h >= input_h);
-    bool upsample_w = (size_w >= input_w);
+    // Determine whether each spatial dimension will be upsampling (increasing size)
+    bool is_upsampling_height = (size_h >= input_h);
+    bool is_upsampling_width = (size_w >= input_w);
 
     // Mixed up/downsample not allowed
-    if (upsample_h != upsample_w)
+    if (is_upsampling_height != is_upsampling_width)
     {
         TT_THROW(
             "OpType::Resize2d does not support one spatial dimension as upsample and another spatial dimension as "
@@ -165,7 +165,7 @@ void decompose_initial(
         result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
     }
 
-    if (upsample_h && upsample_w)
+    if (is_upsampling_height && is_upsampling_width)
     {
         if (align_corners)
         {
