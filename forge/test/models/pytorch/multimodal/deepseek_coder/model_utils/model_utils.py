@@ -2,19 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_mask
-
-
-def download_model_and_tokenizer(model_name, **kwargs):
-    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-    model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True)
-
-    # Prepare input sentence
-    messages = [{"role": "user", "content": "write a bubble sort algorithm in python."}]
-    inputs = tokenizer.apply_chat_template(messages, add_generation_prompt=True, return_tensors="pt").to(model.device)
-
-    return model, tokenizer, inputs
 
 
 class DeepSeekWrapper(torch.nn.Module):

@@ -18,7 +18,7 @@ from forge.verify.verify import verify
 from test.models.pytorch.vision.yolo.model_utils.yolov4_utils import (
     Wrapper,
 )
-from third_party.tt_forge_models.yolov4 import ModelLoader  # isort:skip
+from third_party.tt_forge_models.yolov4.pytorch import ModelLoader  # isort:skip
 
 
 @pytest.mark.out_of_memory

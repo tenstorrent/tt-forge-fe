@@ -4,7 +4,6 @@
 ## Inception V4
 import pytest
 import torch
-from pytorchcv.model_provider import get_model as ptcv_get_model
 from third_party.tt_forge_models.inception.pytorch import ModelLoader, ModelVariant
 
 import forge
@@ -21,33 +20,24 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.models_utils import print_cls_results
-from test.models.pytorch.vision.inception.model_utils.model_utils import get_image
-from test.utils import download_model
-
-
-def generate_model_inceptionV4_imgcls_osmr_pytorch(variant):
-    # Load model
-    framework_model = download_model(ptcv_get_model, variant, pretrained=True)
-
-    # Load and pre-process image
-    img_tensor = get_image()
-
-    return framework_model.to(torch.bfloat16), [img_tensor.to(torch.bfloat16)]
-
 
 @pytest.mark.nightly
-def test_inception_v4_osmr_pytorch():
+@pytest.mark.parametrize("variant", [ModelVariant.INCEPTION_V4_OSMR])
+def test_inception_v4_osmr_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.INCEPTION,
-        variant="v4",
+        variant=variant,
         source=Source.OSMR,
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    framework_model, inputs = generate_model_inceptionV4_imgcls_osmr_pytorch("inceptionv4")
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -61,12 +51,12 @@ def test_inception_v4_osmr_pytorch():
     )
 
     # Model Verification
-    fw_out, co_out = verify(
+    _, co_out = verify(
         inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
     )
 
     # Post processing
-    print_cls_results(fw_out[0], co_out[0])
+    loader.print_cls_results(co_out)
 
 
 variants = [
@@ -106,7 +96,9 @@ def test_inception_v4_timm_pytorch(variant):
     )
 
     # Model Verification and inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(
+        inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
+    )
 
     # Post processing
     loader.print_cls_results(co_out)

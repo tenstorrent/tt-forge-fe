@@ -398,13 +398,20 @@ class DecomposeStack(DFPatternCallback):
         self.pattern = self.r4
 
     def callback(self, pre: Expr, post: Expr, node_map: tvm.ir.container.Map) -> Expr:
+
+        # Get original concatenate axis and target shape
+        concat_node = node_map[self.concatenate][0]
+        target_axis = concat_node.attrs.axis
+        target_shape = post.attrs.newshape
+
         # replacing concat op with stack, as is done in the pytorch decomposition
         act1 = node_map[self.act1][0]
         act2 = node_map[self.act2][0]
         tup = tvm.relay.Tuple([act1, act2])
-        stacked = tvm.relay.stack(tup, axis=-1)
-        r = tvm.relay.reshape(stacked, newshape=[0, 0, 0, -1, 1])
-        output = tvm.relay.squeeze(r, axis=[4])
+        # Use original axis for stack
+        stacked = tvm.relay.stack(tup, axis=target_axis)
+        # Use original target shape
+        output = tvm.relay.reshape(stacked, newshape=target_shape)
 
         return output
 
@@ -1038,8 +1045,10 @@ class RemoveRedundantReshape(DFPatternCallback):
     def callback(self, pre, post, node_map):
         act = node_map[self.input_tensor][0]
         reshape_op = node_map[self.reshape][0]
+        input_shape = list(act.checked_type.shape)
         new_shape = list(reshape_op.attrs.newshape)
-        if len(new_shape) == 0:
+        # Remove the reshape if the input and target shapes are identical
+        if input_shape == new_shape:
             return act
         else:
             return post

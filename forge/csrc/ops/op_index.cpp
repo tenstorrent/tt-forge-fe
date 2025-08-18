@@ -24,15 +24,57 @@ using namespace graphlib;
 
 at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Index, "Wrong op type.");
-    return op.base_eval(old_op_type, tensors);
+    TT_ASSERT(tensors.size() == 1, "Index should have one input tensor.");
+
+    const auto &input_tensor = tensors[0];
+
+    int dim = op.attr_as<int>("dim");
+    int start = op.attr_as<int>("start");
+    int stop = op.attr_as<int>("stop");
+    int stride = op.attr_as<int>("stride");
+
+    return input_tensor.slice(dim, start, stop, stride);
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
     const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Index, "Wrong op type.");
-    return op.base_shape(old_op_type, in_shapes);
+    TT_ASSERT(in_shapes.size() == 1, "Index should have one input shape.");
+
+    const auto &input_shape = in_shapes[0];
+    std::vector<std::uint32_t> output_shape(input_shape.begin(), input_shape.end());
+
+    int dim = op.attr_as<int>("dim");
+    int start = op.attr_as<int>("start");
+    int stop = op.attr_as<int>("stop");
+    int stride = op.attr_as<int>("stride");
+
+    // Convert dim to positive
+    if (dim < 0)
+        dim += static_cast<int>(output_shape.size());
+
+    TT_ASSERT(dim >= 0 && dim < static_cast<int>(output_shape.size()), "Invalid dimension index");
+
+    // Handle stride=0 case (use full dimension size as stride)
+    if (stride == 0)
+        stride = static_cast<int>(output_shape[dim]);
+
+    // Convert start to positive
+    if (start < 0)
+        start = static_cast<int>(output_shape[dim]) + start;
+
+    // Convert stop to positive
+    if (stop < 0)
+        stop = static_cast<int>(output_shape[dim]) + stop;
+
+    // Calculate the new dimension size: ceil((stop - start) / stride)
+    int new_size = (stop - start + stride - 1) / stride;
+    if (new_size < 0)
+        new_size = 0;
+
+    output_shape[dim] = static_cast<std::uint32_t>(new_size);
+
+    return std::make_tuple(Shape::create(output_shape), std::vector<DimBroadcast>{});
 }
 
 NodeContext backward(
@@ -44,36 +86,78 @@ NodeContext backward(
     const NodeContext &output,
     const NodeContext &gradient)
 {
-    TT_DBG_ASSERT(op.type() == OpType::Index, "Wrong op type.");
-    return op.base_backward(old_op_type, ac, operand, inputs, output, gradient);
-}
+    TT_ASSERT(operand == 0, "Index should have exactly one input");
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Index, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
-}
+    int dim = op.attr_as<int>("dim");
+    int start = op.attr_as<int>("start");
+    int stop = op.attr_as<int>("stop");
+    int stride = op.attr_as<int>("stride");
 
-void decompose_post_optimize(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Index, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
-}
+    auto input_shape_uint = inputs[0].shape.as_vector();
+    std::vector<int64_t> input_shape(input_shape_uint.begin(), input_shape_uint.end());
+    int num_dims = static_cast<int>(input_shape.size());
 
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Index, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
-}
+    // Convert to positive dimension
+    if (dim < 0)
+        dim += num_dims;
 
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Index, "Wrong op type.");
-    return op.base_initial_flops_estimate(old_op_type, inputs);
+    TT_ASSERT(dim >= 0 && dim < num_dims, "Invalid dimension index: " + std::to_string(dim));
+
+    // Handle stride=0 case (use full dimension size as stride)
+    if (stride == 0)
+        stride = static_cast<int>(input_shape[dim]);
+
+    // Convert start to positive
+    if (start < 0)
+        start = static_cast<int>(input_shape[dim]) + start;
+
+    // Convert stop to positive
+    if (stop < 0)
+        stop = static_cast<int>(input_shape[dim]) + stop;
+
+    // For each gradient element, create a padded tensor that places it at the correct position
+    // Then add it to the result which is initially zero tensor of the same shape as the input
+    int num_elements = (stop - start + stride - 1) / stride;  // ceiling division
+
+    // Start with zero tensor
+    auto zero_tensor = at::zeros(input_shape, data_format_to_scalar_type(gradient.output_df));
+    auto result = ac.autograd->create_constant_tensor(ac, zero_tensor);
+
+    int input_size_dim = static_cast<int>(input_shape[dim]);
+
+    // For each element in the gradient, create a padded version and add it to the result
+    for (int i = 0; i < num_elements; i++)
+    {
+        int target_pos = start + i * stride;
+
+        // Extract the i-th element from gradient
+        graphlib::OpType index_op("index");
+        index_op.set_attr("dim", dim);
+        index_op.set_attr("start", i);
+        index_op.set_attr("stop", i + 1);
+        index_op.set_attr("stride", 1);
+
+        auto grad_element = ac.autograd->create_op(ac, index_op, {gradient});
+
+        // Calculate padding for the indexed element
+        // Use constant_pad with TTIR format: [dim0_low, dim0_high, dim1_low, dim1_high, ...]
+        std::vector<int> padding(num_dims * 2, 0);
+
+        padding[dim * 2] = target_pos;                           // low padding
+        padding[dim * 2 + 1] = input_size_dim - target_pos - 1;  // high padding
+
+        graphlib::OpType constant_pad_op("constant_pad");
+        constant_pad_op.set_attr("padding", padding);
+        constant_pad_op.set_attr("value", 0.0f);
+
+        auto padded_grad_element = ac.autograd->create_op(ac, constant_pad_op, {grad_element});
+
+        // Add this padded gradient to the result
+        graphlib::OpType add_op("add");
+        result = ac.autograd->create_op(ac, add_op, {result, padded_grad_element});
+    }
+
+    return result;
 }
 
 }  // namespace index

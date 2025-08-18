@@ -24,7 +24,6 @@ from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
 
 from test.models.pytorch.vision.retinanet.model_utils.model_utils import Wrapper
-from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
 
 variants = [
     ModelVariant.RETINANET_RN18FPN,
@@ -44,7 +43,7 @@ def test_retinanet(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.RETINANET,
         variant=variant.value,
-        source=Source.HUGGINGFACE,
+        source=Source.GITHUB,
         task=Task.OBJECT_DETECTION,
     )
 
@@ -71,13 +70,8 @@ def test_retinanet(variant):
     )
 
 
-variants_with_weights = {
-    "retinanet_resnet50_fpn_v2": "RetinaNet_ResNet50_FPN_V2_Weights",
-}
-
-
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants_with_weights.keys())
+@pytest.mark.parametrize("variant", [ModelVariant.RETINANET_RESNET50_FPN_V2])
 def test_retinanet_torchvision(variant):
 
     # Record Forge Property
@@ -91,11 +85,11 @@ def test_retinanet_torchvision(variant):
     pytest.xfail(reason="Fatal Python error: Aborted")
 
     # Load model and input
-    weight_name = variants_with_weights[variant]
-    framework_model, inputs = load_vision_model_and_input(variant, "detection", weight_name)
-    framework_model.to(torch.bfloat16)
-    framework_model = Wrapper(framework_model)
-    inputs = [inputs[0].to(torch.bfloat16)]
+    loader = ModelLoader(variant=variant)
+    model = loader.load_model(dtype_override=torch.bfloat16)
+    framework_model = Wrapper(model)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)

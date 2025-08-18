@@ -54,6 +54,7 @@ class NewToOldOpType
         mapping_[OpType::Clip] = "clip";
         mapping_[OpType::Concatenate] = "concatenate";
         mapping_[OpType::Constant] = "constant";
+        mapping_[OpType::ConstantPad] = "constant_pad";
         mapping_[OpType::Conv2d] = "conv2d";
         mapping_[OpType::Conv2dDepthwiseWeights] = "conv2d_depthwise_weights";
         mapping_[OpType::Conv2dDepthwiseWeightsBw] = "conv2d_depthwise_weights_bw";
@@ -105,7 +106,6 @@ class NewToOldOpType
         mapping_[OpType::Nop] = "nop";
         mapping_[OpType::NotEqual] = "not_equal";
         mapping_[OpType::Pad] = "pad";
-        mapping_[OpType::PadTile] = "pad_tile";
         mapping_[OpType::PixelShuffle] = "pixel_shuffle";
         mapping_[OpType::Pow] = "pow";
         mapping_[OpType::Power] = "power";
@@ -164,6 +164,7 @@ class OldToNewOpType
         mapping_["clip"] = OpType::Clip;
         mapping_["concatenate"] = OpType::Concatenate;
         mapping_["constant"] = OpType::Constant;
+        mapping_["constant_pad"] = OpType::ConstantPad;
         mapping_["conv2d"] = OpType::Conv2d;
         mapping_["conv2d_depthwise_weights"] = OpType::Conv2dDepthwiseWeights;
         mapping_["conv2d_depthwise_weights_bw"] = OpType::Conv2dDepthwiseWeightsBw;
@@ -215,7 +216,6 @@ class OldToNewOpType
         mapping_["nop"] = OpType::Nop;
         mapping_["not_equal"] = OpType::NotEqual;
         mapping_["pad"] = OpType::Pad;
-        mapping_["pad_tile"] = OpType::PadTile;
         mapping_["pixel_shuffle"] = OpType::PixelShuffle;
         mapping_["pow"] = OpType::Pow;
         mapping_["power"] = OpType::Power;
@@ -339,6 +339,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Clip: return clip::eval(old_op_type, *this, tensors);
         case OpType::Concatenate: return concatenate::eval(old_op_type, *this, tensors);
         case OpType::Constant: return constant::eval(old_op_type, *this, tensors);
+        case OpType::ConstantPad: return constant_pad::eval(old_op_type, *this, tensors);
         case OpType::Conv2d: return conv_2d::eval(old_op_type, *this, tensors);
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::eval(old_op_type, *this, tensors);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::eval(old_op_type, *this, tensors);
@@ -390,7 +391,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Nop: return nop::eval(old_op_type, *this, tensors);
         case OpType::NotEqual: return not_equal::eval(old_op_type, *this, tensors);
         case OpType::Pad: return pad::eval(old_op_type, *this, tensors);
-        case OpType::PadTile: return pad_tile::eval(old_op_type, *this, tensors);
         case OpType::PixelShuffle: return pixel_shuffle::eval(old_op_type, *this, tensors);
         case OpType::Pow: return pow::eval(old_op_type, *this, tensors);
         case OpType::Power: return power::eval(old_op_type, *this, tensors);
@@ -442,6 +442,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Clip: return clip::shape(old_op_type, *this, inputs);
         case OpType::Concatenate: return concatenate::shape(old_op_type, *this, inputs);
         case OpType::Constant: return constant::shape(old_op_type, *this, inputs);
+        case OpType::ConstantPad: return constant_pad::shape(old_op_type, *this, inputs);
         case OpType::Conv2d: return conv_2d::shape(old_op_type, *this, inputs);
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::shape(old_op_type, *this, inputs);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::shape(old_op_type, *this, inputs);
@@ -493,7 +494,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Nop: return nop::shape(old_op_type, *this, inputs);
         case OpType::NotEqual: return not_equal::shape(old_op_type, *this, inputs);
         case OpType::Pad: return pad::shape(old_op_type, *this, inputs);
-        case OpType::PadTile: return pad_tile::shape(old_op_type, *this, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::shape(old_op_type, *this, inputs);
         case OpType::Pow: return pow::shape(old_op_type, *this, inputs);
         case OpType::Power: return power::shape(old_op_type, *this, inputs);
@@ -550,6 +550,7 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Clip: return clip::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Concatenate: return concatenate::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Constant: return constant::backward(old_op_type, *this, context, operand, inputs, output, gradient);
+        case OpType::ConstantPad: return constant_pad::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Conv2d: return conv_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -601,7 +602,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Nop: return nop::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::NotEqual: return not_equal::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Pad: return pad::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::PadTile: return pad_tile::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::PixelShuffle: return pixel_shuffle::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Pow: return pow::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Power: return power::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -675,6 +675,7 @@ void Op::decompose_initial(
         case OpType::Clip: return;
         case OpType::Concatenate: return concatenate::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Constant: return;
+        case OpType::ConstantPad: return;
         case OpType::Conv2d: return conv_2d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::decompose_initial(old_op_type, *this, dc, inputs);
@@ -703,7 +704,7 @@ void Op::decompose_initial(
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
         case OpType::Heaviside: return;
-        case OpType::Index: return index::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Index: return;
         case OpType::IndexCopy: return index_copy::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Interleave: return interleave::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Layernorm: return;
@@ -726,7 +727,6 @@ void Op::decompose_initial(
         case OpType::Nop: return;
         case OpType::NotEqual: return;
         case OpType::Pad: return pad::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::PadTile: return pad_tile::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::PixelShuffle: return pixel_shuffle::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Pow: return;
         case OpType::Power: return;
@@ -780,6 +780,7 @@ void Op::decompose_post_optimize(
         case OpType::Clip: return;
         case OpType::Concatenate: return;
         case OpType::Constant: return;
+        case OpType::ConstantPad: return;
         case OpType::Conv2d: return;
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::decompose_post_optimize(old_op_type, *this, dc, inputs);
@@ -808,7 +809,7 @@ void Op::decompose_post_optimize(
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
         case OpType::Heaviside: return;
-        case OpType::Index: return index::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Index: return;
         case OpType::IndexCopy: return index_copy::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Interleave: return interleave::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Layernorm: return;
@@ -830,8 +831,7 @@ void Op::decompose_post_optimize(
         case OpType::Multiply: return;
         case OpType::Nop: return;
         case OpType::NotEqual: return;
-        case OpType::Pad: return pad::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::PadTile: return pad_tile::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Pad: return;
         case OpType::PixelShuffle: return pixel_shuffle::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Pow: return;
         case OpType::Power: return;
@@ -885,6 +885,7 @@ void Op::decompose_post_autograd(
         case OpType::Clip: return;
         case OpType::Concatenate: return;
         case OpType::Constant: return;
+        case OpType::ConstantPad: return;
         case OpType::Conv2d: return;
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -913,7 +914,7 @@ void Op::decompose_post_autograd(
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
         case OpType::Heaviside: return heaviside::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Index: return index::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Index: return;
         case OpType::IndexCopy: return index_copy::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Interleave: return interleave::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Layernorm: return layernorm::decompose_post_autograd(old_op_type, *this, dc, inputs);
@@ -935,8 +936,7 @@ void Op::decompose_post_autograd(
         case OpType::Multiply: return;
         case OpType::Nop: return;
         case OpType::NotEqual: return;
-        case OpType::Pad: return pad::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::PadTile: return pad_tile::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Pad: return;
         case OpType::PixelShuffle: return pixel_shuffle::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Pow: return;
         case OpType::Power: return;
@@ -988,6 +988,7 @@ long Op::initial_flops_estimate(
         case OpType::Clip: return 0;
         case OpType::Concatenate: return 0;
         case OpType::Constant: return 0;
+        case OpType::ConstantPad: return 0;
         case OpType::Conv2d: return 0;
         case OpType::Conv2dDepthwiseWeights: return conv_2d_depthwise_weights::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Conv2dDepthwiseWeightsBw: return conv_2d_depthwise_weights_bw::initial_flops_estimate(old_op_type, *this, inputs);
@@ -1016,7 +1017,7 @@ long Op::initial_flops_estimate(
         case OpType::Greater: return 0;
         case OpType::GreaterEqual: return 0;
         case OpType::Heaviside: return 0;
-        case OpType::Index: return index::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Index: return 0;
         case OpType::IndexCopy: return index_copy::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Interleave: return interleave::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Layernorm: return 0;
@@ -1038,8 +1039,7 @@ long Op::initial_flops_estimate(
         case OpType::Multiply: return 0;
         case OpType::Nop: return 0;
         case OpType::NotEqual: return 0;
-        case OpType::Pad: return pad::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::PadTile: return pad_tile::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Pad: return 0;
         case OpType::PixelShuffle: return pixel_shuffle::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Pow: return 0;
         case OpType::Power: return 0;
@@ -1090,6 +1090,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Clip: return false;
         case OpType::Concatenate: return false;
         case OpType::Constant: return false;
+        case OpType::ConstantPad: return true;
         case OpType::Conv2d: return false;
         case OpType::Conv2dDepthwiseWeights: return true;
         case OpType::Conv2dDepthwiseWeightsBw: return true;
@@ -1141,7 +1142,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Nop: return false;
         case OpType::NotEqual: return false;
         case OpType::Pad: return true;
-        case OpType::PadTile: return true;
         case OpType::PixelShuffle: return true;
         case OpType::Pow: return false;
         case OpType::Power: return false;
@@ -1192,6 +1192,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Clip: return true;
         case OpType::Concatenate: return true;
         case OpType::Constant: return false;
+        case OpType::ConstantPad: return false;
         case OpType::Conv2d: return false;
         case OpType::Conv2dDepthwiseWeights: return false;
         case OpType::Conv2dDepthwiseWeightsBw: return false;
@@ -1243,7 +1244,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Nop: return true;
         case OpType::NotEqual: return true;
         case OpType::Pad: return false;
-        case OpType::PadTile: return false;
         case OpType::PixelShuffle: return false;
         case OpType::Pow: return true;
         case OpType::Power: return true;
@@ -1294,6 +1294,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Clip: return true;
         case OpType::Concatenate: return false;
         case OpType::Constant: return false;
+        case OpType::ConstantPad: return false;
         case OpType::Conv2d: return false;
         case OpType::Conv2dDepthwiseWeights: return false;
         case OpType::Conv2dDepthwiseWeightsBw: return false;
@@ -1345,7 +1346,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Nop: return true;
         case OpType::NotEqual: return false;
         case OpType::Pad: return false;
-        case OpType::PadTile: return false;
         case OpType::PixelShuffle: return false;
         case OpType::Pow: return true;
         case OpType::Power: return false;
@@ -1396,6 +1396,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Clip: return false;
         case OpType::Concatenate: return false;
         case OpType::Constant: return false;
+        case OpType::ConstantPad: return false;
         case OpType::Conv2d: return false;
         case OpType::Conv2dDepthwiseWeights: return false;
         case OpType::Conv2dDepthwiseWeightsBw: return false;
@@ -1447,7 +1448,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Nop: return false;
         case OpType::NotEqual: return true;
         case OpType::Pad: return false;
-        case OpType::PadTile: return false;
         case OpType::PixelShuffle: return false;
         case OpType::Pow: return false;
         case OpType::Power: return true;
@@ -1498,6 +1498,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Clip: return false;
         case OpType::Concatenate: return true;
         case OpType::Constant: return false;
+        case OpType::ConstantPad: return false;
         case OpType::Conv2d: return false;
         case OpType::Conv2dDepthwiseWeights: return false;
         case OpType::Conv2dDepthwiseWeightsBw: return false;
@@ -1548,7 +1549,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Nop: return false;
         case OpType::NotEqual: return false;
         case OpType::Pad: return false;
-        case OpType::PadTile: return false;
         case OpType::PixelShuffle: return false;
         case OpType::Pow: return false;
         case OpType::Power: return false;

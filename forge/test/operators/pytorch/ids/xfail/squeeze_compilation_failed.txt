@@ -1,5 +1,0 @@
-# xfail_squeeze_COMPILATION_FAILED ids
-
-squeeze-FROM_ANOTHER_OP-None-(1, 1)-None-None
-squeeze-FROM_HOST-None-(1, 1)-None-None
-squeeze-CONST_EVAL_PASS-None-(1, 1)-None-None

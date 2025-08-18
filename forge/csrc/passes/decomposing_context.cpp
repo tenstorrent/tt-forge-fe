@@ -188,6 +188,32 @@ NodeContext DecomposingContext::tensor(const at::Tensor &tensor)
     return NodeContext(node);
 }
 
+NodeContext DecomposingContext::create_constant_tensor(DecomposingContext &dc, const at::Tensor &tensor)
+{
+    // Convert at::Tensor to Python object for storage
+    py::object py_tensor = py::cast(tensor);
+    std::shared_ptr<void> tensor_ptr = make_shared_py_object(py_tensor);
+
+    graphlib::Shape shape = graphlib::Shape::create(std::vector<int64_t>(tensor.sizes().begin(), tensor.sizes().end()));
+
+    // Create node with given shape
+    auto node = dc.get_graph()->add_node(
+        graphlib::create_node<graphlib::ConstantInputNode>(
+            "dc.input_constant_" + dc.get_node_name() + "_" + std::to_string(dc.get_op_index()), tensor_ptr, shape),
+        dc.get_subgraph_idx());
+
+    node->set_shape(shape);
+
+    DataFormat output_df = graphlib::scalar_type_to_data_format(tensor.scalar_type());
+    node->set_output_df(output_df);
+
+    node->set_epoch_type(dc.get_node()->get_epoch_type());
+
+    dc.increment_op_index();
+
+    return NodeContext(node);
+}
+
 template <DecomposeEpoch epoch>
 std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_tt_forge_graph(
     Graph *graph, std::shared_ptr<void> compiler_cfg)

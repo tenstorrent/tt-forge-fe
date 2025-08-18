@@ -191,8 +191,8 @@ TestParamsData.test_plan = TestPlan(
         TestCollection(
             operators=TestParamsData.operators,
             input_shapes=[(10, 10, 10000, 1)],
-            skip_reason=FailingReasons.ALLOCATION_FAILED,
-            failing_reason=FailingReasons.ALLOCATION_FAILED,
+            skip_reason=FailingReasons.OUT_OF_MEMORY,
+            failing_reason=FailingReasons.OUT_OF_MEMORY,
         ),
         # # Unsupported data format:
         # TestCollection(

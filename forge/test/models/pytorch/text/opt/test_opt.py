@@ -66,11 +66,9 @@ class OptModelWrapper(torch.nn.Module):
 variants = [
     pytest.param(
         CausalLMVariant.OPT_125M,
-        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2661")],
     ),
     pytest.param(
         CausalLMVariant.OPT_350M,
-        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2661")],
     ),
     pytest.param(
         CausalLMVariant.OPT_1_3B,
@@ -117,7 +115,6 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2661")
 @pytest.mark.parametrize("variant", variants)
 def test_opt_qa(variant):
 
@@ -152,10 +149,7 @@ def test_opt_qa(variant):
 variants = [
     SequenceClassificationVariant.OPT_125M,
     SequenceClassificationVariant.OPT_350M,
-    pytest.param(
-        SequenceClassificationVariant.OPT_1_3B,
-        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2661")],
-    ),
+    SequenceClassificationVariant.OPT_1_3B,
 ]
 
 

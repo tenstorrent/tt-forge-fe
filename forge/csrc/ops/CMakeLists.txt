@@ -16,6 +16,7 @@ add_library(ops
     op_clip.cpp
     op_concatenate.cpp
     op_constant.cpp
+    op_constant_pad.cpp
     op_conv_2d.cpp
     op_conv_2d_depthwise_weights.cpp
     op_conv_2d_depthwise_weights_bw.cpp
@@ -67,7 +68,6 @@ add_library(ops
     op_nop.cpp
     op_not_equal.cpp
     op_pad.cpp
-    op_pad_tile.cpp
     op_pixel_shuffle.cpp
     op_pow.cpp
     op_power.cpp
