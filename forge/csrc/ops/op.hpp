@@ -129,6 +129,7 @@ enum class OpType : uint32_t
     Unsqueeze,
     UpdateCache,
     Upsample2d,
+    TopK,
     Where,
 };
 

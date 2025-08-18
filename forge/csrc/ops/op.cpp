@@ -125,6 +125,7 @@ class NewToOldOpType
         mapping_[OpType::Unsqueeze] = "unsqueeze";
         mapping_[OpType::UpdateCache] = "update_cache";
         mapping_[OpType::Upsample2d] = "upsample2d";
+        mapping_[OpType::TopK] = "topk";
         mapping_[OpType::Where] = "where";
     }
 
@@ -227,6 +228,7 @@ class OldToNewOpType
         mapping_["unsqueeze"] = OpType::Unsqueeze;
         mapping_["update_cache"] = OpType::UpdateCache;
         mapping_["upsample2d"] = OpType::Upsample2d;
+        mapping_["topk"] = OpType::TopK;
         mapping_["where"] = OpType::Where;
     }
 
@@ -394,6 +396,7 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Unsqueeze: return unsqueeze::eval(old_op_type, *this, tensors);
         case OpType::UpdateCache: return update_cache::eval(old_op_type, *this, tensors);
         case OpType::Upsample2d: return upsample_2d::eval(old_op_type, *this, tensors);
+        case OpType::TopK: return topk::eval(old_op_type, *this, tensors);
         case OpType::Where: return where::eval(old_op_type, *this, tensors);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
@@ -489,6 +492,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Unsqueeze: return unsqueeze::shape(old_op_type, *this, inputs);
         case OpType::UpdateCache: return update_cache::shape(old_op_type, *this, inputs);
         case OpType::Upsample2d: return upsample_2d::shape(old_op_type, *this, inputs);
+        case OpType::TopK: return topk::shape(old_op_type, *this, inputs);
         case OpType::Where: return where::shape(old_op_type, *this, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
@@ -589,6 +593,7 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Unsqueeze: return unsqueeze::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::UpdateCache: return update_cache::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Upsample2d: return upsample_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
+        case OpType::TopK: return topk::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Where: return where::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
@@ -706,6 +711,7 @@ void Op::decompose_initial(
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
+        case OpType::TopK: return;
         case OpType::Where: return where::decompose_initial(old_op_type, *this, dc, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
@@ -802,6 +808,7 @@ void Op::decompose_post_optimize(
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
+        case OpType::TopK: return;
         case OpType::Where: return where::decompose_post_optimize(old_op_type, *this, dc, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
@@ -899,6 +906,7 @@ void Op::decompose_post_autograd(
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
+        case OpType::TopK: return;
         case OpType::Where: return where::decompose_post_autograd(old_op_type, *this, dc, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
@@ -994,6 +1002,7 @@ long Op::initial_flops_estimate(
         case OpType::Unsqueeze: return 0;
         case OpType::UpdateCache: return 0;
         case OpType::Upsample2d: return 0;
+        case OpType::TopK: return 0;
         case OpType::Where: return where::initial_flops_estimate(old_op_type, *this, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
@@ -1088,6 +1097,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Unsqueeze: return true;
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
+        case OpType::TopK: return false;
         case OpType::Where: return false;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }
@@ -1182,6 +1192,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Unsqueeze: return false;
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
+        case OpType::TopK: return false;
         case OpType::Where: return true;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }
@@ -1276,6 +1287,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Unsqueeze: return false;
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
+        case OpType::TopK: return false;
         case OpType::Where: return false;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }
@@ -1370,6 +1382,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Unsqueeze: return false;
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
+        case OpType::TopK: return false;
         case OpType::Where: return false;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }
@@ -1463,6 +1476,7 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Unsqueeze: return false;
         case OpType::UpdateCache: return false;
         case OpType::Upsample2d: return false;
+        case OpType::TopK: return false;
         case OpType::Where: return true;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }

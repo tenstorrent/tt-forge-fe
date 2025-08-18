@@ -871,7 +871,10 @@ def to_forge_tensors(tensors: Tuple[Union[torch.Tensor, Tensor], ...]) -> Tuple[
         elif t is None:
             continue
         elif isinstance(t, (list, tuple)):
-            forge_tensors.append(to_forge_tensors(t))
+            forge_tensors.extend(to_forge_tensors(t))
+        elif hasattr(t, "__iter__") and hasattr(t, "__len__"):
+            # Accept tuple-like wrappers (e.g., TensorPair)
+            forge_tensors.extend(to_forge_tensors(tuple(t)))
         elif isinstance(t, dict):
             tensor_list = list(t.values())
             pb_dict = {k: v for (k, _), v, in zip(t.items(), to_forge_tensors(tensor_list))}

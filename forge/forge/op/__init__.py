@@ -72,3 +72,4 @@ from .embedding import Embedding
 from .kv_cache import FillCache, UpdateCache
 from .misc import CumSum
 import forge.op.loss
+from .topk import TopK
