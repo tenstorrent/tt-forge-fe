@@ -8,6 +8,8 @@ from third_party.tt_forge_models.beit.pytorch import ModelLoader as BeitLoader
 from third_party.tt_forge_models.beit.pytorch import ModelVariant as BeitVariant
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
     ModelArch,
@@ -42,14 +44,18 @@ def test_beit_image_classification_pytorch(variant):
     # Load model and input
     loader = BeitLoader(variant)
     model = loader.load_model(dtype_override=torch.bfloat16)
+    model.config.return_dict = False
     input_dict = loader.load_inputs(dtype_override=torch.bfloat16)
 
     # prepare inputs
     inputs = [input_dict["pixel_values"]]
     model.eval()
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
-    compiled_model = forge.compile(model, inputs, module_name)
+    compiled_model = forge.compile(model, inputs, module_name, compiler_cfg=compiler_cfg)
 
     # Model Verification
     verify(inputs, model, compiled_model)

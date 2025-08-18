@@ -81,9 +81,9 @@ def test_segformer_image_classification_pytorch(variant):
 
 
 variants_semseg = [
-    pytest.param("nvidia/segformer-b0-finetuned-ade-512-512", marks=pytest.mark.xfail),
-    pytest.param("nvidia/segformer-b1-finetuned-ade-512-512", marks=pytest.mark.xfail),
-    pytest.param("nvidia/segformer-b2-finetuned-ade-512-512", marks=[pytest.mark.out_of_memory, pytest.mark.xfail]),
+    pytest.param("nvidia/segformer-b0-finetuned-ade-512-512"),
+    pytest.param("nvidia/segformer-b1-finetuned-ade-512-512"),
+    pytest.param("nvidia/segformer-b2-finetuned-ade-512-512", marks=pytest.mark.xfail),
     pytest.param("nvidia/segformer-b3-finetuned-ade-512-512", marks=pytest.mark.xfail),
     pytest.param("nvidia/segformer-b4-finetuned-ade-512-512", marks=pytest.mark.xfail),
 ]
@@ -103,7 +103,7 @@ def test_segformer_semantic_segmentation_pytorch(variant):
     )
 
     # Load the model from HuggingFace
-    framework_model = SegformerForSemanticSegmentation.from_pretrained(variant).to(torch.bfloat16)
+    framework_model = SegformerForSemanticSegmentation.from_pretrained(variant, return_dict=False).to(torch.bfloat16)
     framework_model.eval()
 
     # Load the sample image
