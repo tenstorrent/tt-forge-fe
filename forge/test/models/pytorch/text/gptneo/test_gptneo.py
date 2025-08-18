@@ -30,7 +30,10 @@ from forge.verify.verify import verify
 from test.models.models_utils import TextModelWrapper
 
 GPTNEO_VARIANTS = [
-    CausalLMVariant.GPT_NEO_125M,
+    pytest.param(
+        CausalLMVariant.GPT_NEO_125M,
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2747")],
+    ),
     CausalLMVariant.GPT_NEO_1_3B,
     pytest.param(
         CausalLMVariant.GPT_NEO_2_7B,
