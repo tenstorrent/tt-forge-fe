@@ -4,6 +4,7 @@
 from functools import wraps
 from forge.op.tm import Broadcast, Unsqueeze
 from ..module import ForgeModule
+from ..tensor import Tensor
 from .constant import Constant
 from .eltwise_unary import Clip, Log, Abs, Sigmoid, Sqrt
 from .eltwise_binary import Add, GreaterEqual, Less, Max, Min, Subtract, Multiply
@@ -15,6 +16,9 @@ def validate_shapes(min_dim=None, max_dim=None):
     def decorator(func):
         @wraps(func)
         def wrapper(self, predictions, labels, *args, **kwargs):
+            assert isinstance(predictions, Tensor), "predictions must be a forge tensor"
+            assert isinstance(labels, Tensor), "labels must be a forge tensor"
+            assert predictions.data_format == labels.data_format, "Data format of predictions and labels must match"
             assert (
                 predictions.ndim() == labels.ndim()
             ), f"Number of dimensions for predictions and labels must match. Got {predictions.ndim()} and {labels.ndim()}."
@@ -76,7 +80,7 @@ class CrossEntropyLoss(ForgeModule):
         product = Multiply("products", labels, log_softmax)
         log_loss = ReduceSum("log_loss", product, dim=-1)
 
-        negative_one_constant = Constant("negative_one_const", constant=-1.0)
+        negative_one_constant = Constant("negative_one_const", constant=-1.0, dtype=predictions.data_format)
         negative_log_loss = Multiply(
             "negative_log_loss",
             log_loss,
@@ -139,7 +143,7 @@ class NLLLoss(ForgeModule):
     @validate_shapes(min_dim=1, max_dim=2)
     def forward(self, prediction, labels):
         weighted_prediction = Multiply("mul_pred_labels", prediction, labels)
-        negative_one = Constant("negative_one", constant=-1.0)
+        negative_one = Constant("negative_one", constant=-1.0, dtype=prediction.data_format)
         loss = Multiply("mul_neg_loss", weighted_prediction, negative_one)
         loss = ReduceSum("r_sum", loss, -1)
         loss = reduce_loss(self.reduction, loss)
@@ -190,7 +194,7 @@ class HuberLoss(ForgeModule):
         abs_diff = Abs("abs", diff)
 
         # delta
-        const_delta = Constant("delta", constant=self.delta)
+        const_delta = Constant("delta", constant=self.delta, dtype=prediction.data_format)
         # doing manual broadcasting because of the following issue:
         # https://github.com/tenstorrent/tt-metal/issues/15965
         delta = Broadcast("broadcast_delta_1", const_delta, dim=0, shape=abs_diff.shape[0])
@@ -202,7 +206,7 @@ class HuberLoss(ForgeModule):
 
         # 0.5 * (x - y)**2
         square = Multiply("square", diff, diff)
-        half_const = Constant("half", constant=0.5)
+        half_const = Constant("half", constant=0.5, dtype=prediction.data_format)
         half = Broadcast("broad_cast_half_dim0", half_const, dim=0, shape=square.shape[0])
         if square.ndim() != 1:
             half = Unsqueeze("half_unsqueeze", half, dim=1)
@@ -255,7 +259,7 @@ class BCELoss(ForgeModule):
         log_prediction = Log("log", prediction)
         first_term = Multiply("mul_lab_pred", labels, log_prediction)
 
-        one = Constant("one", constant=1.0)
+        one = Constant("one", constant=1.0, dtype=prediction.data_format)
         one = align_shape(one, labels, "one")
 
         # Second term: (1 - y) * log(1 - p)
@@ -266,7 +270,7 @@ class BCELoss(ForgeModule):
 
         # -1 * (y * log(p) + (1 - y) * log(1 - p))
         sum_terms = Add("sum_terms", first_term, second_term)
-        neg_one = Constant("neg_one", constant=-1.0)
+        neg_one = Constant("neg_one", constant=-1.0, dtype=prediction.data_format)
         neg_one = align_shape(neg_one, sum_terms, "neg_one")
         negative_sum_terms = Multiply("negative_sum_terms", sum_terms, neg_one)
         loss = reduce_loss(self.reduction, negative_sum_terms)
@@ -326,7 +330,7 @@ class TripletMarginLoss(ForgeModule):
 
     @validate_shapes(min_dim=2, max_dim=2)
     def forward(self, anchor, positive, negative):
-        eps_const = Constant("eps_pos", constant=self.eps)
+        eps_const = Constant("eps_pos", constant=self.eps, dtype=anchor.data_format)
 
         # Squared distance for positive pair (anchor-positive)
         sub_pos = Subtract("sub_pos", anchor, positive)
@@ -358,7 +362,7 @@ class TripletMarginLoss(ForgeModule):
 
         # Compute original triplet loss
         dist_diff = Subtract("dist_diff", pos_dist, neg_dist)
-        margin = Constant("margin", constant=self.margin)
+        margin = Constant("margin", constant=self.margin, dtype=anchor.data_format)
         margin = Unsqueeze("expand_margin", margin, -1)
         margin = Broadcast("broadcast_margin", margin, 0, dist_diff.shape[0])
         margin = Broadcast("broadcast_margin_dim_1", margin, 1, dist_diff.shape[1])
