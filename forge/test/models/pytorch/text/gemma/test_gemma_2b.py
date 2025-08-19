@@ -80,7 +80,7 @@ def test_gemma_2b(variant):
     [
         pytest.param(
             "google/gemma-2-2b-it",
-            marks=[pytest.mark.xfail, pytest.mark.out_of_memory],
+            marks=pytest.mark.xfail,
         ),
         pytest.param("google/gemma-2-9b-it", marks=[pytest.mark.xfail, pytest.mark.out_of_memory]),
     ],
@@ -99,6 +99,8 @@ def test_gemma_pytorch_v2(variant):
     )
     if variant == "google/gemma-2-9b-it":
         pytest.xfail(reason="Requires multi-chip support")
+    elif variant == "google/gemma-2-2b-it":
+        pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2844")
 
     # Load model and tokenizer from HuggingFace
     tokenizer = AutoTokenizer.from_pretrained(variant)
