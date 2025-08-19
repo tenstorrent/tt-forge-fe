@@ -35,14 +35,14 @@ from forge.verify.verify import verify
 from test.models.models_utils import TextModelWrapper
 
 causal_lm_variants = [
-    CausalLMVariant.QWEN_3_32B,
-    CausalLMVariant.QWEN_3_30B_A3B,
-    CausalLMVariant.QWQ_32B,
-    CausalLMVariant.QWEN_3_14B,
+    pytest.param(CausalLMVariant.QWEN_3_32B, marks=[pytest.mark.out_of_memory]),
+    pytest.param(CausalLMVariant.QWEN_3_30B_A3B, marks=[pytest.mark.out_of_memory]),
+    pytest.param(CausalLMVariant.QWQ_32B, marks=[pytest.mark.out_of_memory]),
+    pytest.param(CausalLMVariant.QWEN_3_14B, marks=[pytest.mark.out_of_memory]),
     CausalLMVariant.QWEN_3_0_6B,
     CausalLMVariant.QWEN_3_1_7B,
     CausalLMVariant.QWEN_3_4B,
-    CausalLMVariant.QWEN_3_8B,
+    pytest.param(CausalLMVariant.QWEN_3_8B, marks=[pytest.mark.out_of_memory]),
 ]
 
 
@@ -91,7 +91,7 @@ def test_qwen3_clm_pytorch(variant):
 embedding_variants = [
     EmbeddingVariant.QWEN_3_EMBEDDING_0_6B,
     EmbeddingVariant.QWEN_3_EMBEDDING_4B,
-    EmbeddingVariant.QWEN_3_EMBEDDING_8B,
+    pytest.param(EmbeddingVariant.QWEN_3_EMBEDDING_8B, marks=[pytest.mark.out_of_memory]),
 ]
 
 
