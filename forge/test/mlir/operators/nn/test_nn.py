@@ -207,6 +207,34 @@ def test_interpolate(shape, mode, scale_factor):
 
 
 @pytest.mark.parametrize(
+    "shape, size",
+    [
+        ((1, 64, 27), 54),
+        ((1, 3, 12), 48),
+        ((1, 1, 8), 24),
+        ((2, 36, 5), 50),
+        ((4, 4, 7), 56),
+    ],
+)
+@pytest.mark.parametrize("mode",["nearest", "linear"])
+@pytest.mark.push
+def test_resize1d(shape, size, mode):
+    class Interpolate(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            return nn.functional.interpolate(x, size=size, mode=mode)
+
+    inputs = [torch.rand(shape)]
+
+    framework_model = Interpolate()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
     "input_shape, target_height, target_width",
     [
         pytest.param(
