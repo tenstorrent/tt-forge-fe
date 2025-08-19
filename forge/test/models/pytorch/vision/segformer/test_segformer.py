@@ -102,7 +102,7 @@ def test_segformer_semantic_segmentation_pytorch(variant):
         source=Source.HUGGINGFACE,
     )
 
-    if variant in ["nvidia/segformer-b2-finetuned-ade-512-512","nvidia/segformer-b4-finetuned-ade-512-512"]:
+    if variant in ["nvidia/segformer-b2-finetuned-ade-512-512", "nvidia/segformer-b4-finetuned-ade-512-512"]:
         pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2844")
 
     # Load the model from HuggingFace
