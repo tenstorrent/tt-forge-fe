@@ -27,7 +27,7 @@ class Resize2D0(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[56, 56], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[56, 56], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -38,7 +38,7 @@ class Resize2D1(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[28, 28], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[28, 28], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -49,7 +49,7 @@ class Resize2D2(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[14, 14], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[14, 14], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -60,7 +60,7 @@ class Resize2D3(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[30, 40], method="linear", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[30, 40], mode="bilinear", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -71,7 +71,7 @@ class Resize2D4(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[60, 80], method="linear", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[60, 80], mode="bilinear", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -82,7 +82,7 @@ class Resize2D5(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[120, 160], method="linear", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[120, 160], mode="bilinear", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -93,7 +93,7 @@ class Resize2D6(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[240, 320], method="linear", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[240, 320], mode="bilinear", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -104,7 +104,7 @@ class Resize2D7(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[480, 640], method="linear", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[480, 640], mode="bilinear", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -115,7 +115,7 @@ class Resize2D8(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[20, 64], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[20, 64], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -126,7 +126,7 @@ class Resize2D9(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[40, 128], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[40, 128], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -137,7 +137,7 @@ class Resize2D10(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[80, 256], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[80, 256], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -148,7 +148,7 @@ class Resize2D11(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[160, 512], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[160, 512], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -159,7 +159,7 @@ class Resize2D12(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[320, 1024], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[320, 1024], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -170,7 +170,7 @@ class Resize2D13(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[12, 40], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[12, 40], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -181,7 +181,7 @@ class Resize2D14(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[24, 80], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[24, 80], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -192,7 +192,7 @@ class Resize2D15(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[48, 160], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[48, 160], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -203,7 +203,7 @@ class Resize2D16(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[96, 320], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[96, 320], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -214,7 +214,7 @@ class Resize2D17(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[192, 640], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[192, 640], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -225,7 +225,7 @@ class Resize2D18(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[30, 40], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[30, 40], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -236,7 +236,7 @@ class Resize2D19(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[60, 80], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[60, 80], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -247,7 +247,7 @@ class Resize2D20(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[128, 128], method="linear", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[128, 128], mode="bilinear", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -258,7 +258,7 @@ class Resize2D21(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[64, 64], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[64, 64], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -269,7 +269,7 @@ class Resize2D22(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[32, 32], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[32, 32], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -280,7 +280,7 @@ class Resize2D23(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[28, 28], method="linear", align_corners=True, channel_last=0
+            "", resize2d_input_0, sizes=[28, 28], mode="bilinear", align_corners=True, channel_last=False
         )
         return resize2d_output_1
 
@@ -291,7 +291,7 @@ class Resize2D24(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[56, 56], method="linear", align_corners=True, channel_last=0
+            "", resize2d_input_0, sizes=[56, 56], mode="bilinear", align_corners=True, channel_last=False
         )
         return resize2d_output_1
 
@@ -302,7 +302,7 @@ class Resize2D25(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[112, 112], method="linear", align_corners=True, channel_last=0
+            "", resize2d_input_0, sizes=[112, 112], mode="bilinear", align_corners=True, channel_last=False
         )
         return resize2d_output_1
 
@@ -313,7 +313,7 @@ class Resize2D26(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[224, 224], method="linear", align_corners=True, channel_last=0
+            "", resize2d_input_0, sizes=[224, 224], mode="bilinear", align_corners=True, channel_last=False
         )
         return resize2d_output_1
 
@@ -324,7 +324,7 @@ class Resize2D27(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[112, 112], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[112, 112], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -335,7 +335,7 @@ class Resize2D28(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[224, 224], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[224, 224], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -346,7 +346,7 @@ class Resize2D29(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[40, 40], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[40, 40], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -357,7 +357,7 @@ class Resize2D30(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[80, 80], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[80, 80], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -368,7 +368,7 @@ class Resize2D31(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[20, 20], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[20, 20], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -379,7 +379,7 @@ class Resize2D32(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[30, 30], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[30, 30], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -390,7 +390,7 @@ class Resize2D33(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[60, 60], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[60, 60], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -401,7 +401,7 @@ class Resize2D34(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[26, 26], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[26, 26], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -412,7 +412,7 @@ class Resize2D35(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[52, 52], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[52, 52], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -423,7 +423,7 @@ class Resize2D36(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[27, 27], method="linear", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[27, 27], mode="bilinear", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -434,7 +434,7 @@ class Resize2D37(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[16, 16], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[16, 16], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -445,7 +445,7 @@ class Resize2D38(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[160, 160], method="nearest_neighbor", align_corners=False, channel_last=0
+            "", resize2d_input_0, sizes=[160, 160], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -472,9 +472,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -493,9 +493,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -514,9 +514,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -535,9 +535,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -556,9 +556,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -577,9 +577,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[14, 14]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -592,9 +592,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -607,9 +607,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -625,9 +625,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -640,9 +640,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -655,9 +655,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -670,9 +670,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -688,9 +688,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -703,9 +703,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -718,9 +718,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -736,9 +736,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[14, 14]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -751,9 +751,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[14, 14]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -766,9 +766,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -781,9 +781,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -796,9 +796,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -811,9 +811,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -826,9 +826,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -841,9 +841,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -856,9 +856,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[14, 14]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -871,9 +871,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -886,9 +886,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -901,9 +901,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -916,9 +916,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -931,9 +931,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -946,9 +946,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[14, 14]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -961,9 +961,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -976,9 +976,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -991,9 +991,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1006,9 +1006,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1021,9 +1021,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1036,9 +1036,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[14, 14]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1051,9 +1051,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1066,9 +1066,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1081,9 +1081,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[14, 14]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1094,7 +1094,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
-            "args": {"sizes": "[30, 40]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[30, 40]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -1104,7 +1104,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
-            "args": {"sizes": "[60, 80]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[60, 80]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -1114,7 +1114,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
-            "args": {"sizes": "[120, 160]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[120, 160]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -1124,7 +1124,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
-            "args": {"sizes": "[240, 320]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[240, 320]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -1134,7 +1134,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
-            "args": {"sizes": "[480, 640]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[480, 640]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -1146,9 +1146,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1161,9 +1161,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1176,9 +1176,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1191,9 +1191,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1206,9 +1206,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1221,9 +1221,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[14, 14]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1240,9 +1240,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[20, 64]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1259,9 +1259,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[40, 128]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1278,9 +1278,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[80, 256]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1297,9 +1297,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[160, 512]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1316,9 +1316,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[320, 1024]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1338,9 +1338,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[12, 40]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1360,9 +1360,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[24, 80]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1382,9 +1382,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[48, 160]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1404,9 +1404,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[96, 320]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1426,9 +1426,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[192, 640]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1448,9 +1448,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[30, 40]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1469,9 +1469,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[60, 80]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1485,7 +1485,7 @@ forge_modules_and_shapes_dtypes_list = [
             ],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -1497,9 +1497,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[64, 64]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1512,9 +1512,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[32, 32]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1528,7 +1528,7 @@ forge_modules_and_shapes_dtypes_list = [
             ],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -1541,7 +1541,7 @@ forge_modules_and_shapes_dtypes_list = [
             ],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -1554,7 +1554,7 @@ forge_modules_and_shapes_dtypes_list = [
             ],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     pytest.param(
@@ -1569,7 +1569,12 @@ forge_modules_and_shapes_dtypes_list = [
                 ],
                 "pcc": 0.99,
                 "default_df_override": "Float16_b",
-                "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+                "args": {
+                    "sizes": "[128, 128]",
+                    "mode": '"bilinear"',
+                    "align_corners": "False",
+                    "channel_last": "False",
+                },
             },
         ),
         marks=[
@@ -1589,7 +1594,7 @@ forge_modules_and_shapes_dtypes_list = [
             ],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -1603,7 +1608,7 @@ forge_modules_and_shapes_dtypes_list = [
             ],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     pytest.param(
@@ -1618,7 +1623,12 @@ forge_modules_and_shapes_dtypes_list = [
                 ],
                 "pcc": 0.99,
                 "default_df_override": "Float16_b",
-                "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+                "args": {
+                    "sizes": "[128, 128]",
+                    "mode": '"bilinear"',
+                    "align_corners": "False",
+                    "channel_last": "False",
+                },
             },
         ),
         marks=[
@@ -1627,45 +1637,57 @@ forge_modules_and_shapes_dtypes_list = [
             )
         ],
     ),
-    (
-        Resize2D23,
-        [((1, 512, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[28, 28]", "method": '"linear"', "align_corners": "True", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D23,
+            [((1, 512, 14, 14), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[28, 28]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: align_corners argument not supported in upsample2d op")],
     ),
-    (
-        Resize2D24,
-        [((1, 256, 28, 28), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[56, 56]", "method": '"linear"', "align_corners": "True", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D24,
+            [((1, 256, 28, 28), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[56, 56]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: align_corners argument not supported in upsample2d op")],
     ),
-    (
-        Resize2D25,
-        [((1, 128, 56, 56), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[112, 112]", "method": '"linear"', "align_corners": "True", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D25,
+            [((1, 128, 56, 56), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[112, 112]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: align_corners argument not supported in upsample2d op")],
     ),
-    (
-        Resize2D26,
-        [((1, 64, 112, 112), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[224, 224]", "method": '"linear"', "align_corners": "True", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D26,
+            [((1, 64, 112, 112), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[224, 224]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: align_corners argument not supported in upsample2d op")],
     ),
     (
         Resize2D2,
@@ -1676,9 +1698,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[14, 14]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1691,9 +1713,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1706,9 +1728,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1721,9 +1743,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[112, 112]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1736,9 +1758,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[224, 224]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1756,9 +1778,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[40, 40]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1776,9 +1798,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[80, 80]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1795,9 +1817,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[40, 40]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1810,9 +1832,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[80, 80]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1824,9 +1846,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[20, 20]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1843,9 +1865,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[40, 40]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1857,9 +1879,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[30, 30]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1871,9 +1893,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[60, 60]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1885,9 +1907,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[20, 20]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1899,9 +1921,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[40, 40]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1913,9 +1935,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[30, 30]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1927,9 +1949,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[60, 60]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1941,9 +1963,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[20, 20]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1955,9 +1977,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[40, 40]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1969,9 +1991,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[30, 30]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -1983,9 +2005,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[60, 60]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2001,9 +2023,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[80, 80]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2015,9 +2037,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[30, 30]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2029,9 +2051,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[60, 60]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2043,9 +2065,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[40, 40]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2057,9 +2079,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[80, 80]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2076,9 +2098,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[40, 40]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2091,9 +2113,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[80, 80]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2106,9 +2128,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[26, 26]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2121,9 +2143,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[52, 52]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2136,9 +2158,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[80, 80]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2150,9 +2172,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[40, 40]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2167,9 +2189,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[80, 80]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2181,9 +2203,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[30, 30]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2195,9 +2217,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[60, 60]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2210,9 +2232,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[40, 40]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2225,9 +2247,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[80, 80]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2242,7 +2264,12 @@ forge_modules_and_shapes_dtypes_list = [
                     "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 ],
                 "pcc": 0.99,
-                "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+                "args": {
+                    "sizes": "[128, 128]",
+                    "mode": '"bilinear"',
+                    "align_corners": "False",
+                    "channel_last": "False",
+                },
             },
         ),
         marks=[
@@ -2261,7 +2288,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -2274,7 +2301,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     pytest.param(
@@ -2288,7 +2315,12 @@ forge_modules_and_shapes_dtypes_list = [
                     "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 ],
                 "pcc": 0.99,
-                "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+                "args": {
+                    "sizes": "[128, 128]",
+                    "mode": '"bilinear"',
+                    "align_corners": "False",
+                    "channel_last": "False",
+                },
             },
         ),
         marks=[
@@ -2304,7 +2336,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
-            "args": {"sizes": "[27, 27]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[27, 27]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -2316,9 +2348,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[16, 16]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2334,9 +2366,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2352,9 +2384,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2370,9 +2402,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2385,9 +2417,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[60, 80]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2399,9 +2431,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[20, 20]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2413,9 +2445,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[40, 40]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2426,18 +2458,21 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
-            "args": {"sizes": "[27, 27]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[27, 27]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
-    (
-        Resize2D23,
-        [((1, 256, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[28, 28]", "method": '"linear"', "align_corners": "True", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D23,
+            [((1, 256, 1, 1), torch.bfloat16)],
+            {
+                "model_names": ["pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[28, 28]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: align_corners argument not supported in upsample2d op")],
     ),
     (
         Resize2D21,
@@ -2448,9 +2483,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[64, 64]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2462,9 +2497,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[40, 40]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2476,9 +2511,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[80, 80]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2490,9 +2525,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[20, 20]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2507,9 +2542,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[40, 40]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2522,9 +2557,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[80, 80]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2536,9 +2571,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[80, 80]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2550,9 +2585,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[160, 160]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2565,9 +2600,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[26, 26]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2580,9 +2615,9 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {
                 "sizes": "[52, 52]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2594,9 +2629,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2608,9 +2643,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2622,9 +2657,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2636,9 +2671,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2650,9 +2685,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2664,9 +2699,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[14, 14]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2679,7 +2714,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -2691,7 +2726,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -2703,7 +2738,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -2715,7 +2750,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -2726,9 +2761,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2740,9 +2775,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2754,9 +2789,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2768,9 +2803,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2782,9 +2817,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2796,9 +2831,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[14, 14]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2810,9 +2845,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[112, 112]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2827,9 +2862,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2841,9 +2876,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[112, 112]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2855,9 +2890,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2869,9 +2904,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[112, 112]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2883,9 +2918,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[112, 112]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2897,9 +2932,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2911,9 +2946,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2925,9 +2960,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2939,9 +2974,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2953,9 +2988,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2967,9 +3002,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[14, 14]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2981,9 +3016,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -2995,9 +3030,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -3009,9 +3044,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -3023,9 +3058,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -3037,9 +3072,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -3051,9 +3086,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[14, 14]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -3065,9 +3100,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -3079,9 +3114,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -3093,9 +3128,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[56, 56]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -3107,9 +3142,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[28, 28]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),
@@ -3121,9 +3156,9 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[14, 14]",
-                "method": '"nearest_neighbor"',
+                "mode": '"nearest"',
                 "align_corners": "False",
-                "channel_last": "0",
+                "channel_last": "False",
             },
         },
     ),

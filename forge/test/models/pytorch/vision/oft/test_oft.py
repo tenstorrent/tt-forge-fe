@@ -17,7 +17,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from third_party.tt_forge_models.oft import ModelLoader  # isort:skip
+from third_party.tt_forge_models.oft.pytorch import ModelLoader  # isort:skip
 
 
 @pytest.mark.nightly

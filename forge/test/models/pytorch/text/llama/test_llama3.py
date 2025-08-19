@@ -105,7 +105,7 @@ def test_llama3_causal_lm_pytorch(variant):
     model = loader.load_model()
     framework_model = TextModelWrapper(model=model, text_embedding=model.model.embed_tokens)
     framework_model.eval()
-    input_dict = loader.load_inputs()
+    input_dict, seq_len = loader.load_inputs()
     inputs = [input_dict["input_ids"], input_dict["attention_mask"]]
 
     # Forge compile framework model

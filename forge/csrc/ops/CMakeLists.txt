@@ -18,15 +18,7 @@ add_library(ops
     op_constant.cpp
     op_constant_pad.cpp
     op_conv_2d.cpp
-    op_conv_2d_depthwise_weights.cpp
-    op_conv_2d_depthwise_weights_bw.cpp
-    op_conv_2d_grouped_weights.cpp
-    op_conv_2d_grouped_weights_bw.cpp
-    op_conv_2d_prestride_act.cpp
-    op_conv_2d_prestride_weights.cpp
     op_conv_2d_transpose.cpp
-    op_conv_3d.cpp
-    op_conv_sum.cpp
     op_cosine.cpp
     op_cumulative_sum.cpp
     op_depthwise.cpp

@@ -9,7 +9,10 @@ import re
 
 from enum import Enum
 from dataclasses import dataclass, field
-from typing import List, Callable, Optional
+from typing import List, Callable, Optional, Generator
+from loguru import logger
+
+from .pytest import PyTestUtils
 
 
 @dataclass
@@ -54,6 +57,29 @@ class ExceptionCheck:
 class FailingReason:
     description: str
     checks: List[ExceptionCheck] = field(default_factory=list)
+
+    def __post_init__(self):
+        self.checks = [
+            check for check in self.checks if check.component is None or check.component != ComponentChecker.NONE.value
+        ]
+        if len(self.checks) == 0:
+            logger.trace(f"FailingReason '{self.description}' has no checks defined, it will not be used.")
+        elif len(self.checks) > 1:
+            logger.trace(f"FailingReason '{self.description}' has multiple ({len(self.checks)}) checks defined.")
+
+    @property
+    def component_checker(self) -> Optional["ComponentChecker"]:
+        for check in self.checks:
+            component = check.component
+            if component is None or component == ComponentChecker.NONE.value:
+                continue
+            return component
+        return None
+
+    @property
+    def component_checker_description(self) -> Optional[str]:
+        component_checker = self.component_checker
+        return component_checker.description if component_checker else None
 
     def __contains__(self, ex: ExceptionData) -> bool:
         return self.check(ex)
@@ -193,6 +219,8 @@ class ComponentChecker(Enum):
                         # Fail with pytorch also. TODO: check if tests are correct
                         M.last_line(M.contains("torch/nn/modules/conv.py:")),
                         M.last_line(M.contains("torch/nn/functional.py")),
+                        M.last_line(M.contains("forge/op/eval/forge/pooling.py")),
+                        M.last_line(M.contains("forge/tensor.py:")),
                     ),
                 ],
             ),
@@ -207,6 +235,7 @@ class ComponentChecker(Enum):
                         M.last_line(M.contains("forge/verify/value_checkers.py:")),
                         M.last_line(M.contains("forge/op/eval/interface.py:")),
                         M.last_line(M.contains("forge/compile.py:")),
+                        M.last_line(M.contains("forge/op/common.py")),
                     ),
                 ],
             ),
@@ -233,6 +262,46 @@ class ComponentChecker(Enum):
             ),
         ],
     )
+
+
+class FailingReasonsFinder:
+    @classmethod
+    def build_ex_data(cls, exception_value: Exception, exception_traceback: str) -> ExceptionData:
+        """Convert exception to ExceptionData object
+
+        Args:
+            exception_value (Exception): Raised exception
+            exception_traceback (str): Exception traceback
+
+        Returns:
+            ExceptionData: Exception data object
+        """
+        ex_class_name = f"{type(exception_value).__module__}.{type(exception_value).__name__}"
+        ex_class_name = ex_class_name.replace("builtins.", "")
+        ex_message = f"{exception_value}"
+        exception_traceback = PyTestUtils.remove_colors(exception_traceback)
+        ex_data = ExceptionData(
+            class_name=ex_class_name,
+            message=ex_message,
+            error_log=exception_traceback,
+        )
+        return ex_data
+
+    @classmethod
+    def find_reason_by_ex_data(cls, ex: ExceptionData) -> Optional["FailingReasons"]:
+        reasons = list(cls.find_reasons_by_ex_data(ex))
+        if not reasons:
+            return None
+        if len(reasons) > 1:
+            logger.warning(f"Multiple reasons found: {reasons} for ex: {ex}")
+        return reasons[0]
+
+    @classmethod
+    def find_reasons_by_ex_data(cls, ex: ExceptionData) -> Generator["FailingReasons", None, None]:
+        for failing_reason in FailingReasons:
+            # Checking if exception data matches the failing reason
+            if ex in failing_reason.value:
+                yield failing_reason
 
 
 class FailingReasons(Enum):
@@ -2028,6 +2097,49 @@ class FailingReasons(Enum):
                 error_log=[
                     M.contains(">       return torch.embedding(t_ops[1], t_ops[0].to(torch.int32))"),
                     M.last_line(M.contains("forge/op/eval/forge/embedding.py:")),
+                ],
+            ),
+        ],
+    )
+
+    INCORRECT_TENSOR_SHAPE = FailingReason(
+        description="Incorrect tensor shape",
+        checks=[
+            # E       AssertionError: Setting a tensor value of incorrect shape: (3, 11, 9, 7) vs torch.Size([3, 11, 8, 9])
+            # forge/forge_wheels/venv/lib/python3.10/site-packages/forge/tensor.py:414: AssertionError
+            ExceptionCheck(
+                class_name="AssertionError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    M.regex(
+                        "Setting a tensor value of incorrect shape: \\(\\d+, \\d+, \\d+, \\d+\\) vs torch.Size\\(\\[\\d+, \\d+, \\d+, \\d+\\]\\)"
+                    ),
+                ],
+                error_log=[
+                    M.last_line(M.contains("forge/tensor.py:")),
+                ],
+            ),
+        ],
+    )
+
+    PAD_BIGGER_THAN_HALF_OF_KERNEL = FailingReason(
+        description="pad should be at most half of effective kernel size",
+        checks=[
+            # E           RuntimeError: pad should be at most half of effective kernel size, but got pad=1, kernel_size=1 and dilation=1
+            # forge/forge_wheels/venv/lib/python3.10/site-packages/forge/op/eval/forge/pooling.py:319: RuntimeError
+            ExceptionCheck(
+                class_name="RuntimeError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    M.regex(
+                        "pad should be at most half of effective kernel size, but got pad=\\d+, kernel_size=\\d+ and dilation=\\d+"
+                    ),
+                ],
+                error_log=[
+                    M.any(
+                        M.last_line(M.contains("forge/op/eval/forge/pooling.py")),
+                        M.last_line(M.contains("forge/op/common.py")),
+                    ),
                 ],
             ),
         ],

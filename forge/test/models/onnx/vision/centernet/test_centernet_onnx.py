@@ -10,7 +10,7 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
-from third_party.tt_forge_models.centernet import ModelLoader
+from third_party.tt_forge_models.centernet.onnx import ModelLoader
 import onnx
 import forge
 from forge.verify.verify import verify

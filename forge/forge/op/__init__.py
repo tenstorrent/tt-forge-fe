@@ -4,7 +4,7 @@
 
 from .matmul import Matmul
 
-from .convolution import Conv2d, Conv2dTranspose, Conv3d
+from .convolution import Conv2d, Conv2dTranspose
 from .pooling import MaxPool1d, MaxPool2d, AvgPool1d, AvgPool2d
 from .eltwise_binary import (
     Add,
