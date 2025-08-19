@@ -34,11 +34,11 @@ from test.models.models_utils import TextModelWrapper
 llama_loader_variants = [
     pytest.param(
         CausalLMVariant.LLAMA_3_2_1B,
-        marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2833")
+        marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2833"),
     ),
     pytest.param(
         CausalLMVariant.LLAMA_3_2_1B_INSTRUCT,
-        marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2833")
+        marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2833"),
     ),
     pytest.param(
         CausalLMVariant.LLAMA_3_8B,
