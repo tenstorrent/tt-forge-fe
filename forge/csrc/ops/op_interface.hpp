@@ -44,6 +44,13 @@ class Op;
     std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(                                  \
         const tt::graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs); \
                                                                                                                        \
+    /* Optional multi-output variants */                                                                               \
+    std::vector<at::Tensor> eval_multi(                                                                                \
+        const tt::graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors);                \
+                                                                                                                       \
+    std::tuple<std::vector<graphlib::Shape>, std::vector<graphlib::DimBroadcastTrampoline>> shape_multi(               \
+        const tt::graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs); \
+                                                                                                                       \
     tt::graphlib::NodeContext backward(                                                                                \
         const tt::graphlib::OpType &old_op_type,                                                                       \
         const Op &op,                                                                                                  \

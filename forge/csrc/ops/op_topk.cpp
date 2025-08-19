@@ -48,6 +48,23 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
     return values;
 }
 
+std::vector<at::Tensor> eval_multi(
+    const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+{
+    TT_DBG_ASSERT(op.type() == OpType::TopK, "Wrong op type.");
+    TT_ASSERT(tensors.size() == 1, "TopK should have one input tensor");
+
+    const int64_t k = static_cast<int64_t>(op.attr_as<int>("k"));
+    const int64_t dim = static_cast<int64_t>(op.attr_as<int>("dim"));
+    const bool largest = op.has_attr("largest") ? op.attr_as<bool>("largest") : true;
+    const bool sorted = op.has_attr("sorted") ? op.attr_as<bool>("sorted") : true;
+
+    auto result = torch::topk(tensors[0], k, dim, largest, sorted);
+    at::Tensor values = std::get<0>(result);
+    at::Tensor indices = std::get<1>(result);
+    return {values, indices};
+}
+
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
     const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
@@ -65,6 +82,13 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     out_shape[pos_dim] = static_cast<uint32_t>(op.attr_as<int>("k"));
 
     return {Shape::create(out_shape), {}};
+}
+
+std::tuple<std::vector<Shape>, std::vector<DimBroadcast>> shape_multi(
+    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+{
+    auto [single, bcast] = shape(old_op_type, op, in_shapes);
+    return {std::vector<Shape>{single, single}, bcast};
 }
 
 // No autograd for now

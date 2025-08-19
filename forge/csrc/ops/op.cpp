@@ -402,6 +402,17 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
     }  // clang-format on
 }
 
+std::vector<at::Tensor> Op::eval_multi(
+    const graphlib::OpType &old_op_type, const std::vector<at::Tensor> &tensors) const
+{
+    // Provide per-op multi-output where implemented; default to single-output wrapper
+    switch (type_)
+    {
+        case OpType::TopK: return topk::eval_multi(old_op_type, *this, tensors);
+        default: return {this->eval(old_op_type, tensors)};
+    }
+}
+
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
     const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
@@ -496,6 +507,21 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Where: return where::shape(old_op_type, *this, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
+}
+
+std::tuple<std::vector<graphlib::Shape>, std::vector<graphlib::DimBroadcast>> Op::shape_multi(
+    const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const
+{
+    // Provide per-op multi-output where implemented; default to single-output wrapper
+    switch (type_)
+    {
+        case OpType::TopK: return topk::shape_multi(old_op_type, *this, inputs);
+        default:
+        {
+            auto [single, bcast] = this->shape(old_op_type, inputs);
+            return {std::vector<graphlib::Shape>{single}, bcast};
+        }
+    }
 }
 
 tt::graphlib::NodeContext Op::backward(

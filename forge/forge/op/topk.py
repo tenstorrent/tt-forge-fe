@@ -94,10 +94,10 @@ def TopK(name: str, tensor: Tensor, k: int, dim: int, largest: bool = True, sort
 
     # Create Forge tensors from trace and set values
     FTensor = Tensor  # alias
-    values_tt = FTensor.create_from_trace(topk_op, tuple(values_pt.shape), val_df)
+    values_tt = FTensor.create_from_trace(topk_op, tuple(values_pt.shape), val_df, src_output_index=0)
     values_tt.set_value(values_pt)
 
-    indices_tt = FTensor.create_from_trace(topk_op, tuple(indices_pt.shape), idx_df)
+    indices_tt = FTensor.create_from_trace(topk_op, tuple(indices_pt.shape), idx_df, src_output_index=1)
     indices_tt.set_value(indices_pt)
 
     return TensorPair(values_tt, indices_tt)

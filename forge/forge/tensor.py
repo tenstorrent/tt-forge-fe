@@ -312,11 +312,13 @@ class Tensor(TensorBase):
         )
 
     @classmethod
-    def create_from_trace(cls, src_op: "ForgeOp", shape: Tuple[int, ...], data_format: DataFormat) -> "TensorFromTrace":
+    def create_from_trace(
+        cls, src_op: "ForgeOp", shape: Tuple[int, ...], data_format: DataFormat, src_output_index: int = 0
+    ) -> "TensorFromTrace":
         """
         New path to creating front-end Tensor
         """
-        return TensorFromTrace(src_op, shape, data_format)
+        return TensorFromTrace(src_op, shape, data_format, src_output_index)
 
     # @classmethod
     # def create_from_tensor_descriptor(cls, descriptor: "PytorchTensorDesc") -> "TensorFromDescriptor":
@@ -398,13 +400,14 @@ class TensorFromTrace(Tensor):
     Tensor wrapper created by tracing model graph
     """
 
-    def __init__(self, src_op: "ForgeOp", shape: Tuple[int, ...], data_format: DataFormat):
+    def __init__(self, src_op: "ForgeOp", shape: Tuple[int, ...], data_format: DataFormat, src_output_index: int = 0):
         super().__init__()
         self.tensor_shape = TensorShape(*shape)
         self.src_op = src_op
         self.requires_grad = False
         self._value = None
         self._data_format = data_format
+        self.src_output_index = src_output_index
 
     def has_value(self) -> bool:
         return self._value is not None
@@ -429,7 +432,7 @@ class TensorFromTrace(Tensor):
 
     def clone(self) -> "TensorFromTrace":
         t: TensorFromTrace = Tensor.create_from_trace(
-            self.src_op, self.tensor_shape.get_pytorch_shape(), self._data_format
+            self.src_op, self.tensor_shape.get_pytorch_shape(), self._data_format, self.src_output_index
         )
         t.requires_grad = self.requires_grad
         if self._value:

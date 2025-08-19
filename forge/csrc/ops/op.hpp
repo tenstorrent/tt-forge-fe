@@ -222,6 +222,14 @@ class Op
         const tt::graphlib::NodeContext &output,
         const tt::graphlib::NodeContext &gradient) const;
 
+    // Multi-output variants with backward-compatible defaults.
+    // By default, these wrap the single-output methods.
+    std::vector<at::Tensor> eval_multi(
+        const graphlib::OpType &old_op_type, const std::vector<at::Tensor> &tensors) const;
+
+    std::tuple<std::vector<graphlib::Shape>, std::vector<graphlib::DimBroadcastTrampoline>> shape_multi(
+        const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const;
+
     bool is_tm(const graphlib::OpType &old_op_type) const;
     bool is_eltwise(const graphlib::OpType &old_op_type) const;
     bool is_eltwise_unary(const graphlib::OpType &old_op_type) const;

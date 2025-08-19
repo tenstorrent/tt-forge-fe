@@ -1363,7 +1363,9 @@ def generate_graph(
         if return_intermediate and tensor.has_value():
             intermediate[op] = tensor.value()
 
-        create_data_edge(graph, op, 0, output, port_index, operand_broadcast)
+        # Use the output index recorded on the tensor to route correct producer port
+        producer_output_port = getattr(tensor, "src_output_index", 0)
+        create_data_edge(graph, op, producer_output_port, output, port_index, operand_broadcast)
 
         for i, t in enumerate(tensor.src_op.operands):
             pending_tensors.append((t, op, i, tensor.src_op.operand_broadcast, subgraph_idx))
