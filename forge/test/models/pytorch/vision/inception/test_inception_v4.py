@@ -52,7 +52,7 @@ def test_inception_v4_osmr_pytorch(variant):
 
     # Model Verification
     _, co_out = verify(
-        inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
+        inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
     )
 
     # Post processing

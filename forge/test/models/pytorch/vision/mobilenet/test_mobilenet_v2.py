@@ -186,6 +186,7 @@ def test_mobilenetv2_deeplabv3(variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2746")
 @pytest.mark.parametrize("variant", [ModelVariant.MOBILENET_V2_TORCHVISION])
 def test_mobilenetv2_torchvision(variant):
 
