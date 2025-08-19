@@ -106,7 +106,7 @@ def test_segformer_semantic_segmentation_pytorch(variant):
         pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2844")
 
     # Load the model from HuggingFace
-    framework_model = SegformerForSemanticSegmentation.from_pretrained(variant).to(torch.bfloat16)
+    framework_model = SegformerForSemanticSegmentation.from_pretrained(variant, return_dict=False).to(torch.bfloat16)
     framework_model.eval()
 
     # Load the sample image

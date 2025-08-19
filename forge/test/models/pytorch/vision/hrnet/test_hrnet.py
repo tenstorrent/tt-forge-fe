@@ -4,11 +4,7 @@
 
 import pytest
 import torch
-from PIL import Image
-from pytorchcv.model_provider import get_model as ptcv_get_model
 from third_party.tt_forge_models.hrnet.pytorch import ModelLoader, ModelVariant
-from third_party.tt_forge_models.tools.utils import get_file
-from torchvision import transforms
 
 import forge
 from forge._C import DataFormat
@@ -23,68 +19,17 @@ from forge.forge_property_utils import (
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
 
-from test.models.models_utils import print_cls_results
-from test.utils import download_model
-
-
-def generate_model_hrnet_imgcls_osmr_pytorch(variant):
-    # STEP 2: Create Forge module from PyTorch model
-    """
-    models = [
-        hrnet_w18_small_v1,
-        hrnet_w18_small_v2,
-        hrnetv2_w18,
-        hrnetv2_w30,
-        hrnetv2_w32,
-        hrnetv2_w40,
-        hrnetv2_w44,
-        hrnetv2_w48,
-        hrnetv2_w64,
-    ]
-    """
-    model = download_model(ptcv_get_model, variant, pretrained=True)
-    model.eval()
-
-    # Model load
-    try:
-        file_path = get_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg")
-        input_image = Image.open(file_path).convert("RGB")
-        preprocess = transforms.Compose(
-            [
-                transforms.Resize(256),
-                transforms.CenterCrop(224),
-                transforms.ToTensor(),
-                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-            ]
-        )
-        input_tensor = preprocess(input_image)
-        input_batch = input_tensor.unsqueeze(0)  # create a mini-batch as expected by the model
-    except:
-        logger.warning(
-            "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
-        )
-        input_batch = torch.rand(1, 3, 224, 224)
-    print(input_batch.shape)
-
-    return model.to(torch.bfloat16), [input_batch.to(torch.bfloat16)], {}
-
-
+# OSMR (pytorchcv) variants using loader enums
 variants = [
-    pytest.param("hrnet_w18_small_v1", marks=pytest.mark.push),
-    pytest.param("hrnet_w18_small_v2"),
-    pytest.param("hrnetv2_w18"),
-    pytest.param("hrnetv2_w30"),
-    pytest.param(
-        "hrnetv2_w32",
-    ),
-    pytest.param(
-        "hrnetv2_w40",
-    ),
-    pytest.param("hrnetv2_w44"),
-    pytest.param(
-        "hrnetv2_w48",
-    ),
-    pytest.param("hrnetv2_w64"),
+    pytest.param(ModelVariant.HRNET_W18_SMALL_V1_OSMR, marks=pytest.mark.push),
+    pytest.param(ModelVariant.HRNET_W18_SMALL_V2_OSMR),
+    pytest.param(ModelVariant.HRNETV2_W18_OSMR),
+    pytest.param(ModelVariant.HRNETV2_W30_OSMR),
+    pytest.param(ModelVariant.HRNETV2_W32_OSMR),
+    pytest.param(ModelVariant.HRNETV2_W40_OSMR),
+    pytest.param(ModelVariant.HRNETV2_W44_OSMR),
+    pytest.param(ModelVariant.HRNETV2_W48_OSMR),
+    pytest.param(ModelVariant.HRNETV2_W64_OSMR),
 ]
 
 
@@ -93,23 +38,30 @@ variants = [
 def test_hrnet_osmr_pytorch(variant):
 
     pcc = 0.99
-    if variant == "hrnetv2_w44":
+    if variant == ModelVariant.HRNETV2_W44_OSMR:
         pcc = 0.97
-    if variant in ["hrnetv2_w64", "hrnetv2_w40", "hrnetv2_w30"]:
+    if variant in [
+        ModelVariant.HRNETV2_W64_OSMR,
+        ModelVariant.HRNETV2_W40_OSMR,
+        ModelVariant.HRNETV2_W30_OSMR,
+        ModelVariant.HRNETV2_W32_OSMR,
+    ]:
         pcc = 0.95
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.HRNET,
-        variant=variant,
+        variant=variant.value,
         source=Source.OSMR,
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    framework_model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
-        variant,
-    )
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -123,7 +75,7 @@ def test_hrnet_osmr_pytorch(variant):
     )
 
     # Model Verification
-    fw_out, co_out = verify(
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
@@ -131,7 +83,7 @@ def test_hrnet_osmr_pytorch(variant):
     )
 
     # Run model on sample data and print results
-    print_cls_results(fw_out[0], co_out[0])
+    loader.print_cls_results(co_out)
 
 
 variants = [
