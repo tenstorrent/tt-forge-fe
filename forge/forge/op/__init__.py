@@ -60,7 +60,6 @@ from .tm import (
     AdvIndex,
     Unsqueeze,
     Squeeze,
-    PixelShuffle,
     ForgePad,
     ForgeUnpad,
 )

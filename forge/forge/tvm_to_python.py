@@ -1359,16 +1359,6 @@ def populate_gelu_args(graph, nid, compiler_cfg):
     return args
 
 
-def populate_pixel_shuffle_args(graph, nid, compiler_cfg):
-    args = []
-    node = graph["nodes"][nid]
-
-    upscale_factor = node["attrs"]["upscale_factor"][0][0]
-    args.append(("upscale_factor", f"{upscale_factor}"))
-
-    return args
-
-
 def populate_prelu_args(graph, nid, compiler_cfg):
     args = []
     node = graph["nodes"][nid]
@@ -1470,7 +1460,6 @@ tvm_to_forge_op_map = {
     "nn.relu": "relu",
     "nn.softmax": "softmax",
     "not_equal": "not_equal",
-    "pixel_shuffle": "pixel_shuffle",
     "power": "power",
     "nn.prelu": "prelu",
     "forge.adv_index": "adv_index",
@@ -1548,7 +1537,6 @@ forge_op_to_function_name = {
     "multiply": "forge.op.Multiply",
     "not_equal": "forge.op.NotEqual",
     "pad": "forge.op.Pad",
-    "pixel_shuffle": "forge.op.PixelShuffle",
     "power": "forge.op.Power",
     "prelu": "forge.op.Prelu",
     "reciprocal": "forge.op.Reciprocal",
@@ -1596,7 +1584,6 @@ forge_ops_needing_arguments = {
     "max_pool1d": populate_maxpool1d_args,
     "max_pool2d": populate_maxpool2d_args,
     "pad": populate_pad_args,
-    "pixel_shuffle": populate_pixel_shuffle_args,
     "prelu": populate_prelu_args,
     "reduce_avg": populate_reduce_args,
     "reduce_max": populate_reduce_args,

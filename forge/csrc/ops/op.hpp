@@ -101,7 +101,6 @@ enum class OpType : uint32_t
     Nop,
     NotEqual,
     Pad,
-    PixelShuffle,
     Pow,
     Power,
     Reciprocal,

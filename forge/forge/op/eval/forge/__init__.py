@@ -64,7 +64,6 @@ op_to_module_map = {
     "constant_pad": "tm",
     "unsqueeze": "tm",
     "squeeze": "tm",
-    "pixel_shuffle": "tm",
     "forge_pad": "tm",
     "forge_unpad": "tm",
     "reduce_avg": "reduce",

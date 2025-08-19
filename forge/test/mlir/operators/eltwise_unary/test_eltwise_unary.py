@@ -14,40 +14,6 @@ import os
 
 
 @pytest.mark.parametrize(
-    "input_shape, scale_factor",
-    [
-        ((1, 256, 4, 128), 2),
-        (
-            (3, 32, 10, 10),
-            4,
-        ),
-        ((2, 98, 6, 6), 7),
-        ((4, 18, 8, 8), 3),
-        ((2, 50, 12, 12), 5),
-        ((2, 64, 7, 7), 8),
-        ((5, 100, 2, 4), 10),
-        ((1, 49, 4, 4), 7),
-        ((4, 36, 5, 5), 6),
-    ],
-)
-@pytest.mark.push
-def test_pixel_shuffle(input_shape, scale_factor):
-    class PixelShuffleModel(nn.Module):
-        def __init__(self, scale_factor):
-            super().__init__()
-            self.model = nn.PixelShuffle(scale_factor)
-
-        def forward(self, x):
-            return self.model(x)
-
-    inputs = [torch.randn(*input_shape)]
-    framework_model = PixelShuffleModel(scale_factor)
-    framework_model.eval()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    verify(inputs, framework_model, compiled_model)
-
-
-@pytest.mark.parametrize(
     "shape, dtype",
     [
         pytest.param(

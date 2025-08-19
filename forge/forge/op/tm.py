@@ -526,26 +526,6 @@ def Squeeze(name: str, operandA: Tensor, dim: int) -> Tensor:
     return op("squeeze", name, operandA, attrs=(dim,), dim=dim).get_tensor()
 
 
-def PixelShuffle(name: str, operandA: Tensor, upscale_factor: int) -> Tensor:
-    """
-    Pixel shuffle operation.
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        First operand
-
-    Returns
-    -------
-    Tensor
-        Forge tensor
-    """
-    return op("pixel_shuffle", name, operandA, attrs=(upscale_factor,), upscale_factor=upscale_factor).get_tensor()
-
-
 def ForgePad(name: str, operandA: Tensor, paddings: Tuple[int, int], value: float) -> Tensor:
     """
     Pad operation that expands a given tensor with arbitrary number of tiles by any dimension.
