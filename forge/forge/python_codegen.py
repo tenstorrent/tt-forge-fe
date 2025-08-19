@@ -961,8 +961,8 @@ class ForgeWriter(PythonWriter):
             )
         else:
             self.wl('@pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list)')
-        self.wl('@pytest.mark.parametrize("enable_training", [False, True], ids=["inference", "training"])')
-        self.wl("def test_module(forge_module_and_shapes_dtypes, enable_training):")
+        self.wl('@pytest.mark.parametrize("training_mode", [False, True], ids=["inference", "training"])')
+        self.wl("def test_module(forge_module_and_shapes_dtypes, training_mode):")
         self.indent += 1
         if module_metadata is not None:
             for metadata_name, metadata_value in module_metadata.items():
@@ -1016,7 +1016,7 @@ class ForgeWriter(PythonWriter):
         ):
             self.wl("max_int = 1000")
         self.wl(
-            "inputs = [Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int, requires_grad = enable_training) for operand_shape, operand_dtype in operand_shapes_dtypes]"
+            "inputs = [Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int, requires_grad = training_mode) for operand_shape, operand_dtype in operand_shapes_dtypes]"
         )
         self.wl("")
         self.wl(f"framework_model = forge_module(forge_module.__name__)")
@@ -1024,7 +1024,7 @@ class ForgeWriter(PythonWriter):
         self.wl("for name, parameter in framework_model._parameters.items():")
         self.indent += 1
         self.wl(
-            "parameter_tensor = Tensor.create_torch_tensor(shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int, requires_grad = enable_training)"
+            "parameter_tensor = Tensor.create_torch_tensor(shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int, requires_grad = training_mode)"
         )
         self.wl("framework_model.set_parameter(name, parameter_tensor)")
         self.indent -= 1
@@ -1032,7 +1032,7 @@ class ForgeWriter(PythonWriter):
         self.wl("for name, constant in framework_model._constants.items():")
         self.indent += 1
         self.wl(
-            "constant_tensor = Tensor.create_torch_tensor(shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int, requires_grad = enable_training)"
+            "constant_tensor = Tensor.create_torch_tensor(shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int, requires_grad = training_mode)"
         )
         self.wl("framework_model.set_constant(name, constant_tensor)")
         self.indent -= 1
@@ -1047,14 +1047,14 @@ class ForgeWriter(PythonWriter):
         self.indent -= 1
         self.wl("")
         self.wl(
-            "compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, training=enable_training)"
+            "compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, training=training_mode)"
         )
         self.wl("")
         self.wl(
             "fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
         )
         self.wl("")
-        self.wl("if enable_training:")
+        self.wl("if training_mode:")
         self.indent += 1
         self.wl("grad = torch.rand_like(fw_out[0])")
         self.wl("")
