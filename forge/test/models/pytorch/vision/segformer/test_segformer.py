@@ -81,8 +81,8 @@ def test_segformer_image_classification_pytorch(variant):
 
 
 variants_semseg = [
-    pytest.param("nvidia/segformer-b0-finetuned-ade-512-512", marks=pytest.mark.xfail),
-    pytest.param("nvidia/segformer-b1-finetuned-ade-512-512", marks=pytest.mark.xfail),
+    pytest.param("nvidia/segformer-b0-finetuned-ade-512-512"),
+    pytest.param("nvidia/segformer-b1-finetuned-ade-512-512"),
     pytest.param("nvidia/segformer-b2-finetuned-ade-512-512", marks=pytest.mark.xfail),
     pytest.param("nvidia/segformer-b3-finetuned-ade-512-512", marks=pytest.mark.xfail),
     pytest.param("nvidia/segformer-b4-finetuned-ade-512-512", marks=pytest.mark.xfail),
