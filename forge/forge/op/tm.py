@@ -543,7 +543,7 @@ def PixelShuffle(name: str, operandA: Tensor, upscale_factor: int) -> Tensor:
     Tensor
         Forge tensor
     """
-    return op("pixel_shuffle", name, operandA, attrs=(upscale_factor,), upscale_factor=upscale_factor).get_tensor()
+    return op("pixel_shuffle", name, operandA, upscale_factor=upscale_factor).get_tensor()
 
 
 def ForgePad(name: str, operandA: Tensor, paddings: Tuple[int, int], value: float) -> Tensor:
