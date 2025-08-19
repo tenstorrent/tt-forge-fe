@@ -41,7 +41,9 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 
     torch::nn::functional::InterpolateFuncOptions options = torch::nn::functional::InterpolateFuncOptions();
     options = options.size(std::vector<int64_t>{sizes[0], sizes[1]});
-    if (align_corners)
+
+    // align_corners option can be only set to bilinear interpolation mode
+    if (align_corners && mode != "nearest")
         options = options.align_corners(align_corners);
 
     if (mode == "nearest")
@@ -146,6 +148,15 @@ void decompose_initial(
     int input_h = static_cast<int>(input_shape[h_idx]);
     int input_w = static_cast<int>(input_shape[w_idx]);
 
+    // If the resize2d up/down sampling sizes matches with input height and width, there is no need for up/down sampling
+    // operation
+    if ((size_h == input_h) && (size_w == input_w))
+    {
+        result = dc.op(graphlib::OpType("nop"), {result});
+        dc.fuse(result);
+        return;
+    }
+
     // Determine whether each spatial dimension will be upsampling (increasing size)
     bool is_upsampling_height = (size_h >= input_h);
     bool is_upsampling_width = (size_w >= input_w);
@@ -167,9 +178,9 @@ void decompose_initial(
 
     if (is_upsampling_height && is_upsampling_width)
     {
-        if (align_corners)
+        if (align_corners && mode != "nearest")
         {
-            TT_THROW("align_corners argument not supported in upsample2d op");
+            TT_THROW("align_corners argument not supported in upsample2d op with {} interpolation mode", mode);
         }
         std::vector<int> scale_factor;
         scale_factor.push_back(size_h / input_h);
