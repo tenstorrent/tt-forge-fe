@@ -670,7 +670,7 @@ void Op::decompose_initial(
         case OpType::LogicalNot: return;
         case OpType::BitwiseAnd: return;
         case OpType::Mask: return;
-        case OpType::Matmul: return matmul::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Matmul: return;
         case OpType::MaxPool1d: return;
         case OpType::MaxPool2d: return max_pool_2d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Maximum: return;
@@ -766,7 +766,7 @@ void Op::decompose_post_optimize(
         case OpType::LogicalNot: return;
         case OpType::BitwiseAnd: return;
         case OpType::Mask: return;
-        case OpType::Matmul: return matmul::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Matmul: return;
         case OpType::MaxPool1d: return;
         case OpType::MaxPool2d: return;
         case OpType::Maximum: return;
@@ -863,7 +863,7 @@ void Op::decompose_post_autograd(
         case OpType::LogicalNot: return;
         case OpType::BitwiseAnd: return;
         case OpType::Mask: return;
-        case OpType::Matmul: return matmul::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Matmul: return;
         case OpType::MaxPool1d: return;
         case OpType::MaxPool2d: return;
         case OpType::Maximum: return;
@@ -958,7 +958,7 @@ long Op::initial_flops_estimate(
         case OpType::LogicalNot: return 0;
         case OpType::BitwiseAnd: return 0;
         case OpType::Mask: return 0;
-        case OpType::Matmul: return matmul::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Matmul: return 0;
         case OpType::MaxPool1d: return 0;
         case OpType::MaxPool2d: return 0;
         case OpType::Maximum: return 0;
