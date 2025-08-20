@@ -29,38 +29,6 @@ def eval(type, attr, ops):
                     result.append(zero_slice)
         return torch.stack(result, dim=dim)
 
-    if type == "forge_pad":
-        assert (
-            len(attr) == 3
-        ), "Forge pad should have three attributes. The paddings for R and C dimensions and the value to pad with."
-        r_tiles, c_tiles, value = attr
-        operand = t_ops[0]
-        shape = operand.shape
-        # Padding is always given in tiles, so we need to recompute the padding in the original dimension
-        new_r_size_tile, new_c_size_tile = 0, 0
-        new_r_size, new_c_size = 0, 0
-        if r_tiles > 0:
-            new_r_size_tile = align_up_tile(shape[-2]) - shape[-2]
-            new_r_size = r_tiles * TILE_DIM
-        if c_tiles > 0:
-            new_c_size_tile = align_up_tile(shape[-1]) - shape[-1]
-            new_c_size = c_tiles * TILE_DIM
-        result = torch.nn.functional.pad(operand, [0, new_c_size_tile, 0, new_r_size_tile], value=0)
-        result = torch.nn.functional.pad(result, [0, new_c_size, 0, new_r_size], value=value)
-        return result
-
-    if type == "forge_unpad":
-        assert len(attr) == 4, "Forge unpad should have four attributes. The paddings and the original shape."
-        r_tiles, c_tiles, orig_r, orig_c = attr
-        operand = t_ops[0]
-        if r_tiles > 0:
-            assert operand.shape[-2] == align_up_tile(orig_r) + r_tiles * TILE_DIM
-        if c_tiles > 0:
-            assert operand.shape[-1] == align_up_tile(orig_c) + c_tiles * TILE_DIM
-        result = torch.index_select(operand, -2, torch.arange(orig_r))
-        result = torch.index_select(result, -1, torch.arange(orig_c))
-        return result
-
     assert False, f"{type} not defined in tensor manipulations"
 
 
@@ -73,33 +41,6 @@ def shape(type, attr, ops):
         shape = list(ops[0])
         shape[dim] = length * round_up_div(shape[dim] - begin, stride)
         return tuple(shape), []
-
-    if type == "forge_pad":
-        assert (
-            len(attr) == 3
-        ), "Forge pad should have three attributes. The paddings for R and C dimensions and the value to pad with."
-        r_tiles, c_tiles, value = attr
-        shape = list(ops[0])
-        # Padding is always given in tiles, so we need to recompute the padding in the original dimension
-        if r_tiles > 0:
-            shape[-2] = (align_up_tile(shape[-2]) // TILE_DIM + r_tiles) * TILE_DIM
-        if c_tiles > 0:
-            shape[-1] = (align_up_tile(shape[-1]) // TILE_DIM + c_tiles) * TILE_DIM
-        return tuple(shape), []
-
-    if type == "forge_unpad":
-        assert len(attr) == 4, "Forge unpad should have four attributes. The paddings and the original shape."
-        r_tiles, c_tiles, orig_r, orig_c = attr
-        if r_tiles > 0:
-            assert ops[0][-2] == align_up_tile(orig_r) + r_tiles * TILE_DIM
-        if c_tiles > 0:
-            assert ops[0][-1] == align_up_tile(orig_c) + c_tiles * TILE_DIM
-        shape = list(ops[0])
-        shape[-2] = orig_r
-        shape[-1] = orig_c
-        return tuple(shape), []
-
-    assert False, f"{type} not defined in tensor manipulations"
 
 
 def backward(type, attr, ac, operand, inputs, output, grad):
