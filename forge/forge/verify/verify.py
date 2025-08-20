@@ -359,7 +359,7 @@ def verify_backward(
     if isinstance(framework_model, torch.nn.Module):
         framework_model.zero_grad()
 
-    record_execution(ExecutionStage.FAILED_TTNN_BINARY_BACKWARD_EXECUTION)
+    record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
     # 1st step: run backward pass for the networks and get gradients
     compiled_model.gradient_inputs = [CTensor(output_grad)]
     co_gradient_outputs = compiled_model.backward()
@@ -375,7 +375,7 @@ def verify_backward(
         framework_model.zero_grad()
     framework_output.backward(gradient=output_grad)
 
-    record_execution(ExecutionStage.FAILED_BACKWARD_VERIFICATION)
+    record_execution(ExecutionStage.FAILED_VERIFICATION)
     # 2nd step: verify gradients
     for name in co_gradients:
         co_grad = co_gradients[name]
@@ -408,13 +408,14 @@ def verify_backward(
 
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
-    record_execution(ExecutionStage.PASSED_BACKWARD)
+    record_execution(ExecutionStage.PASSED)
 
 
 def verify(
     inputs: List[FrameworkTensor],
     framework_model: FrameworkModule,
     compiled_model: CompiledModel,
+    with_backward: bool = False,
     verify_cfg: VerifyConfig = None,
 ):
     """
@@ -467,9 +468,9 @@ def verify(
     fw_out = framework_model(*fw_inputs)
     del fw_inputs
 
-    record_execution(ExecutionStage.FAILED_TTNN_BINARY_FORWARD_EXECUTION)
+    record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
     co_out = compiled_model(*inputs)
-    record_execution(ExecutionStage.FAILED_FORWARD_VERIFICATION)
+    record_execution(ExecutionStage.FAILED_VERIFICATION)
 
     # EmitC verification
     if verify_cfg.verify_emitc_correctness:
@@ -532,7 +533,23 @@ def verify(
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
 
-    record_execution(ExecutionStage.PASSED_FORWARD)
-
+    # This will only work if model is compiled in training mode
+    if with_backward:
+        record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
+        grad = torch.rand_like(fw_out[0])
+        verify_backward(
+            inputs,
+            grad,
+            fw_out[0],
+            co_out[0],
+            framework_model,
+            compiled_model,
+            verify_cfg=verify_cfg,
+        )
+    else:
+        # If with_backward is False, we need to record the execution as passed
+        # When with_backward is True, we do it at the end of the verify_backward function
+        record_execution(ExecutionStage.PASSED)
+    
     # Return both the framework and compiled model outputs
     return fw_out, co_out
