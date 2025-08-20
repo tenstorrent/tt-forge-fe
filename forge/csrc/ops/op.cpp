@@ -694,7 +694,7 @@ void Op::decompose_initial(
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
-        case OpType::Where: return where::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Where: return;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
@@ -788,7 +788,7 @@ void Op::decompose_post_optimize(
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
-        case OpType::Where: return where::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Where: return;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
@@ -883,7 +883,7 @@ void Op::decompose_post_autograd(
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
-        case OpType::Where: return where::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Where: return;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
@@ -976,7 +976,7 @@ long Op::initial_flops_estimate(
         case OpType::Unsqueeze: return 0;
         case OpType::UpdateCache: return 0;
         case OpType::Upsample2d: return 0;
-        case OpType::Where: return where::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Where: return 0;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }

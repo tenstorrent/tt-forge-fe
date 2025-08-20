@@ -12,10 +12,7 @@ from loguru import logger
 
 def eval(type, attr, ops):
 
-    if type == "where":
-        return torch.where(ops[0].type(torch.bool), ops[1], ops[2])
-
-    elif type == "index_copy":
+    if type == "index_copy":
         t_ops = to_torch_operands(*ops)
         t_ops = list(t_ops)
         # index_copy expects index to be long tensor, not int
@@ -26,35 +23,7 @@ def eval(type, attr, ops):
 
 # Return shape, and list of dimensions that were broadcast on operands
 def shape(type, attr, ops) -> Tuple[Tuple, List]:
-    def get_eltwise_shape_and_broadcast():
-        broadcast = []
-        output_dims = max(len(op) for op in ops)
-        for index in range(len(ops)):
-            ops[index] = list(ops[index])
-            if len(ops[index]) < output_dims:
-                ops[index] = [1] * (output_dims - len(ops[index])) + ops[index]
-
-        output_shape = [max(dim) for dim in zip(*ops)]
-        for op_index in range(len(ops)):
-            for dim_index in range(len(ops[op_index])):
-                if ops[op_index][dim_index] != output_shape[dim_index]:
-                    assert (
-                        ops[op_index][dim_index] == 1
-                    ), f"Eltwise nary ops must have same shape or operand must be 1 wide to broadcast: {ops}"
-                    broadcast.append(
-                        (
-                            op_index,
-                            dim_index - len(output_shape),
-                            output_shape[dim_index],
-                        )
-                    )
-
-        return tuple(output_shape), broadcast
-
-    if type == "where":
-        return get_eltwise_shape_and_broadcast()
-
-    elif type == "index_copy":
+    if type == "index_copy":
         # index copy writes data to specified indices in the first operand
         # so the output shape is the same as the first operand
         return ops[0], []
