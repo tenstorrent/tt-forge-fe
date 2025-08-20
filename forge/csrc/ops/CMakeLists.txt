@@ -21,7 +21,6 @@ add_library(ops
     op_conv_2d_transpose.cpp
     op_cosine.cpp
     op_cumulative_sum.cpp
-    op_depthwise.cpp
     op_divide.cpp
     op_downsample_2d.cpp
     op_dropout.cpp
