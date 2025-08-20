@@ -3,6 +3,7 @@
 
 import pytest
 import torch
+from third_party.tt_forge_models.deepseek.deepseek_math.pytorch import ModelVariant
 
 import forge
 from forge.verify.compare import compare_with_golden
@@ -44,7 +45,7 @@ def decode_on_cpu(model, tokenizer, input_ids, hidden_states, max_new_tokens):
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.parametrize("variant", ["deepseek-math-7b-instruct"])
+@pytest.mark.parametrize("variant", [ModelVariant.DEEPSEEK_7B_INSTRUCT])
 @pytest.mark.xfail
 def test_deepseek_prefil_on_device_decode_on_cpu(variant):
     """
@@ -53,8 +54,7 @@ def test_deepseek_prefil_on_device_decode_on_cpu(variant):
     - The second part is the decoding of the model on the CPU without KV cache.
     """
 
-    model_name = f"deepseek-ai/{variant}"
-    model, tokenizer, input_ids = download_model_and_tokenizer(model_name)
+    model, tokenizer, input_ids = download_model_and_tokenizer(variant)
 
     # This is the part of the model needed for prefill; model without the last Linear layer (lm_head)
     model_decoder = model.get_decoder()

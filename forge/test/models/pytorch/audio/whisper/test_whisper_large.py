@@ -3,8 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from datasets import load_dataset
-from transformers import AutoFeatureExtractor, WhisperModel
+from third_party.tt_forge_models.whisper.pytorch.loader import ModelLoader, ModelVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -17,13 +16,11 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.utils import download_model
-
-variants = ["openai/whisper-large-v3"]
+variants = [ModelVariant.WHISPER_LARGE_V3]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 @pytest.mark.xfail
 def test_whisper_large_v3(variant):
 
@@ -37,12 +34,11 @@ def test_whisper_large_v3(variant):
         group=ModelGroup.RED,
     )
 
-    # model loading
-    model = download_model(WhisperModel.from_pretrained, variant, return_dict=False)
-    feature_extractor = download_model(AutoFeatureExtractor.from_pretrained, variant)
-    ds = load_dataset("hf-internal-testing/librispeech_asr_dummy", "clean", split="validation")
-    input_audio = feature_extractor(ds[0]["audio"]["array"], return_tensors="pt")
-    input_features = input_audio.input_features
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    model = loader.load_model()
+    input_features = loader.load_inputs()
+
     decoder_input_ids = torch.tensor([[1, 1]]) * model.config.decoder_start_token_id
     inputs = [input_features, decoder_input_ids]
 
