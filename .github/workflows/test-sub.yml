@@ -52,6 +52,11 @@ on:
         description: 'Run tests using shared runners'
         required: false
         type: boolean
+      run_models_ops_tests:
+        description: 'Run the generated models ops tests'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   run-tests:
@@ -150,6 +155,16 @@ jobs:
           source env/activate
           pip install tt_tvm*.whl --upgrade
           pip install tt_forge_fe*.whl --upgrade
+
+      - name: Download Generated Models Ops Tests
+        if: ${{ inputs.run_models_ops_tests }}
+        continue-on-error: true
+        uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
+        with:
+          name: generated-models-ops-tests
+          run_id: ${{ inputs.run_id }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          path: forge/test/models_ops
 
       - name: Run Test
         env:

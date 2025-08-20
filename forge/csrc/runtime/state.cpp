@@ -67,24 +67,25 @@ void ModelState::run_program(ProgramType program_type, std::vector<tt::Tensor> a
     {
         if (!tensor.on_device())
         {
-            auto layout = tt::runtime::getLayout(binary, pg_id, input_idx++);
+            auto layout = tt::runtime::getLayout(binary, pg_id, input_idx);
             tensor.to_device(device_id, layout);
         }
 
         inputs.emplace_back(tensor);
+        input_idx++;
     }
 
     // Push persistent inputs to the device if they are not already there.
     for (auto& persistent_input : program_state.persistent_inputs)
     {
-        size_t curr_input_id = input_idx++;
         if (!persistent_input.on_device())
         {
-            auto layout = tt::runtime::getLayout(binary, pg_id, curr_input_id);
+            auto layout = tt::runtime::getLayout(binary, pg_id, input_idx);
             persistent_input.to_device(device_id, layout);
         }
 
         inputs.emplace_back(persistent_input);
+        input_idx++;
     }
 
     program_state.outputs = ::tt::run_program(binary, pg_id, inputs);
