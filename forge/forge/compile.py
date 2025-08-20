@@ -1136,6 +1136,9 @@ def generate_graph(
             input_names_known = False
     inputs, _, _ = flatten_inputs(inputs)
 
+    # Track counts to ensure unique output names per base name
+    output_name_counts: Dict[str, int] = {}
+
     for out in all_subgraph_outputs:
         module = output_to_module_map[out]
         assert module is not None
@@ -1164,9 +1167,14 @@ def generate_graph(
                 raise RuntimeError("Untraced output tensor encountered")
 
         else:
+            base_name = module_name + ".output_" + out.src_op.name
+            count = output_name_counts.get(base_name, 0)
+            unique_name = base_name if count == 0 else f"{base_name}_{count}"
+            output_name_counts[base_name] = count + 1
+
             outq = create_output(
                 graph,
-                module_name + ".output_" + out.src_op.name,
+                unique_name,
                 out.shape.get_pytorch_shape(),
                 out.data_format,
                 module.is_loss,
@@ -1177,8 +1185,10 @@ def generate_graph(
 
     recorded_parameters = {}
 
-    while pending_tensors:
+    # Map to ensure we create an op node only once per source op name
+    op_node_by_name: Dict[str, int] = {}
 
+    while pending_tensors:
         tensor, output, port_index, operand_broadcast, subgraph_idx = pending_tensors.popleft()
 
         if tensor in visited_tensors:
@@ -1333,15 +1343,21 @@ def generate_graph(
         tags = {}
         if tensor.src_layer is not None:
             tags["layer"] = tensor.src_layer
-        op = create_op_node(
-            graph,
-            tensor.src_op.name,
-            tensor.src_op.cpp_op_type,
-            tensor.shape.get_pytorch_shape(),
-            tensor.data_format,
-            subgraph_idx,
-            tags,
-        )
+        # Reuse the same op node if we already created one for this src_op.name
+        existing = op_node_by_name.get(tensor.src_op.name)
+        if existing is not None:
+            op = existing
+        else:
+            op = create_op_node(
+                graph,
+                tensor.src_op.name,
+                tensor.src_op.cpp_op_type,
+                tensor.shape.get_pytorch_shape(),
+                tensor.data_format,
+                subgraph_idx,
+                tags,
+            )
+            op_node_by_name[tensor.src_op.name] = op
 
         visited_tensors[tensor] = op
         if return_intermediate and tensor.has_value():
@@ -1364,6 +1380,7 @@ def generate_graph(
         if output_tensor in module_output_tensor_to_node
     ]
     module_targets = [module_target_tensor_to_node[target_tensor] for target_tensor in target_tensors]
+
     out_requires_grad = [
         output_tensor.requires_grad
         for output_tensor in all_subgraph_outputs

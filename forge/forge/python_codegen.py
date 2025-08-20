@@ -249,6 +249,15 @@ class ForgeWriter(PythonWriter):
             set_src_layer = ""
             if ops[key].src_layer:
                 set_src_layer = f'.set_src_layer("{ops[key].src_layer}")'
+            # determine LHS: support multi-output when provided
+            if getattr(ops[key], "output_names", None) and len(ops[key].output_names) > 1:
+                lhs = ", ".join(ops[key].output_names)
+            else:
+                # Special-case: unpack TopK into values and indices, keeping first name unchanged for downstream refs
+                if ops[key].function_name == "forge.op.TopK":
+                    lhs = f"{ops[key].output_name}, {ops[key].output_name}_indices"
+                else:
+                    lhs = ops[key].output_name
             if ops[key].is_submodule_call:
                 if len(ops[key].loop_with):
                     if len(ops[key].loop_with) + 1 == self.num_submodels:
@@ -261,21 +270,17 @@ class ForgeWriter(PythonWriter):
 
                     self.wl(f"for i in range({loop_len}):")  # +1 for current op
                     self.indent += 1
-                    self.wl(
-                        f"{ops[key].output_name} = {ops[key].function_name}({activation_names}{arg_text}){set_src_layer}"
-                    )
+                    self.wl(f"{lhs} = {ops[key].function_name}({activation_names}{arg_text}){set_src_layer}")
                     self.indent -= 1
                 else:
-                    self.wl(
-                        f"{ops[key].output_name} = {ops[key].function_name}({activation_names}{arg_text}){set_src_layer}"
-                    )
+                    self.wl(f"{lhs} = {ops[key].function_name}({activation_names}{arg_text}){set_src_layer}")
             else:
                 self.wl(
-                    f'{ops[key].output_name} = {ops[key].function_name}("{ops[key].node_name}"{activation_names}{arg_text}){set_src_layer}'
+                    f'{lhs} = {ops[key].function_name}("{ops[key].node_name}"{activation_names}{arg_text}){set_src_layer}'
                 )
-                if self.delete_inputs:
-                    for name_to_del in ops[key].inputs_to_delete:
-                        self.wl(f"{name_to_del}._value = None")
+            if self.delete_inputs:
+                for name_to_del in ops[key].inputs_to_delete:
+                    self.wl(f"{name_to_del}._value = None")
 
         outputs = list(outputs.values())
         if len(outputs) == 1:
@@ -550,6 +555,7 @@ class ForgeWriter(PythonWriter):
                 self.indent -= 1
                 self.indent -= 1
                 self.indent -= 1
+
         elif self.framework == "tf_graphdef":
             self.wl(f"def process_framework_parameters(self, model):")
             self.indent += 1

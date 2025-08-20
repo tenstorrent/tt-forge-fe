@@ -114,6 +114,39 @@ def populate_torch_adv_index_args(graph, nid, compiler_cfg):
     return args
 
 
+def populate_topk_args(graph, nid, compiler_cfg):
+    args = []
+    node = graph["nodes"][nid]
+
+    k = int(node["attrs"].get("k", [[1]])[0][0]) if "k" in node["attrs"] else 1
+    axis = int(node["attrs"].get("axis", [[-1]])[0][0]) if "axis" in node["attrs"] else -1
+
+    is_ascend = False
+    if "is_ascend" in node["attrs"]:
+        raw = node["attrs"]["is_ascend"][0][0]
+        if isinstance(raw, (int, bool)):
+            is_ascend = bool(raw)
+        elif isinstance(raw, str):
+            low = raw.strip().lower()
+            if low in ("1", "true", "t", "yes"):
+                is_ascend = True
+            elif low in ("0", "false", "f", "no"):
+                is_ascend = False
+            else:
+                try:
+                    is_ascend = bool(int(low))
+                except Exception:
+                    is_ascend = False
+    largest = not is_ascend
+
+    args.append(("k", f"{k}"))
+    args.append(("dim", f"{axis}"))
+    args.append(("largest", "True" if largest else "False"))
+    args.append(("sorted", "True"))
+
+    return args
+
+
 def populate_torch_reshape_args(graph, nid, compiler_cfg):
     curr_node, args = _populate_torch_init_args(graph, nid)
 
@@ -466,6 +499,7 @@ tvm_to_pytorch_op_map = {
     "where": "where",
     "layernorm": "layernorm",
     "forge_cpudevice.dropout": "dropout",
+    "topk": "topk",
 }
 
 pytorch_op_to_function_name = {
@@ -520,6 +554,7 @@ pytorch_op_to_function_name = {
     "where": "torch.where",
     "layernorm": "torch.nn.functional.layer_norm",
     "dropout": "torch.nn.functional.dropout",
+    "topk": "torch.topk",
 }
 
 pytorch_ops_needing_arguments = {
@@ -1500,6 +1535,8 @@ tvm_to_forge_op_map = {
     "squeeze": "squeeze",
     "qnn.dense": "matmul",
     "atan": "atan",
+    "upsample2d": "upsample2d",
+    "topk": "topk",
 }
 
 forge_op_to_function_name = {
@@ -1575,6 +1612,8 @@ forge_op_to_function_name = {
     "unsqueeze": "forge.op.Unsqueeze",
     "squeeze": "forge.op.Squeeze",
     "atan": "forge.op.Atan",
+    "upsample2d": "forge.op.Upsample2d",
+    "topk": "forge.op.TopK",
 }
 forge_ops_needing_arguments = {
     "argmax": populate_argmax_args,
@@ -1612,6 +1651,7 @@ forge_ops_needing_arguments = {
     "unsupported": populate_unsupported_args,
     "unsqueeze": populate_unsqueeze_args,
     "squeeze": populate_squeeze_args,
+    "topk": populate_topk_args,
     # "dropout"                      : populate_dropout_args,
 }
 
@@ -2164,7 +2204,23 @@ def compile_tvm_to_python(
                     if "users" not in input_node:
                         input_node["users"] = []
                     input_node["users"].append(nid)
-                    input_names.append(input_node["forge_name"])
+                    input_name = input_node["forge_name"]
+                    # If consuming non-primary output (producer port > 0), suffix name to match writer conventions
+                    try:
+                        producer_port = int(node["inputs"][input_port][1])
+                    except Exception:
+                        producer_port = 0
+                    try:
+                        producer_num_outputs = int(graph["nodes"][input_nid]["attrs"].get("num_outputs", 1))
+                    except Exception:
+                        producer_num_outputs = 1
+                    if producer_port > 0 and producer_num_outputs > 1:
+                        # For port 1, use the conventional "_indices" suffix; otherwise use generic suffix
+                        if producer_port == 1:
+                            input_name = input_name + "_indices"
+                        else:
+                            input_name = f"{input_name}_out{producer_port}"
+                    input_names.append(input_name)
                     input_shapes.append(input_node["forge_shape"])
                     input_dtypes.append(_determine_node_dtype(input_node))
                     if input_nid in params.keys():
@@ -2210,6 +2266,8 @@ def compile_tvm_to_python(
         for output_nid in output_nodes:
             output_node = graph["nodes"][output_nid]
             returns[output_nid] = output_node["forge_name"]
+            if output_node["name"] == "topk":
+                returns[f"{output_nid}_indices"] = output_node["forge_name"] + "_indices"
             if len(output_node["forge_shape"]) == 0:
                 returns_requiring_batch_dim_fix.append(output_node["forge_name"])
             elif output_node["forge_shape"][0] != 1:

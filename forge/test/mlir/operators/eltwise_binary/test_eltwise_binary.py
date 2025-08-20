@@ -83,6 +83,37 @@ def test_einsum(einsum_pattern, shape_1, shape_2):
 
 
 @pytest.mark.parametrize(
+    "shape, k, dim, largest",
+    [
+        ((10,), 3, 0, True),
+        ((5, 5), 2, 1, False),
+    ],
+)
+@pytest.mark.xfail()
+def test_topk(shape, k, dim, largest):
+    class TopK(nn.Module):
+        def __init__(self, k, dim, largest):
+            super().__init__()
+            self.k = k
+            self.dim = dim
+            self.largest = largest
+
+        def forward(self, x):
+            values, indices = torch.topk(x, k=self.k, dim=self.dim, largest=self.largest)
+            return values, indices
+            # return values * indices.to(values.dtype)
+
+    input_tensor = torch.randn(shape)
+    framework_model = TopK(k=k, dim=dim, largest=largest)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=[input_tensor],
+        verify_cfg=DeprecatedVerifyConfig(verify_forge_codegen_vs_framework=True),
+    )
+    verify([input_tensor], framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
     "shape",
     [
         (300, 1),
