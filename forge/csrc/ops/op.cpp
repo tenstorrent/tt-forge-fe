@@ -77,7 +77,6 @@ class NewToOldOpType
         mapping_[OpType::Heaviside] = "heaviside";
         mapping_[OpType::Index] = "index";
         mapping_[OpType::IndexCopy] = "index_copy";
-        mapping_[OpType::Interleave] = "interleave";
         mapping_[OpType::Layernorm] = "layernorm";
         mapping_[OpType::LayernormBw] = "layernorm_bw";
         mapping_[OpType::LeakyRelu] = "leaky_relu";
@@ -179,7 +178,6 @@ class OldToNewOpType
         mapping_["heaviside"] = OpType::Heaviside;
         mapping_["index"] = OpType::Index;
         mapping_["index_copy"] = OpType::IndexCopy;
-        mapping_["interleave"] = OpType::Interleave;
         mapping_["layernorm"] = OpType::Layernorm;
         mapping_["layernorm_bw"] = OpType::LayernormBw;
         mapping_["leaky_relu"] = OpType::LeakyRelu;
@@ -346,7 +344,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Heaviside: return heaviside::eval(old_op_type, *this, tensors);
         case OpType::Index: return index::eval(old_op_type, *this, tensors);
         case OpType::IndexCopy: return index_copy::eval(old_op_type, *this, tensors);
-        case OpType::Interleave: return interleave::eval(old_op_type, *this, tensors);
         case OpType::Layernorm: return layernorm::eval(old_op_type, *this, tensors);
         case OpType::LayernormBw: return layernorm_bw::eval(old_op_type, *this, tensors);
         case OpType::LeakyRelu: return leaky_relu::eval(old_op_type, *this, tensors);
@@ -441,7 +438,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Heaviside: return heaviside::shape(old_op_type, *this, inputs);
         case OpType::Index: return index::shape(old_op_type, *this, inputs);
         case OpType::IndexCopy: return index_copy::shape(old_op_type, *this, inputs);
-        case OpType::Interleave: return interleave::shape(old_op_type, *this, inputs);
         case OpType::Layernorm: return layernorm::shape(old_op_type, *this, inputs);
         case OpType::LayernormBw: return layernorm_bw::shape(old_op_type, *this, inputs);
         case OpType::LeakyRelu: return leaky_relu::shape(old_op_type, *this, inputs);
@@ -541,7 +537,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Heaviside: return heaviside::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Index: return index::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::IndexCopy: return index_copy::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Interleave: return interleave::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Layernorm: return layernorm::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::LayernormBw: return layernorm_bw::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::LeakyRelu: return leaky_relu::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -658,7 +653,6 @@ void Op::decompose_initial(
         case OpType::Heaviside: return;
         case OpType::Index: return;
         case OpType::IndexCopy: return index_copy::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Interleave: return interleave::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Layernorm: return;
         case OpType::LayernormBw: return;
         case OpType::LeakyRelu: return;
@@ -754,7 +748,6 @@ void Op::decompose_post_optimize(
         case OpType::Heaviside: return;
         case OpType::Index: return;
         case OpType::IndexCopy: return index_copy::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Interleave: return interleave::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Layernorm: return;
         case OpType::LayernormBw: return;
         case OpType::LeakyRelu: return;
@@ -851,7 +844,6 @@ void Op::decompose_post_autograd(
         case OpType::Heaviside: return heaviside::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Index: return;
         case OpType::IndexCopy: return index_copy::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Interleave: return interleave::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Layernorm: return layernorm::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::LayernormBw: return layernorm_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::LeakyRelu: return;
@@ -946,7 +938,6 @@ long Op::initial_flops_estimate(
         case OpType::Heaviside: return 0;
         case OpType::Index: return 0;
         case OpType::IndexCopy: return index_copy::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Interleave: return interleave::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Layernorm: return 0;
         case OpType::LayernormBw: return 0;
         case OpType::LeakyRelu: return 0;
@@ -1040,7 +1031,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Heaviside: return false;
         case OpType::Index: return true;
         case OpType::IndexCopy: return false;
-        case OpType::Interleave: return false;
         case OpType::Layernorm: return false;
         case OpType::LayernormBw: return false;
         case OpType::LeakyRelu: return false;
@@ -1134,7 +1124,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Heaviside: return true;
         case OpType::Index: return false;
         case OpType::IndexCopy: return true;
-        case OpType::Interleave: return true;
         case OpType::Layernorm: return false;
         case OpType::LayernormBw: return false;
         case OpType::LeakyRelu: return true;
@@ -1228,7 +1217,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Heaviside: return false;
         case OpType::Index: return false;
         case OpType::IndexCopy: return false;
-        case OpType::Interleave: return false;
         case OpType::Layernorm: return false;
         case OpType::LayernormBw: return false;
         case OpType::LeakyRelu: return true;
@@ -1322,7 +1310,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Heaviside: return true;
         case OpType::Index: return false;
         case OpType::IndexCopy: return false;
-        case OpType::Interleave: return false;
         case OpType::Layernorm: return false;
         case OpType::LayernormBw: return false;
         case OpType::LeakyRelu: return false;
@@ -1416,7 +1403,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Heaviside: return false;
         case OpType::Index: return false;
         case OpType::IndexCopy: return true;
-        case OpType::Interleave: return true;
         case OpType::Layernorm: return false;
         case OpType::LayernormBw: return false;
         case OpType::LeakyRelu: return false;

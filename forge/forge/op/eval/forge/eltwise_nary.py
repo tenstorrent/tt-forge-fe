@@ -23,22 +23,6 @@ def eval(type, attr, ops):
         out = t_ops[0].index_copy(attr[0], t_ops[1], t_ops[2])
         return out
 
-    elif type == "interleave":
-        assert len(attr) == 2, "Interleave should have 2 attr"
-        axis = attr[0]
-        stride = attr[1]
-        assert axis == -3 and stride == 1
-
-        # Forward impl only works for Z dim interleave with stride 1
-        t_ops = to_torch_operands(*ops)
-        stacked = torch.stack(t_ops, dim=axis)
-        target_shape = list(t_ops[0].shape)
-        for op in t_ops[1:]:
-            target_shape[axis] += op.shape[axis]
-
-        return torch.reshape(stacked, target_shape)
-    assert False, f"Unknown eval: {type}"
-
 
 # Return shape, and list of dimensions that were broadcast on operands
 def shape(type, attr, ops) -> Tuple[Tuple, List]:
@@ -75,17 +59,6 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
         # so the output shape is the same as the first operand
         return ops[0], []
 
-    elif type == "interleave":
-        assert len(attr) == 2, "Interleave should have 2 attr"
-        axis = attr[0]
-        stride = attr[1]
-        assert axis == -3 and stride == 1
-
-        output_shape = list(ops[0])
-        for op in ops[1:]:
-            output_shape[axis] += op[axis]
-
-        return output_shape, []
     assert False, f"{type} not defined in eltwise_nary"
 
 

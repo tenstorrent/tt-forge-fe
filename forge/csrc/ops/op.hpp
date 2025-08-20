@@ -80,7 +80,6 @@ enum class OpType : uint32_t
     Heaviside,
     Index,
     IndexCopy,
-    Interleave,
     Layernorm,
     LayernormBw,
     LeakyRelu,

@@ -46,7 +46,6 @@ op_to_module_map = {
     "concatenate": "eltwise_nary",
     "where": "eltwise_nary",
     "index_copy": "eltwise_nary",
-    "interleave": "eltwise_nary",
     "stack": "eltwise_nary",
     "matmul": "matmul",
     "depthwise": "depthwise",
