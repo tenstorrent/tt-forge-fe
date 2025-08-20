@@ -62,7 +62,6 @@ enum class OpType : uint32_t
     Conv2dTranspose,
     Cosine,
     CumulativeSum,
-    Depthwise,
     Divide,
     Downsample2d,
     Dropout,

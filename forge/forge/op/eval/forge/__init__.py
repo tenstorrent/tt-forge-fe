@@ -49,7 +49,6 @@ op_to_module_map = {
     "interleave": "eltwise_nary",
     "stack": "eltwise_nary",
     "matmul": "matmul",
-    "depthwise": "depthwise",
     "embedding": "embedding",
     "embedding_bw": "embedding_bw",
     "transpose": "tm",

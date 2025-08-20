@@ -59,7 +59,6 @@ class NewToOldOpType
         mapping_[OpType::Conv2dTranspose] = "conv2d_transpose";
         mapping_[OpType::Cosine] = "cosine";
         mapping_[OpType::CumulativeSum] = "cumsum";
-        mapping_[OpType::Depthwise] = "depthwise";
         mapping_[OpType::Divide] = "divide";
         mapping_[OpType::Downsample2d] = "downsample2d";
         mapping_[OpType::Dropout] = "dropout";
@@ -161,7 +160,6 @@ class OldToNewOpType
         mapping_["conv2d_transpose"] = OpType::Conv2dTranspose;
         mapping_["cosine"] = OpType::Cosine;
         mapping_["cumsum"] = OpType::CumulativeSum;
-        mapping_["depthwise"] = OpType::Depthwise;
         mapping_["divide"] = OpType::Divide;
         mapping_["downsample2d"] = OpType::Downsample2d;
         mapping_["dropout"] = OpType::Dropout;
@@ -328,7 +326,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Conv2dTranspose: return conv_2d_transpose::eval(old_op_type, *this, tensors);
         case OpType::Cosine: return cosine::eval(old_op_type, *this, tensors);
         case OpType::CumulativeSum: return cumulative_sum::eval(old_op_type, *this, tensors);
-        case OpType::Depthwise: return depthwise::eval(old_op_type, *this, tensors);
         case OpType::Divide: return divide::eval(old_op_type, *this, tensors);
         case OpType::Downsample2d: return downsample_2d::eval(old_op_type, *this, tensors);
         case OpType::Dropout: return dropout::eval(old_op_type, *this, tensors);
@@ -423,7 +420,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Conv2dTranspose: return conv_2d_transpose::shape(old_op_type, *this, inputs);
         case OpType::Cosine: return cosine::shape(old_op_type, *this, inputs);
         case OpType::CumulativeSum: return cumulative_sum::shape(old_op_type, *this, inputs);
-        case OpType::Depthwise: return depthwise::shape(old_op_type, *this, inputs);
         case OpType::Divide: return divide::shape(old_op_type, *this, inputs);
         case OpType::Downsample2d: return downsample_2d::shape(old_op_type, *this, inputs);
         case OpType::Dropout: return dropout::shape(old_op_type, *this, inputs);
@@ -523,7 +519,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Conv2dTranspose: return conv_2d_transpose::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Cosine: return cosine::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::CumulativeSum: return cumulative_sum::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Depthwise: return depthwise::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Divide: return divide::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Downsample2d: return downsample_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Dropout: return dropout::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -640,7 +635,6 @@ void Op::decompose_initial(
         case OpType::Conv2dTranspose: return conv_2d_transpose::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Cosine: return;
         case OpType::CumulativeSum: return;
-        case OpType::Depthwise: return depthwise::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
         case OpType::Downsample2d: return downsample_2d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Dropout: return;
@@ -736,7 +730,6 @@ void Op::decompose_post_optimize(
         case OpType::Conv2d: return;
         case OpType::Cosine: return;
         case OpType::CumulativeSum: return;
-        case OpType::Depthwise: return depthwise::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
         case OpType::Downsample2d: return downsample_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Dropout: return;
@@ -833,7 +826,6 @@ void Op::decompose_post_autograd(
         case OpType::Conv2dTranspose: return;
         case OpType::Cosine: return;
         case OpType::CumulativeSum: return;
-        case OpType::Depthwise: return depthwise::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
         case OpType::Downsample2d: return downsample_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Dropout: return;
@@ -928,7 +920,6 @@ long Op::initial_flops_estimate(
         case OpType::Conv2dTranspose: return 0;
         case OpType::Cosine: return 0;
         case OpType::CumulativeSum: return 0;
-        case OpType::Depthwise: return depthwise::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Divide: return 0;
         case OpType::Downsample2d: return downsample_2d::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Dropout: return 0;
@@ -1022,7 +1013,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Conv2dTranspose: return false;
         case OpType::Cosine: return false;
         case OpType::CumulativeSum: return false;
-        case OpType::Depthwise: return false;
         case OpType::Divide: return false;
         case OpType::Downsample2d: return false;
         case OpType::Dropout: return false;
@@ -1116,7 +1106,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Conv2dTranspose: return false;
         case OpType::Cosine: return true;
         case OpType::CumulativeSum: return false;
-        case OpType::Depthwise: return false;
         case OpType::Divide: return true;
         case OpType::Downsample2d: return false;
         case OpType::Dropout: return false;
@@ -1210,7 +1199,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Conv2dTranspose: return false;
         case OpType::Cosine: return true;
         case OpType::CumulativeSum: return false;
-        case OpType::Depthwise: return false;
         case OpType::Divide: return false;
         case OpType::Downsample2d: return false;
         case OpType::Dropout: return false;
@@ -1304,7 +1292,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Conv2dTranspose: return false;
         case OpType::Cosine: return false;
         case OpType::CumulativeSum: return false;
-        case OpType::Depthwise: return false;
         case OpType::Divide: return true;
         case OpType::Downsample2d: return false;
         case OpType::Dropout: return false;
@@ -1398,7 +1385,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Conv2dTranspose: return false;
         case OpType::Cosine: return false;
         case OpType::CumulativeSum: return false;
-        case OpType::Depthwise: return false;
         case OpType::Divide: return false;
         case OpType::Downsample2d: return false;
         case OpType::Dropout: return false;
