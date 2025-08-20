@@ -71,8 +71,6 @@ enum class OpType : uint32_t
     Erf,
     Exp,
     FillCache,
-    ForgePad,
-    ForgeUnpad,
     Gelu,
     Greater,
     GreaterEqual,

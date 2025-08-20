@@ -30,8 +30,6 @@ add_library(ops
     op_erf.cpp
     op_exp.cpp
     op_fill_cache.cpp
-    op_forge_pad.cpp
-    op_forge_unpad.cpp
     op_gelu.cpp
     op_greater.cpp
     op_greater_equal.cpp

@@ -63,8 +63,6 @@ op_to_module_map = {
     "unsqueeze": "tm",
     "squeeze": "tm",
     "pixel_shuffle": "tm",
-    "forge_pad": "tm",
-    "forge_unpad": "tm",
     "reduce_avg": "reduce",
     "reduce_sum": "reduce",
     "reduce_max": "reduce",

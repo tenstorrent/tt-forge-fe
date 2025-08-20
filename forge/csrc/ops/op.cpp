@@ -68,8 +68,6 @@ class NewToOldOpType
         mapping_[OpType::Erf] = "erf";
         mapping_[OpType::Exp] = "exp";
         mapping_[OpType::FillCache] = "fill_cache";
-        mapping_[OpType::ForgePad] = "forge_pad";
-        mapping_[OpType::ForgeUnpad] = "forge_unpad";
         mapping_[OpType::Gelu] = "gelu";
         mapping_[OpType::Greater] = "greater";
         mapping_[OpType::GreaterEqual] = "greater_equal";
@@ -168,8 +166,6 @@ class OldToNewOpType
         mapping_["erf"] = OpType::Erf;
         mapping_["exp"] = OpType::Exp;
         mapping_["fill_cache"] = OpType::FillCache;
-        mapping_["forge_pad"] = OpType::ForgePad;
-        mapping_["forge_unpad"] = OpType::ForgeUnpad;
         mapping_["gelu"] = OpType::Gelu;
         mapping_["greater"] = OpType::Greater;
         mapping_["greater_equal"] = OpType::GreaterEqual;
@@ -333,8 +329,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Erf: return erf::eval(old_op_type, *this, tensors);
         case OpType::Exp: return exp::eval(old_op_type, *this, tensors);
         case OpType::FillCache: return fill_cache::eval(old_op_type, *this, tensors);
-        case OpType::ForgePad: return forge_pad::eval(old_op_type, *this, tensors);
-        case OpType::ForgeUnpad: return forge_unpad::eval(old_op_type, *this, tensors);
         case OpType::Gelu: return gelu::eval(old_op_type, *this, tensors);
         case OpType::Greater: return greater::eval(old_op_type, *this, tensors);
         case OpType::GreaterEqual: return greater_equal::eval(old_op_type, *this, tensors);
@@ -426,8 +420,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Erf: return erf::shape(old_op_type, *this, inputs);
         case OpType::Exp: return exp::shape(old_op_type, *this, inputs);
         case OpType::FillCache: return fill_cache::shape(old_op_type, *this, inputs);
-        case OpType::ForgePad: return forge_pad::shape(old_op_type, *this, inputs);
-        case OpType::ForgeUnpad: return forge_unpad::shape(old_op_type, *this, inputs);
         case OpType::Gelu: return gelu::shape(old_op_type, *this, inputs);
         case OpType::Greater: return greater::shape(old_op_type, *this, inputs);
         case OpType::GreaterEqual: return greater_equal::shape(old_op_type, *this, inputs);
@@ -524,8 +516,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Erf: return erf::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Exp: return exp::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::FillCache: return fill_cache::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::ForgePad: return forge_pad::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::ForgeUnpad: return forge_unpad::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Gelu: return gelu::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Greater: return greater::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::GreaterEqual: return greater_equal::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -639,8 +629,6 @@ void Op::decompose_initial(
         case OpType::Erf: return;
         case OpType::Exp: return;
         case OpType::FillCache: return;
-        case OpType::ForgePad: return forge_pad::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::ForgeUnpad: return forge_unpad::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Gelu: return;
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
@@ -733,8 +721,6 @@ void Op::decompose_post_optimize(
         case OpType::Erf: return;
         case OpType::Exp: return;
         case OpType::FillCache: return;
-        case OpType::ForgePad: return forge_pad::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::ForgeUnpad: return forge_unpad::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Gelu: return;
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
@@ -828,8 +814,6 @@ void Op::decompose_post_autograd(
         case OpType::Erf: return;
         case OpType::Exp: return;
         case OpType::FillCache: return;
-        case OpType::ForgePad: return forge_pad::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::ForgeUnpad: return forge_unpad::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Gelu: return;
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
@@ -921,8 +905,6 @@ long Op::initial_flops_estimate(
         case OpType::Erf: return 0;
         case OpType::Exp: return 0;
         case OpType::FillCache: return 0;
-        case OpType::ForgePad: return forge_pad::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::ForgeUnpad: return forge_unpad::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Gelu: return 0;
         case OpType::Greater: return 0;
         case OpType::GreaterEqual: return 0;
@@ -1013,8 +995,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Erf: return false;
         case OpType::Exp: return false;
         case OpType::FillCache: return false;
-        case OpType::ForgePad: return true;
-        case OpType::ForgeUnpad: return true;
         case OpType::Gelu: return false;
         case OpType::Greater: return false;
         case OpType::GreaterEqual: return false;
@@ -1105,8 +1085,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Erf: return true;
         case OpType::Exp: return true;
         case OpType::FillCache: return false;
-        case OpType::ForgePad: return false;
-        case OpType::ForgeUnpad: return false;
         case OpType::Gelu: return true;
         case OpType::Greater: return true;
         case OpType::GreaterEqual: return true;
@@ -1197,8 +1175,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Erf: return true;
         case OpType::Exp: return true;
         case OpType::FillCache: return false;
-        case OpType::ForgePad: return false;
-        case OpType::ForgeUnpad: return false;
         case OpType::Gelu: return true;
         case OpType::Greater: return false;
         case OpType::GreaterEqual: return false;
@@ -1289,8 +1265,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Erf: return false;
         case OpType::Exp: return false;
         case OpType::FillCache: return false;
-        case OpType::ForgePad: return false;
-        case OpType::ForgeUnpad: return false;
         case OpType::Gelu: return false;
         case OpType::Greater: return true;
         case OpType::GreaterEqual: return true;
@@ -1381,8 +1355,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Erf: return false;
         case OpType::Exp: return false;
         case OpType::FillCache: return false;
-        case OpType::ForgePad: return false;
-        case OpType::ForgeUnpad: return false;
         case OpType::Gelu: return false;
         case OpType::Greater: return false;
         case OpType::GreaterEqual: return false;
