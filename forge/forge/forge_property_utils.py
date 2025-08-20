@@ -278,7 +278,7 @@ class ExecutionStage(Enum):
     FAILED_FORGE_MLIR_COMPILATION = auto()
     FAILED_TTNN_BINARY_EXECUTION = auto()
     FAILED_VERIFICATION = auto()
-    PASSED= auto()
+    PASSED = auto()
 
     @classmethod
     def to_str(cls, value):
