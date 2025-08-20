@@ -17,7 +17,6 @@
 #include "passes/decomposing_context.hpp"
 #include "passes/erase_consecutive_reshape.hpp"
 #include "passes/erase_inverse_ops.hpp"
-#include "passes/erase_unnecessary_4d_tm_sequence.hpp"
 #include "passes/explicate_unsqueeze.hpp"
 #include "passes/fuse_conv2d_bias.hpp"
 #include "passes/fuse_pad_conv2d.hpp"
@@ -62,7 +61,6 @@ run_post_initial_graph_passes(
     passes::print_graph(graph, "INITIAL");
     passes::generate_initial_flops_estimate(graph);
     passes::decompose_nd_reshape_split(graph);
-    passes::erase_unnecessary_4d_tm_sequence(graph);
     passes::fuse_pad_conv2d(graph);
     passes::explicate_unsqueeze(graph);
     passes::fuse_conv2d_bias(graph);

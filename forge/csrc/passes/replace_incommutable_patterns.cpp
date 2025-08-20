@@ -189,7 +189,7 @@ static bool find_and_replace_incommutable_patterns(
         }
         // TODO: (lpanos) I dont think is_elementwise should return true for any of these ops, but for now it does
         bool can_commute = op->is_eltwise() and op->new_op_type() != ops::OpType::Concatenate and
-                           op->new_op_type() != ops::OpType::Select and op->new_op_type() != ops::OpType::Interleave;
+                           op->new_op_type() != ops::OpType::Select;
 
         if (not can_commute and op != initial_op)
         {

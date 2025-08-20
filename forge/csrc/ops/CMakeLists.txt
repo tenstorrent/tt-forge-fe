@@ -39,7 +39,6 @@ add_library(ops
     op_heaviside.cpp
     op_index.cpp
     op_index_copy.cpp
-    op_interleave.cpp
     op_layernorm.cpp
     op_layernorm_bw.cpp
     op_leaky_relu.cpp

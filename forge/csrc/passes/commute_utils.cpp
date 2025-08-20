@@ -901,7 +901,7 @@ bool can_commute_past_op(
         return can_commute;
     }
 
-    return (op->is_eltwise() and op->new_op_type() != ops::OpType::Interleave);
+    return op->is_eltwise();
 }
 
 /**

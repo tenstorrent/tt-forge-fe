@@ -66,7 +66,7 @@ from .tm import (
 )
 from .constant import Constant
 from .nn import Softmax, Layernorm, LogSoftmax, Batchnorm, Dropout, MaxPool2dModule
-from .eltwise_nary import Concatenate, Where, IndexCopy, Stack, Interleave
+from .eltwise_nary import Concatenate, Where, IndexCopy, Stack
 from .resize import Resize2d, Upsample2d, Downsample2d
 from .embedding import Embedding
 from .kv_cache import FillCache, UpdateCache
