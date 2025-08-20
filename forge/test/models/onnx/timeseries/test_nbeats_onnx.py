@@ -74,7 +74,6 @@ def test_nbeats_with_seasonality_basis_onnx(variant, forge_tmp_path):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["generic_basis"])
 def test_nbeats_with_generic_basis(variant, forge_tmp_path):
 
@@ -116,7 +115,6 @@ def test_nbeats_with_generic_basis(variant, forge_tmp_path):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["trend_basis"])
 def test_nbeats_with_trend_basis(variant, forge_tmp_path):
 

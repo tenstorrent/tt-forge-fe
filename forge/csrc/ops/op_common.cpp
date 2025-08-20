@@ -159,6 +159,25 @@ std::string get_resize_method(int method)
     unreachable();
 }
 
+std::vector<at::Tensor> promote_floating_dtypes(const std::vector<at::Tensor> &tensors)
+{
+    std::vector<at::Tensor> result;
+    result.reserve(tensors.size());
+
+    at::ScalarType promote_t = torch::kU8;
+    for (const auto &t : tensors)
+        if (t.is_floating_point())
+            promote_t = at::promote_types(promote_t, t.scalar_type());
+
+    for (const auto &t : tensors)
+        if (t.is_floating_point() && t.scalar_type() != promote_t)
+            result.emplace_back(t.to(promote_t));
+        else
+            result.emplace_back(t.clone());
+
+    return result;
+}
+
 }  // namespace op_common
 }  // namespace ops
 }  // namespace tt

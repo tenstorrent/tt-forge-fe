@@ -60,6 +60,7 @@ def test_llava_onnx(variant, forge_tmp_path):
         priority=ModelPriority.P1,
     )
 
+    pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2832")
     # Load model and inputs
     loader = ConditionalGenModelLoader()
     torch_model = loader.load_model()
