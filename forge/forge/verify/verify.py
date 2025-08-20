@@ -415,8 +415,8 @@ def verify(
     inputs: List[FrameworkTensor],
     framework_model: FrameworkModule,
     compiled_model: CompiledModel,
-    with_backward: bool = False,
     verify_cfg: VerifyConfig = None,
+    with_backward: bool = False,
 ):
     """
     Performs verification of a compiled model by comparing its outputs against a reference framework model.
