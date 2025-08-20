@@ -1,7 +1,14 @@
 # SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
+import math
+from forge.config import CompilerConfig
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 import pytest
+from test.operators.utils.compat import create_torch_inputs, verify_module_for_inputs
+from test.operators.utils.datatypes import ValueRanges
+from test.operators.utils.utils import TensorUtils
 import torch
 from torch import nn
 import torch.nn.functional as F
@@ -853,3 +860,347 @@ def test_scaled_dot_product_attention():
     )
 
     verify(inputs, framework_model, compiled_model)
+
+
+# MAXPOOL2D TESTS THAT ARE FAILING WITH:
+# AUTOSHARDING_ERROR
+# E       RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/generic/generic_pools.cpp:110: sw_parallel_config.has_value()
+# E       info:
+# E       autosharding could not determine valid shard scheme, please check tensor dimensions
+
+### run all `pytest -svv -rap 'tt-forge-fe/forge/test/mlir/operators/nn/test_nn.py::test_max_pool_2d_with_autosharding_error'` ####
+
+# max_pool_2d-FROM_HOST-{'kernel_size': (4, 4), 'stride': 1, 'padding': (1, 0), 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(3, 11, 45, 17)-None-None]
+# max_pool_2d-FROM_ANOTHER_OP-{'kernel_size': (4, 4), 'stride': 1, 'padding': (1, 0), 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(3, 11, 45, 17)-None-None]
+# max_pool_2d-CONST_EVAL_PASS-{'kernel_size': (4, 4), 'stride': 1, 'padding': (1, 0), 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(3, 11, 45, 17)-None-None]
+
+# max_pool_2d-FROM_HOST-{'kernel_size': (13, 13), 'stride': (4, 4), 'padding': 0, 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(1, 10, 1000, 100)-None-None
+# max_pool_2d-FROM_ANOTHER_OP-{'kernel_size': (13, 13), 'stride': (4, 4), 'padding': 0, 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(1, 10, 1000, 100)-None-None
+# max_pool_2d-CONST_EVAL_PASS-{'kernel_size': (13, 13), 'stride': (4, 4), 'padding': 0, 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(1, 10, 1000, 100)-None-None
+@pytest.mark.parametrize(
+    "kernel_size, stride, padding, dilation, return_indices, ceil_mode, input_shape",
+    [
+        pytest.param(
+            (4, 4),
+            1,
+            (1, 0),
+            1,
+            False,
+            False,
+            (3, 11, 45, 17),
+            id="{'kernel_size': (4, 4), 'stride': 1, 'padding': (1, 0), 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(3, 11, 45, 17)",
+        ),
+        pytest.param(
+            (13, 13),
+            (4, 4),
+            0,
+            1,
+            False,
+            False,
+            (1, 10, 1000, 100),
+            id="{'kernel_size': (13, 13), 'stride': (4, 4), 'padding': 0, 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(1, 10, 1000, 100)",
+        ),
+    ],
+)
+@pytest.mark.parametrize("model_type", ["ModelFromAnotherOp", "ModelDirect", "ModelConstEvalPass"])
+def test_max_pool_2d_with_autosharding_error(
+    kernel_size, stride, padding, dilation, return_indices, ceil_mode, input_shape, model_type
+):
+
+    value_range = ValueRanges.SMALL  # [-1, 1]
+
+    class ModelFromAnotherOp(torch.nn.Module):
+        def __init__(self, kernel_size, stride, padding, dilation, return_indices, ceil_mode):
+            super().__init__()
+            self.return_indices = return_indices
+            self.ct1 = nn.MaxPool2d(
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                dilation=dilation,
+                return_indices=return_indices,
+                ceil_mode=ceil_mode,
+            )
+
+        def forward(self, x: torch.Tensor):
+            # we use Add operator to create one operands which is input for the MaxPool2d operator
+            add = torch.add(x, x)
+            output = self.ct1(add)
+            if self.return_indices:
+                output = output[0]
+            return output
+
+    class ModelDirect(torch.nn.Module):
+        def __init__(self, kernel_size, stride, padding, dilation, return_indices, ceil_mode):
+            super().__init__()
+            self.return_indices = return_indices
+            self.ct1 = nn.MaxPool2d(
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                dilation=dilation,
+                return_indices=return_indices,
+                ceil_mode=ceil_mode,
+            )
+
+        def forward(self, x: torch.Tensor):
+            output = self.ct1(x)
+            if self.return_indices:
+                output = output[0]
+            return output
+
+    class ModelConstEvalPass(torch.nn.Module):
+        def __init__(self, kernel_size, stride, padding, dilation, return_indices, ceil_mode, input_shape):
+            super().__init__()
+            self.return_indices = return_indices
+
+            self.constant = TensorUtils.create_torch_constant(
+                input_shape=input_shape,  # (3, 11, 45, 17) or (10, 10, 10000, 100)
+                dev_data_format=None,  # torch.float32
+                value_range=value_range,  # [-1, 1],
+                random_seed=math.prod(input_shape),
+            )
+            self.register_buffer("constant1", self.constant)
+
+            self.ct1 = nn.MaxPool2d(
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                dilation=dilation,
+                return_indices=return_indices,
+                ceil_mode=ceil_mode,
+            )
+
+        def forward(self, x: torch.Tensor):
+            v1 = self.ct1(self.constant)
+            v2 = self.ct1(x)
+            # add consume inputs
+            if self.return_indices:
+                v1 = v1[0]
+                v2 = v2[0]
+            add = torch.add(v1, v2)
+            return add
+
+    # prepare model
+
+    if model_type == "ModelConstEvalPass":
+        framework_model = eval(model_type)(
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            dilation=dilation,
+            ceil_mode=ceil_mode,
+            return_indices=return_indices,
+            input_shape=input_shape,
+        )
+    else:
+        framework_model = eval(model_type)(
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            dilation=dilation,
+            ceil_mode=ceil_mode,
+            return_indices=return_indices,
+        )
+
+    # prepare inputs
+    inputs = create_torch_inputs(
+        input_shapes=[
+            input_shape,
+        ],
+        dev_data_format=None,  # torch.float32
+        value_range=value_range,  # [-1, 1]
+    )
+
+    verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99, rtol=1e-2, atol=1e-2))
+
+    # this 2 lines will be executed in method `verify_module_for_inputs`, need to be like this because of pcc error level handling logic that is writthen in `verify_module_for_inputs`
+    ## compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    ## verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+    verify_module_for_inputs(
+        model=framework_model,
+        inputs=inputs,
+        compiler_cfg=CompilerConfig(),
+        verify_config=verify_cfg,
+        convert_to_forge=False,
+    )
+
+
+# MAXPOOL2D TESTS THAT ARE FAILING WITH:
+# CORE_CHANNELS_MODULUS_NOT_ZERO
+# E       RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/conv/conv2d/conv2d_utils.cpp:314: channels % num_cores_channels == 0
+# E       info:
+# E       Channels: 1, num core channels: 2
+
+### run all `pytest -svv -rap 'tt-forge-fe/forge/test/mlir/operators/nn/test_nn.py::test_max_pool_2d_with_core_channels_error'` ####
+
+# max_pool_2d-FROM_ANOTHER_OP-{'kernel_size': (2, 2), 'stride': 1, 'padding': 0, 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(1, 1, 10, 1000)-None-None
+# max_pool_2d-FROM_HOST-{'kernel_size': (2, 2), 'stride': 1, 'padding': 0, 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(1, 1, 10, 1000)-None-None
+# max_pool_2d-CONST_EVAL_PASS-{'kernel_size': (2, 2), 'stride': 1, 'padding': 0, 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(1, 1, 10, 1000)-None-None
+
+# max_pool_2d-FROM_ANOTHER_OP-{'kernel_size': (2, 2), 'stride': (2, 2), 'padding': 0, 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(1, 1, 10, 1000)-None-None
+# max_pool_2d-FROM_HOST-{'kernel_size': (2, 2), 'stride': (2, 2), 'padding': 0, 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(1, 1, 10, 1000)-None-None
+# max_pool_2d-CONST_EVAL_PASS-{'kernel_size': (2, 2), 'stride': (2, 2), 'padding': 0, 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(1, 1, 10, 1000)-None-None
+
+# max_pool_2d-FROM_ANOTHER_OP-{'kernel_size': (1, 1), 'stride': (2, 2), 'padding': 0, 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(8, 1, 10, 1000)-None-None
+# max_pool_2d-FROM_HOST-{'kernel_size': (1, 1), 'stride': (2, 2), 'padding': 0, 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(8, 1, 10, 1000)-None-None
+# max_pool_2d-CONST_EVAL_PASS-{'kernel_size': (1, 1), 'stride': (2, 2), 'padding': 0, 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(8, 1, 10, 1000)-None-None
+
+
+@pytest.mark.parametrize(
+    "kernel_size, stride, padding, dilation, return_indices, ceil_mode, input_shape",
+    [
+        pytest.param(
+            (2, 2),
+            1,
+            0,
+            1,
+            False,
+            False,
+            (1, 1, 10, 1000),
+            id="{'kernel_size': (2, 2), 'stride': 1, 'padding': 0, 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(1, 1, 10, 1000)",
+        ),
+        pytest.param(
+            (2, 2),
+            (2, 2),
+            0,
+            1,
+            False,
+            False,
+            (1, 1, 10, 1000),
+            id="{'kernel_size': (2, 2), 'stride': (2, 2), 'padding': 0, 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(1, 1, 10, 1000)",
+        ),
+        pytest.param(
+            (1, 1),
+            (2, 2),
+            0,
+            1,
+            False,
+            False,
+            (8, 1, 10, 1000),
+            id="{'kernel_size': (1, 1), 'stride': (2, 2), 'padding': 0, 'dilation': 1, 'return_indices': False, 'ceil_mode': False}-(8, 1, 10, 1000)",
+        ),
+    ],
+)
+@pytest.mark.parametrize("model_type", ["ModelFromAnotherOp", "ModelDirect", "ModelConstEvalPass"])
+def test_max_pool_2d_with_core_channels_error(
+    kernel_size, stride, padding, dilation, return_indices, ceil_mode, input_shape, model_type
+):
+
+    value_range = ValueRanges.SMALL  # [-1, 1]
+
+    class ModelFromAnotherOp(torch.nn.Module):
+        def __init__(self, kernel_size, stride, padding, dilation, return_indices, ceil_mode):
+            super().__init__()
+            self.return_indices = return_indices
+            self.ct1 = nn.MaxPool2d(
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                dilation=dilation,
+                return_indices=return_indices,
+                ceil_mode=ceil_mode,
+            )
+
+        def forward(self, x: torch.Tensor):
+            # we use Add operator to create one operands which is input for the MaxPool2d operator
+            add = torch.add(x, x)
+            output = self.ct1(add)
+            if self.return_indices:
+                output = output[0]
+            return output
+
+    class ModelDirect(torch.nn.Module):
+        def __init__(self, kernel_size, stride, padding, dilation, return_indices, ceil_mode):
+            super().__init__()
+            self.return_indices = return_indices
+            self.ct1 = nn.MaxPool2d(
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                dilation=dilation,
+                return_indices=return_indices,
+                ceil_mode=ceil_mode,
+            )
+
+        def forward(self, x: torch.Tensor):
+            output = self.ct1(x)
+            if self.return_indices:
+                output = output[0]
+            return output
+
+    class ModelConstEvalPass(torch.nn.Module):
+        def __init__(self, kernel_size, stride, padding, dilation, return_indices, ceil_mode, input_shape):
+            super().__init__()
+            self.return_indices = return_indices
+
+            self.constant = TensorUtils.create_torch_constant(
+                input_shape=input_shape,  # (3, 11, 45, 17) or (10, 10, 10000, 100)
+                dev_data_format=None,  # torch.float32
+                value_range=value_range,  # [-1, 1],
+                random_seed=math.prod(input_shape),
+            )
+            self.register_buffer("constant1", self.constant)
+
+            self.ct1 = nn.MaxPool2d(
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                dilation=dilation,
+                return_indices=return_indices,
+                ceil_mode=ceil_mode,
+            )
+
+        def forward(self, x: torch.Tensor):
+            v1 = self.ct1(self.constant)
+            v2 = self.ct1(x)
+            # add consume inputs
+            if self.return_indices:
+                v1 = v1[0]
+                v2 = v2[0]
+            add = torch.add(v1, v2)
+            return add
+
+    # prepare model
+
+    if model_type == "ModelConstEvalPass":
+        framework_model = eval(model_type)(
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            dilation=dilation,
+            ceil_mode=ceil_mode,
+            return_indices=return_indices,
+            input_shape=input_shape,
+        )
+    else:
+        framework_model = eval(model_type)(
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            dilation=dilation,
+            ceil_mode=ceil_mode,
+            return_indices=return_indices,
+        )
+
+    # prepare inputs
+    inputs = create_torch_inputs(
+        input_shapes=[
+            input_shape,
+        ],
+        dev_data_format=None,  # torch.float32
+        value_range=value_range,  # [-1, 1]
+    )
+
+    verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99, rtol=1e-2, atol=1e-2))
+
+    # this 2 lines will be executed in method `verify_module_for_inputs`, need to be like this because of pcc error level handling logic that is writthen in `verify_module_for_inputs`
+    ## compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    ## verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+    verify_module_for_inputs(
+        model=framework_model,
+        inputs=inputs,
+        compiler_cfg=CompilerConfig(),
+        verify_config=verify_cfg,
+        convert_to_forge=False,
+    )
