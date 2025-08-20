@@ -29,11 +29,6 @@ def eval(type, attr, ops):
                     result.append(zero_slice)
         return torch.stack(result, dim=dim)
 
-    if type == "pixel_shuffle":
-        assert len(ops) == 1, "Pixel shuffle should have one operand."
-        assert len(attr) == 1, "Pixel shuffle should have one attribute."
-        return torch.nn.functional.pixel_shuffle(ops[0], attr[0])
-
     if type == "forge_pad":
         assert (
             len(attr) == 3
@@ -78,26 +73,6 @@ def shape(type, attr, ops):
         shape = list(ops[0])
         shape[dim] = length * round_up_div(shape[dim] - begin, stride)
         return tuple(shape), []
-
-    if type == "pixel_shuffle":
-        assert len(ops) == 1, "Pixel shuffle should have one operand."
-        assert len(attr) == 1, "Pixel shuffle should have one attribute."
-
-        orig_shape = ops[0]
-        assert len(orig_shape) >= 3, "Pixel shuffle should be at least 3D."
-
-        upscale_factor = attr[0]
-        assert (
-            orig_shape[-3] % (upscale_factor**2) == 0
-        ), f"Op shape at dim -3 ({orig_shape[-3]}) should be divisible by upscale_factor*upscale_factor ({upscale_factor**2})."
-
-        output_shape = (
-            *orig_shape[:-3],
-            orig_shape[-3] // upscale_factor**2,
-            orig_shape[-2] * upscale_factor,
-            orig_shape[-1] * upscale_factor,
-        )
-        return output_shape, []
 
     if type == "forge_pad":
         assert (
@@ -227,27 +202,7 @@ def squeeze_output_for_reshape_decomp(dc, output, orig_out_shape):
 
 
 def decompose(type, attr, dc, inputs):
-
-    if type == "pixel_shuffle":
-        result = inputs[0]  # Shape: (N, C*r*r, H, W)
-        N, C_r2, H, W = result.shape
-        r = attr[0]
-        C = C_r2 // (r * r)
-
-        # Step 1: Reshape to (N, C, r, r, H, W)
-        reshape_dims = (N, C, r, r, H, W)
-        x = dc.op_with_named_attrs("reshape", [result], {"shape": reshape_dims})
-
-        # Step 2: Transpose sequence on x
-        x = dc.op_with_named_attrs("transpose", [x], {"dim0": 2, "dim1": 4})  # [0,1,4,3,2,5]
-        x = dc.op_with_named_attrs("transpose", [x], {"dim0": 3, "dim1": 4})  # [0,1,4,2,3,5]
-        x = dc.op_with_named_attrs("transpose", [x], {"dim0": 4, "dim1": 5})  # [0,1,4,2,5,3]
-
-        # Step 3: Final reshape to (N, C, H * r, W * r)
-        reshape_dims = (N, C, H * r, W * r)
-        x = dc.op_with_named_attrs("reshape", [x], {"shape": reshape_dims})
-
-        dc.fuse(x)
+    pass
 
 
 def decompose_post_optimize(type, attr, dc, inputs):

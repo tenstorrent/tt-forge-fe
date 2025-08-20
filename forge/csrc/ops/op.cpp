@@ -775,7 +775,7 @@ void Op::decompose_post_optimize(
         case OpType::Nop: return;
         case OpType::NotEqual: return;
         case OpType::Pad: return;
-        case OpType::PixelShuffle: return pixel_shuffle::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::PixelShuffle: return;
         case OpType::Pow: return;
         case OpType::Power: return;
         case OpType::Reciprocal: return;
@@ -872,7 +872,7 @@ void Op::decompose_post_autograd(
         case OpType::Nop: return;
         case OpType::NotEqual: return;
         case OpType::Pad: return;
-        case OpType::PixelShuffle: return pixel_shuffle::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::PixelShuffle: return;
         case OpType::Pow: return;
         case OpType::Power: return;
         case OpType::Reciprocal: return;
@@ -967,7 +967,7 @@ long Op::initial_flops_estimate(
         case OpType::Nop: return 0;
         case OpType::NotEqual: return 0;
         case OpType::Pad: return 0;
-        case OpType::PixelShuffle: return pixel_shuffle::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::PixelShuffle: return 0;
         case OpType::Pow: return 0;
         case OpType::Power: return 0;
         case OpType::Reciprocal: return 0;
