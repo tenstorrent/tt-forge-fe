@@ -166,6 +166,7 @@ def test_mobilenetv2_deeplabv3(variant):
     # Load the model and inputs
     loader = ModelLoader(variant=variant)
     framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    framework_model.config.return_dict = False
     input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
     inputs = [input_tensor]
 
@@ -185,6 +186,7 @@ def test_mobilenetv2_deeplabv3(variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2746")
 @pytest.mark.parametrize("variant", [ModelVariant.MOBILENET_V2_TORCHVISION])
 def test_mobilenetv2_torchvision(variant):
 

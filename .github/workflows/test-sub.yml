@@ -53,6 +53,11 @@ on:
         description: 'Run tests using shared runners'
         required: false
         type: boolean
+      run_models_ops_tests:
+        description: 'Run the generated models ops tests'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   run-tests:
@@ -63,7 +68,7 @@ jobs:
         build: ${{ fromJson(inputs.runs-on) }}
         test_group_id: ${{ fromJSON(inputs.test_group_ids) }}
 
-    runs-on: ${{ inputs.sh-runner && format('tt-beta-ubuntu-2204-{0}-large-stable', matrix.build.runs-on) || fromJson(format('["{0}", "in-service"]', matrix.build.runs-on)) }}
+    runs-on: ${{ inputs.sh-runner && format('tt-ubuntu-2204-{0}-stable', matrix.build.runs-on) || fromJson(format('["{0}", "in-service"]', matrix.build.runs-on)) }}
 
     continue-on-error: ${{ inputs.allow-fail }}
 
@@ -241,6 +246,16 @@ jobs:
           updateComment: false
           detailed_summary: true
           group_suite: true
+
+      - name: Download Generated Models Ops Tests
+        if: ${{ inputs.run_models_ops_tests }}
+        continue-on-error: true
+        uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
+        with:
+          name: generated-models-ops-tests
+          run_id: ${{ inputs.run_id }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          path: forge/test/models_ops
 
       - name: Run Test
         if: ${{ inputs.test_mark != 'slim_wheel' }}

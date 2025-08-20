@@ -18,7 +18,7 @@ on:
       runs-on:
         description: 'Runs on'
         required: false
-        default: runner
+        default: n150
         type: choice
         options:
           - runner
@@ -39,13 +39,20 @@ on:
         required: false
         type: boolean
         default: false
+      create_pull_request:
+        description: 'Automatically create a Pull Request containing the generated model ops tests.'
+        required: false
+        type: boolean
+        default: false
+  # schedule:
+  #   - cron: '0 0 * * *'  # Runs at 12:00 UTC every day
 
 
 permissions:
   packages: write
   checks: write
 
-run-name: "Model Analysis Ops Test Generation (${{inputs.runs-on}}-${{inputs.test_group_cnt}})"
+run-name: "Model Analysis (${{inputs.runs-on}}-${{inputs.test_group_cnt}})"
 
 jobs:
 
@@ -61,13 +68,23 @@ jobs:
       test_group_cnt: ${{ steps.set-inputs.outputs.test_group_cnt }}
       test_group_ids: ${{ steps.set-inputs.outputs.test_group_ids }}
       runs-on: ${{ steps.set-inputs.outputs.runs-on }}
+      runner: ${{ steps.set-inputs.outputs.runner}}
+      create_pr: ${{ steps.set-inputs.outputs.create_pr }}
     steps:
       - name: Inputs Management
         id: set-inputs
         run: |
-          echo "test_group_cnt=${{ inputs.test_group_cnt }}" >> $GITHUB_OUTPUT
-          echo "test_group_ids=[$(seq -s ',' 1 ${{ inputs.test_group_cnt }})]" >> $GITHUB_OUTPUT
-          echo "runs-on=[{\"runs-on\": \"${{ inputs.runs-on }}\"}]" >> $GITHUB_OUTPUT
+          default_test_group_cnt=10
+          default_runs_on=n150
+          default_create_pr=false
+          tgc=$(if [ -z "${{ inputs.test_group_cnt }}" ]; then echo $default_test_group_cnt; else echo ${{ inputs.test_group_cnt }}; fi)
+          runs_on=$(if [ -z "${{ inputs.runs-on }}" ]; then echo $default_runs_on; else echo ${{ inputs.runs-on}}; fi)
+          default_create_pr=$(if [ -z "${{ inputs.create_pull_request }}" ]; then echo $default_create_pr; else echo ${{ inputs.create_pull_request }}; fi)
+          echo "test_group_cnt=$tgc" >> $GITHUB_OUTPUT
+          echo "test_group_ids=[$(seq -s ',' 1 $tgc)]" >> $GITHUB_OUTPUT
+          echo "runs-on=[{\"runs-on\": \"$runs_on\"}]" >> $GITHUB_OUTPUT
+          echo "runner=$runs_on" >> $GITHUB_OUTPUT
+          echo "create_pr=$default_create_pr" >> $GITHUB_OUTPUT
 
   build:
     needs:
@@ -104,7 +121,7 @@ jobs:
       - build
       - extract-unique-ops-configuration
 
-    runs-on: ["in-service", "${{ inputs.runs-on }}"]
+    runs-on: ["in-service", "${{ needs.set-inputs.outputs.runner }}" ]
 
     container:
       image: ${{ needs.docker-build.outputs.docker-image }}
@@ -216,8 +233,16 @@ jobs:
           name: models-unique-ops-output
           path: ${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }}
 
+      - name: Upload Generated Models Ops Tests
+        uses: actions/upload-artifact@v4
+        if: ${{ needs.set-inputs.outputs.create_pr == 'false' }}
+        with:
+          name: generated-models-ops-tests
+          path: ${{ env.GENERATED_MODELS_OPS_TESTS_PATH }}
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
+        if: ${{ needs.set-inputs.outputs.create_pr == 'true' }}
         with:
           branch: ${{ env.BRANCH_NAME }}
           committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
@@ -227,7 +252,26 @@ jobs:
           title: ${{ env.TITLE }}
           body: ${{ env.BODY }}
           delete-branch: true
-          draft: true
           token: ${{ secrets.GH_TOKEN }}
           add-paths: |
-              ${{ env.OUTPUT_PATH }}
+              ${{ env.GENERATED_MODELS_OPS_TESTS_PATH }}
+
+  run-models-ops-tests:
+    if: ${{ needs.set-inputs.outputs.create_pr == 'false' }}
+    needs:
+      - docker-build
+      - set-inputs
+      - build
+      - extract-unique-ops-configuration
+      - generate-models-ops-tests
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      test_mark: 'nightly_models_ops'
+      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
+      runs-on: '[{"runs-on": "n150"}]'
+      sh-runner: true
+      run_id: ${{ needs.build.outputs.run_id }}
+      run_models_ops_tests: true

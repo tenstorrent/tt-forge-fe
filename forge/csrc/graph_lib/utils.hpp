@@ -287,7 +287,6 @@ enum class RuntimeTensorTransformType
 {
     NoTransform = 0,
     ReinterpretShape,
-    Prestride,
     EmbeddingIndex,
     ConstantInput,
     Unpad,
@@ -299,7 +298,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
     {
         {tt::graphlib::RuntimeTensorTransformType::NoTransform, "NoTransform"},
         {tt::graphlib::RuntimeTensorTransformType::ReinterpretShape, "ReinterpretShape"},
-        {tt::graphlib::RuntimeTensorTransformType::Prestride, "Prestride"},
         {tt::graphlib::RuntimeTensorTransformType::EmbeddingIndex, "EmbeddingIndex"},
         {tt::graphlib::RuntimeTensorTransformType::ConstantInput, "ConstantInput"},
         {tt::graphlib::RuntimeTensorTransformType::Unpad, "Unpad"},

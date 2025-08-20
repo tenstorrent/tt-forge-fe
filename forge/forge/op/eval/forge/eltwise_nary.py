@@ -12,42 +12,7 @@ from loguru import logger
 
 def eval(type, attr, ops):
 
-    if type == "conv_sum":
-
-        t_ops = to_torch_operands(*ops)
-
-        t_ops = list(t_ops)
-
-        # Extract attributes
-        originalY = attr[0]
-        originalX = attr[1]
-        shifts = attr[2:]
-
-        # Check operands
-        for t_op in t_ops:
-            assert len(t_op.shape) == 4, f"Tensor must have 4 dimensions, given {len(t_op.shape)}"
-
-        # To forge shape
-        for i in range(len(t_ops)):
-            t_ops[i] = t_ops[i][:, :, : originalY * originalX, :]
-            t_ops[i] = t_ops[i].transpose(2, 3)
-            t_ops[i] = t_ops[i].reshape(1, t_ops[i].shape[2], originalY, originalX)
-
-        # Shift and Add
-        res = 0
-        for i in range(len(t_ops)):
-            res += torch.nn.functional.pad(
-                t_ops[i],
-                (shifts[2 * i], -shifts[2 * i], shifts[2 * i + 1], -shifts[2 * i + 1]),
-            )
-
-        # To forge shape
-        res = res.reshape(1, res.shape[1], res.shape[2] * res.shape[3], 1)
-        res = res.transpose(1, 3)
-
-        return res
-
-    elif type == "where":
+    if type == "where":
         return torch.where(ops[0].type(torch.bool), ops[1], ops[2])
 
     elif type == "index_copy":
@@ -102,19 +67,7 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
 
         return tuple(output_shape), broadcast
 
-    if type == "conv_sum":
-        shapes = []
-        for op in ops:
-            assert len(op) <= 4, "Shape of an operand must be smaller than or equal to 4"
-            if len(op) < 4:
-                op = (4 - len(op)) * (1,) + op
-            if len(shapes) > 0:
-                assert shapes[-1] == op, "Shapes of all operands must be the same size"
-            shapes.append(op)
-
-        return shapes[0], []
-
-    elif type == "where":
+    if type == "where":
         return get_eltwise_shape_and_broadcast()
 
     elif type == "index_copy":
@@ -137,18 +90,6 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
 
 
 def backward(op_type, attr, ac, operand, inputs, output, grad):
-    if op_type == "conv_sum":
-        y = attr[0]
-        x = attr[1]
-        shifts = attr[2:]
-
-        return ac.op_with_named_attrs(
-            "conv_sum",
-            [grad],
-            {"y": y, "x": x, "shift_y": -shifts[operand * 2], "shift_x": -shifts[operand * 2 + 1]},
-            [y, x, -shifts[operand * 2], -shifts[operand * 2 + 1]],
-        )
-
     assert False, f"{op_type} not defined in eltwise_nary"
 
 

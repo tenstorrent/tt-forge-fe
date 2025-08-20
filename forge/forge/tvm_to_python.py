@@ -591,51 +591,6 @@ def populate_conv2d_args(graph, nid, compiler_cfg):
     return args
 
 
-def populate_conv3d_args(graph, nid, compiler_cfg):
-    args = []
-    node = graph["nodes"][nid]
-    strides = [int(stride) for stride in node["attrs"]["strides"][0]]
-    args.append(
-        (
-            "stride",
-            f"{strides}",
-        )
-    )
-
-    padding = [int(padding) for padding in node["attrs"]["padding"][0]]
-    # TVM has padding [depth_first, top, left, depth_last, bottom, right]
-    # Convert to [left right top bottom depth_first depth_last]
-    reordered_padding = [padding[2], padding[5], padding[1], padding[4], padding[0], padding[3]]
-    args.append(
-        (
-            "padding",
-            f"{reordered_padding}",
-        )
-    )
-
-    dilation = [int(dilation) for dilation in node["attrs"]["dilation"][0]]
-    assert all([dim == dilation[0] for dim in dilation])
-    args.append(
-        (
-            "dilation",
-            f"{dilation[0]}",
-        )
-    )
-
-    groups = int(node["attrs"]["groups"][0][0])
-    args.append(
-        (
-            "groups",
-            f"{groups}",
-        )
-    )
-
-    channel_last = int(node["attrs"]["data_layout"][0][0] == "NHWC")
-    args.append(("channel_last", f"{channel_last}"))
-
-    return args
-
-
 def populate_cumsum_args(graph, nid, compiler_cfg):
     args = []
     node = graph["nodes"][nid]
@@ -1313,14 +1268,18 @@ def populate_resize2d_args(graph, nid, compiler_cfg):
 
     sizes = [int(x) for x in node["attrs"]["size"][0]]
     assert len(sizes) == 2
-    method = node["attrs"]["method"][0][0]
 
-    assert (
-        method == "nearest_neighbor" or method == "linear" or method == "bilinear" or method == "cubic"
-    ), "Only support nearest neighbor, linear and cubic for now"
+    method = node["attrs"]["method"][0][0]
+    if method == "nearest_neighbor":
+        mode = "nearest"
+    elif method == "linear":
+        mode = "bilinear"
+    else:
+        mode = method
+
+    assert mode in ["nearest", "bilinear"], "Resize2d op only support nearest and bilinear mode for now"
+
     assert int(node["attrs"]["num_inputs"]) == 1
-    input_nid = node["inputs"][0][0]
-    input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
 
     args.append(
         (
@@ -1330,8 +1289,8 @@ def populate_resize2d_args(graph, nid, compiler_cfg):
     )
     args.append(
         (
-            "method",
-            f'"{method}"',
+            "mode",
+            f'"{mode}"',
         )
     )
 
@@ -1344,7 +1303,7 @@ def populate_resize2d_args(graph, nid, compiler_cfg):
         )
     )
 
-    channel_last = int(node["attrs"]["layout"][0][0] == "NHWC")
+    channel_last = bool(int(node["attrs"]["layout"][0][0] == "NHWC"))
     args.append(("channel_last", f"{channel_last}"))
 
     return args
@@ -1502,7 +1461,6 @@ tvm_to_forge_op_map = {
     "nn.batch_matmul": "matmul",
     "nn.conv2d_transpose": "conv2d_transpose",
     "nn.conv2d": "conv2d",
-    "nn.conv3d": "conv3d",
     "nn.leaky_relu": "leaky_relu",
     "nn.log_softmax": "log_softmax",
     "nn.matmul": "matmul",
@@ -1542,7 +1500,6 @@ tvm_to_forge_op_map = {
     "squeeze": "squeeze",
     "qnn.dense": "matmul",
     "atan": "atan",
-    "upsample2d": "upsample2d",
 }
 
 forge_op_to_function_name = {
@@ -1559,7 +1516,6 @@ forge_op_to_function_name = {
     "concatenate": "forge.op.Concatenate",
     "conv2d_transpose": "forge.op.Conv2dTranspose",
     "conv2d": "forge.op.Conv2d",
-    "conv3d": "forge.op.Conv3d",
     "cos": "forge.op.Cosine",
     "cumsum": "forge.op.CumSum",
     "divide": "forge.op.Divide",
@@ -1619,7 +1575,6 @@ forge_op_to_function_name = {
     "unsqueeze": "forge.op.Unsqueeze",
     "squeeze": "forge.op.Squeeze",
     "atan": "forge.op.Atan",
-    "upsample2d": "forge.op.Upsample2d",
 }
 forge_ops_needing_arguments = {
     "argmax": populate_argmax_args,
@@ -1631,7 +1586,6 @@ forge_ops_needing_arguments = {
     "concatenate": populate_concatenate_args,
     "conv2d_transpose": populate_conv2d_transpose_args,
     "conv2d": populate_conv2d_args,
-    "conv3d": populate_conv3d_args,
     "cumsum": populate_cumsum_args,
     "gelu": populate_gelu_args,
     "index_copy": populate_index_copy_args,

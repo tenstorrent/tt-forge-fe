@@ -14,6 +14,10 @@ class FailingReasonsRegister:
     xfail = [
         ("add", FailingReasons.DATA_MISMATCH_ALL_CLOSE),
         ("add", FailingReasons.DATA_MISMATCH_PCC_LOW_RANGE),
+        ("avg_pool_2d", FailingReasons.DATA_MISMATCH_PCC_LOW_RANGE),
+        ("avg_pool_2d", FailingReasons.INCORRECT_TENSOR_SHAPE),
+        ("avg_pool_2d", FailingReasons.OUT_OF_MEMORY),
+        ("avg_pool_2d", FailingReasons.PAD_BIGGER_THAN_HALF_OF_KERNEL),
         ("clamp", FailingReasons.FAILED_MLIR_VERIFICATION),
         ("clamp", FailingReasons.VALUE_CONVERSION_OVERFLOW),
         ("concatenate", FailingReasons.CIRCULAR_BUFFER_EXCEEDS_L1),
@@ -117,4 +121,5 @@ class FailingReasonsRegister:
         ("linear", FailingReasons.FATAL_ERROR, None),
         ("pow", FailingReasons.FATAL_ERROR, None),
         ("square", FailingReasons.FATAL_ERROR, None),
+        ("avg_pool_2d", FailingReasons.INFERENCE_FROZE, None),
     ]

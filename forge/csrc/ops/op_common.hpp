@@ -69,6 +69,13 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> reduce_ops_shap
  */
 std::string get_resize_method(int method);
 
+/**
+ * Promotes all floating point tensors to the biggest float type of all tensors.
+ * @param tensors input tensors.
+ * @return promoted tensors.
+ */
+std::vector<at::Tensor> promote_floating_dtypes(const std::vector<at::Tensor> &tensors);
+
 }  // namespace op_common
 }  // namespace ops
 }  // namespace tt

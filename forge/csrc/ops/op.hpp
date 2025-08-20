@@ -57,15 +57,9 @@ enum class OpType : uint32_t
     Constant,
     ConstantPad,
     Conv2d,
-    Conv2dDepthwiseWeights,
-    Conv2dDepthwiseWeightsBw,
-    Conv2dGroupedWeights,
-    Conv2dGroupedWeightsBw,
     Conv2dPrestrideAct,
     Conv2dPrestrideWeights,
     Conv2dTranspose,
-    Conv3d,
-    ConvSum,
     Cosine,
     CumulativeSum,
     Depthwise,
@@ -188,6 +182,7 @@ class Op
     void set_attr(std::string const &name, Attr attr) { attrs_[name] = std::move(attr); }
     bool remove_attr(const std::string &attr_name) { return attrs_.erase(attr_name) > 0; }
     void clear_attrs() { attrs_.clear(); }
+    const Attr &get_attr(const std::string &name) const { return attr(name); }
 
     const std::string &as_string() const;
 

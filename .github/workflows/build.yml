@@ -50,7 +50,7 @@ jobs:
       fail-fast: false
       matrix:
         build: [
-          { runs-on: tt-beta-ubuntu-2204-large, build-type: Release },
+          { runs-on: tt-ubuntu-2204-large-stable, build-type: Release },
         ]
 
     runs-on:
@@ -141,7 +141,7 @@ jobs:
       fail-fast: false
       matrix:
         build: [
-          { runs-on: tt-beta-ubuntu-2204-large, build-type: Debug },
+          { runs-on: tt-ubuntu-2204-large-stable, build-type: Debug },
         ]
 
     runs-on:
