@@ -550,6 +550,6 @@ def verify(
         # If with_backward is False, we need to record the execution as passed
         # When with_backward is True, we do it at the end of the verify_backward function
         record_execution(ExecutionStage.PASSED)
-    
+
     # Return both the framework and compiled model outputs
     return fw_out, co_out
