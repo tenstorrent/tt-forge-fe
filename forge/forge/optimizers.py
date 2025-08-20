@@ -257,7 +257,6 @@ class Adam(Optimizer):
         """
         Return a dict of optimizer parameter names to tensor
         """
-        torch_lr = torch.full((1,), self.learning_rate, dtype=self.torch_dtype)
         if self.bias_correction:
             return {
                 "lr": Tensor.create_from_torch(torch.full(shape, self.learning_rate, dtype=self.torch_dtype)),
