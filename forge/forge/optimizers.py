@@ -119,15 +119,15 @@ class SGD(Optimizer):
         # For each Parameter, we register its associated set of optimizer parameters
         for parameter in parameters:
             if parameter.requires_grad:
-                self.parameter_to_opt_inputs[parameter.get_name()] = self.get_param_dict(parameter.pt_data_format)
+                self.parameter_to_opt_inputs[parameter.get_name()] = self.get_param_dict()
 
-    def get_param_dict(self, dtype: torch.dtype) -> Dict:
+    def get_param_dict(self) -> Dict:
         """
         Return a dict of optimizer parameter names to tensor
         """
         # Forge needs a pytorch array for now
         # TODO(jchu): modify these two lines when we deprecate the old path
-        learning_rate_torch = torch.full((1,), self.learning_rate, dtype=dtype)
+        learning_rate_torch = torch.full((1,), self.learning_rate, dtype=self.torch_dtype)
 
         learning_rate = Tensor.create_from_torch(learning_rate_torch)
         return {"lr": learning_rate}
@@ -163,7 +163,7 @@ class SGD(Optimizer):
             self.learning_rate = learning_rate
 
         for parameter, opt_inputs in self.parameter_to_opt_inputs.items():
-            learning_rate_tensor = torch.full((1,), self.learning_rate, dtype=opt_inputs["lr"].pt_data_format)
+            learning_rate_tensor = torch.full((1,), self.learning_rate, dtype=self.torch_dtype)
             opt_inputs["lr"] = Tensor.create_from_torch(learning_rate_tensor)
 
     def generate_op_trace(self, ac, parameter, gradient):

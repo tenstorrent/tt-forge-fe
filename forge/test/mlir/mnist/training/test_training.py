@@ -605,31 +605,42 @@ def test_optimizer_device():
 
 
 @pytest.mark.push
-def test_e2e_device():
+@pytest.mark.parametrize("dtype", [torch.bfloat16, torch.float32])
+def test_e2e_device(dtype):
     # Config
     num_epochs = 5
     batch_size = 1024
     learning_rate = 0.1
 
     # Load dataset
-    test_loader, train_loader = load_dataset(batch_size)
+    test_loader, train_loader = load_dataset(batch_size, dtype=dtype)
 
-    framework_model = MNISTLinear(bias=False)
+    framework_model = MNISTLinear(bias=False, dtype=dtype)
     framework_loss = torch.nn.CrossEntropyLoss()
     tt_optimizer = forge.optimizers.SGD(learning_rate=learning_rate)
+
+    # Configure compiler only if using bfloat16
+    compiler_cfg = CompilerConfig()
+    if dtype == torch.bfloat16:
+        data_format_override = DataFormat.Float16_b
+        compiler_cfg.default_df_override = data_format_override
 
     verify_cfg = DeprecatedVerifyConfig()
     verify_cfg.stages_for_intermediate_verification = {CompileDepth.AUTOGRAD}
     verify_cfg.enable_op_level_comparision = True
     tt_model = forge.compile(
         framework_model,
-        sample_inputs=[torch.rand(batch_size, 784)],
+        sample_inputs=[torch.rand(batch_size, 784, dtype=dtype)],
         optimizer=tt_optimizer,
         training=True,
         verify_cfg=verify_cfg,
+        compiler_cfg=compiler_cfg,
     )
 
-    loss_inputs = [torch.rand(batch_size, 10).requires_grad_(True), torch.rand(batch_size, 10)]
+    loss_inputs = [
+        torch.rand(batch_size, 10, dtype=dtype).requires_grad_(True),
+        torch.rand(batch_size, 10, dtype=dtype),
+    ]
     loss_inputs = to_forge_tensors(loss_inputs)
     tt_loss = forge.compile(
         CrossEntropyLoss(name="cross_entropy_loss"),
@@ -647,7 +658,7 @@ def test_e2e_device():
         for batch_idx, (data, target) in enumerate(train_loader):
 
             # Create target tensor and leave on CPU.
-            target = nn.functional.one_hot(target, num_classes=10).float()
+            target = nn.functional.one_hot(target, num_classes=10).to(dtype)
 
             # Forward pass
             golden_pred, pred = verify(
@@ -683,7 +694,7 @@ def test_e2e_device():
     test_loss = 0
     for batch_idx, (data, target) in enumerate(test_loader):
         pred = tt_model(data)[0]
-        target = nn.functional.one_hot(target, num_classes=10).float()
+        target = nn.functional.one_hot(target, num_classes=10).to(dtype)
 
         test_loss += framework_loss(pred, target)
         break
