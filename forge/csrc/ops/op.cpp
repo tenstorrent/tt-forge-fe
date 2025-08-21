@@ -726,7 +726,7 @@ void Op::decompose_post_optimize(
         case OpType::GreaterEqual: return;
         case OpType::Heaviside: return;
         case OpType::Index: return;
-        case OpType::IndexCopy: return index_copy::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::IndexCopy: return;
         case OpType::Layernorm: return;
         case OpType::LayernormBw: return;
         case OpType::LeakyRelu: return;
@@ -819,7 +819,7 @@ void Op::decompose_post_autograd(
         case OpType::GreaterEqual: return;
         case OpType::Heaviside: return heaviside::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Index: return;
-        case OpType::IndexCopy: return index_copy::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::IndexCopy: return;
         case OpType::Layernorm: return layernorm::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::LayernormBw: return layernorm_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::LeakyRelu: return;
@@ -910,7 +910,7 @@ long Op::initial_flops_estimate(
         case OpType::GreaterEqual: return 0;
         case OpType::Heaviside: return 0;
         case OpType::Index: return 0;
-        case OpType::IndexCopy: return index_copy::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::IndexCopy: return 0;
         case OpType::Layernorm: return 0;
         case OpType::LayernormBw: return 0;
         case OpType::LeakyRelu: return 0;
