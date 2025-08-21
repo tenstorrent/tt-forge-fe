@@ -474,7 +474,7 @@ def test_divide(shape):
     framework_model = Divide()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=is_training)
 
-    verify(inputs, framework_model, compiled_model, with_backward = True)
+    verify(inputs, framework_model, compiled_model, with_backward=True)
 
 
 @pytest.mark.push
