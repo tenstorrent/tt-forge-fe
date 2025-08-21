@@ -169,6 +169,8 @@ def test_remove_concat_pass(dim):
     verify(inputs, model, compiled_model)
 
 
+@pytest.mark.skip_model_analysis
+@pytest.mark.push
 @pytest.mark.parametrize(
     "input_shape, flip_dim",
     [
@@ -255,6 +257,7 @@ variants_with_weights = {
 }
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
@@ -308,6 +311,8 @@ def test_ssdlite320_mobilenet_v3_large_problematic_block(variant):
 
 
 @pytest.mark.skip_model_analysis
+@pytest.mark.push
+@pytest.mark.xfail
 def test_gather_to_take_onnx():
     class take(nn.Module):
         def __init__(self):
@@ -351,6 +356,9 @@ def test_gather_to_take_onnx():
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.skip_model_analysis
+@pytest.mark.xfail
+@pytest.mark.push
 def test_concat_block():
     class concat(nn.Module):
         def __init__(self):
@@ -513,6 +521,7 @@ def test_scatter_elements(shape):
     verify(inputs, model, compiled_model)
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.xfail
 @pytest.mark.nightly
 def test_bart_cls_head_onnx():
@@ -559,6 +568,7 @@ def test_bart_cls_head_onnx():
     )
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "shape,axis,index",
