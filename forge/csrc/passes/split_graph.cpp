@@ -386,29 +386,26 @@ std::unique_ptr<Graph> extract_optimizer_graph(
     std::vector<graphlib::NodeId> opt_module_inputs;
 
     // Add all parameter gradients used in the optimizer graph as input nodes.
-    auto grad_nodes = graph->nodes(
-        [](const graphlib::Node *node) {
-            return node->node_type() == graphlib::NodeType::kQueue &&
-                   node->as<graphlib::QueueNode>()->is_grad_accumulator();
-        });
-    log_debug("Found {} gradient accumulator nodes", grad_nodes.size());
-
-    for (auto grad_node : grad_nodes)
+    for (auto grad_output : graph->nodes(
+             [](const graphlib::Node *node) {
+                 return node->node_type() == graphlib::NodeType::kQueue &&
+                        node->as<graphlib::QueueNode>()->is_grad_accumulator();
+             }))
     {
-        if (!has_users_in_opt(graph, grad_node))
+        if (!has_users_in_opt(graph, grad_output))
         {
             continue;
         }
 
-        log_debug("Adding gradient input node {} as input to opt graph", grad_node->name());
-        auto grad_input_node =
-            graphlib::create_node<graphlib::InputNode>(grad_node->name(), graphlib::InputNodeType::Gradient, false);
-        grad_input_node->set_shape(grad_node->shape());
-        grad_input_node->set_output_df(grad_node->output_df());
-        grad_input_node->set_epoch_type(graphlib::NodeEpochType::Optimizer);
+        log_debug("Adding gradient input node {} as input to opt graph", grad_output->name());
+        auto grad_output_node =
+            graphlib::create_node<graphlib::InputNode>(grad_output->name(), graphlib::InputNodeType::Gradient, false);
+        grad_output_node->set_shape(grad_output->shape());
+        grad_output_node->set_output_df(grad_output->output_df());
+        grad_output_node->set_epoch_type(graphlib::NodeEpochType::Optimizer);
 
-        opt_graph->add_node(std::move(grad_input_node), 0 /*subgraph_id=*/);
-        opt_module_inputs.push_back(opt_graph->get_node_by_name(grad_node->name())->id());
+        opt_graph->add_node(std::move(grad_output_node), 0 /*subgraph_id=*/);
+        opt_module_inputs.push_back(opt_graph->get_node_by_name(grad_output->name())->id());
     }
 
     // Until this point, we have created all the inputs/outputs of the optimizer graph. Extract the rest of the
@@ -454,7 +451,6 @@ std::unique_ptr<Graph> extract_optimizer_graph(
         "Expect all inputs to the optimizer graph to be Gradient inputs");
 
     opt_graph->register_module_inputs(opt_module_inputs);
-
     opt_graph->register_module_outputs(opt_module_outputs);
 
     return opt_graph;
