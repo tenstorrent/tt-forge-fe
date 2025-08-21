@@ -372,26 +372,10 @@ std::unique_ptr<Graph> extract_optimizer_graph(
         // The runtime will look for aliased outputs and will make sure that the appropriate tensors are updated.
         // See `OutputNode::is_aliased_tensor()` for more details.
         //
-        // Create cast node if needed for non-fp32 float parameters
-        DataFormat param_df = input_node->output_df();
-        bool needs_cast = (param_df != DataFormat::Float32 && is_float_data_format(param_df));
-
-        if (needs_cast)
-        {
-            auto cast_node = opt_graph->add_node(
-                graphlib::create_node<graphlib::PyOpNode>(
-                    input_node->name() + "_cast_to_original",
-                    graphlib::OpType("cast", {}, {{"dtype", static_cast<int>(param_df)}})),
-                0);
-            cast_node->set_shape(input_node->shape());
-            cast_node->set_output_df(param_df);
-            cast_node->set_optimizer();
-        }
-
         auto grad_output_node = graphlib::create_node<graphlib::OutputNode>(input_node->name() + "_updated");
         grad_output_node->set_output_type(graphlib::OutputType::Internal);
         grad_output_node->set_shape(input_node->shape());
-        grad_output_node->set_output_df(param_df);
+        grad_output_node->set_output_df(input_node->output_df());
         grad_output_node->set_epoch_type(graphlib::NodeEpochType::Optimizer);
         grad_output_node->set_alias(input_node->as<graphlib::InputNode>());
 
@@ -457,20 +441,7 @@ std::unique_ptr<Graph> extract_optimizer_graph(
         for (auto user : loopback_users)
         {
             auto weight_output_node = opt_graph->get_node_by_name(user->name() + "_updated");
-            auto cast_node_name = user->name() + "_cast_to_original";
-
-            if (opt_graph->has_node_with_name(cast_node_name))
-            {
-                // optimizer_op -> cast -> output
-                auto cast_node = opt_graph->get_node_by_name(cast_node_name);
-                opt_graph->add_edge(opt_graph->get_node_by_name(node->name()), cast_node);
-                opt_graph->add_edge(cast_node, weight_output_node);
-            }
-            else
-            {
-                // optimizer_op -> output
-                opt_graph->add_edge(opt_graph->get_node_by_name(node->name()), weight_output_node);
-            }
+            opt_graph->add_edge(opt_graph->get_node_by_name(node->name()), weight_output_node);
         }
     }
 

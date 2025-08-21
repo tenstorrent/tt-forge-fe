@@ -469,8 +469,28 @@ void autograd_engine::create_optimizer_graph()
                         generate_op_trace_fcn(context, NodeContext(input_node), NodeContext(gradient))
                             .cast<NodeContext>();
 
+                    // If input parameter is not fp32 but is a float type, insert cast node to convert
+                    // from fp32 back to original parameter dtype
+                    Node *final_optimizer_output = graph->node_by_id(optimizer_output.id);
+                    DataFormat param_df = input_node->output_df();
+                    if (param_df != DataFormat::Float32 && is_float_data_format(param_df))
+                    {
+                        auto cast_node = graph->add_node(
+                            graphlib::create_node<graphlib::PyOpNode>(
+                                final_optimizer_output->name() + "_cast",
+                                graphlib::OpType("cast", {}, {{"dtype", static_cast<int>(param_df)}})),
+                            0);
+                        cast_node->set_shape(final_optimizer_output->shape());
+                        cast_node->set_output_df(param_df);
+                        cast_node->set_epoch_type(graphlib::NodeEpochType::Optimizer);
+
+                        // optimizer_op -> cast
+                        graph->add_edge(final_optimizer_output, cast_node);
+                        final_optimizer_output = cast_node;
+                    }
+
                     graph->add_edge(
-                        graph->node_by_id(optimizer_output.id),
+                        final_optimizer_output,
                         input_node,
                         graphlib::PortId(0),
                         graphlib::PortId(0),
