@@ -29,43 +29,6 @@ def eval(type, attr, ops):
                     result.append(zero_slice)
         return torch.stack(result, dim=dim)
 
-    if type == "pixel_shuffle":
-        assert len(ops) == 1, "Pixel shuffle should have one operand."
-        assert len(attr) == 1, "Pixel shuffle should have one attribute."
-        return torch.nn.functional.pixel_shuffle(ops[0], attr[0])
-
-    if type == "forge_pad":
-        assert (
-            len(attr) == 3
-        ), "Forge pad should have three attributes. The paddings for R and C dimensions and the value to pad with."
-        r_tiles, c_tiles, value = attr
-        operand = t_ops[0]
-        shape = operand.shape
-        # Padding is always given in tiles, so we need to recompute the padding in the original dimension
-        new_r_size_tile, new_c_size_tile = 0, 0
-        new_r_size, new_c_size = 0, 0
-        if r_tiles > 0:
-            new_r_size_tile = align_up_tile(shape[-2]) - shape[-2]
-            new_r_size = r_tiles * TILE_DIM
-        if c_tiles > 0:
-            new_c_size_tile = align_up_tile(shape[-1]) - shape[-1]
-            new_c_size = c_tiles * TILE_DIM
-        result = torch.nn.functional.pad(operand, [0, new_c_size_tile, 0, new_r_size_tile], value=0)
-        result = torch.nn.functional.pad(result, [0, new_c_size, 0, new_r_size], value=value)
-        return result
-
-    if type == "forge_unpad":
-        assert len(attr) == 4, "Forge unpad should have four attributes. The paddings and the original shape."
-        r_tiles, c_tiles, orig_r, orig_c = attr
-        operand = t_ops[0]
-        if r_tiles > 0:
-            assert operand.shape[-2] == align_up_tile(orig_r) + r_tiles * TILE_DIM
-        if c_tiles > 0:
-            assert operand.shape[-1] == align_up_tile(orig_c) + c_tiles * TILE_DIM
-        result = torch.index_select(operand, -2, torch.arange(orig_r))
-        result = torch.index_select(result, -1, torch.arange(orig_c))
-        return result
-
     assert False, f"{type} not defined in tensor manipulations"
 
 
@@ -78,53 +41,6 @@ def shape(type, attr, ops):
         shape = list(ops[0])
         shape[dim] = length * round_up_div(shape[dim] - begin, stride)
         return tuple(shape), []
-
-    if type == "pixel_shuffle":
-        assert len(ops) == 1, "Pixel shuffle should have one operand."
-        assert len(attr) == 1, "Pixel shuffle should have one attribute."
-
-        orig_shape = ops[0]
-        assert len(orig_shape) >= 3, "Pixel shuffle should be at least 3D."
-
-        upscale_factor = attr[0]
-        assert (
-            orig_shape[-3] % (upscale_factor**2) == 0
-        ), f"Op shape at dim -3 ({orig_shape[-3]}) should be divisible by upscale_factor*upscale_factor ({upscale_factor**2})."
-
-        output_shape = (
-            *orig_shape[:-3],
-            orig_shape[-3] // upscale_factor**2,
-            orig_shape[-2] * upscale_factor,
-            orig_shape[-1] * upscale_factor,
-        )
-        return output_shape, []
-
-    if type == "forge_pad":
-        assert (
-            len(attr) == 3
-        ), "Forge pad should have three attributes. The paddings for R and C dimensions and the value to pad with."
-        r_tiles, c_tiles, value = attr
-        shape = list(ops[0])
-        # Padding is always given in tiles, so we need to recompute the padding in the original dimension
-        if r_tiles > 0:
-            shape[-2] = (align_up_tile(shape[-2]) // TILE_DIM + r_tiles) * TILE_DIM
-        if c_tiles > 0:
-            shape[-1] = (align_up_tile(shape[-1]) // TILE_DIM + c_tiles) * TILE_DIM
-        return tuple(shape), []
-
-    if type == "forge_unpad":
-        assert len(attr) == 4, "Forge unpad should have four attributes. The paddings and the original shape."
-        r_tiles, c_tiles, orig_r, orig_c = attr
-        if r_tiles > 0:
-            assert ops[0][-2] == align_up_tile(orig_r) + r_tiles * TILE_DIM
-        if c_tiles > 0:
-            assert ops[0][-1] == align_up_tile(orig_c) + c_tiles * TILE_DIM
-        shape = list(ops[0])
-        shape[-2] = orig_r
-        shape[-1] = orig_c
-        return tuple(shape), []
-
-    assert False, f"{type} not defined in tensor manipulations"
 
 
 def backward(type, attr, ac, operand, inputs, output, grad):
@@ -227,27 +143,7 @@ def squeeze_output_for_reshape_decomp(dc, output, orig_out_shape):
 
 
 def decompose(type, attr, dc, inputs):
-
-    if type == "pixel_shuffle":
-        result = inputs[0]  # Shape: (N, C*r*r, H, W)
-        N, C_r2, H, W = result.shape
-        r = attr[0]
-        C = C_r2 // (r * r)
-
-        # Step 1: Reshape to (N, C, r, r, H, W)
-        reshape_dims = (N, C, r, r, H, W)
-        x = dc.op_with_named_attrs("reshape", [result], {"shape": reshape_dims})
-
-        # Step 2: Transpose sequence on x
-        x = dc.op_with_named_attrs("transpose", [x], {"dim0": 2, "dim1": 4})  # [0,1,4,3,2,5]
-        x = dc.op_with_named_attrs("transpose", [x], {"dim0": 3, "dim1": 4})  # [0,1,4,2,3,5]
-        x = dc.op_with_named_attrs("transpose", [x], {"dim0": 4, "dim1": 5})  # [0,1,4,2,5,3]
-
-        # Step 3: Final reshape to (N, C, H * r, W * r)
-        reshape_dims = (N, C, H * r, W * r)
-        x = dc.op_with_named_attrs("reshape", [x], {"shape": reshape_dims})
-
-        dc.fuse(x)
+    pass
 
 
 def decompose_post_optimize(type, attr, dc, inputs):

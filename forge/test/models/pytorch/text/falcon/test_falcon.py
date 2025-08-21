@@ -4,7 +4,6 @@
 import pytest
 import torch
 from third_party.tt_forge_models.falcon.pytorch.loader import ModelLoader, ModelVariant
-from transformers import AutoTokenizer, FalconForCausalLM
 
 import forge
 from forge.forge_property_utils import (
@@ -22,7 +21,7 @@ from test.models.models_utils import generate_no_cache, pad_inputs
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["tiiuae/falcon-7b-instruct"])
+@pytest.mark.parametrize("variant", [ModelVariant.FALCON_7B_INSTRUCT])
 def test_falcon(variant):
 
     # Record Forge Property
@@ -36,10 +35,10 @@ def test_falcon(variant):
 
     pytest.xfail(reason="Requires multi-chip support")
 
-    tokenizer = AutoTokenizer.from_pretrained(variant)
-    model = FalconForCausalLM.from_pretrained(variant)
-    model.config.use_cache = False
-    model.config.return_dict = False
+    # Load model and inputs
+    model_loader = ModelLoader(variant)
+    model = model_loader.load_model()
+    input_dict = model_loader.load_inputs()
 
     class Wrapper(torch.nn.Module):
         def __init__(self, model):
@@ -50,9 +49,8 @@ def test_falcon(variant):
             return self.model(input_ids, None, attention_mask)
 
     framework_model = Wrapper(model)
-    input_tokens = tokenizer("Hello, my dog is cute", return_tensors="pt")
 
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    inputs = [input_dict["input_ids"], input_dict["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)

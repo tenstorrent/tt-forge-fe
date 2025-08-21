@@ -21,7 +21,6 @@ add_library(ops
     op_conv_2d_transpose.cpp
     op_cosine.cpp
     op_cumulative_sum.cpp
-    op_depthwise.cpp
     op_divide.cpp
     op_downsample_2d.cpp
     op_dropout.cpp
@@ -31,15 +30,12 @@ add_library(ops
     op_erf.cpp
     op_exp.cpp
     op_fill_cache.cpp
-    op_forge_pad.cpp
-    op_forge_unpad.cpp
     op_gelu.cpp
     op_greater.cpp
     op_greater_equal.cpp
     op_heaviside.cpp
     op_index.cpp
     op_index_copy.cpp
-    op_interleave.cpp
     op_layernorm.cpp
     op_layernorm_bw.cpp
     op_leaky_relu.cpp
