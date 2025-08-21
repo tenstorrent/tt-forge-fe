@@ -47,7 +47,7 @@ def test_deepseek_inference_no_cache(variant):
     framework_model.eval()
     tokenizer = loader._load_tokenizer()
 
-    padded_inputs, seq_len = loader.load_inputs()
+    padded_inputs = loader.load_inputs()
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -60,6 +60,6 @@ def test_deepseek_inference_no_cache(variant):
     verify([padded_inputs], framework_model, compiled_model)
 
     generated_text = loader.decode_output(
-        max_new_tokens=512, model=compiled_model, inputs=padded_inputs, seq_len=seq_len, tokenizer=tokenizer
+        max_new_tokens=512, model=compiled_model, inputs=padded_inputs, tokenizer=tokenizer
     )
     print(generated_text)
