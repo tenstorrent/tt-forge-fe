@@ -44,6 +44,8 @@ on:
         required: false
         type: boolean
         default: false
+  # push:
+  #   branches: ["pchandrasekaran/test_model_analysis"]
   # schedule:
   #   - cron: '0 0 * * *'  # Runs at 12:00 UTC every day
 
@@ -74,7 +76,7 @@ jobs:
       - name: Inputs Management
         id: set-inputs
         run: |
-          default_test_group_cnt=10
+          default_test_group_cnt=1
           default_runs_on=n150
           default_create_pr=false
           tgc=$(if [ -z "${{ inputs.test_group_cnt }}" ]; then echo $default_test_group_cnt; else echo ${{ inputs.test_group_cnt }}; fi)
@@ -110,7 +112,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: ${{ needs.set-inputs.outputs.runs-on }}
       run_id: ${{ needs.build.outputs.run_id }}
-      tests_to_filter: ${{ inputs.tests_to_filter }}
+      tests_to_filter: 'forge/test/models/pytorch/text/albert/test_albert.py::test_albert_masked_lm_pytorch[base_v2],forge/test/models/pytorch/text/albert/test_albert.py::test_albert_masked_lm_pytorch[xlarge_v2]'
       allow-fail: true
 
   generate-models-ops-tests:
