@@ -4,6 +4,10 @@ This document describes how to build the TT-Forge-FE project on your local machi
 * [Installing a Wheel and Running an Example](getting_started.md) - You should choose this option if you want to run models.
 * [Using a Docker Container to Run an Example](getting_started_docker.md) - Choose this option if you want to keep the environment for running models separate from your existing environment.
 
+> **NOTE:** TT-Forge-FE is a framework agnostic frontend  that can convert any model to a generic
+> Intermediate Representation (IR) that can then be converted to a Tenstorrent specific IR for use with
+> Tenstorrent hardware. TT-Forge-FE is for use with single-chip systems only.
+
 The topics covered in this document are:
 * [Configuring Your Hardware](#configuring-your-hardware)
 * [Prerequisites](#prerequisites)
