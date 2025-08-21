@@ -196,10 +196,7 @@ static std::unique_ptr<graphlib::PyOpNode> create_slice(
 
     int start = i * (int)shape[dim];
     int length = (int)shape[dim];
-    graphlib::OpType select(
-        "select",
-        {dim, start, length, stride},
-        {{"dim", dim}, {"begin", start}, {"length", length}, {"stride", stride}});
+    graphlib::OpType select("select", {}, {{"dim", dim}, {"begin", start}, {"length", length}, {"stride", stride}});
     auto new_op = graphlib::create_node<graphlib::PyOpNode>(new_op_name, select);
     new_op->set_shape(shape);
     new_op->set_epoch_type(op->get_epoch_type());

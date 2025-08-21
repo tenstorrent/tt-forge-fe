@@ -242,18 +242,7 @@ def Select(
     assert (start + length) <= stride, f"(start = {start} + length = {length}) should be <= stride = {stride}"
     assert (start + length) > 0, f"(start = {start} + length = {length}) should be > 0"
 
-    return op(
-        "select",
-        name,
-        operandA,
-        attrs=(dim, index[0], index[1], stride),
-        **{
-            "dim": dim,
-            "begin": index[0],
-            "length": index[1],
-            "stride": stride,
-        },
-    ).get_tensor()
+    return op("select", name, operandA, dim=dim, begin=index[0], length=index[1], stride=stride).get_tensor()
 
 
 def Pad(

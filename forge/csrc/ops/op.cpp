@@ -668,7 +668,7 @@ void Op::decompose_initial(
         case OpType::RepeatInterleave: return;
         case OpType::Reshape: return reshape::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Resize2d: return resize_2d::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Select: return select::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Select: return;
         case OpType::Sigmoid: return;
         case OpType::Sine: return;
         case OpType::Softmax: return;
@@ -760,7 +760,7 @@ void Op::decompose_post_optimize(
         case OpType::RepeatInterleave: return;
         case OpType::Reshape: return;
         case OpType::Resize2d: return;
-        case OpType::Select: return select::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Select: return;
         case OpType::Sigmoid: return;
         case OpType::Sine: return;
         case OpType::Softmax: return;
@@ -853,7 +853,7 @@ void Op::decompose_post_autograd(
         case OpType::RepeatInterleave: return;
         case OpType::Reshape: return reshape::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Resize2d: return;
-        case OpType::Select: return select::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Select: return;
         case OpType::Sigmoid: return;
         case OpType::Sine: return;
         case OpType::Softmax: return;
@@ -944,7 +944,7 @@ long Op::initial_flops_estimate(
         case OpType::RepeatInterleave: return 0;
         case OpType::Reshape: return 0;
         case OpType::Resize2d: return 0;
-        case OpType::Select: return select::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Select: return 0;
         case OpType::Sigmoid: return 0;
         case OpType::Sine: return 0;
         case OpType::Softmax: return 0;
