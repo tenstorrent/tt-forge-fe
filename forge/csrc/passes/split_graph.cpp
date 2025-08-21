@@ -372,10 +372,26 @@ std::unique_ptr<Graph> extract_optimizer_graph(
         // The runtime will look for aliased outputs and will make sure that the appropriate tensors are updated.
         // See `OutputNode::is_aliased_tensor()` for more details.
         //
+        // Create cast node if needed for non-fp32 float parameters
+        DataFormat param_df = input_node->output_df();
+        bool needs_cast = (param_df != DataFormat::Float32 && is_float_data_format(param_df));
+
+        if (needs_cast)
+        {
+            auto cast_node = opt_graph->add_node(
+                graphlib::create_node<graphlib::PyOpNode>(
+                    input_node->name() + "_cast_to_original",
+                    graphlib::OpType("cast", {}, {{"dtype", static_cast<int>(param_df)}})),
+                0);
+            cast_node->set_shape(input_node->shape());
+            cast_node->set_output_df(param_df);
+            cast_node->set_optimizer();
+        }
+
         auto grad_output_node = graphlib::create_node<graphlib::OutputNode>(input_node->name() + "_updated");
         grad_output_node->set_output_type(graphlib::OutputType::Internal);
         grad_output_node->set_shape(input_node->shape());
-        grad_output_node->set_output_df(input_node->output_df());
+        grad_output_node->set_output_df(param_df);
         grad_output_node->set_epoch_type(graphlib::NodeEpochType::Optimizer);
         grad_output_node->set_alias(input_node->as<graphlib::InputNode>());
 
@@ -441,7 +457,20 @@ std::unique_ptr<Graph> extract_optimizer_graph(
         for (auto user : loopback_users)
         {
             auto weight_output_node = opt_graph->get_node_by_name(user->name() + "_updated");
-            opt_graph->add_edge(opt_graph->get_node_by_name(node->name()), weight_output_node);
+            auto cast_node_name = user->name() + "_cast_to_original";
+
+            if (opt_graph->has_node_with_name(cast_node_name))
+            {
+                // optimizer_op -> cast -> output
+                auto cast_node = opt_graph->get_node_by_name(cast_node_name);
+                opt_graph->add_edge(opt_graph->get_node_by_name(node->name()), cast_node);
+                opt_graph->add_edge(cast_node, weight_output_node);
+            }
+            else
+            {
+                // optimizer_op -> output
+                opt_graph->add_edge(opt_graph->get_node_by_name(node->name()), weight_output_node);
+            }
         }
     }
 
@@ -454,42 +483,6 @@ std::unique_ptr<Graph> extract_optimizer_graph(
         "Expect all inputs to the optimizer graph to be Gradient inputs");
 
     opt_graph->register_module_inputs(opt_module_inputs);
-
-    // Insert cast nodes for weight outputs to convert from fp32 back to original parameter dtype
-    for (auto output_id : opt_module_outputs)
-    {
-        auto output_node = opt_graph->node_by_id(output_id);
-        if (output_node->name().find("_updated") == std::string::npos)
-            continue;
-
-        // Get original parameter name and node
-        std::string param_name = output_node->name().substr(0, output_node->name().find("_updated"));
-        auto param_node = opt_graph->get_node_by_name(param_name);
-        if (!param_node || param_node->output_df() == DataFormat::Float32 ||
-            !is_float_data_format(param_node->output_df()))
-            continue;
-
-        // Get producer and insert cast node
-        auto producers = opt_graph->operands(output_node);
-        if (producers.empty())
-            continue;
-
-        auto producer = producers[0];
-        auto cast_node = opt_graph->add_node(
-            graphlib::create_node<graphlib::PyOpNode>(
-                param_name + "_cast_to_original",
-                graphlib::OpType("cast", {}, {{"dtype", static_cast<int>(param_node->output_df())}})),
-            0);
-
-        cast_node->set_shape(producer->shape());
-        cast_node->set_output_df(param_node->output_df());
-        cast_node->set_optimizer();
-
-        // Rewire: producer -> cast -> output
-        opt_graph->remove_edge(opt_graph->operand_data_edges(output_node)[0]);
-        opt_graph->add_edge(graphlib::Edge(producer->id(), 0, cast_node->id(), 0, graphlib::EdgeType::kData));
-        opt_graph->add_edge(graphlib::Edge(cast_node->id(), 0, output_node->id(), 0, graphlib::EdgeType::kData));
-    }
 
     opt_graph->register_module_outputs(opt_module_outputs);
 
