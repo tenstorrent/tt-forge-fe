@@ -26,6 +26,7 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
 def decompose(type, attr, dc, inputs):
     pass
 
+
 from math import gcd
 from functools import reduce
 

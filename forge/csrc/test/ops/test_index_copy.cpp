@@ -9,6 +9,7 @@
 #include "graph_lib/shape.hpp"
 #include "ops/op.hpp"
 #include "test/ops/test_ops.hpp"
+#include "test_ops.hpp"
 #include "torch/torch.h"
 
 namespace tt::test::ops::index_copy
@@ -115,18 +116,14 @@ std::vector<OpTestParam> generate_index_copy_test_params()
                     src_shape[dim] = num_indices;
 
                     std::vector<graphlib::Shape> shapes = {input_shape, index_shape, src_shape};
-                    std::vector<torch::Dtype> dtypes = {
-                        torch::kFloat, torch::kLong, torch::kFloat};  // input, index, source
                     if (valid_inputs(shapes, dim))
                     {
                         // Create sequential index tensor from 0 to num_indices-1
                         torch::Tensor sequential_indices =
                             torch::arange(0, static_cast<int64_t>(index_shape[0]), torch::kLong);
-                        std::vector<torch::Tensor> override_tensors = {
-                            {}, sequential_indices, {}};  // Only override index tensor
 
                         tt::ops::Op op(tt::ops::OpType::IndexCopy, {{"dim", dim}});
-                        params.emplace_back(op, shapes, dtypes, override_tensors);
+                        params.emplace_back(op, shapes);
                     }
                 }
                 else
@@ -136,18 +133,14 @@ std::vector<OpTestParam> generate_index_copy_test_params()
                     src_shape[dim] = num_indices;  // Source has same size as indices
 
                     std::vector<graphlib::Shape> shapes = {input_shape, index_shape, src_shape};
-                    std::vector<torch::Dtype> dtypes = {
-                        torch::kFloat, torch::kLong, torch::kFloat};  // input, index, source
                     if (valid_inputs(shapes, dim))
                     {
                         // Create sequential index tensor from 0 to num_indices-1
                         torch::Tensor sequential_indices =
                             torch::arange(0, static_cast<int64_t>(index_shape[0]), torch::kLong);
-                        std::vector<torch::Tensor> override_tensors = {
-                            {}, sequential_indices, {}};  // Only override index tensor
 
                         tt::ops::Op op(tt::ops::OpType::IndexCopy, {{"dim", dim}});
-                        params.emplace_back(op, shapes, dtypes, override_tensors);
+                        params.emplace_back(op, shapes);
                     }
                 }
             }
@@ -164,18 +157,14 @@ std::vector<OpTestParam> generate_index_copy_test_params()
                     src_shape[dim] = 1;  // Single slice
 
                     std::vector<graphlib::Shape> shapes = {input_shape, index_shape, src_shape};
-                    std::vector<torch::Dtype> dtypes = {
-                        torch::kFloat, torch::kLong, torch::kFloat};  // input, index, source
                     if (valid_inputs(shapes, dim))
                     {
                         // Create sequential index tensor from 0 to num_indices-1
                         torch::Tensor sequential_indices =
                             torch::arange(0, static_cast<int64_t>(index_shape[0]), torch::kLong);
-                        std::vector<torch::Tensor> override_tensors = {
-                            {}, sequential_indices, {}};  // Only override index tensor
 
                         tt::ops::Op op(tt::ops::OpType::IndexCopy, {{"dim", dim}});
-                        params.emplace_back(op, shapes, dtypes, override_tensors);
+                        params.emplace_back(op, shapes);
                     }
                 }
                 else
@@ -189,19 +178,15 @@ std::vector<OpTestParam> generate_index_copy_test_params()
                         src_shape[dim] = 1;  // Single slice
 
                         std::vector<graphlib::Shape> shapes = {input_shape, index_shape, src_shape};
-                        std::vector<torch::Dtype> dtypes = {
-                            torch::kFloat, torch::kLong, torch::kFloat};  // input, index, source
                         if (valid_inputs(shapes, dim))
                         {
                             // Create random index tensor within valid range for single slice insertion
                             int64_t max_index = static_cast<int64_t>(dim_size - 1);
                             int64_t random_index = std::rand() % (max_index + 1);  // Random index from 0 to max_index
                             torch::Tensor random_index_tensor = torch::tensor({random_index}, torch::kLong);
-                            std::vector<torch::Tensor> override_tensors = {
-                                {}, random_index_tensor, {}};  // Only override index tensor
 
                             tt::ops::Op op(tt::ops::OpType::IndexCopy, {{"dim", dim}});
-                            params.emplace_back(op, shapes, dtypes, override_tensors);
+                            params.emplace_back(op, shapes);
                         }
                     }
                 }
@@ -226,18 +211,14 @@ std::vector<OpTestParam> generate_index_copy_test_params()
                     src_shape[dim] = 1;
 
                     std::vector<graphlib::Shape> shapes = {input_shape, index_shape, src_shape};
-                    std::vector<torch::Dtype> dtypes = {
-                        torch::kFloat, torch::kLong, torch::kFloat};  // input, index, source
                     if (valid_inputs(shapes, neg_dim))
                     {
                         // For KV cache, use sequential indices starting from 0
                         torch::Tensor sequential_indices =
                             torch::arange(0, static_cast<int64_t>(input_shape[0]), torch::kLong);
-                        std::vector<torch::Tensor> override_tensors = {
-                            {}, sequential_indices, {}};  // Only override index tensor
 
                         tt::ops::Op op(tt::ops::OpType::IndexCopy, {{"dim", neg_dim}});
-                        params.emplace_back(op, shapes, dtypes, override_tensors);
+                        params.emplace_back(op, shapes);
                     }
                 }
                 else
@@ -247,19 +228,15 @@ std::vector<OpTestParam> generate_index_copy_test_params()
                     src_shape[dim] = 1;
 
                     std::vector<graphlib::Shape> shapes = {input_shape, index_shape, src_shape};
-                    std::vector<torch::Dtype> dtypes = {
-                        torch::kFloat, torch::kLong, torch::kFloat};  // input, index, source
                     if (valid_inputs(shapes, neg_dim))
                     {
                         // Create random index tensor within valid range for single slice insertion
                         int64_t max_index = static_cast<int64_t>(dim_size - 1);
                         int64_t random_index = std::rand() % (max_index + 1);  // Random index from 0 to max_index
                         torch::Tensor random_index_tensor = torch::tensor({random_index}, torch::kLong);
-                        std::vector<torch::Tensor> override_tensors = {
-                            {}, random_index_tensor, {}};  // Only override index tensor
 
                         tt::ops::Op op(tt::ops::OpType::IndexCopy, {{"dim", neg_dim}});
-                        params.emplace_back(op, shapes, dtypes, override_tensors);
+                        params.emplace_back(op, shapes);
                     }
                 }
             }
@@ -269,12 +246,10 @@ std::vector<OpTestParam> generate_index_copy_test_params()
     return params;
 }
 
-// Test individual cases using the standard SimpleOpDecomposeOnlyTest
 INSTANTIATE_TEST_SUITE_P(
     IndexCopyOpsIndividual,
     SimpleOpDecomposeOnlyTest,
     testing::ValuesIn(generate_index_copy_test_params()),
-    [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
-    { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
+    [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
 
 }  // namespace tt::test::ops::index_copy
