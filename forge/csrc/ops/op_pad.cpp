@@ -151,6 +151,82 @@ NodeContext create_constant_pad_op(
     return dc.op(graphlib::OpType("constant_pad", {{"padding", constant_padding}, {"value", value}}), {input});
 }
 
+void decompose_constant_mode(DecomposingContext &dc, const NodeContext &input, const PaddingParams &params, float value)
+{
+    /**
+     * This code path fails with memory exceeded error in metal. Example:
+     * Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=7)] grow to 2197184 B which is beyond max
+     * L1 size of 1499136 B.
+     *
+     * Once fixed, we should enable this code path.
+     */
+    if constexpr (false)
+    {
+        NodeContext result = create_constant_pad_op(dc, input, params, value);
+        return dc.fuse(result);
+    }
+
+    /**
+     * Alternative implementation for constant padding using concatenation.
+     * This decomposes constant padding into extract, constant tensor creation, and concatenation operations
+     * to avoid the memory issues with direct constant_pad operation.
+     */
+    NodeContext result = input;
+
+    std::unique_ptr<NodeContext> left_pad, right_pad, top_pad, bot_pad;
+
+    if (params.left > 0)
+    {
+        auto left_shape = input.shape.as_vector();
+        left_shape[params.width_dim] = params.left;
+
+        at::Tensor left_constant = at::full(
+            std::vector<int64_t>(left_shape.begin(), left_shape.end()), value, at::TensorOptions().dtype(at::kFloat));
+
+        left_pad = std::make_unique<NodeContext>(DecomposingContext::create_constant_tensor(dc, left_constant));
+    }
+
+    if (params.right > 0)
+    {
+        auto right_shape = input.shape.as_vector();
+        right_shape[params.width_dim] = params.right;
+
+        at::Tensor right_constant = at::full(
+            std::vector<int64_t>(right_shape.begin(), right_shape.end()), value, at::TensorOptions().dtype(at::kFloat));
+
+        right_pad = std::make_unique<NodeContext>(DecomposingContext::create_constant_tensor(dc, right_constant));
+    }
+
+    result = concat_patches(dc, left_pad.get(), result, right_pad.get(), params.width_dim);
+
+    if (params.top > 0)
+    {
+        auto top_shape = result.shape.as_vector();
+        top_shape[params.height_dim] = params.top;
+
+        at::Tensor top_constant = at::full(
+            std::vector<int64_t>(top_shape.begin(), top_shape.end()), value, at::TensorOptions().dtype(at::kFloat));
+
+        top_pad = std::make_unique<NodeContext>(DecomposingContext::create_constant_tensor(dc, top_constant));
+    }
+
+    if (params.bottom > 0)
+    {
+        auto bottom_shape = result.shape.as_vector();
+        bottom_shape[params.height_dim] = params.bottom;
+
+        at::Tensor bottom_constant = at::full(
+            std::vector<int64_t>(bottom_shape.begin(), bottom_shape.end()),
+            value,
+            at::TensorOptions().dtype(at::kFloat));
+
+        bot_pad = std::make_unique<NodeContext>(DecomposingContext::create_constant_tensor(dc, bottom_constant));
+    }
+
+    result = concat_patches(dc, top_pad.get(), result, bot_pad.get(), params.height_dim);
+    dc.fuse(result);
+}
+
 void decompose_replicate_mode(DecomposingContext &dc, const NodeContext &input, const PaddingParams &params)
 {
     NodeContext result = input;
@@ -368,9 +444,7 @@ void decompose_initial(
 
     if (mode == 0)  // constant mode
     {
-        // Use ConstantPad operation with direct TTIR mapping
-        NodeContext result = create_constant_pad_op(dc, input, params, value);
-        dc.fuse(result);
+        decompose_constant_mode(dc, input, params, value);
     }
     else if (mode == 1)  // replicate mode
     {
