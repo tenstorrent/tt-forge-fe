@@ -6,7 +6,7 @@ import torch
 from torch import nn
 
 import forge
-from forge.verify.verify import verify, verify_backward, DeprecatedVerifyConfig
+from forge.verify.verify import verify, DeprecatedVerifyConfig
 from forge.config import CompileDepth
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker

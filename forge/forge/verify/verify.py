@@ -299,7 +299,7 @@ def check_dtypes(fw_dtype: torch.dtype, co_dtype: torch.dtype):
         raise ValueError(f"Dtype mismatch: framework_model.dtype={fw_dtype}, compiled_model.dtype={co_dtype}")
 
 
-def verify_backward(
+def _verify_backward(
     inputs: List[torch.Tensor],
     output_grad: torch.Tensor,
     framework_output: torch.Tensor,
@@ -314,6 +314,8 @@ def verify_backward(
     Runs backward on both models with the same inputs and performs various validation checks
     based on the provided verification configuration. Checks can include output size matching,
     dtype consistency, shape equivalence, and numeric value comparison.
+
+    This method does not record the PASSED execution stage, as it is only used as a private method in verify.
 
     Parameters:
         inputs: List of tensor inputs
@@ -408,7 +410,6 @@ def verify_backward(
 
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
-    record_execution(ExecutionStage.PASSED)
 
 
 def verify(
@@ -535,9 +536,8 @@ def verify(
 
     # This will only work if model is compiled in training mode
     if with_backward:
-        record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
         grad = torch.rand_like(fw_out[0])
-        verify_backward(
+        _verify_backward(
             inputs,
             grad,
             fw_out[0],
@@ -546,10 +546,7 @@ def verify(
             compiled_model,
             verify_cfg=verify_cfg,
         )
-    else:
-        # If with_backward is False, we need to record the execution as passed
-        # When with_backward is True, we do it at the end of the verify_backward function
-        record_execution(ExecutionStage.PASSED)
+    record_execution(ExecutionStage.PASSED)
 
     # Return both the framework and compiled model outputs
     return fw_out, co_out
