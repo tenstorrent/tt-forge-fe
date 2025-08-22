@@ -25,52 +25,26 @@ from forge.op_repo import OperatorRepository
 
 class FrameworkTestUtils:
     @classmethod
-    def copy_framework(
-        cls, framework: Framework, framework_name: str = None, skip_operators: Tuple[str] = []
-    ) -> Framework:
-        framework0 = framework
+    def copy_framework(cls, framework: Framework, framework_name: str = None) -> Framework:
         framework = copy(framework)
         if framework_name is not None:
             framework.framework_name = framework_name
         framework.operator_repository = copy(framework.operator_repository)
-        cls.skip_operators(framework, skip_operators)
-        assert len(framework.operator_repository.operators) + len(skip_operators) == len(
-            framework0.operator_repository.operators
-        ), "Operators count should match after skipping operators"
         return framework
 
     @classmethod
     def skip_operators(cls, framework: Framework, skip_operators: Tuple[str] = []) -> None:
-        initial_operator_count = len(framework.operator_repository.operators)
-        if len(skip_operators) == 0:
-            # Nothing to skip, avoid logging
-            return
-        logger.trace(f"Skipping operators for framework {framework.framework_name}: {[op for op in skip_operators]}")
-        for skip_op in skip_operators:
-            if skip_op not in [op.name for op in framework.operator_repository.operators]:
-                logger.warning(f"Operator {skip_op} not found in framework {framework.framework_name}, can't skip it")
+        allow_operators = (framework.operator_list - skip_operators).operators
         framework.operator_repository.operators = [
-            op for op in framework.operator_repository.operators if op.name not in skip_operators
+            op for op in framework.operator_repository.operators if op.name in allow_operators
         ]
-        logger.debug(
-            f"Skipped num of operators for framework {framework.framework_name}: {initial_operator_count} -> {len(framework.operator_repository.operators)}"
-        )
-        assert (
-            len(framework.operator_repository.operators) + len(skip_operators) == initial_operator_count
-        ), f"Operators count should match after skipping operators {len(framework.operator_repository.operators)} + {len(skip_operators)} == {initial_operator_count}"
 
     @classmethod
     def allow_operators(cls, framework: Framework, allow_operators: Tuple[str] = []) -> None:
-        initial_operator_count = len(framework.operator_repository.operators)
-        logger.trace(f"Allowing operators for framework {framework.framework_name}: {[op for op in allow_operators]}")
-        skip_operators = [op.name for op in framework.operator_repository.operators if op.name not in allow_operators]
-        cls.skip_operators(framework, skip_operators)
-        logger.debug(
-            f"Allowed num of operators for framework {framework.framework_name}: {initial_operator_count} -> {len(framework.operator_repository.operators)}"
-        )
-        assert len(allow_operators) == len(
-            framework.operator_repository.operators
-        ), f"Operators count should match after allowing operators {len(framework.operator_repository.operators)} == {len(allow_operators)}"
+        allow_operators = (framework.operator_list * allow_operators).operators
+        framework.operator_repository.operators = [
+            op for op in framework.operator_repository.operators if op.name in allow_operators
+        ]
 
     @classmethod
     def copy_operator(cls, framework: Framework, operator_name: str) -> OperatorDefinition:
