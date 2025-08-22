@@ -258,6 +258,24 @@ def build_module_name(
     return module_name
 
 
+class ExecutionRunMode(Enum):
+    INFERENCE = auto()
+    TRAINING = auto()
+
+    @classmethod
+    def to_str(cls, value):
+        return value.name
+
+    @classmethod
+    def from_training_param(cls, training: bool):
+        return cls.TRAINING if training else cls.INFERENCE
+
+
+class ExecutionPass(Enum):
+    FORWARD = auto()
+    BACKWARD = auto()
+
+
 class ExecutionStage(Enum):
     FAILED_BEFORE_FORGE_COMPILATION_INITIATION = auto()
     FAILED_TVM_RELAY_IRMODULE_GENERATION = auto()
@@ -676,15 +694,44 @@ class ForgePropertyHandler:
         """
         self.add("tags.execution_stage", ExecutionStage.to_str(execution_stage))
 
-    def record_execution(self, execution_stage: ExecutionStage):
+    def record_execution_run_mode(self, execution_run_mode: ExecutionRunMode):
+        """
+        Records the execution run mode (as run_mode)in the tags.
+
+        Args:
+            execution_run_mode (ExecutionRunMode): The execution run mode value.
+        """
+        self.add("tags.run_mode", ExecutionRunMode.to_str(execution_run_mode))
+
+    def record_execution_pass(self, execution_pass: ExecutionPass):
+
+        """
+        Records the execution pass (as is_forward) in the tags.
+
+        Args:
+            execution_pass (ExecutionPass): The execution pass value.
+        """
+        self.add("tags.is_forward", True if execution_pass == ExecutionPass.FORWARD else False)
+
+    def record_execution(
+        self,
+        execution_stage: ExecutionStage,
+        execution_run_mode: Optional[ExecutionRunMode],
+        execution_pass: Optional[ExecutionPass],
+    ):
         """
         Records the execution depth and stage in the tags.
 
         Args:
             execution_stage (ExecutionStage): The execution stage value.
+            execution_run_mode (ExecutionRunMode): The execution run mode value.
         """
         self.record_execution_stage(execution_stage)
         self.record_execution_depth(ExecutionDepth.from_exec_stage(execution_stage))
+        if execution_run_mode is not None:
+            self.record_execution_run_mode(execution_run_mode)
+        if execution_pass is not None:
+            self.record_execution_pass(execution_pass)
 
     def record_emitc_status(self, is_success: bool):
         self.add("tags.emitc_status", is_success)
@@ -800,7 +847,11 @@ forge_property_handler_var = contextvars.ContextVar("forge_property_handler_var"
 # record various properties.
 
 
-def record_execution(execution_stage: ExecutionStage):
+def record_execution(
+    execution_stage: ExecutionStage,
+    execution_run_mode: Optional[ExecutionRunMode] = None,
+    execution_pass: Optional[ExecutionPass] = None,
+):
     """
     Records the execution depth and stage in the tags.
 
@@ -811,7 +862,7 @@ def record_execution(execution_stage: ExecutionStage):
     if fph is None:
         return
 
-    fph.record_execution(execution_stage)
+    fph.record_execution(execution_stage, execution_run_mode, execution_pass)
 
 
 def record_emitc_status(is_success: bool):
