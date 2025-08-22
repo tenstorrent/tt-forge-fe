@@ -574,7 +574,7 @@ class ForgePropertyHandler:
 
     def __init__(self, store: Optional[ForgePropertyStore] = None):
         self.store = store if store is not None else ForgePropertyStore()
-        self.record_execution(ExecutionStage.FAILED_BEFORE_FORGE_COMPILATION_INITIATION)
+        self.record_execution(ExecutionStage.FAILED_BEFORE_FORGE_COMPILATION_INITIATION, None, None)
 
     def add(self, key: str, value: Any):
         """
