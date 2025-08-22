@@ -6,7 +6,6 @@ import random
 import pytest
 import torch
 from datasets import load_dataset
-from third_party.tt_forge_models.resnet.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -24,8 +23,9 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
+from third_party.tt_forge_models.resnet.pytorch import ModelLoader, ModelVariant  # isort:skip
 
-@pytest.mark.push
+
 @pytest.mark.nightly
 def test_resnet_hf():
     random.seed(0)
