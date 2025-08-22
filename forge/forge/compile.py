@@ -39,6 +39,7 @@ from forge.verify import DeprecatedVerifyConfig, do_verify, _generate_random_los
 from forge.forge_property_utils import (
     ExecutionStage,
     ExecutionRunMode,
+    ExecutionPass,
     record_execution,
     record_compiler_config,
     record_flatbuffer_details,
