@@ -46,6 +46,8 @@
 // TTMLIR headers
 #include "ttmlir/Dialect/TTCore/IR/TTCoreOpsTypes.h"
 #include "ttmlir/Dialect/TTIR/IR/TTIROps.h"
+#include "ttmlir/Target/Common/Target.h"
+#include "ttmlir/Target/Common/system_desc_bfbs_hash_generated.h"
 
 // Reportify headers
 #include "reportify/reportify.hpp"
@@ -174,6 +176,187 @@ class AttributeMapper
     }
 };
 
+/// Helper function to parse a runtime::SystemDesc into a SystemDescAttr
+mlir::tt::ttcore::SystemDescAttr parse_runtime_system_desc_to_mlir_attr(
+    const runtime::SystemDesc& runtimeSystemDesc, mlir::MLIRContext* context)
+{
+
+    // SystemDescAttr sys_attr = SystemDescAttr::from(runtimeSystemDesc.get());
+    // Get the flatbuffer data from the runtime SystemDesc
+    const auto *binarySystemDescRoot = ::tt::target::GetSizePrefixedSystemDescRoot(runtimeSystemDesc.handle.get());
+    
+    if (binarySystemDescRoot->schema_hash()->string_view() !=
+        ::tt::target::common::system_desc_bfbs_schema_hash) {
+        TT_THROW("System desc schema mismatch, please collect a system desc with a runtime compiled with the same schema version");
+    }
+
+    const auto *binarySystemDesc = binarySystemDescRoot->system_desc();
+    const auto *binaryCpuDesc = binarySystemDesc->cpu_descs();
+    const auto *binaryChipDesc = binarySystemDesc->chip_descs();
+    const auto *binaryChipDescIndices = binarySystemDesc->chip_desc_indices();
+    const auto *chipCapabilities = binarySystemDesc->chip_capabilities();
+    const auto *binaryChipCoords = binarySystemDesc->chip_coords();
+    const auto *chipChannelConnections = binarySystemDesc->chip_channels();
+
+    // Parse CPU descriptors
+    std::vector<mlir::tt::ttcore::CPUDescAttr> cpuDescList;
+    for (const auto *element : *binaryCpuDesc) {
+        const auto *flatbufferTargetTripleString = element->target_triple();
+        cpuDescList.emplace_back(mlir::tt::ttcore::CPUDescAttr::get(
+            context, 
+            static_cast<mlir::tt::ttcore::CPURole>(element->role()),
+            mlir::StringAttr::get(
+                context, 
+                std::string(flatbufferTargetTripleString->c_str(),
+                           flatbufferTargetTripleString->size()))));
+    }
+
+    // Parse chip descriptors  
+    std::vector<mlir::tt::ttcore::ChipDescAttr> chipDescList;
+    for (const auto *element : *binaryChipDesc) {
+        mlir::tt::ttcore::Arch arch;
+        switch (element->arch()) {
+        case ::tt::target::Arch::Grayskull:
+            arch = mlir::tt::ttcore::Arch::Grayskull;
+            break;
+        case ::tt::target::Arch::Wormhole_b0:
+            arch = mlir::tt::ttcore::Arch::WormholeB0;
+            break;
+        case ::tt::target::Arch::Blackhole:
+            arch = mlir::tt::ttcore::Arch::Blackhole;
+            break;
+        }
+
+        std::vector<mlir::tt::ttcore::DataTypeAttr> supportedDataTypesAttr;
+        for (auto it : *(element->supported_data_types())) {
+            switch (it) {
+            case ::tt::target::DataType::Float32:
+                supportedDataTypesAttr.push_back(
+                    mlir::tt::ttcore::DataTypeAttr::get(context, mlir::tt::ttcore::DataType::Float32));
+                break;
+            case ::tt::target::DataType::Float16:
+                supportedDataTypesAttr.push_back(
+                    mlir::tt::ttcore::DataTypeAttr::get(context, mlir::tt::ttcore::DataType::Float16));
+                break;
+            case ::tt::target::DataType::BFloat16:
+                supportedDataTypesAttr.push_back(
+                    mlir::tt::ttcore::DataTypeAttr::get(context, mlir::tt::ttcore::DataType::BFloat16));
+                break;
+            case ::tt::target::DataType::BFP_Float8:
+                supportedDataTypesAttr.push_back(
+                    mlir::tt::ttcore::DataTypeAttr::get(context, mlir::tt::ttcore::DataType::BFP_Float8));
+                break;
+            case ::tt::target::DataType::BFP_BFloat8:
+                supportedDataTypesAttr.push_back(
+                    mlir::tt::ttcore::DataTypeAttr::get(context, mlir::tt::ttcore::DataType::BFP_BFloat8));
+                break;
+            case ::tt::target::DataType::BFP_Float4:
+                supportedDataTypesAttr.push_back(
+                    mlir::tt::ttcore::DataTypeAttr::get(context, mlir::tt::ttcore::DataType::BFP_Float4));
+                break;
+            case ::tt::target::DataType::BFP_BFloat4:
+                supportedDataTypesAttr.push_back(
+                    mlir::tt::ttcore::DataTypeAttr::get(context, mlir::tt::ttcore::DataType::BFP_BFloat4));
+                break;
+            case ::tt::target::DataType::BFP_Float2:
+                supportedDataTypesAttr.push_back(
+                    mlir::tt::ttcore::DataTypeAttr::get(context, mlir::tt::ttcore::DataType::BFP_Float2));
+                break;
+            case ::tt::target::DataType::BFP_BFloat2:
+                supportedDataTypesAttr.push_back(
+                    mlir::tt::ttcore::DataTypeAttr::get(context, mlir::tt::ttcore::DataType::BFP_BFloat2));
+                break;
+            case ::tt::target::DataType::UInt32:
+                supportedDataTypesAttr.push_back(
+                    mlir::tt::ttcore::DataTypeAttr::get(context, mlir::tt::ttcore::DataType::UInt32));
+                break;
+            case ::tt::target::DataType::UInt16:
+                supportedDataTypesAttr.push_back(
+                    mlir::tt::ttcore::DataTypeAttr::get(context, mlir::tt::ttcore::DataType::UInt16));
+                break;
+            case ::tt::target::DataType::UInt8:
+                supportedDataTypesAttr.push_back(
+                    mlir::tt::ttcore::DataTypeAttr::get(context, mlir::tt::ttcore::DataType::UInt8));
+                break;
+            case ::tt::target::DataType::Int32:
+                supportedDataTypesAttr.push_back(
+                    mlir::tt::ttcore::DataTypeAttr::get(context, mlir::tt::ttcore::DataType::Int32));
+                break;
+            default:
+                break;
+            }
+        }
+
+        llvm::SmallVector<mlir::tt::ttcore::TileSizeAttr> supportedTileSizesAttr;
+        for (const auto *it : *(element->supported_tile_sizes())) {
+            supportedTileSizesAttr.push_back(
+                mlir::tt::ttcore::TileSizeAttr::get(context, it->y(), it->x()));
+        }
+
+        auto currentChipDescAttr = mlir::tt::ttcore::ChipDescAttr::get(
+            context, 
+            mlir::tt::ttcore::ArchAttr::get(context, arch),
+            {element->grid_size()->y(), element->grid_size()->x()},
+            {element->coord_translation_offsets()->y(),
+             element->coord_translation_offsets()->x()},
+            element->l1_size(), element->num_dram_channels(),
+            element->dram_channel_size(), element->noc_l1_address_align_bytes(),
+            element->pcie_address_align_bytes(),
+            element->noc_dram_address_align_bytes(), element->l1_unreserved_base(),
+            element->erisc_l1_unreserved_base(), element->dram_unreserved_base(),
+            element->dram_unreserved_end(), supportedDataTypesAttr,
+            supportedTileSizesAttr, element->dst_register_size_tiles(),
+            element->num_cbs(), element->num_compute_threads(),
+            element->num_datamovement_threads());
+        chipDescList.push_back(currentChipDescAttr);
+    }
+
+    // Parse chip indices
+    std::vector<uint32_t> chipIndicesList;
+    for (auto element : *binaryChipDescIndices) {
+        chipIndicesList.push_back(element);
+    }
+
+    // Parse chip capabilities
+    std::vector<mlir::tt::ttcore::ChipCapabilityAttr> chipCapabilitiesList;
+    for (auto element : *chipCapabilities) {
+        auto chipCapabilitiesAttr =
+            mlir::tt::ttcore::ChipCapabilityAttr::get(context, 
+                static_cast<mlir::tt::ttcore::ChipCapability>(element));
+        chipCapabilitiesList.push_back(chipCapabilitiesAttr);
+    }
+
+    // Parse chip coordinates
+    std::vector<mlir::tt::ttcore::ChipCoordAttr> chipCoordinateList;
+    for (const auto *element : *binaryChipCoords) {
+        auto chipCoordinateAttr = mlir::tt::ttcore::ChipCoordAttr::get(
+            context, element->rack(), element->shelf(), element->y(), element->x());
+        chipCoordinateList.push_back(chipCoordinateAttr);
+    }
+
+    // Parse chip channels
+    std::vector<mlir::tt::ttcore::ChipChannelAttr> chipChannelList;
+    for (const auto *element : *chipChannelConnections) {
+        std::vector<int64_t> ethernetCoreCoord0Vec = {
+            element->ethernet_core_coord0().y(),
+            element->ethernet_core_coord0().x()};
+
+        std::vector<int64_t> ethernetCoreCoord1Vec = {
+            element->ethernet_core_coord1().y(),
+            element->ethernet_core_coord1().x()};
+
+        auto chipChannelAttr = mlir::tt::ttcore::ChipChannelAttr::get(
+            context, element->device_id0(), ethernetCoreCoord0Vec,
+            element->device_id1(), ethernetCoreCoord1Vec);
+        chipChannelList.push_back(chipChannelAttr);
+    }
+
+    // Create and return the system descriptor attribute
+    return mlir::tt::ttcore::SystemDescAttr::get(
+        context, cpuDescList, chipDescList, chipIndicesList, 
+        chipCapabilitiesList, chipCoordinateList, chipChannelList);
+}
+
 class MLIRGenerator
 {
    public:
@@ -187,7 +370,7 @@ class MLIRGenerator
 
         graphModule_->setAttr(
             mlir::tt::ttcore::SystemDescAttr::name,
-            mlir::tt::ttcore::SystemDescAttr::getDefault(builder_.getContext(), get_device_arch()));
+            get_system_desc_attr());
         builder_.setInsertionPointToStart(&graphModule_.getBodyRegion().front());
 
         // Collect all the supported TTIR operations
@@ -658,18 +841,13 @@ class MLIRGenerator
         builder_.create<mlir::func::ReturnOp>(builder_.getUnknownLoc(), mlir::ValueRange(returnValues));
     }
 
-    /// Get device Architecture from TTSystem
-    mlir::tt::ttcore::Arch get_device_arch()
+    /// Get SystemDescAttr from TTSystem
+    mlir::tt::ttcore::SystemDescAttr get_system_desc_attr()
     {
         TTSystem &system = TTSystem::get_system();
         TT_ASSERT(!system.devices.empty() && system.devices[0], "No available device found");
-        ARCH tt_arch = system.devices[0]->arch;
-        switch (tt_arch)
-        {
-            case ARCH::WORMHOLE_B0: return mlir::tt::ttcore::Arch::WormholeB0;
-            case ARCH::BLACKHOLE: return mlir::tt::ttcore::Arch::Blackhole;
-            default: TT_THROW("Unsupported architecture: {}", to_string_arch(tt_arch)); unreachable();
-        }
+        
+        return parse_runtime_system_desc_to_mlir_attr(system.system_desc, builder_.getContext());
     }
 
     /// Get the MLIR data type for a TTForge node.
