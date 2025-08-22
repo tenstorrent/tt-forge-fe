@@ -668,7 +668,7 @@ void Op::decompose_initial(
         case OpType::RepeatInterleave: return;
         case OpType::Reshape: return reshape::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Resize2d: return resize_2d::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Select: return select::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Select: return;
         case OpType::Sigmoid: return;
         case OpType::Sine: return;
         case OpType::Softmax: return;
@@ -682,7 +682,7 @@ void Op::decompose_initial(
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
-        case OpType::Where: return where::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Where: return;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
@@ -726,7 +726,7 @@ void Op::decompose_post_optimize(
         case OpType::GreaterEqual: return;
         case OpType::Heaviside: return;
         case OpType::Index: return;
-        case OpType::IndexCopy: return index_copy::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::IndexCopy: return;
         case OpType::Layernorm: return;
         case OpType::LayernormBw: return;
         case OpType::LeakyRelu: return;
@@ -760,7 +760,7 @@ void Op::decompose_post_optimize(
         case OpType::RepeatInterleave: return;
         case OpType::Reshape: return;
         case OpType::Resize2d: return;
-        case OpType::Select: return select::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Select: return;
         case OpType::Sigmoid: return;
         case OpType::Sine: return;
         case OpType::Softmax: return;
@@ -774,7 +774,7 @@ void Op::decompose_post_optimize(
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
-        case OpType::Where: return where::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Where: return;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
@@ -819,7 +819,7 @@ void Op::decompose_post_autograd(
         case OpType::GreaterEqual: return;
         case OpType::Heaviside: return heaviside::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Index: return;
-        case OpType::IndexCopy: return index_copy::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::IndexCopy: return;
         case OpType::Layernorm: return layernorm::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::LayernormBw: return layernorm_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::LeakyRelu: return;
@@ -853,7 +853,7 @@ void Op::decompose_post_autograd(
         case OpType::RepeatInterleave: return;
         case OpType::Reshape: return reshape::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Resize2d: return;
-        case OpType::Select: return select::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Select: return;
         case OpType::Sigmoid: return;
         case OpType::Sine: return;
         case OpType::Softmax: return;
@@ -867,7 +867,7 @@ void Op::decompose_post_autograd(
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
-        case OpType::Where: return where::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Where: return;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
@@ -910,7 +910,7 @@ long Op::initial_flops_estimate(
         case OpType::GreaterEqual: return 0;
         case OpType::Heaviside: return 0;
         case OpType::Index: return 0;
-        case OpType::IndexCopy: return index_copy::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::IndexCopy: return 0;
         case OpType::Layernorm: return 0;
         case OpType::LayernormBw: return 0;
         case OpType::LeakyRelu: return 0;
@@ -944,7 +944,7 @@ long Op::initial_flops_estimate(
         case OpType::RepeatInterleave: return 0;
         case OpType::Reshape: return 0;
         case OpType::Resize2d: return 0;
-        case OpType::Select: return select::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Select: return 0;
         case OpType::Sigmoid: return 0;
         case OpType::Sine: return 0;
         case OpType::Softmax: return 0;
@@ -958,7 +958,7 @@ long Op::initial_flops_estimate(
         case OpType::Unsqueeze: return 0;
         case OpType::UpdateCache: return 0;
         case OpType::Upsample2d: return 0;
-        case OpType::Where: return where::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Where: return 0;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
