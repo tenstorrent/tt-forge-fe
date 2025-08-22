@@ -156,7 +156,7 @@ class VerifyUtils:
         random_seed: Optional[int] = None,
         warm_reset: bool = False,
         verify_config: Optional[VerifyConfig] = VerifyConfig(),
-        skip_forge_verification: bool = TestSweepsFeatures.params.skip_forge_verification,
+        skip_forge_verification: Optional[bool] = None,
     ):
         """Perform Forge verification on the model
 
@@ -177,6 +177,9 @@ class VerifyUtils:
             verify_config: Verification configuration
             skip_forge_verification: Skip verification with Forge module
         """
+
+        if skip_forge_verification is None:
+            skip_forge_verification: bool = TestSweepsFeatures.params.skip_forge_verification
 
         # Conclude if we should convert to forge data format
         if convert_to_forge is None and isinstance(model, ForgeModule):
