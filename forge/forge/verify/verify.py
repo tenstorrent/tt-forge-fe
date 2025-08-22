@@ -36,6 +36,8 @@ from forge.verify.compare import compare_tensor_to_golden
 from forge.verify.utils import convert_to_supported_pytorch_dtype
 from forge.forge_property_utils import (
     ExecutionStage,
+    ExecutionRunMode,
+    ExecutionPass,
     ModelGroup,
     get_model_group,
     record_execution,
