@@ -9,6 +9,7 @@
 #include "autograd/autograd.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
+#include "graph_lib/utils.hpp"
 #include "op.hpp"
 #include "op_interface.hpp"
 #include "passes/decomposing_context.hpp"
@@ -181,7 +182,9 @@ void decompose_constant_mode(DecomposingContext &dc, const NodeContext &input, c
         left_shape[params.width_dim] = params.left;
 
         at::Tensor left_constant = at::full(
-            std::vector<int64_t>(left_shape.begin(), left_shape.end()), value, at::TensorOptions().dtype(at::kFloat));
+            std::vector<int64_t>(left_shape.begin(), left_shape.end()),
+            value,
+            at::TensorOptions().dtype(graphlib::data_format_to_scalar_type(input.output_df)));
 
         left_pad = std::make_unique<NodeContext>(DecomposingContext::create_constant_tensor(dc, left_constant));
     }
@@ -192,7 +195,9 @@ void decompose_constant_mode(DecomposingContext &dc, const NodeContext &input, c
         right_shape[params.width_dim] = params.right;
 
         at::Tensor right_constant = at::full(
-            std::vector<int64_t>(right_shape.begin(), right_shape.end()), value, at::TensorOptions().dtype(at::kFloat));
+            std::vector<int64_t>(right_shape.begin(), right_shape.end()),
+            value,
+            graphlib::data_format_to_scalar_type(input.output_df));
 
         right_pad = std::make_unique<NodeContext>(DecomposingContext::create_constant_tensor(dc, right_constant));
     }
@@ -205,7 +210,9 @@ void decompose_constant_mode(DecomposingContext &dc, const NodeContext &input, c
         top_shape[params.height_dim] = params.top;
 
         at::Tensor top_constant = at::full(
-            std::vector<int64_t>(top_shape.begin(), top_shape.end()), value, at::TensorOptions().dtype(at::kFloat));
+            std::vector<int64_t>(top_shape.begin(), top_shape.end()),
+            value,
+            graphlib::data_format_to_scalar_type(input.output_df));
 
         top_pad = std::make_unique<NodeContext>(DecomposingContext::create_constant_tensor(dc, top_constant));
     }
@@ -218,7 +225,7 @@ void decompose_constant_mode(DecomposingContext &dc, const NodeContext &input, c
         at::Tensor bottom_constant = at::full(
             std::vector<int64_t>(bottom_shape.begin(), bottom_shape.end()),
             value,
-            at::TensorOptions().dtype(at::kFloat));
+            graphlib::data_format_to_scalar_type(input.output_df));
 
         bot_pad = std::make_unique<NodeContext>(DecomposingContext::create_constant_tensor(dc, bottom_constant));
     }
