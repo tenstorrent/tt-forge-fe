@@ -1934,7 +1934,7 @@ def compile_tvm_to_python(
         if "framework_dtype" in node["attrs"].keys() and node["attrs"]["framework_dtype"] != "N/A":
             return node["attrs"]["framework_dtype"]
         else:
-            logger.debug(
+            logger.trace(
                 f"Node '{node['forge_name']}' does not have a framework dtype specified. Using TVM generated dtype."
             )
             return node["attrs"]["dtype"][0][0]

@@ -603,7 +603,7 @@ def extract_and_export_unique_ops_config(
     unique_operations = UniqueOperations.create_unique_operations(
         ops, named_parameters, node_name_to_node_type, compiler_cfg=compiler_cfg
     )
-    logger.info(f"UniqueOperations:\n{unique_operations}")
+    logger.trace(f"UniqueOperations:\n{unique_operations}")
 
     unique_operation_details = unique_operations.create_list_of_dict()
 
