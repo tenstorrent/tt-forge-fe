@@ -40,8 +40,6 @@ def test_bart_classifier_onnx(variant, forge_tmp_path):
         source=Source.HUGGINGFACE,
     )
 
-    pytest.xfail(reason="Hang at generate initial graph stage.")
-
     model = download_model(BartForSequenceClassification.from_pretrained, variant, torchscript=True)
     model.eval()
     tokenizer = download_model(BartTokenizer.from_pretrained, variant, pad_to_max_length=True)
