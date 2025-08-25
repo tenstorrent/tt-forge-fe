@@ -110,7 +110,7 @@ bool match_unsqueeze(graphlib::OpType const &a, graphlib::OpType const &b)
     if (not fns_match)
         return false;
 
-    return std::get<int>(a.legacy_attrs_[0]) == std::get<int>(b.legacy_attrs_[0]);
+    return a.attr_as<int>("dim") == b.attr_as<int>("dim");
 }
 
 bool match_squeeze(graphlib::OpType const &a, graphlib::OpType const &b)
@@ -120,7 +120,7 @@ bool match_squeeze(graphlib::OpType const &a, graphlib::OpType const &b)
     if (not fns_match)
         return false;
 
-    return std::get<int>(a.legacy_attrs_[0]) == std::get<int>(b.legacy_attrs_[0]);
+    return a.attr_as<int>("dim") == b.attr_as<int>("dim");
 }
 
 bool match_reshape(graphlib::OpType const &a, graphlib::OpType const &) { return a.type() == ops::OpType::Reshape; }
@@ -250,7 +250,7 @@ bool commute_through_select(
     graphlib::OpType *golden_transform,
     bool commute_up)
 {
-    int select_dim = std::get<int>(op->op_legacy_attrs()[0]);
+    int select_dim = op->op_attr_as<int>("dim");
 
     // Convert to positive indexing
     if (select_dim < 0)
@@ -392,10 +392,6 @@ bool commute_through_select(
     TT_ASSERT(golden_transform, "golden_transform must be set");
 
     // Perform the actual commute
-    auto attr = op->op_legacy_attrs();
-
-    std::get<int>(attr[0]) = new_dim - commute_shape->size();
-
     auto concat_shape = *commute_shape;
     int concat_output_len = op->shape().as_vector()[select_dim];
     op->set_shape(concat_shape);
@@ -524,13 +520,6 @@ bool commute_through_concat(
     TT_ASSERT(golden_transform, "golden_transform must be set");
 
     // Perform the actual commute
-    auto attr = op->op_legacy_attrs();
-
-    if (new_dim >= 0)
-        std::get<int>(attr[0]) = new_dim - commute_shape->size();
-    else
-        std::get<int>(attr[0]) = new_dim;
-
     auto concat_shape = *commute_shape;
     int concat_output_len = op->shape()[concat_dim];
     op->set_shape(concat_shape);
@@ -547,9 +536,7 @@ bool commute_through_concat(
         concat_golden_transform.attr_as<std::vector<int>>("shape")[idx] = concat_output_len;
     }
     op->add_golden_transform(concat_golden_transform);
-    graphlib::OpType::Attrs named_attrs;
-    named_attrs["dim"] = new_dim;
-    op->change_op_type(graphlib::OpType("concatenate", {}, named_attrs));
+    op->change_op_type(ops::Op(ops::OpType::Concatenate).as_string(), {{"dim", new_dim}});
 
     *commute_shape = concat_shape;
     *golden_transform = concat_golden_transform;
@@ -750,9 +737,6 @@ bool commute_through_reduce(
 
     if (producer->new_op_type() == op->new_op_type())
     {
-        auto op_attr = op->op_legacy_attrs();
-        auto producer_attr = producer->op_legacy_attrs();
-
         int op_reduce_dim;
         bool op_keep_dim;
 
@@ -795,29 +779,17 @@ bool commute_through_reduce(
         (*clone_shape)[op_reduce_dim] = 1;
         (*clone_shape)[producer_reduce_dim] = 1;
 
-        producer->change_op_type("nop");
+        producer->change_op_type(ops::Op(ops::OpType::Nop).as_string());
     }
     else
     {
-        auto attr = op->op_legacy_attrs();
-        int reduce_dim = std::get<int>(attr[0]);
-        bool keep_dim;
-        if (op->new_op_type() == ops::OpType::ReduceMax)
-        {
-            keep_dim = std::get<bool>(attr[2]);
-        }
-        else
-        {
-            keep_dim = std::get<bool>(attr[1]);
-        }
-
+        int reduce_dim = op->op_attr_as<std::vector<int>>("dim_arg")[0];
+        bool keep_dim = op->op_attr_as<bool>("keep_dim");
         int orig_op_dims = op->shape().size();
         if (reduce_dim < 0)
-        {
             reduce_dim += orig_op_dims;
-        }
+
         int new_dim = std::get<1>(can_commute_through_dim(initial_op, graph, reduce_dim));
-        std::get<int>(attr[0]) = new_dim - commute_shape->size();
 
         auto reduce_shape = *commute_shape;
         reduce_shape[new_dim] = 1;
@@ -986,16 +958,6 @@ void update_conv_attr(graphlib::OpNode *conv, const std::vector<int> &pad_attrs)
 {
     TT_ASSERT(conv->new_op_type() == ops::OpType::Conv2d, "update_conv_attr called for a non-conv operation");
 
-    std::vector<graphlib::OpType::Attr> conv_attrs = conv->op_legacy_attrs();
-
-    int pad_idx_offset = 4;
-    for (uint32_t i = 0; i < 4; i++)
-    {
-        if (i < pad_attrs.size())
-        {
-            conv_attrs[pad_idx_offset + i] = pad_attrs[i];
-        }
-    }
     conv->set_op_attr("padding", pad_attrs);
     log_trace(LogGraphCompiler, "Conv2d operation updated with new padding values: {}", pad_attrs);
 }
@@ -1261,8 +1223,6 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
 
                 // Set new reshape shape
                 auto new_reshape_shape = op->shape();
-                auto attr = op->op_legacy_attrs();
-                std::get<int>(attr[bcast_dim]) = 1;
                 new_reshape_shape[bcast_dim] = 1;
                 op->set_shape(new_reshape_shape);
                 update_reshape_attr(op, new_reshape_shape);
@@ -1291,8 +1251,6 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
 
                 // Set new reshape shape
                 auto new_reshape_shape = op->shape();
-                auto attr = op->op_legacy_attrs();
-                std::get<int>(attr[op->shape().size() - 1]) = 1;
                 new_reshape_shape[op->shape().size() - 1] = 1;
                 op->set_shape(new_reshape_shape);
                 update_reshape_attr(op, new_reshape_shape);
@@ -1317,8 +1275,6 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
 
                 // Set new reshape shape
                 auto new_reshape_shape = op->shape();
-                auto attr = op->op_legacy_attrs();
-                std::get<int>(attr[op->shape().size() - 2]) = 1;
                 new_reshape_shape[op->shape().size() - 2] = 1;
                 op->set_shape(new_reshape_shape);
                 update_reshape_attr(op, new_reshape_shape);
@@ -1344,8 +1300,6 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
 
                 // Set new reshape shape
                 auto new_reshape_shape = op->shape();
-                auto attr = op->op_legacy_attrs();
-                std::get<int>(attr[op->shape().size() + bcast_dim]) = 1;
                 new_reshape_shape[op->shape().size() + bcast_dim] = 1;
                 op->set_shape(new_reshape_shape);
                 update_reshape_attr(op, new_reshape_shape);

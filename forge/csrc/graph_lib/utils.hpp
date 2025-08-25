@@ -289,7 +289,6 @@ enum class RuntimeTensorTransformType
     ReinterpretShape,
     EmbeddingIndex,
     ConstantInput,
-    Unpad,
     Concatenate,
 };
 
@@ -300,7 +299,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
         {tt::graphlib::RuntimeTensorTransformType::ReinterpretShape, "ReinterpretShape"},
         {tt::graphlib::RuntimeTensorTransformType::EmbeddingIndex, "EmbeddingIndex"},
         {tt::graphlib::RuntimeTensorTransformType::ConstantInput, "ConstantInput"},
-        {tt::graphlib::RuntimeTensorTransformType::Unpad, "Unpad"},
         {tt::graphlib::RuntimeTensorTransformType::Concatenate, "Concatenate"},
     });
 
@@ -361,12 +359,6 @@ class RuntimeTensorTransform
 
         this->original_shape = original_shape;
         this->reinterpreted_shape = reinterpreted_shape;
-    }
-    RuntimeTensorTransform(Shape unpadded_shape)
-    {
-        this->type = RuntimeTensorTransformType::Unpad;
-
-        this->unpadded_shape = unpadded_shape;
     }
 
     static RuntimeTensorTransform ConcatenateOnHost(int group, int index, int dim)

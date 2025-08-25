@@ -78,12 +78,12 @@ void decompose_initial(
     {
         if (index.shape[0] > 1)
         {
-            auto result = dc.op(graphlib::OpType("fill_cache", {}, {{"batch_offset", 0}}), {operandA, value});
+            auto result = dc.op(graphlib::OpType("fill_cache", {{"batch_offset", 0}}), {operandA, value});
             dc.fuse(result);
         }
         else
         {
-            auto result = dc.op(graphlib::OpType("update_cache", {}, {{"batch_offset", 0}}), {operandA, value, index});
+            auto result = dc.op(graphlib::OpType("update_cache", {{"batch_offset", 0}}), {operandA, value, index});
             dc.fuse(result);
         }
     }

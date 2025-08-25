@@ -92,12 +92,12 @@ static bool attempt_replace_downward_pattern(
 
         // Add golden transform
         std::vector<uint32_t> shape_vec = output_clone_shape.as_vector();
-        std::vector<graphlib::OpType::Attr> golden_transform_attrs;
+        std::vector<int> golden_transform_attrs;
         for (uint32_t d : shape_vec)
         {
             golden_transform_attrs.push_back((int)d);
         }
-        op->add_golden_transform(graphlib::OpType("reshape", golden_transform_attrs));
+        op->add_golden_transform(graphlib::OpType("reshape", {{"shape", golden_transform_attrs}}));
 
         for (graphlib::Edge outgoing_edge : graph->user_data_edges(op))
         {

@@ -82,9 +82,8 @@ void decompose_post_autograd(
 
     // Decompose: result = (grad - torch.sum(grad * output, dim=dim, keepdim=True)) * output
     auto grad_out = dc.op(graphlib::OpType("multiply"), {grad, output});
-    auto gout_sum = dc.op(
-        graphlib::OpType("reduce_sum", {dim, true}, {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}),
-        {grad_out});
+    auto gout_sum =
+        dc.op(graphlib::OpType("reduce_sum", {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {grad_out});
     auto gout_sub = dc.op(graphlib::OpType("subtract"), {grad, gout_sum});
     auto result = dc.op(graphlib::OpType("multiply"), {gout_sub, output});
     dc.fuse(result);

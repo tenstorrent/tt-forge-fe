@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Tuple, Union
+from typing import Union
 
 from ..tensor import Tensor
 from ..parameter import Parameter
@@ -19,9 +19,7 @@ deprecated_op_id = 0
 
 
 class ForgeOp:
-    def __init__(
-        self, op_type: str, name: str, *operands: Union[Tensor, Parameter], attrs: Tuple[int, ...] = (), **named_attrs
-    ):
+    def __init__(self, op_type: str, name: str, *operands: Union[Tensor, Parameter], **named_attrs):
         """
         Create an op with given parameters.
         """
@@ -43,9 +41,8 @@ class ForgeOp:
             for operand in operands
         )
         self.operands = operands
-        self.attrs = attrs
         self.named_attrs = named_attrs
-        self.cpp_op_type = OpType(self.op_type, self.attrs, self.named_attrs)
+        self.cpp_op_type = OpType(self.op_type, self.named_attrs)
 
     def get_tensor(self, out_df=None) -> Tensor:
         """

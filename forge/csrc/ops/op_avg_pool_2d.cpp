@@ -264,15 +264,14 @@ void decompose_initial(
             result = dc.op(
                 graphlib::OpType(
                     "reshape",
-                    {},
                     {{"shape",
                       std::vector<int>{static_cast<int>(w), 1, static_cast<int>(y * x), static_cast<int>(cin)}}}),
                 {activations});
             result = dc.op(
-                graphlib::OpType("reduce_avg", {}, {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}), {result});
+                graphlib::OpType("reduce_avg", {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}), {result});
             result = dc.op(
                 graphlib::OpType(
-                    "reshape", {}, {{"shape", std::vector<int>{static_cast<int>(w), 1, 1, static_cast<int>(cin)}}}),
+                    "reshape", {{"shape", std::vector<int>{static_cast<int>(w), 1, 1, static_cast<int>(cin)}}}),
                 {result});
         }
         else
@@ -280,17 +279,16 @@ void decompose_initial(
             result = dc.op(
                 graphlib::OpType(
                     "reshape",
-                    {},
                     {{"shape",
                       std::vector<int>{static_cast<int>(w), 1, static_cast<int>(cin), static_cast<int>(y * x)}}}),
                 {activations});
-            result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", 2}, {"dim1", 3}}), {result});
+            result = dc.op(graphlib::OpType("transpose", {{"dim0", 2}, {"dim1", 3}}), {result});
             result = dc.op(
-                graphlib::OpType("reduce_avg", {}, {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}), {result});
-            result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", 2}, {"dim1", 3}}), {result});
+                graphlib::OpType("reduce_avg", {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}), {result});
+            result = dc.op(graphlib::OpType("transpose", {{"dim0", 2}, {"dim1", 3}}), {result});
             result = dc.op(
                 graphlib::OpType(
-                    "reshape", {}, {{"shape", std::vector<int>{static_cast<int>(w), static_cast<int>(cin), 1, 1}}}),
+                    "reshape", {{"shape", std::vector<int>{static_cast<int>(w), static_cast<int>(cin), 1, 1}}}),
                 {result});
         }
         dc.fuse(result);
@@ -306,7 +304,6 @@ void decompose_initial(
     NodeContext result = dc.op(
         graphlib::OpType(
             "conv2d",
-            {},
             {{"stride", std::vector<int>{stride_height, stride_width}},
              {"dilation", std::vector<int>{dilation_height, dilation_width}},
              {"groups", static_cast<int>(cin)},
@@ -331,7 +328,6 @@ void decompose_initial(
             result = dc.op(
                 graphlib::OpType(
                     "reshape",
-                    {},
                     {{"shape",
                       std::vector<int>{
                           static_cast<int>(w), 1, static_cast<int>(y_out * x_out), static_cast<int>(cin)}}}),
@@ -345,12 +341,11 @@ void decompose_initial(
             result = dc.op(
                 graphlib::OpType(
                     "reshape",
-                    {},
                     {{"shape",
                       std::vector<int>{
                           static_cast<int>(w), 1, static_cast<int>(cin), static_cast<int>(y_out * x_out)}}}),
                 {result});
-            result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", 2}, {"dim1", 3}}), {result});
+            result = dc.op(graphlib::OpType("transpose", {{"dim0", 2}, {"dim1", 3}}), {result});
         }
 
         // Create padding correction matrix
@@ -410,14 +405,13 @@ void decompose_initial(
                                            .coalesce();
 
         NodeContext correction_tensor = dc.tensor(correction_matrix.to_dense());
-        result = dc.op(graphlib::OpType("matmul", {}, {}), {correction_tensor, result});
+        result = dc.op(graphlib::OpType("matmul"), {correction_tensor, result});
 
         if (channel_last)
         {
             result = dc.op(
                 graphlib::OpType(
                     "reshape",
-                    {},
                     {{"shape",
                       std::vector<int>{
                           static_cast<int>(w),
@@ -428,11 +422,10 @@ void decompose_initial(
         }
         else
         {
-            result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", 2}, {"dim1", 3}}), {result});
+            result = dc.op(graphlib::OpType("transpose", {{"dim0", 2}, {"dim1", 3}}), {result});
             result = dc.op(
                 graphlib::OpType(
                     "reshape",
-                    {},
                     {{"shape",
                       std::vector<int>{
                           static_cast<int>(w),

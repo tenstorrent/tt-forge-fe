@@ -371,25 +371,21 @@ struct OpType
     using Attrs = ForgeOpAttrs;
 
     std::string op_;
-    std::vector<Attr> legacy_attrs_;  // legacy path
-    Attrs named_attrs_;               // new path
+    Attrs named_attrs_;  // new path
 
    private:
     ops::Op new_op_;
 
    public:
-    OpType(std::string const &op, std::vector<Attr> const &attr = {}, Attrs named_attrs = {}) :
-        op_(op), legacy_attrs_(attr), named_attrs_(std::move(named_attrs)), new_op_(*this)
+    OpType(std::string const &op, Attrs named_attrs = {}) :
+        op_(op), named_attrs_(std::move(named_attrs)), new_op_(*this)
     {
     }
 
     bool operator==(const ops::OpType other_type) const { return type() == other_type; }
     bool operator!=(const ops::OpType other_type) const { return !(operator==(other_type)); }
 
-    bool operator==(const OpType &other) const
-    {
-        return *this == other.type() and legacy_attrs_ == other.legacy_attrs_ and named_attrs_ == other.named_attrs_;
-    }
+    bool operator==(const OpType &other) const { return *this == other.type() and named_attrs_ == other.named_attrs_; }
     bool operator!=(const OpType &other) const { return !(*this == other); }
 
     ops::OpType type() const { return new_op_.type(); }
@@ -436,51 +432,6 @@ struct OpType
     std::string as_string() const
     {
         std::string ret = op_;
-        if (legacy_attrs_.size() > 0)
-        {
-            ret += "(";
-            for (unsigned int i = 0; i < legacy_attrs_.size(); i++)
-            {
-                if (std::holds_alternative<bool>(legacy_attrs_[i]))
-                {
-                    ret += std::to_string(std::get<bool>(legacy_attrs_[i])) + ",";
-                }
-                else if (std::holds_alternative<int>(legacy_attrs_[i]))
-                {
-                    ret += std::to_string(std::get<int>(legacy_attrs_[i])) + ",";
-                }
-                else if (std::holds_alternative<float>(legacy_attrs_[i]))
-                {
-                    ret += std::to_string(std::get<float>(legacy_attrs_[i])) + ",";
-                }
-                else if (std::holds_alternative<std::string>(legacy_attrs_[i]))
-                {
-                    ret += std::get<std::string>(legacy_attrs_[i]) + ",";
-                }
-                else if (std::holds_alternative<std::vector<int>>(legacy_attrs_[i]))
-                {
-                    auto attr_val = std::get<std::vector<int>>(legacy_attrs_[i]);
-                    size_t num_items = attr_val.size();
-
-                    ret += "[";
-                    for (size_t j = 0; j < num_items; ++j)
-                    {
-                        ret += std::to_string(attr_val[j]);
-                        if (j < num_items - 1)
-                            ret += ", ";
-                    }
-                    ret += "], ";
-                }
-                else
-                {
-                    TT_ASSERT(false, "Unknown alternative in Attr");
-                }
-            }
-            // ret += "(" + std::to_string(attr[0]);
-            // for (std::size_t i = 1; i < attr.size(); i++) ret += "," + std::to_string(attr[i]);
-            ret += ")";
-        }
-
         if (named_attrs_.size() > 0)
         {
             using tt::operator<<;
@@ -568,19 +519,14 @@ class OpNode : public TaggedNode
 
     ops::Op const &new_op() const { return op_type_.new_op(); }
     void change_op_type(OpType const &new_op_type) { op_type_ = new_op_type; }
-    void change_op_type(const std::string &new_op_type, std::vector<OpType::Attr> attrs = {})
+    void change_op_type(const std::string &new_op_type, OpType::Attrs named_attrs = {})
     {
-        op_type_ = OpType(new_op_type, attrs);
-    }
-    void change_op_type(const std::string &new_op_type, std::vector<OpType::Attr> attrs, OpType::Attrs named_attrs)
-    {
-        op_type_ = OpType(new_op_type, attrs, named_attrs);
+        op_type_ = OpType(new_op_type, named_attrs);
     }
     ops::OpType new_op_type() const { return new_op().type(); }
     OpType const &op_type() const { return op_type_; }
     IRLevel get_ir_level() const { return IRLevel::IR_TT_FORGE; }
     const std::string &op_name() const { return op_type_.name(); }
-    const std::vector<OpType::Attr> &op_legacy_attrs() const { return op_type_.legacy_attrs_; }
     const OpType::Attrs &op_named_attrs() { return op_type_.named_attrs_; }
     template <typename T>
     const T &op_attr_as(std::string const &name) const
@@ -657,7 +603,7 @@ class EdgeAttributes
     void set_broadcast_dim(int dim, int size_or_factor, bool explicit_bcast = false)
     {
         tms.push_back(
-            OpType("broadcast", {}, {{"dim", dim}, {"size", size_or_factor}, {"explicit_bcast", explicit_bcast}}));
+            OpType("broadcast", {{"dim", dim}, {"size", size_or_factor}, {"explicit_bcast", explicit_bcast}}));
     }
     void remove_broadcast_dim(int dim);
     inline UBlockOrder get_ublock_order() const { return ublock_order; }
@@ -665,10 +611,6 @@ class EdgeAttributes
     void append_tm(OpType type) { tms.push_back(type); }
     void set_tms(std::vector<OpType> new_tms) { tms = new_tms; }
     void append_tms(std::vector<OpType> new_tms) { tms.insert(tms.end(), new_tms.begin(), new_tms.end()); }
-    void prepend_tm(std::string op_type, std::vector<OpType::Attr> attrs)
-    {
-        tms.insert(tms.begin(), OpType(op_type, attrs));
-    }
     void prepend_tm(OpType type) { tms.insert(tms.begin(), type); }
 
     const std::vector<OpType> &get_tms() const { return tms; }

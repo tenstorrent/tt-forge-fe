@@ -81,7 +81,7 @@ tt::graphlib::NodeContext backward(
     if (!op.attr_as<bool>("keep_dim"))
     {
         // If keep_dim is false, we need to unsqueeze the output to match the input shape.
-        unsqueeze = ac.autograd->create_op(ac, graphlib::OpType("unsqueeze", {}, {{"dim", dim}}), {output});
+        unsqueeze = ac.autograd->create_op(ac, graphlib::OpType("unsqueeze", {{"dim", dim}}), {output});
     }
 
     // mask = subtract(in0, output) - has 0.0 in max positions and < 0.0 everywhere else
@@ -99,7 +99,7 @@ tt::graphlib::NodeContext backward(
 
     // redc = reduce_max(mask) - argmax
     NodeContext redc = ac.autograd->create_op(
-        ac, graphlib::OpType("reduce_max", {}, {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {mask});
+        ac, graphlib::OpType("reduce_max", {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {mask});
 
     // mask = subtract(mask, redc) - Orig range - argmax, 0.0 in FIRST max position
     mask = ac.autograd->create_op(ac, graphlib::OpType("subtract"), {mask, redc});
@@ -115,7 +115,7 @@ tt::graphlib::NodeContext backward(
     {
         // If keep_dim is false, we need to unsqueeze the gradient to match the input shape.
         // This is necessary because the mask has been reduced to a single dimension.
-        unsqueeze_gradient = ac.autograd->create_op(ac, graphlib::OpType("unsqueeze", {}, {{"dim", dim}}), {gradient});
+        unsqueeze_gradient = ac.autograd->create_op(ac, graphlib::OpType("unsqueeze", {{"dim", dim}}), {gradient});
     }
 
     return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {unsqueeze_gradient, mask});
@@ -147,7 +147,7 @@ void decompose_initial(
         }
 
         // In this case, we can replace `reduce_sum` with a `squeeze` operation.
-        NodeContext result = dc.op(graphlib::OpType("squeeze", {}, {{"dim", dim}}), {inputs[0]});
+        NodeContext result = dc.op(graphlib::OpType("squeeze", {{"dim", dim}}), {inputs[0]});
         dc.fuse(result);
     }
 }

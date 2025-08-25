@@ -68,13 +68,12 @@ tt::graphlib::NodeContext backward(
     if (!op.attr_as<bool>("keep_dim"))
     {
         // If keep_dim is false, we need to unsqueeze the gradient to match the input shape.
-        unsqueeze = ac.autograd->create_op(ac, graphlib::OpType("unsqueeze", {}, {{"dim", dim}}), {gradient});
+        unsqueeze = ac.autograd->create_op(ac, graphlib::OpType("unsqueeze", {{"dim", dim}}), {gradient});
     }
 
     std::vector<int> repeats(unsqueeze.shape.size(), 1);
     repeats[dim] = size;
-    NodeContext repeat =
-        ac.autograd->create_op(ac, graphlib::OpType("repeat", {}, {{"repeats", repeats}}), {unsqueeze});
+    NodeContext repeat = ac.autograd->create_op(ac, graphlib::OpType("repeat", {{"repeats", repeats}}), {unsqueeze});
 
     NodeContext consts = ac.autograd->create_constant(ac, 1.0 / size);
 
@@ -107,7 +106,7 @@ void decompose_initial(
         }
 
         // In this case, we can replace `reduce_sum` with a `squeeze` operation.
-        NodeContext result = dc.op(graphlib::OpType("squeeze", {}, {{"dim", dim}}), {inputs[0]});
+        NodeContext result = dc.op(graphlib::OpType("squeeze", {{"dim", dim}}), {inputs[0]});
         dc.fuse(result);
     }
 }

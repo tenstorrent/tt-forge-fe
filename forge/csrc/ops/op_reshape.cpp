@@ -55,7 +55,7 @@ tt::graphlib::NodeContext backward(
     TT_ASSERT(operand == 0, "Invalid operand index.");
 
     return ac.autograd->create_op(
-        ac, graphlib::OpType("reshape", {}, {{"shape", inputs[0].shape.as_vector<int>()}}), {gradient});
+        ac, graphlib::OpType("reshape", {{"shape", inputs[0].shape.as_vector<int>()}}), {gradient});
 }
 
 /**
@@ -83,8 +83,8 @@ void decompose_reshape(const Op &op, DecomposingContext &dc, const std::vector<N
         return;
 
     NodeContext result = inputs[0];  // clang-format off
-    for (; rank < 0; ++rank) result = dc.op(graphlib::OpType("squeeze",   {0}, {{"dim", 0}}), {std::move(result)});
-    for (; rank > 0; --rank) result = dc.op(graphlib::OpType("unsqueeze", {0}, {{"dim", 0}}), {std::move(result)});  // clang-format on
+    for (; rank < 0; ++rank) result = dc.op(graphlib::OpType("squeeze",   {{"dim", 0}}), {std::move(result)});
+    for (; rank > 0; --rank) result = dc.op(graphlib::OpType("unsqueeze", {{"dim", 0}}), {std::move(result)});  // clang-format on
 
     dc.fuse(result);
 }
