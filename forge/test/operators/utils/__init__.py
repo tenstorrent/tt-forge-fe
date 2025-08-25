@@ -11,6 +11,7 @@ from .utils import TensorUtils
 from .utils import InputSourceFlag, InputSourceFlags
 from .utils import CompilerUtils
 from .utils import DeviceUtils
+from .utils import ValueCheckerUtils
 from .utils import VerifyUtils
 from .utils import LoggerUtils
 from .utils import RateLimiter
@@ -37,6 +38,8 @@ from .failing_reasons import FailingReasonsFinder
 from .failing_reasons_validation import FailingReasonsValidation
 from .pytest import PyTestUtils
 from .pytest import PytestParamsUtils
+from .compat import TestDevice
+
 
 __all__ = [
     "OperatorParameterTypes",
@@ -49,6 +52,7 @@ __all__ = [
     "InputSourceFlags",
     "CompilerUtils",
     "DeviceUtils",
+    "ValueCheckerUtils",
     "VerifyUtils",
     "LoggerUtils",
     "RateLimiter",
@@ -75,4 +79,5 @@ __all__ = [
     "FailingReasonsValidation",
     "PyTestUtils",
     "PytestParamsUtils",
+    "TestDevice",
 ]

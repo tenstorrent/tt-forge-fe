@@ -5,28 +5,26 @@
 import math
 import torch
 import random
-import forge
 
 from typing import List, Dict
 from loguru import logger
 
-from forge.verify.config import VerifyConfig
+from ...utils import (
+    InputSource,
+    PytorchUtils,
+    TestCollection,
+    TestCollectionCommon,
+    TestCollectionTorch,
+    TestDevice,
+    TestPlan,
+    TestVector,
+    ValueCheckerUtils,
+    ValueRanges,
+    VerifyUtils,
+)
+from ..ids import TestIdsDataLoader
 
-from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
-
-from test.operators.utils import VerifyUtils
-from test.operators.utils import InputSource
-from test.operators.utils import TestVector
-from test.operators.utils import TestPlan
-from test.operators.utils.compat import TestDevice
-from test.operators.utils import TestCollection
-from test.operators.utils import TestCollectionCommon
-from test.operators.utils import ValueRanges
-from test.operators.utils.utils import PytorchUtils
-from test.operators.pytorch.ids.loader import TestIdsDataLoader
-from test.operators.utils.test_data import TestCollectionTorch
-
-from test.operators.pytorch.eltwise_unary import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
+from ..eltwise_unary import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 
 
 class TestVerification:
@@ -71,9 +69,9 @@ class TestVerification:
         logger.trace(f"***input_shapes: {input_shapes}")
 
         # We use AllCloseValueChecker in all cases except for integer data formats:
-        verify_config = VerifyConfig(value_checker=AllCloseValueChecker(atol=1e-1, rtol=1e-2))
+        value_checker = ValueCheckerUtils.all_close(atol=1e-1, rtol=1e-2)
         if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
-            verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
+            value_checker = ValueCheckerUtils.automatic()
 
         VerifyUtils.verify(
             model=pytorch_model,
@@ -84,7 +82,7 @@ class TestVerification:
             math_fidelity=test_vector.math_fidelity,
             warm_reset=warm_reset,
             value_range=value_range,
-            verify_config=verify_config,
+            value_checker=value_checker,
         )
 
 

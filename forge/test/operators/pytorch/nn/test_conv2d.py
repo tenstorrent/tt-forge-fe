@@ -8,38 +8,30 @@
 from dataclasses import dataclass
 import math
 import random
-import pytest
 import os
 
 from typing import List, Dict
 from loguru import logger
 
 import torch
-import forge
-import forge.op
 
-from forge._C import DataFormat
-
-from forge.config import CompilerConfig
-from forge.verify.config import VerifyConfig
-from forge.verify.value_checkers import AutomaticValueChecker
-
-from test.operators.utils import (
-    TensorUtils,
-    VerifyUtils,
-    ValueRanges,
-    InputSource,
-    TestVector,
-    TestPlan,
+from ...utils import (
     FailingReasons,
+    InputSource,
+    PytorchUtils,
+    TensorUtils,
     TestCollection,
     TestCollectionCommon,
+    TestCollectionTorch,
+    TestDevice,
+    TestPlan,
     TestPlanUtils,
+    TestVector,
+    ValueCheckerUtils,
+    ValueRanges,
+    VerifyUtils,
 )
-from test.operators.utils.compat import TestDevice
-from test.operators.utils.test_data import TestCollectionTorch
-from test.operators.utils.utils import PytorchUtils
-from test.operators.pytorch.ids.loader import TestIdsDataLoader
+from ..ids import TestIdsDataLoader
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -156,28 +148,23 @@ class TestVerification:
             )
 
         dtype = kwargs.get("dtype")
-        compiler_cfg = CompilerConfig()
-
-        if dtype is torch.bfloat16:
-            pytorch_model.to(dtype)
-            compiler_cfg.default_df_override = DataFormat.Float16_b
 
         input_shapes = tuple([test_vector.input_shape for _ in range(number_of_operands)])
         logger.trace(f"***input_shapes: {input_shapes}")
 
-        verify_config = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99, rtol=1e-2, atol=1e-2))
+        value_checker = ValueCheckerUtils.automatic(pcc=0.99, rtol=1e-2, atol=1e-2)
 
         VerifyUtils.verify(
             model=pytorch_model,
             test_device=test_device,
             input_shapes=input_shapes,
             input_params=input_params,
-            compiler_cfg=compiler_cfg,
+            model_dtype=dtype if dtype is torch.bfloat16 else None,
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             pcc=test_vector.pcc,
             warm_reset=warm_reset,
-            verify_config=verify_config,
+            value_checker=value_checker,
             value_range=value_range,
         )
 
