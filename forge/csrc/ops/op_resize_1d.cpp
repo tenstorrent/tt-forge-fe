@@ -159,13 +159,13 @@ void decompose_initial(
     // The sequence of transposes below transforms:
     //   (N, C, 1, W) --> (N, 1, W, C)
     // ---------------------------------------------------------------------
-    result = dc.op(graphlib::OpType("unsqueeze", {}, {{"dim", w_dim}}), {result});
+    result = dc.op(graphlib::OpType("unsqueeze", {{"dim", w_dim}}), {result});
 
     if (!channel_last)
     {
         // Changing the Layout from NCHW to NHWC as ttir.upsample2d supports only the NHWC layout
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
+        result = dc.op(graphlib::OpType("transpose", {{"dim0", -3}, {"dim1", -2}}), {result});
+        result = dc.op(graphlib::OpType("transpose", {{"dim0", -2}, {"dim1", -1}}), {result});
     }
 
     TT_ASSERT(
@@ -185,18 +185,15 @@ void decompose_initial(
     mode = (mode == "linear") ? "bilinear" : mode;
 
     result = dc.op(
-        graphlib::OpType(
-            "upsample2d",
-            {scale_factor, mode, true},
-            {{"scale_factor", scale_factor}, {"mode", mode}, {"channel_last", true}}),
+        graphlib::OpType("upsample2d", {{"scale_factor", scale_factor}, {"mode", mode}, {"channel_last", true}}),
         {result});
 
     if (!channel_last)
     {
         // Convert layout back from NHWC-like (N, 1, New_W, C) -> NCHW-like (N, C, 1, New_W).
         // Reverse the transposes applied before the upsample2d.
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
+        result = dc.op(graphlib::OpType("transpose", {{"dim0", -2}, {"dim1", -1}}), {result});
+        result = dc.op(graphlib::OpType("transpose", {{"dim0", -3}, {"dim1", -2}}), {result});
     }
 
     // ---------------------------------------------------------------------
@@ -210,7 +207,7 @@ void decompose_initial(
     // we first inserted the singleton. That restores the tensor to the
     // original 3D shape but with the new width.
     // ---------------------------------------------------------------------
-    result = dc.op(graphlib::OpType("squeeze", {}, {{"dim", w_dim}}), {result});
+    result = dc.op(graphlib::OpType("squeeze", {{"dim", w_dim}}), {result});
 
     dc.fuse(result);
 }

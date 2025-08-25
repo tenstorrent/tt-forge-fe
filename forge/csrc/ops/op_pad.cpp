@@ -72,7 +72,7 @@ NodeContext repeat_vector(DecomposingContext &dc, const NodeContext &input, int 
 
     std::vector<graphlib::OpType::Attr> repeat_attrs(repeats.begin(), repeats.end());
 
-    graphlib::OpType repeat_op("repeat", repeat_attrs, {{"repeats", repeats}});
+    graphlib::OpType repeat_op("repeat", {{"repeats", repeats}});
 
     return dc.op(repeat_op, {input});
 }
@@ -103,7 +103,7 @@ NodeContext concat_patches(
         return center;  // No concatenation needed
     }
 
-    graphlib::OpType concat_op("concatenate", {}, {{"dim", dim_axis}});
+    graphlib::OpType concat_op("concatenate", {{"dim", dim_axis}});
     return dc.op(concat_op, inputs);
 }
 
@@ -123,7 +123,7 @@ NodeContext extract_and_mirror(DecomposingContext &dc, const NodeContext &input,
     NodeContext indices = DecomposingContext::create_constant_tensor(dc, indices_tensor);
 
     // Mirror patch using adv_index
-    graphlib::OpType adv_index_op("adv_index", {dim_axis}, {{"dim", dim_axis}});
+    graphlib::OpType adv_index_op("adv_index", {{"dim", dim_axis}});
     NodeContext patch_mirrored = dc.op(adv_index_op, {patch, indices});
 
     return patch_mirrored;
@@ -148,7 +148,7 @@ NodeContext create_constant_pad_op(
     }
 
     // Create constant_pad operation for direct TTIR mapping
-    return dc.op(graphlib::OpType("constant_pad", {}, {{"padding", constant_padding}, {"value", value}}), {input});
+    return dc.op(graphlib::OpType("constant_pad", {{"padding", constant_padding}, {"value", value}}), {input});
 }
 
 void decompose_replicate_mode(DecomposingContext &dc, const NodeContext &input, const PaddingParams &params)

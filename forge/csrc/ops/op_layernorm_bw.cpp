@@ -144,13 +144,12 @@ void decompose_post_autograd(
         if (grad.shape.size() == 3 && grad.shape[0] != 1)
         {
             // has to reduce over batch first
-            grad_reduced = dc.op(
-                graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{0}}, {"keep_dim", true}}), {grad});
+            grad_reduced =
+                dc.op(graphlib::OpType("reduce_sum", {{"dim_arg", std::vector<int>{0}}, {"keep_dim", true}}), {grad});
         }
         // Gradient w.r.t. bias (beta): dbeta = reduce_sum(grad, dim=-2, keep_dim=True)
         NodeContext dbeta = dc.op(
-            graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}),
-            {grad_reduced});
+            graphlib::OpType("reduce_sum", {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}), {grad_reduced});
         dc.fuse(dbeta);
         return;
     }
@@ -173,39 +172,38 @@ void decompose_post_autograd(
     if (operand == 1)
     {
         // Gradient w.r.t. weights (gamma): dgamma = reduce_sum(xhat * grad, dim=-2, keep_dim=True)
-        NodeContext xhat_grad = dc.op(graphlib::OpType("multiply", {}, {}), {xhat, grad});
+        NodeContext xhat_grad = dc.op(graphlib::OpType("multiply"), {xhat, grad});
         NodeContext xhat_grad_reduced = xhat_grad;
         if (xhat_grad.shape.size() == 3 && xhat_grad.shape[0] != 1)
         {
             // has to reduce over batch first
             xhat_grad_reduced = dc.op(
-                graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{0}}, {"keep_dim", true}}),
-                {xhat_grad});
+                graphlib::OpType("reduce_sum", {{"dim_arg", std::vector<int>{0}}, {"keep_dim", true}}), {xhat_grad});
         }
         NodeContext dgamma = dc.op(
-            graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}),
+            graphlib::OpType("reduce_sum", {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}),
             {xhat_grad_reduced});
         dc.fuse(dgamma);
         return;
     }
 
     // operand == 0: Gradient w.r.t. input
-    NodeContext dxhat = dc.op(graphlib::OpType("multiply", {}, {}), {grad, gamma});
+    NodeContext dxhat = dc.op(graphlib::OpType("multiply"), {grad, gamma});
 
     // sum_1 = reduce_sum(dxhat, dim, keep_dim=True)
     NodeContext sum_1 =
-        dc.op(graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {dxhat});
+        dc.op(graphlib::OpType("reduce_sum", {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {dxhat});
 
     // sum_2 = reduce_sum(dxhat * xhat, dim, keep_dim=True)
-    NodeContext dxhat_xhat = dc.op(graphlib::OpType("multiply", {}, {}), {dxhat, xhat});
-    NodeContext sum_2 = dc.op(
-        graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {dxhat_xhat});
+    NodeContext dxhat_xhat = dc.op(graphlib::OpType("multiply"), {dxhat, xhat});
+    NodeContext sum_2 =
+        dc.op(graphlib::OpType("reduce_sum", {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {dxhat_xhat});
 
     // xhat_sum_2 = xhat * sum_2
-    NodeContext xhat_sum_2 = dc.op(graphlib::OpType("multiply", {}, {}), {xhat, sum_2});
+    NodeContext xhat_sum_2 = dc.op(graphlib::OpType("multiply"), {xhat, sum_2});
 
     // sum_1_sum_2_add = sum_1 + xhat_sum_2
-    NodeContext sum_1_sum_2_add = dc.op(graphlib::OpType("add", {}, {}), {sum_1, xhat_sum_2});
+    NodeContext sum_1_sum_2_add = dc.op(graphlib::OpType("add"), {sum_1, xhat_sum_2});
 
     // N_recip = 1.0 / N
     std::vector<uint32_t> sum_shape = sum_1_sum_2_add.shape.as_vector<uint32_t>();
@@ -214,13 +212,13 @@ void decompose_post_autograd(
     NodeContext N_recip_node = dc.tensor(N_recip_tensor);
 
     // N_recip_add = N_recip * sum_1_sum_2_add
-    NodeContext N_recip_add = dc.op(graphlib::OpType("multiply", {}, {}), {N_recip_node, sum_1_sum_2_add});
+    NodeContext N_recip_add = dc.op(graphlib::OpType("multiply"), {N_recip_node, sum_1_sum_2_add});
 
     // dxhat_add_sub = dxhat - N_recip_add
-    NodeContext dxhat_add_sub = dc.op(graphlib::OpType("subtract", {}, {}), {dxhat, N_recip_add});
+    NodeContext dxhat_add_sub = dc.op(graphlib::OpType("subtract"), {dxhat, N_recip_add});
 
     // dx = ivar * dxhat_add_sub
-    NodeContext dx = dc.op(graphlib::OpType("multiply", {}, {}), {ivar, dxhat_add_sub});
+    NodeContext dx = dc.op(graphlib::OpType("multiply"), {ivar, dxhat_add_sub});
 
     dc.fuse(dx);
 }

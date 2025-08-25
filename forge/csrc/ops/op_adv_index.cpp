@@ -129,7 +129,7 @@ void decompose_initial(
     NodeContext current = inputs[0];
     if (dim != 0)
         for (int i = dim; i > 0; i--)
-            current = dc.op(graphlib::OpType("transpose", {}, {{"dim0", i}, {"dim1", i - 1}}), {current});
+            current = dc.op(graphlib::OpType("transpose", {{"dim0", i}, {"dim1", i - 1}}), {current});
     NodeContext permuted = current;
 
     // Step 2: Reshape to [data_shape[dim], -1]
@@ -150,7 +150,7 @@ void decompose_initial(
         }
 
         std::vector<int> reshape_dims = {static_cast<int>(data_shape[dim]), rest_dims_product};
-        reshaped = dc.op(graphlib::OpType("reshape", {}, {{"shape", reshape_dims}}), {permuted});
+        reshaped = dc.op(graphlib::OpType("reshape", {{"shape", reshape_dims}}), {permuted});
     }
 
     // Step 3: Apply embedding operation
@@ -165,7 +165,7 @@ void decompose_initial(
             total_indices *= idx_dim;
         }
         std::vector<int> flattened_shape = {static_cast<int>(total_indices)};
-        indices_input = dc.op(graphlib::OpType("reshape", {}, {{"shape", flattened_shape}}), {inputs[1]});
+        indices_input = dc.op(graphlib::OpType("reshape", {{"shape", flattened_shape}}), {inputs[1]});
     }
     NodeContext selected = dc.op(graphlib::OpType("embedding"), {indices_input, reshaped});
 
@@ -193,7 +193,7 @@ void decompose_initial(
             output_shape.push_back(permuted_shape[i]);
         }
 
-        reshaped_output = dc.op(graphlib::OpType("reshape", {}, {{"shape", output_shape}}), {selected});
+        reshaped_output = dc.op(graphlib::OpType("reshape", {{"shape", output_shape}}), {selected});
     }
 
     // Step 5: Restore original dimension order if necessary using transposes
@@ -209,7 +209,7 @@ void decompose_initial(
     current = reshaped_output;
     for (int i = 0; i < dim; i++)
     {
-        current = dc.op(graphlib::OpType("transpose", {}, {{"dim0", i}, {"dim1", i + 1}}), {current});
+        current = dc.op(graphlib::OpType("transpose", {{"dim0", i}, {"dim1", i + 1}}), {current});
     }
     result = current;
     dc.fuse(result);

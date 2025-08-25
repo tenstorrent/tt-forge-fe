@@ -100,9 +100,7 @@ NodeContext backward(
     std::vector<NodeContext> bw_inputs = {inputs[0], inputs[1], inputs[2], gradient, output};
 
     return ac.autograd->create_op(
-        ac,
-        graphlib::OpType("layernorm_bw", {}, {{"dim", dim}, {"epsilon", epsilon}, {"operand", operand}}),
-        bw_inputs);
+        ac, graphlib::OpType("layernorm_bw", {{"dim", dim}, {"epsilon", epsilon}, {"operand", operand}}), bw_inputs);
 }
 
 void decompose_post_autograd(
@@ -135,47 +133,47 @@ void decompose_post_autograd(
 
     // Calculate mean: mu = sum(input, dim) / N
     NodeContext mu =
-        dc.op(graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {input});
+        dc.op(graphlib::OpType("reduce_sum", {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {input});
 
     // Create tensor for division by N
     std::vector<int64_t> input_shape_int64(input_shape.begin(), input_shape.end());
     at::Tensor divider_tensor = torch::zeros(input_shape_int64) + (1.0f / static_cast<float>(input_shape[dim]));
     NodeContext divider = dc.tensor(divider_tensor);
-    mu = dc.op(graphlib::OpType("multiply", {}, {}), {divider, mu});
+    mu = dc.op(graphlib::OpType("multiply"), {divider, mu});
 
     // Calculate xmu = input - mu
-    NodeContext xmu = dc.op(graphlib::OpType("subtract", {}, {}), {input, mu});
+    NodeContext xmu = dc.op(graphlib::OpType("subtract"), {input, mu});
 
     // Calculate squared difference: sq = xmu * xmu
-    NodeContext sq = dc.op(graphlib::OpType("multiply", {}, {}), {xmu, xmu});
+    NodeContext sq = dc.op(graphlib::OpType("multiply"), {xmu, xmu});
 
     // Calculate variance: var = sum(sq, dim) / N
     NodeContext var =
-        dc.op(graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {sq});
+        dc.op(graphlib::OpType("reduce_sum", {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {sq});
     std::vector<int64_t> var_shape = var.shape.as_vector<int64_t>();
     at::Tensor var_divider_tensor = torch::zeros(var_shape) + (1.0f / static_cast<float>(input_shape[dim]));
     NodeContext var_divider = dc.tensor(var_divider_tensor);
-    var = dc.op(graphlib::OpType("multiply", {}, {}), {var_divider, var});
+    var = dc.op(graphlib::OpType("multiply"), {var_divider, var});
 
     // Add epsilon: var_add = var + epsilon
     at::Tensor epsilon_tensor = torch::zeros(var_shape) + epsilon;
     NodeContext epsilon_node = dc.tensor(epsilon_tensor);
-    NodeContext var_add = dc.op(graphlib::OpType("add", {}, {}), {var, epsilon_node});
+    NodeContext var_add = dc.op(graphlib::OpType("add"), {var, epsilon_node});
 
     // Calculate standard deviation: std = sqrt(var_add)
-    NodeContext std = dc.op(graphlib::OpType("sqrt", {}, {}), {var_add});
+    NodeContext std = dc.op(graphlib::OpType("sqrt"), {var_add});
 
     // Calculate inverse variance: ivar = 1 / std
-    NodeContext ivar = dc.op(graphlib::OpType("reciprocal", {}, {}), {std});
+    NodeContext ivar = dc.op(graphlib::OpType("reciprocal"), {std});
 
     // Normalize: xhat = xmu * ivar
-    NodeContext xhat = dc.op(graphlib::OpType("multiply", {}, {}), {xmu, ivar});
+    NodeContext xhat = dc.op(graphlib::OpType("multiply"), {xmu, ivar});
 
     // Apply weights: xhat_weighted = xhat * weights
-    NodeContext xhat_weighted = dc.op(graphlib::OpType("multiply", {}, {}), {xhat, weights});
+    NodeContext xhat_weighted = dc.op(graphlib::OpType("multiply"), {xhat, weights});
 
     // Apply bias: result = xhat_weighted + bias
-    NodeContext result = dc.op(graphlib::OpType("add", {}, {}), {xhat_weighted, bias});
+    NodeContext result = dc.op(graphlib::OpType("add"), {xhat_weighted, bias});
 
     dc.fuse(result);
 }

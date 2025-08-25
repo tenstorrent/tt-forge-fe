@@ -1270,7 +1270,7 @@ bool swap_broadcast_dims(graphlib::Graph *graph, graphlib::Edge edge, int old_di
             if (dim == old_dim)
             {
                 new_tms.push_back(graphlib::OpType(
-                    "broadcast", {}, {{"dim", new_dim}, {"size", size}, {"explicit_bcast", explicit_bcast}}));
+                    "broadcast", {{"dim", new_dim}, {"size", size}, {"explicit_bcast", explicit_bcast}}));
                 swapped = true;
             }
             else
@@ -1318,7 +1318,7 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Edge edge)
     auto tms = graph->get_edge_attributes(edge)->get_tms();
     graph->get_edge_attributes(edge)->set_tms({});
 
-    auto insert = [graph](graphlib::Edge edge, std::string op, std::uint32_t rank) -> graphlib::Edge
+    auto insert = [graph](graphlib::Edge edge, ops::OpType op_type, std::uint32_t rank) -> graphlib::Edge
     {
         graphlib::Node *producer = graph->node_by_id(edge.producer_node_id);
         graphlib::Node *consumer = graph->node_by_id(edge.consumer_node_id);
@@ -1328,14 +1328,12 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Edge edge)
         TT_ASSERT(inherit);
         // If there are 2 edges from the same producer to the same consumer (eg. eltwise binary op),
         // need edge_creation_id to differentiate naming.
-        std::string name = producer->name() + "_" + consumer->name() + "_" + op + std::to_string(rank) + "_" +
-                           std::to_string(edge.edge_creation_id);
+        std::string name = producer->name() + "_" + consumer->name() + "_" + ops::Op(op_type).as_string() +
+                           std::to_string(rank) + "_" + std::to_string(edge.edge_creation_id);
         graphlib::OpNode *change_rank = dynamic_cast<graphlib::OpNode *>(
             graph->add_node(inherit->clone(name), graph->get_subgraph_id_for_node(producer->id())));
         TT_ASSERT(change_rank);
-        auto attr = (op == "squeeze") ? std::vector<graphlib::OpType::Attr>{0}
-                                      : std::vector<graphlib::OpType::Attr>{0, ((int)rank - 1)};
-        change_rank->change_op_type(op, attr, graphlib::OpType::Attrs{{"dim", attr[0]}});
+        change_rank->change_op_type(ops::Op(op_type).as_string(), graphlib::OpType::Attrs{{"dim", 0}});
         change_rank->set_shape(producer->shape().as_rank(rank));
         change_rank->tag("dont_erase", true);
         auto [incoming_edge, outgoing_edge] = insert_node_on_edge(graph, edge, change_rank);
@@ -1351,14 +1349,14 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Edge edge)
     while (producer_size < consumer_size)
     {
         producer_size++;
-        edge = insert(edge, "unsqueeze", producer_size);
+        edge = insert(edge, ops::OpType::Unsqueeze, producer_size);
     }
 
     while (producer_size > consumer_size)
     {
         producer_size--;
         TT_ASSERT(producer_size > 0);
-        edge = insert(edge, "squeeze", producer_size);
+        edge = insert(edge, ops::OpType::Squeeze, producer_size);
     }
 
     int diff = (int)producer_size - orig_producer_size;
@@ -1884,9 +1882,9 @@ bool is_consteval_capable_input_no_operand_forks(Graph *graph, InputNode *input)
     if (not std::all_of(user_ops.begin(), user_ops.end(), [op_type](OpNode *n) { return n->new_op_type() == op_type; }))
         return false;
 
-    auto attrs = user_ops[0]->op_legacy_attrs();
+    auto attrs = user_ops[0]->op_named_attrs();
     for (OpNode *op : user_ops)
-        if (attrs != op->op_legacy_attrs())
+        if (attrs != op->op_named_attrs())
             return false;
 
     return true;

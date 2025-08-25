@@ -188,13 +188,9 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
             auto new_stop = static_cast<int>(start * new_dim_size + new_dim_size);
             int new_stride = 1;
 
-            std::vector<graphlib::OpType::Attr> new_attrs = {new_dim, new_start, new_stop, new_stride};
-
-            op->change_op_type("index", new_attrs);
-            op->set_op_attr("dim", new_dim);
-            op->set_op_attr("start", new_start);
-            op->set_op_attr("stop", new_stop);
-            op->set_op_attr("stride", new_stride);
+            op->change_op_type(
+                ops::Op(ops::OpType::Index).as_string(),
+                {{"dim", new_dim}, {"start", new_start}, {"stop", new_stop}, {"stride", new_stride}});
 
             op->set_shape(target_shape);
         }

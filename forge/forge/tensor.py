@@ -937,7 +937,7 @@ def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]
         return inputs[name]
 
     def eval_op(op_type, inputs):
-        op = OpType(op_type["type"], op_type["attrs"], op_type["named_attrs"])
+        op = OpType(op_type["type"], op_type["named_attrs"])
         return op.eval(inputs)
 
     logger.debug("ConstEval graph: {}", name)

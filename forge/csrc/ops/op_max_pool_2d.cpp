@@ -187,14 +187,13 @@ void decompose_initial(
         return;
 
     // (N, C, H, W) --> transpose(-3, -2): (N, H, C, W) --> transpose(-2, -1): (N, H, W, C)
-    activations = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {activations});
-    activations = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {activations});
+    activations = dc.op(graphlib::OpType("transpose", {{"dim0", -3}, {"dim1", -2}}), {activations});
+    activations = dc.op(graphlib::OpType("transpose", {{"dim0", -2}, {"dim1", -1}}), {activations});
 
     // Create a new MaxPool2d operation with channel_last=true
     NodeContext result = dc.op(
         graphlib::OpType(
             "max_pool2d",
-            {},
             {{"kernel", op.attr_as<std::vector<int>>("kernel")},
              {"stride", op.attr_as<std::vector<int>>("stride")},
              {"dilation", op.attr_as<std::vector<int>>("dilation")},
@@ -205,8 +204,8 @@ void decompose_initial(
 
     // Transpose back to channel first: (N, H_out, W_out, C_out) --> transpose(-2, -1): (N, H_out, C_out, W_out) -->
     // transpose(-3, -2): (N, C_out, H_out, W_out)
-    result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
-    result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
+    result = dc.op(graphlib::OpType("transpose", {{"dim0", -2}, {"dim1", -1}}), {result});
+    result = dc.op(graphlib::OpType("transpose", {{"dim0", -3}, {"dim1", -2}}), {result});
 
     dc.fuse(result);
     return;

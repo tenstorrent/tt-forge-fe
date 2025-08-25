@@ -162,8 +162,7 @@ static void handle_writeback_golden_transforms(
     graphlib::OutputNode* output, graphlib::OutputNode* fractured_output, NDSlice::Slice slice)
 {
     constexpr bool channel_last = false;
-    std::vector<graphlib::OpType::Attr> pad = {
-        0 /*padding_left*/, 0 /*padding_right*/, 0 /*padding_top*/, 0 /*padding_bottom*/, channel_last};
+    std::vector<int> pad = {0 /*padding_left*/, 0 /*padding_right*/, 0 /*padding_top*/, 0 /*padding_bottom*/};
 
     for (auto [dim, index, factor] : slice.indices)
     {
@@ -175,7 +174,7 @@ static void handle_writeback_golden_transforms(
         pad[pad_idx + 1] = dim_size - (index + 1) * chunk_size;
     }
 
-    fractured_output->add_golden_transform(graphlib::OpType("pad", pad));
+    fractured_output->add_golden_transform(graphlib::OpType("pad", {{"padding", pad}, {"channel_last", channel_last}}));
     fractured_output->set_partial_datacopy_golden_output_index(*output->get_partial_datacopy_golden_output_index());
 }
 
@@ -196,7 +195,7 @@ static std::unique_ptr<graphlib::PyOpNode> create_slice(
 
     int start = i * (int)shape[dim];
     int length = (int)shape[dim];
-    graphlib::OpType select("select", {}, {{"dim", dim}, {"begin", start}, {"length", length}, {"stride", stride}});
+    graphlib::OpType select("select", {{"dim", dim}, {"begin", start}, {"length", length}, {"stride", stride}});
     auto new_op = graphlib::create_node<graphlib::PyOpNode>(new_op_name, select);
     new_op->set_shape(shape);
     new_op->set_epoch_type(op->get_epoch_type());
@@ -228,7 +227,7 @@ static std::unique_ptr<graphlib::PyOpNode> create_gather(
     std::uint32_t fracture_group_id)
 {
     graphlib::OpType gather_op =
-        (dim == NDSlice::k_dim) ? graphlib::OpType("add", {}, {}) : graphlib::OpType("concatenate", {}, {{"dim", dim}});
+        (dim == NDSlice::k_dim) ? graphlib::OpType("add") : graphlib::OpType("concatenate", {{"dim", dim}});
 
     graphlib::Shape shape = operand_shape;
     if (gather_op.type() == ops::OpType::Concatenate)
@@ -809,7 +808,7 @@ static FracturedNodes fracture_tm(
     else if (op->new_op_type() == ops::OpType::Select)
     {
         NDSlice nd_slice = get_node_nd_slice(graph, op, node_to_fractured_nodes, group);
-        int select_dim = std::get<int>(op->op_legacy_attrs().at(0));
+        int select_dim = op->op_attr_as<int>("dim");
         if (nd_slice.get_factor(select_dim) != 1)
             log_fatal(
                 "Op {}: Cannot fracture along select dimension[{}] factor[{}]",

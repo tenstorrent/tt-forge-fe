@@ -27,8 +27,6 @@ static bool can_fuse_select_concat(
     if (map.empty())
         return false;
 
-    // the lambda will only get called when the map is not empty
-    // so we can safely access begin()->second
     auto const cmpWithFirst =
         [&](std::pair<int, std::vector<std::pair<graphlib::OpNode *, graphlib::InputNode *>>> const &i)
     {
@@ -37,17 +35,16 @@ static bool can_fuse_select_concat(
         if (firstOp->new_op_type() != ops::OpType::Select)
             return false;
 
+        int select_dim = firstOp->op_attr_as<int>("dim");
+        int select_stride = firstOp->op_attr_as<int>("stride");
+
         bool same_op = firstOp->new_op_type() == compare_op->new_op_type();
-        bool same_dim =
-            (std::get<int>(firstOp->op_legacy_attrs()[0]) == std::get<int>(compare_op->op_legacy_attrs()[0])) and
-            (std::get<int>(firstOp->op_legacy_attrs()[0]) == concat_dim);
+        bool same_dim = select_dim == compare_op->op_attr_as<int>("dim") and select_dim == concat_dim;
         bool same_producer = (graph->data_operands(firstOp)[0] == graph->data_operands(compare_op)[0]);
 
         // Stride must equal to producer concat dim
         const int stride = graph->data_operands(firstOp)[0]->shape()[concat_dim];
-        bool same_stride =
-            (std::get<int>(firstOp->op_legacy_attrs()[3]) == std::get<int>(compare_op->op_legacy_attrs()[3])) and
-            (std::get<int>(firstOp->op_legacy_attrs()[3]) == stride);
+        bool same_stride = select_stride == compare_op->op_attr_as<int>("stride") and select_stride == stride;
 
         return same_op and same_dim and same_stride and same_producer;
     };
@@ -59,10 +56,7 @@ static bool can_fuse_select_concat(
 
     // Check that all channels are selected
     uint32_t select_amount = 0;
-    for (auto const &[key, value] : map)
-    {
-        select_amount += std::get<int>(value.back().first->op_legacy_attrs()[2]);
-    }
+    for (auto const &[key, value] : map) select_amount += value.back().first->op_attr_as<int>("length");
 
     bool select_all_channels =
         select_amount == graph->data_operands(map.begin()->second.back().first)[0]->shape()[concat_dim];
@@ -73,8 +67,8 @@ static bool can_fuse_select_concat(
 
     for (auto const &[key, value] : map)
     {
-        auto start_index = std::get<int>(value.back().first->op_legacy_attrs()[1]);
-        auto length = std::get<int>(value.back().first->op_legacy_attrs()[2]);
+        auto start_index = value.back().first->op_attr_as<int>("begin");
+        auto length = value.back().first->op_attr_as<int>("length");
 
         for (auto i = start_index; i < start_index + length; i++)
         {
@@ -259,7 +253,7 @@ static bool fuse_per_channel_concat(graphlib::Graph *graph, graphlib::OpNode *co
     bool can_fuse = true;
     auto operands = graph->data_operands(concat);
     int num_operands = operands.size();
-    int concat_dim = std::get<int>(concat->op_legacy_attrs()[0]);
+    int concat_dim = concat->op_attr_as<int>("dim");
     std::map<int, std::vector<std::pair<graphlib::OpNode *, graphlib::InputNode *>>> ops_to_fuse;
 
     // Find path from each operand of concat to producer select, if possible
@@ -328,8 +322,7 @@ static bool fuse_per_channel_concat(graphlib::Graph *graph, graphlib::OpNode *co
                     while (input_ndim < concat->shape().size())
                     {
                         // insert unsqueeze tms
-                        graphlib::OpType op_type(
-                            "unsqueeze", {0, (int)input_ndim}, {{"dim", 0}, {"orig_shape_len", (int)input_ndim}});
+                        graphlib::OpType op_type("unsqueeze", {{"dim", 0}, {"orig_shape_len", (int)input_ndim}});
                         graph->get_edge_attributes(current_edge)->append_tm(op_type);
                         input_ndim++;
                     }

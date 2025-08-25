@@ -117,8 +117,8 @@ void decompose_initial(
         kernel_size == static_cast<int>(activations.shape[activations.shape.size() - 1]),
         "Only support global avg_pool1d for now");
 
-    NodeContext reduce_avg = dc.op(
-        graphlib::OpType("reduce_avg", {}, {{"dim_arg", std::vector<int>{-1}}, {"keep_dim", true}}), {activations});
+    NodeContext reduce_avg =
+        dc.op(graphlib::OpType("reduce_avg", {{"dim_arg", std::vector<int>{-1}}, {"keep_dim", true}}), {activations});
     dc.fuse(reduce_avg);
     return;
 }

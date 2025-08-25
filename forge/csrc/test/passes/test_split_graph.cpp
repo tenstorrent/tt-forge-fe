@@ -42,7 +42,7 @@ struct SplitGraphTest : public ForgeGraphTest, public testing::WithParamInterfac
 
         auto add2 = create_op("add", {l2, bias_l2});
 
-        auto softmax = create_op(graphlib::OpType("softmax", {}, {{"dim", 1}, {"stable", true}}), {add2});
+        auto softmax = create_op(graphlib::OpType("softmax", {{"dim", 1}, {"stable", true}}), {add2});
 
         return {softmax};
     }

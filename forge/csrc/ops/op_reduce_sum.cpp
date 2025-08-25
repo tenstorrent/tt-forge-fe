@@ -64,13 +64,13 @@ tt::graphlib::NodeContext backward(
     if (!op.attr_as<bool>("keep_dim"))
     {
         // If `keep_dim` is false, we need to unsqueeze the gradient to match the input shape.
-        unsqueeze = ac.autograd->create_op(ac, graphlib::OpType("unsqueeze", {}, {{"dim", dim}}), {gradient});
+        unsqueeze = ac.autograd->create_op(ac, graphlib::OpType("unsqueeze", {{"dim", dim}}), {gradient});
     }
 
     // For sum, gradient just needs to be broadcast back to original shape.
     NodeContext broadcast = ac.autograd->create_op(
         ac,
-        graphlib::OpType("broadcast", {}, {{"dim", dim}, {"size", static_cast<int>(size)}}),
+        graphlib::OpType("broadcast", {{"dim", dim}, {"size", static_cast<int>(size)}}),
         {unsqueeze.has_value() ? *unsqueeze : gradient});
     return broadcast;
 }
@@ -99,7 +99,7 @@ void decompose_initial(
         }
 
         // In this case, we can replace `reduce_sum` with a `squeeze` operation.
-        NodeContext result = dc.op(graphlib::OpType("squeeze", {}, {{"dim", dim}}), {inputs[0]});
+        NodeContext result = dc.op(graphlib::OpType("squeeze", {{"dim", dim}}), {inputs[0]});
         dc.fuse(result);
     }
 }

@@ -188,11 +188,8 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
                         .second;
                 if (golden_transform.type() == ops::OpType::Reshape)
                 {
-                    for (std::size_t i = 0; i < golden_transform.legacy_attrs_.size(); i++)
-                    {
-                        int current_dim = std::get<int>(golden_transform.legacy_attrs_[i]);
-                        golden_transform.legacy_attrs_[i] = clone_bcasts[i] * current_dim;
-                    }
+                    std::vector<int> &shapes = golden_transform.attr_as<std::vector<int>>("shape");
+                    for (std::size_t i = 0; i < shapes.size(); i++) shapes[i] *= clone_bcasts[i];
                 }
 
                 graphlib::Edge between_edge = retrieve_between_edge(graph, producer, consumer);
@@ -289,21 +286,10 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
 
             // Operand commute clones for squeeze/unsqueeze need to be swapped to the opposite op
             if (first->new_op_type() == ops::OpType::Unsqueeze)
-            {
-                op->change_op_type(
-                    "squeeze",
-                    {first->op_legacy_attrs()[0]},
-                    graphlib::OpType::Attrs{{"dim", first->op_legacy_attrs()[0]}});
-            }
+                op->change_op_type(ops::Op(ops::OpType::Squeeze).as_string(), {{"dim", first->op_attr_as<int>("dim")}});
             else if (first->new_op_type() == ops::OpType::Squeeze)
-            {
-                op->change_op_type("unsqueeze");
                 op->change_op_type(
-                    "unsqueeze",
-                    {first->op_legacy_attrs()[0],
-                     (int)graph->node_by_id(operand_edge.producer_node_id)->shape().size()},
-                    graphlib::OpType::Attrs{{"dim", first->op_legacy_attrs()[0]}});
-            }
+                    ops::Op(ops::OpType::Unsqueeze).as_string(), {{"dim", first->op_attr_as<int>("dim")}});
 
             // Inputs can have mismatched number of dims and still function corretly to the consuming op
             // Thus if the op we are commuting through has shape (1, 128, 1024) and its operand is a param with shape
@@ -313,7 +299,7 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
             if ((first->new_op_type() == ops::OpType::Unsqueeze or first->new_op_type() == ops::OpType::Squeeze) and
                 dynamic_cast<graphlib::InputNode *>(graph->node_by_id(operand_edge.producer_node_id)))
             {
-                op->change_op_type("reshape");
+                op->change_op_type(ops::Op(ops::OpType::Reshape).as_string());
                 graphlib::Shape op_shape = graphlib::Shape::create(std::vector<uint32_t>(consumer->shape().size(), 1));
                 auto input = dynamic_cast<graphlib::InputNode *>(graph->node_by_id(operand_edge.producer_node_id));
 

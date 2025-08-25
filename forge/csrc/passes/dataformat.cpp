@@ -33,7 +33,7 @@ static void insert_cast_on_const_input_nodes(graphlib::Graph *graph, DataFormat 
             is_integer_data_format(node->output_df()))
             continue;
 
-        graphlib::OpType op_type = graphlib::OpType("cast", {}, {{"dtype", static_cast<int>(df_override)}});
+        graphlib::OpType op_type = graphlib::OpType("cast", {{"dtype", static_cast<int>(df_override)}});
 
         Node *cast_node = graph->add_node(
             graphlib::create_node<graphlib::PyOpNode>("cast_input_" + node->name(), op_type),

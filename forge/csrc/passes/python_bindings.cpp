@@ -29,7 +29,6 @@ void PassesModule(py::module &m_passes)
             [](tt::DecomposingContext &self,
                std::variant<std::string, py::object> const &type,
                std::vector<NodeContext> const &operands,
-               std::vector<graphlib::OpType::Attr> const &attrs = {},
                bool copy_tms = true,
                bool dont_decompose = false,
                bool optimize_hoist = false,
@@ -42,7 +41,7 @@ void PassesModule(py::module &m_passes)
                         "Error decomposing a type with old OpType interface, expects new OpType interface {}",
                         std::get<std::string>(type));
                     return self.op(
-                        graphlib::OpType(std::get<std::string>(type), attrs),
+                        graphlib::OpType(std::get<std::string>(type)),
                         operands,
                         copy_tms,
                         dont_decompose,
@@ -51,14 +50,12 @@ void PassesModule(py::module &m_passes)
                 }
                 else
                 {
-                    TT_ASSERT(attrs.size() == 0, "Illegal mixing of API modes");
                     auto const &op_type = std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
                     return self.op(op_type, operands, copy_tms, dont_decompose, optimize_hoist, output_df);
                 }
             },
             py::arg("type"),
             py::arg("operands"),
-            py::arg("attrs") = std::vector<int>{},
             py::arg("copy_tms") = true,
             py::arg("dont_decompose") = false,
             py::arg("optimize_hoist") = false,
@@ -69,7 +66,6 @@ void PassesModule(py::module &m_passes)
                std::variant<std::string, py::object> const &type,
                std::vector<NodeContext> const &operands,
                ForgeOpAttrs const &named_attrs,
-               std::vector<graphlib::OpType::Attr> const &attrs = {},
                bool copy_tms = true,
                bool dont_decompose = false,
                bool optimize_hoist = false,
@@ -82,7 +78,7 @@ void PassesModule(py::module &m_passes)
                         "Error decomposing a type with old OpType interface, expects new OpType interface {}",
                         std::get<std::string>(type));
                     return self.op(
-                        graphlib::OpType(std::get<std::string>(type), attrs, named_attrs),
+                        graphlib::OpType(std::get<std::string>(type), named_attrs),
                         operands,
                         copy_tms,
                         dont_decompose,
@@ -91,7 +87,6 @@ void PassesModule(py::module &m_passes)
                 }
                 else
                 {
-                    TT_ASSERT(attrs.size() == 0, "Illegal mixing of API modes");
                     auto const &op_type = std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
                     return self.op(op_type, operands, copy_tms, dont_decompose, optimize_hoist, output_df);
                 }
@@ -99,7 +94,6 @@ void PassesModule(py::module &m_passes)
             py::arg("type"),
             py::arg("operands"),
             py::arg("named_attrs"),
-            py::arg("attrs") = std::vector<int>{},
             py::arg("copy_tms") = true,
             py::arg("dont_decompose") = false,
             py::arg("optimize_hoist") = false,

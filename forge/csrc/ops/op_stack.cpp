@@ -120,12 +120,12 @@ void decompose_initial(
 
     for (const auto &input : inputs)
     {
-        auto reshaped = dc.op(graphlib::OpType("unsqueeze", {}, {{"dim", dim}}), {input});
+        auto reshaped = dc.op(graphlib::OpType("unsqueeze", {{"dim", dim}}), {input});
         unsqueezed_inputs.push_back(reshaped);
     }
 
     // Concatenate along the stack dimension
-    auto result = dc.op(graphlib::OpType("concatenate", {}, {{"dim", dim}}), unsqueezed_inputs);
+    auto result = dc.op(graphlib::OpType("concatenate", {{"dim", dim}}), unsqueezed_inputs);
     dc.fuse(result);
 }
 

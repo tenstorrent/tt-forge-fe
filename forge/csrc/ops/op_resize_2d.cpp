@@ -172,8 +172,8 @@ void decompose_initial(
     if (!channel_last)
     {
         // Changing the Layout from NCHW to NHWC as ttir.upsample2d supports only the NHWC layout
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
+        result = dc.op(graphlib::OpType("transpose", {{"dim0", -3}, {"dim1", -2}}), {result});
+        result = dc.op(graphlib::OpType("transpose", {{"dim0", -2}, {"dim1", -1}}), {result});
     }
 
     if (is_upsampling_height && is_upsampling_width)
@@ -186,10 +186,7 @@ void decompose_initial(
         scale_factor.push_back(size_h / input_h);
         scale_factor.push_back(size_w / input_w);
         result = dc.op(
-            graphlib::OpType(
-                "upsample2d",
-                {scale_factor, mode, true},
-                {{"scale_factor", scale_factor}, {"mode", mode}, {"channel_last", true}}),
+            graphlib::OpType("upsample2d", {{"scale_factor", scale_factor}, {"mode", mode}, {"channel_last", true}}),
             {result});
     }
     else
@@ -202,7 +199,6 @@ void decompose_initial(
         // result = dc.op(
         //     graphlib::OpType(
         //         "downsample2d",
-        //         {scale_factor, resize_method, true},
         //         {{"scale_factor", scale_factor}, {"mode", resize_method}, {"channel_last", true}}),
         //     {result});
     }
@@ -210,8 +206,8 @@ void decompose_initial(
     if (!channel_last)
     {
         // Changing the Layout back to NCHW from NHWC after operation
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
+        result = dc.op(graphlib::OpType("transpose", {{"dim0", -2}, {"dim1", -1}}), {result});
+        result = dc.op(graphlib::OpType("transpose", {{"dim0", -3}, {"dim1", -2}}), {result});
     }
 
     dc.fuse(result);

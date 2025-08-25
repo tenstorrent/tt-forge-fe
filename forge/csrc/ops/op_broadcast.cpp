@@ -95,9 +95,7 @@ tt::graphlib::NodeContext backward(
     int dim = op.attr_as<int>("dim");
 
     return ac.autograd->create_op(
-        ac,
-        graphlib::OpType("reduce_sum", {dim, true}, {{"dim_arg", std::vector<int>({dim})}, {"keep_dim", true}}),
-        {gradient});
+        ac, graphlib::OpType("reduce_sum", {{"dim_arg", std::vector<int>({dim})}, {"keep_dim", true}}), {gradient});
 }
 
 void decompose_initial(
