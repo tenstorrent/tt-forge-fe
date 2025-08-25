@@ -568,7 +568,6 @@ def pytest_runtest_logreport(report):
                         # Level 2 overrides
                         "FORGE_RIBBON2": "",
                         "FORGE_DISABLE_STREAM_OUTPUT": "",
-                        "FORGE_PAD_OUTPUT_BUFFER": "",
                         "FORGE_OVERRIDE_DEVICE_YAML": "",  # Mostly used for 1x1 model overrides
                     },
                 )

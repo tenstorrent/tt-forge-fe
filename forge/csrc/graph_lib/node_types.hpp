@@ -595,7 +595,7 @@ class OpNode : public TaggedNode
     {
         return new_op_type() == ops::OpType::Embedding || new_op_type() == ops::OpType::EmbeddingBw;
     }
-    bool is_matmul() const { return new_op_type() == ops::OpType::Matmul || is_depthwise_matmul(); }
+    bool is_matmul() const { return new_op_type() == ops::OpType::Matmul; }
     bool is_reduce() const
     {
         return new_op_type() == ops::OpType::ReduceAvg or new_op_type() == ops::OpType::ReduceMax or
@@ -603,9 +603,6 @@ class OpNode : public TaggedNode
     }
     bool is_add() const { return new_op_type() == ops::OpType::Add; }
     bool is_maximum() const { return new_op_type() == ops::OpType::Maximum; }
-    // Check whether this is needed, because it makes no sence.
-    bool is_depthwise_matmul() const { return new_op_type() == ops::OpType::Depthwise; }
-
     bool is_tm() const { return op_type_.is_tm(); };
     bool is_eltwise() const { return op_type_.is_eltwise(); };
     bool is_eltwise_unary() const { return op_type_.is_eltwise_unary(); }

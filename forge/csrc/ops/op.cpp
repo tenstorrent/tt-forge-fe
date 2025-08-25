@@ -59,7 +59,6 @@ class NewToOldOpType
         mapping_[OpType::Conv2dTranspose] = "conv2d_transpose";
         mapping_[OpType::Cosine] = "cosine";
         mapping_[OpType::CumulativeSum] = "cumsum";
-        mapping_[OpType::Depthwise] = "depthwise";
         mapping_[OpType::Divide] = "divide";
         mapping_[OpType::Downsample2d] = "downsample2d";
         mapping_[OpType::Dropout] = "dropout";
@@ -69,15 +68,12 @@ class NewToOldOpType
         mapping_[OpType::Erf] = "erf";
         mapping_[OpType::Exp] = "exp";
         mapping_[OpType::FillCache] = "fill_cache";
-        mapping_[OpType::ForgePad] = "forge_pad";
-        mapping_[OpType::ForgeUnpad] = "forge_unpad";
         mapping_[OpType::Gelu] = "gelu";
         mapping_[OpType::Greater] = "greater";
         mapping_[OpType::GreaterEqual] = "greater_equal";
         mapping_[OpType::Heaviside] = "heaviside";
         mapping_[OpType::Index] = "index";
         mapping_[OpType::IndexCopy] = "index_copy";
-        mapping_[OpType::Interleave] = "interleave";
         mapping_[OpType::Layernorm] = "layernorm";
         mapping_[OpType::LayernormBw] = "layernorm_bw";
         mapping_[OpType::LeakyRelu] = "leaky_relu";
@@ -161,7 +157,6 @@ class OldToNewOpType
         mapping_["conv2d_transpose"] = OpType::Conv2dTranspose;
         mapping_["cosine"] = OpType::Cosine;
         mapping_["cumsum"] = OpType::CumulativeSum;
-        mapping_["depthwise"] = OpType::Depthwise;
         mapping_["divide"] = OpType::Divide;
         mapping_["downsample2d"] = OpType::Downsample2d;
         mapping_["dropout"] = OpType::Dropout;
@@ -171,15 +166,12 @@ class OldToNewOpType
         mapping_["erf"] = OpType::Erf;
         mapping_["exp"] = OpType::Exp;
         mapping_["fill_cache"] = OpType::FillCache;
-        mapping_["forge_pad"] = OpType::ForgePad;
-        mapping_["forge_unpad"] = OpType::ForgeUnpad;
         mapping_["gelu"] = OpType::Gelu;
         mapping_["greater"] = OpType::Greater;
         mapping_["greater_equal"] = OpType::GreaterEqual;
         mapping_["heaviside"] = OpType::Heaviside;
         mapping_["index"] = OpType::Index;
         mapping_["index_copy"] = OpType::IndexCopy;
-        mapping_["interleave"] = OpType::Interleave;
         mapping_["layernorm"] = OpType::Layernorm;
         mapping_["layernorm_bw"] = OpType::LayernormBw;
         mapping_["leaky_relu"] = OpType::LeakyRelu;
@@ -328,7 +320,6 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Conv2dTranspose: return conv_2d_transpose::eval(old_op_type, *this, tensors);
         case OpType::Cosine: return cosine::eval(old_op_type, *this, tensors);
         case OpType::CumulativeSum: return cumulative_sum::eval(old_op_type, *this, tensors);
-        case OpType::Depthwise: return depthwise::eval(old_op_type, *this, tensors);
         case OpType::Divide: return divide::eval(old_op_type, *this, tensors);
         case OpType::Downsample2d: return downsample_2d::eval(old_op_type, *this, tensors);
         case OpType::Dropout: return dropout::eval(old_op_type, *this, tensors);
@@ -338,15 +329,12 @@ at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::T
         case OpType::Erf: return erf::eval(old_op_type, *this, tensors);
         case OpType::Exp: return exp::eval(old_op_type, *this, tensors);
         case OpType::FillCache: return fill_cache::eval(old_op_type, *this, tensors);
-        case OpType::ForgePad: return forge_pad::eval(old_op_type, *this, tensors);
-        case OpType::ForgeUnpad: return forge_unpad::eval(old_op_type, *this, tensors);
         case OpType::Gelu: return gelu::eval(old_op_type, *this, tensors);
         case OpType::Greater: return greater::eval(old_op_type, *this, tensors);
         case OpType::GreaterEqual: return greater_equal::eval(old_op_type, *this, tensors);
         case OpType::Heaviside: return heaviside::eval(old_op_type, *this, tensors);
         case OpType::Index: return index::eval(old_op_type, *this, tensors);
         case OpType::IndexCopy: return index_copy::eval(old_op_type, *this, tensors);
-        case OpType::Interleave: return interleave::eval(old_op_type, *this, tensors);
         case OpType::Layernorm: return layernorm::eval(old_op_type, *this, tensors);
         case OpType::LayernormBw: return layernorm_bw::eval(old_op_type, *this, tensors);
         case OpType::LeakyRelu: return leaky_relu::eval(old_op_type, *this, tensors);
@@ -423,7 +411,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Conv2dTranspose: return conv_2d_transpose::shape(old_op_type, *this, inputs);
         case OpType::Cosine: return cosine::shape(old_op_type, *this, inputs);
         case OpType::CumulativeSum: return cumulative_sum::shape(old_op_type, *this, inputs);
-        case OpType::Depthwise: return depthwise::shape(old_op_type, *this, inputs);
         case OpType::Divide: return divide::shape(old_op_type, *this, inputs);
         case OpType::Downsample2d: return downsample_2d::shape(old_op_type, *this, inputs);
         case OpType::Dropout: return dropout::shape(old_op_type, *this, inputs);
@@ -433,15 +420,12 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
         case OpType::Erf: return erf::shape(old_op_type, *this, inputs);
         case OpType::Exp: return exp::shape(old_op_type, *this, inputs);
         case OpType::FillCache: return fill_cache::shape(old_op_type, *this, inputs);
-        case OpType::ForgePad: return forge_pad::shape(old_op_type, *this, inputs);
-        case OpType::ForgeUnpad: return forge_unpad::shape(old_op_type, *this, inputs);
         case OpType::Gelu: return gelu::shape(old_op_type, *this, inputs);
         case OpType::Greater: return greater::shape(old_op_type, *this, inputs);
         case OpType::GreaterEqual: return greater_equal::shape(old_op_type, *this, inputs);
         case OpType::Heaviside: return heaviside::shape(old_op_type, *this, inputs);
         case OpType::Index: return index::shape(old_op_type, *this, inputs);
         case OpType::IndexCopy: return index_copy::shape(old_op_type, *this, inputs);
-        case OpType::Interleave: return interleave::shape(old_op_type, *this, inputs);
         case OpType::Layernorm: return layernorm::shape(old_op_type, *this, inputs);
         case OpType::LayernormBw: return layernorm_bw::shape(old_op_type, *this, inputs);
         case OpType::LeakyRelu: return leaky_relu::shape(old_op_type, *this, inputs);
@@ -523,7 +507,6 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Conv2dTranspose: return conv_2d_transpose::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Cosine: return cosine::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::CumulativeSum: return cumulative_sum::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Depthwise: return depthwise::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Divide: return divide::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Downsample2d: return downsample_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Dropout: return dropout::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -533,15 +516,12 @@ tt::graphlib::NodeContext Op::backward(
         case OpType::Erf: return erf::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Exp: return exp::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::FillCache: return fill_cache::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::ForgePad: return forge_pad::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::ForgeUnpad: return forge_unpad::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Gelu: return gelu::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Greater: return greater::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::GreaterEqual: return greater_equal::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Heaviside: return heaviside::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Index: return index::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::IndexCopy: return index_copy::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Interleave: return interleave::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::Layernorm: return layernorm::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::LayernormBw: return layernorm_bw::backward(old_op_type, *this, context, operand, inputs, output, gradient);
         case OpType::LeakyRelu: return leaky_relu::backward(old_op_type, *this, context, operand, inputs, output, gradient);
@@ -640,7 +620,6 @@ void Op::decompose_initial(
         case OpType::Conv2dTranspose: return conv_2d_transpose::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Cosine: return;
         case OpType::CumulativeSum: return;
-        case OpType::Depthwise: return depthwise::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
         case OpType::Downsample2d: return downsample_2d::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Dropout: return;
@@ -650,15 +629,12 @@ void Op::decompose_initial(
         case OpType::Erf: return;
         case OpType::Exp: return;
         case OpType::FillCache: return;
-        case OpType::ForgePad: return forge_pad::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::ForgeUnpad: return forge_unpad::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Gelu: return;
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
         case OpType::Heaviside: return;
         case OpType::Index: return;
         case OpType::IndexCopy: return index_copy::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Interleave: return interleave::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Layernorm: return;
         case OpType::LayernormBw: return;
         case OpType::LeakyRelu: return;
@@ -692,7 +668,7 @@ void Op::decompose_initial(
         case OpType::RepeatInterleave: return;
         case OpType::Reshape: return reshape::decompose_initial(old_op_type, *this, dc, inputs);
         case OpType::Resize2d: return resize_2d::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Select: return select::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Select: return;
         case OpType::Sigmoid: return;
         case OpType::Sine: return;
         case OpType::Softmax: return;
@@ -706,7 +682,7 @@ void Op::decompose_initial(
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
-        case OpType::Where: return where::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Where: return;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
@@ -736,7 +712,6 @@ void Op::decompose_post_optimize(
         case OpType::Conv2d: return;
         case OpType::Cosine: return;
         case OpType::CumulativeSum: return;
-        case OpType::Depthwise: return depthwise::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
         case OpType::Downsample2d: return downsample_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Dropout: return;
@@ -746,15 +721,12 @@ void Op::decompose_post_optimize(
         case OpType::Erf: return;
         case OpType::Exp: return;
         case OpType::FillCache: return;
-        case OpType::ForgePad: return forge_pad::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::ForgeUnpad: return forge_unpad::decompose_post_optimize(old_op_type, *this, dc, inputs);
         case OpType::Gelu: return;
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
         case OpType::Heaviside: return;
         case OpType::Index: return;
-        case OpType::IndexCopy: return index_copy::decompose_post_optimize(old_op_type, *this, dc, inputs);
-        case OpType::Interleave: return interleave::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::IndexCopy: return;
         case OpType::Layernorm: return;
         case OpType::LayernormBw: return;
         case OpType::LeakyRelu: return;
@@ -775,7 +747,7 @@ void Op::decompose_post_optimize(
         case OpType::Nop: return;
         case OpType::NotEqual: return;
         case OpType::Pad: return;
-        case OpType::PixelShuffle: return pixel_shuffle::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::PixelShuffle: return;
         case OpType::Pow: return;
         case OpType::Power: return;
         case OpType::Reciprocal: return;
@@ -788,7 +760,7 @@ void Op::decompose_post_optimize(
         case OpType::RepeatInterleave: return;
         case OpType::Reshape: return;
         case OpType::Resize2d: return;
-        case OpType::Select: return select::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Select: return;
         case OpType::Sigmoid: return;
         case OpType::Sine: return;
         case OpType::Softmax: return;
@@ -802,7 +774,7 @@ void Op::decompose_post_optimize(
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
-        case OpType::Where: return where::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Where: return;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
@@ -833,7 +805,6 @@ void Op::decompose_post_autograd(
         case OpType::Conv2dTranspose: return;
         case OpType::Cosine: return;
         case OpType::CumulativeSum: return;
-        case OpType::Depthwise: return depthwise::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Divide: return;
         case OpType::Downsample2d: return downsample_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Dropout: return;
@@ -843,15 +814,12 @@ void Op::decompose_post_autograd(
         case OpType::Erf: return;
         case OpType::Exp: return;
         case OpType::FillCache: return;
-        case OpType::ForgePad: return forge_pad::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::ForgeUnpad: return forge_unpad::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Gelu: return;
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
         case OpType::Heaviside: return heaviside::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Index: return;
-        case OpType::IndexCopy: return index_copy::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::Interleave: return interleave::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::IndexCopy: return;
         case OpType::Layernorm: return layernorm::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::LayernormBw: return layernorm_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::LeakyRelu: return;
@@ -872,7 +840,7 @@ void Op::decompose_post_autograd(
         case OpType::Nop: return;
         case OpType::NotEqual: return;
         case OpType::Pad: return;
-        case OpType::PixelShuffle: return pixel_shuffle::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::PixelShuffle: return;
         case OpType::Pow: return;
         case OpType::Power: return;
         case OpType::Reciprocal: return;
@@ -885,7 +853,7 @@ void Op::decompose_post_autograd(
         case OpType::RepeatInterleave: return;
         case OpType::Reshape: return reshape::decompose_post_autograd(old_op_type, *this, dc, inputs);
         case OpType::Resize2d: return;
-        case OpType::Select: return select::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Select: return;
         case OpType::Sigmoid: return;
         case OpType::Sine: return;
         case OpType::Softmax: return;
@@ -899,7 +867,7 @@ void Op::decompose_post_autograd(
         case OpType::Unsqueeze: return;
         case OpType::UpdateCache: return;
         case OpType::Upsample2d: return;
-        case OpType::Where: return where::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Where: return;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
@@ -928,7 +896,6 @@ long Op::initial_flops_estimate(
         case OpType::Conv2dTranspose: return 0;
         case OpType::Cosine: return 0;
         case OpType::CumulativeSum: return 0;
-        case OpType::Depthwise: return depthwise::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Divide: return 0;
         case OpType::Downsample2d: return downsample_2d::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Dropout: return 0;
@@ -938,15 +905,12 @@ long Op::initial_flops_estimate(
         case OpType::Erf: return 0;
         case OpType::Exp: return 0;
         case OpType::FillCache: return 0;
-        case OpType::ForgePad: return forge_pad::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::ForgeUnpad: return forge_unpad::initial_flops_estimate(old_op_type, *this, inputs);
         case OpType::Gelu: return 0;
         case OpType::Greater: return 0;
         case OpType::GreaterEqual: return 0;
         case OpType::Heaviside: return 0;
         case OpType::Index: return 0;
-        case OpType::IndexCopy: return index_copy::initial_flops_estimate(old_op_type, *this, inputs);
-        case OpType::Interleave: return interleave::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::IndexCopy: return 0;
         case OpType::Layernorm: return 0;
         case OpType::LayernormBw: return 0;
         case OpType::LeakyRelu: return 0;
@@ -967,7 +931,7 @@ long Op::initial_flops_estimate(
         case OpType::Nop: return 0;
         case OpType::NotEqual: return 0;
         case OpType::Pad: return 0;
-        case OpType::PixelShuffle: return pixel_shuffle::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::PixelShuffle: return 0;
         case OpType::Pow: return 0;
         case OpType::Power: return 0;
         case OpType::Reciprocal: return 0;
@@ -980,7 +944,7 @@ long Op::initial_flops_estimate(
         case OpType::RepeatInterleave: return 0;
         case OpType::Reshape: return 0;
         case OpType::Resize2d: return 0;
-        case OpType::Select: return select::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Select: return 0;
         case OpType::Sigmoid: return 0;
         case OpType::Sine: return 0;
         case OpType::Softmax: return 0;
@@ -994,7 +958,7 @@ long Op::initial_flops_estimate(
         case OpType::Unsqueeze: return 0;
         case OpType::UpdateCache: return 0;
         case OpType::Upsample2d: return 0;
-        case OpType::Where: return where::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Where: return 0;
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
@@ -1022,7 +986,6 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Conv2dTranspose: return false;
         case OpType::Cosine: return false;
         case OpType::CumulativeSum: return false;
-        case OpType::Depthwise: return false;
         case OpType::Divide: return false;
         case OpType::Downsample2d: return false;
         case OpType::Dropout: return false;
@@ -1032,15 +995,12 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
         case OpType::Erf: return false;
         case OpType::Exp: return false;
         case OpType::FillCache: return false;
-        case OpType::ForgePad: return true;
-        case OpType::ForgeUnpad: return true;
         case OpType::Gelu: return false;
         case OpType::Greater: return false;
         case OpType::GreaterEqual: return false;
         case OpType::Heaviside: return false;
         case OpType::Index: return true;
         case OpType::IndexCopy: return false;
-        case OpType::Interleave: return false;
         case OpType::Layernorm: return false;
         case OpType::LayernormBw: return false;
         case OpType::LeakyRelu: return false;
@@ -1116,7 +1076,6 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Conv2dTranspose: return false;
         case OpType::Cosine: return true;
         case OpType::CumulativeSum: return false;
-        case OpType::Depthwise: return false;
         case OpType::Divide: return true;
         case OpType::Downsample2d: return false;
         case OpType::Dropout: return false;
@@ -1126,15 +1085,12 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
         case OpType::Erf: return true;
         case OpType::Exp: return true;
         case OpType::FillCache: return false;
-        case OpType::ForgePad: return false;
-        case OpType::ForgeUnpad: return false;
         case OpType::Gelu: return true;
         case OpType::Greater: return true;
         case OpType::GreaterEqual: return true;
         case OpType::Heaviside: return true;
         case OpType::Index: return false;
         case OpType::IndexCopy: return true;
-        case OpType::Interleave: return true;
         case OpType::Layernorm: return false;
         case OpType::LayernormBw: return false;
         case OpType::LeakyRelu: return true;
@@ -1210,7 +1166,6 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Conv2dTranspose: return false;
         case OpType::Cosine: return true;
         case OpType::CumulativeSum: return false;
-        case OpType::Depthwise: return false;
         case OpType::Divide: return false;
         case OpType::Downsample2d: return false;
         case OpType::Dropout: return false;
@@ -1220,15 +1175,12 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
         case OpType::Erf: return true;
         case OpType::Exp: return true;
         case OpType::FillCache: return false;
-        case OpType::ForgePad: return false;
-        case OpType::ForgeUnpad: return false;
         case OpType::Gelu: return true;
         case OpType::Greater: return false;
         case OpType::GreaterEqual: return false;
         case OpType::Heaviside: return false;
         case OpType::Index: return false;
         case OpType::IndexCopy: return false;
-        case OpType::Interleave: return false;
         case OpType::Layernorm: return false;
         case OpType::LayernormBw: return false;
         case OpType::LeakyRelu: return true;
@@ -1304,7 +1256,6 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Conv2dTranspose: return false;
         case OpType::Cosine: return false;
         case OpType::CumulativeSum: return false;
-        case OpType::Depthwise: return false;
         case OpType::Divide: return true;
         case OpType::Downsample2d: return false;
         case OpType::Dropout: return false;
@@ -1314,15 +1265,12 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
         case OpType::Erf: return false;
         case OpType::Exp: return false;
         case OpType::FillCache: return false;
-        case OpType::ForgePad: return false;
-        case OpType::ForgeUnpad: return false;
         case OpType::Gelu: return false;
         case OpType::Greater: return true;
         case OpType::GreaterEqual: return true;
         case OpType::Heaviside: return true;
         case OpType::Index: return false;
         case OpType::IndexCopy: return false;
-        case OpType::Interleave: return false;
         case OpType::Layernorm: return false;
         case OpType::LayernormBw: return false;
         case OpType::LeakyRelu: return false;
@@ -1398,7 +1346,6 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Conv2dTranspose: return false;
         case OpType::Cosine: return false;
         case OpType::CumulativeSum: return false;
-        case OpType::Depthwise: return false;
         case OpType::Divide: return false;
         case OpType::Downsample2d: return false;
         case OpType::Dropout: return false;
@@ -1408,15 +1355,12 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
         case OpType::Erf: return false;
         case OpType::Exp: return false;
         case OpType::FillCache: return false;
-        case OpType::ForgePad: return false;
-        case OpType::ForgeUnpad: return false;
         case OpType::Gelu: return false;
         case OpType::Greater: return false;
         case OpType::GreaterEqual: return false;
         case OpType::Heaviside: return false;
         case OpType::Index: return false;
         case OpType::IndexCopy: return true;
-        case OpType::Interleave: return true;
         case OpType::Layernorm: return false;
         case OpType::LayernormBw: return false;
         case OpType::LeakyRelu: return false;

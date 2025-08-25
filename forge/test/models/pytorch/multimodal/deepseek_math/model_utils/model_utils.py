@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer, GenerationConfig
+from third_party.tt_forge_models.deepseek.deepseek_math.pytorch import ModelLoader
 
 
 def generation(max_new_tokens, compiled_model, input_ids, tokenizer):
@@ -20,13 +20,11 @@ def generation(max_new_tokens, compiled_model, input_ids, tokenizer):
     return generated_text
 
 
-def download_model_and_tokenizer(model_name, **kwargs):
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="cpu")
-
-    model.generation_config = GenerationConfig.from_pretrained(model_name)
-    model.generation_config.pad_token_id = model.generation_config.eos_token_id
-    model.generation_config.use_cache = kwargs.get("use_cache", False)
+def download_model_and_tokenizer(variant, **kwargs):
+    # Load Model and Tokenizer
+    loader = ModelLoader(variant=variant)
+    model = loader.load_model()
+    tokenizer = loader._load_tokenizer()
 
     # Prepare input sentence
     messages = kwargs.get(

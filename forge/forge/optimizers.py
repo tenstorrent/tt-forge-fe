@@ -24,6 +24,8 @@ class Optimizer:
 
     dynamic_params = False
     linked_modules: Optional[List[CompiledModel]] = None
+    torch_dtype = torch.float32
+    forge_dtype = forge._C.DataFormat.Float32
 
     # For each parameter that we are optimizing, we store a dictionary of optimizer parameters for that particular parameter.
     # The derived classes will populate this dictionary with the necessary optimizer parameters.
@@ -117,15 +119,15 @@ class SGD(Optimizer):
         # For each Parameter, we register its associated set of optimizer parameters
         for parameter in parameters:
             if parameter.requires_grad:
-                self.parameter_to_opt_inputs[parameter.get_name()] = self.get_param_dict(parameter.pt_data_format)
+                self.parameter_to_opt_inputs[parameter.get_name()] = self.get_param_dict()
 
-    def get_param_dict(self, dtype: torch.dtype) -> Dict:
+    def get_param_dict(self) -> Dict:
         """
         Return a dict of optimizer parameter names to tensor
         """
         # Forge needs a pytorch array for now
         # TODO(jchu): modify these two lines when we deprecate the old path
-        learning_rate_torch = torch.full((1,), self.learning_rate, dtype=dtype)
+        learning_rate_torch = torch.full((1,), self.learning_rate, dtype=self.torch_dtype)
 
         learning_rate = Tensor.create_from_torch(learning_rate_torch)
         return {"lr": learning_rate}
@@ -161,11 +163,11 @@ class SGD(Optimizer):
             self.learning_rate = learning_rate
 
         for parameter, opt_inputs in self.parameter_to_opt_inputs.items():
-            learning_rate_tensor = torch.full((1,), self.learning_rate, dtype=opt_inputs["lr"].pt_data_format)
+            learning_rate_tensor = torch.full((1,), self.learning_rate, dtype=self.torch_dtype)
             opt_inputs["lr"] = Tensor.create_from_torch(learning_rate_tensor)
 
     def generate_op_trace(self, ac, parameter, gradient):
-        lr = ac.input("lr", (1,))
+        lr = ac.input("lr", (1,), dtype=self.forge_dtype)
 
         grad_times_lr = ac.op("multiply", (gradient, lr))
         param_minus_lr_times_grad = ac.op("subtract", (parameter, grad_times_lr))
@@ -235,40 +237,39 @@ class Adam(Optimizer):
         if parameters:
             self.set_parameters_to_optimize(parameters)
 
-    def get_cpu_param_dict(self, dtype: torch.dtype, shape: Tuple[int]) -> Dict:
+    def get_cpu_param_dict(self, shape: Tuple[int]) -> Dict:
         # TODO: shapes are set to the shape of the parameter because of the following issue
         # https://github.com/tenstorrent/tt-metal/issues/16352
         if self.bias_correction:
             return {
-                "torch_mean": torch.full(shape, 0.0, dtype=dtype),
-                "torch_variance": torch.full(shape, 0.0, dtype=dtype),
-                "torch_beta1_pow": torch.full(shape, 1.0, dtype=dtype),
-                "torch_beta2_pow": torch.full(shape, 1.0, dtype=dtype),
+                "torch_mean": torch.full(shape, 0.0, dtype=self.torch_dtype),
+                "torch_variance": torch.full(shape, 0.0, dtype=self.torch_dtype),
+                "torch_beta1_pow": torch.full(shape, 1.0, dtype=self.torch_dtype),
+                "torch_beta2_pow": torch.full(shape, 1.0, dtype=self.torch_dtype),
             }
         else:
             return {
-                "torch_mean": torch.full(shape, 0.0, dtype=dtype),
-                "torch_variance": torch.full(shape, 0.0, dtype=dtype),
+                "torch_mean": torch.full(shape, 0.0, dtype=self.torch_dtype),
+                "torch_variance": torch.full(shape, 0.0, dtype=self.torch_dtype),
             }
 
-    def get_param_dict(self, dtype: torch.dtype, shape: Tuple[int]) -> Dict:
+    def get_param_dict(self, shape: Tuple[int]) -> Dict:
         """
         Return a dict of optimizer parameter names to tensor
         """
-        torch_lr = torch.full((1,), self.learning_rate, dtype=dtype)
         if self.bias_correction:
             return {
-                "lr": Tensor.create_from_torch(torch.full(shape, self.learning_rate, dtype=dtype)),
-                "mean": Tensor.create_from_torch(torch.full(shape, 0.0, dtype=dtype)),
-                "variance": Tensor.create_from_torch(torch.full(shape, 0.0, dtype=dtype)),
-                "beta1_pow": Tensor.create_from_torch(torch.full(shape, 1.0, dtype=dtype)),
-                "beta2_pow": Tensor.create_from_torch(torch.full(shape, 1.0, dtype=dtype)),
+                "lr": Tensor.create_from_torch(torch.full(shape, self.learning_rate, dtype=self.torch_dtype)),
+                "mean": Tensor.create_from_torch(torch.full(shape, 0.0, dtype=self.torch_dtype)),
+                "variance": Tensor.create_from_torch(torch.full(shape, 0.0, dtype=self.torch_dtype)),
+                "beta1_pow": Tensor.create_from_torch(torch.full(shape, 1.0, dtype=self.torch_dtype)),
+                "beta2_pow": Tensor.create_from_torch(torch.full(shape, 1.0, dtype=self.torch_dtype)),
             }
         else:
             return {
-                "lr": Tensor.create_from_torch(torch.full(shape, self.learning_rate, dtype=dtype)),
-                "mean": Tensor.create_from_torch(torch.full(shape, 0.0, dtype=dtype)),
-                "variance": Tensor.create_from_torch(torch.full(shape, 0.0, dtype=dtype)),
+                "lr": Tensor.create_from_torch(torch.full(shape, self.learning_rate, dtype=self.torch_dtype)),
+                "mean": Tensor.create_from_torch(torch.full(shape, 0.0, dtype=self.torch_dtype)),
+                "variance": Tensor.create_from_torch(torch.full(shape, 0.0, dtype=self.torch_dtype)),
             }
 
     def get_optimizer_state_keys(self) -> List:
@@ -285,10 +286,10 @@ class Adam(Optimizer):
         for parameter in parameters:
             if parameter.requires_grad:
                 self.parameter_to_opt_inputs[parameter.get_name()] = self.get_param_dict(
-                    parameter.pt_data_format, parameter.shape.get_pytorch_shape()
+                    parameter.shape.get_pytorch_shape()
                 )
                 self.parameter_to_opt_torch_inputs[parameter.get_name()] = self.get_cpu_param_dict(
-                    parameter.pt_data_format, parameter.shape.get_pytorch_shape()
+                    parameter.shape.get_pytorch_shape()
                 )
 
     def set_optimizer_parameters(self, learning_rate: Optional[float] = None) -> None:
@@ -317,14 +318,13 @@ class Adam(Optimizer):
 
         # {mean, variance} get updated in the loopback
         for parameter, opt_inputs in self.parameter_to_opt_inputs.items():
-            torch_lr = torch.full(parameter.shape.as_list(), self.learning_rate, dtype=opt_inputs["lr"].pt_data_format)
+            torch_lr = torch.full(parameter.shape.as_list(), self.learning_rate, dtype=self.torch_dtype)
             opt_inputs["lr"] = Tensor.create_from_torch(torch_lr)
 
     def generate_op_trace(self, ac, parameter, gradient):
-
         parameter_shape = parameter.shape.as_list()
         if self.weight_decay > 0.0:
-            weight_decay = ac.tensor(torch.full(parameter_shape, self.weight_decay))
+            weight_decay = ac.tensor(torch.full(parameter_shape, self.weight_decay, dtype=self.torch_dtype))
         else:
             weight_decay = None
 
@@ -333,32 +333,36 @@ class Adam(Optimizer):
             gradient = ac.op("add", (gradient, weight_decay_times_param))
 
         # self.mean = self.beta1 * self.mean + one_minus_beta1 * gradient
-        mean = ac.input("mean", parameter.shape, copy_consteval_operations=True)
-        beta1 = ac.tensor(torch.full(parameter_shape, self.beta1))
-        one_minus_beta1 = ac.tensor(torch.full(parameter_shape, 1 - self.beta1))
+        mean = ac.input("mean", parameter.shape, copy_consteval_operations=True, dtype=self.forge_dtype)
+        beta1 = ac.tensor(torch.full(parameter_shape, self.beta1, dtype=self.torch_dtype))
+        one_minus_beta1 = ac.tensor(torch.full(parameter_shape, 1 - self.beta1, dtype=self.torch_dtype))
         mean_times_beta1 = ac.op("multiply", (mean, beta1))
         gradient_times_one_minus_beta1 = ac.op("multiply", (gradient, one_minus_beta1))
         updated_mean = ac.op("add", (mean_times_beta1, gradient_times_one_minus_beta1))
 
         # self.variance = self.beta2 * self.variance + one_minus_beta2 * gradient**2
-        variance = ac.input("variance", parameter.shape, copy_consteval_operations=True)
-        beta2 = ac.tensor(torch.full(parameter_shape, self.beta2))
-        one_minus_beta2 = ac.tensor(torch.full(parameter_shape, 1 - self.beta2))
+        variance = ac.input("variance", parameter.shape, copy_consteval_operations=True, dtype=self.forge_dtype)
+        beta2 = ac.tensor(torch.full(parameter_shape, self.beta2, dtype=self.torch_dtype))
+        one_minus_beta2 = ac.tensor(torch.full(parameter_shape, 1 - self.beta2, dtype=self.torch_dtype))
         variance_times_beta2 = ac.op("multiply", (variance, beta2))
         gradient_squared = ac.op("multiply", (gradient, gradient))
         gradient_squared_times_one_minus_beta2 = ac.op("multiply", (gradient_squared, one_minus_beta2))
         updated_variance = ac.op("add", (variance_times_beta2, gradient_squared_times_one_minus_beta2))
         if self.bias_correction:
             # bias_correction1 = 1 - beta1 ** step
-            beta1_one = ac.tensor(torch.full(parameter_shape, 1.0))
-            beta1_pow = ac.input("beta1_pow", parameter.shape, disable_consteval=True)  # stores beta1 ** step
+            beta1_one = ac.tensor(torch.full(parameter_shape, 1.0, dtype=self.torch_dtype))
+            beta1_pow = ac.input(
+                "beta1_pow", parameter.shape, disable_consteval=True, dtype=self.forge_dtype
+            )  # stores beta1 ** step
             updated_beta1_pow = ac.op("multiply", (beta1_pow, beta1))
             bias_correction1 = ac.op("subtract", (beta1_one, updated_beta1_pow))
             reciprocal_bias_correction1 = ac.op("reciprocal", (bias_correction1,))
 
             # bias_correction2 = 1 - beta2 ** step
-            beta2_one = ac.tensor(torch.full(parameter_shape, 1.0))
-            beta2_pow = ac.input("beta2_pow", parameter.shape, disable_consteval=True)  # stores beta2 ** step
+            beta2_one = ac.tensor(torch.full(parameter_shape, 1.0, dtype=self.torch_dtype))
+            beta2_pow = ac.input(
+                "beta2_pow", parameter.shape, disable_consteval=True, dtype=self.forge_dtype
+            )  # stores beta2 ** step
             updated_beta2_pow = ac.op("multiply", (beta2_pow, beta2))
             bias_correction2 = ac.op("subtract", (beta2_one, updated_beta2_pow))
             sqrt_bias_correction2 = ac.op("sqrt", (bias_correction2,))
@@ -370,7 +374,7 @@ class Adam(Optimizer):
         else:
             sqrt_of_variance = ac.op("sqrt", (updated_variance,))
 
-        epsilon = ac.tensor(torch.full(parameter_shape, self.epsilon))
+        epsilon = ac.tensor(torch.full(parameter_shape, self.epsilon, dtype=self.torch_dtype))
         sqrt_of_variance_plus_epsilon = ac.op("add", (sqrt_of_variance, epsilon))
         reciprocal_of_sqrt_of_variance_plus_epsilon = ac.op("reciprocal", (sqrt_of_variance_plus_epsilon,))
 
@@ -396,7 +400,7 @@ class Adam(Optimizer):
                 mean_times_reciprocal_of_sqrt_of_variance_plus_epsilon
             )
 
-        lr = ac.input("lr", parameter.shape)
+        lr = ac.input("lr", parameter.shape, dtype=self.forge_dtype)
         parameter_delta = ac.op(
             "multiply", (mean_times_reciprocal_of_sqrt_of_variance_plus_epsilon_plus_weight_decay_times_param, lr)
         )

@@ -7,13 +7,10 @@
 # To enable the chunked algorithm, pass the chunk_length_s parameter to the pipeline.
 # For large-v3, a chunk length of 30-seconds is optimal. To activate batching over long audio files, pass the argument batch_size
 
+
 import pytest
 import torch
-from transformers import (
-    WhisperConfig,
-    WhisperForConditionalGeneration,
-    WhisperProcessor,
-)
+from third_party.tt_forge_models.whisper.pytorch.loader import ModelLoader, ModelVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -45,7 +42,7 @@ class Wrapper(torch.nn.Module):
 
 @pytest.mark.nightly
 @pytest.mark.xfail
-@pytest.mark.parametrize("variant", ["openai/whisper-large-v3-turbo"])
+@pytest.mark.parametrize("variant", [ModelVariant.WHISPER_LARGE_V3_TURBO])
 def test_whisper_large_v3_speech_translation(variant):
 
     # Record Forge Property
@@ -58,18 +55,14 @@ def test_whisper_large_v3_speech_translation(variant):
         group=ModelGroup.RED,
     )
 
-    processor = WhisperProcessor.from_pretrained(variant)
-    framework_model = WhisperForConditionalGeneration.from_pretrained(variant)
-    model_config = WhisperConfig.from_pretrained(variant)
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    model = loader.load_model()
+    input_features = loader.load_inputs()
     framework_model = Wrapper(framework_model)
 
-    sample = torch.load("forge/test/models/files/samples/audio/1272-128104-0000.pt", weights_only=False)
-    sample_audio = sample["audio"]["array"]
-    processed_inputs = processor(sample_audio, return_tensors="pt", sampling_rate=16000)
-    input_features = processed_inputs.input_features
-
     # Get decoder inputs
-    decoder_input_ids = torch.tensor([[1, 1]]) * model_config.decoder_start_token_id
+    decoder_input_ids = torch.tensor([[1, 1]]) * model.config.decoder_start_token_id
     encoder_outputs = framework_model.model.model.encoder(input_features)[0].detach()
     encoder_outputs = encoder_outputs.to(torch.float32)
     inputs = [decoder_input_ids, encoder_outputs]
