@@ -8,7 +8,7 @@ import torch
 import forge
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
-from forge.verify.verify import verify, verify_backward
+from forge.verify.verify import verify
 from test.mlir.llama.utils.utils import load_model
 from test.models.models_utils import TextModelWrapper
 from forge.config import CompilerConfig
@@ -67,20 +67,7 @@ def test_llama_lora_bwd_pass(model_path):
     # Compile the model for training
     compiled_model = forge.compile(framework_model, input_ids, training=True)
 
-    fw_out, co_out = verify([input_ids], framework_model, compiled_model)
-
-    # Run bwd pass
-    grad = torch.rand_like(fw_out[0])
-
-    verify_backward(
-        [input_ids],
-        grad,
-        fw_out[0],
-        co_out[0],
-        framework_model,
-        compiled_model,
-        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)),
-    )
+    verify([input_ids], framework_model, compiled_model, with_backward=True)
 
 
 @pytest.mark.parametrize("model_path", ["meta-llama/Llama-3.2-1B", "openlm-research/open_llama_3b"])
@@ -118,17 +105,4 @@ def test_llama_lora_bfloat16(forge_property_recorder, model_path):
         compiler_cfg=compiler_cfg,
     )
 
-    fw_out, co_out = verify([input_ids], framework_model, compiled_model)
-
-    # Run bwd pass
-    grad = torch.rand_like(fw_out[0]).to(torch.bfloat16)
-
-    verify_backward(
-        [input_ids],
-        grad,
-        fw_out[0],
-        co_out[0],
-        framework_model,
-        compiled_model,
-        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)),
-    )
+    verify([input_ids], framework_model, compiled_model, with_backward=True)
