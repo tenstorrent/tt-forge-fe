@@ -1,50 +1,46 @@
-# SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
-#
+# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
+
 # SPDX-License-Identifier: Apache-2.0
 
+import io
+import urllib.request
+from typing import List
 
-import pytest
-from third_party.tt_forge_models.suryaocr.pytorch import ModelLoader
+import torch
+import torchvision.transforms as transforms
+from PIL import Image
 
 import forge
-from forge.forge_property_utils import (
-    Framework,
-    ModelArch,
-    ModelGroup,
-    ModelPriority,
-    Source,
-    Task,
-    record_model_properties,
-)
 from forge.verify.verify import verify
 
+from test.models.pytorch.vision.suryaocr.model_utils.model_utils import (
+    SuryaOCRWrapper,
+    freeze_all,
+    save_outputs,
+)
 
-@pytest.mark.nightly
-@pytest.mark.xfail
+
 def test_surya_ocr():
 
-    # Record Forge Property
-    module_name = record_model_properties(
-        framework=Framework.PYTORCH,
-        model=ModelArch.SURYAOCR,
-        variant="default",
-        task=Task.OPTICAL_CHARACTER_RECOGNITION,
-        source=Source.GITHUB,
-        group=ModelGroup.RED,
-        priority=ModelPriority.P1,
-    )
+    # Hardcode image(s) from URL
+    IMAGE_URL = "https://raw.githubusercontent.com/VikParuchuri/surya/master/static/images/excerpt_text.png"
+    with urllib.request.urlopen(IMAGE_URL) as resp:
+        img_bytes = resp.read()
+    image = Image.open(io.BytesIO(img_bytes)).convert("RGB")
 
-    # Load model and inputs via loader
-    loader = ModelLoader()
-    framework_model = loader.load_model()
-    inputs = loader.load_inputs()
+    images: List[Image.Image] = [image]
+    transform = transforms.Compose([transforms.ToTensor()])
+    image_tensor = transform(image)
+    image_tensor = torch.stack([image_tensor])
+
+    # Load model
+    framework_model = SuryaOCRWrapper()
+    freeze_all(framework_model, warmup_input=image_tensor)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model,
-        sample_inputs=inputs,
-        module_name=module_name,
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=image_tensor, module_name="surya_ocr")
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(image_tensor, framework_model, compiled_model)
+
+    save_outputs(co_out, images)
