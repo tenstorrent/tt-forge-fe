@@ -178,10 +178,10 @@ void decompose_initial(
 
     if (is_upsampling_height && is_upsampling_width)
     {
-        if (align_corners && mode != "nearest")
-        {
-            TT_THROW("align_corners argument not supported in upsample2d op with {} interpolation mode", mode);
-        }
+        TT_ASSERT(
+            (mode == "nearest") || (mode == "bilinear" && !align_corners),
+            "align_corners argument not supported in upsample2d op with {} interpolation mode",
+            mode);
         std::vector<int> scale_factor;
         scale_factor.push_back(size_h / input_h);
         scale_factor.push_back(size_w / input_w);

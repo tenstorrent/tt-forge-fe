@@ -135,6 +135,11 @@ void decompose_initial(
 
     // Determine whether it is upsample or downsample
     bool is_upsampling = (size >= input_w);
+    if (!is_upsampling)
+    {
+        TT_THROW("Resize1d doesn't support downsampling");
+        unreachable();
+    }
 
     // ---------------------------------------------------------------------
     // Decompose resize1d into upsample2d by inserting a singleton spatial dim
@@ -163,36 +168,28 @@ void decompose_initial(
         result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
     }
 
-    if (is_upsampling)
-    {
-        if (align_corners && mode != "nearest")
-        {
-            TT_THROW("align_corners argument not supported in upsample2d op with {} interpolation mode", mode);
-        }
+    TT_ASSERT(
+        (mode == "nearest") || (mode == "linear" && !align_corners),
+        "align_corners argument not supported in upsample2d op with {} interpolation mode",
+        mode);
 
-        // Create a 2D scale_factor vector where:
-        //  - first element corresponds to the added singleton spatial dimension (height) -> 1 (no change)
-        //  - second element is the width scaling ratio (new_width / old_width)
-        // This maps the 1D scaling into a 2D upsample: [1, width_ratio]
-        std::vector<int> scale_factor;
-        scale_factor.push_back(1);
-        scale_factor.push_back(size / input_w);
+    // Create a 2D scale_factor vector where:
+    //  - first element corresponds to the added singleton spatial dimension (height) -> 1 (no change)
+    //  - second element is the width scaling ratio (new_width / old_width)
+    // This maps the 1D scaling into a 2D upsample: [1, width_ratio]
+    std::vector<int> scale_factor;
+    scale_factor.push_back(1);
+    scale_factor.push_back(size / input_w);
 
-        // If the mode was "linear" for 1D, map it to "bilinear" for 2D upsample
-        mode = (mode == "linear") ? "bilinear" : mode;
+    // If the mode was "linear" for 1D, map it to "bilinear" for 2D upsample
+    mode = (mode == "linear") ? "bilinear" : mode;
 
-        result = dc.op(
-            graphlib::OpType(
-                "upsample2d",
-                {scale_factor, mode, true},
-                {{"scale_factor", scale_factor}, {"mode", mode}, {"channel_last", true}}),
-            {result});
-    }
-    else
-    {
-        TT_THROW("Resize1d doesn't support downsampling");
-        unreachable();
-    }
+    result = dc.op(
+        graphlib::OpType(
+            "upsample2d",
+            {scale_factor, mode, true},
+            {{"scale_factor", scale_factor}, {"mode", mode}, {"channel_last", true}}),
+        {result});
 
     if (!channel_last)
     {
