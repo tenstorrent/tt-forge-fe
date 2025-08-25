@@ -7,6 +7,52 @@ from ..tensor import Tensor
 from .common import ForgeOp as op
 
 
+def Resize1d(
+    name: str,
+    operandA: Tensor,
+    size: int,
+    mode: str = "nearest",
+    align_corners: bool = False,
+    channel_last: bool = False,
+) -> Tensor:
+    """
+    Resize input activations, with default mode 'nearest'
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+        Input operand A
+
+    size: int
+        The target size to extrapolate
+
+    mode: str
+        Interpolation mode
+
+    channel_last: bool
+        Whether the input is in channel-last format (NWC)
+
+    """
+
+    assert isinstance(size, int)
+    assert mode in ["nearest", "linear"], "Only support nearest and linear mode for now"
+
+    result: Tensor = op(
+        "resize1d",
+        name,
+        operandA,
+        size=size,
+        mode=mode,
+        align_corners=align_corners,
+        channel_last=channel_last,
+    ).get_tensor()
+
+    return result
+
+
 def Resize2d(
     name: str,
     operandA: Tensor,

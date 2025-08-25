@@ -109,6 +109,7 @@ enum class OpType : uint32_t
     Repeat,
     RepeatInterleave,
     Reshape,
+    Resize1d,
     Resize2d,
     Select,
     Sigmoid,
