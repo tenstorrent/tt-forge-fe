@@ -390,3 +390,39 @@ def test_concat_block():
     )
 
     verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.nightly
+@pytest.mark.skip_model_analysis
+@pytest.mark.parametrize(
+    "tensor_size,max_length",
+    [
+        (24, 160),
+        (10, 50),
+        (32, 100),
+        (16, 200),
+        (8, 5),
+    ],
+)
+def test_index_put_speecht5_tts(tensor_size, max_length):
+    class index_put(nn.Module):
+        def __init__(self, max_length):
+            super().__init__()
+            self.max_length = max_length
+
+        def forward(self, pos_seq):
+
+            pos_seq[pos_seq < -self.max_length] = -self.max_length
+            return pos_seq
+
+    pos_seq = torch.arange(tensor_size).unsqueeze(1) - torch.arange(tensor_size).unsqueeze(0)
+
+    inputs = [pos_seq]
+    model = index_put(max_length)
+    model.eval()
+
+    compiled_model = forge.compile(
+        model,
+        sample_inputs=inputs,
+    )
+    verify(inputs, model, compiled_model)
