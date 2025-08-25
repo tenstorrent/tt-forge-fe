@@ -249,7 +249,7 @@ TestParamsData.test_plan = TestPlan(
         # Skip all tests with input shapes with 2 dimensions
         TestCollection(
             criteria=lambda test_vector: len(test_vector.input_shape) == 2,
-            skip_reason=FailingReasons.NOT_IMPLEMENTED,
+            skip_reason=FailingReasons.UNSUPPORTED_DIMENSION,
         ),
         *TestIdsDataLoader.build_failing_rules(operators=TestCollectionData.all.operators),
     ],
