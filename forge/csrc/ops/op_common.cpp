@@ -7,6 +7,7 @@
 #include "autograd/autograd.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
+#include "graph_lib/utils.hpp"
 #include "lower_to_forge/common.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
@@ -182,18 +183,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> reduce_ops_shap
     return {graphlib::Shape::create(ret), {}};
 }
 
-std::string get_resize_method(int method)
-{
-    TT_ASSERT(method >= 0 && method <= 2, "Unsupported resize method: " + std::to_string(method));
-    if (method == 0)
-        return "nearest";
-    else if (method == 1)
-        return "bilinear";
-    else if (method == 2)
-        return "cubic";
-    unreachable();
-}
-
 std::vector<at::Tensor> promote_floating_dtypes(const std::vector<at::Tensor> &tensors)
 {
     std::vector<at::Tensor> result;
@@ -211,6 +200,93 @@ std::vector<at::Tensor> promote_floating_dtypes(const std::vector<at::Tensor> &t
             result.emplace_back(t.clone());
 
     return result;
+}
+
+void decompose_nearest_interpolation(tt::DecomposingContext &dc, const tt::graphlib::NodeContext &activation, std::vector<int> sizes, bool channel_last)
+{
+    NodeContext result = activation;
+    graphlib::Shape act_shape = activation.shape;
+    const size_t rank = act_shape.size();
+    if (rank == 3)
+    {
+        size_t c_dim = channel_last ? rank - 1 : rank - 2;
+        size_t w_dim = channel_last ? rank - 2 : rank - 1;
+        int input_c = static_cast<int>(act_shape[c_dim]);
+        int input_w = static_cast<int>(act_shape[w_dim]);
+        int size_w = sizes[0];
+        int g_w = std::gcd(size_w, input_w);
+        int up_w = size_w / g_w;
+        int down_w = input_w / g_w;
+        if (up_w > 1)
+            result = dc.op(tt::graphlib::OpType("repeat_interleave", {}, {{"repeats", up_w}, {"dim", static_cast<int>(w_dim)}}), {result});
+        if (down_w != 1)
+        {
+            result = dc.op(tt::graphlib::OpType("unsqueeze", {}, {{"dim", static_cast<int>(w_dim)}}), {result});
+            std::vector<int64_t> weight_shape = {input_c, 1, 1, down_w};
+            at::ScalarType datatype = tt::graphlib::data_format_to_scalar_type(result.output_df);
+            at::Tensor weight_tensor = torch::zeros(weight_shape, torch::TensorOptions().dtype(datatype));
+            weight_tensor.index_put_({torch::indexing::Slice(), 0, 0, 0}, 1.0);
+            NodeContext weight = dc.tensor(weight_tensor);
+            std::vector<int> stride = {1, down_w};
+            std::vector<int> padding = {0, 0, 0, 0};
+            std::vector<int> dilation = {1, 1};
+            result = dc.op(tt::graphlib::OpType("conv2d", {}, {{"stride", stride}, {"groups", input_c}, {"padding", padding}, {"dilation", dilation}, {"channel_last", channel_last}}), {result, weight});
+            result = dc.op(tt::graphlib::OpType("squeeze", {}, {{"dim", static_cast<int>(w_dim)}}), {result});
+        }
+        dc.fuse(result);
+    }
+    else if (rank == 4)
+    {
+        size_t c_dim = channel_last ? rank - 1 : rank - 3;
+        size_t h_dim = channel_last ? rank - 3 : rank - 2;
+        size_t w_dim = channel_last ? rank - 2 : rank - 1;
+        int input_c = static_cast<int>(act_shape[c_dim]);
+        int input_h = static_cast<int>(act_shape[h_dim]);
+        int input_w = static_cast<int>(act_shape[w_dim]);
+        int size_h = sizes[0];
+        int size_w = sizes[1];
+        int g_h = std::gcd(size_h, input_h);
+        int g_w = std::gcd(size_w, input_w);
+        int up_h = size_h / g_h;
+        int up_w = size_w / g_w;
+        int down_h = input_h / g_h;
+        int down_w = input_w / g_w;
+        NodeContext result = activation;
+        if (up_h > 1)
+            result = dc.op(tt::graphlib::OpType("repeat_interleave", {}, {{"repeats", up_h}, {"dim", static_cast<int>(h_dim)}}), {result});
+        if (up_w > 1)
+            result = dc.op(tt::graphlib::OpType("repeat_interleave", {}, {{"repeats", up_w}, {"dim", static_cast<int>(w_dim)}}), {result});
+        if (down_w != 1)
+        {
+            std::vector<int64_t> weight_shape = {input_c, 1, 1, down_w};
+            at::ScalarType datatype = tt::graphlib::data_format_to_scalar_type(result.output_df);
+            at::Tensor weight_tensor = torch::zeros(weight_shape, torch::TensorOptions().dtype(datatype));
+            weight_tensor.index_put_({torch::indexing::Slice(), 0, 0, 0}, 1.0);
+            NodeContext weight = dc.tensor(weight_tensor);
+            std::vector<int> stride = {1, down_w};
+            std::vector<int> padding = {0, 0, 0, 0};
+            std::vector<int> dilation = {1, 1};
+            result = dc.op(tt::graphlib::OpType("conv2d", {}, {{"stride", stride}, {"groups", input_c}, {"padding", padding}, {"dilation", dilation}, {"channel_last", channel_last}}), {result, weight});
+        }
+        if (down_h != 1)
+        {
+            std::vector<int64_t> weight_shape = {input_c, 1, down_h, 1};
+            at::ScalarType datatype = tt::graphlib::data_format_to_scalar_type(result.output_df);
+            at::Tensor weight_tensor = torch::zeros(weight_shape, torch::TensorOptions().dtype(datatype));
+            weight_tensor.index_put_({torch::indexing::Slice(), 0, 0, 0}, 1.0);
+            NodeContext weight = dc.tensor(weight_tensor);
+            std::vector<int> stride = {down_h, 1};
+            std::vector<int> padding = {0, 0, 0, 0};
+            std::vector<int> dilation = {1, 1};
+            result = dc.op(tt::graphlib::OpType("conv2d", {}, {{"stride", stride}, {"groups", input_c}, {"padding", padding}, {"dilation", dilation},  {"channel_last",channel_last}}), {result, weight});
+        }
+        dc.fuse(result);
+    }
+    else
+    {
+        TT_THROW("Nearest interpolation is supported only for 3d and 4d inputs");
+        unreachable();
+    }
 }
 
 }  // namespace op_common

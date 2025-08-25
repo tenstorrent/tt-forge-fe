@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "autograd/autograd.hpp"
+#include "passes/decomposing_context.hpp"
 #include "torch/torch.h"
 
 namespace tt
@@ -87,6 +88,8 @@ std::string get_resize_method(int method);
  * @return promoted tensors.
  */
 std::vector<at::Tensor> promote_floating_dtypes(const std::vector<at::Tensor> &tensors);
+
+void decompose_nearest_interpolation(tt::DecomposingContext &dc, const tt::graphlib::NodeContext &activation, std::vector<int> sizes, bool channel_last);
 
 }  // namespace op_common
 }  // namespace ops
