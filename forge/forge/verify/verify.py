@@ -36,6 +36,8 @@ from forge.verify.compare import compare_tensor_to_golden
 from forge.verify.utils import convert_to_supported_pytorch_dtype
 from forge.forge_property_utils import (
     ExecutionStage,
+    ExecutionRunMode,
+    ExecutionPass,
     ModelGroup,
     get_model_group,
     record_execution,
@@ -453,9 +455,17 @@ def verify(
     fw_out = framework_model(*fw_inputs)
     del fw_inputs
 
-    record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
+    record_execution(
+        ExecutionStage.FAILED_TTNN_BINARY_EXECUTION,
+        ExecutionRunMode.from_training_param(compiled_model.training()),
+        ExecutionPass.FORWARD,
+    )
     co_out = compiled_model(*inputs)
-    record_execution(ExecutionStage.FAILED_VERIFICATION)
+    record_execution(
+        ExecutionStage.FAILED_VERIFICATION,
+        ExecutionRunMode.from_training_param(compiled_model.training()),
+        ExecutionPass.FORWARD,
+    )
 
     # EmitC verification
     if verify_cfg.verify_emitc_correctness:
@@ -518,7 +528,9 @@ def verify(
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
 
-    record_execution(ExecutionStage.PASSED)
+    record_execution(
+        ExecutionStage.PASSED, ExecutionRunMode.from_training_param(framework_model.training), ExecutionPass.FORWARD
+    )
 
     # Return both the framework and compiled model outputs
     return fw_out, co_out
