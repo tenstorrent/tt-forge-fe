@@ -85,8 +85,10 @@ def test_distilbert_token_classification_pytorch(variant, forge_tmp_path):
 
     # post processing
     predicted_token_class_ids = co_out[0].argmax(-1)
-    predicted_token_class_ids = torch.masked_select(predicted_token_class_ids, (input_tokens["attention_mask"][0] == 1))
-    predicted_tokens_classes = [framework_model.config.id2label[t.item()] for t in predicted_token_class_ids]
+    predicted_token_class_ids = torch.masked_select(predicted_token_class_ids, input_tokens["attention_mask"][0] == 1)
+
+    # Decode into readable text
+    predicted_text = tokenizer.decode(predicted_token_class_ids.tolist(), skip_special_tokens=True)
 
     print(f"Context: {sample_text}")
-    print(f"Answer: {predicted_tokens_classes}")
+    print(f"Answer: {predicted_text}")
