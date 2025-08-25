@@ -1,10 +1,9 @@
-# SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
-#
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
+# SPDX-License-Identifier: Apache-2.0
+import shutil
 
 import pytest
-from third_party.tt_forge_models.suryaocr.pytorch import ModelLoader
 
 import forge
 from forge.forge_property_utils import (
@@ -17,6 +16,10 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
+from third_party.tt_forge_models.suryaocr.pytorch.loader import (
+    ModelLoader,
+    ModelVariant,
+)
 
 
 @pytest.mark.nightly
@@ -27,7 +30,7 @@ def test_surya_ocr():
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.SURYAOCR,
-        variant="default",
+        variant="ocr_detection",
         task=Task.OPTICAL_CHARACTER_RECOGNITION,
         source=Source.GITHUB,
         group=ModelGroup.RED,
@@ -35,9 +38,9 @@ def test_surya_ocr():
     )
 
     # Load model and inputs via loader
-    loader = ModelLoader()
-    framework_model = loader.load_model()
+    loader = ModelLoader(variant=ModelVariant.OCR_DETECTION)
     inputs = loader.load_inputs()
+    framework_model = loader.load_model()
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -47,4 +50,11 @@ def test_surya_ocr():
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post process outputs
+    output_dir = "test/models/pytorch/vision/suryaocr/surya_detect"
+    try:
+        loader.post_process(co_out, output_dir)
+    finally:
+        shutil.rmtree(output_dir, ignore_errors=True)

@@ -287,6 +287,31 @@ def _prepare_4d_causal_attention_mask_with_cache_position(
     return causal_mask
 
 
+import surya.common.surya.processor as _surya_processor_module
+
+
+def _process_image_input(self, image_input):
+    rotated = image_input.get("rotated", False)
+    image = image_input.get("image", None)
+    assert image is not None, "A PIL Image must be provided when the input type is `image`"
+    image_tiles, grid_thw = self._process_and_tile(image)
+
+    num_tokens = int(image_tiles.shape[0]) / self.merge_size**2
+    assert float(num_tokens).is_integer(), f"Expected number of tokens to be an integer, got {num_tokens}"
+
+    input_ids = [self.image_token_id] * int(num_tokens)
+    input_ids += self.register_token_ids[: self.num_register_tokens]
+
+    if rotated:
+        input_ids = [self.image_rotated_token] + input_ids
+
+    return _surya_processor_module.ProcessorOutput(
+        input_ids=input_ids,
+        image_tiles=image_tiles,
+        grid_thw=grid_thw,
+    )
+
+
 def Gemma2DecoderLayer_patched_forward(
     self,
     hidden_states: torch.Tensor,
