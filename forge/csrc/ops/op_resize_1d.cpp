@@ -76,16 +76,6 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     const size_t rank = input_shape.size();
     size_t w_idx = channel_last ? rank - 2 : rank - 1;
 
-    int input_w = static_cast<int>(input_shape[w_idx]);
-
-    // Determine whether it is upsample or downsample
-    bool is_upsampling = (size >= input_w);
-
-    if (is_upsampling)
-        TT_ASSERT((size % input_w == 0), "Only support upsample with integer scale factor");
-    else
-        TT_ASSERT((input_w % size == 0), "Only support downsample with integer scale factor");
-
     std::vector<uint32_t> output_shape = input_shape;
     output_shape[w_idx] = static_cast<uint32_t>(size);
 
@@ -133,13 +123,15 @@ void decompose_initial(
         return;
     }
 
-    // Determine whether it is upsample or downsample
     bool is_upsampling = (size >= input_w);
-    if (!is_upsampling)
-    {
-        TT_THROW("Resize1d doesn't support downsampling");
-        unreachable();
+
+    if (mode == "nearest" && ((size % input_w != 0) || (!is_upsampling))){
+        std::vector<int> sizes = {size};
+        tt::ops::op_common::decompose_nearest_interpolation(dc, result, sizes, channel_last);
+        return;
     }
+    // Determine whether it is upsample or downsample
+    TT_ASSERT(is_upsampling, "OpType::Resize1d doesn't support downsampling for {} interpolation mode", mode);
 
     // ---------------------------------------------------------------------
     // Decompose resize1d into upsample2d by inserting a singleton spatial dim
