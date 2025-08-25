@@ -56,6 +56,13 @@ _OPERATORS = [
         instantiate=True,
         constructor_params=[],
     ),
+    OperatorDefinition(
+        "max_pool_2d",
+        "torch.nn.MaxPool2d",
+        1,
+        instantiate=True,
+        constructor_params=[],
+    ),
     # Unary operators (implemented)
     OperatorDefinition("relu", "torch.relu", 1),
     OperatorDefinition("sqrt", "torch.sqrt", 1),
