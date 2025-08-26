@@ -76,7 +76,7 @@ patool
 onnx>=1.15.0
 onnxruntime>=1.16.3
 tf2onnx==1.15.1
-tensorflow-cpu==
+tensorflow-cpu==2.19.0
 # Paddle stack
 paddlepaddle==2.6.2
 paddlenlp==2.8.1
