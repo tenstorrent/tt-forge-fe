@@ -64,7 +64,7 @@ void decompose_post_autograd(
     auto x = inputs[0];
     auto y = inputs[1];
 
-    auto zero = dc.op(graphlib::OpType("constant", {}, {{"c", 0.0f}}), {});
+    auto zero = dc.op(graphlib::OpType("constant", {{"c", 0.0f}}), {});
     auto x_gt = dc.op(graphlib::OpType("greater"), {x, zero});
     auto x_eq = dc.op(graphlib::OpType("equal"), {x, zero});
     auto res = dc.op(graphlib::OpType("multiply"), {x_eq, y});

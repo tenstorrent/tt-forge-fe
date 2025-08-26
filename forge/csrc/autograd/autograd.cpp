@@ -329,7 +329,7 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
                     auto reshape_node = graph->add_node(
                         graphlib::create_node<graphlib::PyOpNode>(
                             "reshape_out_grad_" + node->name(),
-                            OpType("reshape", {}, {{"shape", node->shape().as_vector<int>()}})),
+                            OpType("reshape", {{"shape", node->shape().as_vector<int>()}})),
                         graph->get_subgraph_id_for_node(node->id()));
                     reshape_node->set_shape(node->shape());
                     reshape_node->set_output_df(node->output_df());
@@ -396,7 +396,7 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
             {
                 if (tm.type() == ops::OpType::Broadcast)
                 {
-                    TT_ASSERT(tm.legacy_attrs_.size() <= 3);
+                    TT_ASSERT(tm.attrs().size() <= 3);
                     log_debug(
                         tt::LogAutograd,
                         "Edge has broadcast: dim={} size={}",
@@ -406,7 +406,7 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
 
                     NodeContext src = last_out;
                     last_out = create_backward_op(
-                        OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>({dim})}, {"keep_dim", true}}),
+                        OpType("reduce_sum", {{"dim_arg", std::vector<int>({dim})}, {"keep_dim", true}}),
                         {src},
                         node,
                         edge.consumer_input_port_id,
@@ -478,7 +478,7 @@ void autograd_engine::create_optimizer_graph()
                         auto cast_node = graph->add_node(
                             graphlib::create_node<graphlib::PyOpNode>(
                                 final_optimizer_output->name() + "_cast",
-                                graphlib::OpType("cast", {}, {{"dtype", static_cast<int>(param_df)}})),
+                                graphlib::OpType("cast", {{"dtype", static_cast<int>(param_df)}})),
                             0);
                         cast_node->set_shape(final_optimizer_output->shape());
                         cast_node->set_output_df(param_df);
@@ -637,7 +637,7 @@ NodeContext autograd_engine::create_optimizer_op(
                                 "_" + std::to_string(operand.id);
         auto cast_node = graph->add_node(
             graphlib::create_node<graphlib::PyOpNode>(
-                cast_name, graphlib::OpType("cast", {}, {{"dtype", static_cast<int>(DataFormat::Float32)}})),
+                cast_name, graphlib::OpType("cast", {{"dtype", static_cast<int>(DataFormat::Float32)}})),
             graph->get_subgraph_id_for_node(current_fwd_op->id()));
 
         graph->add_edge(Edge(operand.id, operand.output_index, cast_node->id(), 0, graphlib::EdgeType::kData));

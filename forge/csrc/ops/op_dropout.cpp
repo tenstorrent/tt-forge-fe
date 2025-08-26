@@ -56,7 +56,7 @@ NodeContext backward(
     TT_ASSERT(operand == 0, "Invalid operand index for dropout.");
 
     // Apply dropout to gradient with the same parameters.
-    return ac.autograd->create_op(ac, graphlib::OpType("dropout", {}, op.attrs()), {gradient});
+    return ac.autograd->create_op(ac, graphlib::OpType("dropout", op.attrs()), {gradient});
 }
 
 }  // namespace dropout

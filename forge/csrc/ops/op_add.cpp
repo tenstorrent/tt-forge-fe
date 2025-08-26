@@ -57,7 +57,7 @@ tt::graphlib::NodeContext backward(
     if (input_shape == grad_shape)
     {
         // For addition, gradient flows through unchanged (after handling broadcasting)
-        return ac.autograd->create_op(ac, graphlib::OpType("nop", {}, {}), {gradient});
+        return ac.autograd->create_op(ac, graphlib::OpType("nop"), {gradient});
     }
 
     // Shapes don't match, we need to reduce along broadcast dimensions using reduce_sum

@@ -102,19 +102,19 @@ void decompose_initial(
     reshape_dims1.push_back(static_cast<int>(H));
     reshape_dims1.push_back(static_cast<int>(W));
 
-    auto x = dc.op(graphlib::OpType("reshape", {}, {{"shape", reshape_dims1}}), {result});
+    auto x = dc.op(graphlib::OpType("reshape", {{"shape", reshape_dims1}}), {result});
 
     // Step 2: Transpose sequence - adjust indices based on total dimensions
     int base_dim = static_cast<int>(leading_dims.size());  // offset for leading dimensions
 
     // First transpose: swap r and H -> [..., C, H, r, r, W]
-    x = dc.op(graphlib::OpType("transpose", {}, {{"dim0", base_dim + 1}, {"dim1", base_dim + 3}}), {x});
+    x = dc.op(graphlib::OpType("transpose", {{"dim0", base_dim + 1}, {"dim1", base_dim + 3}}), {x});
 
     // Second transpose: swap r and r -> [..., C, H, r, r, W] (positions changed after first transpose)
-    x = dc.op(graphlib::OpType("transpose", {}, {{"dim0", base_dim + 2}, {"dim1", base_dim + 3}}), {x});
+    x = dc.op(graphlib::OpType("transpose", {{"dim0", base_dim + 2}, {"dim1", base_dim + 3}}), {x});
 
     // Third transpose: swap the last two dimensions (r and W) -> [..., C, H, r, W, r]
-    x = dc.op(graphlib::OpType("transpose", {}, {{"dim0", base_dim + 3}, {"dim1", base_dim + 4}}), {x});
+    x = dc.op(graphlib::OpType("transpose", {{"dim0", base_dim + 3}, {"dim1", base_dim + 4}}), {x});
 
     // Step 3: Final reshape to (..., C, H * r, W * r)
     std::vector<int> final_dims = leading_dims;
@@ -122,7 +122,7 @@ void decompose_initial(
     final_dims.push_back(static_cast<int>(H * r));
     final_dims.push_back(static_cast<int>(W * r));
 
-    x = dc.op(graphlib::OpType("reshape", {}, {{"shape", final_dims}}), {x});
+    x = dc.op(graphlib::OpType("reshape", {{"shape", final_dims}}), {x});
 
     dc.fuse(x);
 }

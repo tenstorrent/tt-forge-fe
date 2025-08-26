@@ -95,10 +95,10 @@ void decompose_initial(
         new_shape.insert(new_shape.end(), input_shape.begin(), input_shape.end());
 
         graphlib::OpType::Attrs reshape_attrs = {{"shape", std::vector<int>(new_shape.begin(), new_shape.end())}};
-        result = dc.op(graphlib::OpType("reshape", {}, reshape_attrs), {result});
+        result = dc.op(graphlib::OpType("reshape", reshape_attrs), {result});
 
         graphlib::OpType::Attrs repeat_attrs = {{"repeats", repeats}};
-        result = dc.op(graphlib::OpType("repeat", {}, repeat_attrs), {result});
+        result = dc.op(graphlib::OpType("repeat", repeat_attrs), {result});
         dc.fuse(result);
     }
 }

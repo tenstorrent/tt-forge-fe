@@ -78,8 +78,8 @@ void decompose_initial(
     int dim = op.attr_as<int>("dim");
     bool stable = op.attr_as<bool>("stable");
 
-    NodeContext softmax_result = dc.op(graphlib::OpType("softmax", {}, {{"dim", dim}, {"stable", stable}}), {x});
-    NodeContext result = dc.op(graphlib::OpType("log", {}, {}), {softmax_result});
+    NodeContext softmax_result = dc.op(graphlib::OpType("softmax", {{"dim", dim}, {"stable", stable}}), {x});
+    NodeContext result = dc.op(graphlib::OpType("log"), {softmax_result});
 
     dc.fuse(result);
 }

@@ -284,15 +284,11 @@ void GraphModule(py::module &m_graph)
 
     py::class_<tt::graphlib::OpType, tt::raw_ptr<tt::graphlib::OpType>>(m_graph, "OpType")
         .def(
-            py::init([](std::string const &op,
-                        std::vector<tt::graphlib::OpType::Attr> const &attr,
-                        tt::graphlib::OpType::Attrs const &named_attrs)
-                     { return graphlib::OpType(op, attr, named_attrs); }),
+            py::init([](std::string const &op, tt::graphlib::OpType::Attrs const &named_attrs)
+                     { return graphlib::OpType(op, named_attrs); }),
             py::arg("op"),
-            py::arg("attr") = std::vector<tt::graphlib::OpType::Attr>{},
             py::arg("named_attrs") = tt::graphlib::OpType::Attrs{})
         .def_readonly("op", &tt::graphlib::OpType::op_)
-        .def_readonly("attr", &tt::graphlib::OpType::legacy_attrs_)
         .def_readonly("named_attrs", &tt::graphlib::OpType::named_attrs_)
         .def("eval", &tt::graphlib::OpType::eval)
         .def("shape", &tt::graphlib::OpType::shape)
@@ -315,7 +311,6 @@ void GraphModule(py::module &m_graph)
         .value("ReinterpretShape", tt::graphlib::RuntimeTensorTransformType::ReinterpretShape)
         .value("EmbeddingIndex", tt::graphlib::RuntimeTensorTransformType::EmbeddingIndex)
         .value("ConstantInput", tt::graphlib::RuntimeTensorTransformType::ConstantInput)
-        .value("Unpad", tt::graphlib::RuntimeTensorTransformType::Unpad)
         .value("Concatenate", tt::graphlib::RuntimeTensorTransformType::Concatenate)
         .export_values();
 
@@ -995,7 +990,7 @@ py::object eval_reinterpret_shape(Graph *graph, Node *node, py::object input_val
         runtime_tensor_transform.reinterpreted_shape);
 
     graphlib::OpType reinterpret_shape(
-        "reshape", {}, {{"shape", runtime_tensor_transform.reinterpreted_shape.as_vector<int>()}});
+        "reshape", {{"shape", runtime_tensor_transform.reinterpreted_shape.as_vector<int>()}});
     return eval_op(reinterpret_shape, {input_value});
 }
 
@@ -1016,40 +1011,6 @@ py::object eval_constant_input(Graph *, Node *node, py::object input_value)
         return input_value;
     }
     return runtime_tensor_transform.get_constant_input_tensor();
-}
-
-py::object eval_unpad(Graph *graph, Node *node, py::object input_value)
-{
-    graphlib::OutputNode *output_node = dynamic_cast<graphlib::OutputNode *>(node);
-    if (!output_node)
-        return input_value;
-
-    graphlib::RuntimeTensorTransform runtime_tensor_transform = output_node->get_runtime_tensor_transform();
-    if (runtime_tensor_transform.type != graphlib::RuntimeTensorTransformType::Unpad)
-        return input_value;
-
-    // Determine forge_unpad attributes based on original and padded shape
-    graphlib::Shape original_shape = runtime_tensor_transform.unpadded_shape;
-    int orig_c = original_shape[-1];
-    int orig_r = original_shape[-2];
-
-    graphlib::Shape padded_shape = node->shape();
-    int pad_ct = (padded_shape[-1] / graphlib::Shape::FORGE_TILE_DIM) - graphlib::Shape::to_forge(original_shape).ct();
-    if (pad_ct < 0)
-        pad_ct = 0;
-    int pad_rt = (padded_shape[-2] / graphlib::Shape::FORGE_TILE_DIM) - graphlib::Shape::to_forge(original_shape).rt();
-    if (pad_rt < 0)
-        pad_rt = 0;
-
-    // Populate attributes and construct forge_unpad op for evaluation
-    std::vector<graphlib::OpType::Attr> attr;
-    attr.emplace_back(pad_rt);
-    attr.emplace_back(pad_ct);
-    attr.emplace_back(orig_r);
-    attr.emplace_back(orig_c);
-
-    graphlib::OpType unpad("forge_unpad", attr);
-    return eval_op(unpad, {input_value});
 }
 
 py::object eval_concatenate(
@@ -1097,7 +1058,7 @@ py::object eval_concatenate(
         }
     }
 
-    graphlib::OpType prestride_act("concatenate", {}, {{"dim", runtime_tensor_transform.concat_dim}});
+    graphlib::OpType prestride_act("concatenate", {{"dim", runtime_tensor_transform.concat_dim}});
     return eval_op(prestride_act, concat_inputs);
 }
 
@@ -1128,9 +1089,6 @@ std::vector<py::object> eval_runtime_tensor_transform(
                 break;
             case graphlib::RuntimeTensorTransformType::ConstantInput:
                 ret.push_back(eval_constant_input(graph, node, input_value));
-                break;
-            case graphlib::RuntimeTensorTransformType::Unpad:
-                ret.push_back(eval_unpad(graph, node, input_value));
                 break;
             case graphlib::RuntimeTensorTransformType::Concatenate:
                 // Concatenate will join multiple outputs togeter, pass full vectors
