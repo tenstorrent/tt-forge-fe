@@ -22,13 +22,13 @@ void convert_broadcast_ops_to_tms(Graph *graph)
         [](Node *node) -> bool
         {
             graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(node);
-            return op and op->new_op_type() == ops::OpType::Broadcast;
+            return op and op->op_type() == ops::OpType::Broadcast;
         });
 
     for (Node *node : broadcast_ops)
     {
         graphlib::OpNode *op = node->as<graphlib::OpNode>();
-        graphlib::OpType op_type = op->op_type();
+        ops::Op op_type = op->op();
         constexpr bool remove_node = true;
         graphlib::bypass_node(
             graph,
@@ -92,7 +92,7 @@ bool safe_to_hoist_past(const Graph *graph, const Node *operand)
         return false;
 
     // Any unary op that doesn't change shape, and not transpose (which could keep the same shape)
-    if (operand->as<graphlib::PyOpNode>()->new_op_type() == ops::OpType::Transpose)
+    if (operand->as<graphlib::PyOpNode>()->op_type() == ops::OpType::Transpose)
         return false;
 
     graphlib::Shape incoming_shape = graph->data_operands(operand)[0]->shape();

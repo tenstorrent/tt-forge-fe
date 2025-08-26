@@ -16,6 +16,7 @@
 #include <typeinfo>
 
 #include "graph_lib/defines.hpp"
+#include "ops/op.hpp"
 
 // Forward declarations
 namespace c10
@@ -55,7 +56,6 @@ namespace tt
 
 namespace graphlib
 {
-struct OpType;
 class QueueNode;
 class InputNode;
 
@@ -220,7 +220,7 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Node *node);
 graphlib::Edge clone_input_forking_edge(
     graphlib::Graph *graph, graphlib::Edge user_edge, bool allow_single_user = false);
 
-graphlib::Shape default_tm_evaluator(graphlib::OpType const &tm, graphlib::Shape shape, graphlib::IRLevel ir_level);
+graphlib::Shape default_tm_evaluator(ops::Op const &tm, graphlib::Shape shape, graphlib::IRLevel ir_level);
 
 // Calculate node shape from operand shapes, using python callback
 void calculate_and_set_node_shape(Graph *graph, Node *node);

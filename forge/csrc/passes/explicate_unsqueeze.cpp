@@ -53,8 +53,8 @@ void explicate_unsqueeze(graphlib::Graph *graph)
                     auto rank = current_node->shape().size();
                     std::string name = to_be_unsqueeze->name() + "_" + eltwise->name() + "_unsqueeze_" +
                                        std::to_string(rank) + "_operand_0";
-                    auto named_attr = graphlib::OpType::Attrs{{"dim", 0}};
-                    auto op_type = graphlib::OpType("unsqueeze", named_attr);
+                    auto named_attr = ops::Attrs{{"dim", 0}};
+                    auto op_type = ops::Op("unsqueeze", named_attr);
                     auto change_rank = graph->add_node(
                         std::make_unique<graphlib::PyOpNode>(name, op_type),
                         graph->get_subgraph_id_for_node(current_node->id()));
@@ -98,7 +98,7 @@ void hoist_unsqueeze_squeeze_to_reshape(graphlib::Graph *graph)
         {
             continue;
         }
-        if (op->new_op_type() != ops::OpType::Reshape)
+        if (op->op_type() != ops::OpType::Reshape)
         {
             continue;
         }
@@ -113,11 +113,10 @@ void hoist_unsqueeze_squeeze_to_reshape(graphlib::Graph *graph)
         auto user_op = dynamic_cast<graphlib::OpNode *>(users[0]);
         auto operand_op = dynamic_cast<graphlib::OpNode *>(operands[0]);
         bool user_is_squeeze_unsqueeze =
-            (user_op and
-             (user_op->new_op_type() == ops::OpType::Unsqueeze or user_op->new_op_type() == ops::OpType::Squeeze));
+            (user_op and (user_op->op_type() == ops::OpType::Unsqueeze or user_op->op_type() == ops::OpType::Squeeze));
         bool operand_is_squeeze_unsqueeze =
-            (operand_op and (operand_op->new_op_type() == ops::OpType::Unsqueeze or
-                             operand_op->new_op_type() == ops::OpType::Squeeze));
+            (operand_op and
+             (operand_op->op_type() == ops::OpType::Unsqueeze or operand_op->op_type() == ops::OpType::Squeeze));
         if (not user_is_squeeze_unsqueeze and not operand_is_squeeze_unsqueeze)
         {
             continue;
@@ -127,7 +126,7 @@ void hoist_unsqueeze_squeeze_to_reshape(graphlib::Graph *graph)
         {
             auto target_shape = user_op->shape().as_vector();
             std::vector<int> shape_vector(target_shape.begin(), target_shape.end());
-            op->change_op_type(ops::Op(ops::OpType::Reshape).as_string(), {{"shape", shape_vector}});
+            op->change_op(ops::Op(ops::OpType::Reshape).as_string(), {{"shape", shape_vector}});
             op->set_shape(user_op->shape());
             nodes_to_remove.insert(users[0]);
         }

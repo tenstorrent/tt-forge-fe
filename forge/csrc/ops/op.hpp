@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include <map>
+#include <ostream>
 #include <string>
 #include <tuple>
 #include <utility>
@@ -153,7 +154,7 @@ class Op
    public:
     Op(OpType type, Attrs attrs) : type_(type), attrs_(std::move(attrs)) {}
     Op(OpType type) : type_(type) {}
-    Op(const graphlib::OpType &old_op_type);
+    Op(const std::string &op_name, Attrs attrs = {});
 
     bool operator==(const Op &other) const { return type_ == other.type_ && attrs_ == other.attrs_; }
     bool operator!=(const Op &other) const { return !(*this == other); }
@@ -205,24 +206,23 @@ class Op
      * Calculations segment. All ops must implement these. *
      * ----------------------------------------------------*/
 
-    at::Tensor eval(const graphlib::OpType &old_op_type, const std::vector<at::Tensor> &tensors) const;
+    at::Tensor eval(const std::vector<at::Tensor> &tensors) const;
 
     std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(
-        const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const;
+        const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
     tt::graphlib::NodeContext backward(
-        const graphlib::OpType &old_op_type,
         tt::autograd::autograd_context &context,
         int operand,
         const std::vector<tt::graphlib::NodeContext> &inputs,
         const tt::graphlib::NodeContext &output,
         const tt::graphlib::NodeContext &gradient) const;
 
-    bool is_tm(const graphlib::OpType &old_op_type) const;
-    bool is_eltwise(const graphlib::OpType &old_op_type) const;
-    bool is_eltwise_unary(const graphlib::OpType &old_op_type) const;
-    bool is_eltwise_binary(const graphlib::OpType &old_op_type) const;
-    bool is_eltwise_nary(const graphlib::OpType &old_op_type) const;
+    bool is_tm() const;
+    bool is_eltwise() const;
+    bool is_eltwise_unary() const;
+    bool is_eltwise_binary() const;
+    bool is_eltwise_nary() const;
 
     /* --------------------------*
      * Optional implementations. *
@@ -233,33 +233,21 @@ class Op
      * exist. They are needed for now in order to unblock ops migration from python to cpp.
      */
     template <DecomposeEpoch epoch>
-    void decompose(
-        const graphlib::OpType &old_op_type,
-        DecomposingContext &dc,
-        const std::vector<tt::graphlib::NodeContext> &inputs) const;
+    void decompose(DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
 
-    void decompose_initial(
-        const graphlib::OpType &old_op_type,
-        DecomposingContext &dc,
-        const std::vector<tt::graphlib::NodeContext> &inputs) const;
+    void decompose_initial(DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
+    void decompose_post_optimize(DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
+    void decompose_post_autograd(DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
 
-    void decompose_post_optimize(
-        const graphlib::OpType &old_op_type,
-        DecomposingContext &dc,
-        const std::vector<tt::graphlib::NodeContext> &inputs) const;
-
-    void decompose_post_autograd(
-        const graphlib::OpType &old_op_type,
-        DecomposingContext &dc,
-        const std::vector<tt::graphlib::NodeContext> &inputs) const;
-
-    long initial_flops_estimate(
-        const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const;
+    long initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const;
 
    private:
     OpType type_;
     Attrs attrs_;
 };
+
+std::ostream &operator<<(std::ostream &out, const Attr &attr);
+std::ostream &operator<<(std::ostream &out, const Op &op);
 
 }  // namespace ops
 }  // namespace tt

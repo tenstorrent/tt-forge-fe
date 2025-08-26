@@ -4,6 +4,7 @@
 #include "reportify/to_json.hpp"
 
 #include "nlohmann/json.hpp"
+#include "ops/op.hpp"
 
 namespace tt
 {
@@ -19,17 +20,25 @@ void to_json(json& j, UBlockOrder const& ublock_order)
     }
 }
 
-void to_json(json& j, OpType const& op_type)
-{
-    j["op_type"] = {};
-    j["op_type"]["type"] = op_type.name();
-    j["op_type"]["named_attrs"] = op_type.attrs();
-}
-
 void to_json(json& j, EdgeAttributes const& attrs)
 {
     j["ublock_order"] = attrs.get_ublock_order();
-    j["tms"] = attrs.get_tms();
+
+    std::vector<std::string> str_tms;
+    for (const ops::Op& op : attrs.get_tms()) str_tms.push_back(op.as_string());
+
+    j["tms"] = str_tms;
 }
 }  // namespace graphlib
+
+namespace ops
+{
+void to_json(json& j, ops::Op const& op)
+{
+    j["op"] = {};
+    j["op"]["type"] = op.as_string();
+    j["op"]["attrs"] = op.attrs();
+}
+
+}  // namespace ops
 }  // namespace tt

@@ -21,7 +21,7 @@ namespace erf
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Erf, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "Erf should have one input.");
@@ -30,7 +30,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Erf, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "Erf should have one input.");
@@ -39,7 +39,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -56,20 +56,20 @@ NodeContext backward(
     auto two_over_sqrt_pi = ac.autograd->create_constant(ac, 1.1283791670955126f);
 
     // Compute x²
-    auto x_squared = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {inputs[0], inputs[0]});
+    auto x_squared = ac.autograd->create_op(ac, Op("multiply"), {inputs[0], inputs[0]});
 
     // Compute -x²
     auto neg_one = ac.autograd->create_constant(ac, -1.0f);
-    auto neg_x_squared = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {neg_one, x_squared});
+    auto neg_x_squared = ac.autograd->create_op(ac, Op("multiply"), {neg_one, x_squared});
 
     // Compute exp(-x²)
-    auto exp_neg_x_squared = ac.autograd->create_op(ac, graphlib::OpType("exp"), {neg_x_squared});
+    auto exp_neg_x_squared = ac.autograd->create_op(ac, Op("exp"), {neg_x_squared});
 
     // Compute derivative: (2/√π) * exp(-x²)
-    auto derivative = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {two_over_sqrt_pi, exp_neg_x_squared});
+    auto derivative = ac.autograd->create_op(ac, Op("multiply"), {two_over_sqrt_pi, exp_neg_x_squared});
 
     // Apply chain rule: derivative * gradient
-    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {derivative, gradient});
+    return ac.autograd->create_op(ac, Op("multiply"), {derivative, gradient});
 }
 
 }  // namespace erf

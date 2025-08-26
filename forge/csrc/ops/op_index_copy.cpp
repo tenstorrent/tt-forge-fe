@@ -23,7 +23,7 @@ namespace index_copy
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::IndexCopy, "Wrong op type.");
     TT_DBG_ASSERT(tensors.size() == 3, "IndexCopy expects 3 tensors: input, index, src");
@@ -37,7 +37,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::IndexCopy, "Wrong op type.");
     TT_DBG_ASSERT(in_shapes.size() == 3, "IndexCopy expects 3 input shapes: input, index, src");
@@ -46,7 +46,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -59,8 +59,7 @@ NodeContext backward(
     unreachable();
 }
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::IndexCopy, "Wrong op type.");
     TT_DBG_ASSERT(inputs.size() == 3, "IndexCopy expects 3 inputs: operandA, index, value");
@@ -78,12 +77,12 @@ void decompose_initial(
     {
         if (index.shape[0] > 1)
         {
-            auto result = dc.op(graphlib::OpType("fill_cache", {{"batch_offset", 0}}), {operandA, value});
+            auto result = dc.op(Op("fill_cache", {{"batch_offset", 0}}), {operandA, value});
             dc.fuse(result);
         }
         else
         {
-            auto result = dc.op(graphlib::OpType("update_cache", {{"batch_offset", 0}}), {operandA, value, index});
+            auto result = dc.op(Op("update_cache", {{"batch_offset", 0}}), {operandA, value, index});
             dc.fuse(result);
         }
     }

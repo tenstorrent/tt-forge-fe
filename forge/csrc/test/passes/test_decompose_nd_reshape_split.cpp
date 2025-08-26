@@ -32,32 +32,26 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
 
     // Create reshape: (2, 12) -> (2, 2, 6)
     auto reshape_node = add_node<graphlib::PyOpNode>(
-        *graph, "reshape", graphlib::OpType("reshape", {{"shape", std::vector{2, 2, 6}}}), {input_node});
+        *graph, "reshape", ops::Op("reshape", {{"shape", std::vector{2, 2, 6}}}), {input_node});
 
     reshape_node->set_shape(graphlib::Shape::create({2, 2, 6}));
 
     // Create index operations
     auto index1_node = add_node<graphlib::PyOpNode>(
-        *graph,
-        "index1",
-        graphlib::OpType("index", {{"dim", 1}, {"start", 0}, {"stop", 1}, {"stride", 1}}),
-        {reshape_node});
+        *graph, "index1", ops::Op("index", {{"dim", 1}, {"start", 0}, {"stop", 1}, {"stride", 1}}), {reshape_node});
     index1_node->set_shape(graphlib::Shape::create({2, 1, 6}));
 
     auto index2_node = add_node<graphlib::PyOpNode>(
-        *graph,
-        "index2",
-        graphlib::OpType("index", {{"dim", 1}, {"start", 1}, {"stop", 2}, {"stride", 1}}),
-        {reshape_node});
+        *graph, "index2", ops::Op("index", {{"dim", 1}, {"start", 1}, {"stop", 2}, {"stride", 1}}), {reshape_node});
     index2_node->set_shape(graphlib::Shape::create({2, 1, 6}));
 
     // Create squeeze operations
     auto squeeze1_node = add_node<graphlib::PyOpNode>(
-        *graph, "squeeze1", graphlib::OpType("reshape", {{"shape", std::vector{2, 6}}}), {index1_node});
+        *graph, "squeeze1", ops::Op("reshape", {{"shape", std::vector{2, 6}}}), {index1_node});
     squeeze1_node->set_shape(graphlib::Shape::create({2, 6}));
 
     auto squeeze2_node = add_node<graphlib::PyOpNode>(
-        *graph, "squeeze2", graphlib::OpType("reshape", {{"shape", std::vector{2, 6}}}), {index2_node});
+        *graph, "squeeze2", ops::Op("reshape", {{"shape", std::vector{2, 6}}}), {index2_node});
     squeeze2_node->set_shape(graphlib::Shape::create({2, 6}));
 
     // Create outputs
@@ -71,7 +65,7 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
         if (node->node_type() == graphlib::kPyOp)
         {
             auto op_node = node->as<graphlib::PyOpNode>();
-            if (op_node->new_op_type() == ops::OpType::Index)
+            if (op_node->op_type() == ops::OpType::Index)
                 index_count_before++;
         }
     }
@@ -94,7 +88,7 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
         if (node->node_type() == graphlib::kPyOp)
         {
             auto op_node = node->as<graphlib::PyOpNode>();
-            if (op_node->new_op_type() == ops::OpType::Index)
+            if (op_node->op_type() == ops::OpType::Index)
                 index_count_after++;
         }
     }
@@ -106,7 +100,7 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
         if (node->node_type() == graphlib::kPyOp)
         {
             auto op_node = node->as<graphlib::PyOpNode>();
-            if (op_node->new_op_type() == ops::OpType::Index)
+            if (op_node->op_type() == ops::OpType::Index)
             {
                 // Check connection to input
                 auto operands = graph->operands(node);
@@ -136,7 +130,7 @@ TEST_F(DecomposeNdReshapeSplitTest, invalid_cases_should_be_skipped)
     // Rank change > 1 (should be skipped)
     auto input1 = create_input(*graph, "input1", graphlib::Shape::create({2, 12}));
     auto reshape1 = add_node<graphlib::PyOpNode>(
-        *graph, "reshape1", graphlib::OpType("reshape", {{"shape", std::vector{2, 2, 2, 3}}}), {input1});
+        *graph, "reshape1", ops::Op("reshape", {{"shape", std::vector{2, 2, 2, 3}}}), {input1});
     reshape1->set_shape(graphlib::Shape::create({2, 2, 2, 3}));
     create_output(*graph, "out1", reshape1);
 

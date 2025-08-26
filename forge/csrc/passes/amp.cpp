@@ -268,7 +268,7 @@ bool is_matched_op(const AMPNodeProperties& amp_properties, RegexMatcher& regex_
         if (op_node != nullptr)
         {
             is_match &=
-                (amp_properties.op_type.value() == op_node->op_name() or
+                (amp_properties.op_type.value() == op_node->op_as_string() or
                  amp_properties.op_type.value() == original_op_type(node));
         }
         else if (auto input_node = dynamic_cast<const graphlib::InputNode*>(node); input_node != nullptr)

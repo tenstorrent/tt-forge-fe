@@ -13,7 +13,7 @@ namespace tt::test
 struct SplitGraphTest : public ForgeGraphTest, public testing::WithParamInterface<bool>
 {
    protected:
-    virtual std::vector<OpType*> create_graph() override
+    virtual std::vector<OpNode*> create_graph() override
     {
         int batch_size = 32;
         int input_size = 784;
@@ -42,7 +42,7 @@ struct SplitGraphTest : public ForgeGraphTest, public testing::WithParamInterfac
 
         auto add2 = create_op("add", {l2, bias_l2});
 
-        auto softmax = create_op(graphlib::OpType("softmax", {{"dim", 1}, {"stable", true}}), {add2});
+        auto softmax = create_op(ops::Op("softmax", {{"dim", 1}, {"stable", true}}), {add2});
 
         return {softmax};
     }

@@ -31,7 +31,7 @@ void PassesModule(py::module &m_passes)
                 if (std::holds_alternative<std::string>(type))
                 {
                     return self.op(
-                        graphlib::OpType(std::get<std::string>(type)),
+                        ops::Op(std::get<std::string>(type)),
                         operands,
                         copy_tms,
                         dont_decompose,
@@ -40,46 +40,12 @@ void PassesModule(py::module &m_passes)
                 }
                 else
                 {
-                    auto const &op_type = std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
+                    auto const &op_type = std::get<py::object>(type).attr("op_type").cast<ops::Op>();
                     return self.op(op_type, operands, copy_tms, dont_decompose, optimize_hoist, output_df);
                 }
             },
             py::arg("type"),
             py::arg("operands"),
-            py::arg("copy_tms") = true,
-            py::arg("dont_decompose") = false,
-            py::arg("optimize_hoist") = false,
-            py::arg("output_df") = DataFormat::Invalid)
-        .def(
-            "op_with_named_attrs",
-            [](tt::DecomposingContext &self,
-               std::variant<std::string, py::object> const &type,
-               std::vector<NodeContext> const &operands,
-               ForgeOpAttrs const &named_attrs,
-               bool copy_tms = true,
-               bool dont_decompose = false,
-               bool optimize_hoist = false,
-               DataFormat output_df = DataFormat::Invalid)
-            {
-                if (std::holds_alternative<std::string>(type))
-                {
-                    return self.op(
-                        graphlib::OpType(std::get<std::string>(type), named_attrs),
-                        operands,
-                        copy_tms,
-                        dont_decompose,
-                        optimize_hoist,
-                        output_df);
-                }
-                else
-                {
-                    auto const &op_type = std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
-                    return self.op(op_type, operands, copy_tms, dont_decompose, optimize_hoist, output_df);
-                }
-            },
-            py::arg("type"),
-            py::arg("operands"),
-            py::arg("named_attrs"),
             py::arg("copy_tms") = true,
             py::arg("dont_decompose") = false,
             py::arg("optimize_hoist") = false,
