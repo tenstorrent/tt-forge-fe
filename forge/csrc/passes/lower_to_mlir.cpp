@@ -822,7 +822,8 @@ class MLIRGenerator
         lowering_handler_map["greater"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::GreaterThanOp>;
         lowering_handler_map["index"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::IndexOp>;
         lowering_handler_map["leaky_relu"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LeakyReluOp>;
-        lowering_handler_map["less"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LessEqualOp>;
+        lowering_handler_map["less"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LessThanOp>;
+        lowering_handler_map["less_equal"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LessEqualOp>;
         lowering_handler_map["log"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LogOp>;
         lowering_handler_map["logical_not"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LogicalNotOp>;
         lowering_handler_map["matmul"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MatmulOp>;
