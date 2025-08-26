@@ -22,14 +22,8 @@ if [[ -z "$CURRENT_SOURCE_DIR" ]]; then
     exit 1
 fi
 
-# Torch requires a specific version of wheel to be installed
-# which depends on the platform
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    REQUIREMENTS_FILE="$CURRENT_SOURCE_DIR/mac_requirements.txt"
-else
-    # TODO test on linux
-    REQUIREMENTS_FILE="$CURRENT_SOURCE_DIR/linux_requirements.txt"
-fi
+
+REQUIREMENTS_FILE="$CURRENT_SOURCE_DIR/core_requirements.txt"
 
 $TTFORGE_PYTHON_VERSION -m venv $TTFORGE_VENV_DIR
 unset LD_PRELOAD

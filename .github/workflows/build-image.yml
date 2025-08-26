@@ -92,6 +92,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ github.token }}
+
       - name: Set latest tag on the image
         run: |
           DOCKER_CI_IMAGE=${{ needs.build-image.outputs.docker-image }}
