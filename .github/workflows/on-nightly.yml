@@ -28,7 +28,7 @@ on:
           - 'Yes'
           - 'No'
   schedule:
-    - cron: '0 19 * * *'  # Runs at 22:00 UTC every day
+    - cron: '0 20 * * *'  # Runs at 20:00 UTC every day
 
 # Set cache root to avoid IRD_LF_CACHE error when loading CenterNet ONNX model in CI
 env:
