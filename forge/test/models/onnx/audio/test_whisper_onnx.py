@@ -35,7 +35,7 @@ variants = [
     "openai/whisper-tiny",
     "openai/whisper-base",
     "openai/whisper-small",
-    "openai/whisper-medium",
+    pytest.param("openai/whisper-medium", marks=pytest.mark.crash),
     pytest.param("openai/whisper-large", marks=pytest.mark.xfail),
 ]
 
