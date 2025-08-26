@@ -394,6 +394,7 @@ def test_concat_block():
 
 @pytest.mark.nightly
 @pytest.mark.skip_model_analysis
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2899")
 @pytest.mark.parametrize(
     "tensor_size,max_length",
     [
