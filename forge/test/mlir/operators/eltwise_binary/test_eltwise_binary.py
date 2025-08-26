@@ -151,6 +151,44 @@ def test_less(shape_x, shape_y):
 
 
 @pytest.mark.parametrize(
+    "shape_x, shape_y",
+    [
+        ((1, 128, 28, 28), (1, 128, 28, 28)),
+        ((1, 64, 28, 28), (1, 64, 28, 28)),
+        ((1, 256, 28, 28), (1, 256, 28, 28)),
+        ((1, 128, 14, 14), (1, 128, 14, 14)),
+        ((1, 128, 56, 56), (1, 128, 56, 56)),
+        ((1, 32, 64, 64), (1, 32, 64, 64)),
+        ((1, 512, 7, 7), (1, 512, 7, 7)),
+        ((1, 32, 32, 32), (1, 32, 32, 32)),
+    ],
+)
+@pytest.mark.push
+def test_less_equal(shape_x, shape_y):
+    class LessEqual(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x, y):
+            return torch.less_equal(x, y)
+
+    x = torch.rand(shape_x)
+    y = torch.rand(shape_y)
+
+    inputs = [x, y]
+
+    framework_model = LessEqual()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_dtype=False),
+    )
+
+
+@pytest.mark.parametrize(
     "shape",
     [
         (888,),

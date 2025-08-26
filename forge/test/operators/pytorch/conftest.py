@@ -45,6 +45,8 @@ def pytest_runtest_makereport(item: _pytest.python.Function, call: _pytest.runne
             long_repr = call.excinfo.getrepr(style="long")
             exception_traceback = str(long_repr)
 
+            log_error_properties(item, exception_value, exception_traceback)
+
             ex_data = FailingReasonsFinder.build_ex_data(exception_value, exception_traceback)
             SweepsTagsLogger.log_detected_failing_reason(ex_data)
 
@@ -81,6 +83,13 @@ def pytest_runtest_makereport(item: _pytest.python.Function, call: _pytest.runne
         except Exception as e:
             logger.error(f"Failed to log test vector properties: {e}")
             logger.exception(e)
+
+
+def log_error_properties(item: _pytest.python.Function, exception_value, exception_traceback):
+    ex_class_name = f"{type(exception_value).__module__}.{type(exception_value).__name__}"
+    ex_class_name = ex_class_name.replace("builtins.", "")
+    item.user_properties.append(("exception_value", f"{ex_class_name}: {exception_value}"))
+    item.user_properties.append(("exception_traceback", exception_traceback))
 
 
 def log_test_vector_properties(

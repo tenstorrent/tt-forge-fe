@@ -363,10 +363,7 @@ struct UpdateSelectNamedAttrsTest : testing::Test
         auto select_node = add_node<graphlib::PyOpNode>(
             *graph,
             "select",
-            graphlib::OpType(
-                "select",
-                {dim, begin, length, stride},
-                {{"dim", dim}, {"begin", begin}, {"length", length}, {"stride", stride}}),
+            graphlib::OpType("select", {}, {{"dim", dim}, {"begin", begin}, {"length", length}, {"stride", stride}}),
             {input_node});
         select_node->set_op_attr("select_dim", dim);
         select_node->set_op_attr("begin", begin);

@@ -469,8 +469,28 @@ void autograd_engine::create_optimizer_graph()
                         generate_op_trace_fcn(context, NodeContext(input_node), NodeContext(gradient))
                             .cast<NodeContext>();
 
+                    // If input parameter is not fp32 but is a float type, insert cast node to convert
+                    // from fp32 back to original parameter dtype
+                    Node *final_optimizer_output = graph->node_by_id(optimizer_output.id);
+                    DataFormat param_df = input_node->output_df();
+                    if (param_df != DataFormat::Float32 && is_float_data_format(param_df))
+                    {
+                        auto cast_node = graph->add_node(
+                            graphlib::create_node<graphlib::PyOpNode>(
+                                final_optimizer_output->name() + "_cast",
+                                graphlib::OpType("cast", {}, {{"dtype", static_cast<int>(param_df)}})),
+                            0);
+                        cast_node->set_shape(final_optimizer_output->shape());
+                        cast_node->set_output_df(param_df);
+                        cast_node->set_epoch_type(graphlib::NodeEpochType::Optimizer);
+
+                        // optimizer_op -> cast
+                        graph->add_edge(final_optimizer_output, cast_node);
+                        final_optimizer_output = cast_node;
+                    }
+
                     graph->add_edge(
-                        graph->node_by_id(optimizer_output.id),
+                        final_optimizer_output,
                         input_node,
                         graphlib::PortId(0),
                         graphlib::PortId(0),
@@ -602,6 +622,32 @@ NodeContext autograd_engine::create_optimizer_op(
     int created_op_index,
     std::string name_prefix)
 {
+    // Create cast nodes for non-fp32 operands to ensure fp32 computation
+    std::vector<NodeContext> casted_operands;
+    for (const NodeContext &operand : operands)
+    {
+        if (operand.output_df == DataFormat::Float32 || !is_float_data_format(operand.output_df))
+        {
+            casted_operands.push_back(operand);
+            continue;
+        }
+        // Create cast node to fp32
+        std::string cast_name = "opt_cast_to_fp32_" + current_fwd_op->name() + "_" + std::to_string(operand_index) +
+                                "_" + std::to_string(created_op_index) + "_" + std::to_string(casted_operands.size()) +
+                                "_" + std::to_string(operand.id);
+        auto cast_node = graph->add_node(
+            graphlib::create_node<graphlib::PyOpNode>(
+                cast_name, graphlib::OpType("cast", {}, {{"dtype", static_cast<int>(DataFormat::Float32)}})),
+            graph->get_subgraph_id_for_node(current_fwd_op->id()));
+
+        graph->add_edge(Edge(operand.id, operand.output_index, cast_node->id(), 0, graphlib::EdgeType::kData));
+        cast_node->set_shape(graph->node_by_id(operand.id)->shape());
+        cast_node->set_optimizer();
+        cast_node->set_output_df(DataFormat::Float32);
+
+        casted_operands.push_back(NodeContext(cast_node));
+    }
+
     std::string op_name = "opt_in" + std::to_string(operand_index) + "_" + current_fwd_op->name() + "_";
     if (name_prefix.length() > 0)
     {
@@ -613,14 +659,14 @@ NodeContext autograd_engine::create_optimizer_op(
     auto node = graph->add_node(
         graphlib::create_node<graphlib::PyOpNode>(op_name, type),
         graph->get_subgraph_id_for_node(current_fwd_op->id()));
-    for (size_t i = 0; i < operands.size(); ++i)
+    for (size_t i = 0; i < casted_operands.size(); ++i)
     {
-        const NodeContext &n = operands[i];
+        const NodeContext &n = casted_operands[i];
         graph->add_edge(Edge(n.id, n.output_index, node->id(), i, graphlib::EdgeType::kData));
     }
 
     std::vector<Shape> operand_shapes;
-    for (const NodeContext &n : operands)
+    for (const NodeContext &n : casted_operands)
     {
         operand_shapes.push_back(graph->node_by_id(n.id)->shape());
     }
@@ -704,7 +750,8 @@ NodeContext autograd_engine::create_input(
     std::string &suffix_identifier,
     const std::vector<std::uint32_t> &tensor_shape,
     bool copy_consteval_operations,
-    bool disable_consteval)
+    bool disable_consteval,
+    std::optional<DataFormat> dtype)
 {
     std::string base_string = (epoch_type == graphlib::NodeEpochType::Backward) ? "bwd" : "opt";
 
@@ -721,7 +768,7 @@ NodeContext autograd_engine::create_input(
     }
 
     node->set_shape(Shape::create(tensor_shape));
-    node->set_output_df(current_fwd_op->output_df());
+    node->set_output_df(dtype.value_or(current_fwd_op->output_df()));
 
     if (epoch_type == graphlib::NodeEpochType::Backward)
     {

@@ -2,7 +2,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from third_party.tt_forge_models.phi3.phi_3_5.pytorch import ModelLoader as Phi35Loader
+from third_party.tt_forge_models.phi3.phi_3_5.pytorch import (
+    ModelVariant as Phi35Variant,
+)
 
 import forge
 from forge.forge_property_utils import (
@@ -16,9 +19,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.utils import download_model
-
-variants = ["microsoft/Phi-3.5-mini-instruct"]
+variants = [Phi35Variant.MINI_INSTRUCT]
 
 
 @pytest.mark.out_of_memory
@@ -31,7 +32,7 @@ def test_phi3_5_causal_lm(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.PHI3_5,
-        variant=variant,
+        variant=variant.value,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
@@ -40,23 +41,12 @@ def test_phi3_5_causal_lm(variant):
 
     pytest.xfail(reason="Segmentation Fault")
 
-    # Load model and tokenizer
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    framework_model = download_model(
-        AutoModelForCausalLM.from_pretrained, variant, trust_remote_code=True, use_cache=False
-    )
+    # Load model and inputs via loader
+    loader = Phi35Loader(variant)
+    framework_model = loader.load_model()
     framework_model.eval()
-
-    # prepare input
-    input_prompt = "Africa is an emerging economy because"
-    inputs = tokenizer(
-        input_prompt,
-        return_tensors="pt",
-        max_length=256,
-        padding="max_length",
-        truncation=True,
-    )
-    inputs = [inputs["input_ids"], inputs["attention_mask"]]
+    input_dict = loader.load_inputs()
+    inputs = [input_dict["input_ids"], input_dict["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -65,7 +55,7 @@ def test_phi3_5_causal_lm(variant):
     verify(inputs, framework_model, compiled_model)
 
 
-variants = ["microsoft/Phi-3.5-MoE-instruct"]
+variants = [Phi35Variant.MOE_INSTRUCT]
 
 
 @pytest.mark.parametrize("variant", variants)
@@ -76,7 +66,7 @@ def test_phi3_5_moe_causal_lm(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.PHI3_5_MOE,
-        variant=variant,
+        variant=variant.value,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,

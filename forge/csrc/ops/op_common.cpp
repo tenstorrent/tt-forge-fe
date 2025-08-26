@@ -18,17 +18,52 @@ namespace ops
 {
 namespace op_common
 {
+std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> eltwise_nary_shape(
+    const std::vector<std::vector<uint32_t>> &in_shapes)
+{
+    std::vector<graphlib::DimBroadcast> broadcast;
+    size_t max_dims = 0;
+    for (const auto &shape : in_shapes) max_dims = std::max(max_dims, shape.size());
+
+    std::vector<std::vector<uint32_t>> padded_shapes = in_shapes;
+    for (auto &shape : padded_shapes)
+        while (shape.size() < max_dims) shape.insert(shape.begin(), 1);
+
+    std::vector<uint32_t> output_shape(max_dims);
+    for (size_t dim = 0; dim < max_dims; ++dim)
+    {
+        uint32_t max_size = 1;
+        for (const auto &shape : padded_shapes) max_size = std::max(max_size, shape[dim]);
+
+        output_shape[dim] = max_size;
+
+        for (size_t op_idx = 0; op_idx < padded_shapes.size(); ++op_idx)
+        {
+            if (padded_shapes[op_idx][dim] == max_size)
+                continue;
+
+            TT_ASSERT(
+                padded_shapes[op_idx][dim] == 1,
+                "Eltwise ops must have same shape or operand must be 1 wide to broadcast");
+
+            broadcast.push_back(
+                {static_cast<int>(op_idx), static_cast<int>(dim) - static_cast<int>(max_dims), max_size});
+        }
+    }
+
+    return {graphlib::Shape::create(output_shape), broadcast};
+}
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> compute_elementwise_binary_shape(
-    const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const std::vector<std::vector<uint32_t>> &in_shapes)
 {
     TT_ASSERT(in_shapes.size() == 2, "Elementwise binary ops should have exactly two input shapes.");
 
     std::vector<graphlib::DimBroadcast> broadcast;
-    std::vector<std::uint32_t> output_shape;
+    std::vector<uint32_t> output_shape;
 
-    std::vector<std::uint32_t> shape0 = in_shapes[0];
-    std::vector<std::uint32_t> shape1 = in_shapes[1];
+    std::vector<uint32_t> shape0 = in_shapes[0];
+    std::vector<uint32_t> shape1 = in_shapes[1];
 
     // Add leading 1s to the shorter shape
     while (shape0.size() < shape1.size())

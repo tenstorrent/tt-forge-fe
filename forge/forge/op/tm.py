@@ -242,18 +242,7 @@ def Select(
     assert (start + length) <= stride, f"(start = {start} + length = {length}) should be <= stride = {stride}"
     assert (start + length) > 0, f"(start = {start} + length = {length}) should be > 0"
 
-    return op(
-        "select",
-        name,
-        operandA,
-        attrs=(dim, index[0], index[1], stride),
-        **{
-            "dim": dim,
-            "begin": index[0],
-            "length": index[1],
-            "stride": stride,
-        },
-    ).get_tensor()
+    return op("select", name, operandA, dim=dim, begin=index[0], length=index[1], stride=stride).get_tensor()
 
 
 def Pad(
@@ -543,68 +532,4 @@ def PixelShuffle(name: str, operandA: Tensor, upscale_factor: int) -> Tensor:
     Tensor
         Forge tensor
     """
-    return op("pixel_shuffle", name, operandA, attrs=(upscale_factor,), upscale_factor=upscale_factor).get_tensor()
-
-
-def ForgePad(name: str, operandA: Tensor, paddings: Tuple[int, int], value: float) -> Tensor:
-    """
-    Pad operation that expands a given tensor with arbitrary number of tiles by any dimension.
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        First operand
-
-    paddings: Tuple[int, int]
-        Tuple of paddings for R and C dimensions
-
-    value: float
-        Value to pad with
-    """
-    return op(
-        "forge_pad",
-        name,
-        operandA,
-        attrs=(paddings[0], paddings[1], value),
-        pad_r=paddings[0],
-        pad_c=paddings[1],
-        value=value,
-    ).get_tensor()
-
-
-def ForgeUnpad(
-    name: str,
-    operandA: Tensor,
-    original_length: Tuple[int, ...],
-    paddings: Tuple[int, int],
-) -> Tensor:
-    """
-    Unpad operation that removes arbitrary number of tiles by any dimension.
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        First operand
-
-    original_length: Tuple[int, ...]
-        Original length of R and C dimensions before padding
-
-    paddings: Tuple[int, int]
-        Tuple of paddings for R and C dimensions
-    """
-    return op(
-        "forge_unpad",
-        name,
-        operandA,
-        attrs=(paddings[0], paddings[1], original_length[0], original_length[1]),
-        pad_r=paddings[0],
-        pad_c=paddings[1],
-        original_length_r=original_length[0],
-        original_length_c=original_length[1],
-    ).get_tensor()
+    return op("pixel_shuffle", name, operandA, upscale_factor=upscale_factor).get_tensor()
