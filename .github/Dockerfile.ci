@@ -18,10 +18,6 @@ RUN mkdir -p $BUILD_DIR && \
 ADD . $BUILD_DIR/$PROJECT_NAME
 
 
-# Install model dependencies as part of the Docker image
-WORKDIR $BUILD_DIR/$PROJECT_NAME
-RUN chmod +x scripts/install_model_deps.sh
-RUN source env/activate && python3 scripts/install_model_deps.sh
 # Build the toolchain
 WORKDIR $BUILD_DIR/$PROJECT_NAME
 
@@ -30,8 +26,9 @@ RUN git log -1
 
 # Build the toolchain
 WORKDIR $BUILD_DIR/$PROJECT_NAME
-RUN source env/activate && \
-    cmake -B env/build env && \
+RUN chmod +x scripts/install_model_deps.sh
+RUN source env/activate && python3 scripts/install_model_deps.sh
+RUN cmake -B env/build env && \
     cmake --build env/build
 
 FROM ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:${FROM_TAG} AS ci
@@ -46,6 +43,12 @@ COPY --from=ci-build $TTMLIR_TOOLCHAIN_DIR $TTMLIR_TOOLCHAIN_DIR
 
 RUN echo "Copying from ci-build stage $TTFORGE_TOOLCHAIN_DIR"
 COPY --from=ci-build $TTFORGE_TOOLCHAIN_DIR $TTFORGE_TOOLCHAIN_DIR
+
+# Copy the Python environment with model dependencies from the build stage
+ARG BUILD_DIR=/home/build
+ENV PROJECT_NAME=tt-forge-fe
+RUN echo "Copying Python environment with model dependencies"
+COPY --from=ci-build $BUILD_DIR/$PROJECT_NAME/env $BUILD_DIR/$PROJECT_NAME/env
 
 RUN du -h --max-depth=2 $TTMLIR_TOOLCHAIN_DIR
 RUN du -h --max-depth=2 $TTFORGE_TOOLCHAIN_DIR
