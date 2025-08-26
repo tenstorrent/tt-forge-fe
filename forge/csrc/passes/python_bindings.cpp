@@ -13,12 +13,6 @@
 namespace tt
 {
 
-static bool has_newstyle_interface(std::string const &op_name)
-{
-    py::object eval_module = py::module_::import("forge.op.eval.forge");
-    return eval_module.attr("has_newstyle_interface")(op_name).cast<bool>();
-}
-
 void PassesModule(py::module &m_passes)
 {
     py::class_<tt::DecomposingContext>(m_passes, "DecomposingContext")
@@ -36,10 +30,6 @@ void PassesModule(py::module &m_passes)
             {
                 if (std::holds_alternative<std::string>(type))
                 {
-                    TT_LOG_ASSERT(
-                        not has_newstyle_interface(std::get<std::string>(type)),
-                        "Error decomposing a type with old OpType interface, expects new OpType interface {}",
-                        std::get<std::string>(type));
                     return self.op(
                         graphlib::OpType(std::get<std::string>(type)),
                         operands,
@@ -73,10 +63,6 @@ void PassesModule(py::module &m_passes)
             {
                 if (std::holds_alternative<std::string>(type))
                 {
-                    TT_LOG_ASSERT(
-                        not has_newstyle_interface(std::get<std::string>(type)),
-                        "Error decomposing a type with old OpType interface, expects new OpType interface {}",
-                        std::get<std::string>(type));
                     return self.op(
                         graphlib::OpType(std::get<std::string>(type), named_attrs),
                         operands,
