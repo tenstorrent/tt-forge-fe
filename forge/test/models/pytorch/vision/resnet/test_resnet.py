@@ -6,7 +6,6 @@ import random
 import pytest
 import torch
 from datasets import load_dataset
-from third_party.tt_forge_models.resnet.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -23,6 +22,8 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
+
+from third_party.tt_forge_models.resnet.pytorch import ModelLoader, ModelVariant  # isort:skip
 
 
 @pytest.mark.push
@@ -71,7 +72,9 @@ def test_resnet_hf():
     )
 
     # Run model on sample data and print results
-    loader.post_process(framework_model=framework_model, compiled_model=compiled_model, inputs=images)
+    loader.post_process(
+        framework_model=framework_model, compiled_model=compiled_model, inputs=images, dtype_override=torch.bfloat16
+    )
 
 
 @pytest.mark.nightly
