@@ -978,8 +978,8 @@ class FailingReasons(Enum):
         ],
     )
 
-    NOT_IMPLEMENTED = FailingReason(
-        description="Not implemented operator",
+    NOT_IMPLEMENTED_OLD = FailingReason(
+        description="Not implemented operator old",
         checks=[
             ExceptionCheck(
                 class_name="RuntimeError",
@@ -1018,6 +1018,13 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
+        ],
+    )
+
+    SOURCE_MAPS_NOT_POPULATED = FailingReason(
+        description="Source maps are not populated",
+        checks=[
+            # sum	tvm._ffi.base.TVMError: Traceback (most recent call last):
             # E       tvm._ffi.base.TVMError: Traceback (most recent call last):
             # E         12: _ZN3tvm7runtime13PackedFuncObj
             # E         11: tvm::runtime::TypedPackedFunc<tvm::RelayExpr (tvm::runtime::Array<tvm::relay::DFPatternCallback, void>, tvm::RelayExpr, tvm::IRModule)>::AssignTypedLambda<tvm::RelayExpr (*)(tvm::runtime::Array<tvm::relay::DFPatternCallback, void>, tvm::RelayExpr, tvm::IRModule)>(tvm::RelayExpr (*)(tvm::runtime::Array<tvm::relay::DFPatternCallback, void>, tvm::RelayExpr, tvm::IRModule), std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}::operator()(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*) const
@@ -1043,6 +1050,9 @@ class FailingReasons(Enum):
                     M.contains("Traceback (most recent call last)"),
                 ],
                 error_log=[
+                    M.contains(
+                        "TVMError: The source maps are not populated for this module. Please use `tvm.relay.transform.AnnotateSpans` to attach source maps for error reporting."
+                    ),
                     M.regex("tensor type .* has .* dimensions, while .* has .* dimensions"),
                     M.last_line(M.contains("tvm/_ffi/base.py:")),
                 ],
@@ -1509,6 +1519,10 @@ class FailingReasons(Enum):
 
     UNSUPPORTED_DIMENSION = FailingReason(
         description="Unsupported dimension",
+    )
+
+    NORMALIZATION_ONLY_LAST_DIM = FailingReason(
+        description="Normalization only over last dimension",
         checks=[
             # layer_norm	AssertionError: Support only normalization over last one dimension.
             # >       assert ndims == 1, "Support only normalization over last one dimension."

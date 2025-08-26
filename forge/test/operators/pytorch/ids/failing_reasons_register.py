@@ -29,7 +29,6 @@ class FailingReasonsRegister:
         ("conv2d", FailingReasons.DATA_MISMATCH_PCC_LOW_RANGE),
         ("conv2d", FailingReasons.NOT_IMPLEMENTED_ATEN),
         ("conv2d", FailingReasons.OUT_OF_MEMORY),
-        ("conv2d", FailingReasons.WEIGHT_BIAS_SHAPE_MISMATCH),
         ("conv_transpose_2d", FailingReasons.ASSERT_DIM),
         ("conv_transpose_2d", FailingReasons.ASSERT_GROUPS),
         ("conv_transpose_2d", FailingReasons.ASSERT_STRIDE),
@@ -46,7 +45,6 @@ class FailingReasonsRegister:
         ("div", FailingReasons.VERIFICATION_FAILED_SPECIAL_VALUES),
         ("embedding", FailingReasons.FAILED_MLIR_VERIFICATION),
         ("embedding", FailingReasons.OUT_OF_MEMORY),
-        ("embedding", FailingReasons.VERIFICATION_FAILED_SPECIAL_VALUES),
         ("exp", FailingReasons.DATA_MISMATCH_ALL_CLOSE),
         ("ge", FailingReasons.DATA_MISMATCH_PCC_LOW_RANGE),
         ("ge", FailingReasons.DTYPE_MISMATCH),
@@ -54,8 +52,8 @@ class FailingReasonsRegister:
         ("gt", FailingReasons.DTYPE_MISMATCH),
         ("isnan", FailingReasons.DTYPE_MISMATCH),
         ("layer_norm", FailingReasons.DATA_MISMATCH_ALL_CLOSE),
+        ("layer_norm", FailingReasons.NORMALIZATION_ONLY_LAST_DIM),
         ("layer_norm", FailingReasons.UNHANDLED_CASE_NONE),
-        ("layer_norm", FailingReasons.UNSUPPORTED_DIMENSION),
         ("layer_norm", FailingReasons.VERIFICATION_FAILED_PCC_NAN),
         ("linear", FailingReasons.DATA_MISMATCH_ALL_CLOSE),
         ("linear", FailingReasons.OUT_OF_MEMORY),
@@ -113,9 +111,8 @@ class FailingReasonsRegister:
         ("sub", FailingReasons.DATA_MISMATCH_PCC_LOW_RANGE),
         ("sub", FailingReasons.DTYPE_MISMATCH),
         ("sum", FailingReasons.DATA_MISMATCH_ALL_CLOSE),
-        ("sum", FailingReasons.NOT_IMPLEMENTED),
+        ("sum", FailingReasons.FAILED_MLIR_VERIFICATION),
         ("tanh", FailingReasons.DATA_MISMATCH_ALL_CLOSE),
-        ("tanh", FailingReasons.DTYPE_MISMATCH),
     ]
 
     # List of skip reasons for each operator
