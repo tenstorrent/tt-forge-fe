@@ -185,7 +185,7 @@ class MLIRGenerator
     {
         graphModule_ = mlir::ModuleOp::create(get_module_location(module), module.name());
 
-        graphModule_->setAttr(mlir::tt::ttcore::SystemDescAttr::name, get_system_desc_attr());
+        graphModule_->setAttr(mlir::tt::ttcore::SystemDescAttr::name, get_system_desc_attr(graphModule_));
         builder_.setInsertionPointToStart(&graphModule_.getBodyRegion().front());
 
         // Collect all the supported TTIR operations
@@ -657,13 +657,18 @@ class MLIRGenerator
     }
 
     /// Get SystemDescAttr from TTSystem
-    mlir::tt::ttcore::SystemDescAttr get_system_desc_attr()
+    mlir::tt::ttcore::SystemDescAttr get_system_desc_attr(mlir::ModuleOp module)
     {
         TTSystem &system = TTSystem::get_system();
         TT_ASSERT(!system.devices.empty() && system.devices[0], "No available device found");
 
-        auto systemDescResult = mlir::tt::ttcore::SystemDescAttr::getFromTargetSystemDesc(
-            builder_.getContext(), system.system_desc.handle.get());
+        // Add this check
+        TT_ASSERT(system.system_desc.handle, "System descriptor handle is null");
+
+        auto systemDescResult = mlir::tt::ttcore::SystemDescAttr::getFromBuffer(
+            builder_.getContext(),
+            system.system_desc.handle.get(),
+            [&]() -> mlir::InFlightDiagnostic { return module->emitOpError(); });
 
         if (mlir::failed(systemDescResult))
         {
