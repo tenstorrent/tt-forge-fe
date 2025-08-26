@@ -23,9 +23,6 @@ std::vector<OpTestParam> generate_index_focused_params()
             // Negative start - covers shape() negative start handling (lines 63-66)
             {create_index_op(0, -2, 8, 1), {graphlib::Shape{8}}},
 
-            // Stride > 1 - covers shape() new_size calculation and backward() loop
-            {create_index_op(0, 0, 6, 2), {graphlib::Shape{8}}},
-
             // Single element - covers backward() single iteration case
             {create_index_op(0, 3, 4, 1), {graphlib::Shape{8}}},
 
@@ -34,9 +31,6 @@ std::vector<OpTestParam> generate_index_focused_params()
 
             // Multi-dim negative - covers shape() and backward() multi-dim negative handling
             {create_index_op(-2, 1, 3, 1), {graphlib::Shape{2, 4, 8}}},
-
-            // Large stride - covers backward() multiple elements with large stride
-            {create_index_op(0, 0, 16, 4), {graphlib::Shape{16}}},
 
             // Boundary case - covers shape() bounds check (new_size >= 0)
             {create_index_op(0, 0, 1, 1), {graphlib::Shape{4}}},

@@ -9,7 +9,9 @@
 #include "autograd/autograd.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
+#include "graph_lib/utils.hpp"
 #include "op.hpp"
+#include "op_common.hpp"
 #include "op_interface.hpp"
 #include "passes/decomposing_context.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
@@ -24,34 +26,9 @@ namespace pad
 {
 using namespace graphlib;
 
-struct PaddingParams
-{
-    int left, right, top, bottom;
-    int width_dim, height_dim;
-
-    // Parse padding values - format is [left, right] or [left, right, top, bottom]
-    // Determine dimension axes based on channel_last format
-    PaddingParams(const std::vector<int> &padding, int shape_size, bool channel_last) :
-        left(padding[0]), right(padding[1]), top(0), bottom(0)
-    {
-        if (channel_last)
-        {
-            height_dim = shape_size - 3;  // height at -3
-            width_dim = shape_size - 2;   // width at -2
-        }
-        else
-        {
-            height_dim = shape_size - 2;  // height at -2
-            width_dim = shape_size - 1;   // width at -1
-        }
-
-        if (padding.size() == 4)
-        {
-            top = padding[2];
-            bottom = padding[3];
-        }
-    }
-};
+using op_common::concat_patches;
+using op_common::decompose_constant_mode;
+using op_common::PaddingParams;
 
 NodeContext extract(DecomposingContext &dc, const NodeContext &input, int dim_axis, int start, int stop)
 {
@@ -77,36 +54,6 @@ NodeContext repeat_vector(DecomposingContext &dc, const NodeContext &input, int 
     return dc.op(repeat_op, {input});
 }
 
-NodeContext concat_patches(
-    DecomposingContext &dc,
-    const NodeContext *first_patch,
-    const NodeContext &center,
-    const NodeContext *second_patch,
-    int dim_axis)
-{
-    std::vector<NodeContext> inputs;
-
-    if (first_patch)
-    {
-        inputs.push_back(*first_patch);
-    }
-
-    inputs.push_back(center);
-
-    if (second_patch)
-    {
-        inputs.push_back(*second_patch);
-    }
-
-    if (inputs.size() == 1)
-    {
-        return center;  // No concatenation needed
-    }
-
-    graphlib::OpType concat_op("concatenate", {{"dim", dim_axis}});
-    return dc.op(concat_op, inputs);
-}
-
 NodeContext extract_and_mirror(DecomposingContext &dc, const NodeContext &input, int dim_axis, int start, int stop)
 {
     NodeContext patch = extract(dc, input, dim_axis, start, stop);
@@ -129,29 +76,7 @@ NodeContext extract_and_mirror(DecomposingContext &dc, const NodeContext &input,
     return patch_mirrored;
 }
 
-NodeContext create_constant_pad_op(
-    DecomposingContext &dc, const NodeContext &input, const PaddingParams &params, float value)
-{
-    // Convert padding format from [left, right] or [left, right, top, bottom]
-    // to TTIR format: [dim0_low, dim0_high, dim1_low, dim1_high, ...]
-
-    int rank = static_cast<int>(input.shape.size());
-    std::vector<int> constant_padding(rank * 2, 0);  // Initialize all to 0
-
-    constant_padding[params.width_dim * 2] = params.left;       // low padding
-    constant_padding[params.width_dim * 2 + 1] = params.right;  // high padding
-
-    if (params.top > 0 || params.bottom > 0)
-    {
-        constant_padding[params.height_dim * 2] = params.top;         // low padding
-        constant_padding[params.height_dim * 2 + 1] = params.bottom;  // high padding
-    }
-
-    // Create constant_pad operation for direct TTIR mapping
-    return dc.op(graphlib::OpType("constant_pad", {{"padding", constant_padding}, {"value", value}}), {input});
-}
-
-void decompose_replicate_mode(DecomposingContext &dc, const NodeContext &input, const PaddingParams &params)
+NodeContext decompose_replicate_mode(DecomposingContext &dc, const NodeContext &input, const PaddingParams &params)
 {
     NodeContext result = input;
 
@@ -185,11 +110,10 @@ void decompose_replicate_mode(DecomposingContext &dc, const NodeContext &input, 
         bot_pad = std::make_unique<NodeContext>(repeat_vector(dc, bot_patch, params.bottom, params.height_dim));
     }
 
-    result = concat_patches(dc, top_pad.get(), result, bot_pad.get(), params.height_dim);
-    dc.fuse(result);
+    return concat_patches(dc, top_pad.get(), result, bot_pad.get(), params.height_dim);
 }
 
-void decompose_reflect_mode(DecomposingContext &dc, const NodeContext &input, const PaddingParams &params)
+NodeContext decompose_reflect_mode(DecomposingContext &dc, const NodeContext &input, const PaddingParams &params)
 {
     NodeContext result = input;
 
@@ -237,8 +161,7 @@ void decompose_reflect_mode(DecomposingContext &dc, const NodeContext &input, co
     }
 
     // Step 4: Concatenate the mirrored patches to the original result
-    result = concat_patches(dc, top_pad.get(), result, bot_pad.get(), params.height_dim);
-    dc.fuse(result);
+    return concat_patches(dc, top_pad.get(), result, bot_pad.get(), params.height_dim);
 }
 
 at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
@@ -351,6 +274,8 @@ void decompose_initial(
     auto value = op.attr_as<float>("value");
     auto channel_last = op.attr_as<bool>("channel_last");
 
+    TT_ASSERT(mode >= 0 && mode <= 2, "Unsupported padding mode: " + std::to_string(mode));
+
     // Check if all padding values are 0 - if so, replace with Nop
     bool all_zero = std::all_of(padding.begin(), padding.end(), [](int x) { return x == 0; });
     if (all_zero)
@@ -366,20 +291,10 @@ void decompose_initial(
     TT_ASSERT(padding.size() == 2 || padding.size() == 4, "Not supported padding type");
     PaddingParams params(padding, shape_size, channel_last);
 
-    if (mode == 0)  // constant mode
-    {
-        // Use ConstantPad operation with direct TTIR mapping
-        NodeContext result = create_constant_pad_op(dc, input, params, value);
-        dc.fuse(result);
-    }
-    else if (mode == 1)  // replicate mode
-    {
-        decompose_replicate_mode(dc, input, params);
-    }
-    else  // reflect mode
-    {
-        decompose_reflect_mode(dc, input, params);
-    }
+    NodeContext result = (mode == 0)   ? decompose_constant_mode(dc, input, params, value)
+                         : (mode == 1) ? decompose_replicate_mode(dc, input, params)
+                                       : decompose_reflect_mode(dc, input, params);
+    dc.fuse(result);
 }
 
 }  // namespace pad
