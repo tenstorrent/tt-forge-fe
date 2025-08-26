@@ -275,6 +275,14 @@ class ExecutionPass(Enum):
     FORWARD = auto()
     BACKWARD = auto()
 
+    @classmethod
+    def to_str(cls, value):
+        return value.name
+
+    @classmethod
+    def from_str(cls, value):
+        return cls[value.upper()]
+
 
 class ExecutionStage(Enum):
     FAILED_BEFORE_FORGE_COMPILATION_INITIATION = auto()
@@ -706,12 +714,12 @@ class ForgePropertyHandler:
     def record_execution_pass(self, execution_pass: ExecutionPass):
 
         """
-        Records the execution pass (as is_forward) in the tags.
+        Records the execution pass (as execution_pass) in the tags.
 
         Args:
             execution_pass (ExecutionPass): The execution pass value.
         """
-        self.add("tags.is_forward", True if execution_pass == ExecutionPass.FORWARD else False)
+        self.add("tags.execution_pass", ExecutionPass.to_str(execution_pass))
 
     def record_execution(
         self,

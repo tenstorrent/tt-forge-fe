@@ -529,7 +529,7 @@ def verify(
             verify_cfg.value_checker.check(fw, co)
 
     record_execution(
-        ExecutionStage.PASSED, ExecutionRunMode.from_training_param(framework_model.training), ExecutionPass.FORWARD
+        ExecutionStage.PASSED, ExecutionRunMode.from_training_param(compiled_model.training), ExecutionPass.FORWARD
     )
 
     # Return both the framework and compiled model outputs
