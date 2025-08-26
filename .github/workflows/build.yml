@@ -126,12 +126,19 @@ jobs:
         cd ../../..
         cp third_party/tvm/python/dist/*.whl dist/
 
+    - name: Create manylinux wheels (tt-forge-fe and tvm)
+      shell: bash
+      run: |
+        # Exclude libtorch*.so & libc10.so since they are sourced from torch in the python requirements.txt
+        pip install auditwheel
+        auditwheel repair --disable-isa-ext-check --plat manylinux_2_35_x86_64  --exclude libtorch*.so --exclude libc10.so dist/*.whl
+
     - name: Upload Build
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
         name: forge-wheel
-        path: dist/*.whl
+        path: wheelhouse/*.whl
 
 
   unit-test-build:
