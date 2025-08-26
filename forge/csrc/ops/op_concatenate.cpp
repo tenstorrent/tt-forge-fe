@@ -97,8 +97,7 @@ tt::graphlib::NodeContext backward(
 
     // Create index operation to extract the slice for this operand
     uint32_t stop = begin + inputs[operand].shape[dim];
-    // TODO: delete positional args from index op
-    graphlib::OpType index_op("index", {dim, static_cast<int>(begin), static_cast<int>(stop), 1});
+    graphlib::OpType index_op("index");
     index_op.set_attr("dim", dim);
     index_op.set_attr("start", static_cast<int>(begin));
     index_op.set_attr("stop", static_cast<int>(stop));

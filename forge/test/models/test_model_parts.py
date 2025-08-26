@@ -10,6 +10,8 @@ import forge
 from forge.verify.verify import verify
 import math
 import onnx
+from torchvision.models.detection import _utils as det_utils
+from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
 
 
 @pytest.mark.skip_model_analysis
@@ -163,4 +165,264 @@ def test_remove_concat_pass(dim):
     inputs = [query]
 
     compiled_model = forge.compile(model, sample_inputs=inputs)
+    verify(inputs, model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "input_shape, flip_dim",
+    [
+        ((1, 1, 1024, 72), 0),
+        ((1, 1, 104, 72), 1),
+        ((1, 12, 1, 92), 2),
+        ((1, 33, 11, 1), 3),
+        ((1, 1, 17, 16), 1),
+    ],
+)
+def test_flip(input_shape, flip_dim):
+    class Flip(nn.Module):
+        def __init__(self, dim):
+            super().__init__()
+            self.dim = dim
+
+        def forward(self, x):
+            return x.flip(dims=(self.dim,))
+
+    torch_model = Flip(dim=flip_dim)
+    inputs = [torch.rand(*input_shape)]
+
+    # Export model to ONNX
+    onnx_path = "flip.onnx"
+    torch.onnx.export(torch_model, (inputs[0],), onnx_path, opset_version=17)
+
+    # Load framework model
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule("sanity", onnx_model)
+
+    # Compile model
+    compiled_model = forge.compile(onnx_model, inputs)
+
+    # Model Verification
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+    )
+
+
+@pytest.mark.skip_model_analysis
+@pytest.mark.push
+def test_stack_and_reshape_onnx():
+    class stack_reshape(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.boxes_shape = (3234, 4)
+
+        def forward(self, boxes_x, boxes_y):
+            clipped_boxes = torch.stack((boxes_x, boxes_y), dim=2)
+            return clipped_boxes.reshape(self.boxes_shape)
+
+    torch_model = stack_reshape()
+    x = torch.randn(3234, 2)
+    y = torch.randn(3234, 2)
+    inputs = [x, y]
+
+    onnx_path = "stack_reshape.onnx"
+    torch.onnx.export(
+        torch_model,
+        (inputs[0], inputs[1]),
+        onnx_path,
+        opset_version=17,
+    )
+
+    module_name = "stack_reshape"
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule(module_name, onnx_model)
+
+    compiled_model = forge.compile(
+        onnx_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+    )
+
+    verify(inputs, framework_model, compiled_model)
+
+
+variants_with_weights = {
+    "ssdlite320_mobilenet_v3_large": "SSDLite320_MobileNet_V3_Large_Weights",
+}
+
+
+@pytest.mark.nightly
+@pytest.mark.skip_model_analysis
+@pytest.mark.parametrize("variant", variants_with_weights.keys())
+def test_ssdlite320_mobilenet_v3_large_problematic_block(variant):
+
+    pytest.xfail(reason="Fatal Python error: Segmentation fault")
+
+    class postprocess_detections(nn.Module):
+        def __init__(self, model):
+            super().__init__()
+            self.model = model
+            self.image_sizes = [(320, 320)]
+
+        def forward(self, input1, input2, input3):
+
+            head_outputs = {"bbox_regression": input1, "cls_logits": input2}
+            anchors = [input3]
+
+            op = self.model.postprocess_detections(head_outputs, anchors, self.image_sizes)
+            return op
+
+    # Load model
+    weight_name = variants_with_weights[variant]
+    framework_model, _ = load_vision_model_and_input(variant, "detection", weight_name)
+    framework_model = postprocess_detections(framework_model)
+
+    bbox_regression = torch.randn(1, 3234, 4)
+    cls_logits = torch.randn(1, 3234, 91)
+    anchors = torch.randn(3234, 4)
+    inputs = [bbox_regression, cls_logits, anchors]
+
+    onnx_path = "problematic_block.onnx"
+    torch.onnx.export(
+        framework_model,
+        (inputs[0], inputs[1], inputs[2]),
+        onnx_path,
+        opset_version=17,
+    )
+
+    module_name = "problematic_block"
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule(module_name, onnx_model)
+
+    compiled_model = forge.compile(
+        onnx_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+    )
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.skip_model_analysis
+def test_gather_to_take_onnx():
+    class take(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, boxes, score):
+
+            keep_idxs = score > 0.001
+            score = score[keep_idxs]
+            box = boxes[keep_idxs]
+            _, idxs = score.topk(300)
+            box = box[idxs]
+
+            return box
+
+    torch_model = take()
+    boxes = torch.rand(3234, 4)
+    scores = torch.rand(3234)
+    inputs = [boxes, scores]
+
+    onnx_path = "take.onnx"
+    torch.onnx.export(
+        torch_model,
+        (inputs[0], inputs[1]),
+        onnx_path,
+        opset_version=17,
+        verbose=True,
+    )
+
+    module_name = "gather_to_take_onnx"
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+
+    framework_model = forge.OnnxModule(module_name, onnx_model)
+    compiled_model = forge.compile(
+        onnx_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+    )
+
+    verify(inputs, framework_model, compiled_model)
+
+
+def test_concat_block():
+    class concat(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.score_thresh = 0.001
+            self.topk_candidates = 300
+
+        def forward(self, score):
+
+            keep_idxs = score > self.score_thresh
+            score = score[keep_idxs]
+            num_topk = det_utils._topk_min(score, self.topk_candidates, 0)
+
+            return num_topk
+
+    torch_model = concat()
+    scores = torch.rand(3234)
+    inputs = [scores]
+
+    onnx_path = "concat.onnx"
+    torch.onnx.export(
+        torch_model,
+        (inputs[0]),
+        onnx_path,
+        opset_version=17,
+        verbose=True,
+    )
+
+    module_name = "concat"
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule(module_name, onnx_model)
+
+    compiled_model = forge.compile(
+        onnx_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+    )
+
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.nightly
+@pytest.mark.skip_model_analysis
+@pytest.mark.parametrize(
+    "tensor_size,max_length",
+    [
+        (24, 160),
+        (10, 50),
+        (32, 100),
+        (16, 200),
+        (8, 5),
+    ],
+)
+def test_index_put_speecht5_tts(tensor_size, max_length):
+    class index_put(nn.Module):
+        def __init__(self, max_length):
+            super().__init__()
+            self.max_length = max_length
+
+        def forward(self, pos_seq):
+
+            pos_seq[pos_seq < -self.max_length] = -self.max_length
+            return pos_seq
+
+    pos_seq = torch.arange(tensor_size).unsqueeze(1) - torch.arange(tensor_size).unsqueeze(0)
+
+    inputs = [pos_seq]
+    model = index_put(max_length)
+    model.eval()
+
+    compiled_model = forge.compile(
+        model,
+        sample_inputs=inputs,
+    )
     verify(inputs, model, compiled_model)

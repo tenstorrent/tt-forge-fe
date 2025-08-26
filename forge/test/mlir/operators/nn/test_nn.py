@@ -179,20 +179,30 @@ def test_maxpool2d(input_shape, kernel_size, stride_size, padding, ceil_mode):
 
 
 @pytest.mark.parametrize(
-    "shape, mode",
+    "shape, mode, scale_factor",
     [
-        pytest.param((1, 2048, 7, 7), "nearest"),
-        pytest.param((1, 2048, 7, 7), "bilinear"),
+        pytest.param((1, 2048, 7, 7), "nearest", (2, 2)),
+        pytest.param((1, 2048, 7, 7), "bilinear", (2, 2)),
+        pytest.param((1, 3, 128, 128), "nearest", (2, 3)),
+        pytest.param((1, 3, 128, 128), "bilinear", (2, 3)),
+        pytest.param((1, 4, 12, 16), "nearest", (3, 4)),
+        pytest.param((1, 4, 12, 16), "bilinear", (3, 4)),
+        pytest.param((1, 4, 12), "nearest", 2),
+        pytest.param((1, 4, 12), "linear", 2),
+        pytest.param((1, 7, 9), "nearest", 3),
+        pytest.param((1, 7, 9), "linear", 3),
+        pytest.param((1, 3, 128), "nearest", 2),
+        pytest.param((1, 3, 128), "linear", 2),
     ],
 )
 @pytest.mark.push
-def test_interpolate(shape, mode):
+def test_interpolate(shape, mode, scale_factor):
     class Interpolate(nn.Module):
         def __init__(self):
             super().__init__()
 
         def forward(self, x):
-            return nn.functional.interpolate(x, scale_factor=2, mode=mode)
+            return nn.functional.interpolate(x, scale_factor=scale_factor, mode=mode)
 
     inputs = [torch.rand(shape)]
 

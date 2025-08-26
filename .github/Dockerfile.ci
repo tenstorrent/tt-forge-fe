@@ -28,7 +28,8 @@ RUN git log -1
 WORKDIR $BUILD_DIR/$PROJECT_NAME
 RUN chmod +x scripts/install_model_deps.sh
 RUN source env/activate && python3 scripts/install_model_deps.sh
-RUN cmake -B env/build env && \
+RUN source env/activate && \
+    cmake -B env/build env && \
     cmake --build env/build
 
 FROM ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:${FROM_TAG} AS ci

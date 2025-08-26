@@ -313,7 +313,6 @@ void GraphModule(py::module &m_graph)
     py::enum_<tt::graphlib::RuntimeTensorTransformType>(m_graph, "RuntimeTensorTransformType")
         .value("NoTransform", tt::graphlib::RuntimeTensorTransformType::NoTransform)
         .value("ReinterpretShape", tt::graphlib::RuntimeTensorTransformType::ReinterpretShape)
-        .value("Prestride", tt::graphlib::RuntimeTensorTransformType::Prestride)
         .value("EmbeddingIndex", tt::graphlib::RuntimeTensorTransformType::EmbeddingIndex)
         .value("ConstantInput", tt::graphlib::RuntimeTensorTransformType::ConstantInput)
         .value("Unpad", tt::graphlib::RuntimeTensorTransformType::Unpad)
@@ -1053,40 +1052,6 @@ py::object eval_unpad(Graph *graph, Node *node, py::object input_value)
     return eval_op(unpad, {input_value});
 }
 
-py::object eval_prestride(Graph *graph, Node *node, py::object input_value)
-{
-    graphlib::InputNode *input = dynamic_cast<graphlib::InputNode *>(node);
-
-    if (!input)
-    {
-        return input_value;
-    }
-
-    graphlib::RuntimeTensorTransform runtime_tensor_transform = input->get_runtime_tensor_transform();
-    if (runtime_tensor_transform.type != graphlib::RuntimeTensorTransformType::Prestride)
-    {
-        return input_value;
-    }
-
-    log_trace(
-        LogEval,
-        "Eval prestride {}: {} -> {}",
-        node->name(),
-        node->shape(),
-        runtime_tensor_transform.reinterpreted_shape);
-    std::vector<graphlib::OpType::Attr> attr;
-
-    attr.emplace_back(runtime_tensor_transform.stride_height);
-    attr.emplace_back(runtime_tensor_transform.stride_width);
-    attr.emplace_back(runtime_tensor_transform.kernel_height);
-    attr.emplace_back(runtime_tensor_transform.kernel_width);
-    attr.emplace_back(static_cast<int>(runtime_tensor_transform.original_shape[-2]));
-    attr.emplace_back(static_cast<int>(runtime_tensor_transform.original_shape[-1]));
-
-    graphlib::OpType prestride_act("conv2d_prestride_act", attr);
-    return eval_op(prestride_act, {input_value});
-}
-
 py::object eval_concatenate(
     Graph *graph, std::vector<Node *> nodes, std::vector<py::object> input_values, size_t output_index)
 {
@@ -1155,9 +1120,6 @@ std::vector<py::object> eval_runtime_tensor_transform(
 
         switch (runtime_tensor_transform.type)
         {
-            case graphlib::RuntimeTensorTransformType::Prestride:
-                ret.push_back(eval_prestride(graph, node, input_value));
-                break;
             case graphlib::RuntimeTensorTransformType::ReinterpretShape:
                 ret.push_back(eval_reinterpret_shape(graph, node, input_value, flip));
                 break;

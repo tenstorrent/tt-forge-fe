@@ -5,6 +5,7 @@
 from enum import Enum, auto
 from pytest import FixtureRequest
 import json
+import numpy as np
 import re
 import contextvars
 from dataclasses import dataclass, is_dataclass, field
@@ -492,6 +493,23 @@ class ModelInfo:
 
 @dataclass_json
 @dataclass
+class SweepsTags:
+    operator: str = ""
+    input_source: str = ""
+    input_shape: str = ""
+    dev_data_format: str = ""
+    math_fidelity: str = ""
+    kwargs: str = ""
+    expected_failing_reason: str = ""
+    expected_failing_reason_desc: str = ""
+    expected_component: str = ""
+    detected_failing_reason: str = ""
+    detected_failing_reason_desc: str = ""
+    detected_component: str = ""
+
+
+@dataclass_json
+@dataclass
 class Tags:
     model_name: Optional[str] = None
     bringup_status: str = ""
@@ -503,6 +521,7 @@ class Tags:
     inputs: Optional[List[TensorDesc]] = None
     outputs: Optional[List[TensorDesc]] = None
     model_info: Optional[ModelInfo] = None
+    sweeps: Optional[SweepsTags] = None
     failure_category: str = ""
     refined_error_message: str = ""
     group: Optional[str] = None
@@ -941,6 +960,21 @@ def record_model_properties(
     return module_name
 
 
+def sanitize_json_float(value: Optional[float]) -> Optional[float]:
+    """
+    Sanitize float values for JSON serialization.
+
+    Parameters:
+        value: The float value to sanitize.
+
+    Returns:
+        The sanitized float value, or None if the value is NaN or Inf.
+    """
+    if value is None or np.isnan(value) or np.isinf(value):
+        return None
+    return value
+
+
 def record_consistency_limits(
     framework_outputs: Union[Tuple[TorchTensor, ...], List[TorchTensor]], compiled_outputs: List[TorchTensor]
 ):
@@ -958,12 +992,102 @@ def record_consistency_limits(
     pcc, atol, rtol = determine_consistency_limits(
         framework_outputs=framework_outputs, compiled_outputs=compiled_outputs
     )
+    pcc = sanitize_json_float(pcc)
+    atol = sanitize_json_float(atol)
+    rtol = sanitize_json_float(rtol)
     if pcc is not None:
         fph.add("tags.pcc", pcc)
     if atol is not None:
         fph.add("tags.atol", atol)
     if rtol is not None:
         fph.add("tags.rtol", rtol)
+
+
+def record_sweeps_test_tags(
+    operator: str,
+    input_source: str = None,
+    input_shape: str = None,
+    dev_data_format: str = None,
+    math_fidelity: str = None,
+    kwargs: str = None,
+):
+    """
+    Records the operator and additional tags in the sweeps tags.
+    Args:
+        operator (str): The operator name.
+        input_source (str): The source of the input data.
+        dev_data_format (str): The data format used in the device.
+        math_fidelity (str): The math fidelity level.
+        input_shape (str): The shape of the input data.
+        kwargs (str): Additional keyword arguments to be recorded.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    if operator is not None:
+        fph.add("tags.sweeps.operator", operator)
+    if input_source is not None:
+        fph.add("tags.sweeps.input_source", input_source)
+    if input_shape is not None:
+        fph.add("tags.sweeps.input_shape", input_shape)
+    if dev_data_format is not None:
+        fph.add("tags.sweeps.dev_data_format", dev_data_format)
+    if math_fidelity is not None:
+        fph.add("tags.sweeps.math_fidelity", math_fidelity)
+    if kwargs is not None:
+        fph.add("tags.sweeps.kwargs", kwargs)
+
+
+def record_sweeps_expected_failing_reason(
+    expected_failing_reason: str = "",
+    expected_failing_reason_desc: str = "",
+    expected_component: str = "",
+):
+    """
+    Records the operator and failing reason in the sweeps tags.
+
+    Args:
+        operator (str): The operator name.
+        expected_failing_reason (str): The expected failing reason.
+        expected_failing_reason_desc (str): The description of the expected failing reason.
+        expected_component (str): The expected component.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    if expected_failing_reason is not None:
+        fph.add("tags.sweeps.expected_failing_reason", expected_failing_reason)
+    if expected_failing_reason_desc is not None:
+        fph.add("tags.sweeps.expected_failing_reason_desc", expected_failing_reason_desc)
+    if expected_component is not None:
+        fph.add("tags.sweeps.expected_component", expected_component)
+
+
+def record_sweeps_detected_failing_reason(
+    detected_failing_reason: str = "",
+    detected_failing_reason_desc: str = "",
+    detected_component: str = "",
+):
+    """
+    Records detected failing reason and its description in the sweeps tags.
+
+    Args:
+        detected_failing_reason (str): The detected failing reason.
+        detected_failing_reason_desc (str): The description of the detected failing reason.
+        detected_component (str): The detected component.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    if detected_failing_reason is not None:
+        fph.add("tags.sweeps.detected_failing_reason", detected_failing_reason)
+    if detected_failing_reason_desc is not None:
+        fph.add("tags.sweeps.detected_failing_reason_desc", detected_failing_reason_desc)
+    if detected_component is not None:
+        fph.add("tags.sweeps.detected_component", detected_component)
 
 
 def record_forge_op_name(forge_op_name: str):

@@ -19,7 +19,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from third_party.tt_forge_models.vgg19_unet import ModelLoader  # isort:skip
+from third_party.tt_forge_models.vgg19_unet.pytorch import ModelLoader  # isort:skip
 
 
 @pytest.mark.nightly
@@ -33,10 +33,12 @@ def test_vgg19_unet():
         task=Task.SEMANTIC_SEGMENTATION,
         source=Source.GITHUB,
     )
+    pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2888")
 
     # Load model and input
-    framework_model = ModelLoader.load_model(dtype_override=torch.bfloat16)
-    input_sample = ModelLoader.load_inputs(dtype_override=torch.bfloat16)
+    loader = ModelLoader()
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_sample = loader.load_inputs(dtype_override=torch.bfloat16)
 
     # Configurations
     compiler_cfg = CompilerConfig()
@@ -68,4 +70,4 @@ def test_vgg19_unet_brain_tumor_segmentation():
         priority=ModelPriority.P1,
     )
 
-    raise RuntimeError("Test is currently not executable due to model code dependency.")
+    pytest.xfail(reason="Test is currently not executable due to model code dependency.")

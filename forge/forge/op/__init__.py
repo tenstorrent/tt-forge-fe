@@ -4,7 +4,7 @@
 
 from .matmul import Matmul
 
-from .convolution import Conv2d, Conv2dTranspose, Conv3d
+from .convolution import Conv2d, Conv2dTranspose
 from .pooling import MaxPool1d, MaxPool2d, AvgPool1d, AvgPool2d
 from .eltwise_binary import (
     Add,
@@ -53,7 +53,7 @@ from .tm import (
     Index,
     Select,
     Pad,
-    PadTile,
+    ConstantPad,
     Broadcast,
     Repeat,
     RepeatInterleave,
@@ -61,13 +61,11 @@ from .tm import (
     Unsqueeze,
     Squeeze,
     PixelShuffle,
-    ForgePad,
-    ForgeUnpad,
 )
 from .constant import Constant
 from .nn import Softmax, Layernorm, LogSoftmax, Batchnorm, Dropout, MaxPool2dModule
-from .eltwise_nary import Concatenate, Where, IndexCopy, Stack, Interleave
-from .resize import Resize2d, Upsample2d, Downsample2d
+from .eltwise_nary import Concatenate, Where, IndexCopy, Stack
+from .resize import Resize1d, Resize2d, Upsample2d, Downsample2d
 from .embedding import Embedding
 from .kv_cache import FillCache, UpdateCache
 from .misc import CumSum

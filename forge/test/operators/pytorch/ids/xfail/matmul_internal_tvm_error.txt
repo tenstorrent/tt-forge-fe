@@ -1,5 +1,0 @@
-# xfail_matmul_INTERNAL_TVM_ERROR ids
-
-matmul-FROM_ANOTHER_OP-None-((3,), (3,))-None-None
-matmul-FROM_HOST-None-((3,), (3,))-None-None
-matmul-CONST_EVAL_PASS-None-((3,), (3,))-None-None

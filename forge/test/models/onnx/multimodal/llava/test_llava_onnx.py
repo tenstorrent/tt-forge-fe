@@ -1,30 +1,52 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
-
 # SPDX-License-Identifier: Apache-2.0
-
 
 import pytest
 import torch
+import onnx
 
 import forge
 from forge.forge_property_utils import (
     Framework,
     ModelArch,
+    ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
 )
 from forge.verify.verify import verify
-import onnx
-from test.models.pytorch.multimodal.llava.model_utils.utils import load_inputs
-from test.models.pytorch.multimodal.llava.test_llava import load_model
+from third_party.tt_forge_models.llava.pytorch import (
+    ModelLoader as ConditionalGenModelLoader,
+)
+from third_party.tt_forge_models.llava.pytorch import (
+    ModelVariant as ConditionalGenModelVariant,
+)
 
-variants = ["llava-hf/llava-1.5-7b-hf"]
+
+class Wrapper(torch.nn.Module):
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+
+    def forward(self, input_ids, attention_mask, pixel_values):
+        inputs = {
+            "input_ids": input_ids,
+            "attention_mask": attention_mask,
+            "pixel_values": pixel_values,
+        }
+        output = self.model(**inputs)
+        return output.logits
+
+
+LLAVA_VARIANTS = [
+    ConditionalGenModelVariant.LLAVA_1_5_7B,
+]
 
 
 @pytest.mark.xfail
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", LLAVA_VARIANTS)
 def test_llava_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
@@ -34,33 +56,41 @@ def test_llava_onnx(variant, forge_tmp_path):
         variant=variant,
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
 
-    pytest.xfail(reason="Hangs at generate initial graph stage.")
+    pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2832")
+    # Load model and inputs
+    loader = ConditionalGenModelLoader()
+    torch_model = loader.load_model()
+    wrapped_model = Wrapper(torch_model)
 
-    torch_model, processor = load_model(variant)
-    image = "https://www.ilankelman.org/stopsigns/australia.jpg"
-    text = "What’s shown in this image?"
+    inputs_dict = loader.load_inputs()
+    input_ids = inputs_dict["input_ids"]
+    attention_mask = inputs_dict["attention_mask"]
+    pixel_values = inputs_dict["pixel_values"]
 
-    # Input sample
-    input_ids, attn_mask, pixel_values = load_inputs(image, text, processor)
-    inputs = [input_ids, attn_mask, pixel_values]
+    inputs = [input_ids, attention_mask, pixel_values]
 
-    # Export model to ONNX
-    onnx_path = f"{forge_tmp_path}/" + str(variant).split("/")[-1].replace("-", "_") + ".onnx"
-    torch.onnx.export(torch_model, (inputs[0], inputs[1], inputs[2]), onnx_path, opset_version=17)
+    # ONNX export path
+    onnx_path = f"{forge_tmp_path}/{str(variant).lower().replace('-', '_')}.onnx"
 
-    # Load framework model
+    # Export to ONNX
+    torch.onnx.export(
+        wrapped_model,
+        (input_ids, attention_mask, pixel_values),
+        onnx_path,
+        input_names=["input_ids", "attention_mask", "pixel_values"],
+    )
+
+    # Load and validate ONNX model
     onnx_model = onnx.load(onnx_path)
-    onnx.checker.check_model(onnx_path)
+
     framework_model = forge.OnnxModule(module_name, onnx_model, onnx_path)
 
-    # Compile model
+    # Compile ONNX model
     compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Model Verification
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-    )
+    verify(inputs, framework_model, compiled_model)

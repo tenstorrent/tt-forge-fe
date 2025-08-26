@@ -480,3 +480,101 @@ INSTANTIATE_TEST_SUITE_P(
     { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
 
 }  // namespace tt::test::ops::bitwise_binary
+
+namespace tt::test::ops::eltwise_nary
+{
+
+std::vector<tt::ops::Op> get_nary_eltwise_ops()
+{
+    return {
+        tt::ops::OpType::Where,
+    };
+}
+
+std::vector<VecShapes> get_nary_individual_test_shapes()
+{
+    return {
+        // All the same shape.
+        VecShapes{{1, 1, 1, 32}, {1, 1, 1, 32}, {1, 1, 1, 32}},
+        VecShapes{{1, 1, 32, 1}, {1, 1, 32, 1}, {1, 1, 32, 1}},
+        VecShapes{{1, 32, 1, 1}, {1, 32, 1, 1}, {1, 32, 1, 1}},
+        VecShapes{{32, 1, 1, 1}, {32, 1, 1, 1}, {32, 1, 1, 1}},
+        VecShapes{{1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}},
+        VecShapes{{2, 3, 4}, {2, 3, 4}, {2, 3, 4}},
+        VecShapes{{3, 4}, {3, 4}, {3, 4}},
+        VecShapes{{4}, {4}, {4}},
+        VecShapes{{1}, {1}, {1}},
+        // Broadcasting cases.
+        VecShapes{{1}, {1, 2, 3, 4}, {1, 2, 3, 4}},
+        VecShapes{{1, 1, 1, 1}, {1, 2, 3, 4}, {1, 2, 3, 4}},
+        VecShapes{{1, 1, 3, 1}, {1, 2, 3, 4}, {1, 2, 3, 4}},
+        // X or Y broadcasts.
+        VecShapes{{1, 2, 3, 4}, {1}, {1, 2, 3, 4}},
+        VecShapes{{1, 2, 3, 4}, {1, 2, 3, 4}, {1}},
+    };
+}
+
+bool valid_nary_inputs(const graphlib::Shape& x, const graphlib::Shape& y, const graphlib::Shape& z)
+{
+    return graphlib::can_be_broadcasted(x, y) && graphlib::can_be_broadcasted(x, z) &&
+           graphlib::can_be_broadcasted(y, z);
+}
+
+std::vector<std::vector<graphlib::Shape>> generate_nary_input_shapes()
+{
+    std::vector<std::vector<graphlib::Shape>> input_shapes;
+    std::vector<graphlib::Shape> shapes;
+
+    auto shapes_range = shape_range({1}, {8});
+    shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
+    shapes_range = shape_range({1, 1}, {8, 8});
+    shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
+    shapes_range = shape_range({1, 1, 1}, {4, 1, 1});
+    shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
+    shapes_range = shape_range({1, 1, 1, 1}, {4, 1, 1, 1});
+    shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
+
+    for (size_t i = 0; i < shapes.size(); ++i)
+    {
+        input_shapes.push_back({shapes[i], shapes[i], shapes[i]});
+
+        for (size_t j = i + 1; j < shapes.size(); ++j)
+        {
+            for (size_t k = j; k < shapes.size(); ++k)
+            {
+                if (valid_nary_inputs(shapes[i], shapes[j], shapes[k]))
+                {
+                    input_shapes.push_back({shapes[i], shapes[j], shapes[k]});
+                    if (i != j || j != k)
+                    {
+                        input_shapes.push_back({shapes[j], shapes[i], shapes[k]});
+                        input_shapes.push_back({shapes[k], shapes[j], shapes[i]});
+                    }
+                }
+            }
+        }
+    }
+
+    return input_shapes;
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    NaryEltwiseOpsIndividual,
+    SimpleOpDecomposeOnlyTest,
+    testing::ConvertGenerator(
+        testing::Combine(
+            testing::ValuesIn(get_nary_eltwise_ops()), testing::ValuesIn(get_nary_individual_test_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
+    { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
+
+INSTANTIATE_TEST_SUITE_P(
+    NaryEltwiseOpsSweep,
+    SimpleOpDecomposeOnlyTest,
+    testing::ConvertGenerator(
+        testing::Combine(testing::ValuesIn(get_nary_eltwise_ops()), testing::ValuesIn(generate_nary_input_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
+    { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
+
+}  // namespace tt::test::ops::eltwise_nary

@@ -9,7 +9,10 @@ import re
 
 from enum import Enum
 from dataclasses import dataclass, field
-from typing import List, Callable, Optional
+from typing import List, Callable, Optional, Generator
+from loguru import logger
+
+from .pytest import PyTestUtils
 
 
 @dataclass
@@ -54,6 +57,29 @@ class ExceptionCheck:
 class FailingReason:
     description: str
     checks: List[ExceptionCheck] = field(default_factory=list)
+
+    def __post_init__(self):
+        self.checks = [
+            check for check in self.checks if check.component is None or check.component != ComponentChecker.NONE.value
+        ]
+        if len(self.checks) == 0:
+            logger.trace(f"FailingReason '{self.description}' has no checks defined, it will not be used.")
+        elif len(self.checks) > 1:
+            logger.trace(f"FailingReason '{self.description}' has multiple ({len(self.checks)}) checks defined.")
+
+    @property
+    def component_checker(self) -> Optional["ComponentChecker"]:
+        for check in self.checks:
+            component = check.component
+            if component is None or component == ComponentChecker.NONE.value:
+                continue
+            return component
+        return None
+
+    @property
+    def component_checker_description(self) -> Optional[str]:
+        component_checker = self.component_checker
+        return component_checker.description if component_checker else None
 
     def __contains__(self, ex: ExceptionData) -> bool:
         return self.check(ex)
@@ -193,6 +219,8 @@ class ComponentChecker(Enum):
                         # Fail with pytorch also. TODO: check if tests are correct
                         M.last_line(M.contains("torch/nn/modules/conv.py:")),
                         M.last_line(M.contains("torch/nn/functional.py")),
+                        M.last_line(M.contains("forge/op/eval/forge/pooling.py")),
+                        M.last_line(M.contains("forge/tensor.py:")),
                     ),
                 ],
             ),
@@ -207,6 +235,7 @@ class ComponentChecker(Enum):
                         M.last_line(M.contains("forge/verify/value_checkers.py:")),
                         M.last_line(M.contains("forge/op/eval/interface.py:")),
                         M.last_line(M.contains("forge/compile.py:")),
+                        M.last_line(M.contains("forge/op/common.py")),
                     ),
                 ],
             ),
@@ -233,6 +262,46 @@ class ComponentChecker(Enum):
             ),
         ],
     )
+
+
+class FailingReasonsFinder:
+    @classmethod
+    def build_ex_data(cls, exception_value: Exception, exception_traceback: str) -> ExceptionData:
+        """Convert exception to ExceptionData object
+
+        Args:
+            exception_value (Exception): Raised exception
+            exception_traceback (str): Exception traceback
+
+        Returns:
+            ExceptionData: Exception data object
+        """
+        ex_class_name = f"{type(exception_value).__module__}.{type(exception_value).__name__}"
+        ex_class_name = ex_class_name.replace("builtins.", "")
+        ex_message = f"{exception_value}"
+        exception_traceback = PyTestUtils.remove_colors(exception_traceback)
+        ex_data = ExceptionData(
+            class_name=ex_class_name,
+            message=ex_message,
+            error_log=exception_traceback,
+        )
+        return ex_data
+
+    @classmethod
+    def find_reason_by_ex_data(cls, ex: ExceptionData) -> Optional["FailingReasons"]:
+        reasons = list(cls.find_reasons_by_ex_data(ex))
+        if not reasons:
+            return None
+        if len(reasons) > 1:
+            logger.warning(f"Multiple reasons found: {reasons} for ex: {ex}")
+        return reasons[0]
+
+    @classmethod
+    def find_reasons_by_ex_data(cls, ex: ExceptionData) -> Generator["FailingReasons", None, None]:
+        for failing_reason in FailingReasons:
+            # Checking if exception data matches the failing reason
+            if ex in failing_reason.value:
+                yield failing_reason
 
 
 class FailingReasons(Enum):
@@ -272,26 +341,27 @@ class FailingReasons(Enum):
         ],
     )
 
-    UNSUPPORTED_DATA_FORMAT = FailingReason(
-        description="Data format is not supported",
+    NOT_IMPLEMENTED_DATA_FORMAT_OLD = FailingReason(
+        description="Data format is not implemented old",
         checks=[
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.NONE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.contains("Unsupported data type"),
                 ],
             ),
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.NONE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.contains("/forge/csrc/passes/lower_to_mlir.cpp:"),
                 ],
             ),
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.FORGE.value,
+                # component=ComponentChecker.FORGE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 # bitwise_and	RuntimeError: "bitwise_and_cpu" not implemented for 'Float'
                 # bitwise_left_shift	RuntimeError: "lshift_cpu" not implemented for 'Float'
                 # bitwise_not	RuntimeError: "bitwise_not_cpu" not implemented for 'Float'
@@ -317,6 +387,12 @@ class FailingReasons(Enum):
                     ),
                 ],
             ),
+        ],
+    )
+
+    UNSUPPORTED_DATA_FORMAT = FailingReason(
+        description="Data format is not supported",
+        checks=[
             ExceptionCheck(
                 # matmul	RuntimeError: TT_FATAL @ tt-metal/ttnn/cpp/ttnn/operations/matmul/device/matmul_op.cpp:1542: is_floating_point(input_tensor_a.get_dtype())
                 # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
@@ -352,7 +428,7 @@ class FailingReasons(Enum):
             ),
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.NONE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.contains("Input tensors must have the same data type, but got {} and {}"),
                 ],
@@ -360,8 +436,8 @@ class FailingReasons(Enum):
         ],
     )
 
-    DATA_MISMATCH = FailingReason(
-        description="Verification failed due to data mismatch",
+    DATA_MISMATCH_OLD = FailingReason(
+        description="Verification failed due to data mismatch old",
         checks=[
             # sum	AssertionError: PCC check failed
             # transpose	AssertionError: PCC check failed
@@ -369,7 +445,8 @@ class FailingReasons(Enum):
             # forge/test/operators/utils/compat.py:319: AssertionError
             ExceptionCheck(
                 class_name="AssertionError",
-                component=ComponentChecker.FORGE.value,
+                # component=ComponentChecker.FORGE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.equals("PCC check failed"),
                 ],
@@ -379,11 +456,17 @@ class FailingReasons(Enum):
             ),
             ExceptionCheck(
                 class_name="AssertionError",
-                component=ComponentChecker.NONE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.starts_with("Data mismatch"),
                 ],
             ),
+        ],
+    )
+
+    DATA_MISMATCH_ALL_CLOSE = FailingReason(
+        description="Data mismatch (all close)",
+        checks=[
             # add	ValueError: Data mismatch -> AllCloseValueChecker (all_close):
             # add	ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model=tensor([],
             # clamp	ValueError: Data mismatch -> AllCloseValueChecker (all_close):
@@ -403,7 +486,41 @@ class FailingReasons(Enum):
                 message=[
                     M.any(
                         M.starts_with("Data mismatch -> AllCloseValueChecker (all_close)"),
+                    ),
+                ],
+                error_log=[
+                    M.any(
+                        M.last_line(M.contains("forge/verify/value_checkers.py:")),
+                    ),
+                ],
+            ),
+        ],
+    )
+
+    # Should not happen
+    DATA_MISMATCH_AUTOMATIC = FailingReason(
+        description="Data mismatch (automatic)",
+        checks=[
+            # forge/forge/verify/value_checkers.py:39: ValueError
+            ExceptionCheck(
+                class_name="ValueError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    M.any(
                         M.starts_with("Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
+                    ),
+                    M.neg(
+                        M.any(
+                            M.starts_with(
+                                "Data mismatch -> AutomaticValueChecker (compare_with_golden): pcc is in invalid low range:"
+                            ),
+                            M.starts_with(
+                                "Data mismatch -> AutomaticValueChecker (compare_with_golden): pcc is in invalid medium range:"
+                            ),
+                            M.starts_with(
+                                "Data mismatch -> AutomaticValueChecker (compare_with_golden): pcc is in invalid high range:"
+                            ),
+                        ),
                     ),
                 ],
                 error_log=[
@@ -416,7 +533,79 @@ class FailingReasons(Enum):
         ],
     )
 
-    SPECIAL_VALUES = FailingReason(
+    DATA_MISMATCH_PCC_LOW_RANGE = FailingReason(
+        description="Data mismatch PCC in low range",
+        checks=[
+            # >                   raise ValueError(
+            #                         f"Data mismatch -> AutomaticValueChecker (compare_with_golden): pcc is in invalid low range: {pcc} <= 0.85"
+            # E                       ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden): pcc is in invalid low range: 0.736095037069272 <= 0.85
+            # forge/test/operators/utils/compat.py:326: ValueError
+            ExceptionCheck(
+                class_name="ValueError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    M.any(
+                        M.starts_with(
+                            "Data mismatch -> AutomaticValueChecker (compare_with_golden): pcc is in invalid low range:"
+                        ),
+                    ),
+                ],
+                error_log=[
+                    M.any(
+                        M.last_line(M.contains("test/operators/utils/compat.py:")),
+                    ),
+                ],
+            ),
+        ],
+    )
+
+    DATA_MISMATCH_PCC_MEDIUM_RANGE = FailingReason(
+        description="Data mismatch PCC in medium range",
+        checks=[
+            # forge/test/operators/utils/compat.py:326: ValueError
+            ExceptionCheck(
+                class_name="ValueError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    M.any(
+                        M.starts_with(
+                            "Data mismatch -> AutomaticValueChecker (compare_with_golden): pcc is in invalid medium range:"
+                        ),
+                    ),
+                ],
+                error_log=[
+                    M.any(
+                        M.last_line(M.contains("test/operators/utils/compat.py:")),
+                    ),
+                ],
+            ),
+        ],
+    )
+
+    DATA_MISMATCH_PCC_HIGH_RANGE = FailingReason(
+        description="Data mismatch PCC in high range",
+        checks=[
+            # forge/test/operators/utils/compat.py:326: ValueError
+            ExceptionCheck(
+                class_name="ValueError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    M.any(
+                        M.starts_with(
+                            "Data mismatch -> AutomaticValueChecker (compare_with_golden): pcc is in invalid high range:"
+                        ),
+                    ),
+                ],
+                error_log=[
+                    M.any(
+                        M.last_line(M.contains("test/operators/utils/compat.py:")),
+                    ),
+                ],
+            ),
+        ],
+    )
+
+    VERIFICATION_FAILED_SPECIAL_VALUES = FailingReason(
         description="Verification failed due to special values",
         checks=[
             # div	RuntimeError: TT_ASSERT @ tt-forge-fe/forge/csrc/verif/verif_ops.cpp:361: !has_special_values(a)
@@ -465,6 +654,12 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/verify/compare.py:")),
                 ],
             ),
+        ],
+    )
+
+    VERIFICATION_FAILED_PCC_NAN = FailingReason(
+        description="Verification failed due to PCC being NaN",
+        checks=[
             # clamp	AssertionError: PCC is nan, but tensors are not equal
             # pow	AssertionError: PCC is nan, but tensors are not equal
             # >               assert False, "PCC is nan, but tensors are not equal"
@@ -480,6 +675,12 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/verify/compare.py:")),
                 ],
             ),
+        ],
+    )
+
+    ALL_CLOSE_FOR_INT_TYPE_OLD = FailingReason(
+        description="All close for integer type old",
+        checks=[
             # max	AssertionError: AllCloseValueChecker (all_close): all_close doesn't make sense for integer/bool types
             # >       assert fw_out.dtype not in [
             #             torch.int32,
@@ -490,7 +691,8 @@ class FailingReasons(Enum):
             # forge/forge/verify/value_checkers.py:48: AssertionError
             ExceptionCheck(
                 class_name="AssertionError",
-                component=ComponentChecker.FORGE.value,
+                # component=ComponentChecker.FORGE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.equals("AllCloseValueChecker (all_close): all_close doesn't make sense for integer/bool types"),
                 ],
@@ -519,12 +721,19 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/verify/verify.py:")),
                 ],
             ),
+        ],
+    )
+
+    WEIGHT_TYPE_MISMATCH_OLD = FailingReason(
+        description="Weight type mismatch old",
+        checks=[
             # conv2d	RuntimeError: Input type (CPUBFloat16Type) and weight type (torch.FloatTensor) should be the same or input should be a MKLDNN tensor and weight is a dense tensor
             # E       RuntimeError: Input type (CPUBFloat16Type) and weight type (torch.FloatTensor) should be the same or input should be a MKLDNN tensor and weight is a dense tensor
             # ../ttforge-toolchain/venv/lib/python3.10/site-packages/torch/nn/modules/conv.py:952: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.FORGE.value,
+                # component=ComponentChecker.FORGE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.starts_with(
                         "Input type (CPUBFloat16Type) and weight type (torch.FloatTensor) should be the same or input should be a MKLDNN tensor and weight is a dense tensor"
@@ -542,7 +751,8 @@ class FailingReasons(Enum):
             # forge/forge/compiled_graph_state.py:310: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.FORGE.value,
+                # component=ComponentChecker.FORGE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     # M.contains("data type mismatch"),
                     M.regex("Tensor .* - data type mismatch: expected .*, got .*"),
@@ -579,7 +789,7 @@ class FailingReasons(Enum):
             # # forge/forge/compiled_graph_state.py:310: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.NONE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 # component=ComponentChecker.FORGE.value,
                 # component=ComponentChecker.TTNN.value,
                 # TODO: introduce console output check
@@ -597,8 +807,8 @@ class FailingReasons(Enum):
         ],
     )
 
-    WRONG_SCALAR_TYPE = FailingReason(
-        description="Wrong scalar type",
+    WRONG_SCALAR_TYPE_OLD = FailingReason(
+        description="Wrong scalar type old",
         checks=[
             # RuntimeError: expected scalar type Char but found Float
             # RuntimeError: expected scalar type Int but found Float
@@ -607,7 +817,8 @@ class FailingReasons(Enum):
             # ../ttforge-toolchain/venv/lib/python3.10/site-packages/torch/nn/modules/conv.py:456: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.FORGE.value,
+                # component=ComponentChecker.FORGE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.regex("expected scalar type .* but found Float"),
                 ],
@@ -618,8 +829,8 @@ class FailingReasons(Enum):
         ],
     )
 
-    UNSUPPORTED_SPECIAL_CASE = FailingReason(
-        description="Unsupported special case",
+    UNSUPPORTED_EXPONENT_VALUE = FailingReason(
+        description="Unsupported exponent value",
         checks=[
             # >               assert False, f"Exponent value {dec} is not yet supported."
             # E               AssertionError: Exponent value 0.25999999046325684 is not yet supported.
@@ -634,6 +845,19 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/tvm_calls/relay/op/forge_passes.py:")),
                 ],
             ),
+        ],
+    )
+
+    # # TODO
+    # UNSUPPORTED_SPECIAL_CASE = FailingReason(
+    #     description="Unsupported special case",
+    #     checks=[
+    #     ]
+    # )
+
+    WEIGHT_BIAS_SHAPE_MISMATCH = FailingReason(
+        description="Weight and bias shape mismatch",
+        checks=[
             # ExceptionCheck(
             #     class_name="RuntimeError",
             #     message=[
@@ -667,7 +891,8 @@ class FailingReasons(Enum):
             # forge/forge/op/eval/interface.py:112: TypeError
             ExceptionCheck(
                 class_name="TypeError",
-                component=ComponentChecker.FORGE.value,
+                # component=ComponentChecker.FORGE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.equals("'NotImplementedType' object is not callable"),
                 ],
@@ -678,15 +903,28 @@ class FailingReasons(Enum):
         ],
     )
 
-    NOT_IMPLEMENTED = FailingReason(
-        description="Not implemented operator",
+    NOT_IMPLEMENTED_ATEN = FailingReason(
+        description="Not implemented aten operator",
         checks=[
+            # >           raise NotImplementedError(msg)
+            # E           NotImplementedError: The following operators are not implemented: ['aten::exp2']
+            # tvm/relay/frontend/pytorch.py:5319: NotImplementedError
             ExceptionCheck(
                 class_name="NotImplementedError",
+                component=ComponentChecker.TVM.value,
                 message=[
-                    M.starts_with("The following operators are not implemented:"),
+                    M.starts_with("The following operators are not implemented: ['aten::"),
+                ],
+                error_log=[
+                    M.last_line(M.contains("tvm/relay/frontend/pytorch.py:")),
                 ],
             ),
+        ],
+    )
+
+    LOWERING_UNSUPPORTED_OPERATION = FailingReason(
+        description="Lowering unsupported operation",
+        checks=[
             # arctan	RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph
             # arctan2	RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph
             # atan	RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph
@@ -706,11 +944,18 @@ class FailingReasons(Enum):
             ),
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.FORGE.value,
+                # component=ComponentChecker.FORGE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.starts_with("Unsupported operation for lowering from TTForge to TTIR:"),
                 ],
             ),
+        ],
+    )
+
+    UNSUPPORTED_OP_TYPES = FailingReason(
+        description="Unsupported op types",
+        checks=[
             # ExceptionCheck(
             #     class_name="RuntimeError",
             #     message=[
@@ -730,9 +975,15 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/tvm_to_python.py:")),
                 ],
             ),
+        ],
+    )
+
+    NOT_IMPLEMENTED = FailingReason(
+        description="Not implemented operator",
+        checks=[
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.NONE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     # tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/concat/device/concat_device_operation.cpp:47: !in_ref.get_shape().has_tile_padding(this->dim)
                     M.contains("!in_ref.get_shape().has_tile_padding(this->dim)"),
@@ -758,7 +1009,8 @@ class FailingReasons(Enum):
             # forge/forge/compiled_graph_state.py:310: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.TTNN.value,
+                # component=ComponentChecker.TTNN.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.contains("info:\nBinaryOpType cannot be mapped to BcastOpMath"),
                 ],
@@ -798,7 +1050,7 @@ class FailingReasons(Enum):
         ],
     )
 
-    ALLOCATION_FAILED = FailingReason(
+    OUT_OF_MEMORY = FailingReason(
         description="Out of Memory",
         checks=[
             # # INFO     | forge.compiled_graph_state:__call__:247  Running model forward on device...
@@ -866,16 +1118,51 @@ class FailingReasons(Enum):
         ],
     )
 
-    ALLOCATION_CIRCULAR_BUFFER = FailingReason(
-        description="Allocation of circular buffer",
+    CIRCULAR_BUFFER_EXCEEDS_L1 = FailingReason(
+        description="Circular buffer exceeds L1 cache size",
         checks=[
+            # concatenate	RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-metal/tt_metal/impl/program/program.cpp:939: tt::exception
+            # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
+            # E       RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:939: tt::exception
+            # E       info:
+            # E       Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=7)] grow to 2140832 B which is beyond max L1 size of 1499136 B
+            # E       backtrace:
+            # E        --- tt::tt_metal::detail::ProgramImpl::validate_circular_buffer_region(tt::tt_metal::IDevice const*)
+            # E        --- tt::tt_metal::distributed::MeshWorkloadImpl::compile(tt::tt_metal::distributed::MeshDevice*)
+            # E        --- tt::tt_metal::distributed::EnqueueMeshWorkload(tt::tt_metal::distributed::MeshCommandQueue&, tt::tt_metal::distributed::MeshWorkload&, bool)
+            # E        --- tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >::tensor_return_value_t ttnn::device_operation::detail::invoke<tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > > >(ttsl::StrongType<unsigned char, ttnn::QueueIdTag>, tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >::operation_attributes_t const&, tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >::tensor_args_t const&)
+            # E        --- std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > tt::tt_metal::operation::run<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >(tt::tt_metal::operation::DeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >&&, std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > const&, std::vector<std::optional<tt::tt_metal::Tensor const>, std::allocator<std::optional<tt::tt_metal::Tensor const> > > const&, std::vector<std::optional<tt::tt_metal::Tensor>, std::allocator<std::optional<tt::tt_metal::Tensor> > > const&, ttsl::StrongType<unsigned char, ttnn::QueueIdTag>)
+            # E        --- ttnn::operations::data_movement::detail::pad_impl(ttsl::StrongType<unsigned char, ttnn::QueueIdTag>, tt::tt_metal::Tensor const&, std::span<unsigned int const, 18446744073709551615ul>, std::span<unsigned int const, 18446744073709551615ul>, float, bool, std::optional<tt::tt_metal::MemoryConfig> const&)
+            # E        --- ttnn::operations::data_movement::detail::pad_impl(ttsl::StrongType<unsigned char, ttnn::QueueIdTag>, tt::tt_metal::Tensor const&, ttsl::SmallVector<ttnn::operations::data_movement::PadSpecDim, 8ul>, float, bool, std::optional<tt::tt_metal::MemoryConfig> const&)
+            # E        --- ttnn::operations::data_movement::detail::invoke_rm(ttsl::StrongType<unsigned char, ttnn::QueueIdTag>, tt::tt_metal::Tensor const&, ttsl::SmallVector<ttnn::operations::data_movement::PadSpecDim, 8ul> const&, float, bool, std::optional<tt::tt_metal::MemoryConfig> const&)
+            # E        --- ttnn::operations::data_movement::ExecutePad::invoke(ttsl::StrongType<unsigned char, ttnn::QueueIdTag>, tt::tt_metal::Tensor const&, ttsl::SmallVector<ttnn::operations::data_movement::PadSpecDim, 8ul> const&, float, bool, std::optional<tt::tt_metal::MemoryConfig> const&)
+            # E        --- ttnn::operations::data_movement::ExecutePad::invoke(ttsl::StrongType<unsigned char, ttnn::QueueIdTag>, tt::tt_metal::Tensor const&, ttsl::SmallVector<std::pair<unsigned int, unsigned int>, 8ul> const&, float, bool, std::optional<tt::tt_metal::MemoryConfig> const&)
+            # E        --- ttnn::operations::data_movement::pad_to_tile_vol(ttsl::StrongType<unsigned char, ttnn::QueueIdTag>, tt::tt_metal::Tensor const&, float, bool, std::optional<tt::tt_metal::MemoryConfig> const&)
+            # E        --- ttnn::operations::data_movement::ConcatOperation::invoke(ttsl::StrongType<unsigned char, ttnn::QueueIdTag>, std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > const&, int, std::optional<tt::tt_metal::MemoryConfig> const&, std::optional<tt::tt_metal::Tensor> const&, unsigned int)
+            # E        --- tt::runtime::ttnn::operations::data_movement::run(tt::target::ttnn::ConcatOp const*, tt::runtime::ttnn::ProgramContext&)
+            # E        --- tt::runtime::ttnn::ProgramExecutor::execute()
+            # E        --- tt::runtime::ttnn::submit(tt::runtime::Device, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> >&)
+            # E        --- tt::runtime::submit(tt::runtime::Device, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> >&)
+            # E        --- tt::run_program(tt::runtime::Binary&, int, std::vector<tt::Tensor, std::allocator<tt::Tensor> >&)
+            # E        --- tt::ModelState::run_program(tt::ProgramType, std::vector<tt::Tensor, std::allocator<tt::Tensor> >)
+            # forge/compiled_graph_state.py:316: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
                 component=ComponentChecker.METAL.value,
                 message=[
+                    M.starts_with("TT_THROW"),
                     M.contains("Statically allocated circular buffers on core range"),
                 ],
+                error_log=[
+                    M.last_line(M.contains("forge/compiled_graph_state.py:")),
+                ],
             ),
+        ],
+    )
+
+    CIRCULAR_BUFFER_CLASH = FailingReason(
+        description="Circular buffer clash",
+        checks=[
             # conv2d	RuntimeError: TT_THROW @ tt-metal/tt_metal/impl/program/program.cpp:791: tt::exception
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
             # E       RuntimeError: TT_THROW @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:791: tt::exception
@@ -912,6 +1199,12 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
+        ],
+    )
+
+    CIRCULAR_MODE_NOT_SUPPORTED = FailingReason(
+        description="Circular mode not supported",
+        checks=[
             # conv2d	ValueError: circular mode for torch.nn.functional.pad are not supported in TVM
             # >           raise ValueError("circular mode for torch.nn.functional.pad are not supported in TVM")
             # E           ValueError: circular mode for torch.nn.functional.pad are not supported in TVM
@@ -952,16 +1245,26 @@ class FailingReasons(Enum):
 
     COMPILATION_FAILED = FailingReason(
         description="Model compilation failed",
+    )
+
+    COMPILATION_FAILED_OLD1 = FailingReason(
+        description="Model compilation failed old 1",
         checks=[
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.NONE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.regex(
                         "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/core/core.cpp:\\d+: tt::exception"
                     ),
                 ],
             ),
+        ],
+    )
+
+    FAILED_MLIR_VERIFICATION = FailingReason(
+        description="MLIR module failed verification",
+        checks=[
             # forge/forge/compile.py:1015: RuntimeError
             # >       context.compiled_binary = forge._C.run_mlir_compiler(forge_module, compiler_cfg.mlir_config, forge_property_handler)
             # E       RuntimeError: Generated MLIR module failed verification.
@@ -976,13 +1279,20 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/compile.py:")),
                 ],
             ),
+        ],
+    )
+
+    COMPILATION_FAILED_OLD2 = FailingReason(
+        description="Model compilation failed old2",
+        checks=[
             # clamp	RuntimeError: Fatal error
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
             # E       RuntimeError: Fatal error
             # forge/forge/compiled_graph_state.py:310: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.FORGE.value,
+                # component=ComponentChecker.FORGE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.equals("Fatal error"),
                 ],
@@ -995,7 +1305,8 @@ class FailingReasons(Enum):
             # forge/compile.py:745: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.FORGE.value,
+                # component=ComponentChecker.FORGE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.contains(
                         "Unable to cast Python instance to C++ type (#define PYBIND11_DETAILED_ERROR_MESSAGES or compile in debug mode for details)"
@@ -1008,19 +1319,19 @@ class FailingReasons(Enum):
         ],
     )
 
-    INFERENCE_FAILED = FailingReason(
-        description="Inference failed",
+    INFERENCE_FAILED_OLD1 = FailingReason(
+        description="Inference failed old 1",
         checks=[
             ExceptionCheck(
                 class_name="AttributeError",
-                component=ComponentChecker.NONE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.equals("'TransposeTM' object has no attribute 'z_dim_slice' (via OpType cpp underlying class)"),
                 ],
             ),
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.NONE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.contains(
                         "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/tilize/device/tilize_op.cpp"
@@ -1029,13 +1340,19 @@ class FailingReasons(Enum):
             ),
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.NONE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.contains(
                         "Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=7)] grow to 28100144 B which is beyond max L1 size of 1499136 B"
                     ),
                 ],
             ),
+        ],
+    )
+
+    NORMALIZED_INDEX_OUT_OF_BOUNDS = FailingReason(
+        description="Normalized index out of bounds",
+        checks=[
             ExceptionCheck(
                 # repeat_interleave	RuntimeError: TT_FATAL @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/common/shape.cpp:57: normalized_index >= 0 and normalized_i
                 # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
@@ -1066,9 +1383,15 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
+        ],
+    )
+
+    INFERENCE_FAILED_OLD2 = FailingReason(
+        description="Inference failed old 2",
+        checks=[
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.NONE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.contains(
                         "293 unique+common runtime args targeting kernel reader_concat_stick_layout_interleaved_start_id on (x=0,y=0) are too large. Max allowable is 256"
@@ -1077,7 +1400,7 @@ class FailingReasons(Enum):
             ),
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.NONE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.contains("mat1 and mat2 must have the same dtype, but got Int and Float"),
                 ],
@@ -1163,8 +1486,8 @@ class FailingReasons(Enum):
         ],
     )
 
-    BUGGY_SHAPE = FailingReason(
-        description="Buggy shape",
+    BUGGY_SHAPE_OLD = FailingReason(
+        description="Buggy shape old",
         checks=[
             ExceptionCheck(
                 # max	ValueError: Shape mismatch: framework_model.shape=torch.Size([a, b]), compiled_model.shape=torch.Size([a, b])
@@ -1173,7 +1496,7 @@ class FailingReasons(Enum):
                 # forge/forge/verify/verify.py:481: ValueError
                 class_name="ValueError",
                 # component=ComponentChecker.FORGE.value,
-                component=ComponentChecker.NONE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.regex("Shape mismatch: framework_model.shape=torch.Size.*, compiled_model.shape=torch.Size.*"),
                 ],
@@ -1205,24 +1528,25 @@ class FailingReasons(Enum):
         ],
     )
 
-    UNSUPPORTED_PARAMETER_VALUE = FailingReason(
-        description="Unsupported parameter value",
-    )
+    # UNSUPPORTED_PARAMETER_VALUE = FailingReason(
+    #     description="Unsupported parameter value",
+    # )
 
-    UNSUPPORTED_TYPE_FOR_VALIDATION = FailingReason(
-        description="Verification failed due to unsupported type in verify_module",
-    )
+    # UNSUPPORTED_TYPE_FOR_VALIDATION = FailingReason(
+    #     description="Verification failed due to unsupported type in verify_module",
+    # )
 
     # # "Fatal python error - xfail does not work; UserWarning: resource_tracker: There appear to be 26 leaked semaphore objects to clean up at shutdown"
     # # "Fatal python error - xfail does not work. Error message: Fatal Python error: Segmentation fault; UserWarning: resource_tracker: There appear to be 26 leaked semaphore objects to clean up at shutdown"
     # SEMAPHORE_LEAK = "Semaphore leak"
-    SEMAPHORE_LEAK = FailingReason(
-        description="Semaphore leak",
-    )
+    # SEMAPHORE_LEAK = FailingReason(
+    #     description="Semaphore leak",
+    # )
 
-    INTERNAL_TVM_ERROR = FailingReason(
-        description="Internal TVM error",
+    RELAY_OP_SHAPE_CHECK = FailingReason(
+        description="Relay operator shape check",
         checks=[
+            # matmul	tvm.error.InternalError: Traceback (most recent call last):
             # E       tvm.error.InternalError: Traceback (most recent call last):
             # E         8: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<tvm::IRModule (tvm::transform::Pass, tvm::IRModule)>::AssignTypedLambda<tvm::transform::__mk_TVM9::{lambda(tvm::transform::Pass, tvm::IRModule)#1}>(tvm::transform::__mk_TVM9::{lambda(tvm::transform::Pass, tvm::IRModule)#1}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, tvm::runtime::TVMRetValue)
             # E         7: tvm::transform::Pass::operator()(tvm::IRModule) const
@@ -1246,6 +1570,12 @@ class FailingReasons(Enum):
                     ),
                 ],
             ),
+        ],
+    )
+
+    CANNOT_SQUEEZE_AXIS_NOT_ONE = FailingReason(
+        description="Cannot squeeze axis with dimension not equal to 1",
+        checks=[
             # squeeze	tvm.error.InternalError: Traceback (most recent call last):
             # >       raise py_err
             # E       tvm.error.InternalError: Traceback (most recent call last):
@@ -1274,29 +1604,14 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("/tvm/_ffi/base.py:")),
                 ],
             ),
+        ],
+    )
+
+    TENSOR_TRANSFORM_SHAPE_CHECK = FailingReason(
+        description="Tensor transform shape check",
+        checks=[
+            # reshape	tvm.error.InternalError: Traceback (most recent call last):
             # >       raise py_err
-            # E       tvm.error.InternalError: Traceback (most recent call last):
-            # E         9: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<tvm::IRModule (tvm::transform::Pass, tvm::IRModule)>::AssignTypedLambda<tvm::transform::__mk_TVM9::{lambda(tvm::transform::Pass, tvm::IRModule)#1}>(tvm::transform::__mk_TVM9::{lambda(tvm::transform::Pass, tvm::IRModule)#1}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, tvm::runtime::TVMRetValue)
-            # E         8: tvm::transform::Pass::operator()(tvm::IRModule) const
-            # E         7: tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
-            # E         6: tvm::transform::ModulePassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
-            # E         5: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<tvm::IRModule (tvm::IRModule, tvm::transform::PassContext)>::AssignTypedLambda<tvm::relay::transform::InferType()::{lambda(tvm::IRModule, tvm::transform::PassContext const&)#1}>(tvm::relay::transform::InferType()::{lambda(tvm::IRModule, tvm::transform::PassContext const&)#1})::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
-            # E         4: tvm::relay::TypeInferencer::Infer(tvm::GlobalVar, tvm::relay::Function)
-            # E         3: tvm::relay::TypeSolver::Solve()
-            # E         2: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<bool (tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)>::AssignTypedLambda<bool (*)(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)>(bool (*)(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&))::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
-            # E         1: tvm::relay::ReshapeRel(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)
-            # E         0: tvm::relay::InferNewShape(tvm::runtime::Array<tvm::PrimExpr, void> const&, tvm::Attrs const&, bool)
-            # E         File "/localdev/vbrkic/src/forge/tt-forge-fe/third_party/tvm/src/relay/op/tensor/transform.cc", line 698
-            # E       InternalError: Check failed: src_idx < ishape.size() (1 vs. 1) :
-            # third_party/tvm/python/tvm/_ffi/base.py:479: InternalError
-            ExceptionCheck(
-                class_name="tvm.error.InternalError",
-                component=ComponentChecker.TVM.value,
-                error_log=[
-                    M.last_line(M.contains("/tvm/_ffi/base.py:")),
-                    M.contains("E       InternalError: Check failed: src_idx < ishape.size() (1 vs. 1)"),
-                ],
-            ),
             # E       tvm.error.InternalError: Traceback (most recent call last):
             # E         9: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<tvm::IRModule (tvm::transform::Pass, tvm::IRModule)>::AssignTypedLambda<tvm::transform::__mk_TVM9::{lambda(tvm::transform::Pass, tvm::IRModule)#1}>(tvm::transform::__mk_TVM9::{lambda(tvm::transform::Pass, tvm::IRModule)#1}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, tvm::runtime::TVMRetValue)
             # E         8: tvm::transform::Pass::operator()(tvm::IRModule) const
@@ -1316,9 +1631,15 @@ class FailingReasons(Enum):
                 component=ComponentChecker.TVM.value,
                 error_log=[
                     M.last_line(M.contains("/tvm/_ffi/base.py:")),
-                    M.contains("E       InternalError: Check failed: src_idx < ishape.size() (2 vs. 1)"),
+                    M.regex("E       InternalError: Check failed: src_idx < ishape.size\\(\\) \\(\\d+ vs\\. \\d+\\)"),
                 ],
             ),
+        ],
+    )
+
+    UNHANDLED_CASE_NONE = FailingReason(
+        description="Unhandled case NoneType",
+        checks=[
             # layer_norm	Exception: warning unhandled case:
             # >           raise Exception(f"warning unhandled case: {type(expr)}")
             # E           Exception: warning unhandled case: <class 'NoneType'>
@@ -1336,10 +1657,10 @@ class FailingReasons(Enum):
         ],
     )
 
-    # # RuntimeError: Fatal Python error: Segmentation fault
-    SEG_FAULT = FailingReason(
-        description="Inference failed due to seg fault",
-    )
+    # # # RuntimeError: Fatal Python error: Segmentation fault
+    # SEG_FAULT = FailingReason(
+    #     description="Inference failed due to seg fault",
+    # )
 
     # # RuntimeError: Fatal Python error: Aborted
     FATAL_ERROR = FailingReason(
@@ -1350,16 +1671,16 @@ class FailingReasons(Enum):
         description="High memory usage",
     )
 
-    UNSUPPORTED_INPUT_SOURCE = FailingReason(
-        description="Unsupported input source",
-    )
+    # UNSUPPORTED_INPUT_SOURCE = FailingReason(
+    #     description="Unsupported input source",
+    # )
 
     INFERENCE_FROZE = FailingReason(
         description="Inference froze without error message",
     )
 
-    TTNN_RUNTIME = FailingReason(
-        description="TTNN runtime error",
+    TTNN_RUNTIME_OLD = FailingReason(
+        description="TTNN runtime error old",
         checks=[
             # cumsum	RuntimeError: TT_ASSERT @ ttnn/cpp/ttnn/operations/moreh/moreh_cumsum/device/moreh_cumsum_program_factory.cpp:23: dim == 0 || dim == 1
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
@@ -1379,7 +1700,8 @@ class FailingReasons(Enum):
             # forge/forge/compiled_graph_state.py:310: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.METAL.value,
+                # component=ComponentChecker.METAL.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.starts_with("TT_ASSERT"),
                     M.regex(
@@ -1414,7 +1736,8 @@ class FailingReasons(Enum):
             # forge/forge/compiled_graph_state.py:310: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.METAL.value,
+                # component=ComponentChecker.METAL.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.starts_with("TT_FATAL"),
                     M.regex(
@@ -1443,7 +1766,8 @@ class FailingReasons(Enum):
             # forge/forge/compiled_graph_state.py:310: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.TTNN.value,
+                # component=ComponentChecker.TTNN.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.starts_with("TT_THROW"),
                     M.any(
@@ -1455,6 +1779,12 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
+        ],
+    )
+
+    UNSUPPORTED_INPUT_SHAPE_MATMUL = FailingReason(
+        description="Non broadcast shape",
+        checks=[
             # matmul	matmul	RuntimeError: TT_FATAL @ tt-metal/ttnn/cpp/ttnn/operations/matmul/device/matmul_op.cpp:1479: a_shape[i] == b_shape[i]
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
             # E       RuntimeError: TT_FATAL @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/matmul/device/matmul_op.cpp:1538: a_shape[i] == b_shape[i]
@@ -1495,8 +1825,8 @@ class FailingReasons(Enum):
         ],
     )
 
-    MLIR_RUNTIME = FailingReason(
-        description="MLIR runtime error",
+    MLIR_RUNTIME_OLD = FailingReason(
+        description="MLIR runtime error old",
         checks=[
             # transpose	RuntimeError: TT_FATAL @ tt-metal/ttnn/cpp/ttnn/operations/data_movement/transpose/device/transpose_op.cpp:120: input_tensor.get_dtype() == DataType::BFLOAT16 || input_tensor.get_dtype() == DataType::
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
@@ -1524,13 +1854,11 @@ class FailingReasons(Enum):
             # forge/forge/compiled_graph_state.py:310: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.TTNN.value,
+                # component=ComponentChecker.TTNN.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.starts_with("TT_FATAL"),
                     M.any(
-                        M.regex(
-                            "tt-metal/ttnn/cpp/ttnn/operations/data_movement/transpose/device/transpose_op.cpp:\\d+: input_tensor.get_dtype\\(\\) == DataType::BFLOAT16 || input_tensor.get_dtype\\(\\) == DataType::"
-                        ),
                         M.regex(
                             "tt-metal/ttnn/cpp/ttnn/operations/data_movement/transpose/device/transpose_op.cpp:\\d+: input_tensor.get_dtype\\(\\) == DataType::BFLOAT16 || input_tensor.get_dtype\\(\\) == DataType::"
                         ),
@@ -1541,6 +1869,12 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
+        ],
+    )
+
+    INVALID_ARGUMENTS_TO_RESHAPE = FailingReason(
+        description="Invalid arguments to reshape",
+        checks=[
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
             # E       RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/core/tensor/tensor_utils.cpp:54: new_volume == old_volume
             # E       info:
@@ -1571,8 +1905,8 @@ class FailingReasons(Enum):
         ],
     )
 
-    FORGE_RUNTIME = FailingReason(
-        description="Forge runtime error",
+    FORGE_RUNTIME_OLD = FailingReason(
+        description="Forge runtime error old",
         checks=[
             # max	RuntimeError: TT_ASSERT @ tt-forge-fe/forge/csrc/graph_lib/shape.cpp:230: v.front() == 1
             # >       inserted_node_id_mapping, context.fracture_chip_id_assignments = run_post_initial_graph_passes(
@@ -1590,7 +1924,7 @@ class FailingReasons(Enum):
             ExceptionCheck(
                 class_name="RuntimeError",
                 # component=ComponentChecker.FORGE.value,
-                component=ComponentChecker.NONE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.starts_with("TT_ASSERT"),
                     M.regex("forge/csrc/graph_lib/shape.cpp:\\d+: v.front\\(\\) == 1"),
@@ -1600,6 +1934,12 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/compile.py:")),
                 ],
             ),
+        ],
+    )
+
+    VALUE_CONVERSION_OVERFLOW = FailingReason(
+        description="Value conversion overflow",
+        checks=[
             # clamp	RuntimeError: value cannot be converted to type at::BFloat16 without overflow
             # >       ref_output = self.cpp_op_type.eval(values)
             # E       RuntimeError: value cannot be converted to type at::BFloat16 without overflow
@@ -1618,15 +1958,15 @@ class FailingReasons(Enum):
         ],
     )
 
-    UNASSIGNED_PADDING_VARIABLE = FailingReason(
-        description="Unassigned padding variable",
+    UNASSIGNED_PADDING_VARIABLE_OLD = FailingReason(
+        description="Unassigned padding variable old",
         checks=[
             # >       op_attrs["padding"] = padding
             # E       UnboundLocalError: local variable 'padding' referenced before assignment
             # forge/forge/tvm_calls/relay/op/forge_passes.py:197: UnboundLocalError
             ExceptionCheck(
                 class_name="UnboundLocalError",
-                component=ComponentChecker.NONE.value,
+                component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.starts_with("local variable 'padding' referenced before assignment"),
                 ],
@@ -1638,8 +1978,8 @@ class FailingReasons(Enum):
         ],
     )
 
-    TVM_RUNTIME = FailingReason(
-        description="TVM runtime error",
+    TVM_RUNTIME_OLD = FailingReason(
+        description="TVM runtime error old",
         checks=[
             # squeeze	tvm.error.InternalError: Traceback (most recent call last):
             # >       raise py_err
@@ -1658,7 +1998,7 @@ class FailingReasons(Enum):
             # third_party/tvm/python/tvm/_ffi/base.py:479: InternalError
             ExceptionCheck(
                 class_name="tvm.error.InternalError",
-                component=ComponentChecker.NONE.value,  #  TODO Remove the duplicate
+                component=ComponentChecker.NONE.value,  # TODO remove  #  TODO Remove the duplicate
                 message=[
                     M.starts_with("Traceback (most recent call last):"),
                 ],
@@ -1757,6 +2097,49 @@ class FailingReasons(Enum):
                 error_log=[
                     M.contains(">       return torch.embedding(t_ops[1], t_ops[0].to(torch.int32))"),
                     M.last_line(M.contains("forge/op/eval/forge/embedding.py:")),
+                ],
+            ),
+        ],
+    )
+
+    INCORRECT_TENSOR_SHAPE = FailingReason(
+        description="Incorrect tensor shape",
+        checks=[
+            # E       AssertionError: Setting a tensor value of incorrect shape: (3, 11, 9, 7) vs torch.Size([3, 11, 8, 9])
+            # forge/forge_wheels/venv/lib/python3.10/site-packages/forge/tensor.py:414: AssertionError
+            ExceptionCheck(
+                class_name="AssertionError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    M.regex(
+                        "Setting a tensor value of incorrect shape: \\(\\d+, \\d+, \\d+, \\d+\\) vs torch.Size\\(\\[\\d+, \\d+, \\d+, \\d+\\]\\)"
+                    ),
+                ],
+                error_log=[
+                    M.last_line(M.contains("forge/tensor.py:")),
+                ],
+            ),
+        ],
+    )
+
+    PAD_BIGGER_THAN_HALF_OF_KERNEL = FailingReason(
+        description="pad should be at most half of effective kernel size",
+        checks=[
+            # E           RuntimeError: pad should be at most half of effective kernel size, but got pad=1, kernel_size=1 and dilation=1
+            # forge/forge_wheels/venv/lib/python3.10/site-packages/forge/op/eval/forge/pooling.py:319: RuntimeError
+            ExceptionCheck(
+                class_name="RuntimeError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    M.regex(
+                        "pad should be at most half of effective kernel size, but got pad=\\d+, kernel_size=\\d+ and dilation=\\d+"
+                    ),
+                ],
+                error_log=[
+                    M.any(
+                        M.last_line(M.contains("forge/op/eval/forge/pooling.py")),
+                        M.last_line(M.contains("forge/op/common.py")),
+                    ),
                 ],
             ),
         ],

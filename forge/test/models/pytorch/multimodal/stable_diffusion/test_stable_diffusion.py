@@ -1,6 +1,10 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+from third_party.tt_forge_models.stable_diffusion_1_4.pytorch import (
+    ModelLoader,
+    ModelVariant,
+)
 
 from forge.forge_property_utils import Framework, ModelArch, record_model_properties
 
@@ -14,27 +18,26 @@ from test.models.pytorch.multimodal.stable_diffusion.model_utils.model import (
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="unsupported for now")
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["CompVis/stable-diffusion-v1-4"])
+@pytest.mark.parametrize("variant", [ModelVariant.BASE])
 def test_stable_diffusion_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(framework=Framework.PYTORCH, model=ModelArch.STABLEDIFFUSION, variant=variant)
 
-    batch_size = 1
-
     # Set inference steps
     num_inference_steps = 50
 
-    # Load model
-    pipe = StableDiffusionPipeline.from_pretrained(variant)
+    # Load model and input
+    loader = ModelLoader(variant=variant)
+    pipe = loader.load_model()
+    prompt = loader.load_inputs()
 
     # Sample prompt
-    prompt = "An image of a cat"
-    print("Generating image for prompt: ", prompt)
+    print("Generating image for prompt: ", prompt[0])
 
     # Data preprocessing
     (latents, timesteps, extra_step_kwargs, prompt_embeds, extra_step_kwargs,) = stable_diffusion_preprocessing(
         pipe,
-        [prompt] * batch_size,
+        prompt,
         num_inference_steps=num_inference_steps,
     )
 

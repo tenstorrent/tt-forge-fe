@@ -32,8 +32,14 @@ from forge.verify.verify import verify
 from test.models.models_utils import TextModelWrapper
 
 llama_loader_variants = [
-    pytest.param(CausalLMVariant.LLAMA_3_2_1B),
-    pytest.param(CausalLMVariant.LLAMA_3_2_1B_INSTRUCT),
+    pytest.param(
+        CausalLMVariant.LLAMA_3_2_1B,
+        marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2833"),
+    ),
+    pytest.param(
+        CausalLMVariant.LLAMA_3_2_1B_INSTRUCT,
+        marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2833"),
+    ),
     pytest.param(
         CausalLMVariant.LLAMA_3_8B,
         marks=[pytest.mark.out_of_memory],
@@ -105,7 +111,7 @@ def test_llama3_causal_lm_pytorch(variant):
     model = loader.load_model()
     framework_model = TextModelWrapper(model=model, text_embedding=model.model.embed_tokens)
     framework_model.eval()
-    input_dict = loader.load_inputs()
+    input_dict, seq_len = loader.load_inputs()
     inputs = [input_dict["input_ids"], input_dict["attention_mask"]]
 
     # Forge compile framework model

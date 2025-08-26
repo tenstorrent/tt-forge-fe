@@ -122,6 +122,25 @@ def Index(name: str, operandA: Tensor, dim: int, start: int, stop: int = None, s
     if stop < 0:
         stop += operandA.shape[dim]
 
+    # Handle negative stride by converting it to a positive value (simple case)
+    if stride < 0:
+        # NOTE: This simplified conversion is only valid when the size of the dimension is 1.
+        # For dimensions with size larger than 1, proper flipping logic needs to be implemented.
+        assert operandA.shape[dim] == 1, (
+            f"Negative stride conversion is only supported for dimensions of size 1. "
+            f"Got size {operandA.shape[dim]} for dim {dim}"
+        )
+
+        # Convert the negative stride to its absolute value
+        stride = abs(stride)
+
+        # Handle special case for flip-like operations: (start = -1, stop = very large negative value)
+        # This pattern typically represents a full reverse slice from end to beginning.
+        # Convert it to a standard forward slice: start = 0, stop = operandA.shape[dim]
+        if start == -1 and stop >= torch.iinfo(torch.int64).min:
+            start = 0
+            stop = operandA.shape[dim]
+
     assert stride > 0
 
     assert start < operandA.shape[dim]
@@ -223,18 +242,7 @@ def Select(
     assert (start + length) <= stride, f"(start = {start} + length = {length}) should be <= stride = {stride}"
     assert (start + length) > 0, f"(start = {start} + length = {length}) should be > 0"
 
-    return op(
-        "select",
-        name,
-        operandA,
-        attrs=(dim, index[0], index[1], stride),
-        **{
-            "dim": dim,
-            "begin": index[0],
-            "length": index[1],
-            "stride": stride,
-        },
-    ).get_tensor()
+    return op("select", name, operandA, dim=dim, begin=index[0], length=index[1], stride=stride).get_tensor()
 
 
 def Pad(
@@ -311,9 +319,14 @@ def Pad(
     ).get_tensor()
 
 
-def PadTile(name: str, operandA: Tensor, dim: int, original_length: int) -> Tensor:
+def ConstantPad(
+    name: str,
+    operandA: Tensor,
+    padding: List[int],
+    value: float = 0.0,
+) -> Tensor:
     """
-    TM
+    TM - Direct TTIR constant padding operation.
 
     Parameters
     ----------
@@ -321,22 +334,35 @@ def PadTile(name: str, operandA: Tensor, dim: int, original_length: int) -> Tens
         Op name, unique to the module, or leave blank to autoset
 
     operandA: Tensor
-        Input operand A
+        Input operand A to which padding will be applied.
 
-    dim: int
-        Dimension which to pad to tile dim
+    padding: List[int]
+        Padding values in TTIR format: [dim0_low, dim0_high, dim1_low, dim1_high, ...]
+        Length must be 2 * rank of input tensor.
 
-    original_length: int
-        Original length of the dimension before calling this function
+    value: float, optional
+        The constant value to use for padding. Default is 0.0.
 
     Returns
     -------
     Tensor
-        Forge tensor
+        A tensor with the specified constant padding applied to the input tensor.
     """
+    assert len(padding) == 2 * len(
+        operandA.shape
+    ), f"Padding length {len(padding)} must be 2 * rank {len(operandA.shape)}"
+
+    named_attrs = {
+        "padding": padding,
+        "value": value,
+    }
 
     return op(
-        "pad_tile", name, operandA, attrs=(dim, original_length), dim=dim, original_length=original_length
+        "constant_pad",
+        name,
+        operandA,
+        attrs=[],
+        **named_attrs,
     ).get_tensor()
 
 
@@ -506,68 +532,4 @@ def PixelShuffle(name: str, operandA: Tensor, upscale_factor: int) -> Tensor:
     Tensor
         Forge tensor
     """
-    return op("pixel_shuffle", name, operandA, attrs=(upscale_factor,), upscale_factor=upscale_factor).get_tensor()
-
-
-def ForgePad(name: str, operandA: Tensor, paddings: Tuple[int, int], value: float) -> Tensor:
-    """
-    Pad operation that expands a given tensor with arbitrary number of tiles by any dimension.
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        First operand
-
-    paddings: Tuple[int, int]
-        Tuple of paddings for R and C dimensions
-
-    value: float
-        Value to pad with
-    """
-    return op(
-        "forge_pad",
-        name,
-        operandA,
-        attrs=(paddings[0], paddings[1], value),
-        pad_r=paddings[0],
-        pad_c=paddings[1],
-        value=value,
-    ).get_tensor()
-
-
-def ForgeUnpad(
-    name: str,
-    operandA: Tensor,
-    original_length: Tuple[int, ...],
-    paddings: Tuple[int, int],
-) -> Tensor:
-    """
-    Unpad operation that removes arbitrary number of tiles by any dimension.
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        First operand
-
-    original_length: Tuple[int, ...]
-        Original length of R and C dimensions before padding
-
-    paddings: Tuple[int, int]
-        Tuple of paddings for R and C dimensions
-    """
-    return op(
-        "forge_unpad",
-        name,
-        operandA,
-        attrs=(paddings[0], paddings[1], original_length[0], original_length[1]),
-        pad_r=paddings[0],
-        pad_c=paddings[1],
-        original_length_r=original_length[0],
-        original_length_c=original_length[1],
-    ).get_tensor()
+    return op("pixel_shuffle", name, operandA, upscale_factor=upscale_factor).get_tensor()

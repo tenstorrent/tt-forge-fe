@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-import os
-import ast
 import tvm
 
 from tvm.relay import transform
@@ -398,13 +396,20 @@ class DecomposeStack(DFPatternCallback):
         self.pattern = self.r4
 
     def callback(self, pre: Expr, post: Expr, node_map: tvm.ir.container.Map) -> Expr:
+
+        # Get original concatenate axis and target shape
+        concat_node = node_map[self.concatenate][0]
+        target_axis = concat_node.attrs.axis
+        target_shape = post.attrs.newshape
+
         # replacing concat op with stack, as is done in the pytorch decomposition
         act1 = node_map[self.act1][0]
         act2 = node_map[self.act2][0]
         tup = tvm.relay.Tuple([act1, act2])
-        stacked = tvm.relay.stack(tup, axis=-1)
-        r = tvm.relay.reshape(stacked, newshape=[0, 0, 0, -1, 1])
-        output = tvm.relay.squeeze(r, axis=[4])
+        # Use original axis for stack
+        stacked = tvm.relay.stack(tup, axis=target_axis)
+        # Use original target shape
+        output = tvm.relay.reshape(stacked, newshape=target_shape)
 
         return output
 
@@ -1038,8 +1043,10 @@ class RemoveRedundantReshape(DFPatternCallback):
     def callback(self, pre, post, node_map):
         act = node_map[self.input_tensor][0]
         reshape_op = node_map[self.reshape][0]
+        input_shape = list(act.checked_type.shape)
         new_shape = list(reshape_op.attrs.newshape)
-        if len(new_shape) == 0:
+        # Remove the reshape if the input and target shapes are identical
+        if input_shape == new_shape:
             return act
         else:
             return post
@@ -4288,57 +4295,6 @@ class TransformDenseIntoBatchMM(DFPatternCallback):
         return lm_head
 
 
-class PadSpecificBatchMatmulShapes(DFPatternCallback):
-    def __init__(self):
-        super().__init__(rewrite_once=True, require_type=True)
-
-        self.lhs = wildcard()
-        self.rhs = wildcard()
-
-        self.bmm = is_op("nn.batch_matmul")(self.lhs, self.rhs)
-
-        self.pattern = self.bmm
-
-    def callback(self, pre, post, node_map):
-        # Environment variable guard
-        if "FORGE_PAD_MM" not in os.environ:
-            return post
-        tile_r_padding = ast.literal_eval(os.environ.get("FORGE_PAD_MM", "{}"))
-        pre_node_map = construct_pre_node_map(self.pattern, pre)
-
-        lhs = node_map[self.lhs][0]
-        rhs = node_map[self.rhs][0]
-        bmm = node_map[self.bmm][0]
-
-        bmm_shape = list(bmm.checked_type.shape)
-        if len(bmm_shape) != 3:
-            return post
-        if int(bmm_shape[-2]) <= int(bmm_shape[-1]):
-            return post
-
-        # Pad ammount
-        tile_r = bmm_shape[-2] - 1
-        tile_r = (tile_r - (tile_r % 32) + 32) // 32
-        if tile_r not in tile_r_padding:
-            return post
-        pad_r = tile_r_padding[tile_r]
-        pad_r = tile_r_padding[tile_r] - tile_r
-        if pad_r == 0:
-            return post
-        pad_r_ammount = (tile_r + pad_r) * 32 - bmm_shape[-2]
-
-        # Pad LHS
-        padded_lhs = tvm.relay.nn.pad(
-            lhs, pad_width=[[0, 0], [0, pad_r_ammount], [0, 0]], pad_value=0, pad_mode="constant"
-        )
-        padded_bmm = tvm.relay.nn.batch_matmul(padded_lhs, rhs, transpose_a=False, transpose_b=False)
-
-        # Unpad BMM
-        unpadded_bmm = tvm.relay.strided_slice(padded_bmm, begin=(0,), end=(bmm_shape[-2],), strides=(1,), axes=(1,))
-
-        return unpadded_bmm
-
-
 class GQABroadcastReshape(DFPatternCallback):
     """
     Callback for Grouped Query Attention Pattern. When parsing a standard GQA,
@@ -4973,7 +4929,6 @@ def run_forge_compile_passes(
             Enforce1DOutputForArgwhereOp(),
             BroadcastScatterValuesToMatchIndices(),
             InverseMaskGen(),
-            PadSpecificBatchMatmulShapes(),
             GQABroadcastReshape(),
             RemoveDenseInputSqueeze(),
             RemoveEmptyConcat(),

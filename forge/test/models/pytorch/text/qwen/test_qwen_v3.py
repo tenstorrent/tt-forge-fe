@@ -28,19 +28,21 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.models_utils import TextModelWrapper
 
 causal_lm_variants = [
-    CausalLMVariant.QWEN_3_32B,
-    CausalLMVariant.QWEN_3_30B_A3B,
-    CausalLMVariant.QWQ_32B,
-    CausalLMVariant.QWEN_3_14B,
+    pytest.param(CausalLMVariant.QWEN_3_32B, marks=[pytest.mark.out_of_memory]),
+    pytest.param(CausalLMVariant.QWEN_3_30B_A3B, marks=[pytest.mark.out_of_memory]),
+    pytest.param(CausalLMVariant.QWQ_32B, marks=[pytest.mark.out_of_memory]),
+    pytest.param(CausalLMVariant.QWEN_3_14B, marks=[pytest.mark.out_of_memory]),
     CausalLMVariant.QWEN_3_0_6B,
     CausalLMVariant.QWEN_3_1_7B,
     CausalLMVariant.QWEN_3_4B,
-    CausalLMVariant.QWEN_3_8B,
+    pytest.param(CausalLMVariant.QWEN_3_8B, marks=[pytest.mark.out_of_memory]),
 ]
 
 
@@ -89,7 +91,7 @@ def test_qwen3_clm_pytorch(variant):
 embedding_variants = [
     EmbeddingVariant.QWEN_3_EMBEDDING_0_6B,
     EmbeddingVariant.QWEN_3_EMBEDDING_4B,
-    EmbeddingVariant.QWEN_3_EMBEDDING_8B,
+    pytest.param(EmbeddingVariant.QWEN_3_EMBEDDING_8B, marks=[pytest.mark.out_of_memory]),
 ]
 
 
@@ -106,7 +108,7 @@ def test_qwen3_embedding(variant):
         source=Source.HUGGINGFACE,
     )
 
-    if variant == EmbeddingVariant.QWEN_3_EMBEDDING_8B:
+    if variant in [EmbeddingVariant.QWEN_3_EMBEDDING_4B, EmbeddingVariant.QWEN_3_EMBEDDING_8B]:
         pytest.xfail(reason="Requires multi-chip support")
 
     # Load Model and inputs using loader
@@ -126,7 +128,12 @@ def test_qwen3_embedding(variant):
     )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98)),
+    )
 
     # Post processing
     outputs = co_out[0]

@@ -18,6 +18,11 @@
 #include "graph_lib/defines.hpp"
 
 // Forward declarations
+namespace c10
+{
+enum class ScalarType : int8_t;
+}
+
 namespace at
 {
 class Tensor;
@@ -87,6 +92,8 @@ DataFormat infer_data_format_from_py_tensor(const py::object &py_tensor);
 
 // Conversion functions for types at::ScalarType and DataFormat.
 DataFormat scalar_type_to_data_format(const c10::ScalarType scalar_type);
+
+// Convert DataFormat to at::ScalarType directly (C++ equivalent of forge_dataformat_to_pytorch_dtype)
 c10::ScalarType data_format_to_scalar_type(const DataFormat data_format);
 
 // Insert new node on the given edge. Node attributes will be picked up from consumer node.
@@ -257,7 +264,6 @@ class ConstEvalGraph
     std::unique_ptr<Node> promote_node(std::unique_ptr<Node> &&consteval_node);
     std::unique_ptr<Node> promote_node(Graph *runtime_graph, Node *runtime_node);
     std::unique_ptr<ConstEvalGraph> clone(Node *runtime_input, std::string const &new_input_node_name = "");
-    void pad_output_to_forge_dims(std::string const &name_prefix);
     void set_needs_autograd(bool new_needs_autograd) { needs_autograd = new_needs_autograd; }
     void autograd();
 
@@ -281,7 +287,6 @@ enum class RuntimeTensorTransformType
 {
     NoTransform = 0,
     ReinterpretShape,
-    Prestride,
     EmbeddingIndex,
     ConstantInput,
     Unpad,
@@ -293,7 +298,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
     {
         {tt::graphlib::RuntimeTensorTransformType::NoTransform, "NoTransform"},
         {tt::graphlib::RuntimeTensorTransformType::ReinterpretShape, "ReinterpretShape"},
-        {tt::graphlib::RuntimeTensorTransformType::Prestride, "Prestride"},
         {tt::graphlib::RuntimeTensorTransformType::EmbeddingIndex, "EmbeddingIndex"},
         {tt::graphlib::RuntimeTensorTransformType::ConstantInput, "ConstantInput"},
         {tt::graphlib::RuntimeTensorTransformType::Unpad, "Unpad"},

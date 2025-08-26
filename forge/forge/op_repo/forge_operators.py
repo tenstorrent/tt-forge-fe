@@ -96,15 +96,6 @@ _OPERATORS = [
     OperatorDefinition("where", "forge.op.Where", 3),
     # OperatorDefinition("index_copy", "forge.op.IndexCopy", 3),  # Bug #2705
     OperatorDefinition(
-        "interleave",
-        "forge.op.Interleave",
-        (1, 10),
-        forward_params=[
-            OperatorParamNumber("axis", int, -3, -3),
-            OperatorParamNumber("stride", int, 1, 1),
-        ],
-    ),
-    OperatorDefinition(
         "concatenate",
         "forge.op.Concatenate",
         (1, 10),
@@ -121,7 +112,6 @@ _OPERATORS = [
         ],
     ),
     OperatorDefinition("matmul", "forge.op.Matmul", 2),
-    # OperatorDefinition("sparse_matmul", "forge.op.SparseMatmul", 2),
     # TM operators
     OperatorDefinition("repeat_interleave", "forge.op.RepeatInterleave", 1),
     OperatorDefinition("reshape", "forge.op.Reshape", 1),

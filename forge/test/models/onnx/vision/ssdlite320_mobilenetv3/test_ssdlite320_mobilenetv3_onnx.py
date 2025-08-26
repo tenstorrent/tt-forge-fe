@@ -23,7 +23,6 @@ variants_with_weights = {
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
 def test_ssdlite320_mobilenetv3(variant, forge_tmp_path):
 
@@ -35,6 +34,8 @@ def test_ssdlite320_mobilenetv3(variant, forge_tmp_path):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
+
+    pytest.xfail(reason="Fatal Python error: Segmentation fault")
 
     # Load model and input
     weight_name = variants_with_weights[variant]

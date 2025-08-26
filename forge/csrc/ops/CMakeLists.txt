@@ -16,19 +16,11 @@ add_library(ops
     op_clip.cpp
     op_concatenate.cpp
     op_constant.cpp
+    op_constant_pad.cpp
     op_conv_2d.cpp
-    op_conv_2d_depthwise_weights.cpp
-    op_conv_2d_depthwise_weights_bw.cpp
-    op_conv_2d_grouped_weights.cpp
-    op_conv_2d_grouped_weights_bw.cpp
-    op_conv_2d_prestride_act.cpp
-    op_conv_2d_prestride_weights.cpp
     op_conv_2d_transpose.cpp
-    op_conv_3d.cpp
-    op_conv_sum.cpp
     op_cosine.cpp
     op_cumulative_sum.cpp
-    op_depthwise.cpp
     op_divide.cpp
     op_downsample_2d.cpp
     op_dropout.cpp
@@ -38,15 +30,12 @@ add_library(ops
     op_erf.cpp
     op_exp.cpp
     op_fill_cache.cpp
-    op_forge_pad.cpp
-    op_forge_unpad.cpp
     op_gelu.cpp
     op_greater.cpp
     op_greater_equal.cpp
     op_heaviside.cpp
     op_index.cpp
     op_index_copy.cpp
-    op_interleave.cpp
     op_layernorm.cpp
     op_layernorm_bw.cpp
     op_leaky_relu.cpp
@@ -67,7 +56,6 @@ add_library(ops
     op_nop.cpp
     op_not_equal.cpp
     op_pad.cpp
-    op_pad_tile.cpp
     op_pixel_shuffle.cpp
     op_pow.cpp
     op_power.cpp
@@ -80,6 +68,7 @@ add_library(ops
     op_repeat.cpp
     op_repeat_interleave.cpp
     op_reshape.cpp
+    op_resize_1d.cpp
     op_resize_2d.cpp
     op_select.cpp
     op_sigmoid.cpp

@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-from transformers import AutoModelForCausalLM, AutoTokenizer, GemmaForCausalLM
+from third_party.tt_forge_models.gemma.pytorch import ModelLoader as CausalLMLoader
+from third_party.tt_forge_models.gemma.pytorch import ModelVariant as CausalLMVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -18,54 +19,35 @@ from forge.forge_property_utils import (
 from forge.verify.verify import verify
 
 from test.models.models_utils import TextModelWrapper
-from test.models.pytorch.text.gemma.model_utils.model_utils import (
-    generate_no_cache,
-    pad_inputs,
-)
-from test.utils import download_model
 
 variants = [
-    "google/gemma-2b",
+    CausalLMVariant.GEMMA_2B,
 ]
 
 
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants, ids=[v.value for v in variants])
 def test_gemma_2b(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.GEMMA,
-        variant=variant,
+        variant=variant.value,
         source=Source.HUGGINGFACE,
         task=Task.TEXT_GENERATION,
     )
     pytest.xfail(reason="Requires multi-chip support")
 
-    model = download_model(GemmaForCausalLM.from_pretrained, variant, use_cache=False)
+    # Use loader for model and inputs
+    loader = CausalLMLoader(variant)
+    model = loader.load_model()
     framework_model = TextModelWrapper(model=model, text_embedding=model.model.embed_tokens)
     framework_model.eval()
 
-    # Load tokenizer
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    tokenizer.pad_token = tokenizer.eos_token
-
-    # Sample input
-    prompt = "What is your favorite city?"
-    inputs = tokenizer(
-        prompt,
-        return_tensors="pt",
-        max_length=128,
-        padding="max_length",
-        truncation=True,
-    )
-
-    input_ids = inputs["input_ids"]
-    attn_mask = inputs["attention_mask"]
-
-    inputs = [input_ids, attn_mask]
+    input_dict = loader.load_inputs()
+    inputs = [input_dict["input_ids"], input_dict["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -78,11 +60,8 @@ def test_gemma_2b(variant):
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "google/gemma-2-2b-it",
-            marks=pytest.mark.xfail,
-        ),
-        pytest.param("google/gemma-2-9b-it", marks=[pytest.mark.xfail, pytest.mark.out_of_memory]),
+        pytest.param(CausalLMVariant.GEMMA_2_2B_IT, marks=pytest.mark.xfail),
+        pytest.param(CausalLMVariant.GEMMA_2_9B_IT, marks=[pytest.mark.xfail, pytest.mark.out_of_memory]),
     ],
 )
 def test_gemma_pytorch_v2(variant):
@@ -91,44 +70,38 @@ def test_gemma_pytorch_v2(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.GEMMA,
-        variant=variant,
+        variant=variant.value,
         task=Task.QA,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
     )
-    if variant == "google/gemma-2-9b-it":
+    if variant == CausalLMVariant.GEMMA_2_9B_IT:
         pytest.xfail(reason="Requires multi-chip support")
+    elif variant == "google/gemma-2-2b-it":
+        pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2844")
 
-    # Load model and tokenizer from HuggingFace
-    tokenizer = AutoTokenizer.from_pretrained(variant)
-    framework_model = AutoModelForCausalLM.from_pretrained(variant, return_dict=False, use_cache=False)
+    # Load model and input via loader
+    loader = CausalLMLoader(variant)
+    model = loader.load_model()
+    framework_model = TextModelWrapper(model=model, text_embedding=model.model.embed_tokens)
     framework_model.eval()
-    prompt = "What is the tallest mountain?"
-    inputs = tokenizer(prompt, return_tensors="pt")
-    input_ids = inputs["input_ids"]
-    max_new_tokens = 200
-    padded_inputs, seq_len = pad_inputs(input_ids, max_new_tokens)
+    input_dict = loader.load_inputs(max_new_tokens=200, prompt="What is the tallest mountain?")
+    inputs = [input_dict["input_ids"], input_dict["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,
-        sample_inputs=[padded_inputs],
-        module_name=module_name,
+        inputs,
+        module_name,
     )
 
     # Model Verification
-    verify([padded_inputs], framework_model, compiled_model)
-
-    # Runtime and Post-Processing
-    generated_text = generate_no_cache(
-        max_new_tokens=max_new_tokens, model=compiled_model, inputs=padded_inputs, seq_len=seq_len, tokenizer=tokenizer
-    )
-    print(generated_text)
+    verify(inputs, framework_model, compiled_model)
 
 
 variants = [
-    "google/gemma-2-27b-it",
+    CausalLMVariant.GEMMA_2_27B_IT,
 ]
 
 
@@ -140,7 +113,7 @@ def test_gemma_pytorch_27b(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.FLUX,
-        variant=variant,
+        variant=variant.value,
         task=Task.QA,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,

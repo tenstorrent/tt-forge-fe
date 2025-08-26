@@ -21,17 +21,6 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.models_utils import print_cls_results
-from test.models.pytorch.vision.vovnet.model_utils.model_utils import (
-    preprocess_steps,
-    preprocess_timm_model,
-)
-from test.models.pytorch.vision.vovnet.model_utils.src_vovnet_stigma import (
-    vovnet39,
-    vovnet57,
-)
-from test.utils import download_model
-
 variants = [
     ModelVariant.VOVNET27S,
     ModelVariant.VOVNET39,
@@ -84,16 +73,10 @@ def test_vovnet_osmr_pytorch(variant):
     loader.print_cls_results(co_out)
 
 
-def generate_model_vovnet39_imgcls_stigma_pytorch():
-    # STEP 2: Create Forge module from PyTorch model
-    model, image_tensor = download_model(preprocess_steps, vovnet39)
-    return model.to(torch.bfloat16), [image_tensor.to(torch.bfloat16)], {}
-
-
 @pytest.mark.nightly
 def test_vovnet_v1_39_stigma_pytorch():
 
-    variant = "vovnet39"
+    variant = ModelVariant.VOVNET39
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -104,7 +87,11 @@ def test_vovnet_v1_39_stigma_pytorch():
         task=Task.OBJECT_DETECTION,
     )
 
-    framework_model, inputs, _ = generate_model_vovnet39_imgcls_stigma_pytorch()
+    # Load model and inputs via shared loader
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -120,34 +107,31 @@ def test_vovnet_v1_39_stigma_pytorch():
     verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+    _, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
 
     # Run model on sample data and print results
-    print_cls_results(fw_out[0], co_out[0])
-
-
-def generate_model_vovnet57_imgcls_stigma_pytorch():
-    # STEP 2: Create Forge module from PyTorch model
-    model, image_tensor = download_model(preprocess_steps, vovnet57)
-
-    return model.to(torch.bfloat16), [image_tensor.to(torch.bfloat16)], {}
+    loader.print_cls_results(co_out)
 
 
 @pytest.mark.nightly
 def test_vovnet_v1_57_stigma_pytorch():
 
-    variant = "vovnet_v1_57"
+    variant = ModelVariant.VOVNET57
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.VOVNET,
         variant=variant,
-        source=Source.TORCH_HUB,
-        task=Task.OBJECT_DETECTION,
+        source=Source.OSMR,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
-    framework_model, inputs, _ = generate_model_vovnet57_imgcls_stigma_pytorch()
+    # Load model and inputs via shared loader
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -163,23 +147,17 @@ def test_vovnet_v1_57_stigma_pytorch():
     verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+    _, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
 
     # Run model on sample data and print results
-    print_cls_results(fw_out[0], co_out[0])
-
-
-def generate_model_vovnet_imgcls_timm_pytorch(variant):
-    model, image_tensor = download_model(preprocess_timm_model, variant)
-
-    return model.to(torch.bfloat16), [image_tensor.to(torch.bfloat16)], {}
+    loader.print_cls_results(co_out)
 
 
 variants = [
-    "ese_vovnet19b_dw",
-    "ese_vovnet39b",
-    "ese_vovnet99b",
-    "ese_vovnet19b_dw.ra_in1k",
+    ModelVariant.TIMM_VOVNET19B_DW,
+    ModelVariant.TIMM_VOVNET39B,
+    ModelVariant.TIMM_VOVNET99B,
+    ModelVariant.TIMM_VOVNET19B_DW_RAIN1K,
 ]
 
 
@@ -187,7 +165,7 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_vovnet_timm_pytorch(variant):
 
-    if variant == "ese_vovnet19b_dw.ra_in1k":
+    if variant == ModelVariant.TIMM_VOVNET19B_DW_RAIN1K:
         group = ModelGroup.RED
         priority = ModelPriority.P1
     else:
@@ -199,15 +177,17 @@ def test_vovnet_timm_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.VOVNET,
         variant=variant,
-        source=Source.TORCH_HUB,
-        task=Task.OBJECT_DETECTION,
+        source=Source.TIMM,
+        task=Task.IMAGE_CLASSIFICATION,
         group=group,
         priority=priority,
     )
 
-    framework_model, inputs, _ = generate_model_vovnet_imgcls_timm_pytorch(
-        variant,
-    )
+    # Load model and inputs via shared loader
+    loader = ModelLoader(variant=ModelVariant(variant))
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -221,8 +201,16 @@ def test_vovnet_timm_pytorch(variant):
     )
 
     pcc = 0.99
-    if variant == "ese_vovnet99b":
+    if variant == ModelVariant.TIMM_VOVNET99B:
         pcc = 0.98
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+    )
+
+    # Run model on sample data and print results
+    loader.print_cls_results(co_out)

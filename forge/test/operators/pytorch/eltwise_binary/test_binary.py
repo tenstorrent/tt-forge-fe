@@ -141,6 +141,11 @@ class TestVerification:
         value_range = ValueRanges.LARGE
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
+        dev_data_format = test_vector.dev_data_format
+        if dev_data_format is None and test_vector.operator in TestCollectionData.bitwise.operators:
+            # For bitwise operators, use int data format
+            dev_data_format = TestCollectionData.single_int.dev_data_formats[0]
+
         model_type = cls.MODEL_TYPES[test_vector.input_source]
         pytorch_model = (
             model_type(
@@ -148,7 +153,7 @@ class TestVerification:
                 opname=test_vector.operator,
                 shape=test_vector.input_shape,
                 kwargs=kwargs,
-                dtype=test_vector.dev_data_format,
+                dtype=dev_data_format,
                 value_range=value_range,
             )
             if test_vector.input_source in (InputSource.CONST_EVAL_PASS,)
@@ -164,7 +169,7 @@ class TestVerification:
         # Using AllCloseValueChecker in all cases except for integer data formats
         # and logical operators ge, ne, gt, lt:
         verify_config: VerifyConfig
-        if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
+        if dev_data_format in TestCollectionTorch.int.dev_data_formats:
             verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
         else:
             verify_config = VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2))
@@ -174,7 +179,7 @@ class TestVerification:
             test_device=test_device,
             input_shapes=input_shapes,
             input_params=input_params,
-            dev_data_format=test_vector.dev_data_format,
+            dev_data_format=dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             value_range=value_range,
             warm_reset=warm_reset,
@@ -329,6 +334,14 @@ class TestCollectionData:
         math_fidelities=TestCollectionCommon.single.math_fidelities,
     )
 
+    all_int = TestCollection(
+        dev_data_formats=TestCollectionTorch.int.dev_data_formats,
+    )
+
+    single_int = TestCollection(
+        dev_data_formats=TestCollectionTorch.int.dev_data_formats[0:1],
+    )
+
 
 class BinaryTestPlanBuilder:
     """Helper class for building test plans for binary operators"""
@@ -340,6 +353,12 @@ class BinaryTestPlanBuilder:
         """Build test plan collections for binary operator"""
 
         operators = [operator]
+
+        all_dev_data_formats = TestCollectionData.all.dev_data_formats
+        single_dev_data_formats = TestCollectionData.single.dev_data_formats
+        if operator in TestCollectionData.bitwise.operators:
+            all_dev_data_formats = TestCollectionData.all_int.dev_data_formats
+            single_dev_data_formats = TestCollectionData.single_int.dev_data_formats
 
         collections = [
             # Test plan:
@@ -359,11 +378,7 @@ class BinaryTestPlanBuilder:
                 input_sources=TestCollectionData.single.input_sources,
                 input_shapes=TestCollectionData.single.input_shapes,
                 kwargs=generate_kwargs,
-                dev_data_formats=[
-                    item
-                    for item in TestCollectionData.all.dev_data_formats
-                    if item not in TestCollectionData.single.dev_data_formats
-                ],
+                dev_data_formats=[item for item in all_dev_data_formats if item not in single_dev_data_formats],
                 math_fidelities=TestCollectionData.single.math_fidelities,
             ),
             # Test plan:
@@ -373,7 +388,7 @@ class BinaryTestPlanBuilder:
                 input_sources=TestCollectionData.single.input_sources,
                 input_shapes=TestCollectionData.single.input_shapes,
                 kwargs=generate_kwargs,
-                dev_data_formats=TestCollectionData.single.dev_data_formats,
+                dev_data_formats=single_dev_data_formats,
                 math_fidelities=TestCollectionData.all.math_fidelities,
             ),
         ]
@@ -486,11 +501,21 @@ class TestPlansData:
             # Not implemented operators
             TestCollection(
                 operators=TestCollectionData.not_implemented.operators,
-                failing_reason=FailingReasons.NOT_IMPLEMENTED,
+                failing_reason=FailingReasons.NOT_IMPLEMENTED_ATEN,
             ),
             TestCollection(
-                operators=TestCollectionData.bitwise.operators,
-                failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+                operators=[
+                    "floor_divide",
+                    "fmod",
+                    "bitwise_xor",
+                ],
+                failing_reason=FailingReasons.UNSUPPORTED_OP_TYPES,
+            ),
+            TestCollection(
+                operators=[
+                    "le",
+                ],
+                failing_reason=FailingReasons.LOWERING_UNSUPPORTED_OPERATION,
             ),
             TestCollection(
                 operators=[
