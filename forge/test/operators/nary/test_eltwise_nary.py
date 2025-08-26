@@ -19,40 +19,6 @@ from forge.verify import TestKind, verify_module
 verify_cfg = DeprecatedVerifyConfig(run_golden=True, run_net2pipe=True)  # Run backend golden check on all tests in here
 
 
-@pytest.mark.parametrize(
-    "input_shape",
-    [
-        (1, 10, 32, 32),
-        (1, 32, 16, 16),
-    ],
-)
-@pytest.mark.parametrize("axis", [-3])
-@pytest.mark.parametrize("stride", [1])
-@pytest.mark.parametrize("num_operands", [2, 3])
-def test_interleave(test_kind, test_device, input_shape, axis, stride, num_operands):
-    class Model(ForgeModule):
-        def __init__(self, name, axis, stride):
-            super().__init__(name)
-            self.axis = axis
-            self.stride = stride
-
-        def forward(self, *operands):
-            x = forge.op.Interleave("interleave0", *operands, axis=self.axis, stride=self.stride)
-            return x
-
-    input_shapes = tuple([input_shape for _ in range(num_operands)])
-    mod = Model("interleave_test", axis, stride)
-    verify_module(
-        mod,
-        input_shapes,
-        verify_cfg=DeprecatedVerifyConfig(
-            test_kind=test_kind,
-            devtype=test_device.devtype,
-            arch=test_device.arch,
-        ),
-    )
-
-
 @pytest.mark.parametrize("dim", [1, 2, -1])
 @pytest.mark.parametrize("aligned", [True, False])
 def test_concat(test_kind, test_device, dim, aligned):

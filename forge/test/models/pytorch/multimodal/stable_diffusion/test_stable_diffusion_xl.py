@@ -4,6 +4,10 @@
 
 import pytest
 import torch
+from third_party.tt_forge_models.stable_diffusion_xl.pytorch import (
+    ModelLoader,
+    ModelVariant,
+)
 
 import forge
 from forge._C import DataFormat
@@ -18,11 +22,6 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
-
-from test.models.pytorch.multimodal.stable_diffusion.model_utils.model import (
-    load_pipe,
-    stable_diffusion_preprocessing_xl,
-)
 
 
 class StableDiffusionXLWrapper(torch.nn.Module):
@@ -49,7 +48,7 @@ class StableDiffusionXLWrapper(torch.nn.Module):
     "variant",
     [
         pytest.param(
-            "stable-diffusion-xl-base-1.0",
+            ModelVariant.STABLE_DIFFUSION_XL_BASE_1_0,
             marks=[pytest.mark.xfail],
         ),
     ],
@@ -66,29 +65,17 @@ def test_stable_diffusion_generation(variant):
         priority=ModelPriority.P1,
     )
 
-    # Load the pipeline
-    pipe = load_pipe(variant, variant_type="xl")
+    # Load model and input
+    loader = ModelLoader(variant=variant)
+    pipe = loader.load_model(dtype_override=torch.bfloat16)
+    input_list = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_list[0], input_list[1], input_list[2]]
 
     # Extract only the unet, as the forward pass occurs here.
     framework_model = pipe.unet
 
-    # Tokenize the prompt to a tensor
-    tokenizer = pipe.tokenizer
-    prompt = "An astronaut riding a green horse"
-    (
-        latent_model_input,
-        timestep,
-        prompt_embeds,
-        timestep_cond,
-        added_cond_kwargs,
-        add_time_ids,
-    ) = stable_diffusion_preprocessing_xl(pipe, prompt)
-    inputs = [latent_model_input.to(torch.bfloat16), timestep.to(torch.bfloat16), prompt_embeds.to(torch.bfloat16)]
-
     # Wrap the pipeline in the wrapper
-    framework_model = StableDiffusionXLWrapper(framework_model, added_cond_kwargs, cross_attention_kwargs=None).to(
-        torch.bfloat16
-    )
+    framework_model = StableDiffusionXLWrapper(framework_model, input_list[3], cross_attention_kwargs=None)
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)

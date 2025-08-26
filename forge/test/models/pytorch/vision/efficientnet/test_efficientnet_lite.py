@@ -4,6 +4,10 @@
 ## https://github.com/RangiLyu/EfficientNet-Lite/
 import pytest
 import torch
+from third_party.tt_forge_models.efficientnet_lite.pytorch import (
+    ModelLoader,
+    ModelVariant,
+)
 
 import forge
 from forge._C import DataFormat
@@ -19,15 +23,12 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.models_utils import print_cls_results
-from test.models.pytorch.vision.vision_utils.utils import load_timm_model_and_input
-
 variants = [
-    "tf_efficientnet_lite0.in1k",
-    "tf_efficientnet_lite1.in1k",
-    "tf_efficientnet_lite2.in1k",
-    "tf_efficientnet_lite3.in1k",
-    "tf_efficientnet_lite4.in1k",
+    ModelVariant.TF_EFFICIENTNET_LITE0_IN1K,
+    ModelVariant.TF_EFFICIENTNET_LITE1_IN1K,
+    ModelVariant.TF_EFFICIENTNET_LITE2_IN1K,
+    ModelVariant.TF_EFFICIENTNET_LITE3_IN1K,
+    ModelVariant.TF_EFFICIENTNET_LITE4_IN1K,
 ]
 
 
@@ -39,18 +40,18 @@ def test_efficientnet_lite_timm(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.EFFICIENTNETLITE,
-        variant=variant,
+        variant=variant.value,
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Load the model and inputs
-    framework_model, inputs = load_timm_model_and_input(variant)
-    framework_model = framework_model.to(torch.bfloat16)
-    inputs = [input.to(torch.bfloat16) for input in inputs]
+    # Load the model and inputs via loader
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_tensor = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_tensor]
 
-    data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    compiler_cfg = CompilerConfig(default_df_override=DataFormat.Float16_b)
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -61,13 +62,13 @@ def test_efficientnet_lite_timm(variant):
     )
 
     pcc = 0.99
-    if variant == "tf_efficientnet_lite3.in1k":
+    if variant in [ModelVariant.TF_EFFICIENTNET_LITE3_IN1K, ModelVariant.TF_EFFICIENTNET_LITE2_IN1K]:
         pcc = 0.98
 
     # Model Verification
-    fw_out, co_out = verify(
+    _, co_out = verify(
         inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc))
     )
 
     # Model Postprocessing
-    print_cls_results(fw_out[0], co_out[0])
+    loader.print_cls_results(co_out)

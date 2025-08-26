@@ -151,4 +151,12 @@ class OperatorRepository:
             raise ValueError(f"Detected duplicate operator names: {duplicates}")
 
     def get_by_name(self, name: str):
-        return [op for op in self.operators if op.name == name][0]
+        operators = [op for op in self.operators if op.name == name]
+        if len(operators) == 1:
+            return operators[0]
+        if len(operators) == 0:
+            raise ValueError(f"Operator {name} not found in operator repository")
+        if len(operators) > 1:
+            raise ValueError(
+                f"Ambiguous operator name {name}, found {len(operators)} candidates in operator repository"
+            )

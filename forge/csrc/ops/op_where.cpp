@@ -9,6 +9,7 @@
 #include "graph_lib/shape.hpp"
 #include "op.hpp"
 #include "op_interface.hpp"
+#include "ops/op_common.hpp"
 #include "passes/decomposing_context.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
@@ -25,14 +26,19 @@ using namespace graphlib;
 at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Where, "Wrong op type.");
-    return op.base_eval(old_op_type, tensors);
+    TT_ASSERT(tensors.size() == 3, "Where should have three operands: condition, x, y.");
+
+    at::Tensor condition = tensors[0].to(torch::kBool);
+    return torch::where(condition, tensors[1], tensors[2]);
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
     const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Where, "Wrong op type.");
-    return op.base_shape(old_op_type, in_shapes);
+    TT_ASSERT(in_shapes.size() == 3, "Where should have three operands: condition, x, y.");
+
+    return op_common::eltwise_nary_shape(in_shapes);
 }
 
 NodeContext backward(
@@ -45,35 +51,8 @@ NodeContext backward(
     const NodeContext &gradient)
 {
     TT_DBG_ASSERT(op.type() == OpType::Where, "Wrong op type.");
-    return op.base_backward(old_op_type, ac, operand, inputs, output, gradient);
-}
-
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Where, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
-}
-
-void decompose_post_optimize(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Where, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
-}
-
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Where, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
-}
-
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Where, "Wrong op type.");
-    return op.base_initial_flops_estimate(old_op_type, inputs);
+    TT_THROW("Where op does not have backward implemented.");
+    unreachable();
 }
 
 }  // namespace where

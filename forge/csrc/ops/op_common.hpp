@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "autograd/autograd.hpp"
+#include "torch/torch.h"
 
 namespace tt
 {
@@ -31,7 +32,18 @@ namespace op_common
  * @return Tuple containing the output shape and broadcast information
  */
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> compute_elementwise_binary_shape(
-    const std::vector<std::vector<std::uint32_t>> &in_shapes);
+    const std::vector<std::vector<uint32_t>> &in_shapes);
+
+/**
+ * Compute the output shape and broadcast information for elementwise nnary operations.
+ * This function implements standard broadcasting rules where dimensions are aligned by appending 1s to the beginning of
+ * the shorter shape, and dimensions of size 1 can be broadcasted to match larger dimensions.
+ *
+ * @param in_shapes Vector containing input shapes.
+ * @return Tuple containing the output shape and broadcast information.
+ */
+std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> eltwise_nary_shape(
+    const std::vector<std::vector<uint32_t>> &in_shapes);
 
 /**
  * Handle broadcast reduction in backward pass for elementwise binary operations.

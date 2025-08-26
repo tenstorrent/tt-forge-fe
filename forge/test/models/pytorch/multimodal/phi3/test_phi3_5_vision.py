@@ -4,7 +4,10 @@
 
 import pytest
 import torch
-from transformers import AutoModelForCausalLM, AutoProcessor
+from third_party.tt_forge_models.phi3.phi_3_5_vision.pytorch import (
+    ModelLoader,
+    ModelVariant,
+)
 
 import forge
 from forge.forge_property_utils import (
@@ -18,9 +21,6 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.multimodal.phi3.model_utils.utils import load_input
-from test.utils import download_model
-
 
 class Wrapper(torch.nn.Module):
     def __init__(self, model):
@@ -31,7 +31,7 @@ class Wrapper(torch.nn.Module):
         return self.model(input_ids, attention_mask, None, None, None, pixel_values, image_sizes)
 
 
-variants = ["microsoft/Phi-3.5-vision-instruct"]
+variants = [ModelVariant.INSTRUCT]
 
 
 @pytest.mark.out_of_memory
@@ -52,21 +52,21 @@ def test_phi3_5_vision(variant):
 
     pytest.xfail(reason="Requires multi-chip support")
 
-    # Load model and processor
-    model = download_model(
-        AutoModelForCausalLM.from_pretrained,
-        variant,
-        return_dict=False,
-        trust_remote_code=True,
-        use_cache=False,
-        _attn_implementation="eager",
-    )
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    model = loader.load_model()
+    model.config.return_dict = False
+    model.config.use_cache = False
+    input_dict = loader.load_inputs()
+
     model.eval()
     framework_model = Wrapper(model)
-    processor = download_model(AutoProcessor.from_pretrained, variant, trust_remote_code=True, num_crops=4)
-
-    # prepare input
-    inputs = load_input(processor)
+    inputs = [
+        input_dict["input_ids"],
+        input_dict["attention_mask"],
+        input_dict["pixel_values"],
+        input_dict["image_sizes"],
+    ]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
