@@ -22,7 +22,7 @@ namespace upsample_2d
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Upsample2d, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "Upsample2d expects 1 input tensor");
@@ -72,7 +72,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Upsample2d, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "Upsample2d expects 1 input shape");
@@ -119,7 +119,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,

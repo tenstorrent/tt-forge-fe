@@ -21,7 +21,7 @@ namespace ops
 namespace subtract
 {
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Subtract, "Wrong op type.");
     TT_ASSERT(tensors.size() == 2, "subtract::eval should have two input tensors.");
@@ -31,7 +31,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Subtract, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 2, "subtract::shape should have two input shapes.");
@@ -41,7 +41,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
 }
 
 tt::graphlib::NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     tt::autograd::autograd_context &ac,
     int operand,
@@ -57,10 +57,9 @@ tt::graphlib::NodeContext backward(
     NodeContext op_grad = gradient;
     // For subtract x - y: dx = grad, dy = -grad
     if (operand == 0)
-        op_grad = ac.autograd->create_op(ac, graphlib::OpType("nop"), {gradient});
+        op_grad = ac.autograd->create_op(ac, Op("nop"), {gradient});
     else
-        op_grad = ac.autograd->create_op(
-            ac, graphlib::OpType("multiply"), {gradient, ac.autograd->create_constant(ac, -1.0)});
+        op_grad = ac.autograd->create_op(ac, Op("multiply"), {gradient, ac.autograd->create_constant(ac, -1.0)});
 
     // Reduce dimensions where broadcasting occurred using reduce_sum
     return op_common::reduce_broadcast_dimensions(ac, op_grad, inputs[operand].shape, gradient.shape);

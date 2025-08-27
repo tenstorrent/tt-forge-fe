@@ -22,14 +22,14 @@ namespace minimum
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_ASSERT(tensors.size() == 2, "Minimum should have two input tensors.");
     return torch::minimum(tensors[0], tensors[1]);
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Minimum, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 2, "Minimum should have two input shapes.");
@@ -39,7 +39,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,

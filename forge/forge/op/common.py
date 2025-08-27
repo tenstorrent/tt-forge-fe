@@ -10,7 +10,7 @@ from typing import Union
 from ..tensor import Tensor
 from ..parameter import Parameter
 from forge._C import DataFormat
-from forge._C.graph import OpType
+from forge._C.graph import Op
 import forge
 from forge.forgeglobal import get_unique_node_id, tracing
 from forge.tensor import pytorch_dtype_to_forge_dataformat, forge_dataformat_to_pytorch_dtype
@@ -43,7 +43,7 @@ class ForgeOp:
         )
         self.operands = operands
         self.named_attrs = named_attrs
-        self.cpp_op_type = OpType(self.op_type, self.named_attrs)
+        self.cpp_op_type = Op(self.op_type, self.named_attrs)
 
     def get_tensor(self, out_df=None) -> Tensor:
         """

@@ -32,7 +32,7 @@ using op_common::PaddingParams;
 
 NodeContext extract(DecomposingContext &dc, const NodeContext &input, int dim_axis, int start, int stop)
 {
-    graphlib::OpType index_op("index");
+    Op index_op("index");
     index_op.set_attr("dim", dim_axis);
     index_op.set_attr("start", start);
     index_op.set_attr("stop", stop);
@@ -47,9 +47,9 @@ NodeContext repeat_vector(DecomposingContext &dc, const NodeContext &input, int 
     std::vector<int> repeats(input.shape.size(), 1);
     repeats[axis] = n_repeats;
 
-    std::vector<graphlib::OpType::Attr> repeat_attrs(repeats.begin(), repeats.end());
+    std::vector<ops::Attr> repeat_attrs(repeats.begin(), repeats.end());
 
-    graphlib::OpType repeat_op("repeat", {{"repeats", repeats}});
+    Op repeat_op("repeat", {{"repeats", repeats}});
 
     return dc.op(repeat_op, {input});
 }
@@ -70,7 +70,7 @@ NodeContext extract_and_mirror(DecomposingContext &dc, const NodeContext &input,
     NodeContext indices = DecomposingContext::create_constant_tensor(dc, indices_tensor);
 
     // Mirror patch using adv_index
-    graphlib::OpType adv_index_op("adv_index", {{"dim", dim_axis}});
+    Op adv_index_op("adv_index", {{"dim", dim_axis}});
     NodeContext patch_mirrored = dc.op(adv_index_op, {patch, indices});
 
     return patch_mirrored;
@@ -164,7 +164,7 @@ NodeContext decompose_reflect_mode(DecomposingContext &dc, const NodeContext &in
     return concat_patches(dc, top_pad.get(), result, bot_pad.get(), params.height_dim);
 }
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Pad, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "Pad should have exactly 1 input tensor");
@@ -222,7 +222,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Pad, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "Pad should have exactly 1 input shape");
@@ -249,7 +249,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 // currently this implementation is not used since we decompose pad so when we run backward pass it's run on the
 // decomposed ops (but if we introduce direct mapping to TTIR then we can use this implementation)
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -262,8 +262,7 @@ NodeContext backward(
     return nullptr;
 }
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Pad, "Wrong op type.");
     TT_ASSERT(inputs.size() == 1, "Pad should have exactly 1 input");
@@ -280,7 +279,7 @@ void decompose_initial(
     bool all_zero = std::all_of(padding.begin(), padding.end(), [](int x) { return x == 0; });
     if (all_zero)
     {
-        auto nop_result = dc.op(graphlib::OpType("nop"), {inputs[0]});
+        auto nop_result = dc.op(Op("nop"), {inputs[0]});
         dc.fuse(nop_result);
         return;
     }

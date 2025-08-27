@@ -13,7 +13,7 @@ namespace tt
 
 void OpsModule(py::module &m_ops)
 {
-    py::enum_<ops::OpType>(m_ops, "OpType")
+    py::enum_<ops::OpType>(m_ops, "ops::Op")
         .value("Abs", ops::OpType::Abs)
         .value("AdaptiveMaxPool2d", ops::OpType::AdaptiveMaxPool2d)
         .value("Add", ops::OpType::Add)

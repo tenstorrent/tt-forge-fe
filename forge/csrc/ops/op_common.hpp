@@ -141,7 +141,7 @@ tt::graphlib::NodeContext create_constant(ContextType &context, const at::Tensor
 // Helper to create op based on context type
 template <typename ContextType>
 tt::graphlib::NodeContext create_op(
-    ContextType &context, const tt::graphlib::OpType &op, const std::vector<tt::graphlib::NodeContext> &inputs)
+    ContextType &context, const ops::Op &op, const std::vector<tt::graphlib::NodeContext> &inputs)
 {
     if constexpr (std::is_same_v<ContextType, tt::DecomposingContext>)
         return context.op(op, inputs);
@@ -177,9 +177,7 @@ tt::graphlib::NodeContext concat_patches(
         return center;  // No concatenation needed
     }
 
-    tt::graphlib::OpType concat_op("concatenate", {{"dim", dim_axis}});
-
-    return create_op(context, concat_op, inputs);
+    return create_op(context, ops::Op("concatenate", {{"dim", dim_axis}}), inputs);
 }
 
 // Template function for constant mode padding decomposition
@@ -210,8 +208,7 @@ tt::graphlib::NodeContext decompose_constant_mode(
             constant_padding[params.height_dim * 2 + 1] = params.bottom;  // high padding
         }
 
-        return create_op(
-            context, tt::graphlib::OpType("constant_pad", {{"padding", constant_padding}, {"value", value}}), {input});
+        return create_op(context, ops::Op("constant_pad", {{"padding", constant_padding}, {"value", value}}), {input});
     }
 
     /**

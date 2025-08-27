@@ -19,7 +19,7 @@ namespace ops
 namespace cosine
 {
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Cosine, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "cosine::eval should have single input tensor.");
@@ -27,7 +27,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Cosine, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "cosine::shape should have single input shape.");
@@ -35,7 +35,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
 }
 
 tt::graphlib::NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     tt::autograd::autograd_context &ac,
     int operand,
@@ -52,10 +52,10 @@ tt::graphlib::NodeContext backward(
     TT_ASSERT(inputs.size() == 1, "Cosine should have single input.");
     TT_ASSERT(operand == 0, "Invalid operand index.");
 
-    graphlib::NodeContext sine_output = ac.autograd->create_op(ac, graphlib::OpType("sine"), {inputs[0]});
+    graphlib::NodeContext sine_output = ac.autograd->create_op(ac, Op("sine"), {inputs[0]});
     graphlib::NodeContext neg_sine =
-        ac.autograd->create_op(ac, graphlib::OpType("multiply"), {sine_output, ac.autograd->create_constant(ac, -1.0)});
-    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {neg_sine, gradient});
+        ac.autograd->create_op(ac, Op("multiply"), {sine_output, ac.autograd->create_constant(ac, -1.0)});
+    return ac.autograd->create_op(ac, Op("multiply"), {neg_sine, gradient});
 }
 
 }  // namespace cosine

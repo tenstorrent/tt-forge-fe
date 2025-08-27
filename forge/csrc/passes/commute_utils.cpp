@@ -65,7 +65,7 @@ std::tuple<bool, int> can_commute_through_dim(
 {
     bool can_reduce = false;
     int new_dim = -1;
-    if (initial_op->new_op_type() == ops::OpType::Reshape)
+    if (initial_op->op_type() == ops::OpType::Reshape)
     {
         auto input_shape = graph->data_operands(initial_op)[0]->shape();
         auto output_shape = initial_op->shape();
@@ -73,7 +73,7 @@ std::tuple<bool, int> can_commute_through_dim(
         can_reduce = std::get<0>(result);
         new_dim = std::get<1>(result);
     }
-    else if (initial_op->new_op_type() == ops::OpType::Transpose)
+    else if (initial_op->op_type() == ops::OpType::Transpose)
     {
         // if reduce dim is out of bounds for transpose we can't commute
         if (dim >= (int)initial_op->shape().size())
@@ -82,12 +82,12 @@ std::tuple<bool, int> can_commute_through_dim(
         }
 
         can_reduce = true;
-        int dim0 = initial_op->op_type().attr_as<int>("dim0");
+        int dim0 = initial_op->op().attr_as<int>("dim0");
         if (dim0 < 0)
         {
             dim0 += initial_op->shape().size();
         }
-        int dim1 = initial_op->op_type().attr_as<int>("dim1");
+        int dim1 = initial_op->op().attr_as<int>("dim1");
         if (dim1 < 0)
         {
             dim1 += initial_op->shape().size();
@@ -103,7 +103,7 @@ std::tuple<bool, int> can_commute_through_dim(
     return std::make_tuple(can_reduce, new_dim);
 }
 
-bool match_unsqueeze(graphlib::OpType const &a, graphlib::OpType const &b)
+bool match_unsqueeze(ops::Op const &a, ops::Op const &b)
 {
     bool fns_match = a.type() == ops::OpType::Unsqueeze and b.type() == ops::OpType::Squeeze;
 
@@ -113,7 +113,7 @@ bool match_unsqueeze(graphlib::OpType const &a, graphlib::OpType const &b)
     return a.attr_as<int>("dim") == b.attr_as<int>("dim");
 }
 
-bool match_squeeze(graphlib::OpType const &a, graphlib::OpType const &b)
+bool match_squeeze(ops::Op const &a, ops::Op const &b)
 {
     bool fns_match = a.type() == ops::OpType::Unsqueeze and b.type() == ops::OpType::Squeeze;
 
@@ -123,9 +123,9 @@ bool match_squeeze(graphlib::OpType const &a, graphlib::OpType const &b)
     return a.attr_as<int>("dim") == b.attr_as<int>("dim");
 }
 
-bool match_reshape(graphlib::OpType const &a, graphlib::OpType const &) { return a.type() == ops::OpType::Reshape; }
+bool match_reshape(ops::Op const &a, ops::Op const &) { return a.type() == ops::OpType::Reshape; }
 
-bool match_transpose(graphlib::OpType const &a, graphlib::OpType const &b)
+bool match_transpose(ops::Op const &a, ops::Op const &b)
 {
     if (a.type() != ops::OpType::Transpose)
         return false;
@@ -147,7 +147,7 @@ size_t total_broadcast_volume(graphlib::Graph *graph, graphlib::Edge edge)
 {
     auto tms = graph->get_edge_attributes(edge)->get_tms();
     size_t volume = 1;
-    for (graphlib::OpType &op_type : tms)
+    for (ops::Op &op_type : tms)
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
@@ -211,9 +211,9 @@ bool are_compatible_ops(
 
     // Inverse tms have to be the same op, except for unsqueeze/squeeze case
     bool are_compatible_tms =
-        a->is_tm() and ((a->new_op_type() == b->new_op_type()) or
-                        ((a->new_op_type() == ops::OpType::Unsqueeze and b->new_op_type() == ops::OpType::Squeeze) or
-                         (a->new_op_type() == ops::OpType::Squeeze and b->new_op_type() == ops::OpType::Unsqueeze)));
+        a->is_tm() and ((a->op_type() == b->op_type()) or
+                        ((a->op_type() == ops::OpType::Unsqueeze and b->op_type() == ops::OpType::Squeeze) or
+                         (a->op_type() == ops::OpType::Squeeze and b->op_type() == ops::OpType::Unsqueeze)));
 
     if (not are_compatible_tms)
         return false;
@@ -230,7 +230,7 @@ bool are_compatible_ops(
 
     for (auto [name, match_fn] : match_fns)
     {
-        if (match_fn(a->op_type(), b->op_type()))
+        if (match_fn(a->op(), b->op()))
             return true;
     }
 
@@ -247,7 +247,7 @@ bool commute_through_select(
     bool check_only,
     bool *retain_operand_dim,
     std::pair<int, int> *operand_dims,
-    graphlib::OpType *golden_transform,
+    ops::Op *golden_transform,
     bool commute_up)
 {
     int select_dim = op->op_attr_as<int>("dim");
@@ -438,11 +438,11 @@ bool commute_through_concat(
     bool check_only,
     bool *retain_operand_dim,
     std::pair<int, int> *operand_dims,
-    graphlib::OpType *golden_transform,
+    ops::Op *golden_transform,
     bool commute_up)
 {
-    if (op->new_op_type() == ops::OpType::Concatenate)
-        TT_ASSERT(op->op_named_attrs().size() == 1);
+    if (op->op_type() == ops::OpType::Concatenate)
+        TT_ASSERT(op->op_attrs().size() == 1);
 
     int concat_dim = op->op_attr_as<int>("dim");
     if (concat_dim < 0)
@@ -536,7 +536,7 @@ bool commute_through_concat(
         concat_golden_transform.attr_as<std::vector<int>>("shape")[idx] = concat_output_len;
     }
     op->add_golden_transform(concat_golden_transform);
-    op->change_op_type(ops::Op(ops::OpType::Concatenate).as_string(), {{"dim", new_dim}});
+    op->change_op(ops::Op(ops::OpType::Concatenate).as_string(), {{"dim", new_dim}});
 
     *commute_shape = concat_shape;
     *golden_transform = concat_golden_transform;
@@ -571,7 +571,7 @@ bool commute_through_reduce(
     bool check_only,
     bool *retain_operand_dim,
     std::pair<int, int> *operand_dims,
-    graphlib::OpType *golden_transform,
+    ops::Op *golden_transform,
     bool commute_up)
 {
     std::vector<int> dim_arg = op->op_attr_as<std::vector<int>>("dim_arg");
@@ -603,7 +603,7 @@ bool commute_through_reduce(
             continue;
 
         // Check if the next op is a reduce, and the same type of reduce
-        if (next_op->new_op_type() != op->new_op_type())
+        if (next_op->op_type() != op->op_type())
             continue;
 
         auto compare_shape = check_only ? graph->data_operands(op)[0]->shape() : *clone_shape;
@@ -654,7 +654,7 @@ bool commute_through_reduce(
         if (prev_op == nullptr)
             continue;
 
-        if (prev_op->new_op_type() == op->new_op_type())
+        if (prev_op->op_type() == op->op_type())
         {
             std::vector<int> prev_dim_arg = prev_op->op_attr_as<std::vector<int>>("dim_arg");
             int prev_reduce_dim = prev_dim_arg[0];
@@ -729,13 +729,13 @@ bool commute_through_reduce(
 
     if (graphlib::OpNode *next_as_op = dynamic_cast<graphlib::OpNode *>(next))
     {
-        if (op->new_op_type() == next_as_op->new_op_type())
+        if (op->op_type() == next_as_op->op_type())
         {
             return true;
         }
     }
 
-    if (producer->new_op_type() == op->new_op_type())
+    if (producer->op_type() == op->op_type())
     {
         int op_reduce_dim;
         bool op_keep_dim;
@@ -779,7 +779,7 @@ bool commute_through_reduce(
         (*clone_shape)[op_reduce_dim] = 1;
         (*clone_shape)[producer_reduce_dim] = 1;
 
-        producer->change_op_type(ops::Op(ops::OpType::Nop).as_string());
+        producer->change_op(ops::Op(ops::OpType::Nop).as_string());
     }
     else
     {
@@ -836,7 +836,7 @@ bool can_commute_through_reduce(
         commute_up);
 }
 
-bool commute_through_eltwise(graphlib::OpNode *op, graphlib::Shape *commute_shape, graphlib::OpType *golden_transform)
+bool commute_through_eltwise(graphlib::OpNode *op, graphlib::Shape *commute_shape, ops::Op *golden_transform)
 {
     TT_ASSERT(op->is_eltwise(), "op must be an eltwise op");
     op->set_shape(*commute_shape);
@@ -853,20 +853,20 @@ bool can_commute_past_op(
     bool commute_up,
     graphlib::Node *producer)
 {
-    if (op->new_op_type() == ops::OpType::ReduceAvg or op->new_op_type() == ops::OpType::ReduceSum)
+    if (op->op_type() == ops::OpType::ReduceAvg or op->op_type() == ops::OpType::ReduceSum)
     {
         graphlib::OpNode *producer_as_op = dynamic_cast<graphlib::OpNode *>(producer);
         bool can_commute =
             can_commute_through_reduce(graph, op, initial_op, producer_as_op, commute_shape, clone_shape, commute_up);
         return can_commute;
     }
-    else if (op->new_op_type() == ops::OpType::Concatenate)
+    else if (op->op_type() == ops::OpType::Concatenate)
     {
         bool can_commute =
             can_commute_through_concat(graph, op, initial_op, producer, commute_shape, clone_shape, commute_up);
         return can_commute;
     }
-    else if (op->new_op_type() == ops::OpType::Select)
+    else if (op->op_type() == ops::OpType::Select)
     {
         bool can_commute =
             can_commute_through_select(graph, op, initial_op, producer, commute_shape, clone_shape, commute_up);
@@ -886,7 +886,7 @@ void update_select_attr(
     std::optional<int> length,
     std::optional<int> stride)
 {
-    TT_ASSERT(select_op->new_op_type() == ops::OpType::Select, "update_select_attr called for a non-select operation");
+    TT_ASSERT(select_op->op_type() == ops::OpType::Select, "update_select_attr called for a non-select operation");
 
     select_op->set_op_attr("select_dim", select_dim);
 
@@ -921,7 +921,7 @@ void update_select_attr(
 void update_concat_attr(graphlib::OpNode *concatenate, int dim)
 {
     TT_ASSERT(
-        concatenate->new_op_type() == ops::OpType::Concatenate,
+        concatenate->op_type() == ops::OpType::Concatenate,
         "update_concat_attr called for a non-concatenate operation");
 
     concatenate->set_op_attr("dim", dim);
@@ -934,7 +934,7 @@ void update_concat_attr(graphlib::OpNode *concatenate, int dim)
  */
 void update_reduce_attr(graphlib::OpNode *reduce, int reduce_dim, bool keep_dim)
 {
-    log_trace(LogGraphCompiler, "reduce->op_name() = {}", reduce->op_name());
+    log_trace(LogGraphCompiler, "reduce->op_name() = {}", reduce->op_as_string());
     TT_ASSERT(reduce->is_reduce(), "update_reduce_attr called for a non-reduce operation");
 
     reduce->set_op_attr("dim_arg", std::vector<int>{reduce_dim});
@@ -946,7 +946,7 @@ void update_reduce_attr(graphlib::OpNode *reduce, int reduce_dim, bool keep_dim)
  */
 void update_matmul_attr(graphlib::OpNode *matmul, int requant_zp)
 {
-    TT_ASSERT(matmul->new_op_type() == ops::OpType::Matmul, "update_matmul_attr called for a non-matmul operation");
+    TT_ASSERT(matmul->op_type() == ops::OpType::Matmul, "update_matmul_attr called for a non-matmul operation");
 
     matmul->set_op_attr("requant_zp", requant_zp);
     log_trace(LogGraphCompiler, "MatMul operation updated with new requant_zp: {}", requant_zp);
@@ -956,7 +956,7 @@ void update_matmul_attr(graphlib::OpNode *matmul, int requant_zp)
  */
 void update_conv_attr(graphlib::OpNode *conv, const std::vector<int> &pad_attrs)
 {
-    TT_ASSERT(conv->new_op_type() == ops::OpType::Conv2d, "update_conv_attr called for a non-conv operation");
+    TT_ASSERT(conv->op_type() == ops::OpType::Conv2d, "update_conv_attr called for a non-conv operation");
 
     conv->set_op_attr("padding", pad_attrs);
     log_trace(LogGraphCompiler, "Conv2d operation updated with new padding values: {}", pad_attrs);
@@ -966,10 +966,10 @@ void update_conv_attr(graphlib::OpNode *conv, const std::vector<int> &pad_attrs)
  */
 void update_reshape_attr(graphlib::OpNode *reshape, graphlib::Shape new_shape)
 {
-    if (reshape->new_op_type() == ops::OpType::Transpose)
+    if (reshape->op_type() == ops::OpType::Transpose)
         return;
 
-    TT_ASSERT(reshape->new_op_type() == ops::OpType::Reshape, "update_reshape_attr called for a non-reshape operation");
+    TT_ASSERT(reshape->op_type() == ops::OpType::Reshape, "update_reshape_attr called for a non-reshape operation");
     std::vector<int> shape_vector;
     for (auto dim : new_shape) shape_vector.push_back(dim);
 
@@ -991,7 +991,7 @@ std::pair<bool, std::pair<std::vector<int>, std::vector<int>>> handle_shape_chan
     std::vector<int> total_bcast_on_commute_shape(commute_shape->size(), 1);
     std::vector<int> total_bcast_on_clone_shape(clone_shape->size(), 1);
     bool can_commute = true;
-    for (graphlib::OpType &op_type : tms)
+    for (ops::Op &op_type : tms)
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
@@ -1029,7 +1029,7 @@ void add_or_compound_bcast(graphlib::Graph *graph, graphlib::Edge edge, int dim,
     }
 
     bool compounded_bcast = false;
-    for (graphlib::OpType &op_type : tms)
+    for (ops::Op &op_type : tms)
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
@@ -1056,12 +1056,12 @@ void add_or_compound_bcast(graphlib::Graph *graph, graphlib::Edge edge, int dim,
 void restore_bcast_on_condition(
     graphlib::Graph *graph,
     graphlib::Edge edge,
-    std::vector<graphlib::OpType> orig_tms,
+    std::vector<ops::Op> orig_tms,
     graphlib::Shape operand_shape,
     std::function<bool(graphlib::Shape, int)> eval_condition)
 {
     // auto tms = graph->get_edge_attributes(edge)->get_tms();
-    for (graphlib::OpType &op_type : orig_tms)
+    for (ops::Op &op_type : orig_tms)
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
@@ -1085,10 +1085,10 @@ void restore_bcast_on_condition(
 // changed the axis we want to broadcast on...)
 int update_bcast_dim_commuted_through_transpose(int dim, graphlib::OpNode *op)
 {
-    TT_ASSERT(op->new_op_type() == ops::OpType::Transpose, "Op has to be transpose");
+    TT_ASSERT(op->op_type() == ops::OpType::Transpose, "Op has to be transpose");
     int updated_bcast_dim = dim;
-    int transpose_dim_0 = op->op_type().attr_as<int>("dim0");
-    int transpose_dim_1 = op->op_type().attr_as<int>("dim1");
+    int transpose_dim_0 = op->op().attr_as<int>("dim0");
+    int transpose_dim_1 = op->op().attr_as<int>("dim1");
     if (dim == transpose_dim_0)
         updated_bcast_dim = transpose_dim_1;
     else if (dim == transpose_dim_1)
@@ -1102,8 +1102,8 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
     if (not op)
         return false;
 
-    if (not(op->new_op_type() == ops::OpType::Transpose or op->new_op_type() == ops::OpType::Reshape or
-            op->new_op_type() == ops::OpType::Squeeze or op->new_op_type() == ops::OpType::Unsqueeze))
+    if (not(op->op_type() == ops::OpType::Transpose or op->op_type() == ops::OpType::Reshape or
+            op->op_type() == ops::OpType::Squeeze or op->op_type() == ops::OpType::Unsqueeze))
         return false;
 
     auto operand_edge = graph->operand_data_edges(node)[0];
@@ -1122,7 +1122,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
     int total_bcast_volume = 1;
     int num_bcasts = 0;
     std::vector<int> bcast_dims;
-    for (graphlib::OpType &op_type : tms)
+    for (ops::Op &op_type : tms)
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
@@ -1173,7 +1173,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
     if (matching_in_operand == -1 or matching_in_op == -1)
         return false;
 
-    if (op->new_op_type() == ops::OpType::Reshape)
+    if (op->op_type() == ops::OpType::Reshape)
     {
         if (volume_above(operand_shape.as_vector(), matching_in_operand) ==
                 volume_above(op->shape().as_vector(), matching_in_op) and
@@ -1346,15 +1346,15 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
             return false;
         return true;
     }
-    else if (op->new_op_type() == ops::OpType::Transpose)
+    else if (op->op_type() == ops::OpType::Transpose)
     {
-        std::vector<graphlib::OpType> &tms = graph->get_edge_attributes(operand_edge)->get_tms();
+        std::vector<ops::Op> &tms = graph->get_edge_attributes(operand_edge)->get_tms();
         graphlib::Shape updated_shape = node->shape();
 
         std::vector<int> erase_tms;
         for (int i = 0; i < (int)tms.size(); ++i)
         {
-            graphlib::OpType op_type = tms[i];
+            ops::Op op_type = tms[i];
             if (op_type.type() == ops::OpType::Broadcast)
             {
                 int dim = op_type.attr_as<int>("dim");
@@ -1378,7 +1378,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
         for (auto iter = erase_tms.rbegin(); iter != erase_tms.rend(); ++iter) tms.erase(tms.begin() + *iter);
         return true;
     }
-    else if (op->new_op_type() == ops::OpType::Squeeze or op->new_op_type() == ops::OpType::Unsqueeze)
+    else if (op->op_type() == ops::OpType::Squeeze or op->op_type() == ops::OpType::Unsqueeze)
     {
         // reshape that is equivalent to the unsqeeze (e.g. (16,256,256) -> (1,16,256,256)) is decomposed into unsqueeze
         // op in decompose pass. In this case we still want to erase inverse unsqueeze ops and commute broadcasts

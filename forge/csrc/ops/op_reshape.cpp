@@ -23,7 +23,7 @@ namespace reshape
 
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Reshape, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "Reshape should have single input tensor.");
@@ -33,7 +33,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Reshape, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "Reshape should have single input shape.");
@@ -42,7 +42,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 tt::graphlib::NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -54,8 +54,7 @@ tt::graphlib::NodeContext backward(
     TT_ASSERT(inputs.size() == 1, "Reshape should have single input.");
     TT_ASSERT(operand == 0, "Invalid operand index.");
 
-    return ac.autograd->create_op(
-        ac, graphlib::OpType("reshape", {{"shape", inputs[0].shape.as_vector<int>()}}), {gradient});
+    return ac.autograd->create_op(ac, Op("reshape", {{"shape", inputs[0].shape.as_vector<int>()}}), {gradient});
 }
 
 /**
@@ -83,20 +82,18 @@ void decompose_reshape(const Op &op, DecomposingContext &dc, const std::vector<N
         return;
 
     NodeContext result = inputs[0];  // clang-format off
-    for (; rank < 0; ++rank) result = dc.op(graphlib::OpType("squeeze",   {{"dim", 0}}), {std::move(result)});
-    for (; rank > 0; --rank) result = dc.op(graphlib::OpType("unsqueeze", {{"dim", 0}}), {std::move(result)});  // clang-format on
+    for (; rank < 0; ++rank) result = dc.op(Op("squeeze",   {{"dim", 0}}), {std::move(result)});
+    for (; rank > 0; --rank) result = dc.op(Op("unsqueeze", {{"dim", 0}}), {std::move(result)});  // clang-format on
 
     dc.fuse(result);
 }
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     decompose_reshape(op, dc, inputs);
 }
 
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     decompose_reshape(op, dc, inputs);
 }

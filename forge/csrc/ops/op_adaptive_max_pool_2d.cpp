@@ -22,7 +22,7 @@ namespace adaptive_max_pool_2d
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::AdaptiveMaxPool2d, "Wrong op type.");
     TT_THROW("Not implemented.");
@@ -30,7 +30,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::AdaptiveMaxPool2d, "Wrong op type.");
     TT_THROW("Not implemented.");
@@ -38,7 +38,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -51,25 +51,25 @@ NodeContext backward(
     unreachable();
 }
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::AdaptiveMaxPool2d, "Wrong op type.");
     TT_THROW("Not implemented.");
+    unreachable();
 }
 
-void decompose_post_optimize(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_post_optimize(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::AdaptiveMaxPool2d, "Wrong op type.");
     TT_THROW("Not implemented.");
+    unreachable();
 }
 
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::AdaptiveMaxPool2d, "Wrong op type.");
     TT_THROW("Not implemented.");
+    unreachable();
 }
 
 }  // namespace adaptive_max_pool_2d

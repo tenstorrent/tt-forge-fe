@@ -19,7 +19,7 @@ namespace ops
 namespace leaky_relu
 {
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::LeakyRelu, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "LeakyRelu should have one input");
@@ -32,7 +32,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::LeakyRelu, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "LeakyRelu should have one input");
@@ -41,7 +41,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
 }
 
 tt::graphlib::NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     tt::autograd::autograd_context &ac,
     int operand,
@@ -60,14 +60,14 @@ tt::graphlib::NodeContext backward(
     auto zero = ac.autograd->create_constant(ac, 0.0);
     auto neg_one = ac.autograd->create_constant(ac, -1.0);
 
-    auto relu_dx = ac.autograd->create_op(ac, graphlib::OpType("heaviside"), {output, zero});
+    auto relu_dx = ac.autograd->create_op(ac, Op("heaviside"), {output, zero});
 
-    auto l_relu_dx = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {output, neg_one});
-    l_relu_dx = ac.autograd->create_op(ac, graphlib::OpType("heaviside"), {l_relu_dx, zero});
-    l_relu_dx = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {l_relu_dx, alpha});
-    l_relu_dx = ac.autograd->create_op(ac, graphlib::OpType("add"), {relu_dx, l_relu_dx});
+    auto l_relu_dx = ac.autograd->create_op(ac, Op("multiply"), {output, neg_one});
+    l_relu_dx = ac.autograd->create_op(ac, Op("heaviside"), {l_relu_dx, zero});
+    l_relu_dx = ac.autograd->create_op(ac, Op("multiply"), {l_relu_dx, alpha});
+    l_relu_dx = ac.autograd->create_op(ac, Op("add"), {relu_dx, l_relu_dx});
 
-    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {l_relu_dx, gradient});
+    return ac.autograd->create_op(ac, Op("multiply"), {l_relu_dx, gradient});
 }
 
 }  // namespace leaky_relu
