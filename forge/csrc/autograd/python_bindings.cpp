@@ -14,12 +14,6 @@
 namespace tt
 {
 
-static bool has_newstyle_interface(std::string const &op_name)
-{
-    py::object eval_module = py::module_::import("forge.op.eval.forge");
-    return eval_module.attr("has_newstyle_interface")(op_name).cast<bool>();
-}
-
 void AutogradModule(py::module &m_autograd)
 {
     py::class_<autograd::autograd_config>(m_autograd, "AutogradConfig")
@@ -41,12 +35,6 @@ void AutogradModule(py::module &m_autograd)
                                                ? graphlib::OpType(std::get<std::string>(type))
                                                : std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
 
-                if (std::holds_alternative<std::string>(type))
-                    TT_LOG_ASSERT(
-                        not has_newstyle_interface(std::get<std::string>(type)),
-                        "Error autograd a type with old OpType interface, expects new OpType interface {}",
-                        std::get<std::string>(type));
-
                 return self.autograd->create_op(self, op_type, operands);
             },
             py::arg("type"),
@@ -61,12 +49,6 @@ void AutogradModule(py::module &m_autograd)
                 graphlib::OpType op_type = std::holds_alternative<std::string>(type)
                                                ? graphlib::OpType(std::get<std::string>(type), named_attrs)
                                                : std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
-
-                if (std::holds_alternative<std::string>(type))
-                    TT_LOG_ASSERT(
-                        not has_newstyle_interface(std::get<std::string>(type)),
-                        "Error autograd a type with old OpType interface, expects new OpType interface {}",
-                        std::get<std::string>(type));
 
                 return self.autograd->create_op(self, op_type, operands);
             },

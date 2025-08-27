@@ -164,7 +164,7 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
             if (output->is_loss_output())
             {
                 // Grad of loss is 1. Create constant and use that as "input".
-                py::object eval_module = py::module_::import("forge.op.eval");
+                py::object eval_module = py::module_::import("forge.op.common");
                 auto const_tensor = make_shared_py_object(eval_module.attr("create_constant_tensor_from_tensor")(
                     std::vector<float>{1.0}, node->shape().as_vector(), node->output_df()));
                 auto const_node = graph->add_node(

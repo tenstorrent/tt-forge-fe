@@ -240,61 +240,6 @@ Op::Op(const graphlib::OpType &old_op_type) :
 
 const std::string &Op::as_string() const { return new_to_old_op_type_mapper[type_]; }
 
-/* ------------------------------------------------------------------------------------------------------------------*
- * Default implementation for ops that are not cpp implemented yet. We will invoke old python code to evaluate them. *
- * ------------------------------------------------------------------------------------------------------------------*/
-
-at::Tensor Op::base_eval(const graphlib::OpType &old_op_type, const std::vector<at::Tensor> &tensors) const
-{
-    py::function eval = py::module_::import("forge.op.eval.forge").attr("get_f_forge_eval")(&old_op_type);
-    return eval(&tensors).cast<at::Tensor>();
-}
-
-std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::base_shape(
-    const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const
-{
-    py::function shape = py::module_::import("forge.op.eval.forge").attr("get_f_forge_shape")(&old_op_type);
-    py::tuple result = shape(&inputs);
-    if (result.size() != 2)
-        throw std::runtime_error("Expected a tuple of shape and broadcast.");
-
-    return std::make_tuple(
-        graphlib::Shape::create(result[0].cast<std::vector<std::uint32_t>>()),
-        result[1].cast<std::vector<graphlib::DimBroadcast>>());
-}
-
-tt::graphlib::NodeContext Op::base_backward(
-    const graphlib::OpType &old_op_type,
-    tt::autograd::autograd_context &context,
-    int operand,
-    const std::vector<tt::graphlib::NodeContext> &inputs,
-    const tt::graphlib::NodeContext &output,
-    const tt::graphlib::NodeContext &gradient) const
-{
-    py::function backward = py::module_::import("forge.op.eval.forge").attr("get_f_forge_backward")(&old_op_type);
-    return backward(&context, operand, &inputs, &output, &gradient).cast<tt::graphlib::NodeContext>();
-}
-
-void Op::base_decompose(
-    const graphlib::OpType &old_op_type,
-    const char *dispatch,
-    DecomposingContext &dc,
-    const std::vector<tt::graphlib::NodeContext> &inputs) const
-{
-    py::function decompose = py::module_::import("forge.op.eval.forge").attr(dispatch)(&old_op_type);
-    decompose(&dc, &inputs);
-}
-
-long Op::base_initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const
-{
-    py::function initial_flops_estimate =
-        py::module_::import("forge.op.eval.forge").attr("get_f_forge_initial_flops_estimate")(&old_op_type);
-    py::object ret = initial_flops_estimate(&inputs);
-
-    return ret.is_none() ? 0 : ret.cast<long>();
-}
-
 /* ------------------------------*
  * Dispatching based on op type. *
  * ------------------------------*/
@@ -886,7 +831,7 @@ long Op::initial_flops_estimate(
     switch (type_)  // clang-format off
     {
         case OpType::Abs: return 0;
-        case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::AdaptiveMaxPool2d: return 0;
         case OpType::Add: return 0;
         case OpType::AdvIndex: return 0;
         case OpType::Argmax: return 0;
@@ -905,7 +850,7 @@ long Op::initial_flops_estimate(
         case OpType::Cosine: return 0;
         case OpType::CumulativeSum: return 0;
         case OpType::Divide: return 0;
-        case OpType::Downsample2d: return downsample_2d::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Downsample2d: return 0;
         case OpType::Dropout: return 0;
         case OpType::Embedding: return 0;
         case OpType::EmbeddingBw: return 0;

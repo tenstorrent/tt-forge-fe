@@ -929,8 +929,6 @@ def get_constant_inputs(
 
 
 def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]) -> torch.Tensor:
-    import forge.op.eval.forge as eval_module
-
     consteval_graph = consteval_trace.get(name, None)
 
     if consteval_graph is None:

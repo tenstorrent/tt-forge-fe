@@ -119,14 +119,6 @@ compiler_exception_rules = [
         ["AssertionError", "Only support upsample with integer scale factor"],
     ),
     MatchingExceptionRule(
-        "post_initial_graph_passes",
-        [
-            "RuntimeError",
-            "has_newstyle_interface(std::get<std::string>(type))",
-            "decomposing a type with old OpType interface, expects new OpType interface",
-        ],
-    ),
-    MatchingExceptionRule(
         "Convert tt-forge attribute to an MLIR attribute", ["RuntimeError", "Unhandled attribute type"]
     ),
     MatchingExceptionRule(
