@@ -18,8 +18,11 @@ using EdgeType = graphlib::EdgeType;
 
 void convert_broadcast_ops_to_tms(Graph *graph)
 {
-    std::vector<Node *> broadcast_ops = graph->nodes(
-        [](Node *node) -> bool
+    // Determines if the consumer node is unary to allow broadcast propagation.
+    // If not unary, the broadcast is lowered to TMs and inserted on the consumer edge.
+
+    std::vector<graphlib::Node *> broadcast_ops = graph->nodes(
+        [](graphlib::Node *node) -> bool
         {
             graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(node);
             return op and op->new_op_type() == ops::OpType::Broadcast;
@@ -27,8 +30,25 @@ void convert_broadcast_ops_to_tms(Graph *graph)
 
     for (Node *node : broadcast_ops)
     {
-        graphlib::OpNode *op = node->as<graphlib::OpNode>();
+        graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(node);
+        if (not op)
+            continue;
+
         graphlib::OpType op_type = op->op_type();
+        bool has_unary_consumer = false;
+        for (graphlib::Edge user_edge : graph->user_data_edges(node))
+        {
+            graphlib::OpNode *consumer_op =
+                dynamic_cast<graphlib::OpNode *>(graph->node_by_id(user_edge.consumer_node_id));
+            if (consumer_op && consumer_op->is_eltwise_unary())
+            {
+                has_unary_consumer = true;
+                break;
+            }
+        }
+        if (has_unary_consumer)
+            continue;
+
         constexpr bool remove_node = true;
         graphlib::bypass_node(
             graph,
