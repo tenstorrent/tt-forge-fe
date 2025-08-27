@@ -714,7 +714,7 @@ py::object eval_op(graphlib::OpType type, std::vector<py::object> inputs)
     py::object result = py::cast(type.eval(tensors));
 
     log_trace(LogEval, "  eval_op: {}", type);
-    py::object common_module = py::module_::import("forge.op.eval");
+    py::object common_module = py::module_::import("forge.op.common");
     common_module.attr("eval_debug_print")(type.name(), inputs, result);
 
     return result;
@@ -808,19 +808,19 @@ bool compare_tensor_to_golden(
 
 py::object create_constant_tensor(float constant_value, std::pair<int, int> constant_dims, DataFormat df)
 {
-    py::object eval_module = py::module_::import("forge.op.eval");
+    py::object eval_module = py::module_::import("forge.op.common");
     return eval_module.attr("create_constant_tensor_from_value")(constant_value, constant_dims, df);
 }
 
 py::object create_constant_tensor(const std::vector<float> &tensor_value, const Shape &tensor_shape, tt::DataFormat df)
 {
-    py::object eval_module = py::module_::import("forge.op.eval");
+    py::object eval_module = py::module_::import("forge.op.common");
     return eval_module.attr("create_constant_tensor_from_tensor")(tensor_value, tensor_shape.as_vector(), df);
 }
 
 void dump_tensor(py::object tensor, std::string filename)
 {
-    py::object eval_module = py::module_::import("forge.op.eval");
+    py::object eval_module = py::module_::import("forge.op.common");
     eval_module.attr("dump_tensor")(tensor, filename);
 }
 

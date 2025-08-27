@@ -1,18 +1,19 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
-
 # SPDX-License-Identifier: Apache-2.0
 
+import os
+import struct
+from typing import List, Tuple
+from math import prod
+import torch
 from typing import Union
-
 from ..tensor import Tensor
 from ..parameter import Parameter
 from forge._C import DataFormat
 from forge._C.graph import OpType
 import forge
 from forge.forgeglobal import get_unique_node_id, tracing
-from forge.tensor import pytorch_dtype_to_forge_dataformat
-from loguru import logger
-
+from forge.tensor import pytorch_dtype_to_forge_dataformat, forge_dataformat_to_pytorch_dtype
 
 deprecated_name_dict = {}
 deprecated_op_id = 0
@@ -69,3 +70,79 @@ class ForgeOp:
         result.set_value(ref_output)
 
         return result
+
+
+def create_constant_tensor_from_value(value: float, dims: Tuple[int, int], df: DataFormat) -> torch.Tensor:
+    dim_r, dim_c = dims
+    if dim_r < 0:
+        dim_r = 0
+    if dim_c < 0:
+        dim_c = 0
+
+    tensor_r = dim_r
+    tensor_c = dim_c
+
+    dtype = forge_dataformat_to_pytorch_dtype(df)
+    if tensor_c == 0 and tensor_r == 0:
+        # Unsqueezing to make this a 1d tensor.
+        # Currently, the runtime expects a 1d tensor for scalar values.
+        tensor = torch.unsqueeze(torch.tensor(value, dtype=dtype), dim=0)
+    elif tensor_c == 0 or tensor_r == 0:
+        dim = tensor_c if tensor_r == 0 else tensor_r
+        tensor = torch.zeros(dim, dtype=dtype)
+        tensor[0:dim] = value
+    else:
+        tensor = torch.zeros(tensor_r, tensor_c, dtype=dtype)
+        tensor[0:tensor_r, 0:tensor_c] = value
+
+    return tensor
+
+
+def create_constant_tensor_from_tensor(
+    tensor_values: List[float], tensor_shape: List[int], df: DataFormat
+) -> torch.Tensor:
+    assert prod(tensor_shape) == len(tensor_values)
+    tensor = torch.FloatTensor(tensor_values)
+    tensor = tensor.reshape(tensor_shape)
+    tensor = tensor.type(forge_dataformat_to_pytorch_dtype(df))
+    return tensor
+
+
+def create_constant_tensor(flat_data: List[float], shape: List[int], df: DataFormat) -> torch.Tensor:
+    tensor = torch.FloatTensor(flat_data)
+    tensor = tensor.reshape(*shape)
+    tensor = tensor.type(forge_dataformat_to_pytorch_dtype(df))
+    return tensor
+
+
+def dump_tensor(tensor, name, entry=0):
+    fmt = "f"
+    if tensor.dtype == torch.half or tensor.dtype == torch.float16 or tensor.dtype == torch.bfloat16:
+        tensor = tensor.to(torch.float)
+    elif tensor.dtype == torch.int or tensor.dtype == torch.int32:
+        fmt = "i"
+    elif tensor.dtype == torch.short or tensor.dtype == torch.int16:
+        fmt = "h"
+    elif tensor.dtype == torch.int8:
+        fmt = "b"
+    elif tensor.dtype == torch.uint8:
+        fmt = "B"
+
+    with open(f"{name}.{entry}.bin", "wb") as out_file:
+        for val in tensor.ravel().tolist():
+            out_file.write(struct.pack(fmt, val))
+        out_file.close()
+
+
+def eval_debug_print(type, inputs, output):
+    mode = int(os.environ.get("EVAL_DEBUG", "0"))
+    if mode > 0:
+        print(
+            f"{type}: inputs: {[i.shape if isinstance(i, torch.Tensor) else 1 for i in inputs]}, output: {output.shape}"
+        )
+        if mode > 1:
+            for i, input in enumerate(inputs):
+                print("input ", i)
+                print(input)
+            print("output:")
+            print(output)
