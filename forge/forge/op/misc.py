@@ -41,4 +41,4 @@ def CumSum(name: str, operandA: Tensor, dim: int) -> Tensor:
     if dim < 0:
         dim += len(operandA.shape)
 
-    return op(OpType.Cumsum, name, operandA, dim=dim).get_tensor()
+    return op(OpType.CumulativeSum, name, operandA, dim=dim).get_tensor()
