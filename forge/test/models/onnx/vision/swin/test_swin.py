@@ -9,7 +9,6 @@ from transformers import (
     ViTImageProcessor,
 )
 import onnx
-import torch
 import forge
 import torch
 from forge.verify.verify import verify
