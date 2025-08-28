@@ -3,29 +3,28 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import math
-from typing import List, Dict
+from typing import List
 from loguru import logger
 
 import torch
 
-from forge.verify.config import VerifyConfig
-from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
-
-from test.operators.utils import (
-    TensorUtils,
-    VerifyUtils,
-    InputSource,
-    TestVector,
-    TestPlan,
+from ...utils import (
     FailingReasons,
+    InputSource,
+    PytorchUtils,
+    TensorUtils,
     TestCollection,
     TestCollectionCommon,
     TestCollectionTorch,
+    TestDevice,
+    TestPlan,
+    TestVector,
+    ValueCheckerUtils,
     ValueRanges,
+    VerifyConfig,
+    VerifyUtils,
 )
-from test.operators.utils.compat import TestDevice
-from test.operators.utils.utils import PytorchUtils
-from test.operators.pytorch.ids.loader import TestIdsDataLoader
+from ..ids import TestIdsDataLoader
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -118,7 +117,6 @@ class TestVerification:
         cls,
         test_device: TestDevice,
         test_vector: TestVector,
-        input_params: List[Dict] = [],
         warm_reset: bool = False,
     ):
         """Common verification function for all tests"""
@@ -157,21 +155,21 @@ class TestVerification:
         logger.trace(f"***input_shapes: {input_shapes}")
 
         # Using AllCloseValueChecker in all cases except for integer data formats:
-        verify_config = VerifyConfig(value_checker=AllCloseValueChecker(atol=1e-2))
+        value_checker = ValueCheckerUtils.all_close(atol=1e-2)
         if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
-            verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
+            value_checker = ValueCheckerUtils.automatic()
 
-        VerifyUtils.verify(
+        verify_config = VerifyConfig(
             model=pytorch_model,
             test_device=test_device,
             input_shapes=input_shapes,
-            input_params=input_params,
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             warm_reset=warm_reset,
             value_range=value_range,
-            verify_config=verify_config,
+            value_checker=value_checker,
         )
+        VerifyUtils.verify(verify_config)
 
 
 class TestParamsData:
