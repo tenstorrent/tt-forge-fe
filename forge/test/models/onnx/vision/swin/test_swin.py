@@ -11,6 +11,8 @@ from transformers import (
 import onnx
 import torch
 import forge
+import torch
+from forge.verify.verify import verify
 
 from test.models.pytorch.vision.swin.model_utils.image_utils import load_image
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
@@ -18,7 +20,6 @@ from forge.forge_property_utils import Framework, Source, Task, ModelArch, recor
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_image_classification_onnx(variant, forge_tmp_path):
 
@@ -30,7 +31,6 @@ def test_swin_v2_tiny_image_classification_onnx(variant, forge_tmp_path):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-    pytest.xfail(reason="Segmentation Fault")
 
     # Load the model
     framework_model = Swinv2ForImageClassification.from_pretrained(variant)
@@ -53,6 +53,11 @@ def test_swin_v2_tiny_image_classification_onnx(variant, forge_tmp_path):
 
     # Forge compile framework model
     compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+    )
 
 
 @pytest.mark.nightly
@@ -89,6 +94,11 @@ def test_swin_v2_tiny_masked_onnx(variant, forge_tmp_path):
 
     # Forge compile framework model
     compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+    )
 
 
 variants_with_weights = {"swin_v2_t": "Swin_V2_T_Weights"}
@@ -125,3 +135,8 @@ def test_swin_torchvision(variant, forge_tmp_path):
 
     # Forge compile framework model
     compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+    )
