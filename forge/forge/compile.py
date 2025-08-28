@@ -28,6 +28,7 @@ from forge._C import ForgeGraphModule, GraphType
 import forge._C.autograd as pyautograd
 import forge._C.graph as pygraph
 from forge._C.graph import Graph
+from forge._C.graph import Op
 from forge._C.runtime import Binary
 import forge.ci as ci
 from forge.module import Module, ForgeModule, wrap_module, AnyModule
@@ -1235,7 +1236,7 @@ def generate_graph(
                 nop = create_op_node(
                     graph,
                     f"_passthrough_nop_{output}",
-                    OpType("nop"),
+                    Op("nop"),
                     tensor.shape.get_pytorch_shape(),
                     tensor.data_format,
                     subgraph_idx,

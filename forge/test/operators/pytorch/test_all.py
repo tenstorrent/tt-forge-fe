@@ -339,7 +339,12 @@ class VectorLambdas:
 
     NOT_IMPLEMENTED = (
         lambda test_vector: test_vector.failing_result is not None
-        and test_vector.failing_result.failing_reason == FailingReasons.NOT_IMPLEMENTED
+        and test_vector.failing_result.failing_reason
+        in (
+            FailingReasons.NOT_IMPLEMENTED_ATEN,
+            FailingReasons.LOWERING_UNSUPPORTED_OPERATION,
+            FailingReasons.UNSUPPORTED_OP_TYPES,
+        )
     )
     DATA_MISMATCH = (
         lambda test_vector: test_vector.failing_result is not None

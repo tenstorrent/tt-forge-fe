@@ -18,7 +18,6 @@ class Graph;
 class OpNode;
 class Node;
 class Shape;
-struct OpType;
 struct Edge;
 }  // namespace tt::graphlib
 
@@ -32,15 +31,15 @@ std::tuple<bool, int> can_commute_reshape_through_dim(
 std::tuple<bool, int> can_commute_through_dim(
     graphlib::OpNode *initial_op, graphlib::Graph *graph, int dim, bool commute_up = false);
 
-bool match_unsqueeze(graphlib::OpType const &a, graphlib::OpType const &b);
+bool match_unsqueeze(ops::Op const &a, ops::Op const &b);
 
-bool match_squeeze(graphlib::OpType const &a, graphlib::OpType const &b);
+bool match_squeeze(ops::Op const &a, ops::Op const &b);
 
-bool match_reshape(graphlib::OpType const &a, graphlib::OpType const &);
+bool match_reshape(ops::Op const &a, ops::Op const &);
 
-bool match_transpose(graphlib::OpType const &a, graphlib::OpType const &b);
+bool match_transpose(ops::Op const &a, ops::Op const &b);
 
-using MatchFn = bool(graphlib::OpType const &, graphlib::OpType const &);
+using MatchFn = bool(ops::Op const &, ops::Op const &);
 static std::unordered_map<ops::OpType, MatchFn *> match_fns = {
     {ops::OpType::Reshape, match_reshape},
     {ops::OpType::Transpose, match_transpose},
@@ -69,7 +68,7 @@ bool commute_through_concat(
     bool check_only,
     bool *retain_operand_dim,
     std::pair<int, int> *operand_dims,
-    graphlib::OpType *golden_transform,
+    ops::Op *golden_transform,
     bool commute_up = false);
 
 bool can_commute_through_concat(
@@ -91,7 +90,7 @@ bool commute_through_select(
     bool check_only,
     bool *retain_operand_dim,
     std::pair<int, int> *operand_dims,
-    graphlib::OpType *golden_transform,
+    ops::Op *golden_transform,
     bool commute_up = false);
 
 bool can_commute_through_select(
@@ -114,7 +113,7 @@ bool commute_through_reduce(
     bool check_only,
     bool *retain_operand_dim,
     std::pair<int, int> *operand_dims,
-    graphlib::OpType *golden_transform,
+    ops::Op *golden_transform,
     bool commute_up = false);
 
 bool can_commute_through_reduce(
@@ -127,7 +126,7 @@ bool can_commute_through_reduce(
     bool commute_up);
 
 bool commute_through_eltwise(
-    graphlib::OpNode *op, graphlib::Shape *commute_shape = nullptr, graphlib::OpType *golden_transform = nullptr);
+    graphlib::OpNode *op, graphlib::Shape *commute_shape = nullptr, ops::Op *golden_transform = nullptr);
 
 bool can_commute_past_op(
     graphlib::OpNode *op,

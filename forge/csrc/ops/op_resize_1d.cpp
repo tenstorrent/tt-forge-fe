@@ -23,7 +23,7 @@ namespace resize_1d
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Resize1d, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "Resize1d expects 1 input tensor");
@@ -62,7 +62,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Resize1d, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "Resize1d expects 1 input shape");
@@ -93,7 +93,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -106,8 +106,7 @@ NodeContext backward(
     unreachable();
 }
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Resize1d, "Wrong op type.");
     TT_ASSERT(inputs.size() == 1, "Resize1d expects 1 input");
@@ -128,7 +127,7 @@ void decompose_initial(
     // If the resize1d up/down sampling size matches with input width, there is no need for up/down sampling operation
     if (size == input_w)
     {
-        result = dc.op(graphlib::OpType("nop"), {result});
+        result = dc.op(Op("nop"), {result});
         dc.fuse(result);
         return;
     }
@@ -159,13 +158,13 @@ void decompose_initial(
     // The sequence of transposes below transforms:
     //   (N, C, 1, W) --> (N, 1, W, C)
     // ---------------------------------------------------------------------
-    result = dc.op(graphlib::OpType("unsqueeze", {}, {{"dim", w_dim}}), {result});
+    result = dc.op(Op("unsqueeze", {{"dim", w_dim}}), {result});
 
     if (!channel_last)
     {
         // Changing the Layout from NCHW to NHWC as ttir.upsample2d supports only the NHWC layout
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
+        result = dc.op(Op("transpose", {{"dim0", -3}, {"dim1", -2}}), {result});
+        result = dc.op(Op("transpose", {{"dim0", -2}, {"dim1", -1}}), {result});
     }
 
     TT_ASSERT(
@@ -184,19 +183,15 @@ void decompose_initial(
     // If the mode was "linear" for 1D, map it to "bilinear" for 2D upsample
     mode = (mode == "linear") ? "bilinear" : mode;
 
-    result = dc.op(
-        graphlib::OpType(
-            "upsample2d",
-            {scale_factor, mode, true},
-            {{"scale_factor", scale_factor}, {"mode", mode}, {"channel_last", true}}),
-        {result});
+    result =
+        dc.op(Op("upsample2d", {{"scale_factor", scale_factor}, {"mode", mode}, {"channel_last", true}}), {result});
 
     if (!channel_last)
     {
         // Convert layout back from NHWC-like (N, 1, New_W, C) -> NCHW-like (N, C, 1, New_W).
         // Reverse the transposes applied before the upsample2d.
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
+        result = dc.op(Op("transpose", {{"dim0", -2}, {"dim1", -1}}), {result});
+        result = dc.op(Op("transpose", {{"dim0", -3}, {"dim1", -2}}), {result});
     }
 
     // ---------------------------------------------------------------------
@@ -210,7 +205,7 @@ void decompose_initial(
     // we first inserted the singleton. That restores the tensor to the
     // original 3D shape but with the new width.
     // ---------------------------------------------------------------------
-    result = dc.op(graphlib::OpType("squeeze", {}, {{"dim", w_dim}}), {result});
+    result = dc.op(Op("squeeze", {{"dim", w_dim}}), {result});
 
     dc.fuse(result);
 }

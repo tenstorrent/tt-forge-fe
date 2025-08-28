@@ -80,7 +80,7 @@ template <typename T>
 T* add_node(
     tt::graphlib::Graph& graph,
     const std::string& name,
-    const tt::graphlib::OpType& op_type,
+    const tt::ops::Op& op_type,
     std::vector<tt::graphlib::Node*> ops,
     std::vector<int> user_edge_op_id_edge_id = {},
     unsigned int subgraph_id = 0)
@@ -104,14 +104,11 @@ T* add_node(
     tt::graphlib::Graph& graph,
     const std::string& name,
     const std::string& type,
-    std::vector<tt::graphlib::OpType::Attr> op_attrs,
     std::vector<tt::graphlib::Node*> ops,
     std::vector<int> user_edge_op_id_edge_id = {},
-    const tt::ForgeOpAttrs& forge_op_attrs = {},
-    const tt::graphlib::OpType::Attrs& named_attrs = {},
+    const tt::ops::Attrs& named_attrs = {},
     unsigned int subgraph_id = 0)
 {
-    return add_node<T>(
-        graph, name, graphlib::OpType(type, op_attrs, named_attrs), ops, user_edge_op_id_edge_id, subgraph_id);
+    return add_node<T>(graph, name, ops::Op(type, named_attrs), ops, user_edge_op_id_edge_id, subgraph_id);
 }
 }  // namespace tt

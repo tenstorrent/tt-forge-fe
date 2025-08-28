@@ -21,6 +21,7 @@
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
 #include "op_interface.hpp"
+#include "ostream"
 #include "passes/decomposing_context.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
@@ -233,257 +234,199 @@ class OldToNewOpType
 static NewToOldOpType new_to_old_op_type_mapper;
 static OldToNewOpType old_to_new_op_type_mapper;
 
-Op::Op(const graphlib::OpType &old_op_type) :
-    type_(old_to_new_op_type_mapper[old_op_type.op_]), attrs_(old_op_type.named_attrs_)
-{
-}
+Op::Op(const std::string &op_name, Attrs attrs) : type_(old_to_new_op_type_mapper[op_name]), attrs_(std::move(attrs)) {}
 
 const std::string &Op::as_string() const { return new_to_old_op_type_mapper[type_]; }
-
-/* ------------------------------------------------------------------------------------------------------------------*
- * Default implementation for ops that are not cpp implemented yet. We will invoke old python code to evaluate them. *
- * ------------------------------------------------------------------------------------------------------------------*/
-
-at::Tensor Op::base_eval(const graphlib::OpType &old_op_type, const std::vector<at::Tensor> &tensors) const
-{
-    py::function eval = py::module_::import("forge.op.eval.forge").attr("get_f_forge_eval")(&old_op_type);
-    return eval(&tensors).cast<at::Tensor>();
-}
-
-std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::base_shape(
-    const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const
-{
-    py::function shape = py::module_::import("forge.op.eval.forge").attr("get_f_forge_shape")(&old_op_type);
-    py::tuple result = shape(&inputs);
-    if (result.size() != 2)
-        throw std::runtime_error("Expected a tuple of shape and broadcast.");
-
-    return std::make_tuple(
-        graphlib::Shape::create(result[0].cast<std::vector<std::uint32_t>>()),
-        result[1].cast<std::vector<graphlib::DimBroadcast>>());
-}
-
-tt::graphlib::NodeContext Op::base_backward(
-    const graphlib::OpType &old_op_type,
-    tt::autograd::autograd_context &context,
-    int operand,
-    const std::vector<tt::graphlib::NodeContext> &inputs,
-    const tt::graphlib::NodeContext &output,
-    const tt::graphlib::NodeContext &gradient) const
-{
-    py::function backward = py::module_::import("forge.op.eval.forge").attr("get_f_forge_backward")(&old_op_type);
-    return backward(&context, operand, &inputs, &output, &gradient).cast<tt::graphlib::NodeContext>();
-}
-
-void Op::base_decompose(
-    const graphlib::OpType &old_op_type,
-    const char *dispatch,
-    DecomposingContext &dc,
-    const std::vector<tt::graphlib::NodeContext> &inputs) const
-{
-    py::function decompose = py::module_::import("forge.op.eval.forge").attr(dispatch)(&old_op_type);
-    decompose(&dc, &inputs);
-}
-
-long Op::base_initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const
-{
-    py::function initial_flops_estimate =
-        py::module_::import("forge.op.eval.forge").attr("get_f_forge_initial_flops_estimate")(&old_op_type);
-    py::object ret = initial_flops_estimate(&inputs);
-
-    return ret.is_none() ? 0 : ret.cast<long>();
-}
 
 /* ------------------------------*
  * Dispatching based on op type. *
  * ------------------------------*/
 
-at::Tensor Op::eval(const graphlib::OpType &old_op_type, const std::vector<at::Tensor> &tensors) const
+at::Tensor Op::eval(const std::vector<at::Tensor> &tensors) const
 {
     switch (type_)  // clang-format off
     {
-        case OpType::Abs: return abs::eval(old_op_type, *this, tensors);
-        case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::eval(old_op_type, *this, tensors);
-        case OpType::Add: return add::eval(old_op_type, *this, tensors);
-        case OpType::AdvIndex: return adv_index::eval(old_op_type, *this, tensors);
-        case OpType::Argmax: return argmax::eval(old_op_type, *this, tensors);
-        case OpType::Atan: return atan::eval(old_op_type, *this, tensors);
-        case OpType::AvgPool1d: return avg_pool_1d::eval(old_op_type, *this, tensors);
-        case OpType::AvgPool2d: return avg_pool_2d::eval(old_op_type, *this, tensors);
-        case OpType::Batchnorm: return batchnorm::eval(old_op_type, *this, tensors);
-        case OpType::Broadcast: return broadcast::eval(old_op_type, *this, tensors);
-        case OpType::Cast: return cast::eval(old_op_type, *this, tensors);
-        case OpType::Clip: return clip::eval(old_op_type, *this, tensors);
-        case OpType::Concatenate: return concatenate::eval(old_op_type, *this, tensors);
-        case OpType::Constant: return constant::eval(old_op_type, *this, tensors);
-        case OpType::ConstantPad: return constant_pad::eval(old_op_type, *this, tensors);
-        case OpType::Conv2d: return conv_2d::eval(old_op_type, *this, tensors);
-        case OpType::Conv2dTranspose: return conv_2d_transpose::eval(old_op_type, *this, tensors);
-        case OpType::Cosine: return cosine::eval(old_op_type, *this, tensors);
-        case OpType::CumulativeSum: return cumulative_sum::eval(old_op_type, *this, tensors);
-        case OpType::Divide: return divide::eval(old_op_type, *this, tensors);
-        case OpType::Downsample2d: return downsample_2d::eval(old_op_type, *this, tensors);
-        case OpType::Dropout: return dropout::eval(old_op_type, *this, tensors);
-        case OpType::Embedding: return embedding::eval(old_op_type, *this, tensors);
-        case OpType::EmbeddingBw: return embedding_bw::eval(old_op_type, *this, tensors);
-        case OpType::Equal: return equal::eval(old_op_type, *this, tensors);
-        case OpType::Erf: return erf::eval(old_op_type, *this, tensors);
-        case OpType::Exp: return exp::eval(old_op_type, *this, tensors);
-        case OpType::FillCache: return fill_cache::eval(old_op_type, *this, tensors);
-        case OpType::Gelu: return gelu::eval(old_op_type, *this, tensors);
-        case OpType::Greater: return greater::eval(old_op_type, *this, tensors);
-        case OpType::GreaterEqual: return greater_equal::eval(old_op_type, *this, tensors);
-        case OpType::Heaviside: return heaviside::eval(old_op_type, *this, tensors);
-        case OpType::Index: return index::eval(old_op_type, *this, tensors);
-        case OpType::IndexCopy: return index_copy::eval(old_op_type, *this, tensors);
-        case OpType::Layernorm: return layernorm::eval(old_op_type, *this, tensors);
-        case OpType::LayernormBw: return layernorm_bw::eval(old_op_type, *this, tensors);
-        case OpType::LeakyRelu: return leaky_relu::eval(old_op_type, *this, tensors);
-        case OpType::Less: return less::eval(old_op_type, *this, tensors);
-        case OpType::LessEqual: return less_equal::eval(old_op_type, *this, tensors);
-        case OpType::Log: return log::eval(old_op_type, *this, tensors);
-        case OpType::LogSoftmax: return log_softmax::eval(old_op_type, *this, tensors);
-        case OpType::LogicalAnd: return logical_and::eval(old_op_type, *this, tensors);
-        case OpType::LogicalNot: return logical_not::eval(old_op_type, *this, tensors);
-        case OpType::BitwiseAnd: return bitwise_and::eval(old_op_type, *this, tensors);
-        case OpType::Mask: return mask::eval(old_op_type, *this, tensors);
-        case OpType::Matmul: return matmul::eval(old_op_type, *this, tensors);
-        case OpType::MaxPool1d: return max_pool_1d::eval(old_op_type, *this, tensors);
-        case OpType::MaxPool2d: return max_pool_2d::eval(old_op_type, *this, tensors);
-        case OpType::Maximum: return maximum::eval(old_op_type, *this, tensors);
-        case OpType::Minimum: return minimum::eval(old_op_type, *this, tensors);
-        case OpType::Multiply: return multiply::eval(old_op_type, *this, tensors);
-        case OpType::Nop: return nop::eval(old_op_type, *this, tensors);
-        case OpType::NotEqual: return not_equal::eval(old_op_type, *this, tensors);
-        case OpType::Pad: return pad::eval(old_op_type, *this, tensors);
-        case OpType::PixelShuffle: return pixel_shuffle::eval(old_op_type, *this, tensors);
-        case OpType::Pow: return pow::eval(old_op_type, *this, tensors);
-        case OpType::Power: return power::eval(old_op_type, *this, tensors);
-        case OpType::Reciprocal: return reciprocal::eval(old_op_type, *this, tensors);
-        case OpType::ReduceAvg: return reduce_avg::eval(old_op_type, *this, tensors);
-        case OpType::ReduceMax: return reduce_max::eval(old_op_type, *this, tensors);
-        case OpType::ReduceSum: return reduce_sum::eval(old_op_type, *this, tensors);
-        case OpType::Relu: return relu::eval(old_op_type, *this, tensors);
-        case OpType::Remainder: return remainder::eval(old_op_type, *this, tensors);
-        case OpType::Repeat: return repeat::eval(old_op_type, *this, tensors);
-        case OpType::RepeatInterleave: return repeat_interleave::eval(old_op_type, *this, tensors);
-        case OpType::Reshape: return reshape::eval(old_op_type, *this, tensors);
-        case OpType::Resize1d: return resize_1d::eval(old_op_type, *this, tensors);
-        case OpType::Resize2d: return resize_2d::eval(old_op_type, *this, tensors);
-        case OpType::Select: return select::eval(old_op_type, *this, tensors);
-        case OpType::Sigmoid: return sigmoid::eval(old_op_type, *this, tensors);
-        case OpType::Sine: return sine::eval(old_op_type, *this, tensors);
-        case OpType::Softmax: return softmax::eval(old_op_type, *this, tensors);
-        case OpType::SoftmaxBw: return softmax_bw::eval(old_op_type, *this, tensors);
-        case OpType::Sqrt: return sqrt::eval(old_op_type, *this, tensors);
-        case OpType::Squeeze: return squeeze::eval(old_op_type, *this, tensors);
-        case OpType::Stack: return stack::eval(old_op_type, *this, tensors);
-        case OpType::Subtract: return subtract::eval(old_op_type, *this, tensors);
-        case OpType::Tanh: return tanh::eval(old_op_type, *this, tensors);
-        case OpType::Transpose: return transpose::eval(old_op_type, *this, tensors);
-        case OpType::Unsqueeze: return unsqueeze::eval(old_op_type, *this, tensors);
-        case OpType::UpdateCache: return update_cache::eval(old_op_type, *this, tensors);
-        case OpType::Upsample2d: return upsample_2d::eval(old_op_type, *this, tensors);
-        case OpType::Where: return where::eval(old_op_type, *this, tensors);
+        case OpType::Abs: return abs::eval(*this, tensors);
+        case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::eval(*this, tensors);
+        case OpType::Add: return add::eval(*this, tensors);
+        case OpType::AdvIndex: return adv_index::eval(*this, tensors);
+        case OpType::Argmax: return argmax::eval(*this, tensors);
+        case OpType::Atan: return atan::eval(*this, tensors);
+        case OpType::AvgPool1d: return avg_pool_1d::eval(*this, tensors);
+        case OpType::AvgPool2d: return avg_pool_2d::eval(*this, tensors);
+        case OpType::Batchnorm: return batchnorm::eval(*this, tensors);
+        case OpType::Broadcast: return broadcast::eval(*this, tensors);
+        case OpType::Cast: return cast::eval(*this, tensors);
+        case OpType::Clip: return clip::eval(*this, tensors);
+        case OpType::Concatenate: return concatenate::eval(*this, tensors);
+        case OpType::Constant: return constant::eval(*this, tensors);
+        case OpType::ConstantPad: return constant_pad::eval(*this, tensors);
+        case OpType::Conv2d: return conv_2d::eval(*this, tensors);
+        case OpType::Conv2dTranspose: return conv_2d_transpose::eval(*this, tensors);
+        case OpType::Cosine: return cosine::eval(*this, tensors);
+        case OpType::CumulativeSum: return cumulative_sum::eval(*this, tensors);
+        case OpType::Divide: return divide::eval(*this, tensors);
+        case OpType::Downsample2d: return downsample_2d::eval(*this, tensors);
+        case OpType::Dropout: return dropout::eval(*this, tensors);
+        case OpType::Embedding: return embedding::eval(*this, tensors);
+        case OpType::EmbeddingBw: return embedding_bw::eval(*this, tensors);
+        case OpType::Equal: return equal::eval(*this, tensors);
+        case OpType::Erf: return erf::eval(*this, tensors);
+        case OpType::Exp: return exp::eval(*this, tensors);
+        case OpType::FillCache: return fill_cache::eval(*this, tensors);
+        case OpType::Gelu: return gelu::eval(*this, tensors);
+        case OpType::Greater: return greater::eval(*this, tensors);
+        case OpType::GreaterEqual: return greater_equal::eval(*this, tensors);
+        case OpType::Heaviside: return heaviside::eval(*this, tensors);
+        case OpType::Index: return index::eval(*this, tensors);
+        case OpType::IndexCopy: return index_copy::eval(*this, tensors);
+        case OpType::Layernorm: return layernorm::eval(*this, tensors);
+        case OpType::LayernormBw: return layernorm_bw::eval(*this, tensors);
+        case OpType::LeakyRelu: return leaky_relu::eval(*this, tensors);
+        case OpType::Less: return less::eval(*this, tensors);
+        case OpType::LessEqual: return less_equal::eval(*this, tensors);
+        case OpType::Log: return log::eval(*this, tensors);
+        case OpType::LogSoftmax: return log_softmax::eval(*this, tensors);
+        case OpType::LogicalAnd: return logical_and::eval(*this, tensors);
+        case OpType::LogicalNot: return logical_not::eval(*this, tensors);
+        case OpType::BitwiseAnd: return bitwise_and::eval(*this, tensors);
+        case OpType::Mask: return mask::eval(*this, tensors);
+        case OpType::Matmul: return matmul::eval(*this, tensors);
+        case OpType::MaxPool1d: return max_pool_1d::eval(*this, tensors);
+        case OpType::MaxPool2d: return max_pool_2d::eval(*this, tensors);
+        case OpType::Maximum: return maximum::eval(*this, tensors);
+        case OpType::Minimum: return minimum::eval(*this, tensors);
+        case OpType::Multiply: return multiply::eval(*this, tensors);
+        case OpType::Nop: return nop::eval(*this, tensors);
+        case OpType::NotEqual: return not_equal::eval(*this, tensors);
+        case OpType::Pad: return pad::eval(*this, tensors);
+        case OpType::PixelShuffle: return pixel_shuffle::eval(*this, tensors);
+        case OpType::Pow: return pow::eval(*this, tensors);
+        case OpType::Power: return power::eval(*this, tensors);
+        case OpType::Reciprocal: return reciprocal::eval(*this, tensors);
+        case OpType::ReduceAvg: return reduce_avg::eval(*this, tensors);
+        case OpType::ReduceMax: return reduce_max::eval(*this, tensors);
+        case OpType::ReduceSum: return reduce_sum::eval(*this, tensors);
+        case OpType::Relu: return relu::eval(*this, tensors);
+        case OpType::Remainder: return remainder::eval(*this, tensors);
+        case OpType::Repeat: return repeat::eval(*this, tensors);
+        case OpType::RepeatInterleave: return repeat_interleave::eval(*this, tensors);
+        case OpType::Reshape: return reshape::eval(*this, tensors);
+        case OpType::Resize1d: return resize_1d::eval(*this, tensors);
+        case OpType::Resize2d: return resize_2d::eval(*this, tensors);
+        case OpType::Select: return select::eval(*this, tensors);
+        case OpType::Sigmoid: return sigmoid::eval(*this, tensors);
+        case OpType::Sine: return sine::eval(*this, tensors);
+        case OpType::Softmax: return softmax::eval(*this, tensors);
+        case OpType::SoftmaxBw: return softmax_bw::eval(*this, tensors);
+        case OpType::Sqrt: return sqrt::eval(*this, tensors);
+        case OpType::Squeeze: return squeeze::eval(*this, tensors);
+        case OpType::Stack: return stack::eval(*this, tensors);
+        case OpType::Subtract: return subtract::eval(*this, tensors);
+        case OpType::Tanh: return tanh::eval(*this, tensors);
+        case OpType::Transpose: return transpose::eval(*this, tensors);
+        case OpType::Unsqueeze: return unsqueeze::eval(*this, tensors);
+        case OpType::UpdateCache: return update_cache::eval(*this, tensors);
+        case OpType::Upsample2d: return upsample_2d::eval(*this, tensors);
+        case OpType::Where: return where::eval(*this, tensors);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> Op::shape(
-    const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const
+    const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
     switch (type_)  // clang-format off
     {
-        case OpType::Abs: return abs::shape(old_op_type, *this, inputs);
-        case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::shape(old_op_type, *this, inputs);
-        case OpType::Add: return add::shape(old_op_type, *this, inputs);
-        case OpType::AdvIndex: return adv_index::shape(old_op_type, *this, inputs);
-        case OpType::Argmax: return argmax::shape(old_op_type, *this, inputs);
-        case OpType::Atan: return atan::shape(old_op_type, *this, inputs);
-        case OpType::AvgPool1d: return avg_pool_1d::shape(old_op_type, *this, inputs);
-        case OpType::AvgPool2d: return avg_pool_2d::shape(old_op_type, *this, inputs);
-        case OpType::Batchnorm: return batchnorm::shape(old_op_type, *this, inputs);
-        case OpType::Broadcast: return broadcast::shape(old_op_type, *this, inputs);
-        case OpType::Cast: return cast::shape(old_op_type, *this, inputs);
-        case OpType::Clip: return clip::shape(old_op_type, *this, inputs);
-        case OpType::Concatenate: return concatenate::shape(old_op_type, *this, inputs);
-        case OpType::Constant: return constant::shape(old_op_type, *this, inputs);
-        case OpType::ConstantPad: return constant_pad::shape(old_op_type, *this, inputs);
-        case OpType::Conv2d: return conv_2d::shape(old_op_type, *this, inputs);
-        case OpType::Conv2dTranspose: return conv_2d_transpose::shape(old_op_type, *this, inputs);
-        case OpType::Cosine: return cosine::shape(old_op_type, *this, inputs);
-        case OpType::CumulativeSum: return cumulative_sum::shape(old_op_type, *this, inputs);
-        case OpType::Divide: return divide::shape(old_op_type, *this, inputs);
-        case OpType::Downsample2d: return downsample_2d::shape(old_op_type, *this, inputs);
-        case OpType::Dropout: return dropout::shape(old_op_type, *this, inputs);
-        case OpType::Embedding: return embedding::shape(old_op_type, *this, inputs);
-        case OpType::EmbeddingBw: return embedding_bw::shape(old_op_type, *this, inputs);
-        case OpType::Equal: return equal::shape(old_op_type, *this, inputs);
-        case OpType::Erf: return erf::shape(old_op_type, *this, inputs);
-        case OpType::Exp: return exp::shape(old_op_type, *this, inputs);
-        case OpType::FillCache: return fill_cache::shape(old_op_type, *this, inputs);
-        case OpType::Gelu: return gelu::shape(old_op_type, *this, inputs);
-        case OpType::Greater: return greater::shape(old_op_type, *this, inputs);
-        case OpType::GreaterEqual: return greater_equal::shape(old_op_type, *this, inputs);
-        case OpType::Heaviside: return heaviside::shape(old_op_type, *this, inputs);
-        case OpType::Index: return index::shape(old_op_type, *this, inputs);
-        case OpType::IndexCopy: return index_copy::shape(old_op_type, *this, inputs);
-        case OpType::Layernorm: return layernorm::shape(old_op_type, *this, inputs);
-        case OpType::LayernormBw: return layernorm_bw::shape(old_op_type, *this, inputs);
-        case OpType::LeakyRelu: return leaky_relu::shape(old_op_type, *this, inputs);
-        case OpType::Less: return less::shape(old_op_type, *this, inputs);
-        case OpType::LessEqual: return less_equal::shape(old_op_type, *this, inputs);
-        case OpType::Log: return log::shape(old_op_type, *this, inputs);
-        case OpType::LogSoftmax: return log_softmax::shape(old_op_type, *this, inputs);
-        case OpType::LogicalAnd: return logical_and::shape(old_op_type, *this, inputs);
-        case OpType::LogicalNot: return logical_not::shape(old_op_type, *this, inputs);
-        case OpType::BitwiseAnd: return bitwise_and::shape(old_op_type, *this, inputs);
-        case OpType::Mask: return mask::shape(old_op_type, *this, inputs);
-        case OpType::Matmul: return matmul::shape(old_op_type, *this, inputs);
-        case OpType::MaxPool1d: return max_pool_1d::shape(old_op_type, *this, inputs);
-        case OpType::MaxPool2d: return max_pool_2d::shape(old_op_type, *this, inputs);
-        case OpType::Maximum: return maximum::shape(old_op_type, *this, inputs);
-        case OpType::Minimum: return minimum::shape(old_op_type, *this, inputs);
-        case OpType::Multiply: return multiply::shape(old_op_type, *this, inputs);
-        case OpType::Nop: return nop::shape(old_op_type, *this, inputs);
-        case OpType::NotEqual: return not_equal::shape(old_op_type, *this, inputs);
-        case OpType::Pad: return pad::shape(old_op_type, *this, inputs);
-        case OpType::PixelShuffle: return pixel_shuffle::shape(old_op_type, *this, inputs);
-        case OpType::Pow: return pow::shape(old_op_type, *this, inputs);
-        case OpType::Power: return power::shape(old_op_type, *this, inputs);
-        case OpType::Reciprocal: return reciprocal::shape(old_op_type, *this, inputs);
-        case OpType::ReduceAvg: return reduce_avg::shape(old_op_type, *this, inputs);
-        case OpType::ReduceMax: return reduce_max::shape(old_op_type, *this, inputs);
-        case OpType::ReduceSum: return reduce_sum::shape(old_op_type, *this, inputs);
-        case OpType::Relu: return relu::shape(old_op_type, *this, inputs);
-        case OpType::Remainder: return remainder::shape(old_op_type, *this, inputs);
-        case OpType::Repeat: return repeat::shape(old_op_type, *this, inputs);
-        case OpType::RepeatInterleave: return repeat_interleave::shape(old_op_type, *this, inputs);
-        case OpType::Reshape: return reshape::shape(old_op_type, *this, inputs);
-        case OpType::Resize1d: return resize_1d::shape(old_op_type, *this, inputs);
-        case OpType::Resize2d: return resize_2d::shape(old_op_type, *this, inputs);
-        case OpType::Select: return select::shape(old_op_type, *this, inputs);
-        case OpType::Sigmoid: return sigmoid::shape(old_op_type, *this, inputs);
-        case OpType::Sine: return sine::shape(old_op_type, *this, inputs);
-        case OpType::Softmax: return softmax::shape(old_op_type, *this, inputs);
-        case OpType::SoftmaxBw: return softmax_bw::shape(old_op_type, *this, inputs);
-        case OpType::Sqrt: return sqrt::shape(old_op_type, *this, inputs);
-        case OpType::Squeeze: return squeeze::shape(old_op_type, *this, inputs);
-        case OpType::Stack: return stack::shape(old_op_type, *this, inputs);
-        case OpType::Subtract: return subtract::shape(old_op_type, *this, inputs);
-        case OpType::Tanh: return tanh::shape(old_op_type, *this, inputs);
-        case OpType::Transpose: return transpose::shape(old_op_type, *this, inputs);
-        case OpType::Unsqueeze: return unsqueeze::shape(old_op_type, *this, inputs);
-        case OpType::UpdateCache: return update_cache::shape(old_op_type, *this, inputs);
-        case OpType::Upsample2d: return upsample_2d::shape(old_op_type, *this, inputs);
-        case OpType::Where: return where::shape(old_op_type, *this, inputs);
+        case OpType::Abs: return abs::shape(*this, inputs);
+        case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::shape(*this, inputs);
+        case OpType::Add: return add::shape(*this, inputs);
+        case OpType::AdvIndex: return adv_index::shape(*this, inputs);
+        case OpType::Argmax: return argmax::shape(*this, inputs);
+        case OpType::Atan: return atan::shape(*this, inputs);
+        case OpType::AvgPool1d: return avg_pool_1d::shape(*this, inputs);
+        case OpType::AvgPool2d: return avg_pool_2d::shape(*this, inputs);
+        case OpType::Batchnorm: return batchnorm::shape(*this, inputs);
+        case OpType::Broadcast: return broadcast::shape(*this, inputs);
+        case OpType::Cast: return cast::shape(*this, inputs);
+        case OpType::Clip: return clip::shape(*this, inputs);
+        case OpType::Concatenate: return concatenate::shape(*this, inputs);
+        case OpType::Constant: return constant::shape(*this, inputs);
+        case OpType::ConstantPad: return constant_pad::shape(*this, inputs);
+        case OpType::Conv2d: return conv_2d::shape(*this, inputs);
+        case OpType::Conv2dTranspose: return conv_2d_transpose::shape(*this, inputs);
+        case OpType::Cosine: return cosine::shape(*this, inputs);
+        case OpType::CumulativeSum: return cumulative_sum::shape(*this, inputs);
+        case OpType::Divide: return divide::shape(*this, inputs);
+        case OpType::Downsample2d: return downsample_2d::shape(*this, inputs);
+        case OpType::Dropout: return dropout::shape(*this, inputs);
+        case OpType::Embedding: return embedding::shape(*this, inputs);
+        case OpType::EmbeddingBw: return embedding_bw::shape(*this, inputs);
+        case OpType::Equal: return equal::shape(*this, inputs);
+        case OpType::Erf: return erf::shape(*this, inputs);
+        case OpType::Exp: return exp::shape(*this, inputs);
+        case OpType::FillCache: return fill_cache::shape(*this, inputs);
+        case OpType::Gelu: return gelu::shape(*this, inputs);
+        case OpType::Greater: return greater::shape(*this, inputs);
+        case OpType::GreaterEqual: return greater_equal::shape(*this, inputs);
+        case OpType::Heaviside: return heaviside::shape(*this, inputs);
+        case OpType::Index: return index::shape(*this, inputs);
+        case OpType::IndexCopy: return index_copy::shape(*this, inputs);
+        case OpType::Layernorm: return layernorm::shape(*this, inputs);
+        case OpType::LayernormBw: return layernorm_bw::shape(*this, inputs);
+        case OpType::LeakyRelu: return leaky_relu::shape(*this, inputs);
+        case OpType::Less: return less::shape(*this, inputs);
+        case OpType::LessEqual: return less_equal::shape(*this, inputs);
+        case OpType::Log: return log::shape(*this, inputs);
+        case OpType::LogSoftmax: return log_softmax::shape(*this, inputs);
+        case OpType::LogicalAnd: return logical_and::shape(*this, inputs);
+        case OpType::LogicalNot: return logical_not::shape(*this, inputs);
+        case OpType::BitwiseAnd: return bitwise_and::shape(*this, inputs);
+        case OpType::Mask: return mask::shape(*this, inputs);
+        case OpType::Matmul: return matmul::shape(*this, inputs);
+        case OpType::MaxPool1d: return max_pool_1d::shape(*this, inputs);
+        case OpType::MaxPool2d: return max_pool_2d::shape(*this, inputs);
+        case OpType::Maximum: return maximum::shape(*this, inputs);
+        case OpType::Minimum: return minimum::shape(*this, inputs);
+        case OpType::Multiply: return multiply::shape(*this, inputs);
+        case OpType::Nop: return nop::shape(*this, inputs);
+        case OpType::NotEqual: return not_equal::shape(*this, inputs);
+        case OpType::Pad: return pad::shape(*this, inputs);
+        case OpType::PixelShuffle: return pixel_shuffle::shape(*this, inputs);
+        case OpType::Pow: return pow::shape(*this, inputs);
+        case OpType::Power: return power::shape(*this, inputs);
+        case OpType::Reciprocal: return reciprocal::shape(*this, inputs);
+        case OpType::ReduceAvg: return reduce_avg::shape(*this, inputs);
+        case OpType::ReduceMax: return reduce_max::shape(*this, inputs);
+        case OpType::ReduceSum: return reduce_sum::shape(*this, inputs);
+        case OpType::Relu: return relu::shape(*this, inputs);
+        case OpType::Remainder: return remainder::shape(*this, inputs);
+        case OpType::Repeat: return repeat::shape(*this, inputs);
+        case OpType::RepeatInterleave: return repeat_interleave::shape(*this, inputs);
+        case OpType::Reshape: return reshape::shape(*this, inputs);
+        case OpType::Resize1d: return resize_1d::shape(*this, inputs);
+        case OpType::Resize2d: return resize_2d::shape(*this, inputs);
+        case OpType::Select: return select::shape(*this, inputs);
+        case OpType::Sigmoid: return sigmoid::shape(*this, inputs);
+        case OpType::Sine: return sine::shape(*this, inputs);
+        case OpType::Softmax: return softmax::shape(*this, inputs);
+        case OpType::SoftmaxBw: return softmax_bw::shape(*this, inputs);
+        case OpType::Sqrt: return sqrt::shape(*this, inputs);
+        case OpType::Squeeze: return squeeze::shape(*this, inputs);
+        case OpType::Stack: return stack::shape(*this, inputs);
+        case OpType::Subtract: return subtract::shape(*this, inputs);
+        case OpType::Tanh: return tanh::shape(*this, inputs);
+        case OpType::Transpose: return transpose::shape(*this, inputs);
+        case OpType::Unsqueeze: return unsqueeze::shape(*this, inputs);
+        case OpType::UpdateCache: return update_cache::shape(*this, inputs);
+        case OpType::Upsample2d: return upsample_2d::shape(*this, inputs);
+        case OpType::Where: return where::shape(*this, inputs);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
 
 tt::graphlib::NodeContext Op::backward(
-    const graphlib::OpType &old_op_type,
+
     tt::autograd::autograd_context &context,
     int operand,
     const std::vector<tt::graphlib::NodeContext> &inputs,
@@ -492,89 +435,89 @@ tt::graphlib::NodeContext Op::backward(
 {
     switch (type_)  // clang-format off
     {
-        case OpType::Abs: return abs::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Add: return add::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::AdvIndex: return adv_index::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Argmax: return argmax::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Atan: return atan::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::AvgPool1d: return avg_pool_1d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::AvgPool2d: return avg_pool_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Batchnorm: return batchnorm::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Broadcast: return broadcast::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Cast: return cast::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Clip: return clip::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Concatenate: return concatenate::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Constant: return constant::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::ConstantPad: return constant_pad::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Conv2d: return conv_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Conv2dTranspose: return conv_2d_transpose::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Cosine: return cosine::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::CumulativeSum: return cumulative_sum::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Divide: return divide::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Downsample2d: return downsample_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Dropout: return dropout::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Embedding: return embedding::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::EmbeddingBw: return embedding_bw::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Equal: return equal::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Erf: return erf::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Exp: return exp::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::FillCache: return fill_cache::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Gelu: return gelu::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Greater: return greater::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::GreaterEqual: return greater_equal::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Heaviside: return heaviside::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Index: return index::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::IndexCopy: return index_copy::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Layernorm: return layernorm::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::LayernormBw: return layernorm_bw::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::LeakyRelu: return leaky_relu::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Less: return less::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::LessEqual: return less_equal::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Log: return log::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::LogSoftmax: return log_softmax::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::LogicalAnd: return logical_and::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::LogicalNot: return logical_not::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::BitwiseAnd: return bitwise_and::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Mask: return mask::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Matmul: return matmul::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::MaxPool1d: return max_pool_1d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::MaxPool2d: return max_pool_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Maximum: return maximum::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Minimum: return minimum::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Multiply: return multiply::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Nop: return nop::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::NotEqual: return not_equal::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Pad: return pad::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::PixelShuffle: return pixel_shuffle::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Pow: return pow::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Power: return power::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Reciprocal: return reciprocal::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::ReduceAvg: return reduce_avg::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::ReduceMax: return reduce_max::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::ReduceSum: return reduce_sum::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Relu: return relu::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Remainder: return remainder::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Repeat: return repeat::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::RepeatInterleave: return repeat_interleave::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Reshape: return reshape::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Resize1d: return resize_1d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Resize2d: return resize_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Select: return select::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Sigmoid: return sigmoid::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Sine: return sine::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Softmax: return softmax::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::SoftmaxBw: return softmax_bw::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Sqrt: return sqrt::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Squeeze: return squeeze::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Stack: return stack::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Subtract: return subtract::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Tanh: return tanh::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Transpose: return transpose::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Unsqueeze: return unsqueeze::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::UpdateCache: return update_cache::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Upsample2d: return upsample_2d::backward(old_op_type, *this, context, operand, inputs, output, gradient);
-        case OpType::Where: return where::backward(old_op_type, *this, context, operand, inputs, output, gradient);
+        case OpType::Abs: return abs::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Add: return add::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::AdvIndex: return adv_index::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Argmax: return argmax::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Atan: return atan::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::AvgPool1d: return avg_pool_1d::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::AvgPool2d: return avg_pool_2d::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Batchnorm: return batchnorm::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Broadcast: return broadcast::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Cast: return cast::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Clip: return clip::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Concatenate: return concatenate::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Constant: return constant::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::ConstantPad: return constant_pad::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Conv2d: return conv_2d::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Conv2dTranspose: return conv_2d_transpose::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Cosine: return cosine::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::CumulativeSum: return cumulative_sum::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Divide: return divide::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Downsample2d: return downsample_2d::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Dropout: return dropout::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Embedding: return embedding::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::EmbeddingBw: return embedding_bw::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Equal: return equal::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Erf: return erf::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Exp: return exp::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::FillCache: return fill_cache::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Gelu: return gelu::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Greater: return greater::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::GreaterEqual: return greater_equal::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Heaviside: return heaviside::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Index: return index::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::IndexCopy: return index_copy::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Layernorm: return layernorm::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::LayernormBw: return layernorm_bw::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::LeakyRelu: return leaky_relu::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Less: return less::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::LessEqual: return less_equal::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Log: return log::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::LogSoftmax: return log_softmax::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::LogicalAnd: return logical_and::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::LogicalNot: return logical_not::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::BitwiseAnd: return bitwise_and::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Mask: return mask::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Matmul: return matmul::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::MaxPool1d: return max_pool_1d::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::MaxPool2d: return max_pool_2d::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Maximum: return maximum::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Minimum: return minimum::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Multiply: return multiply::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Nop: return nop::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::NotEqual: return not_equal::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Pad: return pad::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::PixelShuffle: return pixel_shuffle::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Pow: return pow::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Power: return power::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Reciprocal: return reciprocal::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::ReduceAvg: return reduce_avg::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::ReduceMax: return reduce_max::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::ReduceSum: return reduce_sum::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Relu: return relu::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Remainder: return remainder::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Repeat: return repeat::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::RepeatInterleave: return repeat_interleave::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Reshape: return reshape::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Resize1d: return resize_1d::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Resize2d: return resize_2d::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Select: return select::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Sigmoid: return sigmoid::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Sine: return sine::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Softmax: return softmax::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::SoftmaxBw: return softmax_bw::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Sqrt: return sqrt::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Squeeze: return squeeze::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Stack: return stack::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Subtract: return subtract::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Tanh: return tanh::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Transpose: return transpose::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Unsqueeze: return unsqueeze::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::UpdateCache: return update_cache::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Upsample2d: return upsample_2d::backward(*this, context, operand, inputs, output, gradient);
+        case OpType::Where: return where::backward(*this, context, operand, inputs, output, gradient);
         default: TT_ASSERT(false, "Unknown OpType."); unreachable();
     }  // clang-format on
 }
@@ -585,48 +528,46 @@ tt::graphlib::NodeContext Op::backward(
  */
 template <DecomposeEpoch epoch>
 void Op::decompose(
-    const graphlib::OpType &old_op_type,
-    DecomposingContext &dc,
-    const std::vector<tt::graphlib::NodeContext> &inputs) const
+
+    DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const
 {
     if constexpr (epoch == DecomposeEpoch::Initial)
-        return decompose_initial(old_op_type, dc, inputs);
+        return decompose_initial(dc, inputs);
     else if constexpr (epoch == DecomposeEpoch::PostOptimize)
-        return decompose_post_optimize(old_op_type, dc, inputs);
+        return decompose_post_optimize(dc, inputs);
     else if constexpr (epoch == DecomposeEpoch::PostAutograd)
-        return decompose_post_autograd(old_op_type, dc, inputs);
+        return decompose_post_autograd(dc, inputs);
     else
         static_assert("Invalid decomposing epoch.");
 }
 
 void Op::decompose_initial(
-    const graphlib::OpType &old_op_type,
-    DecomposingContext &dc,
-    const std::vector<tt::graphlib::NodeContext> &inputs) const
+
+    DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const
 {
     switch (type_)  // clang-format off
     {
         case OpType::Abs: return;
-        case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::decompose_initial(*this, dc, inputs);
         case OpType::Add: return;
-        case OpType::AdvIndex: return adv_index::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::AdvIndex: return adv_index::decompose_initial(*this, dc, inputs);
         case OpType::Argmax: return;
         case OpType::Atan: return;
-        case OpType::AvgPool1d: return avg_pool_1d::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::AvgPool2d: return avg_pool_2d::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::AvgPool1d: return avg_pool_1d::decompose_initial(*this, dc, inputs);
+        case OpType::AvgPool2d: return avg_pool_2d::decompose_initial(*this, dc, inputs);
         case OpType::Batchnorm: return;
-        case OpType::Broadcast: return broadcast::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Broadcast: return broadcast::decompose_initial(*this, dc, inputs);
         case OpType::Cast: return;
         case OpType::Clip: return;
-        case OpType::Concatenate: return concatenate::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Concatenate: return concatenate::decompose_initial(*this, dc, inputs);
         case OpType::Constant: return;
         case OpType::ConstantPad: return;
-        case OpType::Conv2d: return conv_2d::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Conv2dTranspose: return conv_2d_transpose::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Conv2d: return conv_2d::decompose_initial(*this, dc, inputs);
+        case OpType::Conv2dTranspose: return conv_2d_transpose::decompose_initial(*this, dc, inputs);
         case OpType::Cosine: return;
         case OpType::CumulativeSum: return;
         case OpType::Divide: return;
-        case OpType::Downsample2d: return downsample_2d::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Downsample2d: return downsample_2d::decompose_initial(*this, dc, inputs);
         case OpType::Dropout: return;
         case OpType::Embedding: return;
         case OpType::EmbeddingBw: return;
@@ -639,41 +580,41 @@ void Op::decompose_initial(
         case OpType::GreaterEqual: return;
         case OpType::Heaviside: return;
         case OpType::Index: return;
-        case OpType::IndexCopy: return index_copy::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::IndexCopy: return index_copy::decompose_initial(*this, dc, inputs);
         case OpType::Layernorm: return;
         case OpType::LayernormBw: return;
         case OpType::LeakyRelu: return;
         case OpType::Less: return;
         case OpType::LessEqual: return;
         case OpType::Log: return;
-        case OpType::LogSoftmax: return log_softmax::decompose_initial(old_op_type, *this, dc, inputs);;
+        case OpType::LogSoftmax: return log_softmax::decompose_initial(*this, dc, inputs);;
         case OpType::LogicalAnd: return;
         case OpType::LogicalNot: return;
         case OpType::BitwiseAnd: return;
         case OpType::Mask: return;
         case OpType::Matmul: return;
         case OpType::MaxPool1d: return;
-        case OpType::MaxPool2d: return max_pool_2d::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::MaxPool2d: return max_pool_2d::decompose_initial(*this, dc, inputs);
         case OpType::Maximum: return;
         case OpType::Minimum: return;
         case OpType::Multiply: return;
         case OpType::Nop: return;
         case OpType::NotEqual: return;
-        case OpType::Pad: return pad::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::PixelShuffle: return pixel_shuffle::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Pad: return pad::decompose_initial(*this, dc, inputs);
+        case OpType::PixelShuffle: return pixel_shuffle::decompose_initial(*this, dc, inputs);
         case OpType::Pow: return;
         case OpType::Power: return;
         case OpType::Reciprocal: return;
-        case OpType::ReduceAvg: return reduce_avg::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::ReduceMax: return reduce_max::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::ReduceSum: return reduce_sum::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::ReduceAvg: return reduce_avg::decompose_initial(*this, dc, inputs);
+        case OpType::ReduceMax: return reduce_max::decompose_initial(*this, dc, inputs);
+        case OpType::ReduceSum: return reduce_sum::decompose_initial(*this, dc, inputs);
         case OpType::Relu: return;
         case OpType::Remainder: return;
-        case OpType::Repeat: return repeat::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Repeat: return repeat::decompose_initial(*this, dc, inputs);
         case OpType::RepeatInterleave: return;
-        case OpType::Reshape: return reshape::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Resize1d: return resize_1d::decompose_initial(old_op_type, *this, dc, inputs);
-        case OpType::Resize2d: return resize_2d::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Reshape: return reshape::decompose_initial(*this, dc, inputs);
+        case OpType::Resize1d: return resize_1d::decompose_initial(*this, dc, inputs);
+        case OpType::Resize2d: return resize_2d::decompose_initial(*this, dc, inputs);
         case OpType::Select: return;
         case OpType::Sigmoid: return;
         case OpType::Sine: return;
@@ -681,7 +622,7 @@ void Op::decompose_initial(
         case OpType::SoftmaxBw: return;
         case OpType::Sqrt: return;
         case OpType::Squeeze: return;
-        case OpType::Stack: return stack::decompose_initial(old_op_type, *this, dc, inputs);
+        case OpType::Stack: return stack::decompose_initial(*this, dc, inputs);
         case OpType::Subtract: return;
         case OpType::Tanh: return;
         case OpType::Transpose: return;
@@ -694,14 +635,13 @@ void Op::decompose_initial(
 }
 
 void Op::decompose_post_optimize(
-    const graphlib::OpType &old_op_type,
-    DecomposingContext &dc,
-    const std::vector<tt::graphlib::NodeContext> &inputs) const
+
+    DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const
 {
     switch (type_)  // clang-format off
     {
         case OpType::Abs: return;
-        case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::decompose_post_optimize(*this, dc, inputs);
         case OpType::Add: return;
         case OpType::AdvIndex: return;
         case OpType::Argmax: return;
@@ -719,7 +659,7 @@ void Op::decompose_post_optimize(
         case OpType::Cosine: return;
         case OpType::CumulativeSum: return;
         case OpType::Divide: return;
-        case OpType::Downsample2d: return downsample_2d::decompose_post_optimize(old_op_type, *this, dc, inputs);
+        case OpType::Downsample2d: return downsample_2d::decompose_post_optimize(*this, dc, inputs);
         case OpType::Dropout: return;
         case OpType::Embedding: return;
         case OpType::EmbeddingBw: return;
@@ -787,14 +727,13 @@ void Op::decompose_post_optimize(
 }
 
 void Op::decompose_post_autograd(
-    const graphlib::OpType &old_op_type,
-    DecomposingContext &dc,
-    const std::vector<tt::graphlib::NodeContext> &inputs) const
+
+    DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const
 {
     switch (type_)  // clang-format off
     {
         case OpType::Abs: return;
-        case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::decompose_post_autograd(*this, dc, inputs);
         case OpType::Add: return;
         case OpType::AdvIndex: return;
         case OpType::Argmax: return;
@@ -813,7 +752,7 @@ void Op::decompose_post_autograd(
         case OpType::Cosine: return;
         case OpType::CumulativeSum: return;
         case OpType::Divide: return;
-        case OpType::Downsample2d: return downsample_2d::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Downsample2d: return downsample_2d::decompose_post_autograd(*this, dc, inputs);
         case OpType::Dropout: return;
         case OpType::Embedding: return;
         case OpType::EmbeddingBw: return;
@@ -824,11 +763,11 @@ void Op::decompose_post_autograd(
         case OpType::Gelu: return;
         case OpType::Greater: return;
         case OpType::GreaterEqual: return;
-        case OpType::Heaviside: return heaviside::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Heaviside: return heaviside::decompose_post_autograd(*this, dc, inputs);
         case OpType::Index: return;
         case OpType::IndexCopy: return;
-        case OpType::Layernorm: return layernorm::decompose_post_autograd(old_op_type, *this, dc, inputs);
-        case OpType::LayernormBw: return layernorm_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Layernorm: return layernorm::decompose_post_autograd(*this, dc, inputs);
+        case OpType::LayernormBw: return layernorm_bw::decompose_post_autograd(*this, dc, inputs);
         case OpType::LeakyRelu: return;
         case OpType::Less: return;
         case OpType::LessEqual: return;
@@ -858,14 +797,14 @@ void Op::decompose_post_autograd(
         case OpType::Remainder: return;
         case OpType::Repeat: return;
         case OpType::RepeatInterleave: return;
-        case OpType::Reshape: return reshape::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::Reshape: return reshape::decompose_post_autograd(*this, dc, inputs);
         case OpType::Resize1d: return;
         case OpType::Resize2d: return;
         case OpType::Select: return;
         case OpType::Sigmoid: return;
         case OpType::Sine: return;
         case OpType::Softmax: return;
-        case OpType::SoftmaxBw: return softmax_bw::decompose_post_autograd(old_op_type, *this, dc, inputs);
+        case OpType::SoftmaxBw: return softmax_bw::decompose_post_autograd(*this, dc, inputs);
         case OpType::Sqrt: return;
         case OpType::Squeeze: return;
         case OpType::Stack: return;
@@ -880,13 +819,12 @@ void Op::decompose_post_autograd(
     }  // clang-format on
 }
 
-long Op::initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const std::vector<std::vector<std::uint32_t>> &inputs) const
+long Op::initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const
 {
     switch (type_)  // clang-format off
     {
         case OpType::Abs: return 0;
-        case OpType::AdaptiveMaxPool2d: return adaptive_max_pool_2d::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::AdaptiveMaxPool2d: return 0;
         case OpType::Add: return 0;
         case OpType::AdvIndex: return 0;
         case OpType::Argmax: return 0;
@@ -905,7 +843,7 @@ long Op::initial_flops_estimate(
         case OpType::Cosine: return 0;
         case OpType::CumulativeSum: return 0;
         case OpType::Divide: return 0;
-        case OpType::Downsample2d: return downsample_2d::initial_flops_estimate(old_op_type, *this, inputs);
+        case OpType::Downsample2d: return 0;
         case OpType::Dropout: return 0;
         case OpType::Embedding: return 0;
         case OpType::EmbeddingBw: return 0;
@@ -972,7 +910,7 @@ long Op::initial_flops_estimate(
     }  // clang-format on
 }
 
-bool Op::is_tm(const graphlib::OpType &old_op_type) const
+bool Op::is_tm() const
 {
     switch (type_)
     {
@@ -1063,7 +1001,7 @@ bool Op::is_tm(const graphlib::OpType &old_op_type) const
     }
 }
 
-bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
+bool Op::is_eltwise() const
 {
     switch (type_)
     {
@@ -1154,7 +1092,7 @@ bool Op::is_eltwise(const graphlib::OpType &old_op_type) const
     }
 }
 
-bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
+bool Op::is_eltwise_unary() const
 {
     switch (type_)
     {
@@ -1245,7 +1183,7 @@ bool Op::is_eltwise_unary(const graphlib::OpType &old_op_type) const
     }
 }
 
-bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
+bool Op::is_eltwise_binary() const
 {
     switch (type_)
     {
@@ -1336,7 +1274,7 @@ bool Op::is_eltwise_binary(const graphlib::OpType &old_op_type) const
     }
 }
 
-bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
+bool Op::is_eltwise_nary() const
 {
     switch (type_)
     {
@@ -1426,23 +1364,72 @@ bool Op::is_eltwise_nary(const graphlib::OpType &old_op_type) const
     }
 }
 
+std::string attr_to_string(const tt::ops::Attr &attr)
+{
+    return std::visit(
+        [](const auto &value) -> std::string
+        {
+            using T = std::decay_t<decltype(value)>;
+
+            if constexpr (std::is_same_v<T, std::string>)
+                return value;
+            else if constexpr (std::is_arithmetic_v<T>)
+                return std::to_string(value);
+            else if constexpr (std::is_same_v<T, std::vector<int>>)
+            {
+                std::ostringstream oss;
+                oss << "[";
+                for (size_t i = 0; i < value.size(); ++i)
+                {
+                    if (i > 0)
+                        oss << ", ";
+
+                    oss << value[i];
+                }
+
+                oss << "]";
+                return oss.str();
+            }
+            else
+                return "Unknown type";
+        },
+        attr);
+}
+
+std::ostream &operator<<(std::ostream &out, const Attr &attr) { return out << attr_to_string(attr); }
+
+std::ostream &operator<<(std::ostream &out, const Op &op)
+{
+    out << op.as_string();
+
+    if (op.attrs().size() == 0)
+        return out;
+
+    bool first = true;
+    out << "{";
+    for (auto const &[name, value] : op.attrs())
+    {
+        if (not first)
+            out << ", ";
+
+        out << name << ": " << value;
+        first = false;
+    }
+
+    return out << "}";
+}
+
 /**
  * Explicit instantiations to enable pybind symbol resolution.
  */
 template void Op::decompose<DecomposeEpoch::Initial>(
-    const graphlib::OpType &old_op_type,
-    DecomposingContext &dc,
-    const std::vector<tt::graphlib::NodeContext> &inputs) const;
+    DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
 
 template void Op::decompose<DecomposeEpoch::PostOptimize>(
-    const graphlib::OpType &old_op_type,
-    DecomposingContext &dc,
-    const std::vector<tt::graphlib::NodeContext> &inputs) const;
+    DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
 
 template void Op::decompose<DecomposeEpoch::PostAutograd>(
-    const graphlib::OpType &old_op_type,
-    DecomposingContext &dc,
-    const std::vector<tt::graphlib::NodeContext> &inputs) const;
+    DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
 
 }  // namespace ops
 }  // namespace tt
