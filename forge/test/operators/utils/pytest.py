@@ -4,7 +4,7 @@
 
 # pytest utilities
 
-import forge
+from .datatypes import DataFormat, MathFidelity
 import pytest
 import re
 
@@ -233,7 +233,7 @@ class PytestParamsUtils:
         for item in input_list:
             if isinstance(item, type):
                 id = item.__name__
-            elif isinstance(item, forge.DataFormat) or isinstance(item, forge.MathFidelity):
+            elif isinstance(item, DataFormat) or isinstance(item, MathFidelity):
                 id = item.name
             else:
                 id = str(item)
@@ -429,13 +429,13 @@ class PytestParamsUtils:
         """
         Returns a pytest parameter with a default data format.
         This function creates and returns a pytest parameter with the default
-        data format set to `forge.DataFormat.Float16_b`. The parameter is
+        data format set to `DataFormat.Float16_b`. The parameter is
         identified with the id "dev-data-format=Float16_b".
         Returns:
             pytest.param: A pytest parameter with the default data format.
         """
 
-        return pytest.param(forge.DataFormat.Float16_b, id=f"{id_name}=Float16_b")
+        return pytest.param(DataFormat.Float16_b, id=f"{id_name}=Float16_b")
 
     @staticmethod
     def get_default_mf_param(id_name: str = "math_fidelity") -> pytest.param:
@@ -450,7 +450,7 @@ class PytestParamsUtils:
                           an identifier "math-fidelity=HiFi4".
         """
 
-        return pytest.param(forge.MathFidelity.HiFi4, id=f"{id_name}=HiFi4")
+        return pytest.param(MathFidelity.HiFi4, id=f"{id_name}=HiFi4")
 
     def add_mf_test_params_list(self, *input_list: list[pytest.param]):
         """
@@ -487,7 +487,7 @@ class PytestParamsUtils:
 
         forge_data_formats_to_test = PytestParamsUtils.get_forge_data_formats()
         forge_data_formats_to_test.remove(
-            forge.DataFormat.Float16_b
+            DataFormat.Float16_b
         )  # remove duplicate - this will be added via add_mf_test_params_list
         self.test_list.extend(
             PytestParamsUtils.join_multiple_params_list(
@@ -505,25 +505,25 @@ class PytestParamsUtils:
         The data formats include various bit floating point formats,
         integer formats, and raw unsigned integer formats.
         Returns:
-            list: A list of forge.DataFormat enums representing different data formats.
+            list: A list of DataFormat enums representing different data formats.
         """
 
         return [
-            forge.DataFormat.Bfp2,
-            forge.DataFormat.Bfp2_b,
-            forge.DataFormat.Bfp4,
-            forge.DataFormat.Bfp4_b,
-            forge.DataFormat.Bfp8,
-            forge.DataFormat.Bfp8_b,
-            forge.DataFormat.Float16,
-            forge.DataFormat.Float16_b,
-            forge.DataFormat.Float32,
-            forge.DataFormat.Int8,
-            forge.DataFormat.Lf8,
-            forge.DataFormat.RawUInt16,
-            forge.DataFormat.RawUInt32,
-            forge.DataFormat.RawUInt8,
-            forge.DataFormat.UInt16,
+            DataFormat.Bfp2,
+            DataFormat.Bfp2_b,
+            DataFormat.Bfp4,
+            DataFormat.Bfp4_b,
+            DataFormat.Bfp8,
+            DataFormat.Bfp8_b,
+            DataFormat.Float16,
+            DataFormat.Float16_b,
+            DataFormat.Float32,
+            DataFormat.Int8,
+            DataFormat.Lf8,
+            DataFormat.RawUInt16,
+            DataFormat.RawUInt32,
+            DataFormat.RawUInt8,
+            DataFormat.UInt16,
         ]
 
     @staticmethod
@@ -535,10 +535,10 @@ class PytestParamsUtils:
         """
 
         return [
-            forge.MathFidelity.LoFi,
-            forge.MathFidelity.HiFi2,
-            forge.MathFidelity.HiFi3,
-            forge.MathFidelity.HiFi4,
+            MathFidelity.LoFi,
+            MathFidelity.HiFi2,
+            MathFidelity.HiFi3,
+            MathFidelity.HiFi4,
         ]
 
     @classmethod

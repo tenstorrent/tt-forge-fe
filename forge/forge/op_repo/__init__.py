@@ -18,7 +18,8 @@ from .datatypes import ShapeCalculationContext
 from .forge_operators import forge_operator_repository
 from .pytorch_operators import pytorch_operator_repository
 
-__ALL__ = [
+
+__all__ = [
     "OperandNumInt",
     "OperandNumTuple",
     "OperandNumRange",

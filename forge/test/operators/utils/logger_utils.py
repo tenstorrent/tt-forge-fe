@@ -5,8 +5,7 @@
 # Logger utils for sweeps tags properties
 
 
-from forge.forge_property_utils import record_sweeps_test_tags, record_sweeps_expected_failing_reason
-from forge.forge_property_utils import record_sweeps_detected_failing_reason
+from .frontend import SweepsFrontend
 
 from .plan import TestPlanUtils
 
@@ -18,7 +17,7 @@ from .failing_reasons import FailingReasonsFinder
 class SweepsTagsLogger:
     @classmethod
     def log_test_properties(cls, test_vector):
-        record_sweeps_test_tags(
+        SweepsFrontend.record_test_tags(
             operator=test_vector.operator,
             input_source=test_vector.input_source.name if test_vector.input_source is not None else None,
             input_shape=f"{test_vector.input_shape}" if test_vector.input_shape is not None else None,
@@ -35,7 +34,7 @@ class SweepsTagsLogger:
         failing_reason_name = failing_reason.name
         failing_reason_desc = failing_reason.value.description
         component = failing_reason.value.component_checker_description
-        record_sweeps_expected_failing_reason(
+        SweepsFrontend.record_expected_failing_reason(
             expected_failing_reason=failing_reason_name,
             expected_failing_reason_desc=failing_reason_desc,
             expected_component=component,
@@ -49,7 +48,7 @@ class SweepsTagsLogger:
         failing_reason_name = failing_reason.name
         failing_reason_desc = failing_reason.value.description
         component = failing_reason.value.component_checker_description
-        record_sweeps_detected_failing_reason(
+        SweepsFrontend.record_detected_failing_reason(
             detected_failing_reason=failing_reason_name,
             detected_failing_reason_desc=failing_reason_desc,
             detected_component=component,
