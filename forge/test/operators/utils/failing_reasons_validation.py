@@ -7,6 +7,8 @@
 
 from loguru import logger
 
+from typing import Optional
+
 from .failing_reasons import ExceptionData
 from .failing_reasons import FailingReasons
 from .failing_reasons import FailingReasonsFinder
@@ -14,7 +16,9 @@ from .failing_reasons import FailingReasonsFinder
 
 class FailingReasonsValidation:
     @classmethod
-    def validate_exception(cls, exception_value: Exception, exception_traceback: str, xfail_reason: str):
+    def validate_exception(
+        cls, exception_value: Exception, exception_traceback: str, xfail_reason: str
+    ) -> Optional[bool]:
         """Validate exception based on xfail reason
 
         Args:
