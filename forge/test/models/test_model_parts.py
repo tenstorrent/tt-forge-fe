@@ -474,3 +474,39 @@ def test_view_speecht5_tts(tensor_size, num_heads, head_dim, max_length):
         sample_inputs=inputs,
     )
     verify(inputs, model, compiled_model)
+
+
+@pytest.mark.xfail
+@pytest.mark.nightly
+@pytest.mark.skip_model_analysis
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (1, 24, 768),
+        (1, 16, 512),
+        (1, 32, 128),
+        (1, 8, 64),
+        (1, 160, 256),
+        (1, 200, 512),
+        (2, 24, 768),
+    ],
+)
+def test_scatter_elements(shape):
+    class scatter_elements(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.max_length = 160
+
+        def forward(self, hidden_states):
+            seq_len = hidden_states.shape[1]
+            pos_seq = torch.arange(0, seq_len).long().to(hidden_states.device)
+            pos_seq = pos_seq[:, None] - pos_seq[None, :]
+            pos_seq[pos_seq < -self.max_length] = -self.max_length
+            return pos_seq
+
+    inputs = [torch.randn(shape, dtype=torch.float32)]
+    model = scatter_elements()
+    model.eval()
+
+    compiled_model = forge.compile(model, sample_inputs=inputs)
+    verify(inputs, model, compiled_model)
