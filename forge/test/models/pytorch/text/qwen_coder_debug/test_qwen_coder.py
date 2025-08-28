@@ -28,7 +28,6 @@ variants = [
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_qwen_coder_clm_pytorch(variant):
 
     if variant == ModelVariant.QWEN_2_5_CODER_32B_INSTRUCT:
