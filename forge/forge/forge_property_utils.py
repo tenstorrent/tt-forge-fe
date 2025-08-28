@@ -728,7 +728,6 @@ class ForgePropertyHandler:
 
         Args:
             execution_stage (ExecutionStage): The execution stage value.
-            execution_run_mode (ExecutionRunMode): The execution run mode value.
         """
         self.record_execution_stage(execution_stage)
         self.record_execution_depth(ExecutionDepth.from_exec_stage(execution_stage))
