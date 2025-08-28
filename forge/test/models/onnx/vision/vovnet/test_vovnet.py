@@ -47,7 +47,6 @@ def test_vovnet_osmr_pytorch(variant, forge_tmp_path):
         source=Source.OSMR,
         task=Task.OBJECT_DETECTION,
     )
-    pytest.xfail(reason="Segmentation Fault")
 
     # Load model and inputs
     framework_model, inputs, _ = generate_model_vovnet_imgcls_osmr_pytorch(variant)
@@ -65,6 +64,8 @@ def test_vovnet_osmr_pytorch(variant, forge_tmp_path):
 
     # Forge compile framework model
     compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_vovnet39_imgcls_stigma_pytorch():
@@ -85,7 +86,6 @@ def test_vovnet_v1_39_stigma_onnx(variant, forge_tmp_path):
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
     )
-    pytest.xfail(reason="Segmentation Fault")
 
     framework_model, inputs, _ = generate_model_vovnet39_imgcls_stigma_pytorch()
 
@@ -102,6 +102,9 @@ def test_vovnet_v1_39_stigma_onnx(variant, forge_tmp_path):
 
     # Forge compile framework model
     compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_vovnet57_imgcls_stigma_pytorch():
@@ -123,7 +126,6 @@ def test_vovnet_v1_57_stigma_onnx(variant, forge_tmp_path):
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
     )
-    pytest.xfail(reason="Segmentation Fault")
 
     framework_model, inputs, _ = generate_model_vovnet57_imgcls_stigma_pytorch()
 
@@ -140,6 +142,9 @@ def test_vovnet_v1_57_stigma_onnx(variant, forge_tmp_path):
 
     # Forge compile framework model
     compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_vovnet_imgcls_timm_pytorch(variant):
