@@ -846,6 +846,34 @@ forge_property_handler_var = contextvars.ContextVar("forge_property_handler_var"
 # record various properties.
 
 
+def record_execution_run_mode(execution_run_mode: ExecutionRunMode):
+    """
+    Records the execution run mode in the tags.
+
+    Args:
+        execution_run_mode (ExecutionRunMode): The execution run mode value.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    fph.record_execution_run_mode(execution_run_mode)
+
+
+def record_execution_pass(execution_pass: ExecutionPass):
+    """
+    Records the execution pass in the tags.
+
+    Args:
+        execution_pass (ExecutionPass): The execution pass value.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    fph.record_execution_pass(execution_pass)
+
+
 def record_execution(execution_stage: ExecutionStage):
     """
     Records the execution depth and stage in the tags.
