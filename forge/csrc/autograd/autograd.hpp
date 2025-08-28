@@ -59,11 +59,11 @@ class autograd_engine
     Graph *run();
 
     // Create an op for the given fwd op's operand.
-    NodeContext create_op(struct autograd_context &self, const ops::Op &type, const std::vector<NodeContext> &operands);
+    NodeContext create_op(struct autograd_context &self, ops::Op op, const std::vector<NodeContext> &operands);
 
     // Create a backward op for the given fwd op's operand.
     NodeContext create_backward_op(
-        const ops::Op &type,
+        ops::Op op,
         const std::vector<NodeContext> &operands,
         Node *current_fwd_op,
         int operand_index,
@@ -72,7 +72,7 @@ class autograd_engine
         bool copy_golden_transforms = true);
 
     NodeContext create_optimizer_op(
-        const ops::Op &type,
+        ops::Op op,
         const std::vector<NodeContext> &operands,
         Node *current_fwd_op,
         int operand_index,

@@ -48,20 +48,20 @@ tt::graphlib::NodeContext backward(
     TT_ASSERT(operand >= 0 && operand < 2, "Invalid operand index.");
 
     // if operand is 0, d/da(a/b) = 1/b
-    tt::graphlib::NodeContext op_grad = ac.autograd->create_op(ac, Op("divide"), {gradient, inputs[1]});
+    tt::graphlib::NodeContext op_grad = ac.autograd->create_op(ac, Op(OpType::Divide), {gradient, inputs[1]});
 
     if (operand == 1)
     {
         // d/db(a/b) = -a/b² * grad
         // Step 1: Calculate b²
-        auto b_squared = ac.autograd->create_op(ac, Op("multiply"), {inputs[1], inputs[1]});
+        auto b_squared = ac.autograd->create_op(ac, Op(OpType::Multiply), {inputs[1], inputs[1]});
         // Step 2: Calculate a / b²
-        auto a_over_b_squared = ac.autograd->create_op(ac, Op("divide"), {inputs[0], b_squared});
+        auto a_over_b_squared = ac.autograd->create_op(ac, Op(OpType::Divide), {inputs[0], b_squared});
         // Step 3: Multiply by grad
-        auto temp = ac.autograd->create_op(ac, Op("multiply"), {gradient, a_over_b_squared});
+        auto temp = ac.autograd->create_op(ac, Op(OpType::Multiply), {gradient, a_over_b_squared});
         // Step 4: Negate the result
         auto neg_one = ac.autograd->create_constant(ac, -1.0f);
-        op_grad = ac.autograd->create_op(ac, Op("multiply"), {temp, neg_one});
+        op_grad = ac.autograd->create_op(ac, Op(OpType::Multiply), {temp, neg_one});
     }
 
     // Reduce dimensions where broadcasting occurred using reduce_sum

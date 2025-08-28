@@ -55,9 +55,9 @@ NodeContext backward(
     TT_ASSERT(op.attrs().size() == 0, "Sqrt should not have any attributes");
 
     auto constant_half = ac.autograd->create_constant(ac, 0.5f);
-    auto reciprocal = ac.autograd->create_op(ac, Op("reciprocal"), {output});
-    auto mult = ac.autograd->create_op(ac, Op("multiply"), {reciprocal, constant_half});
-    return ac.autograd->create_op(ac, Op("multiply"), {mult, gradient});
+    auto reciprocal = ac.autograd->create_op(ac, Op(OpType::Reciprocal), {output});
+    auto mult = ac.autograd->create_op(ac, Op(OpType::Multiply), {reciprocal, constant_half});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {mult, gradient});
 }
 
 }  // namespace sqrt

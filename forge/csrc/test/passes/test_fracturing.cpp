@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 //
 // SPDX-License-Identifier: Apache-2.0
+#include "ops/op.hpp"
 #include "passes/fracture.hpp"
 #include "test/common.hpp"
 
@@ -62,9 +63,9 @@ struct FractureFF : public ForgeGraphTest
         auto Win = create_parameter(shape(1, 1, embed, hidden));
         auto Wout = create_parameter(shape(1, 1, hidden, embed));
 
-        auto e0 = create_op("matmul", {act, Win});
-        auto gelu = create_op("gelu", {e0});
-        auto e1 = create_op("matmul", {gelu, Wout});
+        auto e0 = create_op(ops::Op(ops::OpType::Matmul), {act, Win});
+        auto gelu = create_op(ops::Op(ops::OpType::Gelu), {e0});
+        auto e1 = create_op(ops::Op(ops::OpType::Matmul), {gelu, Wout});
 
         Win_name = Win->name();
         Wout_name = Wout->name();
@@ -188,8 +189,8 @@ struct FractureDimSwitch : public ForgeGraphTest
         auto act = create_activation(shape(1, 1, seq_len, embed));
         auto Win = create_parameter(shape(1, 1, embed, hidden));
 
-        auto gelu0 = create_op("gelu", {act});
-        auto ff1 = create_op("matmul", {gelu0, Win});
+        auto gelu0 = create_op(ops::Op(ops::OpType::Gelu), {act});
+        auto ff1 = create_op(ops::Op(ops::OpType::Matmul), {gelu0, Win});
 
         gelu0_name = gelu0->name();
         ff1_name = ff1->name();
@@ -226,8 +227,8 @@ struct FractureSimpleMixedFactors : public ForgeGraphTest, public testing::WithP
 
         auto act = create_activation(shape(1, 1, r, c));
 
-        auto gelu0 = create_op("gelu", {act});
-        auto gelu1 = create_op("gelu", {gelu0});
+        auto gelu0 = create_op(ops::Op(ops::OpType::Gelu), {act});
+        auto gelu1 = create_op(ops::Op(ops::OpType::Gelu), {gelu0});
 
         gelu0_name = gelu0->name();
         gelu1_name = gelu1->name();
@@ -284,9 +285,12 @@ struct FractureLayers : public ForgeGraphTest
             auto Wout = create_parameter(shape(1, 1, hidden, embed));
             auto layer_name = "layer." + std::to_string(layer) + ".";
 
-            auto e0 = create_op(layer_name + "e0", "matmul", {out ? (graphlib::Node*)out : (graphlib::Node*)act, Win});
-            auto gelu = create_op(layer_name + "gelu", "gelu", {e0});
-            auto e1 = create_op(layer_name + "e1", "matmul", {gelu, Wout});
+            auto e0 = create_op(
+                layer_name + "e0",
+                ops::Op(ops::OpType::Matmul),
+                {out ? (graphlib::Node*)out : (graphlib::Node*)act, Win});
+            auto gelu = create_op(layer_name + "gelu", ops::Op(ops::OpType::Gelu), {e0});
+            auto e1 = create_op(layer_name + "e1", ops::Op(ops::OpType::Matmul), {gelu, Wout});
 
             out = e1;
         }

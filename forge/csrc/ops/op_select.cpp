@@ -157,7 +157,8 @@ NodeContext backward(
             }
             else
             {
-                grad_return = ac.autograd->create_op(ac, Op("concatenate", {{"dim", dim}}), {grad_return, zero_slice});
+                grad_return =
+                    ac.autograd->create_op(ac, Op(OpType::Concatenate, {{"dim", dim}}), {grad_return, zero_slice});
             }
         }
 
@@ -167,7 +168,7 @@ NodeContext backward(
         // Pass the gradient for selected part
         NodeContext grad_slice = ac.autograd->create_op(
             ac,
-            Op("select", {{"dim", dim}, {"begin", grad_offset}, {"length", length}, {"stride", current_size}}),
+            Op(OpType::Select, {{"dim", dim}, {"begin", grad_offset}, {"length", length}, {"stride", current_size}}),
             {gradient});
 
         if (!grad_return_initialized)
@@ -177,7 +178,8 @@ NodeContext backward(
         }
         else
         {
-            grad_return = ac.autograd->create_op(ac, Op("concatenate", {{"dim", dim}}), {grad_return, grad_slice});
+            grad_return =
+                ac.autograd->create_op(ac, Op(OpType::Concatenate, {{"dim", dim}}), {grad_return, grad_slice});
         }
 
         grad_offset += length;
@@ -197,7 +199,8 @@ NodeContext backward(
             {
                 NodeContext zero_slice = ac.autograd->create_constant_tensor(ac, torch::zeros(zero_post_pad_shape));
 
-                grad_return = ac.autograd->create_op(ac, Op("concatenate", {{"dim", dim}}), {grad_return, zero_slice});
+                grad_return =
+                    ac.autograd->create_op(ac, Op(OpType::Concatenate, {{"dim", dim}}), {grad_return, zero_slice});
             }
         }
     }

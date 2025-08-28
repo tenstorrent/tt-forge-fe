@@ -55,7 +55,7 @@ NodeContext backward(
 {
     TT_DBG_ASSERT(op.type() == OpType::Embedding, "Wrong op type.");
 
-    auto embedding_bw_context = ac.autograd->create_op(ac, Op("embedding_bw"), {inputs[0], inputs[1], gradient});
+    auto embedding_bw_context = ac.autograd->create_op(ac, Op(OpType::EmbeddingBw), {inputs[0], inputs[1], gradient});
     embedding_bw_context.output_df = inputs[1].output_df;
     return embedding_bw_context;
 }

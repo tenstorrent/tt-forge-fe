@@ -149,7 +149,7 @@ tt::graphlib::NodeContext reduce_broadcast_dimensions(
 
         int dim = static_cast<int>(i);
         result_grad =
-            ac.autograd->create_op(ac, Op("reduce_sum", {{"keep_dim", true}, {"dim_arg", dim}}), {result_grad});
+            ac.autograd->create_op(ac, Op(OpType::ReduceSum, {{"keep_dim", true}, {"dim_arg", dim}}), {result_grad});
     }
 
     return result_grad;

@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 from typing import Union
 
+from forge._C.ops import OpType
 from ..tensor import Tensor
 from ..parameter import Parameter
 from .common import ForgeOp as op
@@ -24,4 +25,4 @@ def Embedding(name: str, indices: Tensor, embedding_table: Union[Tensor, Paramet
         Dictionary of embeddings
     """
 
-    return op("embedding", name, indices, embedding_table).get_tensor()
+    return op(OpType.Embedding, name, indices, embedding_table).get_tensor()

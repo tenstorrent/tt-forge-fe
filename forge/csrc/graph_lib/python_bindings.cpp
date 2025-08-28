@@ -282,21 +282,6 @@ void GraphModule(py::module &m_graph)
         .def_readonly("shape", &graphlib::NodeContext::shape)
         .def_readonly("output_df", &graphlib::NodeContext::output_df);
 
-    py::class_<tt::ops::Op, tt::raw_ptr<tt::ops::Op>>(m_graph, "Op")
-        .def(
-            py::init([](std::string const &op_name, tt::ops::Attrs const &attrs) { return ops::Op(op_name, attrs); }),
-            py::arg("op_name"),
-            py::arg("attrs") = tt::ops::Attrs{})
-        .def("eval", &tt::ops::Op::eval)
-        .def("shape", &tt::ops::Op::shape)
-        .def(
-            "__getattr__", [](tt::ops::Op const &op_type, std::string const &name) { return op_type.attrs().at(name); })
-        .def(
-            "__setattr__",
-            [](tt::ops::Op &op_type, std::string const &name, tt::ops::Attr value)
-            { return op_type.set_attr(name, value); })
-        .def("__repr__", [](tt::ops::Op const &op_type) { return op_type.as_string(); });
-
     py::enum_<tt::graphlib::UBlockOrder>(m_graph, "UBlockOrder")
         .value("R", tt::graphlib::UBlockOrder::R)
         .value("C", tt::graphlib::UBlockOrder::C)
@@ -368,17 +353,17 @@ void GraphModule(py::module &m_graph)
         "create_op_node",
         [](Graph *graph,
            const std::string &name,
-           const ops::Op &op_type,
+           const ops::Op &op,
            const std::vector<std::uint32_t> &shape,
            tt::DataFormat data_format,
            const int subgraph_index,
            graphlib::TagHints tags)
         {
-            auto node = graph->add_node(graphlib::create_node<graphlib::PyOpNode>(name, op_type), subgraph_index);
+            auto node = graph->add_node(graphlib::create_node<graphlib::PyOpNode>(name, op), subgraph_index);
             node->set_shape(Shape::create(shape));
             node->set_output_df(data_format);
             node->as<graphlib::TaggedNode>()->tag("original_op_name", name);
-            node->as<graphlib::TaggedNode>()->tag("original_op_type", op_type.as_string());
+            node->as<graphlib::TaggedNode>()->tag("original_op_type", op.as_string());
             node->as<graphlib::TaggedNode>()->add_tags(tags);
             return node->id();
         });
@@ -758,7 +743,7 @@ void eval_partial_datacopy_golden_transforms(
     }
     else
     {
-        ops::Op overlay("add");
+        ops::Op overlay(ops::OpType::Add);
         ret.at(output_index) = eval_op(overlay, {ret.at(output_index), output_tensor});
     }
 }
@@ -985,7 +970,8 @@ py::object eval_reinterpret_shape(Graph *graph, Node *node, py::object input_val
         node->shape(),
         runtime_tensor_transform.reinterpreted_shape);
 
-    ops::Op reinterpret_shape("reshape", {{"shape", runtime_tensor_transform.reinterpreted_shape.as_vector<int>()}});
+    ops::Op reinterpret_shape(
+        ops::OpType::Reshape, {{"shape", runtime_tensor_transform.reinterpreted_shape.as_vector<int>()}});
     return eval_op(reinterpret_shape, {input_value});
 }
 
@@ -1053,7 +1039,7 @@ py::object eval_concatenate(
         }
     }
 
-    ops::Op prestride_act("concatenate", {{"dim", runtime_tensor_transform.concat_dim}});
+    ops::Op prestride_act(ops::OpType::Concatenate, {{"dim", runtime_tensor_transform.concat_dim}});
     return eval_op(prestride_act, concat_inputs);
 }
 

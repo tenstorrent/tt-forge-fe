@@ -70,7 +70,7 @@ tt::graphlib::NodeContext backward(
     int dim1 = op.attr_as<int>("dim1");
 
     // Transpose is its own inverse - apply the same transpose to the gradient
-    Op transpose_op("transpose");
+    Op transpose_op(OpType::Transpose);
     transpose_op.set_attr("dim0", dim0);
     transpose_op.set_attr("dim1", dim1);
 

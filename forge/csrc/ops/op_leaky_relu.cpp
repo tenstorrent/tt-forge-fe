@@ -60,14 +60,14 @@ tt::graphlib::NodeContext backward(
     auto zero = ac.autograd->create_constant(ac, 0.0);
     auto neg_one = ac.autograd->create_constant(ac, -1.0);
 
-    auto relu_dx = ac.autograd->create_op(ac, Op("heaviside"), {output, zero});
+    auto relu_dx = ac.autograd->create_op(ac, Op(OpType::Heaviside), {output, zero});
 
-    auto l_relu_dx = ac.autograd->create_op(ac, Op("multiply"), {output, neg_one});
-    l_relu_dx = ac.autograd->create_op(ac, Op("heaviside"), {l_relu_dx, zero});
-    l_relu_dx = ac.autograd->create_op(ac, Op("multiply"), {l_relu_dx, alpha});
-    l_relu_dx = ac.autograd->create_op(ac, Op("add"), {relu_dx, l_relu_dx});
+    auto l_relu_dx = ac.autograd->create_op(ac, Op(OpType::Multiply), {output, neg_one});
+    l_relu_dx = ac.autograd->create_op(ac, Op(OpType::Heaviside), {l_relu_dx, zero});
+    l_relu_dx = ac.autograd->create_op(ac, Op(OpType::Multiply), {l_relu_dx, alpha});
+    l_relu_dx = ac.autograd->create_op(ac, Op(OpType::Add), {relu_dx, l_relu_dx});
 
-    return ac.autograd->create_op(ac, Op("multiply"), {l_relu_dx, gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {l_relu_dx, gradient});
 }
 
 }  // namespace leaky_relu

@@ -80,10 +80,10 @@ void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::ve
     TT_ASSERT(idx < output.shape.size(), "Given dimension is out of the shape");
 
     // Decompose: result = (grad - torch.sum(grad * output, dim=dim, keepdim=True)) * output
-    auto grad_out = dc.op(Op("multiply"), {grad, output});
-    auto gout_sum = dc.op(Op("reduce_sum", {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {grad_out});
-    auto gout_sub = dc.op(Op("subtract"), {grad, gout_sum});
-    auto result = dc.op(Op("multiply"), {gout_sub, output});
+    auto grad_out = dc.op(Op(OpType::Multiply), {grad, output});
+    auto gout_sum = dc.op(Op(OpType::ReduceSum, {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {grad_out});
+    auto gout_sub = dc.op(Op(OpType::Subtract), {grad, gout_sum});
+    auto result = dc.op(Op(OpType::Multiply), {gout_sub, output});
     dc.fuse(result);
 }
 

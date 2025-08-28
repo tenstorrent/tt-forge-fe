@@ -95,7 +95,7 @@ tt::graphlib::NodeContext backward(
     int dim = op.attr_as<int>("dim");
 
     return ac.autograd->create_op(
-        ac, Op("reduce_sum", {{"dim_arg", std::vector<int>({dim})}, {"keep_dim", true}}), {gradient});
+        ac, Op(OpType::ReduceSum, {{"dim_arg", std::vector<int>({dim})}, {"keep_dim", true}}), {gradient});
 }
 
 void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
@@ -105,7 +105,7 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
     TT_ASSERT(op.attrs().size() >= 2, "Broadcast should have at least two attributes - dim and size.");
 
     if (op.attr_as<int>("size") == 1)
-        dc.fuse(dc.op(Op("nop"), {inputs[0]}));
+        dc.fuse(dc.op(Op(OpType::Nop), {inputs[0]}));
 }
 
 }  // namespace broadcast

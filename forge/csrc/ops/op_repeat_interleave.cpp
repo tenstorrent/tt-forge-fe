@@ -88,12 +88,12 @@ NodeContext backward(
     shape[dim] = repeats;
     shape.insert(shape.begin() + dim, grad_shape[dim] / repeats);
 
-    NodeContext reshaped = ac.autograd->create_op(ac, Op("reshape", {{"shape", shape}}), {gradient});
+    NodeContext reshaped = ac.autograd->create_op(ac, Op(OpType::Reshape, {{"shape", shape}}), {gradient});
 
     NodeContext reduced = ac.autograd->create_op(
-        ac, Op("reduce_sum", {{"dim_arg", std::vector<int>{dim + 1}}, {"keep_dim", true}}), {reshaped});
+        ac, Op(OpType::ReduceSum, {{"dim_arg", std::vector<int>{dim + 1}}, {"keep_dim", true}}), {reshaped});
 
-    NodeContext squeezed = ac.autograd->create_op(ac, Op("squeeze", {{"dim", dim + 1}}), {reduced});
+    NodeContext squeezed = ac.autograd->create_op(ac, Op(OpType::Squeeze, {{"dim", dim + 1}}), {reduced});
 
     return squeezed;
 }

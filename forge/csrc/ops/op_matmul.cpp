@@ -138,15 +138,15 @@ NodeContext backward(
     if (operand == 0)
     {
         tt::graphlib::NodeContext in1_t =
-            ac.autograd->create_op(ac, Op("transpose", {{"dim0", -2}, {"dim1", -1}}), {inputs[1]});
+            ac.autograd->create_op(ac, Op(OpType::Transpose, {{"dim0", -2}, {"dim1", -1}}), {inputs[1]});
 
-        return ac.autograd->create_op(ac, Op("matmul"), {gradient, in1_t});
+        return ac.autograd->create_op(ac, Op(OpType::Matmul), {gradient, in1_t});
     }
 
     tt::graphlib::NodeContext in0_t =
-        ac.autograd->create_op(ac, Op("transpose", {{"dim0", -2}, {"dim1", -1}}), {inputs[0]});
+        ac.autograd->create_op(ac, Op(OpType::Transpose, {{"dim0", -2}, {"dim1", -1}}), {inputs[0]});
 
-    return ac.autograd->create_op(ac, Op("matmul"), {in0_t, gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Matmul), {in0_t, gradient});
 }
 
 }  // namespace matmul

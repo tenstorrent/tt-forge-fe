@@ -97,7 +97,7 @@ tt::graphlib::NodeContext backward(
 
     // Create index operation to extract the slice for this operand
     uint32_t stop = begin + inputs[operand].shape[dim];
-    Op index_op("index");
+    Op index_op(OpType::Index);
     index_op.set_attr("dim", dim);
     index_op.set_attr("start", static_cast<int>(begin));
     index_op.set_attr("stop", static_cast<int>(stop));
@@ -114,7 +114,7 @@ void decompose_initial(
 
     if (inputs.size() == 1)
     {
-        NodeContext result = dc.op(Op("nop"), {inputs[0]});
+        NodeContext result = dc.op(Op(OpType::Nop), {inputs[0]});
         dc.fuse(result);
     }
 }

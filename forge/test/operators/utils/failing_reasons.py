@@ -1955,7 +1955,7 @@ class FailingReasons(Enum):
         description="Value conversion overflow",
         checks=[
             # clamp	RuntimeError: value cannot be converted to type at::BFloat16 without overflow
-            # >       ref_output = self.cpp_op_type.eval(values)
+            # >       ref_output = self.op.eval(values)
             # E       RuntimeError: value cannot be converted to type at::BFloat16 without overflow
             # forge/op/common.py:61: RuntimeError
             ExceptionCheck(
@@ -1965,7 +1965,7 @@ class FailingReasons(Enum):
                     M.starts_with("value cannot be converted to type at::BFloat16 without overflow"),
                 ],
                 error_log=[
-                    M.contains(">       ref_output = self.cpp_op_type.eval(values)"),
+                    M.contains(">       ref_output = self.op.eval(values)"),
                     M.last_line(M.contains("forge/op/common.py:")),
                 ],
             ),

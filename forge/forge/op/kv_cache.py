@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: © 2025 Tenstorrent AI ULC
 # SPDX-License-Identifier: Apache-2.0
 
+from forge._C.ops import OpType
 from ..tensor import Tensor
 from .common import ForgeOp as op
 
@@ -32,7 +33,7 @@ def FillCache(
         Offset in the batch dimension.
     """
     return op(
-        "fill_cache",
+        OpType.FillCache,
         name,
         cache,
         input,
@@ -68,7 +69,7 @@ def UpdateCache(
         Offset in the batch dimension.
     """
     return op(
-        "update_cache",
+        OpType.UpdateCache,
         name,
         cache,
         input,

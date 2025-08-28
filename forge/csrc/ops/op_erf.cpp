@@ -56,20 +56,20 @@ NodeContext backward(
     auto two_over_sqrt_pi = ac.autograd->create_constant(ac, 1.1283791670955126f);
 
     // Compute x²
-    auto x_squared = ac.autograd->create_op(ac, Op("multiply"), {inputs[0], inputs[0]});
+    auto x_squared = ac.autograd->create_op(ac, Op(OpType::Multiply), {inputs[0], inputs[0]});
 
     // Compute -x²
     auto neg_one = ac.autograd->create_constant(ac, -1.0f);
-    auto neg_x_squared = ac.autograd->create_op(ac, Op("multiply"), {neg_one, x_squared});
+    auto neg_x_squared = ac.autograd->create_op(ac, Op(OpType::Multiply), {neg_one, x_squared});
 
     // Compute exp(-x²)
-    auto exp_neg_x_squared = ac.autograd->create_op(ac, Op("exp"), {neg_x_squared});
+    auto exp_neg_x_squared = ac.autograd->create_op(ac, Op(OpType::Exp), {neg_x_squared});
 
     // Compute derivative: (2/√π) * exp(-x²)
-    auto derivative = ac.autograd->create_op(ac, Op("multiply"), {two_over_sqrt_pi, exp_neg_x_squared});
+    auto derivative = ac.autograd->create_op(ac, Op(OpType::Multiply), {two_over_sqrt_pi, exp_neg_x_squared});
 
     // Apply chain rule: derivative * gradient
-    return ac.autograd->create_op(ac, Op("multiply"), {derivative, gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {derivative, gradient});
 }
 
 }  // namespace erf

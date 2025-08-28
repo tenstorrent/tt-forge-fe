@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 from forge._C import DataFormat
+from forge._C.ops import OpType
 from ..tensor import Tensor
 from .common import ForgeOp as op
 
@@ -23,4 +24,4 @@ def Constant(name: str, *, constant: float, dtype=DataFormat.Float32) -> Tensor:
     Tensor
         Forge tensor
     """
-    return op("constant", name, **{"c": constant, "dtype": dtype}).get_tensor()
+    return op(OpType.Constant, name, **{"c": constant, "dtype": dtype}).get_tensor()

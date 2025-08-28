@@ -5,6 +5,7 @@
 #include "autograd/autograd.hpp"
 #include "forge_graph_module.hpp"
 #include "graph_lib/node_types.hpp"
+#include "ops/op.hpp"
 #include "passes/split_graph.hpp"
 #include "test/common.hpp"
 
@@ -30,19 +31,21 @@ struct SplitGraphTest : public ForgeGraphTest, public testing::WithParamInterfac
         auto weight_l2 = create_parameter(shape(1, 1, output_size, hidden), requires_grad);
         auto bias_l2 = create_parameter(shape(1, 1, 1, output_size), requires_grad);
 
-        auto transposed_weight_l1 = create_op("transpose", {weight_l1}, {{"dim0", -2}, {"dim1", -1}});
-        auto l1 = create_op("matmul", {act, transposed_weight_l1});
+        auto transposed_weight_l1 =
+            create_op(ops::Op(ops::OpType::Transpose, {{"dim0", -2}, {"dim1", -1}}), {weight_l1});
+        auto l1 = create_op(ops::Op(ops::OpType::Matmul), {act, transposed_weight_l1});
         matmul_op_name = l1->name();
 
-        auto add = create_op("add", {l1, bias_l1});
+        auto add = create_op(ops::Op(ops::OpType::Add), {l1, bias_l1});
 
-        auto transposed_weight_l2 = create_op("transpose", {weight_l2}, {{"dim0", -2}, {"dim1", -1}});
-        auto l2 = create_op("matmul", {add, transposed_weight_l2});
+        auto transposed_weight_l2 =
+            create_op(ops::Op(ops::OpType::Transpose, {{"dim0", -2}, {"dim1", -1}}), {weight_l2});
+        auto l2 = create_op(ops::Op(ops::OpType::Matmul), {add, transposed_weight_l2});
         matmul_op_name = l2->name();
 
-        auto add2 = create_op("add", {l2, bias_l2});
+        auto add2 = create_op(ops::Op(ops::OpType::Add), {l2, bias_l2});
 
-        auto softmax = create_op(ops::Op("softmax", {{"dim", 1}, {"stable", true}}), {add2});
+        auto softmax = create_op(ops::Op(ops::OpType::Softmax, {{"dim", 1}, {"stable", true}}), {add2});
 
         return {softmax};
     }

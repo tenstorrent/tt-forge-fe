@@ -47,15 +47,15 @@ tt::graphlib::NodeContext backward(
     TT_ASSERT(operand == 0, "Invalid operand index.");
 
     auto hs = ac.autograd->create_constant(ac, 0.5);
-    auto heaviside = ac.autograd->create_op(ac, Op("heaviside"), {inputs[0], hs});
+    auto heaviside = ac.autograd->create_op(ac, Op(OpType::Heaviside), {inputs[0], hs});
 
     auto st = ac.autograd->create_constant(ac, 0.5);
-    auto subtract = ac.autograd->create_op(ac, Op("subtract"), {heaviside, st});
+    auto subtract = ac.autograd->create_op(ac, Op(OpType::Subtract), {heaviside, st});
 
     auto sch = ac.autograd->create_constant(ac, 2.0);
-    auto stretched = ac.autograd->create_op(ac, Op("multiply"), {subtract, sch});
+    auto stretched = ac.autograd->create_op(ac, Op(OpType::Multiply), {subtract, sch});
 
-    return ac.autograd->create_op(ac, Op("multiply"), {stretched, gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {stretched, gradient});
 }
 
 }  // namespace abs

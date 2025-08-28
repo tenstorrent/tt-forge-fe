@@ -61,14 +61,14 @@ NodeContext backward(
     auto exponent_const = ac.autograd->create_constant(ac, exponent);
 
     // Compute reciprocal of input: 1/x
-    auto reciprocal = ac.autograd->create_op(ac, Op("reciprocal"), {inputs[0]});
+    auto reciprocal = ac.autograd->create_op(ac, Op(OpType::Reciprocal), {inputs[0]});
 
     // Compute n * x^n / x = n * output / x
-    auto partial_grad = ac.autograd->create_op(ac, Op("multiply"), {output, reciprocal});
-    auto derivative = ac.autograd->create_op(ac, Op("multiply"), {exponent_const, partial_grad});
+    auto partial_grad = ac.autograd->create_op(ac, Op(OpType::Multiply), {output, reciprocal});
+    auto derivative = ac.autograd->create_op(ac, Op(OpType::Multiply), {exponent_const, partial_grad});
 
     // Apply chain rule: derivative * gradient
-    return ac.autograd->create_op(ac, Op("multiply"), {derivative, gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {derivative, gradient});
 }
 
 }  // namespace pow

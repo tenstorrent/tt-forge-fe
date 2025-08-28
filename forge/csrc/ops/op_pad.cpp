@@ -32,7 +32,7 @@ using op_common::PaddingParams;
 
 NodeContext extract(DecomposingContext &dc, const NodeContext &input, int dim_axis, int start, int stop)
 {
-    Op index_op("index");
+    Op index_op(OpType::Index);
     index_op.set_attr("dim", dim_axis);
     index_op.set_attr("start", start);
     index_op.set_attr("stop", stop);
@@ -49,7 +49,7 @@ NodeContext repeat_vector(DecomposingContext &dc, const NodeContext &input, int 
 
     std::vector<ops::Attr> repeat_attrs(repeats.begin(), repeats.end());
 
-    Op repeat_op("repeat", {{"repeats", repeats}});
+    Op repeat_op(OpType::Repeat, {{"repeats", repeats}});
 
     return dc.op(repeat_op, {input});
 }
@@ -70,7 +70,7 @@ NodeContext extract_and_mirror(DecomposingContext &dc, const NodeContext &input,
     NodeContext indices = DecomposingContext::create_constant_tensor(dc, indices_tensor);
 
     // Mirror patch using adv_index
-    Op adv_index_op("adv_index", {{"dim", dim_axis}});
+    Op adv_index_op(OpType::AdvIndex, {{"dim", dim_axis}});
     NodeContext patch_mirrored = dc.op(adv_index_op, {patch, indices});
 
     return patch_mirrored;
@@ -279,7 +279,7 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
     bool all_zero = std::all_of(padding.begin(), padding.end(), [](int x) { return x == 0; });
     if (all_zero)
     {
-        auto nop_result = dc.op(Op("nop"), {inputs[0]});
+        auto nop_result = dc.op(Op(OpType::Nop), {inputs[0]});
         dc.fuse(nop_result);
         return;
     }

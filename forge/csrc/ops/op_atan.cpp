@@ -52,17 +52,17 @@ tt::graphlib::NodeContext backward(
     TT_ASSERT(operand == 0, "Invalid operand index");
 
     // x^2
-    auto x_squared = ac.autograd->create_op(ac, Op("multiply"), {inputs[0], inputs[0]});
+    auto x_squared = ac.autograd->create_op(ac, Op(OpType::Multiply), {inputs[0], inputs[0]});
 
     // 1 + x^2
     auto one = ac.autograd->create_constant(ac, 1.0);
-    auto one_plus_x_squared = ac.autograd->create_op(ac, Op("add"), {one, x_squared});
+    auto one_plus_x_squared = ac.autograd->create_op(ac, Op(OpType::Add), {one, x_squared});
 
     // 1 / (1 + x^2)
-    auto derivative = ac.autograd->create_op(ac, Op("divide"), {one, one_plus_x_squared});
+    auto derivative = ac.autograd->create_op(ac, Op(OpType::Divide), {one, one_plus_x_squared});
 
     // derivative * gradient
-    return ac.autograd->create_op(ac, Op("multiply"), {derivative, gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {derivative, gradient});
 }
 
 }  // namespace atan

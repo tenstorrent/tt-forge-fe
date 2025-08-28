@@ -261,27 +261,27 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
         if (channel_last)
         {
             result = dc.op(
-                Op("reshape",
+                Op(OpType::Reshape,
                    {{"shape",
                      std::vector<int>{static_cast<int>(w), 1, static_cast<int>(y * x), static_cast<int>(cin)}}}),
                 {activations});
-            result = dc.op(Op("reduce_avg", {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}), {result});
+            result = dc.op(Op(OpType::ReduceAvg, {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}), {result});
             result = dc.op(
-                Op("reshape", {{"shape", std::vector<int>{static_cast<int>(w), 1, 1, static_cast<int>(cin)}}}),
+                Op(OpType::Reshape, {{"shape", std::vector<int>{static_cast<int>(w), 1, 1, static_cast<int>(cin)}}}),
                 {result});
         }
         else
         {
             result = dc.op(
-                Op("reshape",
+                Op(OpType::Reshape,
                    {{"shape",
                      std::vector<int>{static_cast<int>(w), 1, static_cast<int>(cin), static_cast<int>(y * x)}}}),
                 {activations});
-            result = dc.op(Op("transpose", {{"dim0", 2}, {"dim1", 3}}), {result});
-            result = dc.op(Op("reduce_avg", {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}), {result});
-            result = dc.op(Op("transpose", {{"dim0", 2}, {"dim1", 3}}), {result});
+            result = dc.op(Op(OpType::Transpose, {{"dim0", 2}, {"dim1", 3}}), {result});
+            result = dc.op(Op(OpType::ReduceAvg, {{"dim_arg", std::vector<int>{-2}}, {"keep_dim", true}}), {result});
+            result = dc.op(Op(OpType::Transpose, {{"dim0", 2}, {"dim1", 3}}), {result});
             result = dc.op(
-                Op("reshape", {{"shape", std::vector<int>{static_cast<int>(w), static_cast<int>(cin), 1, 1}}}),
+                Op(OpType::Reshape, {{"shape", std::vector<int>{static_cast<int>(w), static_cast<int>(cin), 1, 1}}}),
                 {result});
         }
         dc.fuse(result);
@@ -295,7 +295,7 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
 
     // Perform convolution
     NodeContext result = dc.op(
-        Op("conv2d",
+        Op(OpType::Conv2d,
            {{"stride", std::vector<int>{stride_height, stride_width}},
             {"dilation", std::vector<int>{dilation_height, dilation_width}},
             {"groups", static_cast<int>(cin)},
@@ -318,7 +318,7 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
             x_out = result_shape[result_shape.size() - 2];
 
             result = dc.op(
-                Op("reshape",
+                Op(OpType::Reshape,
                    {{"shape",
                      std::vector<int>{
                          static_cast<int>(w), 1, static_cast<int>(y_out * x_out), static_cast<int>(cin)}}}),
@@ -330,12 +330,12 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
             x_out = result_shape[result_shape.size() - 1];
 
             result = dc.op(
-                Op("reshape",
+                Op(OpType::Reshape,
                    {{"shape",
                      std::vector<int>{
                          static_cast<int>(w), 1, static_cast<int>(cin), static_cast<int>(y_out * x_out)}}}),
                 {result});
-            result = dc.op(Op("transpose", {{"dim0", 2}, {"dim1", 3}}), {result});
+            result = dc.op(Op(OpType::Transpose, {{"dim0", 2}, {"dim1", 3}}), {result});
         }
 
         // Create padding correction matrix
@@ -395,12 +395,12 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
                                            .coalesce();
 
         NodeContext correction_tensor = dc.tensor(correction_matrix.to_dense());
-        result = dc.op(Op("matmul"), {correction_tensor, result});
+        result = dc.op(Op(OpType::Matmul), {correction_tensor, result});
 
         if (channel_last)
         {
             result = dc.op(
-                Op("reshape",
+                Op(OpType::Reshape,
                    {{"shape",
                      std::vector<int>{
                          static_cast<int>(w),
@@ -411,9 +411,9 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
         }
         else
         {
-            result = dc.op(Op("transpose", {{"dim0", 2}, {"dim1", 3}}), {result});
+            result = dc.op(Op(OpType::Transpose, {{"dim0", 2}, {"dim1", 3}}), {result});
             result = dc.op(
-                Op("reshape",
+                Op(OpType::Reshape,
                    {{"shape",
                      std::vector<int>{
                          static_cast<int>(w),
@@ -443,8 +443,8 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
     //     return;
 
     // NodeContext activations = inputs[0];
-    // activations = dc.op(Op("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {activations});
-    // activations = dc.op(Op("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {activations});
+    // activations = dc.op(Op(OpType::Transpose, {}, {{"dim0", -3}, {"dim1", -2}}), {activations});
+    // activations = dc.op(Op(OpType::Transpose, {}, {{"dim0", -2}, {"dim1", -1}}), {activations});
     // NodeContext result = dc.op(
     //     Op(
     //         "avg_pool2d",
@@ -463,8 +463,8 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
     //          {"dilation_width", dilation_width},
     //          {"count_include_pad", count_include_pad}}),
     //     {activations});
-    // result = dc.op(Op("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
-    // result = dc.op(Op("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
+    // result = dc.op(Op(OpType::Transpose, {}, {{"dim0", -2}, {"dim1", -1}}), {result});
+    // result = dc.op(Op(OpType::Transpose, {}, {{"dim0", -3}, {"dim1", -2}}), {result});
     // dc.fuse(result);
     // return;
 }

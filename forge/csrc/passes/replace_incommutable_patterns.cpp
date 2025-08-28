@@ -97,7 +97,7 @@ static bool attempt_replace_downward_pattern(
         {
             golden_transform_attrs.push_back((int)d);
         }
-        op->add_golden_transform(ops::Op("reshape", {{"shape", golden_transform_attrs}}));
+        op->add_golden_transform(ops::Op(ops::OpType::Reshape, {{"shape", golden_transform_attrs}}));
 
         for (graphlib::Edge outgoing_edge : graph->user_data_edges(op))
         {

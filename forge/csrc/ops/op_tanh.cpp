@@ -56,14 +56,14 @@ NodeContext backward(
     // We can use the output (which is tanh(x)) to compute this efficiently
 
     // Compute tanh²(x)
-    auto tanh_squared = ac.autograd->create_op(ac, Op("multiply"), {output, output});
+    auto tanh_squared = ac.autograd->create_op(ac, Op(OpType::Multiply), {output, output});
 
     // Compute 1 - tanh²(x)
     auto one = ac.autograd->create_constant(ac, 1.0f);
-    auto derivative = ac.autograd->create_op(ac, Op("subtract"), {one, tanh_squared});
+    auto derivative = ac.autograd->create_op(ac, Op(OpType::Subtract), {one, tanh_squared});
 
     // Apply chain rule: derivative * gradient
-    return ac.autograd->create_op(ac, Op("multiply"), {derivative, gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {derivative, gradient});
 }
 
 }  // namespace tanh

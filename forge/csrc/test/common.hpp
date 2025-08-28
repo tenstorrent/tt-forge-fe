@@ -168,35 +168,7 @@ class GraphTest : public ::testing::Test
     OpNode* create_op(tt::ops::Op const& op, std::vector<graphlib::Node*> const& operands)
     {
         std::string name = op.as_string() + std::to_string(op_name_id[op.as_string()]++);
-        return tt::add_node<OpNode>(*graph, name, op.as_string(), operands, {}, op.attrs());
-    }
-
-    template <typename... Attrs>
-    OpNode* create_op(std::string const& type, std::vector<graphlib::Node*> const& operands, Attrs... attrs)
-    {
-        return create_op(ops::Op(type, {attrs...}), operands);
-    }
-
-    template <typename... Attrs>
-    OpNode* create_op(
-        std::string const& name, std::string const& type, std::vector<graphlib::Node*> const& operands, Attrs... attrs)
-    {
-        return create_op(name, ops::Op(type, {attrs...}), operands);
-    }
-
-    OpNode* create_op(
-        std::string const& type, std::vector<graphlib::Node*> const& operands, const ops::Attrs& named_attrs)
-    {
-        return create_op(ops::Op(type, named_attrs), operands);
-    }
-
-    OpNode* create_op(
-        std::string const& name,
-        std::string const& type,
-        std::vector<graphlib::Node*> const& operands,
-        const ops::Attrs& named_attrs)
-    {
-        return create_op(name, ops::Op(type, named_attrs), operands);
+        return tt::add_node<OpNode>(*graph, name, op, operands);
     }
 
     graphlib::QueueNode* create_queue(graphlib::Node* operand, bool cross_epoch = false, bool cross_chip = false)

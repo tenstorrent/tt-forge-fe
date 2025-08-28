@@ -53,11 +53,11 @@ NodeContext backward(
     TT_ASSERT(inputs.size() == 1, "Reciprocal should have single input.");
     TT_ASSERT(operand == 0, "Invalid operand index.");
 
-    auto sq = ac.autograd->create_op(ac, Op("multiply"), {output, output});
+    auto sq = ac.autograd->create_op(ac, Op(OpType::Multiply), {output, output});
     auto neg_one = ac.autograd->create_constant(ac, -1.0);
-    auto neg = ac.autograd->create_op(ac, Op("multiply"), {sq, neg_one});
+    auto neg = ac.autograd->create_op(ac, Op(OpType::Multiply), {sq, neg_one});
 
-    return ac.autograd->create_op(ac, Op("multiply"), {neg, gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {neg, gradient});
 }
 
 }  // namespace reciprocal

@@ -52,8 +52,8 @@ tt::graphlib::NodeContext backward(
     TT_ASSERT(inputs.size() == 1, "Sine should have single input.");
     TT_ASSERT(operand == 0, "Invalid operand index.");
 
-    graphlib::NodeContext cosine_output = ac.autograd->create_op(ac, Op("cosine"), {inputs[0]});
-    return ac.autograd->create_op(ac, Op("multiply"), {cosine_output, gradient});
+    graphlib::NodeContext cosine_output = ac.autograd->create_op(ac, Op(OpType::Cosine), {inputs[0]});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {cosine_output, gradient});
 }
 
 }  // namespace sine

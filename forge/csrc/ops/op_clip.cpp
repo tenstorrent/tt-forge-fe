@@ -64,12 +64,12 @@ NodeContext backward(
     auto max_constant = ac.autograd->create_constant(ac, max_val);
 
     // Create mask: (x >= min) * (x <= max)
-    auto ge_min = ac.autograd->create_op(ac, Op("greater_equal"), {x, min_constant});
-    auto le_max = ac.autograd->create_op(ac, Op("less_equal"), {x, max_constant});
-    auto mask = ac.autograd->create_op(ac, Op("multiply"), {ge_min, le_max});
+    auto ge_min = ac.autograd->create_op(ac, Op(OpType::GreaterEqual), {x, min_constant});
+    auto le_max = ac.autograd->create_op(ac, Op(OpType::LessEqual), {x, max_constant});
+    auto mask = ac.autograd->create_op(ac, Op(OpType::Multiply), {ge_min, le_max});
 
     // Apply mask to gradient
-    return ac.autograd->create_op(ac, Op("multiply"), {mask, gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {mask, gradient});
 }
 
 }  // namespace clip

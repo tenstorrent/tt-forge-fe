@@ -126,7 +126,7 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
     // Step 1: Move the indexed dimension to the front using a sequence of transposes
     NodeContext current = inputs[0];
     if (dim != 0)
-        for (int i = dim; i > 0; i--) current = dc.op(Op("transpose", {{"dim0", i}, {"dim1", i - 1}}), {current});
+        for (int i = dim; i > 0; i--) current = dc.op(Op(OpType::Transpose, {{"dim0", i}, {"dim1", i - 1}}), {current});
     NodeContext permuted = current;
 
     // Step 2: Reshape to [data_shape[dim], -1]
@@ -147,7 +147,7 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
         }
 
         std::vector<int> reshape_dims = {static_cast<int>(data_shape[dim]), rest_dims_product};
-        reshaped = dc.op(Op("reshape", {{"shape", reshape_dims}}), {permuted});
+        reshaped = dc.op(Op(OpType::Reshape, {{"shape", reshape_dims}}), {permuted});
     }
 
     // Step 3: Apply embedding operation
@@ -162,9 +162,9 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
             total_indices *= idx_dim;
         }
         std::vector<int> flattened_shape = {static_cast<int>(total_indices)};
-        indices_input = dc.op(Op("reshape", {{"shape", flattened_shape}}), {inputs[1]});
+        indices_input = dc.op(Op(OpType::Reshape, {{"shape", flattened_shape}}), {inputs[1]});
     }
-    NodeContext selected = dc.op(Op("embedding"), {indices_input, reshaped});
+    NodeContext selected = dc.op(Op(OpType::Embedding), {indices_input, reshaped});
 
     // Step 4: Reshape back to appropriate dimensions
     NodeContext reshaped_output = selected;
@@ -190,7 +190,7 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
             output_shape.push_back(permuted_shape[i]);
         }
 
-        reshaped_output = dc.op(Op("reshape", {{"shape", output_shape}}), {selected});
+        reshaped_output = dc.op(Op(OpType::Reshape, {{"shape", output_shape}}), {selected});
     }
 
     // Step 5: Restore original dimension order if necessary using transposes
@@ -206,7 +206,7 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
     current = reshaped_output;
     for (int i = 0; i < dim; i++)
     {
-        current = dc.op(Op("transpose", {{"dim0", i}, {"dim1", i + 1}}), {current});
+        current = dc.op(Op(OpType::Transpose, {{"dim0", i}, {"dim1", i + 1}}), {current});
     }
     result = current;
     dc.fuse(result);
