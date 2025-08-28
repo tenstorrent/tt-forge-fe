@@ -7,10 +7,10 @@ import os
 
 from typing import Generator, List, Tuple
 
-from test.operators.utils import TestPlanUtils
-from test.operators.utils import TestCollection
-from test.operators.utils import FailingReasons
-from test.operators.utils import TestSweepsFeatures
+from ...utils import TestPlanUtils
+from ...utils import TestCollection
+from ...utils import FailingReasons
+from ...utils import TestSweepsFeatures
 
 from .failing_reasons_register import FailingReasonsRegister
 

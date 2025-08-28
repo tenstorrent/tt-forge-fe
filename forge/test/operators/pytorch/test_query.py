@@ -7,7 +7,7 @@
 
 import pytest
 
-from test.operators.utils import TestVector
+from ..utils import TestVector
 
 from .test_all import TestVerification, TestQueries
 

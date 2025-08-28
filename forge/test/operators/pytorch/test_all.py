@@ -6,7 +6,8 @@
 
 
 import os
-import forge
+from ..utils.datatypes import DataFormat
+from ..utils.datatypes import MathFidelity
 import textwrap
 import json
 
@@ -15,17 +16,17 @@ from tabulate import tabulate
 from typing import List, Tuple, Optional, Generator, Callable
 from dataclasses import dataclass
 
-from test.operators.utils import InputSource
-from test.operators.utils import TestVector
-from test.operators.utils import TestCollection
-from test.operators.utils import TestCollectionCommon
-from test.operators.utils import TestCollectionTorch
-from test.operators.utils import TestQuery
-from test.operators.utils import TestSuite
-from test.operators.utils import TestPlanScanner
-from test.operators.utils import TestPlanUtils
-from test.operators.utils import FailingReasons
-from test.operators.utils import TestSweepsFeatures
+from ..utils import InputSource
+from ..utils import TestVector
+from ..utils import TestCollection
+from ..utils import TestCollectionCommon
+from ..utils import TestCollectionTorch
+from ..utils import TestQuery
+from ..utils import TestSuite
+from ..utils import TestPlanScanner
+from ..utils import TestPlanUtils
+from ..utils import FailingReasons
+from ..utils import TestSweepsFeatures
 
 
 @dataclass
@@ -40,8 +41,8 @@ class RunQueryParams:
     filters: Optional[List[str]]
     input_sources: Optional[List[InputSource]]
     input_shapes: Optional[List[Tuple[int, ...]]]
-    dev_data_formats: Optional[List[forge.DataFormat]]
-    math_fidelities: Optional[List[forge.MathFidelity]]
+    dev_data_formats: Optional[List[DataFormat]]
+    math_fidelities: Optional[List[MathFidelity]]
     kwargs: Optional[List[dict]]
     failing_reasons: Optional[List[FailingReasons]]
     skip_reasons: Optional[List[FailingReasons]]
@@ -91,7 +92,7 @@ class RunQueryParams:
             ]
         math_fidelities = cls._get_env_list("MATH_FIDELITIES")
         if math_fidelities:
-            math_fidelities = [getattr(forge.MathFidelity, math_fidelity) for math_fidelity in math_fidelities]
+            math_fidelities = [TestPlanUtils.math_fidelity_from_str(math_fidelity) for math_fidelity in math_fidelities]
         kwargs = os.getenv("KWARGS", None)
         if kwargs:
             kwargs = eval(kwargs)
@@ -203,8 +204,8 @@ class TestCollectionData:
         # one example for float and int data formats
         dev_data_formats=[
             None,
-            forge.DataFormat.Float16_b,
-            forge.DataFormat.Int8,
+            DataFormat.Float16_b,
+            DataFormat.Int8,
         ],
     )
 
