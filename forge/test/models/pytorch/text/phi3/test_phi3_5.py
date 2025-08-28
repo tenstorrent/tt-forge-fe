@@ -39,7 +39,8 @@ def test_phi3_5_causal_lm(variant):
         priority=ModelPriority.P1,
     )
 
-    pytest.xfail(reason="Segmentation Fault")
+<<<<<<< HEAD
+    pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2903")
 
     # Load model and inputs via loader
     loader = Phi35Loader(variant)
