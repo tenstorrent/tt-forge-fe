@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 from forge.tensor import to_tf_tensors, to_pt_tensor, to_pt_tensors, to_pd_tensors
 from forge.tvm_utils import flatten_inputs, flatten_structured_output
-from forge.forge_property_utils import ExecutionStage, record_execution, ExecutionRunMode
+from forge.forge_property_utils import ExecutionStage, record_execution
 import torch
 import paddle
 import flax
@@ -172,9 +172,6 @@ def compile_tvm_graph(
     global cpu_json_graph
     dev_json_graph = {"functions": {}, "graph": "", "param_names": {}, "device": "tt"}
     cpu_json_graph = {"functions": {}, "graph": "", "param_names": {}, "device": "cpu"}
-
-    # Record information needed to differentiate between inference and training compilation
-    record_execution_run_mode(ExecutionRunMode.from_training_param(compiler_cfg.enable_training))
 
     if framework == "pytorch":
         json_graphs, inputs = compile_pytorch_for_forge(

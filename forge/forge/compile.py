@@ -42,6 +42,7 @@ from forge.forge_property_utils import (
     ExecutionRunMode,
     ExecutionPass,
     record_execution,
+    record_execution_run_mode,
     record_compiler_config,
     record_flatbuffer_details,
 )
