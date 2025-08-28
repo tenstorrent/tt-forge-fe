@@ -38,6 +38,7 @@ from .failing_reasons import FailingReasonsFinder
 from .failing_reasons_validation import FailingReasonsValidation
 from .pytest import PyTestUtils
 from .pytest import PytestParamsUtils
+from .pytest_report import SweepsPytestReport
 from .datatypes import TestDevice
 
 
@@ -79,5 +80,6 @@ __all__ = [
     "FailingReasonsValidation",
     "PyTestUtils",
     "PytestParamsUtils",
+    "SweepsPytestReport",
     "TestDevice",
 ]
