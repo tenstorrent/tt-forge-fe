@@ -5,10 +5,9 @@
 # Test data for various test cases
 
 import pytest
-import forge
 import torch
 
-from forge import MathFidelity, DataFormat
+from .datatypes import MathFidelity, DataFormat
 
 from . import InputSource
 from . import TestCollection
@@ -30,10 +29,10 @@ class TestCollectionCommon:
             (1, 2, 3, 4),
         ],
         dev_data_formats=[
-            forge.DataFormat.Float16_b,
+            DataFormat.Float16_b,
         ],
         math_fidelities=[
-            forge.MathFidelity.HiFi4,
+            MathFidelity.HiFi4,
         ],
     )
 
@@ -230,54 +229,54 @@ class TestCollectionCommon:
             pytest.param((14, 13, 89, 3), marks=pytest.mark.slow),  #       #74     # 4.2 Prime numbers
         ],
         dev_data_formats=[
-            pytest.param(forge.DataFormat.Bfp2, id="Bfp2"),
-            pytest.param(forge.DataFormat.Bfp2_b, id="Bfp2_b"),
-            pytest.param(forge.DataFormat.Bfp4, id="Bfp4"),
-            pytest.param(forge.DataFormat.Bfp4_b, id="Bfp4_b"),
-            pytest.param(forge.DataFormat.Bfp8, id="Bfp8"),
-            pytest.param(forge.DataFormat.Bfp8_b, id="Bfp8_b"),
-            pytest.param(forge.DataFormat.Float16, id="Float16"),
-            pytest.param(forge.DataFormat.Float16_b, id="Float16_b"),
-            pytest.param(forge.DataFormat.Float32, id="Float32"),
-            pytest.param(forge.DataFormat.Lf8, id="Lf8"),
-            pytest.param(forge.DataFormat.RawUInt8, id="RawUInt8"),
-            pytest.param(forge.DataFormat.RawUInt16, id="RawUInt16"),
-            pytest.param(forge.DataFormat.RawUInt32, id="RawUInt32"),
-            pytest.param(forge.DataFormat.Int8, id="Int8"),
-            pytest.param(forge.DataFormat.UInt16, id="UInt16"),
-            pytest.param(forge.DataFormat.Int32, id="Int32"),
+            pytest.param(DataFormat.Bfp2, id="Bfp2"),
+            pytest.param(DataFormat.Bfp2_b, id="Bfp2_b"),
+            pytest.param(DataFormat.Bfp4, id="Bfp4"),
+            pytest.param(DataFormat.Bfp4_b, id="Bfp4_b"),
+            pytest.param(DataFormat.Bfp8, id="Bfp8"),
+            pytest.param(DataFormat.Bfp8_b, id="Bfp8_b"),
+            pytest.param(DataFormat.Float16, id="Float16"),
+            pytest.param(DataFormat.Float16_b, id="Float16_b"),
+            pytest.param(DataFormat.Float32, id="Float32"),
+            pytest.param(DataFormat.Lf8, id="Lf8"),
+            pytest.param(DataFormat.RawUInt8, id="RawUInt8"),
+            pytest.param(DataFormat.RawUInt16, id="RawUInt16"),
+            pytest.param(DataFormat.RawUInt32, id="RawUInt32"),
+            pytest.param(DataFormat.Int8, id="Int8"),
+            pytest.param(DataFormat.UInt16, id="UInt16"),
+            pytest.param(DataFormat.Int32, id="Int32"),
         ],
         math_fidelities=[
-            forge.MathFidelity.LoFi,
-            forge.MathFidelity.HiFi2,
-            forge.MathFidelity.HiFi3,
-            forge.MathFidelity.HiFi4,
+            MathFidelity.LoFi,
+            MathFidelity.HiFi2,
+            MathFidelity.HiFi3,
+            MathFidelity.HiFi4,
         ],
     )
 
     float = TestCollection(
         dev_data_formats=[
-            pytest.param(forge.DataFormat.Bfp2, id="Bfp2"),
-            pytest.param(forge.DataFormat.Bfp2_b, id="Bfp2_b"),
-            pytest.param(forge.DataFormat.Bfp4, id="Bfp4"),
-            pytest.param(forge.DataFormat.Bfp4_b, id="Bfp4_b"),
-            pytest.param(forge.DataFormat.Bfp8, id="Bfp8"),
-            pytest.param(forge.DataFormat.Bfp8_b, id="Bfp8_b"),
-            pytest.param(forge.DataFormat.Float16, id="Float16"),
-            pytest.param(forge.DataFormat.Float16_b, id="Float16_b"),
-            pytest.param(forge.DataFormat.Float32, id="Float32"),
-            pytest.param(forge.DataFormat.Lf8, id="Lf8"),
+            pytest.param(DataFormat.Bfp2, id="Bfp2"),
+            pytest.param(DataFormat.Bfp2_b, id="Bfp2_b"),
+            pytest.param(DataFormat.Bfp4, id="Bfp4"),
+            pytest.param(DataFormat.Bfp4_b, id="Bfp4_b"),
+            pytest.param(DataFormat.Bfp8, id="Bfp8"),
+            pytest.param(DataFormat.Bfp8_b, id="Bfp8_b"),
+            pytest.param(DataFormat.Float16, id="Float16"),
+            pytest.param(DataFormat.Float16_b, id="Float16_b"),
+            pytest.param(DataFormat.Float32, id="Float32"),
+            pytest.param(DataFormat.Lf8, id="Lf8"),
         ],
     )
 
     int = TestCollection(
         dev_data_formats=[
-            pytest.param(forge.DataFormat.RawUInt8, id="RawUInt8"),
-            pytest.param(forge.DataFormat.RawUInt16, id="RawUInt16"),
-            pytest.param(forge.DataFormat.RawUInt32, id="RawUInt32"),
-            pytest.param(forge.DataFormat.Int8, id="Int8"),
-            pytest.param(forge.DataFormat.UInt16, id="UInt16"),
-            pytest.param(forge.DataFormat.Int32, id="Int32"),
+            pytest.param(DataFormat.RawUInt8, id="RawUInt8"),
+            pytest.param(DataFormat.RawUInt16, id="RawUInt16"),
+            pytest.param(DataFormat.RawUInt32, id="RawUInt32"),
+            pytest.param(DataFormat.Int8, id="Int8"),
+            pytest.param(DataFormat.UInt16, id="UInt16"),
+            pytest.param(DataFormat.Int32, id="Int32"),
         ],
     )
 
@@ -291,8 +290,8 @@ class TestCollectionCommon:
         + [shape for shape in all.input_shapes if len(shape) in (4,) and shape[0] != 1][:2],
         dev_data_formats=[
             None,
-            forge.DataFormat.Float16_b,
-            forge.DataFormat.Int8,
+            DataFormat.Float16_b,
+            DataFormat.Int8,
         ],
     )
 

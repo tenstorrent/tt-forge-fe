@@ -5,43 +5,28 @@
 # Operator test utilities
 
 import random
-import os
 import sys
-import forge
 import torch
 import pytest
 
 
-from enum import Enum
-from dataclasses import dataclass
 from loguru import logger
-from typing import Optional, List, Dict, Type, Union
+from typing import Optional, List, Type, Union
 
-from forge import ForgeModule, Module, DeprecatedVerifyConfig
-from forge.op_repo import TensorShape
+
 from forge.op_repo.pytorch_operators import pytorch_operator_repository
-from forge.verify import TestKind  # , verify_module
-from forge._C import MathFidelity
 
-from forge.config import CompilerConfig
-from forge.verify.config import VerifyConfig
+from .compat import create_torch_inputs
 
-from .compat import TestDevice
-from .compat import (
-    create_torch_inputs,
-    verify_module_for_inputs,
-    verify_module_for_inputs_torch,
+from .datatypes import (
+    TensorShape,
+    AutomaticValueChecker,
+    AllCloseValueChecker,
+    ValueRange,
+    ValueRanges,
+    OperatorParameterTypes,
+    FrameworkDataFormat,
 )
-from .datatypes import ValueRange, ValueRanges
-from .datatypes import OperatorParameterTypes
-from .datatypes import FrameworkDataFormat
-from .features import TestSweepsFeatures
-
-
-# All supported framework model types
-FrameworkModelType = Union[
-    Type[torch.nn.Module],
-]
 
 
 class ShapeUtils:
@@ -88,194 +73,16 @@ class TensorUtils:
         return constant
 
 
-@dataclass(frozen=True)
-class InputSourceFlag:
-    """Dataclass for specifying compiler flags for specific input source"""
-
-    input_queues_on_host: bool
-    set_default_dram_parameters: bool
-    default_dram_parameters: Optional[bool]
-
-
-class InputSourceFlags(Enum):
-    """Enums defining input source flags"""
-
-    FROM_HOST = InputSourceFlag(True, False, None)
-    FROM_DRAM = InputSourceFlag(False, False, None)
-    FROM_DRAM_PROLOGUED = InputSourceFlag(False, True, False)
-    FROM_DRAM_NOT_PROLOGUED = InputSourceFlag(False, True, True)
-    FROM_DRAM_PROLOGUE_MICROBATCH_SIZE = InputSourceFlag(False, True, None)
-
-
-class CompilerUtils:
-    """Utility functions for Forge compiler configuration"""
+class ValueCheckerUtils:
+    """Utility functions for value checking"""
 
     @staticmethod
-    def set_input_source(input_source_flag: InputSourceFlag, compiler_cfg: CompilerConfig):
-        """Set compiler configuration for input source"""
-        # Not existing in the compiler, after global config removal
-        # compiler_cfg.input_queues_on_host = input_source_flag.input_queues_on_host
-        # if input_source_flag.set_default_dram_parameters:
-        #     compiler_cfg.default_dram_parameters = input_source_flag.default_dram_parameters
-
-        # NOP since we don't use this flag in the compiler, currently.
+    def automatic(pcc: float = 0.99, rtol: float = 1e-05, atol: float = 1e-08, dissimilarity_threshold: float = 1e-03):
+        return AutomaticValueChecker(pcc=pcc, rtol=rtol, atol=atol, dissimilarity_threshold=dissimilarity_threshold)
 
     @staticmethod
-    def set_math_fidelity(math_fidelity: MathFidelity, compiler_cfg: CompilerConfig):
-        """Set compiler configuration for math fidelity"""
-        # Currently not respected/supported in the compiler
-        compiler_cfg.default_math_fidelity = math_fidelity
-
-
-class DeviceUtils:
-    """Utility functions for Forge verification"""
-
-    @staticmethod
-    def warm_reset():
-        reset_command = "/home/software/syseng/wh/tt-smi -lr all wait -er"
-        os.system(reset_command)
-
-
-class VerifyUtils:
-    """Utility functions for Forge verification"""
-
-    @classmethod
-    def verify(
-        cls,
-        model: Module,
-        test_device: TestDevice,
-        input_shapes: List[TensorShape],
-        input_params: List[Dict] = [],
-        compiler_cfg: CompilerConfig = CompilerConfig(),
-        pcc: Optional[float] = None,
-        input_source_flag: InputSourceFlags = None,
-        dev_data_format: forge.DataFormat = None,
-        convert_to_forge: Optional[bool] = None,
-        math_fidelity: forge.MathFidelity = None,
-        value_range: Optional[ValueRanges] = None,
-        random_seed: Optional[int] = None,
-        warm_reset: bool = False,
-        verify_config: Optional[VerifyConfig] = VerifyConfig(),
-        skip_forge_verification: bool = TestSweepsFeatures.params.skip_forge_verification,
-    ):
-        """Perform Forge verification on the model
-
-        Args:
-            model: Forge model
-            test_device: TestDevice
-            input_shapes: List of input shapes
-            input_params: List of input parameters
-            compiler_cfg: Compiler configuration
-            pcc: PCC value for verification
-            input_source_flag: Input source flag
-            dev_data_format: Data format
-            convert_to_forge: Convert input tensors to Forge data format
-            math_fidelity: Math fidelity
-            value_range: Value range of input tensors
-            random_seed: Random seed
-            warm_reset: Warm reset the device before verification
-            verify_config: Verification configuration
-            skip_forge_verification: Skip verification with Forge module
-        """
-
-        # Conclude if we should convert to forge data format
-        if convert_to_forge is None and isinstance(model, ForgeModule):
-            convert_to_forge = True
-
-        cls.setup(
-            compiler_cfg=compiler_cfg,
-            input_source_flag=input_source_flag,
-            math_fidelity=math_fidelity,
-            warm_reset=warm_reset,
-        )
-
-        inputs = cls.create_torch_inputs(
-            input_shapes=input_shapes,
-            dev_data_format=dev_data_format,
-            value_range=value_range,
-            random_seed=random_seed,
-        )
-
-        cls.verify_module_for_inputs(
-            model=model,
-            inputs=inputs,
-            compiler_cfg=compiler_cfg,
-            pcc=pcc,
-            verify_config=verify_config,
-            dev_data_format=dev_data_format,
-            convert_to_forge=convert_to_forge,
-            skip_forge_verification=skip_forge_verification,
-        )
-
-    @classmethod
-    def setup(
-        cls,
-        compiler_cfg: CompilerConfig,
-        input_source_flag: InputSourceFlags = None,
-        math_fidelity: forge.MathFidelity = None,
-        warm_reset: bool = False,
-    ):
-        if warm_reset:
-            DeviceUtils.warm_reset()
-
-        if input_source_flag:
-            CompilerUtils.set_input_source(input_source_flag.value, compiler_cfg)
-
-        if math_fidelity:
-            CompilerUtils.set_math_fidelity(math_fidelity, compiler_cfg)
-
-        # if dev_data_format:
-        #     input_params.append({"dev_data_format": dev_data_format})
-
-    @classmethod
-    def create_torch_inputs(
-        cls,
-        input_shapes: List[TensorShape],
-        dev_data_format: forge.DataFormat = None,
-        value_range: Optional[ValueRanges] = None,
-        random_seed: Optional[int] = None,
-    ) -> List[torch.Tensor]:
-
-        inputs = create_torch_inputs(
-            input_shapes=input_shapes,
-            dev_data_format=dev_data_format,
-            value_range=value_range,
-            random_seed=random_seed,
-        )
-
-        return inputs
-
-    @classmethod
-    def verify_module_for_inputs(
-        cls,
-        model: Module,
-        inputs: List[torch.Tensor],
-        compiler_cfg: CompilerConfig,
-        pcc: Optional[float] = None,
-        verify_config: Optional[VerifyConfig] = None,
-        dev_data_format: forge.DataFormat = None,
-        convert_to_forge: bool = True,  # explicit conversion to forge data format
-        skip_forge_verification: bool = TestSweepsFeatures.params.skip_forge_verification,
-    ):
-
-        if skip_forge_verification:
-            if isinstance(model, ForgeModule):
-                logger.warning("Nothing to validate while skipping Forge verification for Forge module")
-            else:
-                verify_module_for_inputs_torch(
-                    model=model,
-                    inputs=inputs,
-                    verify_config=verify_config,
-                )
-        else:
-            verify_module_for_inputs(
-                model=model,
-                inputs=inputs,
-                compiler_cfg=compiler_cfg,
-                verify_config=verify_config,
-                dev_data_format=dev_data_format,
-                convert_to_forge=convert_to_forge,
-            )
+    def all_close(rtol: float = 1e-05, atol: float = 1e-08):
+        return AllCloseValueChecker(rtol=rtol, atol=atol)
 
 
 class LoggerUtils:

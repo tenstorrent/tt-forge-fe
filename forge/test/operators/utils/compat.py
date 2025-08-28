@@ -4,31 +4,24 @@
 
 # Compatibility methods and datatypes for Forge
 
-import forge
 import torch
 
 from loguru import logger
 from typing import Optional, List, Union
 
-from forge import ForgeModule, Module, DeprecatedVerifyConfig
-from forge.tensor import to_pt_tensors
-from forge.op_repo import TensorShape
-from forge.config import CompilerConfig
-from forge.tensor import to_forge_tensors
-from forge.verify.compare import compare_with_golden
-from forge.verify.verify import verify
-from forge.verify.config import VerifyConfig
-from forge.forge_property_utils import forge_property_handler_var
+from .frontend import SweepsFrontend
 
-from .datatypes import OperatorParameterTypes, ValueRanges, ValueRange
-from .datatypes import FrameworkDataFormat
+from .frontend.datatypes import ForgeTensor
 
-
-# TODO - Remove this class once TestDevice is available in Forge
-# https://github.com/tenstorrent/tt-forge-fe/issues/342
-class TestDevice:
-
-    pass
+from .datatypes import (
+    DataFormat,
+    FrameworkDataFormat,
+    TensorShape,
+    OperatorParameterTypes,
+    ValueRanges,
+    ValueRange,
+    VerifyConfig,
+)
 
 
 class TestTensorsUtils:
@@ -39,56 +32,56 @@ class TestTensorsUtils:
     # Generated random values are chosen to fit both the torch dtype and the dev data format
     # So after the conversion from torch to forge no data is lost
     dev_data_format_to_dtype = {
-        # forge.DataFormat.Bfp2: torch.float16,
-        # forge.DataFormat.Bfp2: torch.bfloat16,
-        forge.DataFormat.Bfp2: torch.float32,
-        forge.DataFormat.Bfp2_b: torch.float32,
-        # forge.DataFormat.Bfp2_b: torch.bool,  # mapped
-        forge.DataFormat.Bfp4: torch.float32,
-        forge.DataFormat.Bfp4_b: torch.float32,
-        forge.DataFormat.Bfp8: torch.float32,
-        forge.DataFormat.Bfp8_b: torch.float32,
-        # forge.DataFormat.Float16: torch.float16,  # fatal python error
-        forge.DataFormat.Float16: torch.float32,  # mapped
-        forge.DataFormat.Float16_b: torch.float32,  # mapped
-        forge.DataFormat.Float32: torch.float32,  # mapped
-        # forge.DataFormat.Lf8: torch.float16,  # fatal python error
-        # forge.DataFormat.Lf8: torch.bfloat16,  # pcc failed
-        forge.DataFormat.Lf8: torch.float32,
-        # forge.DataFormat.RawUInt8: torch.int8,  # unsupported
-        # forge.DataFormat.RawUInt8: torch.uint8,  # Unsupported torch dtype
-        forge.DataFormat.RawUInt8: torch.int32,
-        # forge.DataFormat.RawUInt16: torch.int8,
-        # forge.DataFormat.RawUInt16: torch.uint8,
-        # forge.DataFormat.RawUInt16: torch.int16,
-        forge.DataFormat.RawUInt16: torch.int32,
-        # forge.DataFormat.RawUInt32: torch.uint8,
-        forge.DataFormat.RawUInt32: torch.int32,
-        # forge.DataFormat.Int8: torch.int8,  # unsupported
-        forge.DataFormat.Int8: torch.int32,  # mapped
-        # forge.DataFormat.UInt16: torch.int8,  #  E  RuntimeError: Unsupported data type
-        forge.DataFormat.UInt16: torch.int32,
-        forge.DataFormat.Int32: torch.int32,  # mapped
+        # DataFormat.Bfp2: torch.float16,
+        # DataFormat.Bfp2: torch.bfloat16,
+        DataFormat.Bfp2: torch.float32,
+        DataFormat.Bfp2_b: torch.float32,
+        # DataFormat.Bfp2_b: torch.bool,  # mapped
+        DataFormat.Bfp4: torch.float32,
+        DataFormat.Bfp4_b: torch.float32,
+        DataFormat.Bfp8: torch.float32,
+        DataFormat.Bfp8_b: torch.float32,
+        # DataFormat.Float16: torch.float16,  # fatal python error
+        DataFormat.Float16: torch.float32,  # mapped
+        DataFormat.Float16_b: torch.float32,  # mapped
+        DataFormat.Float32: torch.float32,  # mapped
+        # DataFormat.Lf8: torch.float16,  # fatal python error
+        # DataFormat.Lf8: torch.bfloat16,  # pcc failed
+        DataFormat.Lf8: torch.float32,
+        # DataFormat.RawUInt8: torch.int8,  # unsupported
+        # DataFormat.RawUInt8: torch.uint8,  # Unsupported torch dtype
+        DataFormat.RawUInt8: torch.int32,
+        # DataFormat.RawUInt16: torch.int8,
+        # DataFormat.RawUInt16: torch.uint8,
+        # DataFormat.RawUInt16: torch.int16,
+        DataFormat.RawUInt16: torch.int32,
+        # DataFormat.RawUInt32: torch.uint8,
+        DataFormat.RawUInt32: torch.int32,
+        # DataFormat.Int8: torch.int8,  # unsupported
+        DataFormat.Int8: torch.int32,  # mapped
+        # DataFormat.UInt16: torch.int8,  #  E  RuntimeError: Unsupported data type
+        DataFormat.UInt16: torch.int32,
+        DataFormat.Int32: torch.int32,  # mapped
     }
 
     # Defines ranges of values for forge data formats
     data_format_ranges = {
-        forge.DataFormat.Bfp2: (-10000, 10000),
-        forge.DataFormat.Bfp2_b: (-10000, 10000),
-        forge.DataFormat.Bfp4: (-10000, 10000),
-        forge.DataFormat.Bfp4_b: (-10000, 10000),
-        forge.DataFormat.Bfp8: (-10000, 10000),
-        forge.DataFormat.Bfp8_b: (-10000, 10000),
-        forge.DataFormat.Float16: (-10000, 10000),
-        forge.DataFormat.Float16_b: (-10000, 10000),
-        forge.DataFormat.Float32: (-10000, 10000),
-        forge.DataFormat.Lf8: (-10000, 10000),
-        forge.DataFormat.RawUInt8: (0, 2**8 - 1),
-        forge.DataFormat.RawUInt16: (0, 2**16 - 1),
-        forge.DataFormat.RawUInt32: (0, 2**32 - 1),
-        forge.DataFormat.Int8: (-(2**7), 2**7 - 1),
-        forge.DataFormat.UInt16: (0, 2**16 - 1),
-        forge.DataFormat.Int32: (-(2**31), 2**31 - 1),
+        DataFormat.Bfp2: (-10000, 10000),
+        DataFormat.Bfp2_b: (-10000, 10000),
+        DataFormat.Bfp4: (-10000, 10000),
+        DataFormat.Bfp4_b: (-10000, 10000),
+        DataFormat.Bfp8: (-10000, 10000),
+        DataFormat.Bfp8_b: (-10000, 10000),
+        DataFormat.Float16: (-10000, 10000),
+        DataFormat.Float16_b: (-10000, 10000),
+        DataFormat.Float32: (-10000, 10000),
+        DataFormat.Lf8: (-10000, 10000),
+        DataFormat.RawUInt8: (0, 2**8 - 1),
+        DataFormat.RawUInt16: (0, 2**16 - 1),
+        DataFormat.RawUInt32: (0, 2**32 - 1),
+        DataFormat.Int8: (-(2**7), 2**7 - 1),
+        DataFormat.UInt16: (0, 2**16 - 1),
+        DataFormat.Int32: (-(2**31), 2**31 - 1),
     }
 
     # Defines ranges of values for torch dtypes
@@ -125,7 +118,7 @@ class TestTensorsUtils:
     @classmethod
     def get_value_range(
         cls,
-        dev_data_format: forge.DataFormat,
+        dev_data_format: DataFormat,
         dtype: torch.dtype,
         value_range: Optional[OperatorParameterTypes.RangeValue] = None,
     ) -> OperatorParameterTypes.RangeValue:
@@ -133,11 +126,11 @@ class TestTensorsUtils:
 
         # When dev_data_format is None, the range should be the same as Float32/float32
         if dev_data_format is None:
-            dev_data_format = forge.DataFormat.Float32
+            dev_data_format = DataFormat.Float32
         if dtype is None:
             dtype = torch.float32
 
-        if isinstance(dev_data_format, forge.DataFormat):
+        if isinstance(dev_data_format, DataFormat):
             forge_data_format_ranges = cls.data_format_ranges
         elif isinstance(dev_data_format, torch.dtype):
             forge_data_format_ranges = cls.dtype_ranges
@@ -186,7 +179,7 @@ class TestTensorsUtils:
         return low, high
 
     @classmethod
-    def get_dtype_for_df(cls, dev_data_format: forge.DataFormat = None) -> torch.dtype:
+    def get_dtype_for_df(cls, dev_data_format: DataFormat = None) -> torch.dtype:
 
         dtype: torch.dtype
 
@@ -210,7 +203,7 @@ class TestTensorsUtils:
     @classmethod
     def get_random_torch_input(
         cls,
-        dev_data_format: forge.DataFormat,
+        dev_data_format: DataFormat,
         dtype: torch.dtype,
         input_shape: TensorShape,
         generator: torch.Generator,
@@ -239,8 +232,9 @@ class TestTensorsUtils:
         else:
             raise ValueError(f"Fail creating random torch input for unsupported dtype: {dtype}")
 
+    @classmethod
     def extract_value_range(
-        value_range: Optional[Union[ValueRanges, ValueRange, OperatorParameterTypes.RangeValue]] = None
+        cls, value_range: Optional[Union[ValueRanges, ValueRange, OperatorParameterTypes.RangeValue]] = None
     ) -> OperatorParameterTypes.RangeValue:
         if isinstance(value_range, ValueRanges):
             value_range = value_range.value.get_range()
@@ -250,9 +244,10 @@ class TestTensorsUtils:
             pass
         return value_range
 
-    def convert_to_forge_tensors(inputs: List[torch.Tensor], dev_data_format: forge.DataFormat) -> List[forge.Tensor]:
-        # return [forge.Tensor.create_from_torch(input, dev_data_format=dev_data_format) for input in inputs]
-        return to_forge_tensors(inputs)
+    @classmethod
+    def convert_to_forge_tensors(cls, inputs: List[torch.Tensor], dev_data_format: DataFormat) -> List[ForgeTensor]:
+        # return [ForgeTensor.create_from_torch(input, dev_data_format=dev_data_format) for input in inputs]
+        return SweepsFrontend.to_forge_tensors(inputs)
 
 
 # TODO move to class TestTensorsUtils
@@ -273,8 +268,6 @@ def create_torch_inputs(
     # if dtype is not None:
     #     torch.set_default_dtype(dtype)
 
-    # forge.config.set_configuration_options(default_df_override=dev_data_format)
-
     if value_range is not None:
         value_range = TestTensorsUtils.extract_value_range(value_range)
 
@@ -286,30 +279,17 @@ def create_torch_inputs(
     return inputs
 
 
-def verify_module_for_inputs(
-    model: Module,
-    inputs: List[torch.Tensor],
-    compiler_cfg: CompilerConfig,
-    verify_config: Optional[VerifyConfig] = VerifyConfig(),
-    dev_data_format: forge.DataFormat = None,
-    convert_to_forge: bool = True,  # explicit conversion to forge data format
-):
+def verify_module_for_inputs(verify_config: VerifyConfig):
 
-    if convert_to_forge:
-        forge_inputs = TestTensorsUtils.convert_to_forge_tensors(inputs, dev_data_format)
-    else:
-        forge_inputs = inputs
-
-    compiled_model = forge.compile(model, sample_inputs=forge_inputs, compiler_cfg=compiler_cfg)
     error_raised = None
     try:
-        verify(forge_inputs, model, compiled_model, verify_config)
+        SweepsFrontend.verify(verify_config=verify_config)
     except Exception as e:
         error_raised = e
         check_pcc_error_level(error_raised)
     finally:
         if not error_raised:
-            pcc = forge_property_handler_var.get().get("tags.pcc")
+            pcc = SweepsFrontend.get_pcc()
             if pcc is not None and 0.99 <= pcc <= 1:
                 logger.info("pcc is in valid range: 0.99 <= {} <= 1, no pcc_error raised", pcc)
 
@@ -319,7 +299,7 @@ def check_pcc_error_level(e: Exception):
     Check the pcc error level based on the pcc value.
     """
     if "Data mismatch -> AutomaticValueChecker" in str(e):
-        pcc = forge_property_handler_var.get().get("tags.pcc")
+        pcc = SweepsFrontend.get_pcc()
         if pcc:
             # logger.error(f"Original error: {e}")
             if pcc <= 0.85:
@@ -337,7 +317,7 @@ def check_pcc_error_level(e: Exception):
             else:
                 logger.info("pcc is in valid range: 0.99 <= {} <= 1, no need to raise error", pcc)
         else:
-            atol = forge_property_handler_var.get().get("tags.atol")
+            atol = SweepsFrontend.get_atol()
             logger.info(
                 "Output is scalar so pcc wasn't calculated, it's AllClose error generated from AutomaticValueChecker, atol={}",
                 atol,
@@ -345,54 +325,3 @@ def check_pcc_error_level(e: Exception):
             raise e
     else:
         raise e
-
-
-def verify_module_for_inputs_torch(
-    model: Module,
-    inputs: List[torch.Tensor],
-    verify_config: Optional[VerifyConfig] = VerifyConfig(),
-):
-
-    verify_torch(inputs, model, verify_config)
-
-
-def verify_torch(
-    inputs: List[torch.Tensor],
-    framework_model: torch.nn.Module,
-    verify_cfg: VerifyConfig = None,
-):
-    """
-    Verify the pytorch model with the given inputs
-    """
-    if verify_cfg is None:
-        verify_cfg = VerifyConfig()
-    if not verify_cfg.enabled:
-        logger.warning("Verification is disabled")
-        return
-
-    # 0th step: input checks
-
-    # Check if inputs are of the correct type
-    if not inputs:
-        raise ValueError("Input tensors must be provided")
-    for input_tensor in inputs:
-        if not isinstance(input_tensor, verify_cfg.supported_tensor_types):
-            raise TypeError(
-                f"Input tensor must be of type {verify_cfg.supported_tensor_types}, but got {type(input_tensor)}"
-            )
-
-    if not isinstance(framework_model, verify_cfg.framework_model_types):
-        raise TypeError(
-            f"Framework model must be of type {verify_cfg.framework_model_types}, but got {type(framework_model)}"
-        )
-
-    # 1st step: run forward pass for the networks
-    fw_out = framework_model(*inputs)
-
-    # 2nd step: apply preprocessing (push tensors to cpu, perform any reshape if necessary,
-    #  cast from tensorflow tensors to pytorch tensors if needed)
-    if not isinstance(fw_out, torch.Tensor):
-        fw_out = to_pt_tensors(fw_out)
-
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    return fw_out

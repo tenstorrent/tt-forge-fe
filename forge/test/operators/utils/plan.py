@@ -7,7 +7,6 @@
 from random import Random
 import types
 import pytest
-import forge
 
 import os
 import importlib
@@ -24,13 +23,16 @@ from enum import Enum
 from loguru import logger
 from typing import Callable, Generator, Optional, List, Set, Dict, Union, Tuple
 
-from forge import MathFidelity, DataFormat
-from forge.op_repo import TensorShape
+from .datatypes import (
+    DataFormat,
+    FrameworkDataFormat,
+    MathFidelity,
+    TensorShape,
+    OperatorParameterTypes,
+)
 
-from .datatypes import OperatorParameterTypes
-from .datatypes import FrameworkDataFormat
 from .pytest import PytestParamsUtils
-from .compat import TestDevice
+from .datatypes import TestDevice
 from .utils import RateLimiter
 from .failing_reasons import FailingReasons, FailingReason
 
@@ -90,7 +92,6 @@ class TestVector:
         dev_data_format: Data format
         math_fidelity: Math fidelity
         kwargs: Operator parameters
-        pcc: PCC value
         failing_result: Failing result
     """
 
@@ -102,7 +103,6 @@ class TestVector:
     dev_data_format: Optional[FrameworkDataFormat] = None
     math_fidelity: Optional[MathFidelity] = None
     kwargs: Optional[OperatorParameterTypes.Kwargs] = None
-    pcc: Optional[float] = None
     failing_result: Optional[TestResultFailing] = None
     test_plan: Optional["TestPlan"] = None  # Needed for verification
 
@@ -146,7 +146,6 @@ class TestCollection:
         dev_data_formats: List of data formats
         math_fidelities: List of math fidelities
         kwargs: List of operator parameters
-        pcc: PCC value
         failing_reason: Failing reason
         skip_reason: Skip reason
     """
@@ -161,7 +160,6 @@ class TestCollection:
     kwargs: Optional[
         Union[List[OperatorParameterTypes.Kwargs], Callable[["TestVector"], List[OperatorParameterTypes.Kwargs]]]
     ] = None
-    pcc: Optional[float] = None
     criteria: Optional[Callable[["TestVector"], bool]] = None
 
     failing_reason: Optional[FailingReasons] = None
@@ -419,7 +417,6 @@ class TestPlan:
                                     input_shape=input_shape,
                                     dev_data_format=dev_data_format,
                                     math_fidelity=math_fidelity,
-                                    pcc=test_collection.pcc,
                                 )
 
                                 # filter collection based on criteria
@@ -437,7 +434,6 @@ class TestPlan:
                                             input_shape=input_shape,
                                             dev_data_format=dev_data_format,
                                             math_fidelity=math_fidelity,
-                                            pcc=test_collection.pcc,
                                             kwargs=kwargs,
                                         )
 
@@ -513,13 +509,23 @@ class TestPlanUtils:
             return None
         dev_data_format_str = dev_data_format_str.replace("forge.", "")
         dev_data_format_str = dev_data_format_str.replace("torch.", "")
-        if hasattr(forge.DataFormat, dev_data_format_str):
-            dev_data_format = getattr(forge.DataFormat, dev_data_format_str)
+        if hasattr(DataFormat, dev_data_format_str):
+            dev_data_format = getattr(DataFormat, dev_data_format_str)
         elif hasattr(torch, dev_data_format_str):
             dev_data_format = getattr(torch, dev_data_format_str)
         else:
             raise ValueError(f"Unsupported data format: {dev_data_format_str} in Forge and PyTorch")
         return dev_data_format
+
+    @classmethod
+    def math_fidelity_from_str(cls, math_fidelity_str: str) -> MathFidelity:
+        if math_fidelity_str is None:
+            return None
+        if hasattr(MathFidelity, math_fidelity_str):
+            math_fidelity = getattr(MathFidelity, math_fidelity_str)
+        else:
+            raise ValueError(f"Unsupported math fidelity: {math_fidelity_str} in Forge")
+        return math_fidelity
 
     @classmethod
     def _match(cls, rule_collection: Optional[List], vector_value):
@@ -703,7 +709,7 @@ class TestPlanUtils:
             math_fidelity_part = "HiFi4"
         if math_fidelity_part is not None and math_fidelity_part.startswith("None"):
             math_fidelity_part = None
-        math_fidelity = eval(f"forge._C.{math_fidelity_part}") if math_fidelity_part is not None else None
+        math_fidelity = cls.math_fidelity_from_str(math_fidelity_part)
 
         return TestVector(
             operator=input_operator,
@@ -732,7 +738,7 @@ class FailingRulesConverter:
                     Union[Optional[TensorShape], List[TensorShape]],
                     Union[Optional[OperatorParameterTypes.Kwargs], List[OperatorParameterTypes.Kwargs]],
                     Union[Optional[FrameworkDataFormat], List[FrameworkDataFormat]],
-                    Union[Optional[forge.MathFidelity], List[forge.MathFidelity]],
+                    Union[Optional[MathFidelity], List[MathFidelity]],
                     Optional[TestResultFailing],
                 ],
                 TestCollection,
@@ -777,7 +783,7 @@ class FailingRulesConverter:
         input_shape: Optional[Union[TensorShape, List[TensorShape]]],
         kwargs: Optional[Union[OperatorParameterTypes.Kwargs, List[OperatorParameterTypes.Kwargs]]],
         dev_data_format: Optional[Union[FrameworkDataFormat, List[FrameworkDataFormat]]],
-        math_fidelity: Optional[Union[forge.MathFidelity, List[forge.MathFidelity]]],
+        math_fidelity: Optional[Union[MathFidelity, List[MathFidelity]]],
         result_failing: Optional[TestResultFailing],
     ) -> TestCollection:
         """Convert failing rule tuple to TestCollection"""

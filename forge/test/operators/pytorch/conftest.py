@@ -7,21 +7,36 @@ import _pytest
 import _pytest.python
 import _pytest.reports
 import _pytest.runner
-import pluggy.callers
+
+from ..utils.frontend import XLA_MODE
+
+if XLA_MODE:
+    import pluggy
+else:
+    import pluggy.callers
 
 from loguru import logger
 
-from test.operators.utils import PyTestUtils
-from test.operators.utils import SweepsTagsLogger
-from test.operators.utils import FailingReasonsFinder
-from test.operators.utils import FailingReasonsValidation
-
+from ..utils import PyTestUtils
+from ..utils import SweepsTagsLogger
+from ..utils import FailingReasonsFinder
+from ..utils import FailingReasonsValidation
 from ..utils import TestPlanUtils
+
+
+def pytest_generate_tests(metafunc):
+    if "test_device" in metafunc.fixturenames:
+        # Temporary work arround to provide dummy test_device
+        # TODO remove workarround https://github.com/tenstorrent/tt-forge-fe/issues/342
+        metafunc.parametrize("test_device", (None,), ids=["no_device"])
 
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item: _pytest.python.Function, call: _pytest.runner.CallInfo):
-    outcome: pluggy.callers._Result = yield
+    if XLA_MODE:
+        outcome: pluggy.Result = yield
+    else:
+        outcome: pluggy.callers._Result = yield
     report: _pytest.reports.TestReport = outcome.get_result()
 
     xfail_reason = None
