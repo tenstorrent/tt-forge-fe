@@ -21,10 +21,7 @@ from forge.verify.verify import verify
 variants = [
     ModelVariant.GHOSTNET_100,
     ModelVariant.GHOSTNET_100_IN1K,
-    pytest.param(
-        ModelVariant.GHOSTNETV2_100_IN1K,
-        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/1656")],
-    ),
+    ModelVariant.GHOSTNETV2_100_IN1K,
 ]
 
 
