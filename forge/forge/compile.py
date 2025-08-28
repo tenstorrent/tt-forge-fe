@@ -239,9 +239,9 @@ def compile_main(
     training = training or optimizer is not None
 
     record_compiler_config(compiler_cfg)
-    record_execution(
-        ExecutionStage.FAILED_TVM_RELAY_IRMODULE_GENERATION, ExecutionRunMode.from_training_param(training)
-    )
+    # Record information needed to differentiate between inference and training compilation
+    record_execution_run_mode(ExecutionRunMode.from_training_param(training))
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IRMODULE_GENERATION)
 
     compile_context: CompileContext = CompileContext(
         modules=modules,
@@ -410,9 +410,7 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
         # execute the optimizer graphs of all linked modules.
         context.optimizer.link_module(compiled_module)
 
-    record_execution(
-        ExecutionStage.FAILED_TTNN_BINARY_EXECUTION, ExecutionRunMode.from_training_param(context.training)
-    )
+    record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
     logger.info("Compilation completed.")
 
     return compiled_module
@@ -642,11 +640,7 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
 
             modules_.append(module)
 
-    record_execution(
-        ExecutionStage.FAILED_FORGE_INITIAL_GRAPH_PASS,
-        ExecutionRunMode.from_training_param(context.training),
-        ExecutionPass.FORWARD,
-    )
+    record_execution(ExecutionStage.FAILED_FORGE_INITIAL_GRAPH_PASS)
 
     if context.graph is None:
         context.graph, context.outputs, context.intermediate_tensors, context.inputs, _ = generate_graph(
@@ -692,11 +686,7 @@ def run_post_initial_graph_pass(context: CompileContext) -> CompileDepth:
     graph_name = context.graph_name
     graph, intermediate_tensors = context.graph, context.intermediate_tensors
 
-    record_execution(
-        ExecutionStage.FAILED_FORGE_POST_INITIAL_GRAPH_PASS,
-        ExecutionRunMode.from_training_param(context.training),
-        ExecutionPass.FORWARD,
-    )
+    record_execution(ExecutionStage.FAILED_FORGE_POST_INITIAL_GRAPH_PASS)
 
     inserted_node_id_mapping, context.fracture_chip_id_assignments = run_post_initial_graph_passes(
         graph, compiler_cfg, compiler_cfg.fracture_groups
@@ -735,11 +725,7 @@ def run_consteval_pass(context: CompileContext) -> CompileDepth:
     """
     graph = context.graph
     graph_name = context.graph_name
-    record_execution(
-        ExecutionStage.FAILED_FORGE_CONSTEVAL,
-        ExecutionRunMode.from_training_param(context.training),
-        ExecutionPass.FORWARD,
-    )
+    record_execution(ExecutionStage.FAILED_FORGE_CONSTEVAL)
 
     run_consteval_graph_pass(graph)
     dump_graph(graph, graph_name, "consteval_graph")
@@ -795,20 +781,12 @@ def run_optimization_pass(context: CompileContext) -> CompileDepth:
     compiler_cfg = context.compiler_cfg
     graph_name = context.graph_name
     graph, intermediate_tensors = context.graph, context.intermediate_tensors
-    record_execution(
-        ExecutionStage.FAILED_FORGE_OPTIMIZATION_GRAPH_PASS,
-        ExecutionRunMode.from_training_param(context.training),
-        ExecutionPass.FORWARD,
-    )
+    record_execution(ExecutionStage.FAILED_FORGE_OPTIMIZATION_GRAPH_PASS)
 
     run_optimization_graph_passes(graph)
     dump_graph(graph, graph_name, "optimized_graph")
 
-    record_execution(
-        ExecutionStage.FAILED_FORGE_POST_OPTIMIZATION_DECOMP,
-        ExecutionRunMode.from_training_param(context.training),
-        ExecutionPass.FORWARD,
-    )
+    record_execution(ExecutionStage.FAILED_FORGE_POST_OPTIMIZATION_DECOMP)
 
     inserted_node_id_mapping = run_post_optimize_decompose_graph_passes(graph, compiler_cfg)
     dump_graph(graph, graph_name, "decomposed_optimized_graph")
@@ -856,11 +834,7 @@ def run_autograd_pass(context: CompileContext) -> CompileDepth:
     graph_name = context.graph_name
     graph, intermediate_tensors, outputs = context.graph, context.intermediate_tensors, context.outputs
 
-    record_execution(
-        ExecutionStage.FAILED_FORGE_AUTOGRAD_PASS,
-        ExecutionRunMode.from_training_param(context.training),
-        ExecutionPass.BACKWARD,
-    )
+    record_execution(ExecutionStage.FAILED_FORGE_AUTOGRAD_PASS)
 
     graph.set_training(True)
 
@@ -912,9 +886,7 @@ def run_post_autograd_pass(context: CompileContext) -> CompileDepth:
         context.losses,
         context.outputs,
     )
-    record_execution(
-        ExecutionStage.FAILED_FORGE_POST_AUTOGRAD_DECOMP, ExecutionRunMode.from_training_param(context.training)
-    )
+    record_execution(ExecutionStage.FAILED_FORGE_POST_AUTOGRAD_DECOMP)
 
     inserted_node_id_mapping = run_post_autograd_graph_passes(graph, compiler_cfg)
     for inserted_node_id, original_node_id in inserted_node_id_mapping:
@@ -946,7 +918,7 @@ def run_pre_lowering_pass(context: CompileContext) -> CompileDepth:
     compiler_cfg = context.compiler_cfg
     graph_name = context.graph_name
     graph = context.graph
-    record_execution(ExecutionStage.FAILED_FORGE_PRE_LOWERING, ExecutionRunMode.from_training_param(context.training))
+    record_execution(ExecutionStage.FAILED_FORGE_PRE_LOWERING)
 
     graph = run_pre_lowering_passes(graph, compiler_cfg.default_df_override)
     dump_graph(graph, graph_name, "pre_lowering")
@@ -970,7 +942,7 @@ def split_graph(context: CompileContext) -> CompileDepth:
     -------
     CompileDepth - next compile stage
     """
-    record_execution(ExecutionStage.FAILED_FORGE_GRAPH_SPLIT, ExecutionRunMode.from_training_param(context.training))
+    record_execution(ExecutionStage.FAILED_FORGE_GRAPH_SPLIT)
 
     assert context.graph is not None
     context.forge_module = forge._C.split_graph(context.graph)
@@ -986,9 +958,7 @@ def run_mlir_compiler(context: CompileContext) -> CompileDepth:
     assert forge_module is not None
     assert compiler_cfg is not None
 
-    record_execution(
-        ExecutionStage.FAILED_FORGE_MLIR_COMPILATION, ExecutionRunMode.from_training_param(context.training)
-    )
+    record_execution(ExecutionStage.FAILED_FORGE_MLIR_COMPILATION)
 
     context.compiled_binary = forge._C.run_mlir_compiler(forge_module, compiler_cfg.mlir_config)
 

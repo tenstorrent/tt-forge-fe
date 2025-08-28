@@ -173,6 +173,9 @@ def compile_tvm_graph(
     dev_json_graph = {"functions": {}, "graph": "", "param_names": {}, "device": "tt"}
     cpu_json_graph = {"functions": {}, "graph": "", "param_names": {}, "device": "cpu"}
 
+    # Record information needed to differentiate between inference and training compilation
+    record_execution_run_mode(ExecutionRunMode.from_training_param(compiler_cfg.enable_training))
+
     if framework == "pytorch":
         json_graphs, inputs = compile_pytorch_for_forge(
             module,
@@ -554,14 +557,12 @@ def compile_pytorch_for_forge(torchmod, *inputs, graph_name, compiler_cfg, verif
         if cached_graphs is not None:
             return cached_graphs, flattened_inputs
 
-    record_execution(ExecutionStage.FAILED_TVM_RELAY_IO_FLATTENING, ExecutionRunMode.from_training_param(training_mode))
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IO_FLATTENING)
     logger.trace("From PyTorch")
     logger.trace(mod.functions)
 
     mod = flatten_IO(mod, flattened_name_map)
-    record_execution(
-        ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION, ExecutionRunMode.from_training_param(training_mode)
-    )
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
 
     # Construct TVM IR
     mod, _ = construct_tvm_ir(
@@ -634,20 +635,14 @@ def compile_paddle_for_forge(paddlemod, *inputs, graph_name, compiler_cfg, verif
     # Generate TVM module
     mod, params = tvm.relay.frontend.from_paddle(traced_model, named_inputs)
 
-    record_execution(
-        ExecutionStage.FAILED_TVM_RELAY_IO_FLATTENING,
-        ExecutionRunMode.from_training_param(compiler_cfg.enable_training),
-    )
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IO_FLATTENING)
 
     logger.trace("From Paddle")
     logger.trace(mod.functions)
 
     mod = flatten_IO(mod, flattened_name_map)
 
-    record_execution(
-        ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION,
-        ExecutionRunMode.from_training_param(compiler_cfg.enable_training),
-    )
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
 
     # Construct TVM IR
     mod, _ = construct_tvm_ir(
@@ -725,10 +720,7 @@ def compile_tvm_for_forge(
         mod, graph_name=graph_name, compiler_cfg=compiler_cfg, input_names=input_names
     )
     tvm.relay.build_module.build(mod, target=target, params=params)
-    record_execution(
-        ExecutionStage.FAILED_FORGE_MODULE_GENERATION,
-        ExecutionRunMode.from_training_param(compiler_cfg.enable_training),
-    )
+    record_execution(ExecutionStage.FAILED_FORGE_MODULE_GENERATION)
 
     if return_params:
         return mod, forge_params
@@ -827,10 +819,7 @@ def compile_onnx_for_forge(onnx_mod, onnx_path, *inputs, graph_name, compiler_cf
 
     mod, params = relay.frontend.from_onnx(onnx_mod, input_shape_dict, freeze_params=False)
     mod = relay.transform.DynamicToStatic()(mod)
-    record_execution(
-        ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION,
-        ExecutionRunMode.from_training_param(compiler_cfg.enable_training),
-    )
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
 
     if not compiler_cfg.enable_tvm_constant_prop:
         mod = tvm.IRModule.from_expr(tvm.relay.build_module.bind_params_by_name(mod["main"], {}))
@@ -906,10 +895,7 @@ def compile_tflite_for_forge(module, path, *inputs, graph_name, compiler_cfg, ve
         tflite_model,
         shape_dict=input_shape_dict,
     )
-    record_execution(
-        ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION,
-        ExecutionRunMode.from_training_param(compiler_cfg.enable_training),
-    )
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
 
     assert len(input_names) == len(inputs), "Number of input names must match number of inputs"
 
@@ -1048,10 +1034,7 @@ def compile_jax_for_forge(jaxmodel, *inputs, graph_name, compiler_cfg, verify_cf
     outputs = [output.name for output in tf_func.outputs]
     mod, params = tvm.relay.frontend.from_tensorflow(graph_def, layout="NCHW", outputs=outputs)
     mod = tvm.transform.Sequential([tvm.relay.transform.Inline()])(mod)
-    record_execution(
-        ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION,
-        ExecutionRunMode.from_training_param(compiler_cfg.enable_training),
-    )
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
 
     # Write Graph to the TensorBoard
     # writer = tf.summary.create_file_writer("generated_modules/tensorboard/jax")
@@ -1160,10 +1143,7 @@ def compile_tf_for_forge(tfmod, *inputs, graph_name, compiler_cfg, verify_cfg=No
     outputs = [x.name for x in flattened_outputs]
     mod, params = tvm.relay.frontend.from_tensorflow(graph_def, outputs=outputs)
     mod = tvm.transform.Sequential([tvm.relay.transform.Inline()])(mod)
-    record_execution(
-        ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION,
-        ExecutionRunMode.from_training_param(compiler_cfg.enable_training),
-    )
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
 
     # Construct TVM IR
     mod, param_name_lookup = construct_tvm_ir(
@@ -1241,10 +1221,7 @@ def compile_tf_graphdef_for_forge(
 
     mod, params = tvm.relay.frontend.from_tensorflow(graph_def, layout="NCHW", outputs=output_list_)
     mod = tvm.transform.Sequential([tvm.relay.transform.Inline()])(mod)
-    record_execution(
-        ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION,
-        ExecutionRunMode.from_training_param(compiler_cfg.enable_training),
-    )
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
 
     assert (
         compiler_cfg.enable_tvm_constant_prop == True
@@ -1274,10 +1251,7 @@ def compile_tf_graphdef_for_forge(
     )
 
     tvm.relay.build_module.build(partitioned_mod, target=target, params=params)
-    record_execution(
-        ExecutionStage.FAILED_FORGE_MODULE_GENERATION,
-        ExecutionRunMode.from_training_param(compiler_cfg.enable_training),
-    )
+    record_execution(ExecutionStage.FAILED_FORGE_MODULE_GENERATION)
 
     json_graphs = extract_graphs(partitioned_mod, forge_params, input_names, [], graph_hash=graph_hash.hexdigest())
 

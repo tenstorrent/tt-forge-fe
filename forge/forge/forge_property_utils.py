@@ -583,7 +583,7 @@ class ForgePropertyHandler:
 
     def __init__(self, store: Optional[ForgePropertyStore] = None):
         self.store = store if store is not None else ForgePropertyStore()
-        self.record_execution(ExecutionStage.FAILED_BEFORE_FORGE_COMPILATION_INITIATION, None, None)
+        self.record_execution(ExecutionStage.FAILED_BEFORE_FORGE_COMPILATION_INITIATION)
 
     def add(self, key: str, value: Any):
         """
@@ -722,12 +722,7 @@ class ForgePropertyHandler:
         """
         self.add("tags.execution_pass", ExecutionPass.to_str(execution_pass))
 
-    def record_execution(
-        self,
-        execution_stage: ExecutionStage,
-        execution_run_mode: Optional[ExecutionRunMode],
-        execution_pass: Optional[ExecutionPass],
-    ):
+    def record_execution(self, execution_stage: ExecutionStage):
         """
         Records the execution depth and stage in the tags.
 
@@ -737,10 +732,6 @@ class ForgePropertyHandler:
         """
         self.record_execution_stage(execution_stage)
         self.record_execution_depth(ExecutionDepth.from_exec_stage(execution_stage))
-        if execution_run_mode is not None:
-            self.record_execution_run_mode(execution_run_mode)
-        if execution_pass is not None:
-            self.record_execution_pass(execution_pass)
 
     def record_emitc_status(self, is_success: bool):
         self.add("tags.emitc_status", is_success)
@@ -856,11 +847,7 @@ forge_property_handler_var = contextvars.ContextVar("forge_property_handler_var"
 # record various properties.
 
 
-def record_execution(
-    execution_stage: ExecutionStage,
-    execution_run_mode: Optional[ExecutionRunMode] = None,
-    execution_pass: Optional[ExecutionPass] = None,
-):
+def record_execution(execution_stage: ExecutionStage):
     """
     Records the execution depth and stage in the tags.
 
@@ -871,7 +858,7 @@ def record_execution(
     if fph is None:
         return
 
-    fph.record_execution(execution_stage, execution_run_mode, execution_pass)
+    fph.record_execution(execution_stage)
 
 
 def record_emitc_status(is_success: bool):

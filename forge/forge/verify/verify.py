@@ -455,17 +455,13 @@ def verify(
     fw_out = framework_model(*fw_inputs)
     del fw_inputs
 
-    record_execution(
-        ExecutionStage.FAILED_TTNN_BINARY_EXECUTION,
-        ExecutionRunMode.from_training_param(compiled_model.training()),
-        ExecutionPass.FORWARD,
-    )
+    # Record information needed to differentiate between forward (inference/training) and backward (training) passes
+    record_execution_run_mode(ExecutionRunMode.from_training_param(compiled_model.training()))
+    record_execution_pass(ExecutionPass.FORWARD)
+
+    record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
     co_out = compiled_model(*inputs)
-    record_execution(
-        ExecutionStage.FAILED_VERIFICATION,
-        ExecutionRunMode.from_training_param(compiled_model.training()),
-        ExecutionPass.FORWARD,
-    )
+    record_execution(ExecutionStage.FAILED_VERIFICATION)
 
     # EmitC verification
     if verify_cfg.verify_emitc_correctness:
@@ -528,9 +524,7 @@ def verify(
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
 
-    record_execution(
-        ExecutionStage.PASSED, ExecutionRunMode.from_training_param(compiled_model.training), ExecutionPass.FORWARD
-    )
+    record_execution(ExecutionStage.PASSED)
 
     # Return both the framework and compiled model outputs
     return fw_out, co_out
