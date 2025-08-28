@@ -24,7 +24,6 @@ from test.models.pytorch.vision.ssd300_resnet50.model_utils.image_utils import (
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_pytorch_ssd300_resnet50(forge_tmp_path):
     # Record Forge Property
     module_name = record_model_properties(
@@ -52,7 +51,7 @@ def test_pytorch_ssd300_resnet50(forge_tmp_path):
     HWC = prepare_input(input_image)
     CHW = np.swapaxes(np.swapaxes(HWC, 0, 2), 1, 2)
     batch = np.expand_dims(CHW, axis=0)
-    input_batch = torch.from_numpy(batch).float()
+    input_batch = torch.from_numpy(batch).float().contiguous()
     inputs = [input_batch]
 
     # STEP 4: Export to ONNX
