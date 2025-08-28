@@ -241,7 +241,7 @@ def LeakyRelu(name: str, operandA: Tensor, alpha: float) -> Tensor:
         Forge tensor
     """
 
-    return op("leaky_relu", name, operandA, attrs=(alpha,), parameter=alpha).get_tensor()
+    return op("leaky_relu", name, operandA, parameter=alpha).get_tensor()
 
 
 def Gelu(name: str, operandA: Tensor, approximate="none") -> Tensor:
@@ -267,7 +267,7 @@ def Gelu(name: str, operandA: Tensor, approximate="none") -> Tensor:
         Forge tensor
     """
 
-    return op("gelu", name, operandA, attrs=(approximate,), approximate=approximate).get_tensor()
+    return op("gelu", name, operandA, approximate=approximate).get_tensor()
 
 
 def Sigmoid(name: str, operandA: Tensor) -> Tensor:

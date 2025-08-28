@@ -41,7 +41,7 @@ def Transpose(name: str, operandA: Tensor, dim0: int, dim1: int) -> Tensor:
     if dim0 > dim1:
         dim0, dim1 = dim1, dim0
 
-    return op("transpose", name, operandA, attrs=(dim0, dim1), dim0=dim0, dim1=dim1).get_tensor()
+    return op("transpose", name, operandA, dim0=dim0, dim1=dim1).get_tensor()
 
 
 def Reshape(name: str, operandA: Tensor, shape: Tuple[int, ...]) -> Tensor:
@@ -147,9 +147,7 @@ def Index(name: str, operandA: Tensor, dim: int, start: int, stop: int = None, s
     assert stop <= operandA.shape[dim]
     assert stride <= operandA.shape[dim]
 
-    return op(
-        "index", name, operandA, attrs=(dim, start, stop, stride), dim=dim, start=start, stop=stop, stride=stride
-    ).get_tensor()
+    return op("index", name, operandA, dim=dim, start=start, stop=stop, stride=stride).get_tensor()
 
 
 def AdvIndex(
@@ -309,12 +307,11 @@ def Pad(
         "value": value,
         "channel_last": channel_last,
     }
-    attrs = named_attrs["padding"] + [named_attrs["mode"], named_attrs["value"], named_attrs["channel_last"]]
+
     return op(
         "pad",
         name,
         operandA,
-        attrs=attrs,
         **named_attrs,
     ).get_tensor()
 
@@ -488,7 +485,7 @@ def Unsqueeze(name: str, operandA: Tensor, dim: int) -> Tensor:
         Forge tensor
     """
 
-    return op("unsqueeze", name, operandA, attrs=(dim,), dim=dim).get_tensor()
+    return op("unsqueeze", name, operandA, dim=dim).get_tensor()
 
 
 def Squeeze(name: str, operandA: Tensor, dim: int) -> Tensor:
@@ -512,7 +509,7 @@ def Squeeze(name: str, operandA: Tensor, dim: int) -> Tensor:
         Forge tensor
     """
 
-    return op("squeeze", name, operandA, attrs=(dim,), dim=dim).get_tensor()
+    return op("squeeze", name, operandA, dim=dim).get_tensor()
 
 
 def PixelShuffle(name: str, operandA: Tensor, upscale_factor: int) -> Tensor:

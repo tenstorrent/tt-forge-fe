@@ -3,83 +3,11 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "lower_to_forge/common.hpp"
 
+#include "ops/op.hpp"
 #include "utils/assert.hpp"
 
 namespace tt
 {
-
-inline void to_netlist(std::ostream &os, int i) { os << i; }
-
-inline void to_netlist(std::ostream &os, bool b) { os << (b ? "true" : "false"); }
-
-inline void to_netlist(std::ostream &os, std::string const &s) { os << s; }
-
-inline void to_netlist(std::ostream &os, float f) { os << std::scientific << f << std::defaultfloat; }
-
-template <typename K, typename V>
-inline void to_netlist(std::ostream &os, std::unordered_map<K, V> const &map);
-template <typename T>
-inline void to_netlist(std::ostream &os, std::vector<T> const &vec);
-template <typename... Ts>
-inline void to_netlist(std::ostream &os, std::tuple<Ts...> const &tuple);
-template <typename... Ts>
-inline void to_netlist(std::ostream &os, std::variant<Ts...> const &variant);
-
-template <typename T>
-inline void to_netlist(std::ostream &os, std::vector<T> const &vec)
-{
-    bool first = true;
-    os << "[";
-    for (T const &i : vec)
-    {
-        if (not first)
-            os << ", ";
-        to_netlist(os, i);
-        first = false;
-    }
-    os << "]";
-}
-
-template <typename K, typename V>
-inline void to_netlist(std::ostream &os, std::unordered_map<K, V> const &map)
-{
-    bool first = true;
-    os << "{";
-    for (auto const &[k, v] : map)
-    {
-        if (not first)
-            os << ", ";
-        os << k << ": " << v;
-        first = false;
-    }
-    os << "}";
-}
-
-template <typename Tuple, size_t... I>
-inline void to_netlist_tuple_helper(std::ostream &os, Tuple const &tuple, std::index_sequence<I...>)
-{
-    os << "[";
-    (..., (os << (I == 0 ? "" : ", ") << std::get<I>(tuple)));
-    os << "]";
-}
-
-template <typename... Ts>
-inline void to_netlist(std::ostream &os, std::tuple<Ts...> const &tuple)
-{
-    to_netlist_tuple_helper(os, tuple, std::make_index_sequence<sizeof...(Ts)>());
-}
-
-template <typename... Ts>
-inline void to_netlist(std::ostream &os, std::variant<Ts...> const &variant)
-{
-    std::visit([&os](auto &&value) { to_netlist(os, value); }, variant);
-}
-
-std::ostream &operator<<(std::ostream &os, const ForgeOpAttr &attr)
-{
-    to_netlist(os, attr);
-    return os;
-}
 
 std::ostream &operator<<(std::ostream &os, const DataFormat &format)
 {

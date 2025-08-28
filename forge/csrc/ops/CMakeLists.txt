@@ -68,6 +68,7 @@ add_library(ops
     op_repeat.cpp
     op_repeat_interleave.cpp
     op_reshape.cpp
+    op_resize_1d.cpp
     op_resize_2d.cpp
     op_select.cpp
     op_sigmoid.cpp

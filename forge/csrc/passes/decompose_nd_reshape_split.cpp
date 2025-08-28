@@ -10,12 +10,10 @@
 namespace tt::passes
 {
 
-using Attr = ForgeOpAttr;
-
 static bool is_reshape(graphlib::Node const *node)
 {
     graphlib::OpNode const *op = dynamic_cast<graphlib::OpNode const *>(node);
-    return op and op->new_op_type() == ops::OpType::Reshape;
+    return op and op->op_type() == ops::OpType::Reshape;
 }
 
 template <typename T>
@@ -90,7 +88,7 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
             [](auto const &consumer)
             {
                 auto op = dynamic_cast<graphlib::OpNode const *>(consumer);
-                return op and op->new_op_type() == ops::OpType::Index;
+                return op and op->op_type() == ops::OpType::Index;
             });
 
         // All consumers must be index
@@ -135,7 +133,7 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
                 auto shape_before = consumer->shape();
                 auto shape_after = users[0]->shape();
                 auto op = dynamic_cast<graphlib::OpNode const *>(users[0]);
-                return users.size() == 1 and op->new_op_type() == ops::OpType::Reshape and
+                return users.size() == 1 and op->op_type() == ops::OpType::Reshape and
                        shape_after.volume() == shape_before.volume() and shape_after.size() + 1 == shape_before.size();
             });
 
@@ -176,7 +174,7 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
         {
             auto op = dynamic_cast<graphlib::OpNode *>(consumers[i]);
 
-            auto op_type_ = op->op_type();
+            auto op_type_ = op->op();
             TT_ASSERT(op_type_.type() == ops::OpType::Index);
             int start = op->op_attr_as<int>("start");
 
@@ -188,13 +186,9 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
             auto new_stop = static_cast<int>(start * new_dim_size + new_dim_size);
             int new_stride = 1;
 
-            std::vector<graphlib::OpType::Attr> new_attrs = {new_dim, new_start, new_stop, new_stride};
-
-            op->change_op_type("index", new_attrs);
-            op->set_op_attr("dim", new_dim);
-            op->set_op_attr("start", new_start);
-            op->set_op_attr("stop", new_stop);
-            op->set_op_attr("stride", new_stride);
+            op->change_op(
+                ops::Op(ops::OpType::Index).as_string(),
+                {{"dim", new_dim}, {"start", new_start}, {"stop", new_stop}, {"stride", new_stride}});
 
             op->set_shape(target_shape);
         }

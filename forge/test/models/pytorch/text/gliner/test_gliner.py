@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-from gliner import GLiNER
+from third_party.tt_forge_models.gliner.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -17,13 +17,9 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.gliner.model_utils.model_utils import (
-    GlinerWrapper,
-    post_processing,
-    pre_processing,
-)
+from test.models.pytorch.text.gliner.model_utils.model_utils import GlinerWrapper
 
-variants = ["urchade/gliner_multi-v2.1"]
+variants = [ModelVariant.GLINER_MULTI_V21]
 
 
 @pytest.mark.nightly
@@ -35,32 +31,20 @@ def test_gliner(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.GLINER,
-        variant=variant,
+        variant=variant.value,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.GITHUB,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
     )
 
-    # Load model
-    model = GLiNER.from_pretrained(variant)
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model()
+    framework_model = GlinerWrapper(framework_model)
+    inputs = loader.load_inputs()
 
-    # prepare input
-    text = """
-    Cristiano Ronaldo dos Santos Aveiro was born 5 February 1985) is a Portuguese professional footballer.
-    """
-    labels = ["person", "award", "date", "competitions", "teams"]
-    inputs, raw_batch = pre_processing(model, [text], labels)
-
-    # Forge compile framework model
-    framework_model = GlinerWrapper(model)
-    framework_model.eval()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
-    # Post processing
-    entities = post_processing(model, co_out, [text], raw_batch)
-    for entity in entities:
-        print(entity["text"], "=>", entity["label"])
+    loader.post_processing(co_out)

@@ -21,7 +21,7 @@ namespace tt::passes
 static bool is_y_dim_concat_with_changed_x_dim(
     graphlib::Graph *graph, graphlib::OpNode *op, graphlib::Shape commute_shape)
 {
-    if (op->new_op_type() != ops::OpType::Concatenate)
+    if (op->op_type() != ops::OpType::Concatenate)
         return false;
 
     int concat_dim = op->op_attr_as<int>("dim");
@@ -37,7 +37,7 @@ static bool is_y_dim_concat_with_changed_x_dim(
     for (auto operand : graph->data_operands(op))
     {
         graphlib::OpNode *operand_op = dynamic_cast<graphlib::OpNode *>(operand);
-        if (not operand_op or operand_op->new_op_type() != ops::OpType::Reshape)
+        if (not operand_op or operand_op->op_type() != ops::OpType::Reshape)
             return false;
 
         auto operand_operand_shape = graph->data_operands(operand_op)[0]->shape();
@@ -92,12 +92,12 @@ static bool attempt_replace_downward_pattern(
 
         // Add golden transform
         std::vector<uint32_t> shape_vec = output_clone_shape.as_vector();
-        std::vector<graphlib::OpType::Attr> golden_transform_attrs;
+        std::vector<int> golden_transform_attrs;
         for (uint32_t d : shape_vec)
         {
             golden_transform_attrs.push_back((int)d);
         }
-        op->add_golden_transform(graphlib::OpType("reshape", golden_transform_attrs));
+        op->add_golden_transform(ops::Op("reshape", {{"shape", golden_transform_attrs}}));
 
         for (graphlib::Edge outgoing_edge : graph->user_data_edges(op))
         {
@@ -188,8 +188,8 @@ static bool find_and_replace_incommutable_patterns(
             break;
         }
         // TODO: (lpanos) I dont think is_elementwise should return true for any of these ops, but for now it does
-        bool can_commute = op->is_eltwise() and op->new_op_type() != ops::OpType::Concatenate and
-                           op->new_op_type() != ops::OpType::Select;
+        bool can_commute =
+            op->is_eltwise() and op->op_type() != ops::OpType::Concatenate and op->op_type() != ops::OpType::Select;
 
         if (not can_commute and op != initial_op)
         {
@@ -244,7 +244,7 @@ bool replace_incommutable_patterns(graphlib::Graph *graph)
         if (not op)
             continue;
 
-        if (op->new_op_type() != ops::OpType::Reshape)
+        if (op->op_type() != ops::OpType::Reshape)
             continue;
 
         if (not find_and_replace_incommutable_patterns(graph, op, shape_of_only_operand(graph, op)))

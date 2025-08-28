@@ -42,14 +42,14 @@ UniqueOpShapesAttrsType extract_unique_op_configuration(
             continue;
         }
 
-        graphlib::OpType current_node_optype = current_op->op_type();
+        ops::Op current_node_op = current_op->op_type();
 
         // If the list of op names (i.e supported_ops) is passed, it will only extract the
         // list of unique ops configuration that are not present in the supported_opnames,
         // otherwise it will extract all the unique op configurations in the graph
         if (!supported_opnames.empty())
         {
-            if (std::find(supported_opnames.begin(), supported_opnames.end(), current_node_optype.name()) !=
+            if (std::find(supported_opnames.begin(), supported_opnames.end(), current_node_op.as_string()) !=
                 supported_opnames.end())
                 continue;
         }
@@ -64,9 +64,9 @@ UniqueOpShapesAttrsType extract_unique_op_configuration(
         // If the op is present in the unique_op_shapes_attrs map, then list of operand shapes
         // of the matched op is compared with the current node operand shapes otherwise the
         // current node operand_shapes and attributes(i.e OpTypes) are added to the unique_op_shapes_attrs map.
-        if (unique_op_shapes_attrs.find(current_node_optype.name()) != unique_op_shapes_attrs.end())
+        if (unique_op_shapes_attrs.find(current_node_op.as_string()) != unique_op_shapes_attrs.end())
         {
-            auto unique_shapes_attrs_list = unique_op_shapes_attrs.at(current_node_optype.name());
+            auto unique_shapes_attrs_list = unique_op_shapes_attrs.at(current_node_op.as_string());
             bool operand_shapes_matched = false;
             for (size_t idx = 0; idx < unique_shapes_attrs_list.size(); idx++)
             {
@@ -75,29 +75,29 @@ UniqueOpShapesAttrsType extract_unique_op_configuration(
                 auto unique_attrs = unique_shapes_attrs.second;
 
                 // If the current node and matched op operand shapes are equivalent,
-                // then take the list of OpType from the unique_shapes_attrs_list map with matched op name and
+                // then take the list of ops::Op from the unique_shapes_attrs_list map with matched op name and
                 // matched operand shapes and then compare with  current node optype, if the current
                 // node optype is not present, then add current node optype in unique_op_shapes_attrs map with matched
                 // op name and matched operand shapes.
                 if (equivalent_shapes(unique_shapes, operand_shapes))
                 {
                     operand_shapes_matched = true;
-                    if (std::find(unique_attrs.begin(), unique_attrs.end(), current_node_optype) == unique_attrs.end())
+                    if (std::find(unique_attrs.begin(), unique_attrs.end(), current_node_op) == unique_attrs.end())
                     {
-                        unique_attrs.push_back(current_node_optype);
-                        unique_op_shapes_attrs[current_node_optype.name()].at(idx) = {unique_shapes, unique_attrs};
+                        unique_attrs.push_back(current_node_op);
+                        unique_op_shapes_attrs[current_node_op.as_string()].at(idx) = {unique_shapes, unique_attrs};
                         break;
                     }
                 }
             }
             if (!operand_shapes_matched)
             {
-                unique_op_shapes_attrs[current_node_optype.name()].push_back({operand_shapes, {current_node_optype}});
+                unique_op_shapes_attrs[current_node_op.as_string()].push_back({operand_shapes, {current_node_op}});
             }
         }
         else
         {
-            unique_op_shapes_attrs[current_node_optype.name()] = {{operand_shapes, {current_node_optype}}};
+            unique_op_shapes_attrs[current_node_op.as_string()] = {{operand_shapes, {current_node_op}}};
         }
     }
 
@@ -129,7 +129,7 @@ void print_unique_op_configuration(const UniqueOpShapesAttrsType &unique_op_shap
             {
                 for (size_t i = 0; i < op_attrs.size(); i++)
                 {
-                    if (op_attrs[i].legacy_attrs_.size() > 0 or op_attrs[i].attrs().size() > 0)
+                    if (op_attrs[i].attrs().size() > 0)
                     {
                         std::cout << "\t\t\t\t\t Attributes: " << op_attrs[i].as_string() << std::endl;
                     }
@@ -189,7 +189,7 @@ void export_unique_op_configuration_to_csv_file(
                         fs << op_shapes[j] << ", ";
                     }
                     fs << "]" << delimiter;
-                    if (op_attrs[i].legacy_attrs_.size() > 0 or op_attrs[i].attrs().size() > 0)
+                    if (op_attrs[i].attrs().size() > 0)
                     {
                         fs << op_attrs[i].as_string();
                     }
@@ -244,9 +244,9 @@ void export_unique_op_configuration_to_xlsx_file(
             py::list py_attrs;
             if (!attrs.empty())
             {
-                for (graphlib::OpType attr : attrs)
+                for (ops::Op attr : attrs)
                 {
-                    if (attr.legacy_attrs_.size() > 0 or attr.attrs().size() > 0)
+                    if (attr.attrs().size() > 0)
                         py_attrs.append(attr.as_string());
                 }
             }

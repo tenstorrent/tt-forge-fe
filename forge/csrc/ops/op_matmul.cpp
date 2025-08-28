@@ -23,7 +23,7 @@ namespace matmul
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Matmul, "Wrong op type.");
     TT_ASSERT(tensors.size() == 2, "Matmul should have two inputs.");
@@ -51,8 +51,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
     return torch::matmul(t0, t1).to(result_type);
 }
 
-std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<uint32_t>> &in_shapes)
+std::tuple<Shape, std::vector<DimBroadcast>> shape(const Op &op, const std::vector<std::vector<uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Matmul, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 2, "Matmul should have two inputs.");
@@ -124,7 +123,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -139,15 +138,15 @@ NodeContext backward(
     if (operand == 0)
     {
         tt::graphlib::NodeContext in1_t =
-            ac.autograd->create_op(ac, graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {inputs[1]});
+            ac.autograd->create_op(ac, Op("transpose", {{"dim0", -2}, {"dim1", -1}}), {inputs[1]});
 
-        return ac.autograd->create_op(ac, graphlib::OpType("matmul"), {gradient, in1_t});
+        return ac.autograd->create_op(ac, Op("matmul"), {gradient, in1_t});
     }
 
     tt::graphlib::NodeContext in0_t =
-        ac.autograd->create_op(ac, graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {inputs[0]});
+        ac.autograd->create_op(ac, Op("transpose", {{"dim0", -2}, {"dim1", -1}}), {inputs[0]});
 
-    return ac.autograd->create_op(ac, graphlib::OpType("matmul"), {in0_t, gradient});
+    return ac.autograd->create_op(ac, Op("matmul"), {in0_t, gradient});
 }
 
 }  // namespace matmul

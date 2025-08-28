@@ -23,7 +23,7 @@ namespace adv_index
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::AdvIndex, "Wrong op type.");
     TT_ASSERT(tensors.size() == 2, "AdvIndex should have 2 input tensors.");
@@ -44,8 +44,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
     return torch::index_select(tensors[0], dim, indices_long);
 }
 
-std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<uint32_t>> &in_shapes)
+std::tuple<Shape, std::vector<DimBroadcast>> shape(const Op &op, const std::vector<std::vector<uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::AdvIndex, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 2, "AdvIndex should have 2 input shapes.");
@@ -79,7 +78,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -94,8 +93,7 @@ NodeContext backward(
     unreachable();
 }
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::AdvIndex, "Wrong op type.");
     TT_ASSERT(inputs.size() == 2, "AdvIndex should have 2 inputs.");
@@ -128,8 +126,7 @@ void decompose_initial(
     // Step 1: Move the indexed dimension to the front using a sequence of transposes
     NodeContext current = inputs[0];
     if (dim != 0)
-        for (int i = dim; i > 0; i--)
-            current = dc.op(graphlib::OpType("transpose", {}, {{"dim0", i}, {"dim1", i - 1}}), {current});
+        for (int i = dim; i > 0; i--) current = dc.op(Op("transpose", {{"dim0", i}, {"dim1", i - 1}}), {current});
     NodeContext permuted = current;
 
     // Step 2: Reshape to [data_shape[dim], -1]
@@ -150,7 +147,7 @@ void decompose_initial(
         }
 
         std::vector<int> reshape_dims = {static_cast<int>(data_shape[dim]), rest_dims_product};
-        reshaped = dc.op(graphlib::OpType("reshape", {}, {{"shape", reshape_dims}}), {permuted});
+        reshaped = dc.op(Op("reshape", {{"shape", reshape_dims}}), {permuted});
     }
 
     // Step 3: Apply embedding operation
@@ -165,9 +162,9 @@ void decompose_initial(
             total_indices *= idx_dim;
         }
         std::vector<int> flattened_shape = {static_cast<int>(total_indices)};
-        indices_input = dc.op(graphlib::OpType("reshape", {}, {{"shape", flattened_shape}}), {inputs[1]});
+        indices_input = dc.op(Op("reshape", {{"shape", flattened_shape}}), {inputs[1]});
     }
-    NodeContext selected = dc.op(graphlib::OpType("embedding"), {indices_input, reshaped});
+    NodeContext selected = dc.op(Op("embedding"), {indices_input, reshaped});
 
     // Step 4: Reshape back to appropriate dimensions
     NodeContext reshaped_output = selected;
@@ -193,7 +190,7 @@ void decompose_initial(
             output_shape.push_back(permuted_shape[i]);
         }
 
-        reshaped_output = dc.op(graphlib::OpType("reshape", {}, {{"shape", output_shape}}), {selected});
+        reshaped_output = dc.op(Op("reshape", {{"shape", output_shape}}), {selected});
     }
 
     // Step 5: Restore original dimension order if necessary using transposes
@@ -209,7 +206,7 @@ void decompose_initial(
     current = reshaped_output;
     for (int i = 0; i < dim; i++)
     {
-        current = dc.op(graphlib::OpType("transpose", {}, {{"dim0", i}, {"dim1", i + 1}}), {current});
+        current = dc.op(Op("transpose", {{"dim0", i}, {"dim1", i + 1}}), {current});
     }
     result = current;
     dc.fuse(result);

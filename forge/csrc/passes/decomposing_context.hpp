@@ -53,7 +53,7 @@ class DecomposingContext
 
     // Available to op/eval/*
     NodeContext op(
-        graphlib::OpType const& op_type,
+        ops::Op const& op_type,
         std::vector<NodeContext> const& operands,
         bool copy_tms = true,
         bool dont_decompose = false,

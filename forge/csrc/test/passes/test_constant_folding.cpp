@@ -10,7 +10,7 @@ namespace tt::test
 struct ConstantFoldMultiplyThroughAdd : public ForgeGraphTest, public testing::WithParamInterface<std::pair<int, bool>>
 {
    protected:
-    virtual std::vector<OpType*> create_graph() override
+    virtual std::vector<OpNode*> create_graph() override
     {
         auto [levels, nop_mixin] = GetParam();
         int num_matmuls = 1 << levels;
@@ -28,7 +28,7 @@ struct ConstantFoldMultiplyThroughAdd : public ForgeGraphTest, public testing::W
         auto bn_constant = create_constant(shape(1, 1, 1, n));
         auto bias = create_constant(shape(1, 1, 1, n));
 
-        std::vector<OpType*> matmuls;
+        std::vector<OpNode*> matmuls;
         for (int i = 0; i < num_matmuls; ++i) matmuls.push_back(create_op("matmul", {acts[i], weights[i]}));
 
         TT_ASSERT(matmuls.size() % 2 == 0);
@@ -80,7 +80,7 @@ INSTANTIATE_TEST_SUITE_P(
 struct ConstantFoldBackToBack : public ForgeGraphTest, public testing::WithParamInterface<std::string>
 {
    protected:
-    virtual std::vector<OpType*> create_graph() override
+    virtual std::vector<OpNode*> create_graph() override
     {
         auto op_type = GetParam();
 

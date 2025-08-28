@@ -2,9 +2,13 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import torch
+from third_party.tt_forge_models.roberta.masked_lm.pytorch import (
+    ModelLoader as MaskedLMLoader,
+)
+from third_party.tt_forge_models.roberta.masked_lm.pytorch import (
+    ModelVariant as MaskedLMVariant,
+)
 from third_party.tt_forge_models.roberta.pytorch import ModelLoader, ModelVariant
-from transformers import AutoModelForMaskedLM, AutoTokenizer
 
 import forge
 from forge.forge_property_utils import (
@@ -18,38 +22,27 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.utils import download_model
+from test.models.pytorch.text.roberta.model_utils.model_utils import RobertaWrapper
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["xlm-roberta-base"])
+@pytest.mark.parametrize("variant", [MaskedLMVariant.XLM_BASE])
 def test_roberta_masked_lm(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.ROBERTA,
-        variant=variant,
+        variant=variant.value,
         task=Task.MASKED_LM,
         source=Source.HUGGINGFACE,
     )
 
-    # Load Albert tokenizer and model from HuggingFace
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    framework_model = download_model(AutoModelForMaskedLM.from_pretrained, variant, return_dict=False)
-
-    # Input processing
-    text = "Hello I'm a <mask> model."
-    input_tokens = tokenizer.encode(
-        text,
-        max_length=128,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-    attention_mask = torch.zeros_like(input_tokens)
-    attention_mask[input_tokens != 1] = 1
-
-    inputs = [input_tokens, attention_mask]
+    # Use masked LM loader to load model and inputs
+    loader = MaskedLMLoader(variant)
+    framework_model = loader.load_model()
+    framework_model = RobertaWrapper(framework_model)
+    input_dict = loader.load_inputs()
+    inputs = [input_dict["input_ids"], input_dict["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -57,11 +50,8 @@ def test_roberta_masked_lm(variant):
     # Model Verification
     _, co_out = verify(inputs, framework_model, compiled_model)
 
-    # post processing
-    logits = co_out[0]
-    mask_token_index = (input_tokens == tokenizer.mask_token_id)[0].nonzero(as_tuple=True)[0]
-    predicted_token_id = logits[0, mask_token_index].argmax(axis=-1)
-    print("The predicted token for the [MASK] is: ", tokenizer.decode(predicted_token_id))
+    # post processing using loader's decode
+    print(loader.decode_output(co_out))
 
 
 @pytest.mark.nightly
@@ -72,7 +62,7 @@ def test_roberta_sentiment_pytorch(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.ROBERTA,
-        variant=variant,
+        variant=variant.value,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )

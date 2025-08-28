@@ -14,8 +14,8 @@
 
 using namespace tt::autograd;
 using Shape = tt::graphlib::Shape;
-using OpType = tt::graphlib::OpType;
+using Op = tt::ops::Op;
 using DimBroadcast = tt::graphlib::DimBroadcast;
 using TileDim = tt::TileDim;
 
-std::tuple<Shape, std::vector<DimBroadcast>> get_op_shape(OpType type, std::vector<Shape> &operands);
+std::tuple<Shape, std::vector<DimBroadcast>> get_op_shape(Op op, std::vector<Shape> &operands);

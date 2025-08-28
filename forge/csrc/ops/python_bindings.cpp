@@ -13,7 +13,7 @@ namespace tt
 
 void OpsModule(py::module &m_ops)
 {
-    py::enum_<ops::OpType>(m_ops, "OpType")
+    py::enum_<ops::OpType>(m_ops, "ops::Op")
         .value("Abs", ops::OpType::Abs)
         .value("AdaptiveMaxPool2d", ops::OpType::AdaptiveMaxPool2d)
         .value("Add", ops::OpType::Add)
@@ -80,6 +80,7 @@ void OpsModule(py::module &m_ops)
         .value("Repeat", ops::OpType::Repeat)
         .value("RepeatInterleave", ops::OpType::RepeatInterleave)
         .value("Reshape", ops::OpType::Reshape)
+        .value("Resize1d", ops::OpType::Resize1d)
         .value("Resize2d", ops::OpType::Resize2d)
         .value("Select", ops::OpType::Select)
         .value("Sigmoid", ops::OpType::Sigmoid)

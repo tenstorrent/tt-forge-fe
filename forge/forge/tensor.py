@@ -19,7 +19,7 @@ import keras
 
 from .forgeglobal import TILE_DIM, align_up_tile, round_up_div
 from forge._C import DataFormat
-from forge._C.graph import OpType, RuntimeTensorTransform, RuntimeTensorTransformType, get_constant_input_value
+from forge._C.graph import Op, RuntimeTensorTransform, RuntimeTensorTransformType, get_constant_input_value
 from forge.utils import detach_tensors
 from .utils import align_up
 
@@ -929,15 +929,13 @@ def get_constant_inputs(
 
 
 def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]) -> torch.Tensor:
-    import forge.op.eval.forge as eval_module
-
     consteval_graph = consteval_trace.get(name, None)
 
     if consteval_graph is None:
         return inputs[name]
 
     def eval_op(op_type, inputs):
-        op = OpType(op_type["type"], op_type["attrs"], op_type["named_attrs"])
+        op = Op(op_type["type"], op_type["attrs"])
         return op.eval(inputs)
 
     logger.debug("ConstEval graph: {}", name)
@@ -956,10 +954,10 @@ def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]
                 operand_tensor = node_to_tensor[operand]
                 if node.get("input_tms", None):
                     for tm in node["input_tms"][input_index]:
-                        operand_tensor = eval_op(tm["op_type"], [operand_tensor])
+                        operand_tensor = eval_op(tm["op"], [operand_tensor])
                 inputs_after_tms.append(operand_tensor)
 
-            output = eval_op(node["op_type"], inputs_after_tms)
+            output = eval_op(node["op"], inputs_after_tms)
             node_to_tensor[node_name] = output
 
         elif node["opcode"] == "Output":

@@ -13,12 +13,6 @@
 namespace tt
 {
 
-static bool has_newstyle_interface(std::string const &op_name)
-{
-    py::object eval_module = py::module_::import("forge.op.eval.forge");
-    return eval_module.attr("has_newstyle_interface")(op_name).cast<bool>();
-}
-
 void PassesModule(py::module &m_passes)
 {
     py::class_<tt::DecomposingContext>(m_passes, "DecomposingContext")
@@ -29,7 +23,6 @@ void PassesModule(py::module &m_passes)
             [](tt::DecomposingContext &self,
                std::variant<std::string, py::object> const &type,
                std::vector<NodeContext> const &operands,
-               std::vector<graphlib::OpType::Attr> const &attrs = {},
                bool copy_tms = true,
                bool dont_decompose = false,
                bool optimize_hoist = false,
@@ -37,12 +30,8 @@ void PassesModule(py::module &m_passes)
             {
                 if (std::holds_alternative<std::string>(type))
                 {
-                    TT_LOG_ASSERT(
-                        not has_newstyle_interface(std::get<std::string>(type)),
-                        "Error decomposing a type with old OpType interface, expects new OpType interface {}",
-                        std::get<std::string>(type));
                     return self.op(
-                        graphlib::OpType(std::get<std::string>(type), attrs),
+                        ops::Op(std::get<std::string>(type)),
                         operands,
                         copy_tms,
                         dont_decompose,
@@ -51,55 +40,12 @@ void PassesModule(py::module &m_passes)
                 }
                 else
                 {
-                    TT_ASSERT(attrs.size() == 0, "Illegal mixing of API modes");
-                    auto const &op_type = std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
+                    auto const &op_type = std::get<py::object>(type).attr("op_type").cast<ops::Op>();
                     return self.op(op_type, operands, copy_tms, dont_decompose, optimize_hoist, output_df);
                 }
             },
             py::arg("type"),
             py::arg("operands"),
-            py::arg("attrs") = std::vector<int>{},
-            py::arg("copy_tms") = true,
-            py::arg("dont_decompose") = false,
-            py::arg("optimize_hoist") = false,
-            py::arg("output_df") = DataFormat::Invalid)
-        .def(
-            "op_with_named_attrs",
-            [](tt::DecomposingContext &self,
-               std::variant<std::string, py::object> const &type,
-               std::vector<NodeContext> const &operands,
-               ForgeOpAttrs const &named_attrs,
-               std::vector<graphlib::OpType::Attr> const &attrs = {},
-               bool copy_tms = true,
-               bool dont_decompose = false,
-               bool optimize_hoist = false,
-               DataFormat output_df = DataFormat::Invalid)
-            {
-                if (std::holds_alternative<std::string>(type))
-                {
-                    TT_LOG_ASSERT(
-                        not has_newstyle_interface(std::get<std::string>(type)),
-                        "Error decomposing a type with old OpType interface, expects new OpType interface {}",
-                        std::get<std::string>(type));
-                    return self.op(
-                        graphlib::OpType(std::get<std::string>(type), attrs, named_attrs),
-                        operands,
-                        copy_tms,
-                        dont_decompose,
-                        optimize_hoist,
-                        output_df);
-                }
-                else
-                {
-                    TT_ASSERT(attrs.size() == 0, "Illegal mixing of API modes");
-                    auto const &op_type = std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
-                    return self.op(op_type, operands, copy_tms, dont_decompose, optimize_hoist, output_df);
-                }
-            },
-            py::arg("type"),
-            py::arg("operands"),
-            py::arg("named_attrs"),
-            py::arg("attrs") = std::vector<int>{},
             py::arg("copy_tms") = true,
             py::arg("dont_decompose") = false,
             py::arg("optimize_hoist") = false,

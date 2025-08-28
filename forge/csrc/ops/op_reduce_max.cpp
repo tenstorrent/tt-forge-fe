@@ -20,7 +20,7 @@ namespace ops
 namespace reduce_max
 {
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::ReduceMax, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "reduce_max should have single input tensor.");
@@ -34,7 +34,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::ReduceMax, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "reduce_max should have single input shape.");
@@ -44,7 +44,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
 }
 
 tt::graphlib::NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     tt::autograd::autograd_context &ac,
     int operand,
@@ -81,51 +81,49 @@ tt::graphlib::NodeContext backward(
     if (!op.attr_as<bool>("keep_dim"))
     {
         // If keep_dim is false, we need to unsqueeze the output to match the input shape.
-        unsqueeze = ac.autograd->create_op(ac, graphlib::OpType("unsqueeze", {}, {{"dim", dim}}), {output});
+        unsqueeze = ac.autograd->create_op(ac, Op("unsqueeze", {{"dim", dim}}), {output});
     }
 
     // mask = subtract(in0, output) - has 0.0 in max positions and < 0.0 everywhere else
-    NodeContext mask = ac.autograd->create_op(ac, graphlib::OpType("subtract"), {inputs[0], unsqueeze});
+    NodeContext mask = ac.autograd->create_op(ac, Op("subtract"), {inputs[0], unsqueeze});
 
     // mask = add(mask, one) - has 1.0 in max positions and < 1.0 everywhere else
-    mask = ac.autograd->create_op(ac, graphlib::OpType("add"), {mask, one});
+    mask = ac.autograd->create_op(ac, Op("add"), {mask, one});
 
     // mask = greater_equal (mask, one) - has 1.0 in max positions, 0.0 everywhere else
-    mask = ac.autograd->create_op(ac, graphlib::OpType("greater_equal"), {mask, one});
+    mask = ac.autograd->create_op(ac, Op("greater_equal"), {mask, one});
 
     // mask = multiply(mask, neg_range) - puts range N...1 in max positions, 0.0 everywhere else
     // Example: [1, 1, 0, 1] -> [4, 3, 0, 1]
-    mask = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {mask, neg_range});
+    mask = ac.autograd->create_op(ac, Op("multiply"), {mask, neg_range});
 
     // redc = reduce_max(mask) - argmax
-    NodeContext redc = ac.autograd->create_op(
-        ac, graphlib::OpType("reduce_max", {}, {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {mask});
+    NodeContext redc =
+        ac.autograd->create_op(ac, Op("reduce_max", {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {mask});
 
     // mask = subtract(mask, redc) - Orig range - argmax, 0.0 in FIRST max position
-    mask = ac.autograd->create_op(ac, graphlib::OpType("subtract"), {mask, redc});
+    mask = ac.autograd->create_op(ac, Op("subtract"), {mask, redc});
 
     // mask = add(mask, one) - has 1.0 in first max position, and < 1.0 everywhere else
-    mask = ac.autograd->create_op(ac, graphlib::OpType("add"), {mask, one});
+    mask = ac.autograd->create_op(ac, Op("add"), {mask, one});
 
     // mask = greater_equal (mask, one) - has 1.0 in first max position, and 0.0 everywhere else
-    mask = ac.autograd->create_op(ac, graphlib::OpType("greater_equal"), {mask, one});
+    mask = ac.autograd->create_op(ac, Op("greater_equal"), {mask, one});
 
     NodeContext unsqueeze_gradient = gradient;
     if (!op.attr_as<bool>("keep_dim"))
     {
         // If keep_dim is false, we need to unsqueeze the gradient to match the input shape.
         // This is necessary because the mask has been reduced to a single dimension.
-        unsqueeze_gradient = ac.autograd->create_op(ac, graphlib::OpType("unsqueeze", {}, {{"dim", dim}}), {gradient});
+        unsqueeze_gradient = ac.autograd->create_op(ac, Op("unsqueeze", {{"dim", dim}}), {gradient});
     }
 
-    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {unsqueeze_gradient, mask});
+    return ac.autograd->create_op(ac, Op("multiply"), {unsqueeze_gradient, mask});
 }
 
 void decompose_initial(
-    const graphlib::OpType &old_op_type,
-    const Op &op,
-    DecomposingContext &dc,
-    const std::vector<tt::graphlib::NodeContext> &inputs)
+
+    const Op &op, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::ReduceMax, "Wrong op type.");
     TT_ASSERT(inputs.size() == 1, "reduce_max should have single input.");
@@ -141,13 +139,13 @@ void decompose_initial(
         if (op.attr_as<bool>("keep_dim"))
         {
             // `keep_dim` is true, hence we don't need to do anything.
-            NodeContext result = dc.op(graphlib::OpType("nop"), {inputs[0]});
+            NodeContext result = dc.op(Op("nop"), {inputs[0]});
             dc.fuse(result);
             return;
         }
 
         // In this case, we can replace `reduce_sum` with a `squeeze` operation.
-        NodeContext result = dc.op(graphlib::OpType("squeeze", {}, {{"dim", dim}}), {inputs[0]});
+        NodeContext result = dc.op(Op("squeeze", {{"dim", dim}}), {inputs[0]});
         dc.fuse(result);
     }
 }

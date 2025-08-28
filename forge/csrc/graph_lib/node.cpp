@@ -53,8 +53,8 @@ Shape Node::shape_of_operand(const Graph* graph, const Node* operand, bool ignor
         found_operand = true;
 
         operand_shape = graph->node_by_id(e.producer_node_id)->shape();
-        std::vector<OpType> tms = graph->get_edge_attributes(e)->get_tms();
-        for (OpType tm : tms)
+        std::vector<ops::Op> tms = graph->get_edge_attributes(e)->get_tms();
+        for (ops::Op tm : tms)
         {
             if (ignore_broadcasts and tm.type() == ops::OpType::Broadcast)
                 continue;
@@ -103,7 +103,7 @@ std::string Node::get_type() const
     if (node_type_ == NodeType::kPyOp)
     {
         OpNode const* op = this->as<OpNode>();
-        return node_type_to_string(node_type_) + "::" + op->op_name();
+        return node_type_to_string(node_type_) + "::" + op->op_as_string();
     }
     else
     {

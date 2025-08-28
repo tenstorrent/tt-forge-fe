@@ -5,6 +5,7 @@
 from enum import Enum, auto
 from pytest import FixtureRequest
 import json
+import numpy as np
 import re
 import contextvars
 from dataclasses import dataclass, is_dataclass, field
@@ -959,6 +960,21 @@ def record_model_properties(
     return module_name
 
 
+def sanitize_json_float(value: Optional[float]) -> Optional[float]:
+    """
+    Sanitize float values for JSON serialization.
+
+    Parameters:
+        value: The float value to sanitize.
+
+    Returns:
+        The sanitized float value, or None if the value is NaN or Inf.
+    """
+    if value is None or np.isnan(value) or np.isinf(value):
+        return None
+    return value
+
+
 def record_consistency_limits(
     framework_outputs: Union[Tuple[TorchTensor, ...], List[TorchTensor]], compiled_outputs: List[TorchTensor]
 ):
@@ -976,6 +992,9 @@ def record_consistency_limits(
     pcc, atol, rtol = determine_consistency_limits(
         framework_outputs=framework_outputs, compiled_outputs=compiled_outputs
     )
+    pcc = sanitize_json_float(pcc)
+    atol = sanitize_json_float(atol)
+    rtol = sanitize_json_float(rtol)
     if pcc is not None:
         fph.add("tags.pcc", pcc)
     if atol is not None:

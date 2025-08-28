@@ -211,7 +211,7 @@ TEST_P(PadPyTorchFailureTest, ExpectedPyTorchDimensionFailures)
     at::Tensor input = torch::randn({(long)shapes[0][0], (long)shapes[0][1], (long)shapes[0][2], (long)shapes[0][3]});
     std::vector<at::Tensor> inputs = {input};
 
-    EXPECT_THROW({ op.eval(graphlib::OpType("pad"), inputs); }, c10::Error);
+    EXPECT_THROW({ op.eval(inputs); }, c10::Error);
 }
 
 INSTANTIATE_TEST_SUITE_P(

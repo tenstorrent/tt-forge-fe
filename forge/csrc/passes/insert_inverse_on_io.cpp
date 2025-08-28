@@ -65,10 +65,10 @@ void add_inverse_to_input_edges(
         }
         else if (input and input->is_parameter())
         {
-            if (clone_0_op->new_op_type() == ops::OpType::Reshape)
+            if (clone_0_op->op_type() == ops::OpType::Reshape)
                 try_consteval_op(graph, clone_0_op, true);
             else if (
-                clone_1_op->new_op_type() == ops::OpType::Transpose and not graph->training() and
+                clone_1_op->op_type() == ops::OpType::Transpose and not graph->training() and
                 not input->requires_grad())
                 try_consteval_op(graph, clone_0_op, true);
         }
@@ -318,8 +318,8 @@ std::pair<std::vector<IOEdgeInfo>, bool> find_incommutable_downsrtream_tm(
 
         bool can_commute = can_commute_past_op(op, initial_op, graph, &commute_shape, &clone_shape);
 
-        bool found_incommutable_tm = initial_op->new_op_type() == op->new_op_type() and
-                                     op->new_op_type() == ops::OpType::Reshape and
+        bool found_incommutable_tm = initial_op->op_type() == op->op_type() and
+                                     op->op_type() == ops::OpType::Reshape and
                                      not are_compatible_ops(graph, initial_op, op, &commute_shape);
         bool found_inverse = are_compatible_ops(graph, initial_op, op, &commute_shape);
         if (op != initial_op and found_incommutable_tm)
@@ -406,7 +406,7 @@ bool insert_inverse_on_inputs(graphlib::Graph *graph)
             if (op->as<graphlib::TaggedNode>()->has_tag("dont_erase"))
                 continue;
 
-            if (op->new_op_type() != ops::OpType::Reshape and op->new_op_type() != ops::OpType::Transpose)
+            if (op->op_type() != ops::OpType::Reshape and op->op_type() != ops::OpType::Transpose)
                 continue;
 
             auto input_edges =
@@ -440,7 +440,7 @@ bool insert_inverse_on_outputs(graphlib::Graph *graph)
             if (op->as<graphlib::TaggedNode>()->has_tag("dont_erase"))
                 continue;
 
-            if (op->new_op_type() != ops::OpType::Reshape and op->new_op_type() != ops::OpType::Transpose)
+            if (op->op_type() != ops::OpType::Reshape and op->op_type() != ops::OpType::Transpose)
                 continue;
 
             auto [_, output_edge_info] = find_commutable_output_edge(graph, op, shape_of_only_operand(graph, op));
@@ -468,7 +468,7 @@ bool insert_inverse_on_downstream_tms(graphlib::Graph *graph)
         if (op->as<graphlib::TaggedNode>()->has_tag("dont_erase"))
             continue;
 
-        if (op->new_op_type() != ops::OpType::Reshape)
+        if (op->op_type() != ops::OpType::Reshape)
             continue;
 
         auto commute_shape = shape_of_only_operand(graph, op);

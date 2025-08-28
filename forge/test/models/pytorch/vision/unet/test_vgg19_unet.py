@@ -33,6 +33,7 @@ def test_vgg19_unet():
         task=Task.SEMANTIC_SEGMENTATION,
         source=Source.GITHUB,
     )
+    pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2888")
 
     # Load model and input
     loader = ModelLoader()

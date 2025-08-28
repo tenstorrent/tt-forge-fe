@@ -19,7 +19,7 @@ void remove_nops(graphlib::Graph *graph)
         if (not op)
             continue;
 
-        if (op->new_op_type() == ops::OpType::Nop)
+        if (op->op_type() == ops::OpType::Nop)
         {
             graphlib::bypass_node(graph, node, true);
         }

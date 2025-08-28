@@ -106,7 +106,7 @@ def test_efficientnet_torchvision(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.EFFICIENTNET,
-        variant=variant,
+        variant=variant.value,
         source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,
     )

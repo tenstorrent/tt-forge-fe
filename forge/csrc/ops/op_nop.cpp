@@ -23,7 +23,7 @@ namespace nop
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Nop, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "Nop should have one input.");
@@ -32,7 +32,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Nop, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "Nop should have one input.");
@@ -41,7 +41,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -53,7 +53,7 @@ NodeContext backward(
     TT_ASSERT(inputs.size() == 1, "Nop should have one input.");
     TT_ASSERT(operand == 0, "Invalid operand index for nop.");
 
-    return ac.autograd->create_op(ac, graphlib::OpType("nop"), {gradient});
+    return ac.autograd->create_op(ac, Op("nop"), {gradient});
 }
 
 }  // namespace nop

@@ -18,7 +18,7 @@ static int count_nodes(
         {
             auto* t = dynamic_cast<T*>(n);
             return t and t->name().find(name_filter) != std::string::npos and
-                   (op_type.empty() or (t->template as<graphlib::OpNode>()->op_name() == op_type));
+                   (op_type.empty() or (t->template as<graphlib::OpNode>()->op().as_string() == op_type));
         }));
 }
 
@@ -52,7 +52,7 @@ static bool fully_connected(graphlib::Graph* graph)
 struct FractureFF : public ForgeGraphTest
 {
    protected:
-    virtual std::vector<OpType*> create_graph() override
+    virtual std::vector<OpNode*> create_graph() override
     {
         std::uint32_t seq_len = 128;
         std::uint32_t embed = 384;
@@ -179,7 +179,7 @@ TEST_F(FractureFF, 2d_weight_stationary_mixed_factors)
 struct FractureDimSwitch : public ForgeGraphTest
 {
    protected:
-    virtual std::vector<OpType*> create_graph() override
+    virtual std::vector<OpNode*> create_graph() override
     {
         std::uint32_t seq_len = 128;
         std::uint32_t embed = 384;
@@ -219,7 +219,7 @@ TEST_F(FractureDimSwitch, dim_switch)
 struct FractureSimpleMixedFactors : public ForgeGraphTest, public testing::WithParamInterface<std::pair<int, int>>
 {
    protected:
-    virtual std::vector<OpType*> create_graph() override
+    virtual std::vector<OpNode*> create_graph() override
     {
         std::uint32_t r = 128;
         std::uint32_t c = 128;
@@ -269,7 +269,7 @@ INSTANTIATE_TEST_SUITE_P(
 struct FractureLayers : public ForgeGraphTest
 {
    protected:
-    virtual std::vector<OpType*> create_graph() override
+    virtual std::vector<OpNode*> create_graph() override
     {
         std::uint32_t seq_len = 128;
         std::uint32_t embed = 384;
@@ -277,7 +277,7 @@ struct FractureLayers : public ForgeGraphTest
 
         auto act = create_activation(shape(1, 1, seq_len, embed));
 
-        OpType* out = nullptr;
+        OpNode* out = nullptr;
         for (int layer = 0; layer < num_layers; ++layer)
         {
             auto Win = create_parameter(shape(1, 1, embed, hidden));
@@ -296,7 +296,7 @@ struct FractureLayers : public ForgeGraphTest
 
     int fracture_factor(int) const { return 2; }
 
-    std::vector<OpType*> layer0;
+    std::vector<ops::Op*> layer0;
     int num_layers = 3;
 };
 

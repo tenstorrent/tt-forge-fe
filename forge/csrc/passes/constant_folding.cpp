@@ -92,7 +92,7 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
     //  - op is eltwise multiply
     //  - 1 argument is a 1 dimensional constant tensor
     //  - 1 argument is a matmul with RHS parameters
-    if (multiply->new_op_type() != ops::OpType::Multiply)
+    if (multiply->op_type() != ops::OpType::Multiply)
         return false;
 
     std::vector<graphlib::Node *> matmuls = find_operands_commute_through(
@@ -101,7 +101,7 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
         [](graphlib::Node *commutable)
         {
             graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(commutable);
-            return op and (op->new_op_type() == ops::OpType::Add or op->new_op_type() == ops::OpType::Nop);
+            return op and (op->op_type() == ops::OpType::Add or op->op_type() == ops::OpType::Nop);
         },
         [](graphlib::Node *matmul)
         {
@@ -194,10 +194,10 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
 
 static bool try_fold_constant_associative(graphlib::Graph *graph, graphlib::OpNode *a, graphlib::OpNode *b)
 {
-    if (a->new_op_type() != b->new_op_type())
+    if (a->op_type() != b->op_type())
         return false;
 
-    if (a->new_op_type() != ops::OpType::Multiply and a->new_op_type() != ops::OpType::Add)
+    if (a->op_type() != ops::OpType::Multiply and a->op_type() != ops::OpType::Add)
         return false;
 
     graphlib::InputNode *a_constant = get_constant_input(graph, a);
