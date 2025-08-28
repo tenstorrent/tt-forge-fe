@@ -394,6 +394,7 @@ def test_concat_block():
 
 @pytest.mark.nightly
 @pytest.mark.skip_model_analysis
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2899")
 @pytest.mark.parametrize(
     "tensor_size,max_length",
     [
@@ -419,6 +420,53 @@ def test_index_put_speecht5_tts(tensor_size, max_length):
 
     inputs = [pos_seq]
     model = index_put(max_length)
+    model.eval()
+
+    compiled_model = forge.compile(
+        model,
+        sample_inputs=inputs,
+    )
+    verify(inputs, model, compiled_model)
+
+
+@pytest.mark.xfail
+@pytest.mark.nightly
+@pytest.mark.skip_model_analysis
+@pytest.mark.parametrize(
+    "tensor_size,num_heads,head_dim,max_length",
+    [
+        (24, 12, 64, 160),
+        (16, 8, 32, 100),
+        (32, 16, 64, 200),
+        (8, 4, 16, 50),
+        (12, 6, 128, 80),
+    ],
+)
+def test_view_speecht5_tts(tensor_size, num_heads, head_dim, max_length):
+    class view(nn.Module):
+        def __init__(self, num_heads, head_dim, max_length):
+            super().__init__()
+            self.num_heads = num_heads
+            self.head_dim = head_dim
+            self.dim = head_dim
+            self.max_length = max_length
+            self.pe_k = torch.nn.Embedding(2 * max_length, head_dim)
+
+        def forward(self, pos_seq, reshape_q):
+            pos_seq[pos_seq < -self.max_length] = -self.max_length
+            pos_seq[pos_seq >= self.max_length] = self.max_length - 1
+            pos_seq = pos_seq + self.max_length
+            position_bias = self.pe_k(pos_seq)
+            rel_pos_bias = torch.matmul(reshape_q, position_bias.transpose(-2, -1))
+            rel_pos_bias = rel_pos_bias.transpose(0, 1)
+            rel_pos_bias = rel_pos_bias.view(1 * self.num_heads, position_bias.size(0), position_bias.size(1))
+            return rel_pos_bias
+
+    x = torch.arange(tensor_size).unsqueeze(1) - torch.arange(tensor_size).unsqueeze(0)
+    y = torch.randn((tensor_size, num_heads, head_dim), dtype=torch.float32)
+
+    inputs = [x, y]
+    model = view(num_heads, head_dim, max_length)
     model.eval()
 
     compiled_model = forge.compile(

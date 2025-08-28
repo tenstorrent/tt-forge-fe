@@ -23,7 +23,7 @@ namespace max_pool_2d
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::MaxPool2d, "Wrong op type.");
     TT_DBG_ASSERT(tensors.size() == 1, "MaxPool2d expects 1 input tensor");
@@ -82,7 +82,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::MaxPool2d, "Wrong op type.");
     TT_DBG_ASSERT(in_shapes.size() == 1, "MaxPool2d expects 1 input shape");
@@ -156,7 +156,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -169,8 +169,7 @@ NodeContext backward(
     unreachable();
 }
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::MaxPool2d, "Wrong op type.");
     TT_ASSERT(inputs.size() == 1, "MaxPool2d expects 1 input");
@@ -187,26 +186,24 @@ void decompose_initial(
         return;
 
     // (N, C, H, W) --> transpose(-3, -2): (N, H, C, W) --> transpose(-2, -1): (N, H, W, C)
-    activations = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {activations});
-    activations = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {activations});
+    activations = dc.op(Op("transpose", {{"dim0", -3}, {"dim1", -2}}), {activations});
+    activations = dc.op(Op("transpose", {{"dim0", -2}, {"dim1", -1}}), {activations});
 
     // Create a new MaxPool2d operation with channel_last=true
     NodeContext result = dc.op(
-        graphlib::OpType(
-            "max_pool2d",
-            {},
-            {{"kernel", op.attr_as<std::vector<int>>("kernel")},
-             {"stride", op.attr_as<std::vector<int>>("stride")},
-             {"dilation", op.attr_as<std::vector<int>>("dilation")},
-             {"padding", op.attr_as<std::vector<int>>("padding")},
-             {"ceil_mode", op.attr_as<bool>("ceil_mode")},
-             {"channel_last", true}}),
+        Op("max_pool2d",
+           {{"kernel", op.attr_as<std::vector<int>>("kernel")},
+            {"stride", op.attr_as<std::vector<int>>("stride")},
+            {"dilation", op.attr_as<std::vector<int>>("dilation")},
+            {"padding", op.attr_as<std::vector<int>>("padding")},
+            {"ceil_mode", op.attr_as<bool>("ceil_mode")},
+            {"channel_last", true}}),
         {activations});
 
     // Transpose back to channel first: (N, H_out, W_out, C_out) --> transpose(-2, -1): (N, H_out, C_out, W_out) -->
     // transpose(-3, -2): (N, C_out, H_out, W_out)
-    result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
-    result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
+    result = dc.op(Op("transpose", {{"dim0", -2}, {"dim1", -1}}), {result});
+    result = dc.op(Op("transpose", {{"dim0", -3}, {"dim1", -2}}), {result});
 
     dc.fuse(result);
     return;
