@@ -40,7 +40,7 @@ from forge.forge_property_utils import (
     ModelGroup,
     get_model_group,
     record_execution,
-    record_execution_run_mode,
+    record_execution_pass,
     record_verify_config,
     record_consistency_limits,
     record_emitc_status,
