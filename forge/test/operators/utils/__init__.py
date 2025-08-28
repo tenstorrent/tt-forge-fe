@@ -6,15 +6,16 @@ from .datatypes import OperatorParameterTypes
 from .datatypes import ValueRange
 from .datatypes import ValueRanges
 from .datatypes import FrameworkDataFormat
+from .datatypes import VerifyConfig
+from .datatypes import TensorShape
 from .utils import ShapeUtils
 from .utils import TensorUtils
-from .utils import InputSourceFlag, InputSourceFlags
-from .utils import CompilerUtils
-from .utils import DeviceUtils
-from .utils import VerifyUtils
+from .datatypes import InputSourceFlag, InputSourceFlags
+from .utils import ValueCheckerUtils
+from .verify import VerifyUtils
 from .utils import LoggerUtils
 from .utils import RateLimiter
-from .utils import FrameworkModelType
+from .datatypes import FrameworkModelType
 from .utils import PytorchUtils
 from .features import TestSweepsFeaturesParams
 from .features import TestSweepsFeatures
@@ -37,18 +38,21 @@ from .failing_reasons import FailingReasonsFinder
 from .failing_reasons_validation import FailingReasonsValidation
 from .pytest import PyTestUtils
 from .pytest import PytestParamsUtils
+from .datatypes import TestDevice
+
 
 __all__ = [
     "OperatorParameterTypes",
     "ValueRange",
     "ValueRanges",
     "FrameworkDataFormat",
+    "VerifyConfig",
+    "TensorShape",
     "ShapeUtils",
     "TensorUtils",
     "InputSourceFlag",
     "InputSourceFlags",
-    "CompilerUtils",
-    "DeviceUtils",
+    "ValueCheckerUtils",
     "VerifyUtils",
     "LoggerUtils",
     "RateLimiter",
@@ -75,4 +79,5 @@ __all__ = [
     "FailingReasonsValidation",
     "PyTestUtils",
     "PytestParamsUtils",
+    "TestDevice",
 ]
