@@ -186,12 +186,12 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
         return;
 
     // (N, C, H, W) --> transpose(-3, -2): (N, H, C, W) --> transpose(-2, -1): (N, H, W, C)
-    activations = dc.op(Op("transpose", {{"dim0", -3}, {"dim1", -2}}), {activations});
-    activations = dc.op(Op("transpose", {{"dim0", -2}, {"dim1", -1}}), {activations});
+    activations = dc.op(Op(OpType::Transpose, {{"dim0", -3}, {"dim1", -2}}), {activations});
+    activations = dc.op(Op(OpType::Transpose, {{"dim0", -2}, {"dim1", -1}}), {activations});
 
     // Create a new MaxPool2d operation with channel_last=true
     NodeContext result = dc.op(
-        Op("max_pool2d",
+        Op(OpType::MaxPool2d,
            {{"kernel", op.attr_as<std::vector<int>>("kernel")},
             {"stride", op.attr_as<std::vector<int>>("stride")},
             {"dilation", op.attr_as<std::vector<int>>("dilation")},
@@ -202,8 +202,8 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
 
     // Transpose back to channel first: (N, H_out, W_out, C_out) --> transpose(-2, -1): (N, H_out, C_out, W_out) -->
     // transpose(-3, -2): (N, C_out, H_out, W_out)
-    result = dc.op(Op("transpose", {{"dim0", -2}, {"dim1", -1}}), {result});
-    result = dc.op(Op("transpose", {{"dim0", -3}, {"dim1", -2}}), {result});
+    result = dc.op(Op(OpType::Transpose, {{"dim0", -2}, {"dim1", -1}}), {result});
+    result = dc.op(Op(OpType::Transpose, {{"dim0", -3}, {"dim1", -2}}), {result});
 
     dc.fuse(result);
     return;

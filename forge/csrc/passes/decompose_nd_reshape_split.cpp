@@ -187,7 +187,7 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
             int new_stride = 1;
 
             op->change_op(
-                ops::Op(ops::OpType::Index).as_string(),
+                ops::OpType::Index,
                 {{"dim", new_dim}, {"start", new_start}, {"stop", new_stop}, {"stride", new_stride}});
 
             op->set_shape(target_shape);

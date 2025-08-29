@@ -7,6 +7,7 @@
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "passes/commute_utils.hpp"
 
 namespace tt::passes
@@ -31,7 +32,7 @@ bool squeeze_to_reshape(graphlib::Graph *graph)
             shape.push_back((int)d);
         }
 
-        op->change_op("reshape");
+        op->change_op(ops::OpType::Reshape);
         graphlib::Shape new_shape = graphlib::Shape::create(shape_vec);
         update_reshape_attr(op, new_shape);
         changed_anything = true;

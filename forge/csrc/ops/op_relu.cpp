@@ -51,9 +51,9 @@ tt::graphlib::NodeContext backward(
     // Standard ReLU gradient: max(0, x)
     tt::graphlib::NodeContext zero_constant = ac.autograd->create_constant(ac, 0.0f);
     tt::graphlib::NodeContext relu_derivative =
-        ac.autograd->create_op(ac, Op("greater_equal"), {inputs[0], zero_constant});
+        ac.autograd->create_op(ac, Op(OpType::GreaterEqual), {inputs[0], zero_constant});
 
-    return ac.autograd->create_op(ac, Op("multiply"), {relu_derivative, gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {relu_derivative, gradient});
 }
 
 }  // namespace relu

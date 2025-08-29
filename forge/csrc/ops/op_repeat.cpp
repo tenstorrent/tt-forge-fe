@@ -93,8 +93,9 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
         std::vector<std::uint32_t> new_shape(repeats.size() - input_shape.size(), 1);
         new_shape.insert(new_shape.end(), input_shape.begin(), input_shape.end());
 
-        result = dc.op(Op("reshape", {{"shape", std::vector<int>(new_shape.begin(), new_shape.end())}}), {result});
-        result = dc.op(Op("repeat", {{"repeats", repeats}}), {result});
+        result =
+            dc.op(Op(OpType::Reshape, {{"shape", std::vector<int>(new_shape.begin(), new_shape.end())}}), {result});
+        result = dc.op(Op(OpType::Repeat, {{"repeats", repeats}}), {result});
         dc.fuse(result);
     }
 }

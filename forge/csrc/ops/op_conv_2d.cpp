@@ -206,7 +206,7 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
     {
         while (bias_shape_size < activations_shape_size)
         {
-            *bias = dc.op(Op("unsqueeze", {{"dim", 0}}), {*bias});
+            *bias = dc.op(Op(OpType::Unsqueeze, {{"dim", 0}}), {*bias});
             bias_shape_size++;
         }
         is_bias_unchanged = false;
@@ -215,8 +215,8 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
     // Convert to channel-last if needed
     if (!is_channel_last)
     {
-        activations = dc.op(Op("transpose", {{"dim0", -3}, {"dim1", -2}}), {activations});
-        activations = dc.op(Op("transpose", {{"dim0", -2}, {"dim1", -1}}), {activations});
+        activations = dc.op(Op(OpType::Transpose, {{"dim0", -3}, {"dim1", -2}}), {activations});
+        activations = dc.op(Op(OpType::Transpose, {{"dim0", -2}, {"dim1", -1}}), {activations});
     }
 
     // Check if bias needs transpose for channel alignment:
@@ -225,8 +225,8 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
     if (bias.has_value() && bias->shape.as_vector()[bias_shape_size - 1] != weight.shape.as_vector()[0] &&
         !is_channel_last)
     {
-        *bias = dc.op(Op("transpose", {{"dim0", -3}, {"dim1", -2}}), {*bias});
-        *bias = dc.op(Op("transpose", {{"dim0", -2}, {"dim1", -1}}), {*bias});
+        *bias = dc.op(Op(OpType::Transpose, {{"dim0", -3}, {"dim1", -2}}), {*bias});
+        *bias = dc.op(Op(OpType::Transpose, {{"dim0", -2}, {"dim1", -1}}), {*bias});
 
         is_bias_unchanged = false;
     }
@@ -246,13 +246,13 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
         if (bias.has_value())
             new_inputs.push_back(*bias);
 
-        NodeContext result = dc.op(Op("conv2d", conv_attrs), new_inputs);
+        NodeContext result = dc.op(Op(OpType::Conv2d, conv_attrs), new_inputs);
 
         // Convert back to channel-first if needed
         if (!is_channel_last)
         {
-            result = dc.op(Op("transpose", {{"dim0", -2}, {"dim1", -1}}), {result});
-            result = dc.op(Op("transpose", {{"dim0", -3}, {"dim1", -2}}), {result});
+            result = dc.op(Op(OpType::Transpose, {{"dim0", -2}, {"dim1", -1}}), {result});
+            result = dc.op(Op(OpType::Transpose, {{"dim0", -3}, {"dim1", -2}}), {result});
         }
 
         dc.fuse(result);

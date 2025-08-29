@@ -52,10 +52,10 @@ tt::graphlib::NodeContext backward(
 
     auto one = ac.autograd->create_constant(ac, 1.0);
 
-    auto sigm_ = ac.autograd->create_op(ac, Op("subtract"), {one, output});
-    auto dsigm = ac.autograd->create_op(ac, Op("multiply"), {output, sigm_});
+    auto sigm_ = ac.autograd->create_op(ac, Op(OpType::Subtract), {one, output});
+    auto dsigm = ac.autograd->create_op(ac, Op(OpType::Multiply), {output, sigm_});
 
-    return ac.autograd->create_op(ac, Op("multiply"), {dsigm, gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {dsigm, gradient});
 }
 
 }  // namespace sigmoid

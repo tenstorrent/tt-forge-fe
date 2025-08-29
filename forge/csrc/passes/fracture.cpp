@@ -174,7 +174,8 @@ static void handle_writeback_golden_transforms(
         pad[pad_idx + 1] = dim_size - (index + 1) * chunk_size;
     }
 
-    fractured_output->add_golden_transform(ops::Op("pad", {{"padding", pad}, {"channel_last", channel_last}}));
+    fractured_output->add_golden_transform(
+        ops::Op(ops::OpType::Pad, {{"padding", pad}, {"channel_last", channel_last}}));
     fractured_output->set_partial_datacopy_golden_output_index(*output->get_partial_datacopy_golden_output_index());
 }
 
@@ -195,7 +196,7 @@ static std::unique_ptr<graphlib::PyOpNode> create_slice(
 
     int start = i * (int)shape[dim];
     int length = (int)shape[dim];
-    ops::Op select("select", {{"dim", dim}, {"begin", start}, {"length", length}, {"stride", stride}});
+    ops::Op select(ops::OpType::Select, {{"dim", dim}, {"begin", start}, {"length", length}, {"stride", stride}});
     auto new_op = graphlib::create_node<graphlib::PyOpNode>(new_op_name, select);
     new_op->set_shape(shape);
     new_op->set_epoch_type(op->get_epoch_type());
@@ -226,7 +227,8 @@ static std::unique_ptr<graphlib::PyOpNode> create_gather(
     std::string new_op_name,
     std::uint32_t fracture_group_id)
 {
-    ops::Op gather_op = (dim == NDSlice::k_dim) ? ops::Op("add") : ops::Op("concatenate", {{"dim", dim}});
+    ops::Op gather_op =
+        (dim == NDSlice::k_dim) ? ops::Op(ops::OpType::Add) : ops::Op(ops::OpType::Concatenate, {{"dim", dim}});
 
     graphlib::Shape shape = operand_shape;
     if (gather_op.type() == ops::OpType::Concatenate)

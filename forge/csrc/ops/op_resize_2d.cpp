@@ -151,7 +151,7 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
     // operation
     if ((size_h == input_h) && (size_w == input_w))
     {
-        result = dc.op(Op("nop"), {result});
+        result = dc.op(Op(OpType::Nop), {result});
         dc.fuse(result);
         return;
     }
@@ -171,8 +171,8 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
     if (!channel_last)
     {
         // Changing the Layout from NCHW to NHWC as ttir.upsample2d supports only the NHWC layout
-        result = dc.op(Op("transpose", {{"dim0", -3}, {"dim1", -2}}), {result});
-        result = dc.op(Op("transpose", {{"dim0", -2}, {"dim1", -1}}), {result});
+        result = dc.op(Op(OpType::Transpose, {{"dim0", -3}, {"dim1", -2}}), {result});
+        result = dc.op(Op(OpType::Transpose, {{"dim0", -2}, {"dim1", -1}}), {result});
     }
 
     if (is_upsampling_height && is_upsampling_width)
@@ -184,8 +184,8 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
         std::vector<int> scale_factor;
         scale_factor.push_back(size_h / input_h);
         scale_factor.push_back(size_w / input_w);
-        result =
-            dc.op(Op("upsample2d", {{"scale_factor", scale_factor}, {"mode", mode}, {"channel_last", true}}), {result});
+        result = dc.op(
+            Op(OpType::Upsample2d, {{"scale_factor", scale_factor}, {"mode", mode}, {"channel_last", true}}), {result});
     }
     else
     {
@@ -204,8 +204,8 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
     if (!channel_last)
     {
         // Changing the Layout back to NCHW from NHWC after operation
-        result = dc.op(Op("transpose", {{"dim0", -2}, {"dim1", -1}}), {result});
-        result = dc.op(Op("transpose", {{"dim0", -3}, {"dim1", -2}}), {result});
+        result = dc.op(Op(OpType::Transpose, {{"dim0", -2}, {"dim1", -1}}), {result});
+        result = dc.op(Op(OpType::Transpose, {{"dim0", -3}, {"dim1", -2}}), {result});
     }
 
     dc.fuse(result);

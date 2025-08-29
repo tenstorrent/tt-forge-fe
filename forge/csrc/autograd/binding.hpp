@@ -18,4 +18,4 @@ using Op = tt::ops::Op;
 using DimBroadcast = tt::graphlib::DimBroadcast;
 using TileDim = tt::TileDim;
 
-std::tuple<Shape, std::vector<DimBroadcast>> get_op_shape(Op op, std::vector<Shape> &operands);
+std::tuple<Shape, std::vector<DimBroadcast>> get_op_shape(const Op &op, std::vector<Shape> &operands);

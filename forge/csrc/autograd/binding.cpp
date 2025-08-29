@@ -5,7 +5,7 @@
 
 #include <vector>
 
-std::tuple<Shape, std::vector<DimBroadcast>> get_op_shape(Op op, std::vector<Shape> &operands)
+std::tuple<Shape, std::vector<DimBroadcast>> get_op_shape(const Op &op, std::vector<Shape> &operands)
 {
     std::vector<std::vector<std::uint32_t>> operand_tuples;
     for (Shape &shape : operands) operand_tuples.push_back(shape.as_vector());

@@ -63,11 +63,11 @@ void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::ve
     auto x = inputs[0];
     auto y = inputs[1];
 
-    auto zero = dc.op(Op("constant", {{"c", 0.0f}}), {});
-    auto x_gt = dc.op(Op("greater"), {x, zero});
-    auto x_eq = dc.op(Op("equal"), {x, zero});
-    auto res = dc.op(Op("multiply"), {x_eq, y});
-    res = dc.op(Op("add"), {res, x_gt});
+    auto zero = dc.op(Op(OpType::Constant, {{"c", 0.0f}}), {});
+    auto x_gt = dc.op(Op(OpType::Greater), {x, zero});
+    auto x_eq = dc.op(Op(OpType::Equal), {x, zero});
+    auto res = dc.op(Op(OpType::Multiply), {x_eq, y});
+    res = dc.op(Op(OpType::Add), {res, x_gt});
 
     dc.fuse(res, 0);
 }

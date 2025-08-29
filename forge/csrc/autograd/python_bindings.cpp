@@ -9,6 +9,7 @@
 #include "graph_lib/node_types.hpp"
 #include "lower_to_forge/common.hpp"
 #include "python_bindings_common.hpp"
+#include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
 
 namespace tt
@@ -27,27 +28,8 @@ void AutogradModule(py::module &m_autograd)
     py::class_<tt::autograd::autograd_context>(m_autograd, "AutogradContext")
         .def(
             "op",
-            [](tt::autograd::autograd_context &self,
-               const std::variant<std::string, py::object> &type,
-               const std::vector<tt::autograd::NodeContext> &operands)
-            {
-                ops::Op op_type = std::holds_alternative<std::string>(type)
-                                      ? ops::Op(std::get<std::string>(type))
-                                      : std::get<py::object>(type).attr("op_type").cast<ops::Op>();
-
-                return self.autograd->create_op(self, op_type, operands);
-            },
-            py::arg("type"),
-            py::arg("operands"))
-        .def(
-            "create_optimizer_op",
-            [](tt::autograd::autograd_context &self,
-               const std::string &type,
-               const std::vector<tt::autograd::NodeContext> &operands)
-            {
-                return self.autograd->create_optimizer_op(
-                    ops::Op(type), operands, self.current_fwd_op, self.operand, self.created_op_index++);
-            },
+            [](tt::autograd::autograd_context &self, ops::Op op, const std::vector<tt::autograd::NodeContext> &operands)
+            { return self.autograd->create_op(self, std::move(op), operands); },
             py::arg("type"),
             py::arg("operands"))
         .def(

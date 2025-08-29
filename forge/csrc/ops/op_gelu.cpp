@@ -34,35 +34,35 @@ tt::graphlib::NodeContext gelu_backward_none(
     auto neg_half = ac.autograd->create_constant(ac, -0.5);
 
     // x * sqrt(1/2)
-    auto x_scaled = ac.autograd->create_op(ac, Op("multiply"), {inputs[0], sqrt1_2});
+    auto x_scaled = ac.autograd->create_op(ac, Op(OpType::Multiply), {inputs[0], sqrt1_2});
 
     // erf(x * sqrt(1/2))
-    auto erf_result = ac.autograd->create_op(ac, Op("erf"), {x_scaled});
+    auto erf_result = ac.autograd->create_op(ac, Op(OpType::Erf), {x_scaled});
 
     // 1 + erf(x * sqrt(1/2))
-    auto one_plus_erf = ac.autograd->create_op(ac, Op("add"), {one, erf_result});
+    auto one_plus_erf = ac.autograd->create_op(ac, Op(OpType::Add), {one, erf_result});
 
     // 0.5 * (1 + erf(x * sqrt(1/2)))
-    auto cdf = ac.autograd->create_op(ac, Op("multiply"), {half, one_plus_erf});
+    auto cdf = ac.autograd->create_op(ac, Op(OpType::Multiply), {half, one_plus_erf});
 
     // x^2
-    auto x_squared = ac.autograd->create_op(ac, Op("multiply"), {inputs[0], inputs[0]});
+    auto x_squared = ac.autograd->create_op(ac, Op(OpType::Multiply), {inputs[0], inputs[0]});
 
     // -0.5 * x^2
-    auto neg_half_x_squared = ac.autograd->create_op(ac, Op("multiply"), {neg_half, x_squared});
+    auto neg_half_x_squared = ac.autograd->create_op(ac, Op(OpType::Multiply), {neg_half, x_squared});
 
     // exp(-0.5 * x^2)
-    auto exp_result = ac.autograd->create_op(ac, Op("exp"), {neg_half_x_squared});
+    auto exp_result = ac.autograd->create_op(ac, Op(OpType::Exp), {neg_half_x_squared});
 
     // x * exp(-0.5 * x^2) * (0.5 * sqrt(1/2) * 2/sqrt(pi))
-    auto x_exp = ac.autograd->create_op(ac, Op("multiply"), {inputs[0], exp_result});
-    auto pdf = ac.autograd->create_op(ac, Op("multiply"), {x_exp, sqrt2pi_factor});
+    auto x_exp = ac.autograd->create_op(ac, Op(OpType::Multiply), {inputs[0], exp_result});
+    auto pdf = ac.autograd->create_op(ac, Op(OpType::Multiply), {x_exp, sqrt2pi_factor});
 
     // cdf + pdf
-    auto derivative = ac.autograd->create_op(ac, Op("add"), {cdf, pdf});
+    auto derivative = ac.autograd->create_op(ac, Op(OpType::Add), {cdf, pdf});
 
     // derivative * gradient
-    return ac.autograd->create_op(ac, Op("multiply"), {derivative, gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {derivative, gradient});
 }
 
 tt::graphlib::NodeContext gelu_backward_tanh(
@@ -83,48 +83,48 @@ tt::graphlib::NodeContext gelu_backward_tanh(
     // === Calculate intermediate_0: 0.5 * (1 + tanh((M_2_SQRTPI / M_SQRT2) * (x + 0.044715 * x^3))) ===
 
     // x^3
-    auto x_squared = ac.autograd->create_op(ac, Op("multiply"), {inputs[0], inputs[0]});
-    auto x_cubed = ac.autograd->create_op(ac, Op("multiply"), {inputs[0], x_squared});
+    auto x_squared = ac.autograd->create_op(ac, Op(OpType::Multiply), {inputs[0], inputs[0]});
+    auto x_cubed = ac.autograd->create_op(ac, Op(OpType::Multiply), {inputs[0], x_squared});
 
     // 0.044715 * x^3
-    auto cubic_term = ac.autograd->create_op(ac, Op("multiply"), {cubic_factor, x_cubed});
+    auto cubic_term = ac.autograd->create_op(ac, Op(OpType::Multiply), {cubic_factor, x_cubed});
 
     // x + 0.044715 * x^3
-    auto inner = ac.autograd->create_op(ac, Op("add"), {inputs[0], cubic_term});
+    auto inner = ac.autograd->create_op(ac, Op(OpType::Add), {inputs[0], cubic_term});
 
     // (M_2_SQRTPI / M_SQRT2) * (x + 0.044715 * x^3)
-    auto tanh_input = ac.autograd->create_op(ac, Op("multiply"), {tanh_factor, inner});
+    auto tanh_input = ac.autograd->create_op(ac, Op(OpType::Multiply), {tanh_factor, inner});
 
     // tanh((M_2_SQRTPI / M_SQRT2) * (x + 0.044715 * x^3))
-    auto tanh_result = ac.autograd->create_op(ac, Op("tanh"), {tanh_input});
+    auto tanh_result = ac.autograd->create_op(ac, Op(OpType::Tanh), {tanh_input});
 
     // 1 + tanh(...)
-    auto one_plus_tanh = ac.autograd->create_op(ac, Op("add"), {one, tanh_result});
+    auto one_plus_tanh = ac.autograd->create_op(ac, Op(OpType::Add), {one, tanh_result});
 
     // intermediate_0 = 0.5 * (1 + tanh(...))
-    auto intermediate_0 = ac.autograd->create_op(ac, Op("multiply"), {half, one_plus_tanh});
+    auto intermediate_0 = ac.autograd->create_op(ac, Op(OpType::Multiply), {half, one_plus_tanh});
 
     // === Calculate intermediate_1: x * exp(-0.5 * x * x) * (0.5 * M_2_SQRTPI / M_SQRT2) ===
 
     // x * x
-    auto x_times_x = ac.autograd->create_op(ac, Op("multiply"), {inputs[0], inputs[0]});
+    auto x_times_x = ac.autograd->create_op(ac, Op(OpType::Multiply), {inputs[0], inputs[0]});
 
     // -0.5 * x * x
-    auto neg_half_x_squared = ac.autograd->create_op(ac, Op("multiply"), {neg_half, x_times_x});
+    auto neg_half_x_squared = ac.autograd->create_op(ac, Op(OpType::Multiply), {neg_half, x_times_x});
 
     // exp(-0.5 * x * x)
-    auto exp_result = ac.autograd->create_op(ac, Op("exp"), {neg_half_x_squared});
+    auto exp_result = ac.autograd->create_op(ac, Op(OpType::Exp), {neg_half_x_squared});
 
     // x * exp(-0.5 * x * x)
-    auto x_exp = ac.autograd->create_op(ac, Op("multiply"), {inputs[0], exp_result});
+    auto x_exp = ac.autograd->create_op(ac, Op(OpType::Multiply), {inputs[0], exp_result});
 
     // intermediate_1 = x * exp(-0.5 * x * x) * (0.5 * M_2_SQRTPI / M_SQRT2)
-    auto intermediate_1 = ac.autograd->create_op(ac, Op("multiply"), {x_exp, exp_factor});
+    auto intermediate_1 = ac.autograd->create_op(ac, Op(OpType::Multiply), {x_exp, exp_factor});
 
-    auto derivative = ac.autograd->create_op(ac, Op("add"), {intermediate_0, intermediate_1});
+    auto derivative = ac.autograd->create_op(ac, Op(OpType::Add), {intermediate_0, intermediate_1});
 
     // derivative * gradient
-    return ac.autograd->create_op(ac, Op("multiply"), {derivative, gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {derivative, gradient});
 }
 
 at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)

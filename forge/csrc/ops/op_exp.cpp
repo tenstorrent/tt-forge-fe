@@ -52,7 +52,7 @@ tt::graphlib::NodeContext backward(
     TT_ASSERT(inputs.size() == 1, "Exp should have one input");
     TT_ASSERT(operand == 0, "Invalid operand index");
 
-    return ac.autograd->create_op(ac, Op("multiply"), {output, gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {output, gradient});
 }
 
 }  // namespace exp

@@ -66,7 +66,7 @@ tt::graphlib::NodeContext backward(
 
     // Create squeeze operation to reverse the unsqueeze
     int dim = op.attr_as<int>("dim");
-    return ac.autograd->create_op(ac, Op("squeeze", {{"dim", dim}}), {gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Squeeze, {{"dim", dim}}), {gradient});
 }
 
 }  // namespace unsqueeze

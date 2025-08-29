@@ -376,17 +376,13 @@ class OpNode : public TaggedNode
     std::uint32_t golden_id_;
 
    public:
-    OpNode(const std::string &name, const std::string &op_name, NodeType node_type) :
-        TaggedNode(name, node_type), op_(op_name), gradient_op_(false)
-    {
-    }
     OpNode(const std::string &name, ops::Op op, NodeType node_type) :
-        TaggedNode(name, node_type), op_(op), gradient_op_(false)
+        TaggedNode(name, node_type), op_(std::move(op)), gradient_op_(false)
     {
     }
 
-    void change_op(ops::Op const &op) { op_ = op; }
-    void change_op(const std::string &op_name, ops::Attrs attrs = {}) { op_ = ops::Op(op_name, attrs); }
+    void change_op(ops::Op op) { op_ = std::move(op); }
+    void change_op(ops::OpType type, ops::Attrs attrs = {}) { op_ = ops::Op(type, std::move(attrs)); }
     ops::OpType op_type() const { return op().type(); }
     ops::Op const &op() const { return op_; }
     IRLevel get_ir_level() const { return IRLevel::IR_TT_FORGE; }
@@ -439,7 +435,6 @@ class OpNode : public TaggedNode
 class PyOpNode : public OpNode
 {
    public:
-    PyOpNode(const std::string &name, const std::string &op_name) : OpNode(name, op_name, NodeType::kPyOp) {}
     PyOpNode(const std::string &name, ops::Op op) : OpNode(name, op, NodeType::kPyOp) {}
     virtual std::unique_ptr<Node> clone(std::string const &name = "") const override;
 
@@ -463,8 +458,8 @@ class EdgeAttributes
     void clear_broadcast_dims();
     void set_broadcast_dim(int dim, int size_or_factor, bool explicit_bcast = false)
     {
-        tms.push_back(
-            ops::Op("broadcast", {{"dim", dim}, {"size", size_or_factor}, {"explicit_bcast", explicit_bcast}}));
+        tms.push_back(ops::Op(
+            ops::OpType::Broadcast, {{"dim", dim}, {"size", size_or_factor}, {"explicit_bcast", explicit_bcast}}));
     }
     void remove_broadcast_dim(int dim);
     inline UBlockOrder get_ublock_order() const { return ublock_order; }

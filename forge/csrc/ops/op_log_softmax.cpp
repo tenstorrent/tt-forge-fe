@@ -77,8 +77,8 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
     int dim = op.attr_as<int>("dim");
     bool stable = op.attr_as<bool>("stable");
 
-    NodeContext softmax_result = dc.op(Op("softmax", {{"dim", dim}, {"stable", stable}}), {x});
-    NodeContext result = dc.op(Op("log"), {softmax_result});
+    NodeContext softmax_result = dc.op(Op(OpType::Softmax, {{"dim", dim}, {"stable", stable}}), {x});
+    NodeContext result = dc.op(Op(OpType::Log), {softmax_result});
 
     dc.fuse(result);
 }

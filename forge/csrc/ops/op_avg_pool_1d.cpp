@@ -117,7 +117,7 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
         "Only support global avg_pool1d for now");
 
     NodeContext reduce_avg =
-        dc.op(Op("reduce_avg", {{"dim_arg", std::vector<int>{-1}}, {"keep_dim", true}}), {activations});
+        dc.op(Op(OpType::ReduceAvg, {{"dim_arg", std::vector<int>{-1}}, {"keep_dim", true}}), {activations});
     dc.fuse(reduce_avg);
     return;
 }

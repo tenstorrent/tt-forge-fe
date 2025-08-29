@@ -1269,8 +1269,8 @@ bool swap_broadcast_dims(graphlib::Graph *graph, graphlib::Edge edge, int old_di
             bool explicit_bcast = op_type.attr_as<bool>("explicit_bcast");
             if (dim == old_dim)
             {
-                new_tms.push_back(
-                    ops::Op("broadcast", {{"dim", new_dim}, {"size", size}, {"explicit_bcast", explicit_bcast}}));
+                new_tms.push_back(ops::Op(
+                    ops::OpType::Broadcast, {{"dim", new_dim}, {"size", size}, {"explicit_bcast", explicit_bcast}}));
                 swapped = true;
             }
             else
@@ -1333,7 +1333,7 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Edge edge)
         graphlib::OpNode *change_rank = dynamic_cast<graphlib::OpNode *>(
             graph->add_node(inherit->clone(name), graph->get_subgraph_id_for_node(producer->id())));
         TT_ASSERT(change_rank);
-        change_rank->change_op(ops::Op(op_type).as_string(), ops::Attrs{{"dim", 0}});
+        change_rank->change_op(op_type, {{"dim", 0}});
         change_rank->set_shape(producer->shape().as_rank(rank));
         change_rank->tag("dont_erase", true);
         auto [incoming_edge, outgoing_edge] = insert_node_on_edge(graph, edge, change_rank);
@@ -1360,14 +1360,14 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Edge edge)
     }
 
     int diff = (int)producer_size - orig_producer_size;
-    for (ops::Op &op_type : tms)
+    for (ops::Op &op : tms)
     {
-        if (op_type.type() == ops::OpType::Broadcast)
+        if (op.type() == ops::OpType::Broadcast)
         {
-            int dim = op_type.attr_as<int>("dim");
+            int dim = op.attr_as<int>("dim");
             if (dim >= 0)
             {
-                op_type.set_attr("dim", dim + diff);
+                op.set_attr("dim", dim + diff);
             }
         }
     }

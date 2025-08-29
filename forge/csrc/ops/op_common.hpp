@@ -177,7 +177,7 @@ tt::graphlib::NodeContext concat_patches(
         return center;  // No concatenation needed
     }
 
-    return create_op(context, ops::Op("concatenate", {{"dim", dim_axis}}), inputs);
+    return create_op(context, ops::Op(OpType::Concatenate, {{"dim", dim_axis}}), inputs);
 }
 
 // Template function for constant mode padding decomposition
@@ -208,7 +208,8 @@ tt::graphlib::NodeContext decompose_constant_mode(
             constant_padding[params.height_dim * 2 + 1] = params.bottom;  // high padding
         }
 
-        return create_op(context, ops::Op("constant_pad", {{"padding", constant_padding}, {"value", value}}), {input});
+        return create_op(
+            context, ops::Op(OpType::ConstantPad, {{"padding", constant_padding}, {"value", value}}), {input});
     }
 
     /**

@@ -100,7 +100,7 @@ NodeContext backward(
     std::vector<NodeContext> bw_inputs = {inputs[0], inputs[1], inputs[2], gradient, output};
 
     return ac.autograd->create_op(
-        ac, Op("layernorm_bw", {{"dim", dim}, {"epsilon", epsilon}, {"operand", operand}}), bw_inputs);
+        ac, Op(OpType::LayernormBw, {{"dim", dim}, {"epsilon", epsilon}, {"operand", operand}}), bw_inputs);
 }
 
 void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
@@ -131,46 +131,46 @@ void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::ve
     TT_ASSERT(beta_shape.back() == input_shape.back(), "Bias shape must be the same as normalized shape.");
 
     // Calculate mean: mu = sum(input, dim) / N
-    NodeContext mu = dc.op(Op("reduce_sum", {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {input});
+    NodeContext mu = dc.op(Op(OpType::ReduceSum, {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {input});
 
     // Create tensor for division by N
     std::vector<int64_t> input_shape_int64(input_shape.begin(), input_shape.end());
     at::Tensor divider_tensor = torch::zeros(input_shape_int64) + (1.0f / static_cast<float>(input_shape[dim]));
     NodeContext divider = dc.tensor(divider_tensor);
-    mu = dc.op(Op("multiply"), {divider, mu});
+    mu = dc.op(Op(OpType::Multiply), {divider, mu});
 
     // Calculate xmu = input - mu
-    NodeContext xmu = dc.op(Op("subtract"), {input, mu});
+    NodeContext xmu = dc.op(Op(OpType::Subtract), {input, mu});
 
     // Calculate squared difference: sq = xmu * xmu
-    NodeContext sq = dc.op(Op("multiply"), {xmu, xmu});
+    NodeContext sq = dc.op(Op(OpType::Multiply), {xmu, xmu});
 
     // Calculate variance: var = sum(sq, dim) / N
-    NodeContext var = dc.op(Op("reduce_sum", {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {sq});
+    NodeContext var = dc.op(Op(OpType::ReduceSum, {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {sq});
     std::vector<int64_t> var_shape = var.shape.as_vector<int64_t>();
     at::Tensor var_divider_tensor = torch::zeros(var_shape) + (1.0f / static_cast<float>(input_shape[dim]));
     NodeContext var_divider = dc.tensor(var_divider_tensor);
-    var = dc.op(Op("multiply"), {var_divider, var});
+    var = dc.op(Op(OpType::Multiply), {var_divider, var});
 
     // Add epsilon: var_add = var + epsilon
     at::Tensor epsilon_tensor = torch::zeros(var_shape) + epsilon;
     NodeContext epsilon_node = dc.tensor(epsilon_tensor);
-    NodeContext var_add = dc.op(Op("add"), {var, epsilon_node});
+    NodeContext var_add = dc.op(Op(OpType::Add), {var, epsilon_node});
 
     // Calculate standard deviation: std = sqrt(var_add)
-    NodeContext std = dc.op(Op("sqrt"), {var_add});
+    NodeContext std = dc.op(Op(OpType::Sqrt), {var_add});
 
     // Calculate inverse variance: ivar = 1 / std
-    NodeContext ivar = dc.op(Op("reciprocal"), {std});
+    NodeContext ivar = dc.op(Op(OpType::Reciprocal), {std});
 
     // Normalize: xhat = xmu * ivar
-    NodeContext xhat = dc.op(Op("multiply"), {xmu, ivar});
+    NodeContext xhat = dc.op(Op(OpType::Multiply), {xmu, ivar});
 
     // Apply weights: xhat_weighted = xhat * weights
-    NodeContext xhat_weighted = dc.op(Op("multiply"), {xhat, weights});
+    NodeContext xhat_weighted = dc.op(Op(OpType::Multiply), {xhat, weights});
 
     // Apply bias: result = xhat_weighted + bias
-    NodeContext result = dc.op(Op("add"), {xhat_weighted, bias});
+    NodeContext result = dc.op(Op(OpType::Add), {xhat_weighted, bias});
 
     dc.fuse(result);
 }

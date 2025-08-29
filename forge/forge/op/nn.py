@@ -5,6 +5,7 @@ import math
 import torch
 from typing import Union
 
+from forge._C.ops import OpType
 from ..tensor import Tensor, TensorShape
 from ..parameter import Parameter
 from ..module import ForgeModule
@@ -45,7 +46,7 @@ def Softmax(name: str, operandA: Tensor, *, dim: int, stable: bool = True) -> Te
     Tensor
         Forge tensor
     """
-    return op("softmax", name, operandA, dim=dim, stable=stable).get_tensor()
+    return op(OpType.Softmax, name, operandA, dim=dim, stable=stable).get_tensor()
 
 
 def LogSoftmax(name: str, operandA: Tensor, *, dim: int, stable: bool = True) -> Tensor:
@@ -72,7 +73,7 @@ def LogSoftmax(name: str, operandA: Tensor, *, dim: int, stable: bool = True) ->
     Tensor
         Forge tensor
     """
-    return op("log_softmax", name, operandA, dim=dim, stable=stable).get_tensor()
+    return op(OpType.LogSoftmax, name, operandA, dim=dim, stable=stable).get_tensor()
 
 
 def Layernorm(
@@ -100,7 +101,7 @@ def Layernorm(
         Forge tensor
     """
 
-    return op("layernorm", name, operandA, weights, bias, dim=dim, epsilon=epsilon).get_tensor()
+    return op(OpType.Layernorm, name, operandA, weights, bias, dim=dim, epsilon=epsilon).get_tensor()
 
 
 def Batchnorm(
@@ -135,7 +136,9 @@ def Batchnorm(
         name = f"batchnorm_{get_unique_node_id()}"
 
     if batchnorm_flag:
-        return op("batchnorm", name, operandA, weights, bias, running_mean, running_var, epsilon=epsilon).get_tensor()
+        return op(
+            OpType.Batchnorm, name, operandA, weights, bias, running_mean, running_var, epsilon=epsilon
+        ).get_tensor()
     else:
         running_mean = Unsqueeze(name + "_mean_unsqueeze_1", running_mean, 1)
         running_mean = Unsqueeze(name + "_mean_unsqueeze_2", running_mean, 1)
@@ -181,7 +184,7 @@ def Dropout(name: str, operandA: Tensor, p: float = 0.5, training: bool = True, 
         Forge tensor
     """
 
-    return op("dropout", name, operandA, p=p, training=training, seed=seed).get_tensor()
+    return op(OpType.Dropout, name, operandA, p=p, training=training, seed=seed).get_tensor()
 
 
 class Linear(ForgeModule):

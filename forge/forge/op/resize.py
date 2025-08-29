@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 from typing import List, Tuple, Union
 
+from forge._C.ops import OpType
 from ..tensor import Tensor
 from .common import ForgeOp as op
 
@@ -41,7 +42,7 @@ def Resize1d(
     assert mode in ["nearest", "linear"], "Only support nearest and linear mode for now"
 
     result: Tensor = op(
-        "resize1d",
+        OpType.Resize1d,
         name,
         operandA,
         size=size,
@@ -87,7 +88,7 @@ def Resize2d(
     assert mode in ["nearest", "bilinear"], "Only support nearest and bilinear mode for now"
 
     result: Tensor = op(
-        "resize2d",
+        OpType.Resize2d,
         name,
         operandA,
         sizes=sizes,
@@ -138,7 +139,7 @@ def Upsample2d(
         scale_factor = (scale_factor, scale_factor)
 
     result: Tensor = op(
-        "upsample2d",
+        OpType.Upsample2d,
         name,
         operandA,
         scale_factor=scale_factor,
@@ -191,7 +192,7 @@ def Downsample2d(
         scale_factor = (scale_factor, scale_factor)
 
     result: Tensor = op(
-        "downsample2d",
+        OpType.Downsample2d,
         name,
         operandA,
         scale_factor=scale_factor,

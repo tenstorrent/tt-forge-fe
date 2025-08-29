@@ -119,12 +119,12 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
 
     for (const auto &input : inputs)
     {
-        auto reshaped = dc.op(Op("unsqueeze", {{"dim", dim}}), {input});
+        auto reshaped = dc.op(Op(OpType::Unsqueeze, {{"dim", dim}}), {input});
         unsqueezed_inputs.push_back(reshaped);
     }
 
     // Concatenate along the stack dimension
-    auto result = dc.op(Op("concatenate", {{"dim", dim}}), unsqueezed_inputs);
+    auto result = dc.op(Op(OpType::Concatenate, {{"dim", dim}}), unsqueezed_inputs);
     dc.fuse(result);
 }
 

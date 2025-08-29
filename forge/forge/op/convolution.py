@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 from typing import Optional, Union, Tuple, List
 
+from forge._C.ops import OpType
 from ..tensor import Tensor
 from ..parameter import Parameter
 from .common import ForgeOp as op
@@ -80,7 +81,7 @@ def Conv2d(
         inputs.append(bias)
 
     return op(
-        "conv2d",
+        OpType.Conv2d,
         name,
         *inputs,
         stride=stride,  # [sH, sW]
@@ -153,7 +154,7 @@ def Conv2dTranspose(
         inputs.append(bias)
 
     return op(
-        "conv2d_transpose",
+        OpType.Conv2dTranspose,
         name,
         *inputs,
         stride=stride,  # [sH, sW]

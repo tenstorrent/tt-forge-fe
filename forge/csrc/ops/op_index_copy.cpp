@@ -77,12 +77,12 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
     {
         if (index.shape[0] > 1)
         {
-            auto result = dc.op(Op("fill_cache", {{"batch_offset", 0}}), {operandA, value});
+            auto result = dc.op(Op(OpType::FillCache, {{"batch_offset", 0}}), {operandA, value});
             dc.fuse(result);
         }
         else
         {
-            auto result = dc.op(Op("update_cache", {{"batch_offset", 0}}), {operandA, value, index});
+            auto result = dc.op(Op(OpType::UpdateCache, {{"batch_offset", 0}}), {operandA, value, index});
             dc.fuse(result);
         }
     }

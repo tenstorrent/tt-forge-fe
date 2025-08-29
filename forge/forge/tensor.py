@@ -19,7 +19,8 @@ import keras
 
 from .forgeglobal import TILE_DIM, align_up_tile, round_up_div
 from forge._C import DataFormat
-from forge._C.graph import Op, RuntimeTensorTransform, RuntimeTensorTransformType, get_constant_input_value
+from forge._C.graph import RuntimeTensorTransform, RuntimeTensorTransformType, get_constant_input_value
+from forge._C.ops import Op
 from forge.utils import detach_tensors
 from .utils import align_up
 
@@ -934,8 +935,8 @@ def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]
     if consteval_graph is None:
         return inputs[name]
 
-    def eval_op(op_type, inputs):
-        op = Op(op_type["type"], op_type["attrs"])
+    def eval_op(op_node, inputs):
+        op = Op(op_node["type"], op_node["attrs"])
         return op.eval(inputs)
 
     logger.debug("ConstEval graph: {}", name)

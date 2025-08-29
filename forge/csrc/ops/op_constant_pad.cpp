@@ -104,7 +104,7 @@ graphlib::NodeContext backward(
             int new_size = original_size - low_pad - high_pad;
             int stop = low_pad + new_size;
 
-            Op index_op("index");
+            Op index_op(OpType::Index);
             index_op.set_attr("dim", dim);
             index_op.set_attr("start", low_pad);
             index_op.set_attr("stop", stop);

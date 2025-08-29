@@ -31,15 +31,13 @@ namespace tt
 namespace ops
 {
 
-namespace py = pybind11;
-
 /**
- * In transition period we need mapping from new to the old op type, in order to preserve old functionalities.
+ * Op type to string mapper.
  */
-class NewToOldOpType
+class OpTypeToString
 {
    public:
-    NewToOldOpType()
+    OpTypeToString()
     {
         mapping_[OpType::Abs] = "abs";
         mapping_[OpType::AdaptiveMaxPool2d] = "adaptive_max_pool2d";
@@ -133,12 +131,12 @@ class NewToOldOpType
 };
 
 /**
- * In transition period we need mapping from old to the new op type, in order to preserve old functionalities.
+ * String to op type mapper.
  */
-class OldToNewOpType
+class StringToOpType
 {
    public:
-    OldToNewOpType()
+    StringToOpType()
     {
         mapping_["abs"] = OpType::Abs;
         mapping_["adaptive_max_pool2d"] = OpType::AdaptiveMaxPool2d;
@@ -231,12 +229,12 @@ class OldToNewOpType
     std::unordered_map<std::string, OpType> mapping_;
 };
 
-static NewToOldOpType new_to_old_op_type_mapper;
-static OldToNewOpType old_to_new_op_type_mapper;
+static OpTypeToString type_to_string;
+static StringToOpType string_to_type;
 
-Op::Op(const std::string &op_name, Attrs attrs) : type_(old_to_new_op_type_mapper[op_name]), attrs_(std::move(attrs)) {}
+Op::Op(const std::string &op_name, Attrs attrs) : type_(string_to_type[op_name]), attrs_(std::move(attrs)) {}
 
-const std::string &Op::as_string() const { return new_to_old_op_type_mapper[type_]; }
+const std::string &Op::as_string() const { return type_to_string[type_]; }
 
 /* ------------------------------*
  * Dispatching based on op type. *

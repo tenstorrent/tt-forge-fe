@@ -55,7 +55,7 @@ tt::graphlib::NodeContext backward(
     TT_ASSERT(operand >= 0 && operand < 2, "Invalid operand index.");
 
     // For multiply x * y: dx = grad * y, dy = grad * x
-    NodeContext op_grad = ac.autograd->create_op(ac, Op("multiply"), {gradient, inputs[1 - operand]});
+    NodeContext op_grad = ac.autograd->create_op(ac, Op(OpType::Multiply), {gradient, inputs[1 - operand]});
 
     // If the shapes are the same, no need to reduce dimensions
     const graphlib::Shape &input_shape = inputs[operand].shape;

@@ -57,9 +57,9 @@ tt::graphlib::NodeContext backward(
     NodeContext op_grad = gradient;
     // For subtract x - y: dx = grad, dy = -grad
     if (operand == 0)
-        op_grad = ac.autograd->create_op(ac, Op("nop"), {gradient});
+        op_grad = ac.autograd->create_op(ac, Op(OpType::Nop), {gradient});
     else
-        op_grad = ac.autograd->create_op(ac, Op("multiply"), {gradient, ac.autograd->create_constant(ac, -1.0)});
+        op_grad = ac.autograd->create_op(ac, Op(OpType::Multiply), {gradient, ac.autograd->create_constant(ac, -1.0)});
 
     // Reduce dimensions where broadcasting occurred using reduce_sum
     return op_common::reduce_broadcast_dimensions(ac, op_grad, inputs[operand].shape, gradient.shape);

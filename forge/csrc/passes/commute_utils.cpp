@@ -536,7 +536,7 @@ bool commute_through_concat(
         concat_golden_transform.attr_as<std::vector<int>>("shape")[idx] = concat_output_len;
     }
     op->add_golden_transform(concat_golden_transform);
-    op->change_op(ops::Op(ops::OpType::Concatenate).as_string(), {{"dim", new_dim}});
+    op->change_op(ops::OpType::Concatenate, {{"dim", new_dim}});
 
     *commute_shape = concat_shape;
     *golden_transform = concat_golden_transform;
@@ -779,7 +779,7 @@ bool commute_through_reduce(
         (*clone_shape)[op_reduce_dim] = 1;
         (*clone_shape)[producer_reduce_dim] = 1;
 
-        producer->change_op(ops::Op(ops::OpType::Nop).as_string());
+        producer->change_op(ops::OpType::Nop);
     }
     else
     {

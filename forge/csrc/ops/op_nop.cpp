@@ -53,7 +53,7 @@ NodeContext backward(
     TT_ASSERT(inputs.size() == 1, "Nop should have one input.");
     TT_ASSERT(operand == 0, "Invalid operand index for nop.");
 
-    return ac.autograd->create_op(ac, Op("nop"), {gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Nop), {gradient});
 }
 
 }  // namespace nop

@@ -51,8 +51,8 @@ tt::graphlib::NodeContext backward(
     TT_ASSERT(operand == 0, "Invalid operand index");
 
     // dx = 1 / x * grad
-    auto recip = ac.autograd->create_op(ac, Op("reciprocal"), {inputs[0]});
-    return ac.autograd->create_op(ac, Op("multiply"), {recip, gradient});
+    auto recip = ac.autograd->create_op(ac, Op(OpType::Reciprocal), {inputs[0]});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {recip, gradient});
 }
 
 }  // namespace log
