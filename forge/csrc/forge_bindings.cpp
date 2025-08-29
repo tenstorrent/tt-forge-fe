@@ -21,7 +21,6 @@ namespace py = pybind11;
 #include "graph_lib/graph.hpp"
 #include "graph_lib/python_bindings.hpp"
 #include "lower_to_forge/common.hpp"
-#include "ops/op.hpp"
 #include "ops/python_bindings.hpp"
 #include "passes/amp.hpp"
 #include "passes/consteval.hpp"
