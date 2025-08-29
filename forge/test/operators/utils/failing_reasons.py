@@ -2159,6 +2159,37 @@ class FailingReasons(Enum):
         ],
     )
 
+    AXIS_OUT_OF_BOUNDS = FailingReason(
+        description="Axis out of bounds error",
+        checks=[
+            # E       tvm.error.InternalError: Traceback (most recent call last):
+            # E         10: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<tvm::IRModule (tvm::transform::Pass, tvm::IRModule)>::AssignTypedLambda<tvm::transform::__mk_TVM9::{lambda(tvm::transform::Pass, tvm::IRModule)#1}>(tvm::transform::__mk_TVM9::{lambda(tvm::transform::Pass, tvm::IRModule)#1}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, tvm::runtime::TVMRetValue)
+            # E         9: tvm::transform::Pass::operator()(tvm::IRModule) const
+            # E         8: tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+            # E         7: tvm::transform::ModulePassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+            # E         6: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<tvm::IRModule (tvm::IRModule, tvm::transform::PassContext)>::AssignTypedLambda<tvm::relay::transform::InferType()::{lambda(tvm::IRModule, tvm::transform::PassContext const&)#1}>(tvm::relay::transform::InferType()::{lambda(tvm::IRModule, tvm::transform::PassContext const&)#1})::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+            # E         5: tvm::relay::TypeInferencer::Infer(tvm::GlobalVar, tvm::relay::Function)
+            # E         4: tvm::relay::TypeSolver::Solve()
+            # E         3: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<bool (tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)>::AssignTypedLambda<bool (*)(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)>(bool (*)(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&))::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+            # E         2: tvm::relay::ReduceRel(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)
+            # E         1: std::vector<tvm::PrimExpr, std::allocator<tvm::PrimExpr> > tvm::relay::ReduceShapeImpl<tvm::relay::ReduceAttrs>(std::vector<tvm::PrimExpr, std::allocator<tvm::PrimExpr> > const&, tvm::relay::ReduceAttrs const*, tvm::TypeReporter const&)
+            # E         0: tvm::relay::GetReduceAxes(unsigned int, tvm::runtime::Array<tvm::Integer, void> const&, bool)
+            # E         File "/__w/tt-forge-fe/tt-forge-fe/third_party/tvm/src/relay/op/tensor/reduce.cc", line 71
+            # E       InternalError: Check failed: (axis < indim) is false: Axis out of bounds in reduce operator.
+            # venv/lib/python3.10/site-packages/tvm/_ffi/base.py:479: InternalError
+            ExceptionCheck(
+                class_name="tvm.error.InternalError",
+                component=ComponentChecker.TVM.value,
+                error_log=[
+                    M.contains(
+                        "E       InternalError: Check failed: (axis < indim) is false: Axis out of bounds in reduce operator."
+                    ),
+                    M.last_line(M.contains("tvm/_ffi/base.py:")),
+                ],
+            ),
+        ],
+    )
+
     UNSUPPORTED_DILATION = FailingReason(
         description="Unsupported dilation, currently only support dilation = 1",
         checks=[

@@ -18,6 +18,8 @@ class FailingReasonsRegister:
         ("avg_pool_2d", FailingReasons.INCORRECT_TENSOR_SHAPE),
         ("avg_pool_2d", FailingReasons.OUT_OF_MEMORY),
         ("avg_pool_2d", FailingReasons.PAD_BIGGER_THAN_HALF_OF_KERNEL),
+        ("batch_norm_1d", FailingReasons.AXIS_OUT_OF_BOUNDS),
+        ("batch_norm_3d", FailingReasons.SOURCE_MAPS_NOT_POPULATED),
         ("clamp", FailingReasons.FAILED_MLIR_VERIFICATION),
         ("clamp", FailingReasons.VALUE_CONVERSION_OVERFLOW),
         ("concatenate", FailingReasons.CIRCULAR_BUFFER_EXCEEDS_L1),

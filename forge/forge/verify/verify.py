@@ -36,9 +36,11 @@ from forge.verify.compare import compare_tensor_to_golden
 from forge.verify.utils import convert_to_supported_pytorch_dtype
 from forge.forge_property_utils import (
     ExecutionStage,
+    ExecutionPass,
     ModelGroup,
     get_model_group,
     record_execution,
+    record_execution_pass,
     record_verify_config,
     record_consistency_limits,
     record_emitc_status,
@@ -332,6 +334,9 @@ def _verify_backward(
         logger.warning("Verification is disabled")
         return
 
+    # Record execution pass
+    record_execution_pass(ExecutionPass.BACKWARD)
+
     assert compiled_model.training(), "Compiled model must be in compiled for training for backward verification"
 
     # Check if inputs are of the correct type
@@ -468,6 +473,9 @@ def verify(
     fw_inputs = clone_framework_tensors(inputs)
     fw_out = framework_model(*fw_inputs)
     del fw_inputs
+
+    # Record execution pass
+    record_execution_pass(ExecutionPass.FORWARD)
 
     record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
     co_out = compiled_model(*inputs)

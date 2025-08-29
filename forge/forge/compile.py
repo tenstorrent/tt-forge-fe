@@ -39,7 +39,9 @@ from forge.tensor import Tensor, to_pt_tensors, AnyTensor
 from forge.verify import DeprecatedVerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
 from forge.forge_property_utils import (
     ExecutionStage,
+    ExecutionRunMode,
     record_execution,
+    record_execution_run_mode,
     record_compiler_config,
     record_flatbuffer_details,
 )
@@ -237,6 +239,8 @@ def compile_main(
     training = training or optimizer is not None
 
     record_compiler_config(compiler_cfg)
+    # Record information needed to differentiate between inference and training compilation
+    record_execution_run_mode(ExecutionRunMode.from_training_param(training))
     record_execution(ExecutionStage.FAILED_TVM_RELAY_IRMODULE_GENERATION)
 
     compile_context: CompileContext = CompileContext(
