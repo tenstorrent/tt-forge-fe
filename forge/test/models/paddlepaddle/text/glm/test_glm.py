@@ -19,7 +19,7 @@ variants = ["THUDM/glm-515m",
 
 
 @pytest.mark.nightly
-#@pytest.mark.xfail()
+# @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_glm(variant):
     # Record Forge properties
