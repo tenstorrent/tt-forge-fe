@@ -12,6 +12,7 @@ import math
 import onnx
 from torchvision.models.detection import _utils as det_utils
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
+from transformers import BartForSequenceClassification
 
 
 @pytest.mark.skip_model_analysis
@@ -474,3 +475,126 @@ def test_view_speecht5_tts(tensor_size, num_heads, head_dim, max_length):
         sample_inputs=inputs,
     )
     verify(inputs, model, compiled_model)
+
+
+@pytest.mark.xfail
+@pytest.mark.nightly
+@pytest.mark.skip_model_analysis
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (1, 24, 768),
+        (1, 16, 512),
+        (1, 32, 128),
+        (1, 8, 64),
+        (1, 160, 256),
+        (1, 200, 512),
+        (2, 24, 768),
+    ],
+)
+def test_scatter_elements(shape):
+    class scatter_elements(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.max_length = 160
+
+        def forward(self, hidden_states):
+            seq_len = hidden_states.shape[1]
+            pos_seq = torch.arange(0, seq_len).long().to(hidden_states.device)
+            pos_seq = pos_seq[:, None] - pos_seq[None, :]
+            pos_seq[pos_seq < -self.max_length] = -self.max_length
+            return pos_seq
+
+    inputs = [torch.randn(shape, dtype=torch.float32)]
+    model = scatter_elements()
+    model.eval()
+
+    compiled_model = forge.compile(model, sample_inputs=inputs)
+    verify(inputs, model, compiled_model)
+
+
+@pytest.mark.xfail
+@pytest.mark.nightly
+def test_bart_cls_head_onnx():
+    class wrapper(nn.Module):
+        def __init__(self, model):
+            super().__init__()
+            self.model = model.classification_head
+
+        def forward(self, hidden_states, eos_mask):
+
+            sentence_representation = hidden_states[eos_mask, :].view(
+                hidden_states.size(0), -1, hidden_states.size(-1)
+            )[:, -1, :]
+            op = self.model(sentence_representation)
+            return op
+
+    # prepare model and input
+    model = BartForSequenceClassification.from_pretrained("facebook/bart-large-mnli", torchscript=True)
+    model.eval()
+    torch_model = wrapper(model)
+    hidden_states = torch.randn(1, 256, 1024)
+    eos_mask = torch.zeros((1, 256), dtype=torch.bool)
+    true_indices = [52, 55, 56]
+    eos_mask[0, true_indices] = True
+    inputs = [hidden_states, eos_mask]
+
+    # Export model to ONNX
+    onnx_path = "bart_cls_head.onnx"
+    torch.onnx.export(torch_model, (inputs[0], inputs[1]), onnx_path, opset_version=17, verbose=True)
+
+    # Load framework model
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule("bart_cls_head", onnx_model)
+
+    # Compile model
+    compiled_model = forge.compile(onnx_model, inputs, module_name="bart_cls_head")
+
+    # Model Verification
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+    )
+
+
+@pytest.mark.nightly
+@pytest.mark.parametrize(
+    "shape,axis,index",
+    [
+        ((1, 3, 1024), 1, -1),
+        ((1, 32, 124), 2, 0),
+        ((1, 2, 24), 2, -1),
+        ((1, 51, 83), 1, 2),
+        ((2, 40, 60), 0, 1),
+    ],
+)
+def test_gather_onnx(shape, axis, index):
+    class Gather(nn.Module):
+        def __init__(self, axis, index):
+            super().__init__()
+            self.axis = axis
+            self.index = index
+
+        def forward(self, x):
+            if self.axis == 0:
+                return x[self.index, :, :]
+            elif self.axis == 1:
+                return x[:, self.index, :]
+            elif self.axis == 2:
+                return x[:, :, self.index]
+
+    torch_model = Gather(axis, index)
+    inputs = [torch.randn(shape)]
+
+    onnx_path = f"gather_axis_{axis}.onnx"
+    torch.onnx.export(torch_model, (inputs[0],), onnx_path, opset_version=17, verbose=True)
+
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule("gather", onnx_model)
+
+    compiled_model = forge.compile(onnx_model, inputs, module_name="gather")
+
+    verify(inputs, framework_model, compiled_model)
