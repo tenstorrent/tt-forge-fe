@@ -961,7 +961,8 @@ class ForgeWriter(PythonWriter):
             )
         else:
             self.wl('@pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list)')
-        self.wl("def test_module(forge_module_and_shapes_dtypes):")
+        self.wl('@pytest.mark.parametrize("training_test", [False, True], ids=["inference", "training"])')
+        self.wl("def test_module(forge_module_and_shapes_dtypes, training_test):")
         self.indent += 1
         if module_metadata is not None:
             for metadata_name, metadata_value in module_metadata.items():
@@ -976,11 +977,18 @@ class ForgeWriter(PythonWriter):
             if exclude_record_property is not None and len(exclude_record_property) != 0:
                 self.wl("")
                 for exclude_metadata in exclude_record_property:
-                    self.wl(f'{exclude_metadata} = metadata.pop("{exclude_metadata}")')
+                    self.wl(f'{exclude_metadata} = metadata.get("{exclude_metadata}")')
             self.wl("")
             self.wl("for metadata_name, metadata_value in metadata.items():")
             self.indent += 1
-            self.wl('if metadata_name == "model_names":')
+            if exclude_record_property is not None and len(exclude_record_property) != 0:
+                self.wl(f"if metadata_name in {exclude_record_property}:")
+                self.indent += 1
+                self.wl("continue")
+                self.indent -= 1
+                self.wl('elif metadata_name == "model_names":')
+            else:
+                self.wl('if metadata_name == "model_names":')
             self.indent += 1
             self.wl("record_op_model_names(metadata_value)")
             self.indent -= 1
@@ -1008,7 +1016,7 @@ class ForgeWriter(PythonWriter):
         ):
             self.wl("max_int = 1000")
         self.wl(
-            "inputs = [Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int) for operand_shape, operand_dtype in operand_shapes_dtypes]"
+            "inputs = [Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int, requires_grad = training_test) for operand_shape, operand_dtype in operand_shapes_dtypes]"
         )
         self.wl("")
         self.wl(f"framework_model = forge_module(forge_module.__name__)")
@@ -1016,7 +1024,7 @@ class ForgeWriter(PythonWriter):
         self.wl("for name, parameter in framework_model._parameters.items():")
         self.indent += 1
         self.wl(
-            "parameter_tensor = Tensor.create_torch_tensor(shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int)"
+            "parameter_tensor = Tensor.create_torch_tensor(shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int, requires_grad = training_test)"
         )
         self.wl("framework_model.set_parameter(name, parameter_tensor)")
         self.indent -= 1
@@ -1024,7 +1032,7 @@ class ForgeWriter(PythonWriter):
         self.wl("for name, constant in framework_model._constants.items():")
         self.indent += 1
         self.wl(
-            "constant_tensor = Tensor.create_torch_tensor(shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int)"
+            "constant_tensor = Tensor.create_torch_tensor(shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int, requires_grad = training_test)"
         )
         self.wl("framework_model.set_constant(name, constant_tensor)")
         self.indent -= 1
@@ -1038,10 +1046,12 @@ class ForgeWriter(PythonWriter):
         self.wl('compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])')
         self.indent -= 1
         self.wl("")
-        self.wl("compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)")
+        self.wl(
+            "compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, training=training_test)"
+        )
         self.wl("")
         self.wl(
-            "verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
+            "verify(inputs, framework_model, compiled_model, with_backward=training_test, verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
         )
         self.wl("")
         self.wl("")

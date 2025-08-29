@@ -6,7 +6,7 @@ import torch
 from torch import nn
 
 import forge
-from forge.verify.verify import verify, verify_backward
+from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 from forge.verify import DeprecatedVerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
@@ -423,21 +423,11 @@ def test_power(dims):
     framework_model = Power()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=True)
 
-    fw_out, co_out = verify(
+    verify(
         inputs,
         framework_model,
         compiled_model,
-    )
-
-    grad = torch.rand_like(fw_out[0])
-
-    verify_backward(
-        inputs,
-        grad,
-        fw_out[0],
-        co_out[0],
-        framework_model,
-        compiled_model,
+        with_backward=True,
     )
 
 
@@ -522,19 +512,7 @@ def test_divide(shape):
     framework_model = Divide()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=is_training)
 
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
-
-    grad = torch.rand_like(fw_out[0])
-
-    verify_backward(
-        inputs,
-        grad,
-        fw_out[0],
-        co_out[0],
-        framework_model,
-        compiled_model,
-        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)),
-    )
+    verify(inputs, framework_model, compiled_model, with_backward=True)
 
 
 @pytest.mark.push
