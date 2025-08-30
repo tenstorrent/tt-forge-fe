@@ -7,8 +7,8 @@
 
 import pytest
 
-from test.operators.utils import TestVector
-from test.operators.utils import TestQuery
+from ..utils import TestVector
+from ..utils import TestQuery
 
 from loguru import logger
 
