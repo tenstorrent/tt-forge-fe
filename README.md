@@ -23,6 +23,7 @@
 # Quick Links
 - [Getting Started / How to Run a Model](docs/src/getting_started.md)
 - [Build](docs/src/getting_started_build_from_source.md) - Use these instructions if you plan to do development work.
+- [Dependency Management](docs/DEPENDENCIES.md) - Learn about the new flexible dependency system for Docker and non-Docker workflows.
 
 -----
 # What is this Repo?
