@@ -2,6 +2,8 @@ name: Model Analysis Testing
 
 on:
   workflow_dispatch:
+  push:
+    branches: ["vvukoman/test-download-artifact"]
 
 permissions:
   packages: write
