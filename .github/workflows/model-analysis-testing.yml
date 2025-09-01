@@ -107,7 +107,7 @@ jobs:
             echo "Downloading artifact ${ARTIFACT_NAME} from ${REPOSITORY}..."
 
             artifacts_response=$(curl -H "Authorization: token ${GITHUB_TOKEN}" -L -v \
-              "https://api.github.com/repos/${REPOSITORY}/actions/runs/${RUN_ID}/artifacts")
+              "https://api.github.com/repos/${REPOSITORY}/actions/runs/${RUN_ID}/artifacts?per_page=100")
             
             curl_status=$?
             echo "Artifacts API call status: $curl_status"
