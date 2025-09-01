@@ -1,0 +1,164 @@
+name: Model Analysis Testing
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["pchandrasekaran/test_model_analysis"]
+
+permissions:
+  packages: write
+  checks: write
+
+jobs:
+
+  docker-build:
+    uses: ./.github/workflows/build-image.yml
+    secrets: inherit
+
+  run-models-ops-tests:
+    needs:
+      - docker-build
+
+    runs-on: ["in-service", "n150" ]
+
+    container:
+      image: ${{ needs.docker-build.outputs.docker-image }}
+      options: --device /dev/tenstorrent/0
+      volumes:
+        - /dev/hugepages:/dev/hugepages
+        - /dev/hugepages-1G:/dev/hugepages-1G
+        - /etc/udev/rules.d:/etc/udev/rules.d
+        - /lib/modules:/lib/modules
+        - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+        - /mnt/dockercache:/mnt/dockercache
+
+    steps:
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+          echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
+
+      - name: Git safe dir
+        run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
+
+      - uses: actions/checkout@v4
+        with:
+            submodules: recursive
+            fetch-depth: 0 # Fetch all history and tags
+            token: ${{ secrets.GH_TOKEN }}
+
+      # Clean everything from submodules (needed to avoid issues
+      # with cmake generated files leftover from previous builds)
+      - name: Cleanup submodules
+        run: |
+            git submodule foreach --recursive git clean -ffdx
+            git submodule foreach --recursive git reset --hard
+
+      - name: Download Generated Models Ops Tests
+        continue-on-error: true
+        uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
+        with:
+          name: generated-models-ops-tests
+          run_id: 17286243878
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          path: forge/test/unique_ops_tests
+
+      - name: Download and extract artifact
+        shell: bash
+        env:
+          ARTIFACT_NAME: 'generated-models-ops-tests'
+          DOWNLOAD_PATH: forge/test/models_ops
+          REPOSITORY: tenstorrent/tt-forge-fe
+          RETRY_COUNT: 3
+          RETRY_WAIT: 10
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_ID: 17286243878
+        run: |
+          set -e
+
+          if [ -z "${DOWNLOAD_PATH}" ]; then
+            path="${GITHUB_WORKSPACE}"
+          else
+            path=$(realpath "${DOWNLOAD_PATH}")
+          fi
+
+          # Check if download path is not malicious
+          if [[ "$path" != "${GITHUB_WORKSPACE}"* ]]; then
+            echo "Error: Download path must be within ${GITHUB_WORKSPACE} but not ${GITHUB_WORKSPACE} itself."
+            exit 1
+          fi
+
+          # Make sure download dir is empty and exists
+          if [[ "$path" != "${GITHUB_WORKSPACE}" ]]; then
+            echo "Removing existing directory: $path"
+            rm -rf "$path"
+            mkdir -p "$path"
+          fi
+
+          # Function to download artifact
+          download_artifact() {
+            echo "Downloading artifact ${ARTIFACT_NAME} from ${REPOSITORY}..."
+
+            curl -H "Authorization: token ${GITHUB_TOKEN}" -L \
+            "https://api.github.com/repos/${REPOSITORY}/actions/runs/${RUN_ID}/artifacts" | \
+            jq -r ".artifacts[] | select(.name==\"${ARTIFACT_NAME}\") | .archive_download_url" | \
+            xargs -I {} curl -H "Authorization: token ${GITHUB_TOKEN}" -L {} --output "$path/${ARTIFACT_NAME}.zip"
+
+            if [ $? -ne 0 ]; then
+              echo "Error: Failed to download artifact."
+              return 1
+            fi
+
+            if [ ! -d "$path" ]; then
+              echo "Error: Path $path does not exist."
+              return 1
+            else
+              echo "Listing contents of $path:"
+              ls -lah "$path"
+            fi
+
+            echo "Listing contents of $pwd:"
+            ls -lah "$(pwd)"
+
+            unzip -o "$path/${ARTIFACT_NAME}.zip" -d "$path"
+            if [ $? -ne 0 ]; then
+              echo "Error: Failed to unzip artifact."
+              return 1
+            fi
+            rm "$path/${ARTIFACT_NAME}.zip"
+          
+            # Check if we need to untar
+            for file in "$path"/*.tar*; do
+              if [ -f "$file" ]; then
+                echo "Extracting tar file: $file"
+                tar -xf "$file" -C "$path"
+                rm "$file"
+              fi
+            done
+
+            return 0
+          }
+
+          # Retry logic
+          success=false
+          for attempt in $(seq 1 ${RETRY_COUNT}); do
+            echo "Attempt $attempt of ${RETRY_COUNT}..."
+
+            if download_artifact; then
+              success=true
+              break
+            else
+              echo "Download failed. Retrying in ${RETRY_WAIT} seconds..."
+              sleep ${RETRY_WAIT}
+            fi
+          done
+
+          if [ "$success" = false ]; then
+            echo "Failed to download artifact after ${RETRY_COUNT} attempts."
+            exit 1
+          fi
+
+          echo "Artifact downloaded and extracted successfully to ${DOWNLOAD_PATH}"
