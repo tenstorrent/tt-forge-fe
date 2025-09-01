@@ -2,8 +2,6 @@ name: Model Analysis Testing
 
 on:
   workflow_dispatch:
-  push:
-    branches: ["pchandrasekaran/test_model_analysis"]
 
 permissions:
   packages: write
@@ -57,6 +55,19 @@ jobs:
             git submodule foreach --recursive git clean -ffdx
             git submodule foreach --recursive git reset --hard
 
+      - name: Log out
+        shell: bash
+        run: |
+          ls -lah
+
+      - name: Download Generated Models Ops Tests
+        continue-on-error: true
+        uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
+        with:
+          name: generated-models-ops-tests
+          run_id: 17286243878
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Download Generated Models Ops Tests
         continue-on-error: true
         uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
@@ -65,6 +76,15 @@ jobs:
           run_id: 17286243878
           github_token: ${{ secrets.GITHUB_TOKEN }}
           path: forge/test/unique_ops_tests
+
+      - name: Download Generated Models Ops Tests
+        continue-on-error: true
+        uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
+        with:
+          name: generated-models-ops-tests
+          run_id: 17286243878
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          path: my-custom-path
 
       - name: Download and extract artifact
         shell: bash
