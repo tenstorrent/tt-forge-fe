@@ -1,24 +1,55 @@
-[build-system]
-requires = ["setuptools>=61.0", "wheel", "pip"]
-build-backend = "setuptools.build_meta"
+ARG FROM_TAG=latest
 
-[project]
-name = "tt_forge_fe"
-description = "AI/ML framework for Tenstorrent devices"
-readme = "README.md"
-license = { file = "LICENSE" }
-authors = [
-  { name = "Tenstorrent", email = "info@tenstorrent.com" }
-]
-requires-python = ">=3.8"
-keywords = ["forge", "machine learning", "tenstorrent"]
+FROM ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:${FROM_TAG} AS ci-build
+SHELL ["/bin/bash", "-c"]
 
-classifiers = [
-  "Development Status :: 3 - Alpha",
-  "Intended Audience :: Developers",
-  "Intended Audience :: Science/Research",
-  "Topic :: Scientific/Engineering :: Artificial Intelligence"
-]
+# Set environment variables
+ENV PROJECT_NAME=tt-forge-fe
+ENV TTMLIR_TOOLCHAIN_DIR=/opt/ttmlir-toolchain
+ENV TTFORGE_TOOLCHAIN_DIR=/opt/ttforge-toolchain
+ENV TTFORGE_PYTHON_VERSION=python3.11
+ENV TTFORGE_VENV_DIR=/opt/ttforge-toolchain/venv
+ENV TTMLIR_VENV_DIR=/opt/ttmlir-toolchain/venv
+ENV TTMLIR_PYTHON_VERSION=python3.11
 
-# We will dynamically provide `version` and `dependencies` in setup.py
-dynamic = ["version", "dependencies"]
+# Install required packages for virtual environment creation
+RUN apt-get update && apt-get install -y \
+    python3.11-venv \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create a directory for the build and toolchain
+ARG BUILD_DIR=/home/build
+RUN mkdir -p $BUILD_DIR && \
+    mkdir -p $TTMLIR_TOOLCHAIN_DIR && \
+    mkdir -p $TTFORGE_TOOLCHAIN_DIR
+
+# Copy the project to the container
+ADD . $BUILD_DIR/$PROJECT_NAME
+
+# Build the toolchain
+WORKDIR $BUILD_DIR/$PROJECT_NAME
+
+# Show last commit
+RUN git log -1
+
+# Build the toolchain
+WORKDIR $BUILD_DIR/$PROJECT_NAME
+RUN source env/activate && \
+    cmake -B env/build env && \
+    cmake --build env/build
+
+FROM ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:${FROM_TAG} AS ci
+
+# Copy the TTMLIR_TOOLCHAIN_DIR from the previous stage
+
+ENV TTMLIR_TOOLCHAIN_DIR=/opt/ttmlir-toolchain
+ENV TTFORGE_TOOLCHAIN_DIR=/opt/ttforge-toolchain
+
+RUN echo "Copying from ci-build stage $TTMLIR_TOOLCHAIN_DIR"
+COPY --from=ci-build $TTMLIR_TOOLCHAIN_DIR $TTMLIR_TOOLCHAIN_DIR
+
+RUN echo "Copying from ci-build stage $TTFORGE_TOOLCHAIN_DIR"
+COPY --from=ci-build $TTFORGE_TOOLCHAIN_DIR $TTFORGE_TOOLCHAIN_DIR
+
+RUN du -h --max-depth=2 $TTMLIR_TOOLCHAIN_DIR
+RUN du -h --max-depth=2 $TTFORGE_TOOLCHAIN_DIR

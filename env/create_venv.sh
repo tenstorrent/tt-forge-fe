@@ -31,10 +31,17 @@ else
     REQUIREMENTS_FILE="$CURRENT_SOURCE_DIR/linux_requirements.txt"
 fi
 
+echo "Creating virtual environment with $TTFORGE_PYTHON_VERSION at $TTFORGE_VENV_DIR"
 $TTFORGE_PYTHON_VERSION -m venv $TTFORGE_VENV_DIR
 unset LD_PRELOAD
 source $TTFORGE_VENV_DIR/bin/activate
+
+echo "Upgrading pip and installing build tools"
 python -m pip install --upgrade pip
 pip3 install wheel==0.37.1
 pip3 install setuptools==78.1.0
+
+echo "Installing requirements from $REQUIREMENTS_FILE"
 pip3 install -r $REQUIREMENTS_FILE -f https://download.pytorch.org/whl/cpu/torch_stable.html
+
+echo "Virtual environment setup complete"

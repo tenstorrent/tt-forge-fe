@@ -7,6 +7,15 @@ SHELL ["/bin/bash", "-c"]
 ENV PROJECT_NAME=tt-forge-fe
 ENV TTMLIR_TOOLCHAIN_DIR=/opt/ttmlir-toolchain
 ENV TTFORGE_TOOLCHAIN_DIR=/opt/ttforge-toolchain
+ENV TTFORGE_PYTHON_VERSION=python3.11
+ENV TTFORGE_VENV_DIR=/opt/ttforge-toolchain/venv
+ENV TTMLIR_VENV_DIR=/opt/ttmlir-toolchain/venv
+ENV TTMLIR_PYTHON_VERSION=python3.11
+
+# Install required packages for virtual environment creation
+RUN apt-get update && apt-get install -y \
+    python3.11-venv \
+    && rm -rf /var/lib/apt/lists/*
 
 # Create a directory for the build and toolchain
 ARG BUILD_DIR=/home/build
