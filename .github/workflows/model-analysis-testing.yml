@@ -57,11 +57,6 @@ jobs:
             git submodule foreach --recursive git clean -ffdx
             git submodule foreach --recursive git reset --hard
 
-      - name: Log out
-        shell: bash
-        run: |
-          ls -lah
-
       - name: Download Generated Models Ops Tests
         continue-on-error: true
         uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
@@ -69,6 +64,7 @@ jobs:
           name: generated-models-ops-tests
           run_id: 17286243878
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          path: forge/test/unique_ops_tests
 
       - name: Download and extract artifact
         shell: bash
@@ -106,54 +102,13 @@ jobs:
           download_artifact() {
             echo "Downloading artifact ${ARTIFACT_NAME} from ${REPOSITORY}..."
 
-            artifacts_response=$(curl -H "Authorization: token ${GITHUB_TOKEN}" -L -v \
-              "https://api.github.com/repos/${REPOSITORY}/actions/runs/${RUN_ID}/artifacts?per_page=100")
-            
-            curl_status=$?
-            echo "Artifacts API call status: $curl_status"
-            
-            if [ $curl_status -ne 0 ]; then
-              echo "Error: Failed to fetch artifacts list from GitHub API."
-              return 1
-            fi
+            curl -H "Authorization: token ${GITHUB_TOKEN}" -L \
+            "https://api.github.com/repos/${REPOSITORY}/actions/runs/${RUN_ID}/artifacts?per_page=100" | \
+            jq -r ".artifacts[] | select(.name==\"${ARTIFACT_NAME}\") | .archive_download_url" | \
+            xargs -I {} curl -H "Authorization: token ${GITHUB_TOKEN}" -L {} --output "$path/${ARTIFACT_NAME}.zip"
 
-            echo "artifacts_response: $artifacts_response"
-            
-            echo "Successfully fetched artifacts list. Response length: ${#artifacts_response}"
-            
-            # Extract download URL
-            echo "Extracting download URL for artifact: ${ARTIFACT_NAME}"
-            download_url=$(echo "$artifacts_response" | jq -r ".artifacts[] | select(.name==\"${ARTIFACT_NAME}\") | .archive_download_url")
-            
-            if [ -z "$download_url" ] || [ "$download_url" = "null" ]; then
-              echo "Error: Could not find artifact '${ARTIFACT_NAME}' or extract download URL."
-              echo "Available artifacts:"
-              echo "$artifacts_response" | jq -r '.artifacts[].name'
-              return 1
-            fi
-            
-            echo "Found download URL: $download_url"
-            
-            # Step 2: Download the actual artifact file
-            echo "Step 2: Downloading artifact file..."
-            curl -H "Authorization: token ${GITHUB_TOKEN}" -L -v "$download_url" --output "$path/${ARTIFACT_NAME}.zip"
-            
-            download_status=$?
-            echo "Artifact download status: $download_status"
-
-            if [ $download_status -ne 0 ]; then
-              echo "Error: Failed to download artifact file."
-              return 1
-            fi
-            
-            echo "Successfully downloaded artifact to: $path/${ARTIFACT_NAME}.zip"
-            
-            # Verify file was created and check its size
-            if [ -f "$path/${ARTIFACT_NAME}.zip" ]; then
-              file_size=$(stat -c%s "$path/${ARTIFACT_NAME}.zip")
-              echo "Downloaded file size: $file_size bytes"
-            else
-              echo "Error: Downloaded file not found at expected location."
+            if [ $? -ne 0 ]; then
+              echo "Error: Failed to download artifact."
               return 1
             fi
 
