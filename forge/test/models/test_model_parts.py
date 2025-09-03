@@ -7,7 +7,7 @@ import torch
 from torch import nn
 
 import forge
-from forge.verify.verify import verify
+from forge.verify.verify import verify, DeprecatedVerifyConfig
 import math
 import onnx
 from torchvision.models.detection import _utils as det_utils
@@ -608,3 +608,49 @@ def test_gather_onnx(shape, axis, index):
     compiled_model = forge.compile(onnx_model, inputs, module_name="gather")
 
     verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.xfail
+@pytest.mark.nightly
+def test_shift_tokens_right():
+    class ShiftTokensRight(nn.Module):
+        def __init__(self, pad_token_id: int, decoder_start_token_id: int):
+            """
+            Module that shifts input tokens to the right by one position.
+
+            Args:
+                pad_token_id (int): The token ID used for padding.
+                decoder_start_token_id (int): The token ID to place at the beginning.
+            """
+            super().__init__()
+            self.pad_token_id = pad_token_id
+            self.decoder_start_token_id = decoder_start_token_id
+
+        def forward(self, input_ids: torch.Tensor) -> torch.Tensor:
+            """
+            Args:
+                input_ids (torch.Tensor): Tensor of shape (batch_size, seq_len)
+
+            Returns:
+                torch.Tensor: Shifted input_ids of the same shape
+            """
+            shifted_input_ids = input_ids.new_zeros(input_ids.shape)
+            # shifted_input_ids[:, 1:] = input_ids[:, :-1].clone()  ## Original code
+            shifted_input_ids = torch.cat([shifted_input_ids[:, :1], input_ids[:, :-1].clone()], dim=1)
+            shifted_input_ids[:, 0] = self.decoder_start_token_id
+            shifted_input_ids.masked_fill_(shifted_input_ids == -100, self.pad_token_id)
+            return shifted_input_ids + (input_ids * 0)
+
+    vocab_size = 1000
+    input_ids = torch.randint(low=0, high=vocab_size, size=(1, 256), dtype=torch.int64)
+    shift_module = ShiftTokensRight(pad_token_id=1, decoder_start_token_id=2)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        shift_module,
+        sample_inputs=[input_ids],
+        module_name="shift_tokens_right",
+        verify_cfg=DeprecatedVerifyConfig(verify_forge_codegen_vs_framework=True),
+    )
+
+    verify([input_ids], shift_module, compiled_model)
