@@ -21,7 +21,6 @@ from third_party.tt_forge_models.googlenet.pytorch import ModelLoader, ModelVari
     ],
 )
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2834")
 def test_googlenet_onnx_export_from_pytorch(variant, forge_tmp_path):
     # Record Forge Property
     module_name = record_model_properties(
