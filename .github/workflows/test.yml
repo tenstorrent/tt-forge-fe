@@ -1,183 +1,44 @@
-name: Test
+name: Superset API Example
 
 on:
-  workflow_dispatch:
-    inputs:
-      rebuild:
-        description: 'Rebuild the Forge'
-        required: false
-        default: false
-        type: boolean
-      preset:
-        description: 'Test preset to run'
-        required: false
-        default: 'Custom'
-        type: choice
-        options:
-          - Full Model Passing
-          - Full Model XFailing
-          - Models Ops
-          - Sweeps
-          - Custom
-      test_mark:
-        description: 'Test mark to run (custom preset)'
-        required: false
-        default: 'push'
-        type: string
-      runs-on:
-        description: 'Runs on'
-        required: false
-        type: choice
-        options:
-          - n150
-          - n300
-          - p150
-      sh-runner:
-        description: 'Run tests using shared runners'
-        required: false
-        default: true
-        type: boolean
-      test_group_cnt:
-        description: 'Test group count'
-        required: false
-        default: "2"
-        type: choice
-        options:
-          - "1"
-          - "2"
-          - "3"
-          - "4"
-          - "8"
-      on-crash:
-        description: 'If test crashes, continue or restart test suite'
-        required: false
-        default: "Continue"
-        type: choice
-        options:
-          - "Continue"
-          - "Restart"
-      operators:
-        description: 'Operators to test (comma separated)'
-        required: false
-        type: string
-      filters:
-        description: 'Filters for tests (comma separated)'
-        required: false
-        type: string
+  push:
+    paths:
+      - '.github/scripts/superset-api/**'
+  pull_request:
+    paths:
+      - '.github/scripts/superset-api/**'
+  workflow_dispatch:  # Allow manual triggering
 
 permissions:
-  packages: write
-  checks: write
-
-run-name: "Test (Rebuild: ${{ inputs.rebuild }} - Preset: ${{ inputs.preset }} - Mark: ${{ inputs.test_mark }} - ${{ inputs.sh-runner && format('{0}-shared', inputs.runs-on) || (inputs.runs-on) }} - ${{ inputs.test_group_cnt }} - Ops: ${{ inputs.operators }} - Filters: ${{ inputs.filters }})"
+  id-token: write   # Required for OIDC
+  contents: read    # Required for checking out code
 
 jobs:
-
-  save-inputs:
+  call_api:
     runs-on: ubuntu-latest
     steps:
-      - name: Show input parameters
-        run: |
-          echo "## Input Parameters" >> $GITHUB_STEP_SUMMARY
-          echo "- Branch: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Rebuild: ${{ inputs.rebuild }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Preset: ${{ inputs.preset }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Test Mark: ${{ inputs.test_mark }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Runs On: ${{ inputs.runs-on }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Shared Runner: ${{ inputs.sh-runner }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Test Group Count: ${{ inputs.test_group_cnt }}" >> $GITHUB_STEP_SUMMARY
-          echo "- On Crash: ${{ inputs.on-crash }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Operators: ${{ inputs.operators }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Filters: ${{ inputs.filters }}" >> $GITHUB_STEP_SUMMARY
-      - name: Save inputs to file
-        run: |
-          echo '{ "branch_name": "${{ github.ref_name }}", "rebuild": "${{ inputs.rebuild }}", "preset": "${{ inputs.preset }}", "test_mark": "${{ inputs.test_mark }}", "runs-on": "${{ inputs.runs-on }}", "sh-runner": "$${{ inputs.sh-runner }}", "test_group_cnt": "${{ inputs.test_group_cnt }}", "on-crash": "${{ inputs.on-crash }}", "operators": "${{ inputs.operators }}", "filters": "${{ inputs.filters }}" }' > inputs.json
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+
+      - name: Checkout code # only needed when using action in same repo
+        uses: actions/checkout@v3
+
+      - name: Call Superset API
+        id: api-call
+        uses: tenstorrent/tt-forge/.github/actions/superset-api
         with:
-          name: inputs
-          path: inputs.json
+          query: 'benchmarks/last_measurement'
+          query_params: '{"project":"tt-forge/tt-forge-fe","ml_model_name":"YOLOv10","batch_size":"1","precision":"bfloat16","github_pipeline_id":"17062200981"}'
 
-  docker-build:
-    uses: ./.github/workflows/build-image.yml
-    secrets: inherit
-
-  set-inputs:
-    runs-on: ubuntu-latest
-    needs: docker-build
-    outputs:
-      buildtype: ${{ steps.set-inputs.outputs.buildtype }}
-      test_group_cnt: ${{ steps.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ steps.set-inputs.outputs.test_group_ids }}
-      test_mark: ${{ steps.set-inputs.outputs.test_mark }}
-      runs-on: ${{ steps.set-inputs.outputs.runs-on }}
-      operators: ${{ steps.set-inputs.outputs.operators }}
-      filters: ${{ steps.set-inputs.outputs.filters }}
-      run_id: ${{ steps.set-inputs.outputs.runid }}
-      continue_on_crash: ${{ inputs.on-crash == 'Continue' }}
-    steps:
-      - name: Inputs Management
-        id: set-inputs
+      - name: Display Response
         run: |
-          if [ ${{ inputs.rebuild }} == 'true' ]; then
-            echo "buildtype=Release" >> $GITHUB_OUTPUT
-            echo "runid=${{ github.run_id }}" >> $GITHUB_OUTPUT
-          else
-            echo "buildtype=None" >> $GITHUB_OUTPUT
-          fi
-          echo "test_group_cnt=${{ inputs.test_group_cnt }}" >> $GITHUB_OUTPUT
-          echo "test_group_ids=[$(seq -s ',' 1 ${{ inputs.test_group_cnt }})]" >> $GITHUB_OUTPUT
-          echo "runs-on=[{\"runs-on\": \"${{ inputs.runs-on }}\"}]" >> $GITHUB_OUTPUT
-          echo "operators=${{ inputs.operators }}" >> $GITHUB_OUTPUT
-          echo "filters=${{ inputs.filters }}" >> $GITHUB_OUTPUT
-          case "${{ inputs.preset }}" in
-            "Full Model Passing")
-              echo "test_mark=nightly and not xfail" >> $GITHUB_OUTPUT
-              ;;
-            "Full Model XFailing")
-              echo "test_mark=nightly and xfail" >> $GITHUB_OUTPUT
-              ;;
-            "Models Ops")
-              echo "test_mark=nightly_models_ops" >> $GITHUB_OUTPUT
-              ;;
-            "Sweeps")
-              echo "test_mark=nightly_sweeps" >> $GITHUB_OUTPUT
-              ;;
-            "Custom")
-              echo "test_mark=${{ inputs.test_mark }}" >> $GITHUB_OUTPUT
-              ;;
-            *)
-              echo "Invalid preset"
-              exit 1
-              ;;
-          esac
+          echo "API Response:"
+          echo '${{ steps.api-call.outputs.response }}'
 
-  build:
-    needs:
-      - docker-build
-      - set-inputs
-    uses: ./.github/workflows/build.yml
-    secrets: inherit
-    with:
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      build: ${{ needs.set-inputs.outputs.buildtype}}
+      - name: Create Job Summary
+        run: |
+          echo "# Benchmark Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| ------ | ----- |" >> $GITHUB_STEP_SUMMARY
 
-
-  run-tests:
-    if: success() || failure()
-    needs:
-      - docker-build
-      - build
-      - set-inputs
-    uses: ./.github/workflows/test-sub.yml
-    secrets: inherit
-    with:
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      test_mark: ${{ needs.set-inputs.outputs.test_mark }}
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
-      runs-on: ${{ needs.set-inputs.outputs.runs-on }}
-      sh-runner: ${{ inputs.sh-runner }}
-      operators: ${{ needs.set-inputs.outputs.operators }}
-      filters: ${{ needs.set-inputs.outputs.filters }}
-      run_id: ${{ needs.set-inputs.outputs.run_id }}
+          # Parse the JSON and create table rows
+          echo '${{ steps.api-call.outputs.response }}' | jq -r '.[] | "| " + .name + " | " + (.last_value | tostring) + " |"' >> $GITHUB_STEP_SUMMARY
