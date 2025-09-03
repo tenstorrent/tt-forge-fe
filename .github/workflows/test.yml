@@ -23,7 +23,7 @@ jobs:
 
       - name: Call Superset API
         id: api-call
-        uses: tenstorrent/tt-forge/.github/actions/superset-api
+        uses: tenstorrent/tt-forge/.github/actions/superset-api@main
         with:
           query: 'benchmarks/last_measurement'
           query_params: '{"project":"tt-forge/tt-forge-fe","ml_model_name":"YOLOv10","batch_size":"1","precision":"bfloat16","github_pipeline_id":"17062200981"}'
