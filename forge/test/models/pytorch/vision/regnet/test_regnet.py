@@ -75,7 +75,7 @@ variants = [
     ModelVariant.Y_8GF,
     ModelVariant.Y_16GF,
     ModelVariant.Y_32GF,
-    pytest.param(ModelVariant.Y_128GF, marks=[pytest.mark.out_of_memory, pytest.mark.xfail(reason="Cannot fit in L1")]),
+    pytest.param(ModelVariant.Y_128GF, marks=[pytest.mark.out_of_memory, pytest.mark.xfail]),
     ModelVariant.X_400MF,
     ModelVariant.X_800MF,
     ModelVariant.X_1_6GF,
@@ -98,6 +98,8 @@ def test_regnet_torchvision(variant):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
+    if variant == ModelVariant.Y_128GF:
+        pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2888")
 
     # Load model and inputs
     loader = ModelLoader(variant=variant)
