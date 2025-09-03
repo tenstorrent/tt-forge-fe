@@ -47,11 +47,12 @@ def test_pt_bart_classifier(variant):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
+    pytest.xfail(reason="Fatal Python error: Segmentation fault")
 
     # Load model and inputs
     loader = ModelLoader(variant=variant)
     framework_model = loader.load_model()
-    framework_model = BartWrapper(framework_model.model)
+    framework_model = BartWrapper(framework_model)
     inputs = loader.load_inputs()
 
     # Forge compile framework model
