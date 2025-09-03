@@ -11,6 +11,11 @@
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
 
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wgnu-anonymous-struct"
+#pragma clang diagnostic ignored "-Wc99-extensions"
+#endif
+
 namespace at
 {
 class Tensor;
@@ -54,12 +59,11 @@ class autograd_engine
     Graph *run();
 
     // Create an op for the given fwd op's operand.
-    NodeContext create_op(
-        struct autograd_context &self, const graphlib::OpType &type, const std::vector<NodeContext> &operands);
+    NodeContext create_op(struct autograd_context &self, ops::Op op, const std::vector<NodeContext> &operands);
 
     // Create a backward op for the given fwd op's operand.
     NodeContext create_backward_op(
-        const graphlib::OpType &type,
+        ops::Op op,
         const std::vector<NodeContext> &operands,
         Node *current_fwd_op,
         int operand_index,
@@ -68,7 +72,7 @@ class autograd_engine
         bool copy_golden_transforms = true);
 
     NodeContext create_optimizer_op(
-        const graphlib::OpType &type,
+        ops::Op op,
         const std::vector<NodeContext> &operands,
         Node *current_fwd_op,
         int operand_index,
@@ -122,7 +126,8 @@ class autograd_engine
         std::string &suffix_identifier,
         const std::vector<std::uint32_t> &tensor_shape,
         bool copy_consteval_operations,
-        bool disable_consteval = false);
+        bool disable_consteval = false,
+        std::optional<DataFormat> dtype = std::nullopt);
 
     bool contains_bwd_nodes() const;
     const std::map<int, std::vector<Node *>> &get_bwd_nodes(Node *fwd) const;
@@ -165,6 +170,20 @@ struct __attribute__((visibility("hidden"))) autograd_context
     int operand;
     graphlib::NodeEpochType epoch_type = graphlib::NodeEpochType::Backward;
     int created_op_index = 0;  // Incremented to ensure unique names when multiple ops are created
+
+    // Get operands of a node
+    std::vector<NodeContext> get_operands(const NodeContext &node) const
+    {
+        graphlib::Graph *graph = autograd->get_graph();
+        std::vector<Node *> operands = graph->data_operands(graph->node_by_id(node.id));
+        std::vector<NodeContext> operand_contexts;
+        for (auto it = operands.begin(); it != operands.end(); ++it)
+        {
+            NodeContext op_context(*it);
+            operand_contexts.push_back(op_context);
+        }
+        return operand_contexts;
+    }
 };
 
 template <typename T>

@@ -6,7 +6,7 @@ import torch
 from torch import nn
 
 import forge
-from forge.verify.verify import verify, verify_backward
+from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 from forge.verify import DeprecatedVerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
@@ -148,6 +148,77 @@ def test_less(shape_x, shape_y):
         compiled_model,
         VerifyConfig(verify_dtype=False),
     )
+
+
+@pytest.mark.parametrize(
+    "shape_x, shape_y",
+    [
+        ((1, 128, 28, 28), (1, 128, 28, 28)),
+        ((1, 64, 28, 28), (1, 64, 28, 28)),
+        ((1, 256, 28, 28), (1, 256, 28, 28)),
+        ((1, 128, 14, 14), (1, 128, 14, 14)),
+        ((1, 128, 56, 56), (1, 128, 56, 56)),
+        ((1, 32, 64, 64), (1, 32, 64, 64)),
+        ((1, 512, 7, 7), (1, 512, 7, 7)),
+        ((1, 32, 32, 32), (1, 32, 32, 32)),
+    ],
+)
+@pytest.mark.push
+def test_less_equal(shape_x, shape_y):
+    class LessEqual(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x, y):
+            return torch.less_equal(x, y)
+
+    x = torch.rand(shape_x)
+    y = torch.rand(shape_y)
+
+    inputs = [x, y]
+
+    framework_model = LessEqual()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_dtype=False),
+    )
+
+
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (888,),
+        (1, 7, 256),
+        (3, 128, 128),
+        (1, 10),
+        (2, 2, 2),
+        (5, 5),
+        (1, 3, 224, 224),
+        (8, 16, 32),
+        (1, 3, 2, 544, 544),
+    ],
+)
+def test_bitwise_and(shape):
+    class BitwiseAnd(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x1, x2):
+            return torch.bitwise_and(x1, x2)
+
+    inputs = [
+        torch.randint(0, 256, shape, dtype=torch.int32),
+        torch.randint(0, 256, shape, dtype=torch.int32),
+    ]
+
+    framework_model = BitwiseAnd()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -352,21 +423,11 @@ def test_power(dims):
     framework_model = Power()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=True)
 
-    fw_out, co_out = verify(
+    verify(
         inputs,
         framework_model,
         compiled_model,
-    )
-
-    grad = torch.rand_like(fw_out[0])
-
-    verify_backward(
-        inputs,
-        grad,
-        fw_out[0],
-        co_out[0],
-        framework_model,
-        compiled_model,
+        with_backward=True,
     )
 
 
@@ -451,19 +512,7 @@ def test_divide(shape):
     framework_model = Divide()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=is_training)
 
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
-
-    grad = torch.rand_like(fw_out[0])
-
-    verify_backward(
-        inputs,
-        grad,
-        fw_out[0],
-        co_out[0],
-        framework_model,
-        compiled_model,
-        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)),
-    )
+    verify(inputs, framework_model, compiled_model, with_backward=True)
 
 
 @pytest.mark.push

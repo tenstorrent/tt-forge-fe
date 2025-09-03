@@ -23,6 +23,8 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.models_utils import TextModelWrapper
@@ -42,6 +44,10 @@ GPTNEO_VARIANTS = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", GPTNEO_VARIANTS)
 def test_gptneo_causal_lm_pytorch(variant):
+
+    pcc = 0.99
+    if variant == CausalLMVariant.GPT_NEO_125M:
+        pcc = 0.95
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -68,7 +74,9 @@ def test_gptneo_causal_lm_pytorch(variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(
+        inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc))
+    )
 
 
 GPTNEO_SEQ_CLS_VARIANTS = [

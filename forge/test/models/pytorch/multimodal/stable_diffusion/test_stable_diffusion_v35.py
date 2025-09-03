@@ -4,6 +4,10 @@
 
 import pytest
 import torch
+from third_party.tt_forge_models.stable_diffusion.pytorch import (
+    ModelLoader,
+    ModelVariant,
+)
 
 import forge
 from forge._C import DataFormat
@@ -18,11 +22,6 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
-
-from test.models.pytorch.multimodal.stable_diffusion.model_utils.model import (
-    load_pipe,
-    stable_diffusion_preprocessing_v35,
-)
 
 
 class StableDiffusionWrapper(torch.nn.Module):
@@ -50,13 +49,13 @@ class StableDiffusionWrapper(torch.nn.Module):
     "variant",
     [
         pytest.param(
-            "stable-diffusion-3.5-medium",
+            ModelVariant.STABLE_DIFFUSION_3_5_MEDIUM,
         ),
         pytest.param(
-            "stable-diffusion-3.5-large",
+            ModelVariant.STABLE_DIFFUSION_3_5_LARGE,
         ),
         pytest.param(
-            "stable-diffusion-3.5-large-turbo",
+            ModelVariant.STABLE_DIFFUSION_3_5_LARGE_TURBO,
         ),
     ],
 )
@@ -74,25 +73,16 @@ def test_stable_diffusion_v35(variant):
 
     pytest.xfail(reason="Requires multi-chip support")
 
-    # Load pipeline
-    pipe = load_pipe(variant, variant_type="v35")
+    # Load model and input
+    loader = ModelLoader(variant=variant)
+    pipe = loader.load_model(dtype_override=torch.bfloat16)
+    inputs = loader.load_inputs(dtype_override=torch.bfloat16)
 
     # Extract only the transformer, as the forward pass occurs here.
     framework_model = pipe.transformer
 
     # TODO: Implement post-processing using VAE decode after obtaining the transformer output.
     framework_model = StableDiffusionWrapper(framework_model, joint_attention_kwargs=None, return_dict=False)
-    framework_model.to(torch.bfloat16)
-
-    # Load inputs
-    prompt = "An astronaut riding a green horse"
-    latent_model_input, timestep, prompt_embeds, pooled_prompt_embeds = stable_diffusion_preprocessing_v35(pipe, prompt)
-    inputs = [
-        latent_model_input.to(torch.bfloat16),
-        timestep.to(torch.bfloat16),
-        prompt_embeds.to(torch.bfloat16),
-        pooled_prompt_embeds.to(torch.bfloat16),
-    ]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)

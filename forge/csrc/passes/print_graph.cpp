@@ -26,7 +26,7 @@ bool print_opnode(graphlib::Graph *graph, graphlib::Node *node)
     {
         std::cout << operand->name() << ", ";
     }
-    std::cout << ") : {OP: " << op->op_type() << "}" << std::endl;
+    std::cout << ") : {OP: " << op->op() << "}" << std::endl;
     return true;
 }
 
@@ -113,7 +113,7 @@ void print_graph_viz_op_nodes_definitions(graphlib::Node *node)
               << "label=\""
               << "name: " << node_name << "\\n"
               << "shape: " << op->shape() << "\\n"
-              << "op: " << op->op_type() << "\"]" << std::endl;
+              << "op: " << op->op() << "\"]" << std::endl;
 }
 
 void print_graph_viz_op_nodes_relations(graphlib::Graph *graph, graphlib::Node *node)

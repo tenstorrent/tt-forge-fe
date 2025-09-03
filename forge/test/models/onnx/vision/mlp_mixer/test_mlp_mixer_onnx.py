@@ -56,7 +56,6 @@ varaints = [
     ),
     pytest.param(
         "mixer_s16_224",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "mixer_s32_224",
@@ -125,6 +124,7 @@ def test_mlp_mixer_timm_onnx(variant, forge_tmp_path):
         opset_version=17,
         input_names=["input"],
         output_names=["output"],
+        keep_initializers_as_inputs=True,
     )
 
     # Load and verify ONNX model

@@ -17,7 +17,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from third_party.tt_forge_models.oft import ModelLoader  # isort:skip
+from third_party.tt_forge_models.oft.pytorch import ModelLoader  # isort:skip
 
 
 @pytest.mark.nightly
@@ -34,9 +34,10 @@ def test_oft():
     pytest.xfail(reason="Getting hang at generate_initial_graph pass")
 
     # Load model and input
-    framework_model = ModelLoader.load_model()
+    loader = ModelLoader()
+    framework_model = loader.load_model()
     framework_model.to(torch.bfloat16)
-    input_sample = ModelLoader.load_inputs()
+    input_sample = loader.load_inputs()
     input_sample_1, input_sample_2, input_sample_3 = input_sample
     inputs = [input_sample_1.to(torch.bfloat16), input_sample_2.to(torch.bfloat16), input_sample_3.to(torch.bfloat16)]
 

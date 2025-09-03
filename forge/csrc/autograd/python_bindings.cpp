@@ -9,16 +9,11 @@
 #include "graph_lib/node_types.hpp"
 #include "lower_to_forge/common.hpp"
 #include "python_bindings_common.hpp"
+#include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
 
 namespace tt
 {
-
-static bool has_newstyle_interface(std::string const &op_name)
-{
-    py::object eval_module = py::module_::import("forge.op.eval.forge");
-    return eval_module.attr("has_newstyle_interface")(op_name).cast<bool>();
-}
 
 void AutogradModule(py::module &m_autograd)
 {
@@ -33,71 +28,10 @@ void AutogradModule(py::module &m_autograd)
     py::class_<tt::autograd::autograd_context>(m_autograd, "AutogradContext")
         .def(
             "op",
-            [](tt::autograd::autograd_context &self,
-               const std::variant<std::string, py::object> &type,
-               const std::vector<tt::autograd::NodeContext> &operands,
-               const std::vector<graphlib::OpType::Attr> &attributes,
-               ForgeOpAttrs named_attrs = {})
-            {
-                graphlib::OpType op_type =
-                    std::holds_alternative<std::string>(type)
-                        ? graphlib::OpType(std::get<std::string>(type), attributes, std::move(named_attrs))
-                        : std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
-
-                if (std::holds_alternative<std::string>(type))
-                    TT_LOG_ASSERT(
-                        not has_newstyle_interface(std::get<std::string>(type)),
-                        "Error autograd a type with old OpType interface, expects new OpType interface {}",
-                        std::get<std::string>(type));
-
-                return self.autograd->create_op(self, op_type, operands);
-            },
+            [](tt::autograd::autograd_context &self, ops::Op op, const std::vector<tt::autograd::NodeContext> &operands)
+            { return self.autograd->create_op(self, std::move(op), operands); },
             py::arg("type"),
-            py::arg("operands"),
-            py::arg("attributes") = std::vector<graphlib::OpType::Attr>(),
-            py::arg("named_attrs") = ForgeOpAttrs())
-        .def(
-            "op_with_named_attrs",
-            [](tt::autograd::autograd_context &self,
-               const std::variant<std::string, py::object> &type,
-               const std::vector<tt::autograd::NodeContext> &operands,
-               const ForgeOpAttrs &named_attrs,
-               std::vector<graphlib::OpType::Attr> attributes = {})
-            {
-                graphlib::OpType op_type =
-                    std::holds_alternative<std::string>(type)
-                        ? graphlib::OpType(std::get<std::string>(type), std::move(attributes), named_attrs)
-                        : std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
-
-                if (std::holds_alternative<std::string>(type))
-                    TT_LOG_ASSERT(
-                        not has_newstyle_interface(std::get<std::string>(type)),
-                        "Error autograd a type with old OpType interface, expects new OpType interface {}",
-                        std::get<std::string>(type));
-
-                return self.autograd->create_op(self, op_type, operands);
-            },
-            py::arg("type"),
-            py::arg("operands"),
-            py::arg("named_attrs"),
-            py::arg("attributes") = std::vector<graphlib::OpType::Attr>())
-        .def(
-            "create_optimizer_op",
-            [](tt::autograd::autograd_context &self,
-               const std::string &type,
-               const std::vector<tt::autograd::NodeContext> &operands,
-               const std::vector<graphlib::OpType::Attr> &attributes)
-            {
-                return self.autograd->create_optimizer_op(
-                    graphlib::OpType(type, attributes),
-                    operands,
-                    self.current_fwd_op,
-                    self.operand,
-                    self.created_op_index++);
-            },
-            py::arg("type"),
-            py::arg("operands"),
-            py::arg("attributes") = std::vector<graphlib::OpType::Attr>())
+            py::arg("operands"))
         .def(
             "constant",
             [](tt::autograd::autograd_context &self, int value)
@@ -118,7 +52,8 @@ void AutogradModule(py::module &m_autograd)
                std::string input_name,
                const std::vector<std::uint32_t> &tensor_shape,
                bool copy_consteval_operations,
-               bool disable_consteval)
+               bool disable_consteval,
+               std::optional<DataFormat> dtype)
             {
                 // Note requires_grad = False
                 return self.autograd->create_input(
@@ -129,13 +64,15 @@ void AutogradModule(py::module &m_autograd)
                     input_name,
                     tensor_shape,
                     copy_consteval_operations,
-                    disable_consteval);
+                    disable_consteval,
+                    dtype);
             },
             py::arg("input_name"),
             py::arg("tensor_shape"),
             py::kw_only(),
             py::arg("copy_consteval_operations") = false,
-            py::arg("disable_consteval") = false)
+            py::arg("disable_consteval") = false,
+            py::arg("dtype") = std::nullopt)
         .def(
             "loopback",
             [](tt::autograd::autograd_context &self,
@@ -176,17 +113,7 @@ void AutogradModule(py::module &m_autograd)
         .def(
             "get_operands",
             [](tt::autograd::autograd_context &self, tt::autograd::NodeContext const &node)
-            {
-                graphlib::Graph *graph = self.autograd->get_graph();
-                std::vector<tt::autograd::Node *> operands = graph->data_operands(graph->node_by_id(node.id));
-                std::vector<tt::autograd::NodeContext *> operand_contexts;
-                for (auto it = operands.begin(); it != operands.end(); ++it)
-                {
-                    tt::autograd::NodeContext *op_context = new tt::autograd::NodeContext(*it);
-                    operand_contexts.push_back(op_context);
-                }
-                return operand_contexts;
-            })
+            { return self.get_operands(node); })
         .def(
             "set_output_df",
             [](tt::autograd::autograd_context &self, tt::autograd::NodeContext &node, DataFormat df)

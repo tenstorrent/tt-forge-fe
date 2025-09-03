@@ -21,7 +21,7 @@ namespace ops
 namespace multiply
 {
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Multiply, "Wrong op type.");
     TT_ASSERT(tensors.size() == 2, "multiply::eval should have two input tensors.");
@@ -31,7 +31,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Multiply, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 2, "multiply::shape should have two input shapes.");
@@ -41,7 +41,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
 }
 
 tt::graphlib::NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     tt::autograd::autograd_context &ac,
     int operand,
@@ -55,7 +55,7 @@ tt::graphlib::NodeContext backward(
     TT_ASSERT(operand >= 0 && operand < 2, "Invalid operand index.");
 
     // For multiply x * y: dx = grad * y, dy = grad * x
-    NodeContext op_grad = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {gradient, inputs[1 - operand]});
+    NodeContext op_grad = ac.autograd->create_op(ac, Op(OpType::Multiply), {gradient, inputs[1 - operand]});
 
     // If the shapes are the same, no need to reduce dimensions
     const graphlib::Shape &input_shape = inputs[operand].shape;

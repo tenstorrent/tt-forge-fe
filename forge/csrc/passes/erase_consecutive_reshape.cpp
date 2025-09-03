@@ -17,13 +17,7 @@ namespace tt::passes
 static bool is_reshape(graphlib::Node const *node)
 {
     graphlib::OpNode const *op = dynamic_cast<graphlib::OpNode const *>(node);
-    return op and op->new_op_type() == ops::OpType::Reshape;
-}
-
-static bool is_narrow(graphlib::Node const *node)
-{
-    graphlib::OpNode const *op = dynamic_cast<graphlib::OpNode const *>(node);
-    return op and op->new_op_type() == ops::OpType::Narrow;
+    return op and op->op_type() == ops::OpType::Reshape;
 }
 
 // A transpose with all dims but one dim equal to 1 is equavalent to a reshape
@@ -31,12 +25,12 @@ static bool is_narrow(graphlib::Node const *node)
 static bool is_reshape_transpose(graphlib::Node const *node)
 {
     graphlib::OpNode const *op = dynamic_cast<graphlib::OpNode const *>(node);
-    if (not op or op->new_op_type() != ops::OpType::Transpose)
+    if (not op or op->op_type() != ops::OpType::Transpose)
         return false;
 
     auto shape = op->shape();
-    int _dim0 = op->op_type().attr_as<int>("dim0");
-    int _dim1 = op->op_type().attr_as<int>("dim1");
+    int _dim0 = op->op().attr_as<int>("dim0");
+    int _dim1 = op->op().attr_as<int>("dim1");
     if (_dim0 > _dim1)
         std::swap(_dim0, _dim1);
 
@@ -124,7 +118,7 @@ static void commute_eltwise_ops(graphlib::Graph *graph, std::vector<graphlib::No
         log_trace(LogGraphCompiler, "Commuting: {} to: {}", node->name(), commute_shape);
         if (graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(node))
         {
-            op->add_golden_transform(first->op_type());
+            op->add_golden_transform(first->op());
 
             // Handle the other operand if it's eltwise-binary op  (taken from erase-inverse-ops)
             if (op->is_eltwise_binary())
@@ -133,7 +127,7 @@ static void commute_eltwise_ops(graphlib::Graph *graph, std::vector<graphlib::No
                 graphlib::Edge current_edge = (edges[0].producer_node_id == path[i - 1]->id()) ? edges[0] : edges[1];
                 auto current_edge_tms = graph->get_edge_attributes(current_edge)->get_tms();
 
-                for (graphlib::OpType &op_type : current_edge_tms)
+                for (ops::Op &op_type : current_edge_tms)
                 {
                     if (op_type.type() == ops::OpType::Broadcast)
                     {
@@ -215,15 +209,6 @@ static bool is_nop_reshape(graphlib::Graph *graph, graphlib::Node *node)
     return (operand->node_type() != graphlib::NodeType::kInput) and operand->shape() == node->shape();
 }
 
-static bool is_nop_narrow(graphlib::Graph *graph, graphlib::Node *node)
-{
-    if (not is_narrow(node))
-        return false;
-
-    graphlib::Node *operand = graph->data_operands(node)[0];
-    return (operand->node_type() != graphlib::NodeType::kInput) and operand->shape() == node->shape();
-}
-
 bool erase_consecutive_reshape(graphlib::Graph *graph, bool commute_eltwise)
 {
     bool updated = true;
@@ -286,13 +271,6 @@ void bypass_nop_tms(graphlib::Graph *graph)
                         handle_change_rank(graph, new_edge);
                 };
                 bypass_node(graph, node, true, change_rank);
-                updated = true;
-                break;
-            }
-            else if (is_nop_narrow(graph, node))
-            {
-                log_trace(LogGraphCompiler, "Bypass NOP narrow: {}", node->name());
-                bypass_node(graph, node, true);
                 updated = true;
                 break;
             }

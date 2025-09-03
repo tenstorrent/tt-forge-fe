@@ -16,6 +16,7 @@ _OPERATORS = [
         "torch.nn.Embedding",
         1,
         instantiate=True,
+        constructor_params=[],
     ),
     OperatorDefinition(
         "linear",
@@ -27,6 +28,7 @@ _OPERATORS = [
             OperatorParamNumber("out_features", int, 10, 50),
         ],
     ),
+    # Convolution functions
     OperatorDefinition(
         "conv2d",
         "torch.nn.Conv2d",
@@ -45,6 +47,21 @@ _OPERATORS = [
         "torch.nn.ConvTranspose2d",
         1,
         instantiate=True,
+        constructor_params=[],
+    ),
+    OperatorDefinition(
+        "avg_pool_2d",
+        "torch.nn.AvgPool2d",
+        1,
+        instantiate=True,
+        constructor_params=[],
+    ),
+    OperatorDefinition(
+        "max_pool_2d",
+        "torch.nn.MaxPool2d",
+        1,
+        instantiate=True,
+        constructor_params=[],
     ),
     # Unary operators (implemented)
     OperatorDefinition("relu", "torch.relu", 1),
@@ -79,6 +96,7 @@ _OPERATORS = [
     OperatorDefinition("log1p", "torch.log1p", 1),
     OperatorDefinition("gelu", "torch.nn.functional.gelu", 1),
     OperatorDefinition("leaky_relu", "torch.nn.functional.leaky_relu", 1),
+    OperatorDefinition("logical_not", "torch.logical_not", 1),
     OperatorDefinition(
         "cumsum",
         "torch.cumsum",
@@ -90,18 +108,12 @@ _OPERATORS = [
     OperatorDefinition("softmax", "torch.softmax", 1),
     # Unary operators (not implemented)
     OperatorDefinition("acos", "torch.acos", 1),
-    OperatorDefinition("arccos", "torch.acos", 1),
     OperatorDefinition("acosh", "torch.acosh", 1),
-    OperatorDefinition("arccosh", "torch.acosh", 1),
     OperatorDefinition("angle", "torch.angle", 1),
     OperatorDefinition("asin", "torch.asin", 1),
-    OperatorDefinition("arcsin", "torch.asin", 1),
     OperatorDefinition("asinh", "torch.asinh", 1),
-    OperatorDefinition("arcsinh", "torch.asinh", 1),
     OperatorDefinition("atan", "torch.atan", 1),
-    OperatorDefinition("arctan", "torch.atan", 1),
     OperatorDefinition("atanh", "torch.atanh", 1),
-    OperatorDefinition("arctanh", "torch.atanh", 1),
     OperatorDefinition("bitwise_not", "torch.bitwise_not", 1),
     OperatorDefinition("ceil", "torch.ceil", 1),
     OperatorDefinition("conj_physical", "torch.conj_physical", 1),
@@ -113,7 +125,6 @@ _OPERATORS = [
     OperatorDefinition("erfinv", "torch.erfinv", 1),
     OperatorDefinition("exp2", "torch.exp2", 1),
     OperatorDefinition("expm1", "torch.expm1", 1),
-    OperatorDefinition("fix", "torch.fix", 1),
     OperatorDefinition("floor", "torch.floor", 1),
     OperatorDefinition("frac", "torch.frac", 1),
     OperatorDefinition("lgamma", "torch.lgamma", 1),
@@ -134,6 +145,13 @@ _OPERATORS = [
     OperatorDefinition("tan", "torch.tan", 1),
     OperatorDefinition("tanh", "torch.tanh", 1),
     OperatorDefinition("trunc", "torch.trunc", 1),
+    OperatorDefinition(
+        "nop",
+        "torch.nn.Identity",
+        1,
+        instantiate=True,
+        constructor_params=[],
+    ),
     # Binary operators
     OperatorDefinition("add", "torch.add", 2),
     OperatorDefinition("sub", "torch.sub", 2),
@@ -145,9 +163,9 @@ _OPERATORS = [
     OperatorDefinition("lt", "torch.lt", 2),
     OperatorDefinition("maximum", "torch.maximum", 2),
     OperatorDefinition("minimum", "torch.minimum", 2),
+    OperatorDefinition("heaviside", "torch.heaviside", 2),
     # Binary operators (not implemented)
     OperatorDefinition("atan2", "torch.atan2", 2),
-    OperatorDefinition("arctan2", "torch.arctan2", 2),
     OperatorDefinition("bitwise_and", "torch.bitwise_and", 2),
     OperatorDefinition("bitwise_or", "torch.bitwise_or", 2),
     OperatorDefinition("bitwise_xor", "torch.bitwise_xor", 2),
@@ -166,7 +184,14 @@ _OPERATORS = [
     # Matmul
     OperatorDefinition("matmul", "torch.matmul", 2),
     # Nary operators
-    OperatorDefinition("concatenate", "torch.concatenate", input_num_range=(2, 7)),
+    OperatorDefinition(
+        "concatenate",
+        "torch.concatenate",
+        input_num_range=(2, 7),
+        forward_params=[
+            OperatorParamNumber("dim", int, -10, 10),
+        ],
+    ),
     OperatorDefinition("where", "torch.where", 3),
     # Reduce operators
     OperatorDefinition("max", "torch.max", 1),
@@ -178,7 +203,19 @@ _OPERATORS = [
     OperatorDefinition("squeeze", "torch.squeeze", 1),
     OperatorDefinition("unsqueeze", "torch.unsqueeze", 1),
     OperatorDefinition("transpose", "torch.transpose", 1),
+    OperatorDefinition(
+        "stack",
+        "torch.stack",
+        (2, 4),
+        forward_params=[
+            OperatorParamNumber("dim", int, 1, 10),
+        ],
+    ),
+    # Activation functions
     OperatorDefinition("layer_norm", "torch.nn.LayerNorm", 1),
+    OperatorDefinition("batch_norm_1d", "torch.nn.BatchNorm1d", 1),
+    OperatorDefinition("batch_norm_2d", "torch.nn.BatchNorm2d", 1),
+    OperatorDefinition("batch_norm_3d", "torch.nn.BatchNorm3d", 1),
 ]
 
 

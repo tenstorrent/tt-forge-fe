@@ -36,43 +36,32 @@ class Op;
 /**
  * Declaration for ops interface in a separate namespace ns.
  */
-#define DECLARE_OP_INTERFACE(ns)                                                                                       \
-    namespace ns                                                                                                       \
-    {                                                                                                                  \
-    at::Tensor eval(const tt::graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors);    \
-                                                                                                                       \
-    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(                                  \
-        const tt::graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs); \
-                                                                                                                       \
-    tt::graphlib::NodeContext backward(                                                                                \
-        const tt::graphlib::OpType &old_op_type,                                                                       \
-        const Op &op,                                                                                                  \
-        tt::autograd::autograd_context &context,                                                                       \
-        int operand,                                                                                                   \
-        const std::vector<tt::graphlib::NodeContext> &inputs,                                                          \
-        const tt::graphlib::NodeContext &output,                                                                       \
-        const tt::graphlib::NodeContext &gradient);                                                                    \
-                                                                                                                       \
-    void decompose_initial(                                                                                            \
-        const tt::graphlib::OpType &old_op_type,                                                                       \
-        const Op &op,                                                                                                  \
-        DecomposingContext &dc,                                                                                        \
-        const std::vector<tt::graphlib::NodeContext> &inputs);                                                         \
-                                                                                                                       \
-    void decompose_post_optimize(                                                                                      \
-        const tt::graphlib::OpType &old_op_type,                                                                       \
-        const Op &op,                                                                                                  \
-        DecomposingContext &dc,                                                                                        \
-        const std::vector<tt::graphlib::NodeContext> &inputs);                                                         \
-                                                                                                                       \
-    void decompose_post_autograd(                                                                                      \
-        const tt::graphlib::OpType &old_op_type,                                                                       \
-        const Op &op,                                                                                                  \
-        DecomposingContext &dc,                                                                                        \
-        const std::vector<tt::graphlib::NodeContext> &inputs);                                                         \
-                                                                                                                       \
-    long initial_flops_estimate(                                                                                       \
-        const tt::graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs); \
+#define DECLARE_OP_INTERFACE(ns)                                                                      \
+    namespace ns                                                                                      \
+    {                                                                                                 \
+    at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors);                            \
+                                                                                                      \
+    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcastTrampoline>> shape(                 \
+        const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs);                         \
+                                                                                                      \
+    tt::graphlib::NodeContext backward(                                                               \
+        const Op &op,                                                                                 \
+        tt::autograd::autograd_context &context,                                                      \
+        int operand,                                                                                  \
+        const std::vector<tt::graphlib::NodeContext> &inputs,                                         \
+        const tt::graphlib::NodeContext &output,                                                      \
+        const tt::graphlib::NodeContext &gradient);                                                   \
+                                                                                                      \
+    void decompose_initial(                                                                           \
+        const Op &op, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs);  \
+                                                                                                      \
+    void decompose_post_optimize(                                                                     \
+        const Op &op, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs);  \
+                                                                                                      \
+    void decompose_post_autograd(                                                                     \
+        const Op &op, DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs);  \
+                                                                                                      \
+    long initial_flops_estimate(const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs); \
     }
 
 /**
@@ -92,20 +81,11 @@ DECLARE_OP_INTERFACE(cast);
 DECLARE_OP_INTERFACE(clip);
 DECLARE_OP_INTERFACE(concatenate);
 DECLARE_OP_INTERFACE(constant);
+DECLARE_OP_INTERFACE(constant_pad);
 DECLARE_OP_INTERFACE(conv_2d);
-DECLARE_OP_INTERFACE(conv_2d_depthwise_weights);
-DECLARE_OP_INTERFACE(conv_2d_depthwise_weights_bw);
-DECLARE_OP_INTERFACE(conv_2d_grouped_weights);
-DECLARE_OP_INTERFACE(conv_2d_grouped_weights_bw);
-DECLARE_OP_INTERFACE(conv_2d_prestride_act);
-DECLARE_OP_INTERFACE(conv_2d_prestride_weights);
 DECLARE_OP_INTERFACE(conv_2d_transpose);
-DECLARE_OP_INTERFACE(conv_3d);
-DECLARE_OP_INTERFACE(conv_sum);
 DECLARE_OP_INTERFACE(cosine);
 DECLARE_OP_INTERFACE(cumulative_sum);
-DECLARE_OP_INTERFACE(dequantize);
-DECLARE_OP_INTERFACE(depthwise);
 DECLARE_OP_INTERFACE(divide);
 DECLARE_OP_INTERFACE(downsample_2d);
 DECLARE_OP_INTERFACE(dropout);
@@ -115,22 +95,13 @@ DECLARE_OP_INTERFACE(equal);
 DECLARE_OP_INTERFACE(erf);
 DECLARE_OP_INTERFACE(exp);
 DECLARE_OP_INTERFACE(fill_cache);
-DECLARE_OP_INTERFACE(forge_dequantize);
-DECLARE_OP_INTERFACE(forge_pad);
-DECLARE_OP_INTERFACE(forge_quantize);
-DECLARE_OP_INTERFACE(forge_requantize);
-DECLARE_OP_INTERFACE(forge_unpad);
-DECLARE_OP_INTERFACE(gather);
 DECLARE_OP_INTERFACE(gelu);
 DECLARE_OP_INTERFACE(gelu_derivative);
 DECLARE_OP_INTERFACE(greater);
 DECLARE_OP_INTERFACE(greater_equal);
 DECLARE_OP_INTERFACE(heaviside);
-DECLARE_OP_INTERFACE(hslice);
-DECLARE_OP_INTERFACE(hstack);
 DECLARE_OP_INTERFACE(index);
 DECLARE_OP_INTERFACE(index_copy);
-DECLARE_OP_INTERFACE(interleave);
 DECLARE_OP_INTERFACE(layernorm);
 DECLARE_OP_INTERFACE(layernorm_bw);
 DECLARE_OP_INTERFACE(leaky_relu);
@@ -139,6 +110,7 @@ DECLARE_OP_INTERFACE(less_equal);
 DECLARE_OP_INTERFACE(log);
 DECLARE_OP_INTERFACE(log_softmax);
 DECLARE_OP_INTERFACE(logical_and);
+DECLARE_OP_INTERFACE(bitwise_and);
 DECLARE_OP_INTERFACE(logical_not);
 DECLARE_OP_INTERFACE(mask);
 DECLARE_OP_INTERFACE(matmul);
@@ -149,13 +121,10 @@ DECLARE_OP_INTERFACE(minimum);
 DECLARE_OP_INTERFACE(multiply);
 DECLARE_OP_INTERFACE(nop);
 DECLARE_OP_INTERFACE(not_equal);
-DECLARE_OP_INTERFACE(narrow);
 DECLARE_OP_INTERFACE(pad);
-DECLARE_OP_INTERFACE(pad_tile);
 DECLARE_OP_INTERFACE(pixel_shuffle);
 DECLARE_OP_INTERFACE(pow);
 DECLARE_OP_INTERFACE(power);
-DECLARE_OP_INTERFACE(quantize);
 DECLARE_OP_INTERFACE(reciprocal);
 DECLARE_OP_INTERFACE(reduce_avg);
 DECLARE_OP_INTERFACE(reduce_max);
@@ -164,15 +133,14 @@ DECLARE_OP_INTERFACE(relu);
 DECLARE_OP_INTERFACE(remainder);
 DECLARE_OP_INTERFACE(repeat);
 DECLARE_OP_INTERFACE(repeat_interleave);
-DECLARE_OP_INTERFACE(requantize);
 DECLARE_OP_INTERFACE(reshape);
+DECLARE_OP_INTERFACE(resize_1d);
 DECLARE_OP_INTERFACE(resize_2d);
 DECLARE_OP_INTERFACE(select);
 DECLARE_OP_INTERFACE(sigmoid);
 DECLARE_OP_INTERFACE(sine);
 DECLARE_OP_INTERFACE(softmax);
 DECLARE_OP_INTERFACE(softmax_bw);
-DECLARE_OP_INTERFACE(sparse_matmul);
 DECLARE_OP_INTERFACE(sqrt);
 DECLARE_OP_INTERFACE(stack);
 DECLARE_OP_INTERFACE(subtract);
@@ -183,8 +151,6 @@ DECLARE_OP_INTERFACE(transpose);
 DECLARE_OP_INTERFACE(unsqueeze);
 DECLARE_OP_INTERFACE(update_cache);
 DECLARE_OP_INTERFACE(upsample_2d);
-DECLARE_OP_INTERFACE(vslice);
-DECLARE_OP_INTERFACE(vstack);
 DECLARE_OP_INTERFACE(where);
 
 #undef DECLARE_OP_INTERFACE

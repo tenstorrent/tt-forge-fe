@@ -4,13 +4,15 @@
 # STEP 0: import Forge library
 import pytest
 import torch
-from third_party.tt_forge_models.swin.pytorch.loader import ModelLoader, ModelVariant
-from transformers import (
-    SwinForImageClassification,
-    Swinv2ForImageClassification,
-    Swinv2ForMaskedImageModeling,
-    Swinv2Model,
-    ViTImageProcessor,
+from third_party.tt_forge_models.swin.image_classification.pytorch import (
+    ModelLoader,
+    ModelVariant,
+)
+from third_party.tt_forge_models.swin.masked_image_modeling.pytorch import (
+    ModelLoader as MaskedImageModelingLoader,
+)
+from third_party.tt_forge_models.swin.masked_image_modeling.pytorch import (
+    ModelVariant as MaskedImageModelingVariant,
 )
 
 import forge
@@ -19,8 +21,6 @@ from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
     ModelArch,
-    ModelGroup,
-    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -29,19 +29,15 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.swin.model_utils.image_utils import load_image
+variants = [
+    ModelVariant.SWIN_TINY_HF,
+    pytest.param(ModelVariant.SWINV2_TINY_HF, marks=pytest.mark.xfail),
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize(
-    "variant",
-    [
-        pytest.param(
-            "microsoft/swin-tiny-patch4-window7-224",
-        ),
-    ],
-)
-def test_swin_v1_tiny_4_224_hf_pytorch(variant):
+@pytest.mark.parametrize("variant", variants)
+def test_swin_hf_image_classification(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
@@ -50,19 +46,22 @@ def test_swin_v1_tiny_4_224_hf_pytorch(variant):
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
-    pytest.xfail(reason="Segmentation fault")
 
-    # STEP 1: Create Forge module from PyTorch model
-    feature_extractor = ViTImageProcessor.from_pretrained(variant)
-    framework_model = SwinForImageClassification.from_pretrained(variant).to(torch.bfloat16)
-    framework_model.eval()
+    dtype_override = None
+    if variant == ModelVariant.SWIN_TINY_HF:
+        dtype_override = torch.bfloat16
+        data_format_override = DataFormat.Float16_b
+        compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
-    # STEP 2: Prepare input samples
-    inputs = load_image(feature_extractor)
-    inputs = [inputs[0].to(torch.bfloat16)]
+    elif variant == ModelVariant.SWINV2_TINY_HF:
+        compiler_cfg = CompilerConfig()
 
-    data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=dtype_override)
+    framework_model.config.return_dict = False
+    input_tensor = loader.load_inputs(dtype_override=dtype_override)
+    inputs = [input_tensor]
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -72,82 +71,23 @@ def test_swin_v1_tiny_4_224_hf_pytorch(variant):
         compiler_cfg=compiler_cfg,
     )
 
+    pcc = 0.99
+    if variant == ModelVariant.SWIN_TINY_HF:
+        pcc = 0.98
+
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
-
-
-@pytest.mark.nightly
-@pytest.mark.parametrize(
-    "variant",
-    [
-        pytest.param(
-            "microsoft/swinv2-tiny-patch4-window8-256",
-        ),
-    ],
-)
-def test_swin_v2_tiny_4_256_hf_pytorch(variant):
-    # Record Forge Property
-    module_name = record_model_properties(
-        framework=Framework.PYTORCH,
-        model=ModelArch.SWIN,
-        variant=variant,
-        source=Source.HUGGINGFACE,
-        task=Task.IMAGE_CLASSIFICATION,
-        group=ModelGroup.RED,
-        priority=ModelPriority.P1,
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
     )
-
-    pytest.xfail(reason="Segmentation fault")
-
-    feature_extractor = ViTImageProcessor.from_pretrained(variant)
-    framework_model = Swinv2Model.from_pretrained(variant)
-
-    inputs = load_image(feature_extractor)
-
-    # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
-
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
-
-
-@pytest.mark.nightly
-@pytest.mark.parametrize(
-    "variant",
-    [
-        pytest.param(
-            "microsoft/swinv2-tiny-patch4-window8-256",
-        ),
-    ],
-)
-def test_swin_v2_tiny_image_classification(variant):
-
-    # Record Forge Property
-    module_name = record_model_properties(
-        framework=Framework.PYTORCH,
-        model=ModelArch.SWIN,
-        variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
-        source=Source.HUGGINGFACE,
-    )
-    pytest.xfail(reason="Segmentation Fault")
-
-    feature_extractor = ViTImageProcessor.from_pretrained(variant)
-    framework_model = Swinv2ForImageClassification.from_pretrained(variant)
-
-    inputs = load_image(feature_extractor)
-
-    # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
-
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.skip_model_analysis
 @pytest.mark.xfail
-@pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
+@pytest.mark.parametrize("variant", [MaskedImageModelingVariant.SWINV2_TINY])
 def test_swin_v2_tiny_masked(variant):
 
     # Record Forge Property
@@ -159,10 +99,12 @@ def test_swin_v2_tiny_masked(variant):
         source=Source.HUGGINGFACE,
     )
 
-    feature_extractor = ViTImageProcessor.from_pretrained(variant)
-    framework_model = Swinv2ForMaskedImageModeling.from_pretrained(variant)
-
-    inputs = load_image(feature_extractor)
+    # Load model and inputs
+    loader = MaskedImageModelingLoader(variant=variant)
+    framework_model = loader.load_model()
+    framework_model.config.return_dict = False
+    input_tensor = loader.load_inputs()
+    inputs = [input_tensor]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -232,7 +174,7 @@ def test_swin_torchvision(variant):
     )
 
     # Model Verification
-    fw_out, co_out = verify(
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,

@@ -6,13 +6,37 @@
 #include <pybind11/operators.h>
 #include <pybind11/stl.h>
 
+#include <utils/raw_ptr.hpp>
+
 #include "ops/op.hpp"
+
+PYBIND11_DECLARE_HOLDER_TYPE(T, tt::raw_ptr<T>);
 
 namespace tt
 {
 
 void OpsModule(py::module &m_ops)
 {
+    py::class_<tt::ops::Op, tt::raw_ptr<tt::ops::Op>>(m_ops, "Op")
+        .def(
+            py::init([](std::string const &op_name, tt::ops::Attrs const &attrs) { return ops::Op(op_name, attrs); }),
+            py::arg("op_name"),
+            py::arg("attrs") = tt::ops::Attrs{})
+        .def(
+            py::init([](ops::OpType type, tt::ops::Attrs const &attrs) { return ops::Op(type, attrs); }),
+            py::arg("type"),
+            py::arg("attrs") = tt::ops::Attrs{})
+        .def("eval", &tt::ops::Op::eval)
+        .def("shape", &tt::ops::Op::shape)
+        .def("__getattr__", [](tt::ops::Op const &op, std::string const &name) { return op.attrs().at(name); })
+        .def(
+            "__setattr__",
+            [](tt::ops::Op &op_type, std::string const &name, tt::ops::Attr value)
+            { return op_type.set_attr(name, value); })
+        .def("__repr__", [](tt::ops::Op const &op_type) { return op_type.as_string(); })
+        .def("type", &tt::ops::Op::type)
+        .def("attrs", &tt::ops::Op::attrs);
+
     py::enum_<ops::OpType>(m_ops, "OpType")
         .value("Abs", ops::OpType::Abs)
         .value("AdaptiveMaxPool2d", ops::OpType::AdaptiveMaxPool2d)
@@ -29,19 +53,10 @@ void OpsModule(py::module &m_ops)
         .value("Concatenate", ops::OpType::Concatenate)
         .value("Constant", ops::OpType::Constant)
         .value("Conv2d", ops::OpType::Conv2d)
-        .value("Conv2dDepthwiseWeights", ops::OpType::Conv2dDepthwiseWeights)
-        .value("Conv2dDepthwiseWeightsBw", ops::OpType::Conv2dDepthwiseWeightsBw)
-        .value("Conv2dGroupedWeights", ops::OpType::Conv2dGroupedWeights)
-        .value("Conv2dGroupedWeightsBw", ops::OpType::Conv2dGroupedWeightsBw)
-        .value("Conv2dPrestrideAct", ops::OpType::Conv2dPrestrideAct)
         .value("Conv2dPrestrideWeights", ops::OpType::Conv2dPrestrideWeights)
         .value("Conv2dTranspose", ops::OpType::Conv2dTranspose)
-        .value("Conv3d", ops::OpType::Conv3d)
-        .value("ConvSum", ops::OpType::ConvSum)
         .value("Cosine", ops::OpType::Cosine)
         .value("CumulativeSum", ops::OpType::CumulativeSum)
-        .value("Dequantize", ops::OpType::Dequantize)
-        .value("Depthwise", ops::OpType::Depthwise)
         .value("Divide", ops::OpType::Divide)
         .value("Downsample2d", ops::OpType::Downsample2d)
         .value("Dropout", ops::OpType::Dropout)
@@ -51,21 +66,12 @@ void OpsModule(py::module &m_ops)
         .value("Erf", ops::OpType::Erf)
         .value("Exp", ops::OpType::Exp)
         .value("FillCache", ops::OpType::FillCache)
-        .value("ForgeDequantize", ops::OpType::ForgeDequantize)
-        .value("ForgePad", ops::OpType::ForgePad)
-        .value("ForgeQuantize", ops::OpType::ForgeQuantize)
-        .value("ForgeRequantize", ops::OpType::ForgeRequantize)
-        .value("ForgeUnpad", ops::OpType::ForgeUnpad)
-        .value("Gather", ops::OpType::Gather)
         .value("Gelu", ops::OpType::Gelu)
         .value("Greater", ops::OpType::Greater)
         .value("GreaterEqual", ops::OpType::GreaterEqual)
         .value("Heaviside", ops::OpType::Heaviside)
-        .value("Hslice", ops::OpType::Hslice)
-        .value("Hstack", ops::OpType::Hstack)
         .value("Index", ops::OpType::Index)
         .value("IndexCopy", ops::OpType::IndexCopy)
-        .value("Interleave", ops::OpType::Interleave)
         .value("Layernorm", ops::OpType::Layernorm)
         .value("LayernormBw", ops::OpType::LayernormBw)
         .value("LeakyRelu", ops::OpType::LeakyRelu)
@@ -75,6 +81,7 @@ void OpsModule(py::module &m_ops)
         .value("LogSoftmax", ops::OpType::LogSoftmax)
         .value("LogicalAnd", ops::OpType::LogicalAnd)
         .value("LogicalNot", ops::OpType::LogicalNot)
+        .value("BitwiseAnd", ops::OpType::BitwiseAnd)
         .value("Mask", ops::OpType::Mask)
         .value("Matmul", ops::OpType::Matmul)
         .value("MaxPool1d", ops::OpType::MaxPool1d)
@@ -84,13 +91,10 @@ void OpsModule(py::module &m_ops)
         .value("Multiply", ops::OpType::Multiply)
         .value("Nop", ops::OpType::Nop)
         .value("NotEqual", ops::OpType::NotEqual)
-        .value("Narrow", ops::OpType::Narrow)
         .value("Pad", ops::OpType::Pad)
-        .value("PadTile", ops::OpType::PadTile)
         .value("PixelShuffle", ops::OpType::PixelShuffle)
         .value("Pow", ops::OpType::Pow)
         .value("Power", ops::OpType::Power)
-        .value("Quantize", ops::OpType::Quantize)
         .value("Reciprocal", ops::OpType::Reciprocal)
         .value("ReduceAvg", ops::OpType::ReduceAvg)
         .value("ReduceMax", ops::OpType::ReduceMax)
@@ -99,15 +103,14 @@ void OpsModule(py::module &m_ops)
         .value("Remainder", ops::OpType::Remainder)
         .value("Repeat", ops::OpType::Repeat)
         .value("RepeatInterleave", ops::OpType::RepeatInterleave)
-        .value("Requantize", ops::OpType::Requantize)
         .value("Reshape", ops::OpType::Reshape)
+        .value("Resize1d", ops::OpType::Resize1d)
         .value("Resize2d", ops::OpType::Resize2d)
         .value("Select", ops::OpType::Select)
         .value("Sigmoid", ops::OpType::Sigmoid)
         .value("Sine", ops::OpType::Sine)
         .value("Softmax", ops::OpType::Softmax)
         .value("SoftmaxBw", ops::OpType::SoftmaxBw)
-        .value("SparseMatmul", ops::OpType::SparseMatmul)
         .value("Sqrt", ops::OpType::Sqrt)
         .value("Stack", ops::OpType::Stack)
         .value("Subtract", ops::OpType::Subtract)
@@ -117,8 +120,6 @@ void OpsModule(py::module &m_ops)
         .value("Unsqueeze", ops::OpType::Unsqueeze)
         .value("UpdateCache", ops::OpType::UpdateCache)
         .value("Upsample2d", ops::OpType::Upsample2d)
-        .value("Vslice", ops::OpType::Vslice)
-        .value("Vstack", ops::OpType::Vstack)
         .value("Where", ops::OpType::Where)
         .export_values();
 }

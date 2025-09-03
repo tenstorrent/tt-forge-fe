@@ -22,21 +22,66 @@ namespace layernorm
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Layernorm, "Wrong op type.");
-    return op.base_eval(old_op_type, tensors);
+    TT_ASSERT(tensors.size() == 3, "Layernorm should have three operands.");
+
+    at::Tensor input = tensors[0];  // Input tensor
+    at::Tensor gamma = tensors[1];  // weights, weight re-scaling parameter
+    at::Tensor beta = tensors[2];   // bias, weight re-centering parameter
+
+    int dim = op.attr_as<int>("dim");
+    float epsilon = op.attr_as<float>("epsilon");
+
+    TT_ASSERT(
+        dim == -1 || dim == static_cast<int>(input.dim()) - 1,
+        "Normalization can be done only over the last dimension");
+    TT_ASSERT(gamma.size(-1) == input.size(-1), "Weights shape must be the same as normalized shape.");
+    TT_ASSERT(beta.size(-1) == input.size(-1), "Bias shape must be the same as normalized shape.");
+
+    // Check that all dimensions except the last one are 1 for gamma and beta
+    for (int i = 0; i < gamma.dim() - 1; ++i)
+    {
+        TT_ASSERT(gamma.size(i) == 1, "All dimensions but the last one must be 1 for gamma");
+    }
+    for (int i = 0; i < beta.dim() - 1; ++i)
+    {
+        TT_ASSERT(beta.size(i) == 1, "All dimensions but the last one must be 1 for beta");
+    }
+
+    // Get the normalized shape (last dimension)
+    std::vector<int64_t> normalized_shape = {input.size(-1)};
+
+    // Reshape gamma and beta to match the normalized shape
+    at::Tensor gamma_reshaped = gamma.reshape({gamma.size(-1)});
+    at::Tensor beta_reshaped = beta.reshape({beta.size(-1)});
+
+    // Ensure all tensors have the same dtype
+    at::ScalarType target_dtype = input.scalar_type();
+    gamma_reshaped = gamma_reshaped.to(target_dtype);
+    beta_reshaped = beta_reshaped.to(target_dtype);
+
+    return torch::nn::functional::layer_norm(
+        input,
+        torch::nn::functional::LayerNormFuncOptions(normalized_shape)
+            .weight(gamma_reshaped)
+            .bias(beta_reshaped)
+            .eps(epsilon));
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Layernorm, "Wrong op type.");
-    return op.base_shape(old_op_type, in_shapes);
+    TT_ASSERT(in_shapes.size() == 3, "Layernorm should have three operands.");
+
+    // LayerNorm output shape is the same as input shape
+    return std::make_tuple(Shape::create(in_shapes[0]), std::vector<DimBroadcast>{});
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -45,35 +90,89 @@ NodeContext backward(
     const NodeContext &gradient)
 {
     TT_DBG_ASSERT(op.type() == OpType::Layernorm, "Wrong op type.");
-    return op.base_backward(old_op_type, ac, operand, inputs, output, gradient);
+    TT_ASSERT(inputs.size() == 3, "Layernorm should have three operands.");
+    TT_ASSERT(operand >= 0 && operand < static_cast<int>(inputs.size()), "Operand index out of the input range.");
+
+    int dim = op.attr_as<int>("dim");
+    float epsilon = op.attr_as<float>("epsilon");
+
+    // Create layernorm_bw op with operand index
+    std::vector<NodeContext> bw_inputs = {inputs[0], inputs[1], inputs[2], gradient, output};
+
+    return ac.autograd->create_op(
+        ac, Op(OpType::LayernormBw, {{"dim", dim}, {"epsilon", epsilon}, {"operand", operand}}), bw_inputs);
 }
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Layernorm, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose", dc, inputs);
-}
+    TT_ASSERT(inputs.size() == 3, "Layernorm should have three operands.");
 
-void decompose_post_optimize(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Layernorm, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_optimize", dc, inputs);
-}
+    NodeContext input = inputs[0];
+    NodeContext weights = inputs[1];
+    NodeContext bias = inputs[2];
 
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Layernorm, "Wrong op type.");
-    return op.base_decompose(old_op_type, "get_f_forge_decompose_post_autograd", dc, inputs);
-}
+    int dim = op.attr_as<int>("dim");
+    float epsilon = op.attr_as<float>("epsilon");
 
-long initial_flops_estimate(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &inputs)
-{
-    TT_DBG_ASSERT(op.type() == OpType::Layernorm, "Wrong op type.");
-    return op.base_initial_flops_estimate(old_op_type, inputs);
+    // Normalize negative dimension
+    if (dim < 0)
+    {
+        dim += static_cast<int>(input.shape.size());
+    }
+
+    std::vector<uint32_t> input_shape = input.shape.as_vector<uint32_t>();
+    std::vector<uint32_t> gamma_shape = weights.shape.as_vector<uint32_t>();
+    std::vector<uint32_t> beta_shape = bias.shape.as_vector<uint32_t>();
+
+    TT_ASSERT(
+        dim == static_cast<int>(input_shape.size()) - 1, "Normalization can be done only over the last dimension.");
+    TT_ASSERT(gamma_shape.back() == input_shape.back(), "Weights shape must be the same as normalized shape.");
+    TT_ASSERT(beta_shape.back() == input_shape.back(), "Bias shape must be the same as normalized shape.");
+
+    // Calculate mean: mu = sum(input, dim) / N
+    NodeContext mu = dc.op(Op(OpType::ReduceSum, {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {input});
+
+    // Create tensor for division by N
+    std::vector<int64_t> input_shape_int64(input_shape.begin(), input_shape.end());
+    at::Tensor divider_tensor = torch::zeros(input_shape_int64) + (1.0f / static_cast<float>(input_shape[dim]));
+    NodeContext divider = dc.tensor(divider_tensor);
+    mu = dc.op(Op(OpType::Multiply), {divider, mu});
+
+    // Calculate xmu = input - mu
+    NodeContext xmu = dc.op(Op(OpType::Subtract), {input, mu});
+
+    // Calculate squared difference: sq = xmu * xmu
+    NodeContext sq = dc.op(Op(OpType::Multiply), {xmu, xmu});
+
+    // Calculate variance: var = sum(sq, dim) / N
+    NodeContext var = dc.op(Op(OpType::ReduceSum, {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {sq});
+    std::vector<int64_t> var_shape = var.shape.as_vector<int64_t>();
+    at::Tensor var_divider_tensor = torch::zeros(var_shape) + (1.0f / static_cast<float>(input_shape[dim]));
+    NodeContext var_divider = dc.tensor(var_divider_tensor);
+    var = dc.op(Op(OpType::Multiply), {var_divider, var});
+
+    // Add epsilon: var_add = var + epsilon
+    at::Tensor epsilon_tensor = torch::zeros(var_shape) + epsilon;
+    NodeContext epsilon_node = dc.tensor(epsilon_tensor);
+    NodeContext var_add = dc.op(Op(OpType::Add), {var, epsilon_node});
+
+    // Calculate standard deviation: std = sqrt(var_add)
+    NodeContext std = dc.op(Op(OpType::Sqrt), {var_add});
+
+    // Calculate inverse variance: ivar = 1 / std
+    NodeContext ivar = dc.op(Op(OpType::Reciprocal), {std});
+
+    // Normalize: xhat = xmu * ivar
+    NodeContext xhat = dc.op(Op(OpType::Multiply), {xmu, ivar});
+
+    // Apply weights: xhat_weighted = xhat * weights
+    NodeContext xhat_weighted = dc.op(Op(OpType::Multiply), {xhat, weights});
+
+    // Apply bias: result = xhat_weighted + bias
+    NodeContext result = dc.op(Op(OpType::Add), {xhat_weighted, bias});
+
+    dc.fuse(result);
 }
 
 }  // namespace layernorm

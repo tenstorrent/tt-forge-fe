@@ -17,54 +17,49 @@ from forge.forge_property_utils import (
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
 
-from test.utils import fetch_model, yolov5_loader
+from third_party.tt_forge_models.yolov5.pytorch import ModelLoader, ModelVariant  # isort:skip
 
-base_url = "https://github.com/ultralytics/yolov5/releases/download/v7.0"
-
-
-def generate_model_yoloV5I320_imgcls_torchhub_pytorch(variant, size):
-    name = "yolov5" + size
-
-    model = fetch_model(name, f"{base_url}/{name}.pt", yolov5_loader, variant=variant)
-
-    input_shape = (1, 3, 320, 320)
-    input_tensor = torch.rand(input_shape)
-    return model, [input_tensor], {}
-
-
-size = [
-    pytest.param("n", id="yolov5n"),
-    pytest.param("s", id="yolov5s"),
-    pytest.param("m", id="yolov5m"),
-    pytest.param("l", id="yolov5l"),
-    pytest.param("x", id="yolov5x"),
+variants = [
+    ModelVariant.YOLOV5N,
+    ModelVariant.YOLOV5S,
+    ModelVariant.YOLOV5M,
+    ModelVariant.YOLOV5L,
+    ModelVariant.YOLOV5X,
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("size", size)
-def test_yolov5_320x320(restore_package_versions, size):
+@pytest.mark.parametrize("variant", variants)
+def test_yolov5_320x320(restore_package_versions, variant):
 
     pcc = 0.99
-    if size == "l":
+    if variant == ModelVariant.YOLOV5L:
         pcc = 0.95
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.YOLOV5,
-        variant="yolov5" + size,
+        variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCH_HUB,
         suffix="320x320",
     )
 
-    framework_model, inputs, _ = generate_model_yoloV5I320_imgcls_torchhub_pytorch(
-        "ultralytics/yolov5",
-        size=size,
-    )
-    framework_model = framework_model.to(torch.bfloat16)
-    inputs = [inputs[0].to(torch.bfloat16)]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+
+    # Unpack the preprocessed input data returned by `load_inputs`
+    # ims       : List of input images
+    # n         : Number of input samples
+    # files     : List of filenames
+    # shape0    : Original image shape
+    # shape1    : Inference image shape after preprocessing
+    # input_tensor : Batched tensor ready for model inference
+
+    ims, n, files, shape0, shape1, input_tensor = loader.load_inputs(dtype_override=torch.bfloat16, input_size=320)
+    inputs = [input_tensor]
 
     # Configurations
     compiler_cfg = CompilerConfig()
@@ -75,53 +70,55 @@ def test_yolov5_320x320(restore_package_versions, size):
         framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
     )
 
-    # Model Verification
-    verify(
+    # Model Verification and inference
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
         verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
     )
 
-
-def generate_model_yoloV5I640_imgcls_torchhub_pytorch(variant, size):
-    name = "yolov5" + size
-    model = fetch_model(name, f"{base_url}/{name}.pt", yolov5_loader, variant=variant)
-
-    input_shape = (1, 3, 640, 640)
-    input_tensor = torch.rand(input_shape)
-    return model, [input_tensor], {}
+    # Post-process and display results
+    loader.post_process(ims, input_tensor.shape, co_out, framework_model, n, shape0, shape1, files)
 
 
-size = [
-    pytest.param("n", id="yolov5n"),
-    pytest.param("s", id="yolov5s"),
-    pytest.param("m", id="yolov5m"),
-    pytest.param("l", id="yolov5l"),
-    pytest.param("x", id="yolov5x"),
+variants = [
+    ModelVariant.YOLOV5N,
+    ModelVariant.YOLOV5S,
+    ModelVariant.YOLOV5M,
+    ModelVariant.YOLOV5L,
+    ModelVariant.YOLOV5X,
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("size", size)
-def test_yolov5_640x640(restore_package_versions, size):
+@pytest.mark.parametrize("variant", variants)
+def test_yolov5_640x640(restore_package_versions, variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.YOLOV5,
-        variant="yolov5" + size,
+        variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCH_HUB,
         suffix="640x640",
     )
 
-    framework_model, inputs, _ = generate_model_yoloV5I640_imgcls_torchhub_pytorch(
-        "ultralytics/yolov5",
-        size=size,
-    )
-    framework_model = framework_model.to(torch.bfloat16)
-    inputs = [inputs[0].to(torch.bfloat16)]
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+
+    # Unpack the preprocessed input data returned by `load_inputs`
+    # ims       : List of input images
+    # n         : Number of input samples
+    # files     : List of filenames
+    # shape0    : Original image shape
+    # shape1    : Inference image shape after preprocessing
+    # input_tensor : Batched tensor ready for model inference
+
+    ims, n, files, shape0, shape1, input_tensor = loader.load_inputs(dtype_override=torch.bfloat16, input_size=640)
+    inputs = [input_tensor]
 
     # Configurations
     compiler_cfg = CompilerConfig()
@@ -132,48 +129,49 @@ def test_yolov5_640x640(restore_package_versions, size):
         framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and inference
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post-process and display results
+    loader.post_process(ims, input_tensor.shape, co_out, framework_model, n, shape0, shape1, files)
 
 
-def generate_model_yoloV5I480_imgcls_torchhub_pytorch(variant, size):
-    name = "yolov5" + size
-    model = fetch_model(name, f"{base_url}/{name}.pt", yolov5_loader, variant=variant)
-    input_shape = (1, 3, 480, 480)
-    input_tensor = torch.rand(input_shape)
-    return model, [input_tensor], {}
-
-
-size = [
-    pytest.param("n", id="yolov5n"),
-    pytest.param("s", id="yolov5s"),
-    pytest.param("m", id="yolov5m"),
-    pytest.param("l", id="yolov5l"),
-    pytest.param("x", id="yolov5x"),
+variants = [
+    ModelVariant.YOLOV5N,
+    ModelVariant.YOLOV5S,
+    ModelVariant.YOLOV5M,
+    ModelVariant.YOLOV5L,
+    ModelVariant.YOLOV5X,
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("size", size)
-def test_yolov5_480x480(restore_package_versions, size):
+@pytest.mark.parametrize("variant", variants)
+def test_yolov5_480x480(restore_package_versions, variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.YOLOV5,
-        variant="yolov5" + size,
+        variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCH_HUB,
         suffix="480x480",
     )
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
 
-    framework_model, inputs, _ = generate_model_yoloV5I480_imgcls_torchhub_pytorch(
-        "ultralytics/yolov5",
-        size=size,
-    )
+    # Unpack the preprocessed input data returned by `load_inputs`
+    # ims       : List of input images
+    # n         : Number of input samples
+    # files     : List of filenames
+    # shape0    : Original image shape
+    # shape1    : Inference image shape after preprocessing
+    # input_tensor : Batched tensor ready for model inference
 
-    framework_model = framework_model.to(torch.bfloat16)
-    inputs = [inputs[0].to(torch.bfloat16)]
+    ims, n, files, shape0, shape1, input_tensor = loader.load_inputs(dtype_override=torch.bfloat16, input_size=480)
+    inputs = [input_tensor]
 
     # Configurations
     compiler_cfg = CompilerConfig()
@@ -184,12 +182,15 @@ def test_yolov5_480x480(restore_package_versions, size):
         framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and inference
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post-process and display results
+    loader.post_process(ims, input_tensor.shape, co_out, framework_model, n, shape0, shape1, files)
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["yolov5s"])
+@pytest.mark.parametrize("variant", [ModelVariant.YOLOV5S])
 def test_yolov5_1280x1280(restore_package_versions, variant):
 
     # Record Forge Property
@@ -202,17 +203,20 @@ def test_yolov5_1280x1280(restore_package_versions, variant):
         suffix="1280x1280",
     )
 
-    framework_model = fetch_model(
-        variant,
-        f"{base_url}/{variant}.pt",
-        yolov5_loader,
-        variant="ultralytics/yolov5",
-    )
+    # Load model and inputs
+    loader = ModelLoader(variant=variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
 
-    framework_model = framework_model.to(torch.bfloat16)
-    input_shape = (1, 3, 1280, 1280)
-    input_tensor = torch.rand(input_shape)
-    inputs = [input_tensor.to(torch.bfloat16)]
+    # Unpack the preprocessed input data returned by `load_inputs`
+    # ims       : List of input images
+    # n         : Number of input samples
+    # files     : List of filenames
+    # shape0    : Original image shape
+    # shape1    : Inference image shape after preprocessing
+    # input_tensor : Batched tensor ready for model inference
+
+    ims, n, files, shape0, shape1, input_tensor = loader.load_inputs(dtype_override=torch.bfloat16, input_size=1280)
+    inputs = [input_tensor]
 
     # Configurations
     compiler_cfg = CompilerConfig()
@@ -223,5 +227,8 @@ def test_yolov5_1280x1280(restore_package_versions, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and inference
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post-process and display results
+    loader.post_process(ims, input_tensor.shape, co_out, framework_model, n, shape0, shape1, files)

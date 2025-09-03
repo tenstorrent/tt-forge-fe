@@ -10,12 +10,10 @@
 namespace tt::passes
 {
 
-using Attr = ForgeOpAttr;
-
 static bool is_reshape(graphlib::Node const *node)
 {
     graphlib::OpNode const *op = dynamic_cast<graphlib::OpNode const *>(node);
-    return op and op->new_op_type() == ops::OpType::Reshape;
+    return op and op->op_type() == ops::OpType::Reshape;
 }
 
 template <typename T>
@@ -31,10 +29,12 @@ bool all_have_same_dim_and_shape_stride1(std::vector<T> const &v)
         v.end(),
         [&](T const &e)
         {
-            auto attrs = dynamic_cast<graphlib::OpNode const *>(e)->op_legacy_attrs();
-            int dim = std::get<int>(attrs[0]);
-            return dim == std::get<int>(dynamic_cast<graphlib::OpNode const *>(v.front())->op_legacy_attrs()[0]) and
-                   e->shape() == v.front()->shape() and std::get<int>(attrs[3]) == 1;
+            auto op_node = dynamic_cast<graphlib::OpNode const *>(e);
+            auto front_op_node = dynamic_cast<graphlib::OpNode const *>(v.front());
+            int dim = op_node->op_attr_as<int>("dim");
+            int stride = op_node->op_attr_as<int>("stride");
+            int front_dim = front_op_node->op_attr_as<int>("dim");
+            return dim == front_dim and e->shape() == v.front()->shape() and stride == 1;
         });
 }
 
@@ -88,7 +88,7 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
             [](auto const &consumer)
             {
                 auto op = dynamic_cast<graphlib::OpNode const *>(consumer);
-                return op and op->new_op_type() == ops::OpType::Index;
+                return op and op->op_type() == ops::OpType::Index;
             });
 
         // All consumers must be index
@@ -102,7 +102,7 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
             continue;
 
         uint32_t total_index_size = 0;
-        int dim = std::get<int>(dynamic_cast<graphlib::OpNode const *>(consumers[0])->op_legacy_attrs()[0]);
+        int dim = dynamic_cast<graphlib::OpNode const *>(consumers[0])->op_attr_as<int>("dim");
 
         for (auto const &consumer : consumers)
         {
@@ -115,7 +115,9 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
             [](auto const &consumer)
             {
                 auto op = dynamic_cast<graphlib::OpNode const *>(consumer);
-                return std::get<int>(op->op_legacy_attrs()[2]) - std::get<int>(op->op_legacy_attrs()[1]) == 1;
+                int stop = op->op_attr_as<int>("stop");
+                int start = op->op_attr_as<int>("start");
+                return stop - start == 1;
             });
 
         // All index must have length 1 and total indexed size must be equal to node dim
@@ -131,7 +133,7 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
                 auto shape_before = consumer->shape();
                 auto shape_after = users[0]->shape();
                 auto op = dynamic_cast<graphlib::OpNode const *>(users[0]);
-                return users.size() == 1 and op->new_op_type() == ops::OpType::Reshape and
+                return users.size() == 1 and op->op_type() == ops::OpType::Reshape and
                        shape_after.volume() == shape_before.volume() and shape_after.size() + 1 == shape_before.size();
             });
 
@@ -172,9 +174,9 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
         {
             auto op = dynamic_cast<graphlib::OpNode *>(consumers[i]);
 
-            auto op_type_ = op->op_type();
+            auto op_type_ = op->op();
             TT_ASSERT(op_type_.type() == ops::OpType::Index);
-            int start = std::get<int>(op->op_type().legacy_attrs_[1]);
+            int start = op->op_attr_as<int>("start");
 
             // Update index attributes to slice the original tensor directly.
             // NOTE: since the old op infrastructure is used we need to set both the vector of attributes and the named
@@ -184,13 +186,9 @@ void decompose_nd_reshape_split(graphlib::Graph *graph)
             auto new_stop = static_cast<int>(start * new_dim_size + new_dim_size);
             int new_stride = 1;
 
-            std::vector<graphlib::OpType::Attr> new_attrs = {new_dim, new_start, new_stop, new_stride};
-
-            op->change_op_type("index", new_attrs);
-            op->set_op_attr("dim", new_dim);
-            op->set_op_attr("start", new_start);
-            op->set_op_attr("stop", new_stop);
-            op->set_op_attr("stride", new_stride);
+            op->change_op(
+                ops::OpType::Index,
+                {{"dim", new_dim}, {"start", new_start}, {"stop", new_stop}, {"stride", new_stride}});
 
             op->set_shape(target_shape);
         }

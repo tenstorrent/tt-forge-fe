@@ -57,7 +57,7 @@ function print_query_docs {
     max_width=$(tput cols)
     max_width=$((max_width * 80 / 100))
 
-    pushd ${SWEEPS_SCRIPT_DIR}/../../../
+    pushd ${SWEEPS_SCRIPT_DIR}/../../../../
     python3 -c "from test.operators.pytorch.test_all import InfoUtils; InfoUtils.print_query_params(max_width=${max_width})"
     popd
 }
@@ -78,7 +78,7 @@ function export_tests {
         file_name="${logs_dir}/${file_name}"
     fi
 
-    pushd ${SWEEPS_SCRIPT_DIR}/../../../
+    pushd ${SWEEPS_SCRIPT_DIR}/../../../../
     python3 -c "from test.operators.pytorch.test_all import InfoUtils; InfoUtils.export(file_name=\"${file_name}\")"
     popd
 }

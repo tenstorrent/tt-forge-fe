@@ -18,17 +18,17 @@ namespace tt
 
 // TODO: move tags to a vector of enums
 NodeContext DecomposingContext::op(
-    graphlib::OpType const &op_type,
+    ops::Op const &op,
     std::vector<NodeContext> const &operands,
     bool copy_tms,
     bool dont_decompose,
     bool optimize_hoist,
     DataFormat output_df)
 {
-    std::string suffix = ".dc." + op_type.name() + "." + std::to_string(op_index);
+    std::string suffix = ".dc." + op.as_string() + "." + std::to_string(op_index);
 
     graphlib::PyOpNode *new_node = this->graph->add_node(
-        graphlib::create_node<graphlib::PyOpNode>(this->node_->name() + suffix, op_type), subgraph_idx);
+        graphlib::create_node<graphlib::PyOpNode>(this->node_->name() + suffix, op), subgraph_idx);
 
     if (dont_decompose)
     {
@@ -57,7 +57,7 @@ NodeContext DecomposingContext::op(
     std::vector<std::vector<std::uint32_t>> operand_tuples;
     for (NodeContext const &op_node : operands) operand_tuples.push_back(op_node.shape.as_vector());
 
-    auto ret = op_type.shape(operand_tuples);
+    auto ret = op.shape(operand_tuples);
     graphlib::Shape shape = std::get<0>(ret);
     std::vector<graphlib::DimBroadcast> broadcasts = std::get<1>(ret);
 
@@ -178,12 +178,38 @@ NodeContext DecomposingContext::tensor(const at::Tensor &tensor)
 
     node->set_shape(shape);
 
-    DataFormat output_df = graphlib::scalar_type_to_data_format(tensor);
+    DataFormat output_df = graphlib::scalar_type_to_data_format(tensor.scalar_type());
     node->set_output_df(output_df);
 
     node->set_epoch_type(node_->get_epoch_type());
 
     this->op_index++;
+
+    return NodeContext(node);
+}
+
+NodeContext DecomposingContext::create_constant_tensor(DecomposingContext &dc, const at::Tensor &tensor)
+{
+    // Convert at::Tensor to Python object for storage
+    py::object py_tensor = py::cast(tensor);
+    std::shared_ptr<void> tensor_ptr = make_shared_py_object(py_tensor);
+
+    graphlib::Shape shape = graphlib::Shape::create(std::vector<int64_t>(tensor.sizes().begin(), tensor.sizes().end()));
+
+    // Create node with given shape
+    auto node = dc.get_graph()->add_node(
+        graphlib::create_node<graphlib::ConstantInputNode>(
+            "dc.input_constant_" + dc.get_node_name() + "_" + std::to_string(dc.get_op_index()), tensor_ptr, shape),
+        dc.get_subgraph_idx());
+
+    node->set_shape(shape);
+
+    DataFormat output_df = graphlib::scalar_type_to_data_format(tensor.scalar_type());
+    node->set_output_df(output_df);
+
+    node->set_epoch_type(dc.get_node()->get_epoch_type());
+
+    dc.increment_op_index();
 
     return NodeContext(node);
 }
@@ -205,7 +231,7 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_tt_forge_gr
 
             graphlib::PyOpNode *py_node = node->as<graphlib::PyOpNode>();
 
-            graphlib::OpType op = py_node->op_type();
+            ops::Op op = py_node->op();
             if (py_node->as<graphlib::TaggedNode>()->has_tag("dont_decompose"))
             {
                 continue;

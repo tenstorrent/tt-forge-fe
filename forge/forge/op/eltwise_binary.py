@@ -4,6 +4,7 @@
 
 from typing import Union
 
+from forge._C.ops import OpType
 from ..tensor import Tensor
 from ..parameter import Parameter
 from .common import ForgeOp as op
@@ -31,7 +32,7 @@ def Add(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tens
 
     """
 
-    return _Eltwise(name, operandA, operandB, "add")
+    return _Eltwise(name, operandA, operandB, OpType.Add)
 
 
 def Subtract(name: str, operandA: Tensor, operandB: Tensor) -> Tensor:
@@ -57,7 +58,7 @@ def Subtract(name: str, operandA: Tensor, operandB: Tensor) -> Tensor:
 
     """
 
-    return _Eltwise(name, operandA, operandB, "subtract")
+    return _Eltwise(name, operandA, operandB, OpType.Subtract)
 
 
 def Multiply(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
@@ -83,7 +84,7 @@ def Multiply(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) ->
 
     """
 
-    return _Eltwise(name, operandA, operandB, "multiply")
+    return _Eltwise(name, operandA, operandB, OpType.Multiply)
 
 
 def Divide(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
@@ -109,7 +110,7 @@ def Divide(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> T
 
     """
 
-    return _Eltwise(name, operandA, operandB, "divide")
+    return _Eltwise(name, operandA, operandB, OpType.Divide)
 
 
 def Max(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
@@ -134,7 +135,7 @@ def Max(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tens
 
     """
 
-    return _Eltwise(name, operandA, operandB, "maximum")
+    return _Eltwise(name, operandA, operandB, OpType.Maximum)
 
 
 def Min(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
@@ -159,7 +160,7 @@ def Min(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tens
 
     """
 
-    return _Eltwise(name, operandA, operandB, "minimum")
+    return _Eltwise(name, operandA, operandB, OpType.Minimum)
 
 
 def Heaviside(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
@@ -184,7 +185,7 @@ def Heaviside(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -
 
     """
 
-    return _Eltwise(name, operandA, operandB, "heaviside")
+    return _Eltwise(name, operandA, operandB, OpType.Heaviside)
 
 
 def Power(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
@@ -209,7 +210,7 @@ def Power(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Te
 
     """
 
-    return _Eltwise(name, operandA, operandB, "power")
+    return _Eltwise(name, operandA, operandB, OpType.Power)
 
 
 def Equal(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
@@ -234,7 +235,7 @@ def Equal(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Te
 
     """
 
-    return _Eltwise(name, operandA, operandB, "equal")
+    return _Eltwise(name, operandA, operandB, OpType.Equal)
 
 
 def NotEqual(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
@@ -259,7 +260,7 @@ def NotEqual(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) ->
 
     """
 
-    return _Eltwise(name, operandA, operandB, "not_equal")
+    return _Eltwise(name, operandA, operandB, OpType.NotEqual)
 
 
 def Greater(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
@@ -284,7 +285,7 @@ def Greater(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> 
 
     """
 
-    return _Eltwise(name, operandA, operandB, "greater")
+    return _Eltwise(name, operandA, operandB, OpType.Greater)
 
 
 def Less(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
@@ -309,7 +310,7 @@ def Less(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Ten
 
     """
 
-    return _Eltwise(name, operandA, operandB, "less")
+    return _Eltwise(name, operandA, operandB, OpType.Less)
 
 
 def GreaterEqual(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
@@ -334,7 +335,7 @@ def GreaterEqual(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]
 
     """
 
-    return _Eltwise(name, operandA, operandB, "greater_equal")
+    return _Eltwise(name, operandA, operandB, OpType.GreaterEqual)
 
 
 def LessEqual(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
@@ -359,10 +360,10 @@ def LessEqual(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -
 
     """
 
-    return _Eltwise(name, operandA, operandB, "less_equal")
+    return _Eltwise(name, operandA, operandB, OpType.LessEqual)
 
 
-def _Eltwise(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter], op_type: str) -> Tensor:
+def _Eltwise(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter], op_type: OpType) -> Tensor:
 
     """
     Common implementation for eltwise ops.
@@ -378,8 +379,8 @@ def _Eltwise(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter], op
     operandB: Tensor
         Second operand
 
-    op_type: str
-        Operation name (add, subtract, multiply...)
+    op_type: OpType
+        Operation type enum (OpType.Add, OpType.Subtract, OpType.Multiply...)
 
     Returns
     -------
@@ -413,8 +414,32 @@ def LogicalAnd(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) 
         Forge tensor
     """
 
-    return op("logical_and", name, operandA, operandA).get_tensor()
+    return op(OpType.LogicalAnd, name, operandA, operandA).get_tensor()
+
+
+def BitwiseAnd(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
+    """
+    Bitwise and operation.
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+        First operand
+
+    operandB: Tensor
+        Second operand
+
+    Returns
+    -------
+    Tensor
+        Forge tensor
+    """
+
+    return _Eltwise(name, operandA, operandB, OpType.BitwiseAnd)
 
 
 def Remainder(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
-    return _Eltwise(name, operandA, operandB, "remainder")
+    return _Eltwise(name, operandA, operandB, OpType.Remainder)

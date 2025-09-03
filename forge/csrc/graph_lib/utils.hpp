@@ -16,11 +16,21 @@
 #include <typeinfo>
 
 #include "graph_lib/defines.hpp"
+#include "ops/op.hpp"
 
 // Forward declarations
+namespace c10
+{
+enum class ScalarType : int8_t;
+}
+
 namespace at
 {
 class Tensor;
+}
+namespace c10
+{
+enum class ScalarType : int8_t;
 }
 namespace py = pybind11;
 
@@ -46,7 +56,6 @@ namespace tt
 
 namespace graphlib
 {
-struct OpType;
 class QueueNode;
 class InputNode;
 
@@ -81,8 +90,11 @@ std::vector<Node *> get_nodes_with_data_outdegree_zero(Graph *graph);
 // Checks dtype of py_tensor and returns appropriate DataFormat
 DataFormat infer_data_format_from_py_tensor(const py::object &py_tensor);
 
-// Convert at::ScalarType to DataFormat directly (C++ equivalent of pytorch_dtype_to_forge_dataformat)
-DataFormat scalar_type_to_data_format(const at::Tensor &tensor);
+// Conversion functions for types at::ScalarType and DataFormat.
+DataFormat scalar_type_to_data_format(const c10::ScalarType scalar_type);
+
+// Convert DataFormat to at::ScalarType directly (C++ equivalent of forge_dataformat_to_pytorch_dtype)
+c10::ScalarType data_format_to_scalar_type(const DataFormat data_format);
 
 // Insert new node on the given edge. Node attributes will be picked up from consumer node.
 // Returns new edges to and from the new node.
@@ -208,7 +220,7 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Node *node);
 graphlib::Edge clone_input_forking_edge(
     graphlib::Graph *graph, graphlib::Edge user_edge, bool allow_single_user = false);
 
-graphlib::Shape default_tm_evaluator(graphlib::OpType const &tm, graphlib::Shape shape, graphlib::IRLevel ir_level);
+graphlib::Shape default_tm_evaluator(ops::Op const &tm, graphlib::Shape shape, graphlib::IRLevel ir_level);
 
 // Calculate node shape from operand shapes, using python callback
 void calculate_and_set_node_shape(Graph *graph, Node *node);
@@ -252,7 +264,6 @@ class ConstEvalGraph
     std::unique_ptr<Node> promote_node(std::unique_ptr<Node> &&consteval_node);
     std::unique_ptr<Node> promote_node(Graph *runtime_graph, Node *runtime_node);
     std::unique_ptr<ConstEvalGraph> clone(Node *runtime_input, std::string const &new_input_node_name = "");
-    void pad_output_to_forge_dims(std::string const &name_prefix);
     void set_needs_autograd(bool new_needs_autograd) { needs_autograd = new_needs_autograd; }
     void autograd();
 
@@ -276,10 +287,8 @@ enum class RuntimeTensorTransformType
 {
     NoTransform = 0,
     ReinterpretShape,
-    Prestride,
     EmbeddingIndex,
     ConstantInput,
-    Unpad,
     Concatenate,
 };
 
@@ -288,10 +297,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
     {
         {tt::graphlib::RuntimeTensorTransformType::NoTransform, "NoTransform"},
         {tt::graphlib::RuntimeTensorTransformType::ReinterpretShape, "ReinterpretShape"},
-        {tt::graphlib::RuntimeTensorTransformType::Prestride, "Prestride"},
         {tt::graphlib::RuntimeTensorTransformType::EmbeddingIndex, "EmbeddingIndex"},
         {tt::graphlib::RuntimeTensorTransformType::ConstantInput, "ConstantInput"},
-        {tt::graphlib::RuntimeTensorTransformType::Unpad, "Unpad"},
         {tt::graphlib::RuntimeTensorTransformType::Concatenate, "Concatenate"},
     });
 
@@ -352,12 +359,6 @@ class RuntimeTensorTransform
 
         this->original_shape = original_shape;
         this->reinterpreted_shape = reinterpreted_shape;
-    }
-    RuntimeTensorTransform(Shape unpadded_shape)
-    {
-        this->type = RuntimeTensorTransformType::Unpad;
-
-        this->unpadded_shape = unpadded_shape;
     }
 
     static RuntimeTensorTransform ConcatenateOnHost(int group, int index, int dim)

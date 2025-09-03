@@ -26,6 +26,7 @@
 #include "mlir/IR/BuiltinAttributes.h"
 #include "mlir/IR/Value.h"
 #include "mlir/IR/ValueRange.h"
+#include "ops/op.hpp"
 #include "passes/extract_unique_op_configuration.hpp"
 #include "runtime/tt_device.hpp"
 #include "utils/logger.hpp"
@@ -159,13 +160,15 @@ class AttributeMapper
         // repeat
         add_op_mapping("repeat", "repeats", AttributeRemap("repeat_dimensions", TargetType::DenseI64ArrayAttr));
 
-        // pad
-        add_op_mapping("pad", "padding", AttributeRemap("padding", TargetType::DenseI32ArrayAttr));
-        add_op_mapping("pad", "value", AttributeRemap("value", TargetType::F32Attr));
+        // constant_pad
+        add_op_mapping("constant_pad", "padding", AttributeRemap("padding", TargetType::DenseI32ArrayAttr));
+        add_op_mapping("constant_pad", "value", AttributeRemap("value", TargetType::F32Attr));
 
         // llm cache
         add_op_mapping("update_cache", "batch_offset", AttributeRemap(std::nullopt, TargetType::I32Attr));
         add_op_mapping("fill_cache", "batch_offset", AttributeRemap(std::nullopt, TargetType::I32Attr));
+
+        add_op_mapping("upsample2d", "scale_factor", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
 
         // Add more default mappings here
     }
@@ -288,7 +291,7 @@ class MLIRGenerator
     }
 
     // Convert a TTForge attribute to an MLIR attribute.
-    mlir::Attribute convert_to_mlir_attribute(const tt::ForgeOpAttr &value, TargetType target_type)
+    mlir::Attribute convert_to_mlir_attribute(const tt::ops::Attr &value, TargetType target_type)
     {
         if (target_type != TargetType::SourceType)
         {
@@ -502,12 +505,13 @@ class MLIRGenerator
     /// Emit an MLIR operation for a TTForge node.
     mlir::Value emit_mlir_tt_forge_operation(tt::graphlib::Graph *graph, tt::graphlib::OpNode *op_node)
     {
-        auto handler = lowering_handler_map.find(op_node->op_name());
+        auto handler = lowering_handler_map.find(op_node->op_as_string());
         // There is no known lowering handler for this operation. Report error.
         if (handler == lowering_handler_map.end())
         {
-            log_error("Unsupported operation for lowering from TTForge to TTIR: {}", op_node->op_name());
-            throw std::runtime_error("Unsupported operation for lowering from TTForge to TTIR: " + op_node->op_name());
+            log_error("Unsupported operation for lowering from TTForge to TTIR: {}", op_node->op_as_string());
+            throw std::runtime_error(
+                "Unsupported operation for lowering from TTForge to TTIR: " + op_node->op_as_string());
         }
 
         // Call the handler to lower the TTForge op to MLIR
@@ -531,9 +535,9 @@ class MLIRGenerator
 
         // Map forge to MLIR attributes for this operation.
         llvm::SmallVector<mlir::NamedAttribute> mlir_attributes;
-        for (const auto &[name, value] : op_node->op_type().attrs())
+        for (const auto &[name, value] : op_node->op().attrs())
         {
-            auto [mapped_name, target_type] = attr_mapper_.get_mapped_name_and_type(op_node->op_name(), name);
+            auto [mapped_name, target_type] = attr_mapper_.get_mapped_name_and_type(op_node->op_as_string(), name);
 
             mlir_attributes.push_back(
                 builder_.getNamedAttr(mapped_name, convert_to_mlir_attribute(value, target_type)));
@@ -560,9 +564,9 @@ class MLIRGenerator
 
         // Map forge to MLIR attributes for this operation.
         llvm::SmallVector<mlir::NamedAttribute> mlir_attributes;
-        for (const auto &[name, value] : op_node->op_type().attrs())
+        for (const auto &[name, value] : op_node->op().attrs())
         {
-            auto [mapped_name, target_type] = attr_mapper_.get_mapped_name_and_type(op_node->op_name(), name);
+            auto [mapped_name, target_type] = attr_mapper_.get_mapped_name_and_type(op_node->op_as_string(), name);
 
             mlir_attributes.push_back(
                 builder_.getNamedAttr(mapped_name, convert_to_mlir_attribute(value, target_type)));
@@ -799,15 +803,20 @@ class MLIRGenerator
         lowering_handler_map["atan"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::AtanOp>;
         lowering_handler_map["argmax"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ArgMaxOp>;
         lowering_handler_map["avg_pool2d"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::AvgPool2dOp>;
+        lowering_handler_map["batchnorm"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::BatchNormOp>;
+        lowering_handler_map["bitwise_and"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::BitwiseAndOp>;
         lowering_handler_map["cast"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::TypecastOp>;
         lowering_handler_map["clip"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ClampScalarOp>;
         lowering_handler_map["concatenate"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ConcatOp>;
+        lowering_handler_map["constant_pad"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::PadOp>;
         lowering_handler_map["conv2d"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::Conv2dOp>;
         lowering_handler_map["cosine"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::CosOp>;
         lowering_handler_map["cumsum"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::CumSumOp>;
+        lowering_handler_map["divide"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::DivOp>;
         lowering_handler_map["embedding_bw"] =
             &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::EmbeddingBackwardOp>;
         lowering_handler_map["embedding"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::EmbeddingOp>;
+        lowering_handler_map["erf"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ErfOp>;
         lowering_handler_map["equal"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::EqualOp>;
         lowering_handler_map["exp"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ExpOp>;
         lowering_handler_map["gelu"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::GeluOp>;
@@ -815,7 +824,8 @@ class MLIRGenerator
         lowering_handler_map["greater"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::GreaterThanOp>;
         lowering_handler_map["index"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::IndexOp>;
         lowering_handler_map["leaky_relu"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LeakyReluOp>;
-        lowering_handler_map["less"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LessEqualOp>;
+        lowering_handler_map["less"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LessThanOp>;
+        lowering_handler_map["less_equal"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LessEqualOp>;
         lowering_handler_map["log"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LogOp>;
         lowering_handler_map["logical_not"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LogicalNotOp>;
         lowering_handler_map["matmul"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MatmulOp>;
@@ -848,13 +858,10 @@ class MLIRGenerator
         lowering_handler_map["transpose"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::TransposeOp>;
         lowering_handler_map["unsqueeze"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::UnsqueezeOp>;
         lowering_handler_map["upsample2d"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::Upsample2dOp>;
-        lowering_handler_map["pad"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::PadOp>;
         lowering_handler_map["where"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::WhereOp>;
         lowering_handler_map["fill_cache"] = &MLIRGenerator::emit_mlir_ttforge_non_dps_op<mlir::tt::ttir::FillCacheOp>;
         lowering_handler_map["update_cache"] =
             &MLIRGenerator::emit_mlir_ttforge_non_dps_op<mlir::tt::ttir::UpdateCacheOp>;
-        lowering_handler_map["divide"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::DivOp>;
-        lowering_handler_map["erf"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ErfOp>;
     }
 };
 

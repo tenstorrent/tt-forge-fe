@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+from forge._C.ops import OpType
 from ..tensor import Tensor
 from ..parameter import Parameter
 from .common import ForgeOp as op
@@ -30,7 +31,7 @@ def Concatenate(name: str, *operands: Tensor, axis: int) -> Tensor:
         Forge tensor
     """
 
-    result: Tensor = op("concatenate", name, *operands, dim=axis).get_tensor()
+    result: Tensor = op(OpType.Concatenate, name, *operands, dim=axis).get_tensor()
     return result
 
 
@@ -59,7 +60,7 @@ def Where(name: str, condition: Tensor, x: Tensor, y: Tensor) -> Tensor:
         Forge tensor
     """
 
-    result: Tensor = op("where", name, condition, x, y).get_tensor()
+    result: Tensor = op(OpType.Where, name, condition, x, y).get_tensor()
     return result
 
 
@@ -91,7 +92,7 @@ def IndexCopy(name: str, operandA: Tensor, index: Tensor, value: Tensor, dim: in
     """
     if dim < 0:
         dim += len(operandA.shape)
-    return op("index_copy", name, operandA, index, value, attrs=(dim,), dim=dim).get_tensor()
+    return op(OpType.IndexCopy, name, operandA, index, value, dim=dim).get_tensor()
 
 
 def Stack(name: str, *operands: Tensor, axis: int) -> Tensor:
@@ -117,42 +118,5 @@ def Stack(name: str, *operands: Tensor, axis: int) -> Tensor:
         Forge tensor
     """
 
-    result: Tensor = op("stack", name, *operands, dim=axis).get_tensor()
-    return result
-
-
-def Interleave(
-    name: str,
-    *operands: Tensor,
-    axis: int,
-    stride: int,
-) -> Tensor:
-
-    """
-    Interleave tensors along an axis with stride
-        - each operand must have the same stride
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operands: Tuple[Tensor, ...]
-        tensors to be interleaved
-
-    axis: int
-        interleave axis
-
-    stride: int
-        stride to interleave each operand
-
-
-    Returns
-    -------
-    Tensor
-        Forge tensor
-    """
-    assert axis == -3, "Only support Z dim interleave"
-    assert stride == 1, "Only support interleave with stride 1 for now"
-    result: Tensor = op("interleave", name, *operands, attrs=(axis, stride)).get_tensor()
+    result: Tensor = op(OpType.Stack, name, *operands, dim=axis).get_tensor()
     return result

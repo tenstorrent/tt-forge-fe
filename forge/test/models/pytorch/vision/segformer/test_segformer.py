@@ -5,7 +5,12 @@
 import pytest
 import torch
 from third_party.tt_forge_models.segformer.pytorch import ModelLoader, ModelVariant
-from transformers import SegformerForSemanticSegmentation
+from third_party.tt_forge_models.segformer.semantic_segmentation.pytorch import (
+    ModelLoader as SemSegLoader,
+)
+from third_party.tt_forge_models.segformer.semantic_segmentation.pytorch import (
+    ModelVariant as SemSegVariant,
+)
 
 import forge
 from forge._C import DataFormat
@@ -20,8 +25,6 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
-
-from test.models.pytorch.vision.segformer.model_utils.image_utils import get_sample_data
 
 variants_img_classification = [
     ModelVariant.MIT_B0,
@@ -48,7 +51,7 @@ def test_segformer_image_classification_pytorch(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.SEGFORMER,
-        variant=variant,
+        variant=variant.value,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
         group=group,
@@ -81,11 +84,11 @@ def test_segformer_image_classification_pytorch(variant):
 
 
 variants_semseg = [
-    pytest.param("nvidia/segformer-b0-finetuned-ade-512-512", marks=pytest.mark.xfail),
-    pytest.param("nvidia/segformer-b1-finetuned-ade-512-512", marks=pytest.mark.xfail),
-    pytest.param("nvidia/segformer-b2-finetuned-ade-512-512", marks=pytest.mark.xfail),
-    pytest.param("nvidia/segformer-b3-finetuned-ade-512-512", marks=pytest.mark.xfail),
-    pytest.param("nvidia/segformer-b4-finetuned-ade-512-512", marks=pytest.mark.xfail),
+    pytest.param(SemSegVariant.B0_FINETUNED, marks=pytest.mark.xfail),
+    pytest.param(SemSegVariant.B1_FINETUNED, marks=pytest.mark.xfail),
+    pytest.param(SemSegVariant.B2_FINETUNED, marks=[pytest.mark.out_of_memory, pytest.mark.xfail]),
+    pytest.param(SemSegVariant.B3_FINETUNED, marks=pytest.mark.xfail),
+    pytest.param(SemSegVariant.B4_FINETUNED, marks=pytest.mark.xfail),
 ]
 
 
@@ -97,18 +100,16 @@ def test_segformer_semantic_segmentation_pytorch(variant):
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.SEGFORMER,
-        variant=variant,
+        variant=variant.value,
         task=Task.SEMANTIC_SEGMENTATION,
         source=Source.HUGGINGFACE,
     )
 
-    # Load the model from HuggingFace
-    framework_model = SegformerForSemanticSegmentation.from_pretrained(variant).to(torch.bfloat16)
-    framework_model.eval()
-
-    # Load the sample image
-    pixel_values = get_sample_data(variant)
-    inputs = [pixel_values.to(torch.bfloat16)]
+    # Load model and inputs via loader
+    loader = SemSegLoader(variant)
+    framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    input_dict = loader.load_inputs(dtype_override=torch.bfloat16)
+    inputs = [input_dict["pixel_values"]]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)

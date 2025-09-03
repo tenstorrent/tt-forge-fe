@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from third_party.tt_forge_models.squeezebert import ModelLoader
+from third_party.tt_forge_models.squeezebert.pytorch import ModelLoader
 
 import forge
 from forge.forge_property_utils import (

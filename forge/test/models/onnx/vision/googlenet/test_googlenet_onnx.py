@@ -1,78 +1,71 @@
-# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
-
+# SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
+#
 # SPDX-License-Identifier: Apache-2.0
+
 import pytest
 import torch
+import torch.onnx
 import onnx
-from loguru import logger
-from PIL import Image
-from third_party.tt_forge_models.tools.utils import get_file
-from torchvision import transforms
 
 import forge
-from forge.forge_property_utils import (
-    Framework,
-    ModelArch,
-    Source,
-    Task,
-    record_model_properties,
-)
 from forge.verify.verify import verify
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
+
+from third_party.tt_forge_models.googlenet.pytorch import ModelLoader, ModelVariant
 
 
+@pytest.mark.parametrize(
+    "variant",
+    [
+        ModelVariant.GOOGLENET,
+    ],
+)
 @pytest.mark.nightly
-@pytest.mark.xfail
-def test_googlenet_onnx(forge_tmp_path):
-
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2834")
+def test_googlenet_onnx_export_from_pytorch(variant, forge_tmp_path):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
         model=ModelArch.GOOGLENET,
-        variant="googlenet",
-        source=Source.HUGGINGFACE,
+        variant=variant,
+        source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Download ONNX model
-    model_url = (
-        "https://github.com/onnx/models/raw/main/Computer_Vision/googlenet_Opset17_torch_hub/googlenet_Opset17.onnx"
-    )
-    onnx_path = get_file(model_url)
+    # Load model and input
+    loader = ModelLoader(variant=variant)
+    torch_model = loader.load_model(dtype_override=torch.float32)
+    input_tensor = loader.load_inputs(dtype_override=torch.float32)
+    sample_inputs = [input_tensor]
 
-    # Load and check ONNX model
+    # Export to ONNX
+    onnx_path = f"{forge_tmp_path}/googlenet_{variant.name.lower()}.onnx"
+    torch.onnx.export(
+        torch_model,
+        input_tensor,
+        onnx_path,
+        export_params=True,
+        opset_version=17,
+        do_constant_folding=True,
+        input_names=["input"],
+        output_names=["output"],
+        dynamic_axes={"input": {0: "batch_size"}, "output": {0: "batch_size"}},
+    )
+
+    # Load ONNX model
     onnx_model = onnx.load(onnx_path)
     onnx.checker.check_model(onnx_model)
-    framework_model = forge.OnnxModule(module_name, onnx_model)
+    framework_model = forge.OnnxModule(module_name, onnx_model, onnx_path)
 
-    # Image preprocessing
-    try:
-        image_url = "https://github.com/pytorch/hub/raw/master/images/dog.jpg"
-        file_path = get_file(image_url)
-        input_image = Image.open(file_path).convert("RGB")
-        preprocess = transforms.Compose(
-            [
-                transforms.Resize(256),
-                transforms.CenterCrop(224),
-                transforms.ToTensor(),
-                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-            ]
-        )
-        input_tensor = preprocess(input_image)
-        input_batch = input_tensor.unsqueeze(0)  # Shape: [1, 3, 224, 224]
-    except:
-        logger.warning(
-            "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
-        )
-        input_batch = torch.rand(1, 3, 224, 224)
-
-    inputs = [input_batch]
-
-    # Compile with Forge
+    # Compile model
     compiled_model = forge.compile(
-        onnx_model,
-        sample_inputs=inputs,
+        framework_model,
+        sample_inputs=sample_inputs,
         module_name=module_name,
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Verify model
+    _, co_out = verify(sample_inputs, framework_model, compiled_model)
+
+    # Print classification results
+    loader.print_cls_results(co_out)

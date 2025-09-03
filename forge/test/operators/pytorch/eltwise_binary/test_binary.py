@@ -141,6 +141,11 @@ class TestVerification:
         value_range = ValueRanges.LARGE
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
+        dev_data_format = test_vector.dev_data_format
+        if dev_data_format is None and test_vector.operator in TestCollectionData.bitwise.operators:
+            # For bitwise operators, use int data format
+            dev_data_format = TestCollectionData.single_int.dev_data_formats[0]
+
         model_type = cls.MODEL_TYPES[test_vector.input_source]
         pytorch_model = (
             model_type(
@@ -148,7 +153,7 @@ class TestVerification:
                 opname=test_vector.operator,
                 shape=test_vector.input_shape,
                 kwargs=kwargs,
-                dtype=test_vector.dev_data_format,
+                dtype=dev_data_format,
                 value_range=value_range,
             )
             if test_vector.input_source in (InputSource.CONST_EVAL_PASS,)
@@ -164,7 +169,7 @@ class TestVerification:
         # Using AllCloseValueChecker in all cases except for integer data formats
         # and logical operators ge, ne, gt, lt:
         verify_config: VerifyConfig
-        if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
+        if dev_data_format in TestCollectionTorch.int.dev_data_formats:
             verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
         else:
             verify_config = VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2))
@@ -174,7 +179,7 @@ class TestVerification:
             test_device=test_device,
             input_shapes=input_shapes,
             input_params=input_params,
-            dev_data_format=test_vector.dev_data_format,
+            dev_data_format=dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             value_range=value_range,
             warm_reset=warm_reset,
@@ -230,30 +235,22 @@ class TestCollectionData:
         operators=[
             "add",  #                   #00
             "div",  #                   #01
-            # "divide",  #              #02     - Alias for div.
             "remainder",  #             #12
             "mul",  #                   #03
-            # "multiply",  #            #04     - Alias for mul.
             "sub",  #                   #05
-            # "subtract",  #            #06     - Alias for sub.
             # "true_divide",  #         #07     - Alias for div with rounding_mode=None.
             "ge",  #                    #08
-            # "greater_equal",  #       #09    - Alias for ge.
             "ne",  #                    #16                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: not_equal      # working with model const
-            # "greater",  #             #18    - Alias for gt.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: greater
             "gt",  #                    #19                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: greater        # working with model const
             "lt",  #                    #21                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less           # working with model const
-            # "less",  #                #22    - Alias for lt.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less
             "maximum",  #               #23                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: maximum        # working with model const
             "minimum",  #               #24                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: minimum        # working with model const
-            # "not_equal",  #           #25    - Alias for ne.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: not_equal
         ],
     )
 
     not_implemented = TestCollection(
         operators=[
             "atan2",  #                 #00                         - NotImplementedError: The following operators are not implemented: ['aten::atan2']
-            "arctan2",  #               #01                         - NotImplementedError: The following operators are not implemented: ['aten::atan2']
             "bitwise_and",  #           #02                         - RuntimeError: "bitwise_and_cpu" not implemented for 'Float'
             "bitwise_or",  #            #03                         - RuntimeError: "bitwise_or_cpu" not implemented for 'Float'
             "bitwise_xor",  #           #04                         - RuntimeError: "bitwise_xor_cpu" not implemented for 'Float'
@@ -268,7 +265,6 @@ class TestCollectionData:
             "fmin",  #                  #14                         - NotImplementedError: The following operators are not implemented: ['aten::fmin']
             "eq",  #                    #15                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: equal          # working with model const
             "le",  #                    #17                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less_equal     # working with model const
-            # "less_equal",  #          #20    - Alias for le.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less_equal
         ],
     )
 
@@ -338,6 +334,14 @@ class TestCollectionData:
         math_fidelities=TestCollectionCommon.single.math_fidelities,
     )
 
+    all_int = TestCollection(
+        dev_data_formats=TestCollectionTorch.int.dev_data_formats,
+    )
+
+    single_int = TestCollection(
+        dev_data_formats=TestCollectionTorch.int.dev_data_formats[0:1],
+    )
+
 
 class BinaryTestPlanBuilder:
     """Helper class for building test plans for binary operators"""
@@ -349,6 +353,12 @@ class BinaryTestPlanBuilder:
         """Build test plan collections for binary operator"""
 
         operators = [operator]
+
+        all_dev_data_formats = TestCollectionData.all.dev_data_formats
+        single_dev_data_formats = TestCollectionData.single.dev_data_formats
+        if operator in TestCollectionData.bitwise.operators:
+            all_dev_data_formats = TestCollectionData.all_int.dev_data_formats
+            single_dev_data_formats = TestCollectionData.single_int.dev_data_formats
 
         collections = [
             # Test plan:
@@ -368,11 +378,7 @@ class BinaryTestPlanBuilder:
                 input_sources=TestCollectionData.single.input_sources,
                 input_shapes=TestCollectionData.single.input_shapes,
                 kwargs=generate_kwargs,
-                dev_data_formats=[
-                    item
-                    for item in TestCollectionData.all.dev_data_formats
-                    if item not in TestCollectionData.single.dev_data_formats
-                ],
+                dev_data_formats=[item for item in all_dev_data_formats if item not in single_dev_data_formats],
                 math_fidelities=TestCollectionData.single.math_fidelities,
             ),
             # Test plan:
@@ -382,7 +388,7 @@ class BinaryTestPlanBuilder:
                 input_sources=TestCollectionData.single.input_sources,
                 input_shapes=TestCollectionData.single.input_shapes,
                 kwargs=generate_kwargs,
-                dev_data_formats=TestCollectionData.single.dev_data_formats,
+                dev_data_formats=single_dev_data_formats,
                 math_fidelities=TestCollectionData.all.math_fidelities,
             ),
         ]
@@ -495,11 +501,21 @@ class TestPlansData:
             # Not implemented operators
             TestCollection(
                 operators=TestCollectionData.not_implemented.operators,
-                failing_reason=FailingReasons.NOT_IMPLEMENTED,
+                failing_reason=FailingReasons.NOT_IMPLEMENTED_ATEN,
             ),
             TestCollection(
-                operators=TestCollectionData.bitwise.operators,
-                failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+                operators=[
+                    "floor_divide",
+                    "fmod",
+                    "bitwise_xor",
+                ],
+                failing_reason=FailingReasons.UNSUPPORTED_OP_TYPES,
+            ),
+            TestCollection(
+                operators=[
+                    "le",
+                ],
+                failing_reason=FailingReasons.LOWERING_UNSUPPORTED_OPERATION,
             ),
             TestCollection(
                 operators=[

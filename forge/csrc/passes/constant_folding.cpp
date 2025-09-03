@@ -54,123 +54,6 @@ bool is_constant_eltwise_binary(graphlib::Graph *graph, graphlib::OpNode *binary
     return bool(get_constant_input(graph, binary)) and bool(get_producer_input(graph, binary));
 }
 
-static void insert_pad_within_tile(graphlib::Graph *graph, graphlib::Edge edge, int dim, int size)
-{
-    graphlib::Node *producer = graph->node_by_id(edge.producer_node_id);
-    graphlib::Node *consumer = graph->node_by_id(edge.consumer_node_id);
-    TT_ASSERT(consumer->shape().index_in_bounds(dim));
-
-    dim = consumer->shape().negative_index(dim);
-    std::uint32_t producer_dim_size = producer->shape().index_in_bounds(dim) ? producer->shape()[dim] : 1;
-    std::uint32_t consumer_dim_size = consumer->shape()[dim];
-
-    if (producer_dim_size == consumer_dim_size)
-        return;
-
-    // Handle by fixing up existing broadcast
-    bool only_bcast = true;
-    auto &tms = graph->get_edge_attributes(edge)->get_tms();
-    for (auto &tm : tms)
-    {
-        if (tm.type() != ops::OpType::Broadcast)
-        {
-            only_bcast = false;
-            break;
-        }
-
-        int tm_dim = consumer->shape().negative_index(tm.attr_as<int>("dim"));
-        if (tm_dim == dim)
-        {
-            tm.set_attr("dim", tm_dim);
-            tm.set_attr("size", size);
-            return;
-        }
-    }
-
-    // Handle by inserting a broadcast
-    bool implicit_broadcast = producer_dim_size == 1;
-    if (implicit_broadcast)
-    {
-        tms.push_back(graphlib::OpType("broadcast", {}, {{"dim", dim}, {"size", size}}));
-        return;
-    }
-
-    TT_ASSERT(size % graphlib::Shape::FORGE_TILE_DIM == 0);
-
-    // Handle with a pad_tile op
-    auto *pad_tile =
-        graph
-            ->add_node(
-                consumer->clone("pad_tile_" + producer->name() + "_" + std::to_string(edge.edge_creation_id)),
-                graph->get_subgraph_id_for_node(producer->id()))
-            ->as<graphlib::OpNode>();
-    pad_tile->change_op_type(graphlib::OpType(
-        "pad_tile",
-        {dim, (int)producer->shape()[dim]},
-        {{"dim", dim}, {"original_length", (int)producer->shape()[dim]}}));
-    auto [incoming_edge, outgoing_edge] = graphlib::insert_node_on_edge(graph, edge, pad_tile);
-    if (only_bcast)
-    {
-        auto &incoming_tms = graph->get_edge_attributes(incoming_edge)->get_tms();
-        auto &outgoing_tms = graph->get_edge_attributes(outgoing_edge)->get_tms();
-        outgoing_tms.insert(outgoing_tms.begin(), incoming_tms.begin(), incoming_tms.end());
-        incoming_tms.clear();
-    }
-    graphlib::Shape pad_tile_shape = only_bcast ? producer->shape() : consumer->shape();
-    TT_ASSERT(size == graphlib::align_up_tile((int)pad_tile_shape[dim]));
-    pad_tile_shape[dim] = graphlib::align_up_tile(pad_tile_shape[dim]);
-    pad_tile->set_shape(pad_tile_shape);
-    graphlib::try_consteval_op(graph, pad_tile);
-}
-
-static bool try_hoist_above_narrow(graphlib::Graph *graph, graphlib::OpNode *narrow, graphlib::OpNode *consumer)
-{
-    if (narrow->new_op_type() != ops::OpType::Narrow)
-        return false;
-
-    if (graph->user_data_edges(narrow).size() > 1)
-        return false;
-
-    auto shape = narrow->shape();
-    auto attr = narrow->op_type().legacy_attrs_;
-    TT_ASSERT(attr.size() == 4);
-    int dim = shape.negative_index(std::get<int>(attr[0]));
-    int start = std::get<int>(attr[1]);
-    int length = std::get<int>(attr[2]);
-
-    bool within_tile = graphlib::align_up_tile(length) == graphlib::align_up_tile((int)shape[dim]);
-
-    if ((dim == -1 or dim == -2) and (start == 0) and within_tile)
-    {
-        log_trace(LogGraphCompiler, "Hoist above narrow: {} {}", narrow->name(), consumer->name());
-
-        auto narrow_operands = graph->data_operands(narrow);
-        TT_ASSERT(narrow_operands.size() == 1);
-        auto narrow_operand = narrow_operands.front();
-
-        consumer->add_golden_transform(narrow->op_type());
-        consumer->set_shape(narrow_operand->shape());
-
-        auto edges = graph->get_edges(narrow, consumer);
-        TT_ASSERT(edges.size() == 1);
-        graphlib::swap(
-            graph,
-            edges.front(),
-            [graph, narrow_operand, dim](graphlib::Edge edge)
-            {
-                // Skip fixing up the original narrow producer
-                if (edge.producer_node_id == narrow_operand->id())
-                    return;
-
-                insert_pad_within_tile(graph, edge, dim, (int)narrow_operand->shape()[dim]);
-            });
-
-        return true;
-    }
-
-    return false;
-}
-
 template <typename CommutableFn, typename SinkOpFn>
 std::vector<graphlib::Node *> find_operands_commute_through(
     graphlib::Graph *graph, graphlib::Node *root, CommutableFn commutable_fn, SinkOpFn sink_op_fn)
@@ -209,7 +92,7 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
     //  - op is eltwise multiply
     //  - 1 argument is a 1 dimensional constant tensor
     //  - 1 argument is a matmul with RHS parameters
-    if (multiply->new_op_type() != ops::OpType::Multiply)
+    if (multiply->op_type() != ops::OpType::Multiply)
         return false;
 
     std::vector<graphlib::Node *> matmuls = find_operands_commute_through(
@@ -218,12 +101,12 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
         [](graphlib::Node *commutable)
         {
             graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(commutable);
-            return op and (op->new_op_type() == ops::OpType::Add or op->new_op_type() == ops::OpType::Nop);
+            return op and (op->op_type() == ops::OpType::Add or op->op_type() == ops::OpType::Nop);
         },
         [](graphlib::Node *matmul)
         {
             graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(matmul);
-            return op and op->is_dense_matmul();
+            return op and op->is_matmul();
         });
 
     if (matmuls.empty())
@@ -311,10 +194,10 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
 
 static bool try_fold_constant_associative(graphlib::Graph *graph, graphlib::OpNode *a, graphlib::OpNode *b)
 {
-    if (a->new_op_type() != b->new_op_type())
+    if (a->op_type() != b->op_type())
         return false;
 
-    if (a->new_op_type() != ops::OpType::Multiply and a->new_op_type() != ops::OpType::Add)
+    if (a->op_type() != ops::OpType::Multiply and a->op_type() != ops::OpType::Add)
         return false;
 
     graphlib::InputNode *a_constant = get_constant_input(graph, a);
@@ -347,7 +230,6 @@ static bool try_fold_constant_associative(graphlib::Graph *graph, graphlib::OpNo
 }
 
 static std::vector<FoldFn *> fold_fns = {
-    try_hoist_above_narrow,
     try_fold_constant_multiply_into_matmul_rhs,
     try_fold_constant_associative,
 };

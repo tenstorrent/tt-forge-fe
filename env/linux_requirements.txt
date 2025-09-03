@@ -25,3 +25,4 @@ opencv-contrib-python==4.9.0.80
 yolov6detect==0.4.1
 peft==0.15.1
 safetensors==0.6.0.dev0
+yolov5==7.0.9

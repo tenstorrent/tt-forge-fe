@@ -17,18 +17,6 @@
 namespace tt
 {
 
-using ForgeOpAttr = ::std::variant<
-    std::string,
-    bool,
-    int,
-    float,
-    std::vector<int>,
-    std::vector<std::tuple<int, int, int>>,
-    std::vector<std::tuple<int, int, int, int>>>;
-using ForgeOpAttrs = ::std::map<std::string, ForgeOpAttr>;
-
-std::ostream &operator<<(std::ostream &os, const ForgeOpAttr &attr);
-
 enum class ExpPrecision : uint8_t
 {
     A = 0,
@@ -156,6 +144,23 @@ inline bool is_a_data_format(DataFormat df)
         case DataFormat::Bfp8:
         case DataFormat::Bfp4:
         case DataFormat::Bfp2: return true;
+        default: return false;
+    }
+}
+
+inline bool is_float_data_format(DataFormat df)
+{
+    switch (df)
+    {
+        case DataFormat::Float32:
+        case DataFormat::Float16:
+        case DataFormat::Float16_b:
+        case DataFormat::Bfp8:
+        case DataFormat::Bfp4:
+        case DataFormat::Bfp2:
+        case DataFormat::Bfp8_b:
+        case DataFormat::Bfp4_b:
+        case DataFormat::Lf8: return true;
         default: return false;
     }
 }

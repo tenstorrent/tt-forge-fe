@@ -8,6 +8,7 @@
 
 #include "graph_lib/shape.hpp"
 #include "gtest/gtest.h"
+#include "lower_to_forge/common.hpp"
 #include "ops/op.hpp"
 #include "test/ops/test_ops.hpp"
 
@@ -136,6 +137,7 @@ std::vector<tt::ops::Op> get_unary_eltwise_ops()
         // tt::ops::OpType::Clip, // Tested separately.
         // tt::ops::OpType::CumulativeSum, // Tested separately.
         tt::ops::OpType::Sine,
+        // tt::ops::OpType::Cast, // Tested separately.
         tt::ops::OpType::Cosine,
         tt::ops::OpType::Relu,
         tt::ops::OpType::Log,
@@ -298,6 +300,49 @@ INSTANTIATE_TEST_SUITE_P(
         [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
     [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
 
+/**
+ * Testing cast operation.
+ */
+std::vector<tt::ops::Op> get_cast_ops()
+{
+    std::vector<tt::ops::Op> ops;
+    for (const DataFormat& df : {
+             DataFormat::Float32,
+             DataFormat::Float16,
+             DataFormat::Bfp8,
+             DataFormat::Bfp4,
+             DataFormat::Bfp2,
+             DataFormat::Float16_b,
+             DataFormat::Bfp8_b,
+             DataFormat::Bfp4_b,
+             DataFormat::RawUInt8,
+             DataFormat::RawUInt32,
+             DataFormat::UInt16,
+             DataFormat::Int32,
+         })
+    {
+        ops.push_back(tt::ops::Op(tt::ops::OpType::Cast, {{"dtype", static_cast<int>(df)}}));
+    }
+
+    return ops;
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    CastOpIndividual,
+    SimpleOpDecomposeOnlyTest,
+    testing::ConvertGenerator(
+        testing::Combine(testing::ValuesIn(get_cast_ops()), testing::ValuesIn(get_unary_individual_test_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
+
+INSTANTIATE_TEST_SUITE_P(
+    CastOpSweeps,
+    SimpleOpDecomposeOnlyTest,
+    testing::ConvertGenerator(
+        testing::Combine(testing::ValuesIn(get_cast_ops()), testing::ValuesIn(generate_input_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpTest::ParamType>& info) { return SimpleOpTest::get_test_name(info); });
+
 }  // namespace tt::test::ops::eltwise_unary
 
 namespace tt::test::ops::comparison
@@ -402,3 +447,134 @@ INSTANTIATE_TEST_SUITE_P(
     [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
     { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
 }  // namespace tt::test::ops::logical_unary
+
+namespace tt::test::ops::bitwise_binary
+{
+
+std::vector<tt::ops::Op> get_bitwise_binary_ops()
+{
+    return {
+        tt::ops::OpType::BitwiseAnd,
+    };
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    BitwiseBinaryOpsIndividual,
+    SimpleOpDecomposeOnlyTest,
+    testing::ConvertGenerator(
+        testing::Combine(
+            testing::ValuesIn(get_bitwise_binary_ops()),
+            testing::ValuesIn(eltwise_binary::get_binary_individual_test_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
+    { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
+
+INSTANTIATE_TEST_SUITE_P(
+    BitwiseBinaryOpsSweep,
+    SimpleOpDecomposeOnlyTest,
+    testing::ConvertGenerator(
+        testing::Combine(
+            testing::ValuesIn(get_bitwise_binary_ops()), testing::ValuesIn(eltwise_binary::generate_input_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
+    { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
+
+}  // namespace tt::test::ops::bitwise_binary
+
+namespace tt::test::ops::eltwise_nary
+{
+
+std::vector<tt::ops::Op> get_nary_eltwise_ops()
+{
+    return {
+        tt::ops::OpType::Where,
+    };
+}
+
+std::vector<VecShapes> get_nary_individual_test_shapes()
+{
+    return {
+        // All the same shape.
+        VecShapes{{1, 1, 1, 32}, {1, 1, 1, 32}, {1, 1, 1, 32}},
+        VecShapes{{1, 1, 32, 1}, {1, 1, 32, 1}, {1, 1, 32, 1}},
+        VecShapes{{1, 32, 1, 1}, {1, 32, 1, 1}, {1, 32, 1, 1}},
+        VecShapes{{32, 1, 1, 1}, {32, 1, 1, 1}, {32, 1, 1, 1}},
+        VecShapes{{1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}},
+        VecShapes{{2, 3, 4}, {2, 3, 4}, {2, 3, 4}},
+        VecShapes{{3, 4}, {3, 4}, {3, 4}},
+        VecShapes{{4}, {4}, {4}},
+        VecShapes{{1}, {1}, {1}},
+        // Broadcasting cases.
+        VecShapes{{1}, {1, 2, 3, 4}, {1, 2, 3, 4}},
+        VecShapes{{1, 1, 1, 1}, {1, 2, 3, 4}, {1, 2, 3, 4}},
+        VecShapes{{1, 1, 3, 1}, {1, 2, 3, 4}, {1, 2, 3, 4}},
+        // X or Y broadcasts.
+        VecShapes{{1, 2, 3, 4}, {1}, {1, 2, 3, 4}},
+        VecShapes{{1, 2, 3, 4}, {1, 2, 3, 4}, {1}},
+    };
+}
+
+bool valid_nary_inputs(const graphlib::Shape& x, const graphlib::Shape& y, const graphlib::Shape& z)
+{
+    return graphlib::can_be_broadcasted(x, y) && graphlib::can_be_broadcasted(x, z) &&
+           graphlib::can_be_broadcasted(y, z);
+}
+
+std::vector<std::vector<graphlib::Shape>> generate_nary_input_shapes()
+{
+    std::vector<std::vector<graphlib::Shape>> input_shapes;
+    std::vector<graphlib::Shape> shapes;
+
+    auto shapes_range = shape_range({1}, {8});
+    shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
+    shapes_range = shape_range({1, 1}, {8, 8});
+    shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
+    shapes_range = shape_range({1, 1, 1}, {4, 1, 1});
+    shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
+    shapes_range = shape_range({1, 1, 1, 1}, {4, 1, 1, 1});
+    shapes.insert(shapes.end(), shapes_range.begin(), shapes_range.end());
+
+    for (size_t i = 0; i < shapes.size(); ++i)
+    {
+        input_shapes.push_back({shapes[i], shapes[i], shapes[i]});
+
+        for (size_t j = i + 1; j < shapes.size(); ++j)
+        {
+            for (size_t k = j; k < shapes.size(); ++k)
+            {
+                if (valid_nary_inputs(shapes[i], shapes[j], shapes[k]))
+                {
+                    input_shapes.push_back({shapes[i], shapes[j], shapes[k]});
+                    if (i != j || j != k)
+                    {
+                        input_shapes.push_back({shapes[j], shapes[i], shapes[k]});
+                        input_shapes.push_back({shapes[k], shapes[j], shapes[i]});
+                    }
+                }
+            }
+        }
+    }
+
+    return input_shapes;
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    NaryEltwiseOpsIndividual,
+    SimpleOpDecomposeOnlyTest,
+    testing::ConvertGenerator(
+        testing::Combine(
+            testing::ValuesIn(get_nary_eltwise_ops()), testing::ValuesIn(get_nary_individual_test_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
+    { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
+
+INSTANTIATE_TEST_SUITE_P(
+    NaryEltwiseOpsSweep,
+    SimpleOpDecomposeOnlyTest,
+    testing::ConvertGenerator(
+        testing::Combine(testing::ValuesIn(get_nary_eltwise_ops()), testing::ValuesIn(generate_nary_input_shapes())),
+        [](const std::tuple<tt::ops::Op, std::vector<graphlib::Shape>>& params) { return params; }),
+    [](const testing::TestParamInfo<SimpleOpDecomposeOnlyTest::ParamType>& info)
+    { return SimpleOpDecomposeOnlyTest::get_test_name(info); });
+
+}  // namespace tt::test::ops::eltwise_nary

@@ -1,11 +1,11 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from forge.op.matmul import SparseMatmul
 import math
 import torch
 from typing import Union
 
+from forge._C.ops import OpType
 from ..tensor import Tensor, TensorShape
 from ..parameter import Parameter
 from ..module import ForgeModule
@@ -46,7 +46,7 @@ def Softmax(name: str, operandA: Tensor, *, dim: int, stable: bool = True) -> Te
     Tensor
         Forge tensor
     """
-    return op("softmax", name, operandA, dim=dim, stable=stable).get_tensor()
+    return op(OpType.Softmax, name, operandA, dim=dim, stable=stable).get_tensor()
 
 
 def LogSoftmax(name: str, operandA: Tensor, *, dim: int, stable: bool = True) -> Tensor:
@@ -73,7 +73,7 @@ def LogSoftmax(name: str, operandA: Tensor, *, dim: int, stable: bool = True) ->
     Tensor
         Forge tensor
     """
-    return op("log_softmax", name, operandA, attrs=(dim, stable), dimension=dim, stable=stable).get_tensor()
+    return op(OpType.LogSoftmax, name, operandA, dim=dim, stable=stable).get_tensor()
 
 
 def Layernorm(
@@ -101,7 +101,7 @@ def Layernorm(
         Forge tensor
     """
 
-    return op("layernorm", name, operandA, weights, bias, attrs=(dim, epsilon), dim=dim, epsilon=epsilon).get_tensor()
+    return op(OpType.Layernorm, name, operandA, weights, bias, dim=dim, epsilon=epsilon).get_tensor()
 
 
 def Batchnorm(
@@ -137,7 +137,7 @@ def Batchnorm(
 
     if batchnorm_flag:
         return op(
-            "batchnorm", name, operandA, weights, bias, running_mean, running_var, attrs=(epsilon,), epsilon=epsilon
+            OpType.Batchnorm, name, operandA, weights, bias, running_mean, running_var, epsilon=epsilon
         ).get_tensor()
     else:
         running_mean = Unsqueeze(name + "_mean_unsqueeze_1", running_mean, 1)
@@ -184,7 +184,7 @@ def Dropout(name: str, operandA: Tensor, p: float = 0.5, training: bool = True, 
         Forge tensor
     """
 
-    return op("dropout", name, operandA, p=p, training=training, seed=seed).get_tensor()
+    return op(OpType.Dropout, name, operandA, p=p, training=training, seed=seed).get_tensor()
 
 
 class Linear(ForgeModule):
@@ -452,23 +452,3 @@ class AvgPool2dModule(ForgeModule):
 
     def forward(self, activations):
         return AvgPool2d(self.name, activations, **self.kwargs)
-
-
-class SparseMatmulModule(ForgeModule):
-    """
-    SparseMatmulModule
-    """
-
-    def __init__(
-        self,
-        name: str,
-        sparseA: Tensor,
-    ):
-        super().__init__(name)
-
-        self.sparseA = Parameter(*sparseA.value().shape, requires_grad=False, name="sparseA")
-        self.set_parameter("sparseA", sparseA.value())
-
-    def forward(self, denseB):
-        m1 = SparseMatmul(self.name, self.sparseA, denseB)
-        return m1

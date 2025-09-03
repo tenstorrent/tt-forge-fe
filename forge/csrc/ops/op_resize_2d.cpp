@@ -23,93 +23,53 @@ namespace resize_2d
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Resize2d, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "Resize2d expects 1 input tensor");
 
-    at::Tensor activations = tensors[0];
-
     auto sizes = op.attr_as<std::vector<int>>("sizes");
     TT_ASSERT(sizes.size() == 2, "Resize2d sizes must have 2 elements");
-    int method = op.attr_as<int>("method");
+    std::string mode = op.attr_as<std::string>("mode");
     bool channel_last = op.attr_as<bool>("channel_last");
+    bool align_corners = op.attr_as<bool>("align_corners");
 
-    std::string resize_method = op_common::get_resize_method(method);
-
-    auto shape = activations.sizes();
-
-    // Determine whether to use upsample or interpolate (matching Python logic)
-    bool upsample = channel_last ? sizes[0] >= shape[shape.size() - 3] : sizes[0] >= shape[shape.size() - 2];
-    int scale_factor = channel_last ? sizes[0] / shape[shape.size() - 3] : sizes[0] / shape[shape.size() - 2];
+    at::Tensor activation = tensors[0];
 
     if (channel_last)
-    {
-        activations = activations.permute({0, 3, 1, 2});
-    }
+        activation = activation.permute({0, 3, 1, 2});
+
+    torch::nn::functional::InterpolateFuncOptions options = torch::nn::functional::InterpolateFuncOptions();
+    options = options.size(std::vector<int64_t>{sizes[0], sizes[1]});
+
+    // align_corners option can be only set to bilinear interpolation mode
+    if (align_corners && mode != "nearest")
+        options = options.align_corners(align_corners);
+
+    if (mode == "nearest")
+        options = options.mode(torch::kNearest);
+    else if (mode == "bilinear")
+        options = options.mode(torch::kBilinear);
+    else
+        TT_THROW("OpType::Resize2d does not support {} interpolation mode", mode);
 
     at::Tensor result;
-
-    if (upsample)
-    {
-        torch::nn::functional::InterpolateFuncOptions options = torch::nn::functional::InterpolateFuncOptions();
-        options = options.scale_factor(
-            std::vector<double>{static_cast<double>(scale_factor), static_cast<double>(scale_factor)});
-
-        if (resize_method == "nearest")
-        {
-            options = options.mode(torch::kNearest);
-        }
-        else if (resize_method == "bilinear")
-        {
-            options = options.mode(torch::kBilinear);
-        }
-        else if (resize_method == "cubic")
-        {
-            options = options.mode(torch::kBicubic);
-        }
-
-        result = torch::nn::functional::interpolate(activations, options);
-    }
-    else
-    {
-        std::string interp_method = (resize_method == "cubic") ? "bicubic" : resize_method;
-
-        torch::nn::functional::InterpolateFuncOptions options = torch::nn::functional::InterpolateFuncOptions();
-        options = options.size(std::vector<int64_t>{sizes[0], sizes[1]});
-
-        if (interp_method == "nearest")
-        {
-            options = options.mode(torch::kNearest);
-        }
-        else if (interp_method == "bilinear")
-        {
-            options = options.mode(torch::kBilinear);
-        }
-        else if (interp_method == "bicubic")
-        {
-            options = options.mode(torch::kBicubic);
-        }
-
-        result = torch::nn::functional::interpolate(activations, options);
-    }
+    result = torch::nn::functional::interpolate(activation, options);
 
     if (channel_last)
-    {
         result = result.permute({0, 2, 3, 1});
-    }
 
     return result;
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Resize2d, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "Resize2d expects 1 input shape");
 
     const auto &input_shape = in_shapes[0];
-    TT_ASSERT(input_shape.size() >= 4, "Resize2d input must have at least 4 dimensions");
+    TT_ASSERT(input_shape.size() == 4, "Resize2d input must have 4 dimensions");
 
     auto sizes = op.attr_as<std::vector<int>>("sizes");
     TT_ASSERT(sizes.size() == 2, "Resize2d sizes must have 2 elements");
@@ -117,26 +77,41 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     int size_w = sizes[1];
     bool channel_last = op.attr_as<bool>("channel_last");
 
-    std::vector<uint32_t> output_shape = input_shape;
+    const size_t rank = input_shape.size();
+    size_t h_idx = channel_last ? rank - 3 : rank - 2;
+    size_t w_idx = channel_last ? rank - 2 : rank - 1;
 
-    if (channel_last)
+    int input_h = static_cast<int>(input_shape[h_idx]);
+    int input_w = static_cast<int>(input_shape[w_idx]);
+
+    // Determine whether each spatial dimension will be upsampling (increasing size)
+    bool is_upsampling_height = (size_h >= input_h);
+    bool is_upsampling_width = (size_w >= input_w);
+
+    // Mixed up/downsample not allowed
+    if (is_upsampling_height != is_upsampling_width)
     {
-        // Input: [N, ..., H, W, C], output: [N, ..., new_H, new_W, C]
-        output_shape[output_shape.size() - 3] = static_cast<uint32_t>(size_h);
-        output_shape[output_shape.size() - 2] = static_cast<uint32_t>(size_w);
+        TT_THROW(
+            "OpType::Resize2d does not support one spatial dimension as upsample and another spatial dimension as "
+            "downsample");
     }
+
+    if (is_upsampling_height && is_upsampling_width)
+        TT_ASSERT(
+            (size_h % input_h == 0) && (size_w % input_w == 0), "Only support upsample with integer scale factor");
     else
-    {
-        // Input: [N, C, ..., H, W], output: [N, C, ..., new_H, new_W]
-        output_shape[output_shape.size() - 2] = static_cast<uint32_t>(size_h);
-        output_shape[output_shape.size() - 1] = static_cast<uint32_t>(size_w);
-    }
+        TT_ASSERT(
+            (input_h % size_h == 0) && (input_w % size_w == 0), "Only support downsample with integer scale factor");
+
+    std::vector<uint32_t> output_shape = input_shape;
+    output_shape[h_idx] = static_cast<uint32_t>(size_h);
+    output_shape[w_idx] = static_cast<uint32_t>(size_w);
 
     return std::make_tuple(Shape::create(output_shape), std::vector<DimBroadcast>{});
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -149,43 +124,68 @@ NodeContext backward(
     unreachable();
 }
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Resize2d, "Wrong op type.");
     TT_ASSERT(inputs.size() == 1, "Resize2d expects 1 input");
 
     auto sizes = op.attr_as<std::vector<int>>("sizes");
     TT_ASSERT(sizes.size() == 2, "Resize2d sizes must have 2 elements");
-    int method = op.attr_as<int>("method");
+    int size_h = sizes[0];
+    int size_w = sizes[1];
+    std::string mode = op.attr_as<std::string>("mode");
     bool channel_last = op.attr_as<bool>("channel_last");
-
-    std::string resize_method = op_common::get_resize_method(method);
+    bool align_corners = op.attr_as<bool>("align_corners");
 
     NodeContext result = inputs[0];
     Shape input_shape = result.shape;
 
-    // Determine whether to use upsample or downsample
-    bool upsample = channel_last ? sizes[0] >= static_cast<int>(input_shape[input_shape.size() - 3])
-                                 : sizes[0] >= static_cast<int>(input_shape[input_shape.size() - 2]);
+    const size_t rank = input_shape.size();
+    size_t h_idx = channel_last ? rank - 3 : rank - 2;
+    size_t w_idx = channel_last ? rank - 2 : rank - 1;
+
+    int input_h = static_cast<int>(input_shape[h_idx]);
+    int input_w = static_cast<int>(input_shape[w_idx]);
+
+    // If the resize2d up/down sampling sizes matches with input height and width, there is no need for up/down sampling
+    // operation
+    if ((size_h == input_h) && (size_w == input_w))
+    {
+        result = dc.op(Op(OpType::Nop), {result});
+        dc.fuse(result);
+        return;
+    }
+
+    // Determine whether each spatial dimension will be upsampling (increasing size)
+    bool is_upsampling_height = (size_h >= input_h);
+    bool is_upsampling_width = (size_w >= input_w);
+
+    // Mixed up/downsample not allowed
+    if (is_upsampling_height != is_upsampling_width)
+    {
+        TT_THROW(
+            "OpType::Resize2d does not support one spatial dimension as upsample and another spatial dimension as "
+            "downsample");
+    }
 
     if (!channel_last)
     {
         // Changing the Layout from NCHW to NHWC as ttir.upsample2d supports only the NHWC layout
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
+        result = dc.op(Op(OpType::Transpose, {{"dim0", -3}, {"dim1", -2}}), {result});
+        result = dc.op(Op(OpType::Transpose, {{"dim0", -2}, {"dim1", -1}}), {result});
     }
 
-    if (upsample)
+    if (is_upsampling_height && is_upsampling_width)
     {
-        int scale_factor = channel_last ? sizes[0] / static_cast<int>(input_shape[input_shape.size() - 3])
-                                        : sizes[0] / static_cast<int>(input_shape[input_shape.size() - 2]);
+        TT_ASSERT(
+            (mode == "nearest") || (mode == "bilinear" && !align_corners),
+            "align_corners argument not supported in upsample2d op with {} interpolation mode",
+            mode);
+        std::vector<int> scale_factor;
+        scale_factor.push_back(size_h / input_h);
+        scale_factor.push_back(size_w / input_w);
         result = dc.op(
-            graphlib::OpType(
-                "upsample2d",
-                {scale_factor, resize_method, true},
-                {{"scale_factor", scale_factor}, {"mode", resize_method}, {"channel_last", true}}),
-            {result});
+            Op(OpType::Upsample2d, {{"scale_factor", scale_factor}, {"mode", mode}, {"channel_last", true}}), {result});
     }
     else
     {
@@ -195,9 +195,8 @@ void decompose_initial(
         // int scale_factor = channel_last ? static_cast<int>(input_shape[input_shape.size() - 3]) / sizes[0]
         //                                 : static_cast<int>(input_shape[input_shape.size() - 2]) / sizes[0];
         // result = dc.op(
-        //     graphlib::OpType(
+        //     Op(
         //         "downsample2d",
-        //         {scale_factor, resize_method, true},
         //         {{"scale_factor", scale_factor}, {"mode", resize_method}, {"channel_last", true}}),
         //     {result});
     }
@@ -205,8 +204,8 @@ void decompose_initial(
     if (!channel_last)
     {
         // Changing the Layout back to NCHW from NHWC after operation
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
+        result = dc.op(Op(OpType::Transpose, {{"dim0", -2}, {"dim1", -1}}), {result});
+        result = dc.op(Op(OpType::Transpose, {{"dim0", -3}, {"dim1", -2}}), {result});
     }
 
     dc.fuse(result);

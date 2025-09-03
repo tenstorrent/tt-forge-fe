@@ -190,7 +190,7 @@ std::vector<int> create_permute_xy_order(const int rank)
 
 std::unique_ptr<Node> PyOpNode::clone(std::string const &name) const
 {
-    std::unique_ptr<PyOpNode> node = create_node<PyOpNode>(this->name(), this->op_type());
+    std::unique_ptr<PyOpNode> node = create_node<PyOpNode>(this->name(), this->op());
     node->Node::clone(this, name);
     node->set_gradient_op(this->is_gradient_op());
     node->set_golden_transforms(this->get_golden_transforms());
@@ -303,7 +303,7 @@ std::unique_ptr<Node> ConstantInputNode::clone(std::string const &name) const
     if (consteval_graph_)
         node->consteval_graph_ = consteval_graph_->clone(node.get());
     node->add_tags(this->as<TaggedNode>()->get_tags());
-    node->sparse_forge = sparse_forge;
+
     return node;
 }
 
@@ -321,20 +321,20 @@ bool ConstantInputNode::equivalent(const ConstantInputNode *other) const
 
 bool EdgeAttributes::has_broadcast_dims() const
 {
-    return std::find_if(tms.begin(), tms.end(), [](const OpType &o) { return o.type() == ops::OpType::Broadcast; }) !=
+    return std::find_if(tms.begin(), tms.end(), [](const ops::Op &o) { return o.type() == ops::OpType::Broadcast; }) !=
            tms.end();
 }
 
 void EdgeAttributes::clear_broadcast_dims()
 {
     tms.erase(
-        std::remove_if(tms.begin(), tms.end(), [](const OpType &o) { return o.type() == ops::OpType::Broadcast; }),
+        std::remove_if(tms.begin(), tms.end(), [](const ops::Op &o) { return o.type() == ops::OpType::Broadcast; }),
         tms.end());
 }
 
 void EdgeAttributes::remove_broadcast_dim(int dim)
 {
-    auto filter = [=](const OpType &o) { return o.type() == ops::OpType::Broadcast && o.attr_as<int>("dim") == dim; };
+    auto filter = [=](const ops::Op &o) { return o.type() == ops::OpType::Broadcast && o.attr_as<int>("dim") == dim; };
     tms.erase(std::remove_if(tms.begin(), tms.end(), filter), tms.end());
 }
 
@@ -420,7 +420,7 @@ void InputNode::clear_consteval_graph()
     }
 }
 
-std::ostream &operator<<(std::ostream &out, const OpType &op_type)
+std::ostream &operator<<(std::ostream &out, const ops::Op &op_type)
 {
     out << op_type.as_string();
     return out;
@@ -462,58 +462,6 @@ TagValue TaggedNode::tag_value(const std::string &tag) const { return this->hint
 void TaggedNode::add_tags(const TagHints &other_tags) { this->hints.insert(other_tags.begin(), other_tags.end()); }
 
 const TagHints &TaggedNode::get_tags() const { return this->hints; }
-
-/**
- * Calculations. This is temporary implementation in ops transition period. It will be deleted once all ops are
- * migrated from python to cpp.
- */
-
-at::Tensor OpType::eval(const std::vector<at::Tensor> &tensors) const { return new_op_.eval(*this, tensors); }
-
-std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> OpType::shape(
-    const std::vector<std::vector<std::uint32_t>> &inputs) const
-{
-    return new_op_.shape(*this, inputs);
-};
-
-tt::graphlib::NodeContext OpType::backward(
-    struct tt::autograd::autograd_context &context,
-    int operand,
-    const std::vector<tt::graphlib::NodeContext> &inputs,
-    const tt::graphlib::NodeContext &output,
-    const tt::graphlib::NodeContext &gradient) const
-{
-    return new_op_.backward(*this, context, operand, inputs, output, gradient);
-}
-
-template <DecomposeEpoch epoch>
-void OpType::decompose(DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const
-{
-    return new_op_.decompose<epoch>(*this, dc, inputs);
-}
-
-long OpType::initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const
-{
-    return new_op_.initial_flops_estimate(*this, inputs);
-}
-
-bool OpType::is_tm() const { return new_op_.is_tm(*this); }
-bool OpType::is_eltwise() const { return new_op_.is_eltwise(*this); }
-bool OpType::is_eltwise_unary() const { return new_op_.is_eltwise_unary(*this); }
-bool OpType::is_eltwise_binary() const { return new_op_.is_eltwise_binary(*this); }
-bool OpType::is_eltwise_nary() const { return new_op_.is_eltwise_nary(*this); }
-
-/**
- * Explicit instantiations to enable pybind symbol resolution.
- */
-template void OpType::decompose<DecomposeEpoch::Initial>(
-    DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
-
-template void OpType::decompose<DecomposeEpoch::PostOptimize>(
-    DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
-
-template void OpType::decompose<DecomposeEpoch::PostAutograd>(
-    DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
 
 }  // namespace graphlib
 }  // namespace tt

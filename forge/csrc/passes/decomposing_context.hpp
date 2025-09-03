@@ -53,7 +53,7 @@ class DecomposingContext
 
     // Available to op/eval/*
     NodeContext op(
-        graphlib::OpType const& op_type,
+        ops::Op const& op_type,
         std::vector<NodeContext> const& operands,
         bool copy_tms = true,
         bool dont_decompose = false,
@@ -63,9 +63,25 @@ class DecomposingContext
 
     NodeContext tensor(const at::Tensor& tensor);
 
+    static NodeContext create_constant_tensor(DecomposingContext& dc, const at::Tensor& tensor);
+
     Graph* get_graph() { return graph; }
 
+    // Get operands of a node
+    std::vector<NodeContext> get_operands(const NodeContext& node) const
+    {
+        std::vector<graphlib::Node*> operands = graph->data_operands(graph->node_by_id(node.id));
+        std::vector<NodeContext> operand_contexts;
+        for (auto it = operands.begin(); it != operands.end(); ++it)
+        {
+            NodeContext op_context(*it);
+            operand_contexts.push_back(op_context);
+        }
+        return operand_contexts;
+    }
+
     inline int get_op_index() { return op_index; }
+    inline void increment_op_index() { op_index++; }
 
     inline graphlib::NodeId get_output_node_id() { return output_node_id; }
 
@@ -74,6 +90,10 @@ class DecomposingContext
     inline std::string get_node_name() { return node_->name(); }
 
     inline std::shared_ptr<void> get_compiler_cfg() { return compiler_cfg; }
+
+    inline unsigned int get_subgraph_idx() { return subgraph_idx; }
+
+    inline graphlib::PyOpNode* get_node() { return node_; }
 };
 
 template <DecomposeEpoch epoch>

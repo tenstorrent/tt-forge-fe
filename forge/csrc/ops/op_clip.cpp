@@ -21,7 +21,7 @@ namespace clip
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Clip, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "Clip should have one input.");
@@ -31,7 +31,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Clip, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "Clip should have one input.");
@@ -41,7 +41,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -64,12 +64,12 @@ NodeContext backward(
     auto max_constant = ac.autograd->create_constant(ac, max_val);
 
     // Create mask: (x >= min) * (x <= max)
-    auto ge_min = ac.autograd->create_op(ac, graphlib::OpType("greater_equal"), {x, min_constant});
-    auto le_max = ac.autograd->create_op(ac, graphlib::OpType("less_equal"), {x, max_constant});
-    auto mask = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {ge_min, le_max});
+    auto ge_min = ac.autograd->create_op(ac, Op(OpType::GreaterEqual), {x, min_constant});
+    auto le_max = ac.autograd->create_op(ac, Op(OpType::LessEqual), {x, max_constant});
+    auto mask = ac.autograd->create_op(ac, Op(OpType::Multiply), {ge_min, le_max});
 
     // Apply mask to gradient
-    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {mask, gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {mask, gradient});
 }
 
 }  // namespace clip
