@@ -139,9 +139,6 @@ def test_conv2d(input_shape, in_channels, out_channels, kernel_size, padding):
             3,
             (1, 1, 1, 1),
             False,
-            marks=pytest.mark.xfail(
-                reason="Runtime Error  : Shard page size must currently have L1 aligned page size."
-            ),
         ),
         pytest.param(
             (1, 3, 32, 32),

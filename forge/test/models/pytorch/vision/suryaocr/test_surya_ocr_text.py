@@ -41,6 +41,7 @@ def test_surya_ocr():
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
     )
+    pytest.xfail(reason="Requires multi-chip support")
 
     # Load model and inputs via loader
     loader = ModelLoader(variant=ModelVariant.OCR_TEXT)

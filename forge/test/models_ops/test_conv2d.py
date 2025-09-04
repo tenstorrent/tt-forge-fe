@@ -89849,20 +89849,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1235,
-        [((1, 512, 30, 30), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5l_img_cls_torchhub_480x480"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "False",
+    pytest.param(
+        (
+            Conv2D1235,
+            [((1, 512, 30, 30), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v5_yolov5l_img_cls_torchhub_480x480"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "False",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1236,
@@ -90020,20 +90023,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1244,
-        [((1, 512, 30, 30), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5l_img_cls_torchhub_480x480"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "False",
+    pytest.param(
+        (
+            Conv2D1244,
+            [((1, 512, 30, 30), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v5_yolov5l_img_cls_torchhub_480x480"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "False",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1245,

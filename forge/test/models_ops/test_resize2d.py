@@ -1611,31 +1611,24 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
-    pytest.param(
-        (
-            Resize2D20,
-            [((1, 768, 128, 128), torch.bfloat16)],
-            {
-                "model_names": [
-                    "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                    "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                    "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                ],
-                "pcc": 0.99,
-                "default_df_override": "Float16_b",
-                "args": {
-                    "sizes": "[128, 128]",
-                    "mode": '"bilinear"',
-                    "align_corners": "False",
-                    "channel_last": "False",
-                },
+    (
+        Resize2D20,
+        [((1, 768, 128, 128), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {
+                "sizes": "[128, 128]",
+                "mode": '"bilinear"',
+                "align_corners": "False",
+                "channel_last": "False",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception"
-            )
-        ],
+        },
     ),
     pytest.param(
         (
@@ -2304,30 +2297,23 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
-    pytest.param(
-        (
-            Resize2D20,
-            [((1, 768, 128, 128), torch.float32)],
-            {
-                "model_names": [
-                    "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                    "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                    "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                ],
-                "pcc": 0.99,
-                "args": {
-                    "sizes": "[128, 128]",
-                    "mode": '"bilinear"',
-                    "align_corners": "False",
-                    "channel_last": "False",
-                },
+    (
+        Resize2D20,
+        [((1, 768, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "sizes": "[128, 128]",
+                "mode": '"bilinear"',
+                "align_corners": "False",
+                "channel_last": "False",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception"
-            )
-        ],
+        },
     ),
     (
         Resize2D36,
