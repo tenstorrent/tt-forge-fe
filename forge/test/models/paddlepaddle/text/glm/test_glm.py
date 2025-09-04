@@ -28,6 +28,8 @@ def test_glm(variant):
         source=Source.PADDLENLP,
         task=Task.CONDITIONAL_GENERATION,
     )
+    if variant == "THUDM/glm-2b":
+        pytest.xfail(reason="Requires multi-chip support")
 
     # Load Model and Tokenizer
     model = GLMForConditionalGeneration.from_pretrained(variant)

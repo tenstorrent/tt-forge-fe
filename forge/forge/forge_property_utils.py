@@ -540,6 +540,8 @@ class Tags:
     model_name: Optional[str] = None
     bringup_status: str = ""
     execution_stage: str = ""
+    run_mode: str = ""
+    execution_pass: str = ""
     pcc: Optional[float] = None
     atol: Optional[float] = None
     rtol: Optional[float] = None
