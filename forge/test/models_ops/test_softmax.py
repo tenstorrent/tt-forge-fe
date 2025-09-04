@@ -66,16 +66,46 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Softmax0,
-        [((1, 16, 384, 384), torch.float32)],
-        {"model_names": ["onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+        [((1, 64, 128, 128), torch.float32)],
+        {
+            "model_names": ["onnx_albert_xxlarge_v1_mlm_hf", "onnx_albert_xxlarge_v2_mlm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
     ),
     (
         Softmax1,
-        [((1, 16, 384, 384), torch.float32)],
+        [((1, 64, 128, 128), torch.float32)],
         {
             "model_names": [
-                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
-                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
+                "pt_albert_xxlarge_v2_mlm_hf",
+                "pt_albert_xxlarge_v2_token_cls_hf",
+                "pt_albert_xxlarge_v1_mlm_hf",
+                "pt_albert_xxlarge_v1_token_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 12, 7, 7), torch.float32)],
+        {
+            "model_names": [
+                "onnx_gpt_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                "onnx_nanogpt_financialsupport_nanogpt_text_gen_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 12, 7, 7), torch.float32)],
+        {
+            "model_names": [
+                "pt_gpt_gpt2_sequence_classification_seq_cls_hf",
+                "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1"},
@@ -86,13 +116,13 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 1, 16384, 256), torch.float32)],
         {
             "model_names": [
-                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
-                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
                 "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
                 "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "3"},
@@ -103,13 +133,13 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 2, 4096, 256), torch.float32)],
         {
             "model_names": [
-                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
-                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
                 "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
                 "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "3"},
@@ -120,13 +150,13 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 5, 1024, 256), torch.float32)],
         {
             "model_names": [
-                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
-                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
                 "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
                 "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "3"},
@@ -137,13 +167,14 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 8, 256, 256), torch.float32)],
         {
             "model_names": [
-                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
-                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
                 "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_perceiverio_deepmind_language_perceiver_mlm_hf",
                 "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "3"},
@@ -155,67 +186,26 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
     (
-        Softmax0,
-        [((1, 16, 197, 197), torch.float32)],
-        {"model_names": ["onnx_vit_base_google_vit_large_patch16_224_img_cls_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+        Softmax1,
+        [((1, 12, 14, 14), torch.float32)],
+        {"model_names": ["pt_albert_squad2_qa_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
     (
         Softmax1,
-        [((1, 24, 44, 44), torch.float32)],
-        {
-            "model_names": ["pt_cogito_deepcogito_cogito_v1_preview_llama_3b_text_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 32, 39, 39), torch.float32)],
-        {"model_names": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 12, 522, 522), torch.float32)],
-        {
-            "model_names": ["pt_falcon3_tiiuae_falcon3_3b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 8, 128, 128), torch.float32)],
-        {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 8, 107, 107), torch.float32)],
-        {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 16, 107, 107), torch.float32)],
-        {"model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 20, 256, 256), torch.float32)],
-        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 20, 5, 5), torch.float32)],
-        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 32, 128, 128), torch.float32)],
+        [((1, 16, 128, 128), torch.float32)],
         {
             "model_names": [
-                "pt_llama3_huggyllama_llama_7b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
-                "pt_mistral_mistralai_mistral_7b_v0_1_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+                "pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf",
+                "pt_albert_xlarge_v1_mlm_hf",
+                "pt_albert_xlarge_v1_token_cls_hf",
+                "pt_albert_xlarge_v2_mlm_hf",
+                "pt_albert_xlarge_v2_token_cls_hf",
+                "pt_albert_large_v2_mlm_hf",
+                "pt_albert_large_v2_token_cls_hf",
+                "pt_qwen_v3_0_6b_clm_hf",
+                "pt_albert_large_v1_mlm_hf",
+                "pt_albert_large_v1_token_cls_hf",
+                "pt_qwen_v3_1_7b_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1"},
@@ -223,11 +213,25 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Softmax0,
-        [((1, 32, 128, 128), torch.float32)],
+        [((1, 16, 128, 128), torch.float32)],
         {
             "model_names": [
-                "onnx_llama3_meta_llama_llama_3_2_1b_clm_hf",
-                "onnx_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+                "onnx_albert_xlarge_v2_mlm_hf",
+                "onnx_albert_large_v1_mlm_hf",
+                "onnx_albert_large_v2_mlm_hf",
+                "onnx_albert_xlarge_v1_mlm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 16, 256, 256), torch.float32)],
+        {
+            "model_names": [
+                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "3"},
@@ -235,16 +239,12 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Softmax1,
-        [((1, 32, 4, 4), torch.float32)],
+        [((1, 16, 256, 256), torch.float32)],
         {
             "model_names": [
-                "pt_llama3_huggyllama_llama_7b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
+                "pt_bart_large_seq_cls_hf",
+                "pt_gptneo_gpt_neo_1_3b_clm_hf",
+                "pt_opt_facebook_opt_350m_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1"},
@@ -252,11 +252,21 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Softmax1,
-        [((1, 24, 128, 128), torch.float32)],
+        [((1, 12, 32, 32), torch.float32)],
+        {
+            "model_names": ["pt_opt_facebook_opt_125m_seq_cls_hf", "pt_opt_facebook_opt_125m_qa_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 16, 32, 32), torch.float32)],
         {
             "model_names": [
-                "pt_llama3_meta_llama_llama_3_2_3b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
+                "pt_opt_facebook_opt_350m_qa_hf",
+                "pt_bloom_default_clm_hf",
+                "pt_opt_facebook_opt_350m_seq_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1"},
@@ -264,47 +274,43 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Softmax1,
-        [((1, 24, 4, 4), torch.float32)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
+        [((1, 8, 256, 2048), torch.float32)],
+        {"model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax0,
+        [((1, 8, 256, 2048), torch.float32)],
+        {"model_names": ["onnx_perceiverio_deepmind_language_perceiver_mlm_hf"], "pcc": 0.99, "args": {"dim": "3"}},
     ),
     (
         Softmax1,
-        [((1, 32, 10, 10), torch.float32)],
-        {"model_names": ["pt_ministral_ministral_ministral_3b_instruct_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+        [((1, 8, 2048, 256), torch.float32)],
+        {"model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
     (
-        Softmax1,
-        [((1, 32, 8, 8), torch.float32)],
-        {
-            "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 32, 135, 135), torch.float32)],
-        {"model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+        Softmax0,
+        [((1, 8, 2048, 256), torch.float32)],
+        {"model_names": ["onnx_perceiverio_deepmind_language_perceiver_mlm_hf"], "pcc": 0.99, "args": {"dim": "3"}},
     ),
     (
         Softmax1,
         [((1, 32, 256, 256), torch.float32)],
         {
             "model_names": [
-                "pt_phi2_microsoft_phi_2_clm_hf",
+                "pt_phi_1_5_microsoft_phi_1_5_clm_hf",
+                "pt_opt_facebook_opt_1_3b_clm_hf",
+                "pt_phi1_microsoft_phi_1_clm_hf",
+                "pt_phi3_5_mini_instruct_clm_hf",
+                "pt_llama3_llama_3_2_1b_clm_hf",
+                "pt_llama3_llama_3_2_1b_instruct_clm_hf",
+                "pt_llama3_huggyllama_7b_clm_hf",
+                "pt_llama3_llama_3_1_8b_clm_hf",
+                "pt_llama3_llama_3_1_8b_instruct_clm_hf",
+                "pt_llama3_llama_3_8b_clm_hf",
+                "pt_llama3_llama_3_8b_instruct_clm_hf",
                 "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
                 "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
-                "pt_phi1_microsoft_phi_1_clm_hf",
-                "pt_opt_facebook_opt_1_3b_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1"},
@@ -312,467 +318,25 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Softmax1,
-        [((1, 32, 12, 12), torch.float32)],
-        {
-            "model_names": [
-                "pt_phi2_microsoft_phi_2_pytdml_token_cls_hf",
-                "pt_phi2_microsoft_phi_2_token_cls_hf",
-                "pt_phi_1_5_microsoft_phi_1_5_token_cls_hf",
-                "pt_phi1_microsoft_phi_1_token_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 32, 11, 11), torch.float32)],
-        {
-            "model_names": ["pt_phi2_microsoft_phi_2_seq_cls_hf", "pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 32, 5, 5), torch.float32)],
-        {
-            "model_names": [
-                "pt_phi3_microsoft_phi_3_mini_128k_instruct_seq_cls_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf",
-                "pt_phi1_microsoft_phi_1_seq_cls_hf",
-                "pt_phi_1_5_microsoft_phi_1_5_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 32, 13, 13), torch.float32)],
-        {
-            "model_names": [
-                "pt_phi3_microsoft_phi_3_mini_128k_instruct_token_cls_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 40, 5, 5), torch.float32)],
-        {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 40, 12, 12), torch.float32)],
-        {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 12, 35, 35), torch.float32)],
-        {
-            "model_names": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 16, 35, 35), torch.float32)],
-        {
-            "model_names": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 28, 35, 35), torch.float32)],
-        {
-            "model_names": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 16, 29, 29), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf", "pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 16, 39, 39), torch.float32)],
-        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 28, 29, 29), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf", "pt_qwen_v2_qwen_qwen2_5_7b_instruct_1m_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 28, 39, 39), torch.float32)],
-        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 28, 38, 38), torch.float32)],
-        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_math_7b_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 28, 13, 13), torch.float32)],
-        {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 12, 513, 513), torch.float32)],
-        {
-            "model_names": ["pt_t5_google_flan_t5_base_text_gen_hf", "pt_t5_t5_base_text_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 12, 61, 61), torch.float32)],
-        {
-            "model_names": ["pt_t5_google_flan_t5_base_text_gen_hf", "pt_t5_t5_base_text_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 12, 513, 61), torch.float32)],
-        {
-            "model_names": ["pt_t5_google_flan_t5_base_text_gen_hf", "pt_t5_t5_base_text_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 16, 513, 513), torch.float32)],
-        {
-            "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 16, 61, 61), torch.float32)],
-        {
-            "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 16, 513, 61), torch.float32)],
-        {
-            "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 20, 101, 101), torch.float32)],
-        {"model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 20, 1500, 1500), torch.float32)],
-        {"model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 20, 101, 1500), torch.float32)],
-        {"model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 12, 128, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_albert_base_v2_mlm_hf",
-                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
-                "pt_roberta_xlm_roberta_base_mlm_hf",
-                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
-                "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
-                "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
-                "pt_distilbert_distilbert_base_cased_mlm_hf",
-                "pt_albert_base_v1_mlm_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
-                "pt_albert_base_v1_token_cls_hf",
-                "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
-                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
-                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
-                "pt_bert_bert_base_uncased_mlm_hf",
-                "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
-                "pt_albert_base_v2_token_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax0,
-        [((1, 12, 128, 128), torch.float32)],
-        {"model_names": ["onnx_bert_bert_base_uncased_mlm_hf"], "pcc": 0.99, "args": {"dim": "3"}},
-    ),
-    (
-        Softmax1,
-        [((1, 16, 128, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_albert_xlarge_v1_mlm_hf",
-                "pt_albert_large_v2_token_cls_hf",
-                "pt_albert_xlarge_v2_token_cls_hf",
-                "pt_albert_large_v1_token_cls_hf",
-                "pt_albert_large_v2_mlm_hf",
-                "pt_albert_large_v1_mlm_hf",
-                "pt_albert_xlarge_v2_mlm_hf",
-                "pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf",
-                "pt_albert_xlarge_v1_token_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 64, 128, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_albert_xxlarge_v2_mlm_hf",
-                "pt_albert_xxlarge_v1_token_cls_hf",
-                "pt_albert_xxlarge_v1_mlm_hf",
-                "pt_albert_xxlarge_v2_token_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 16, 256, 256), torch.float32)],
-        {
-            "model_names": [
-                "pt_bart_facebook_bart_large_mnli_seq_cls_hf",
-                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
-                "pt_opt_facebook_opt_350m_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 12, 16, 16), torch.float32)],
-        {
-            "model_names": ["pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 12, 197, 197), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
-                "pt_vit_google_vit_base_patch16_224_img_cls_hf",
-                "pt_beit_microsoft_beit_base_patch16_224_img_cls_hf",
-                "pt_vit_vit_b_16_img_cls_torchvision",
-                "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 6, 197, 197), torch.bfloat16)],
-        {
-            "model_names": ["pt_deit_facebook_deit_small_patch16_224_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 1, 19200, 300), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 2, 4800, 300), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 5, 1200, 300), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 8, 300, 300), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 12, 5, 5), torch.float32)],
-        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 12, 257, 257), torch.bfloat16)],
-        {
-            "model_names": ["pt_mgp_alibaba_damo_mgp_str_base_scene_text_recognition_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 27, 257), torch.bfloat16)],
-        {
-            "model_names": ["pt_mgp_alibaba_damo_mgp_str_base_scene_text_recognition_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 12, 150, 150), torch.float32)],
-        {"model_names": ["pt_nanogpt_financialsupport_nanogpt_text_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 1, 512, 3025), torch.bfloat16)],
-        {
-            "model_names": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 8, 512, 512), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 1, 1, 512), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 1, 512, 50176), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 12, 39, 39), torch.float32)],
-        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+        [((1, 14, 35, 35), torch.float32)],
+        {"model_names": ["pt_qwen_coder_0_5b_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
     (
         Softmax1,
         [((1, 1, 16384, 256), torch.bfloat16)],
         {
             "model_names": [
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b5_img_cls_hf",
+                "pt_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b4_img_cls_hf",
+                "pt_segformer_mit_b2_img_cls_hf",
+                "pt_segformer_mit_b0_img_cls_hf",
+                "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b3_img_cls_hf",
+                "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b1_img_cls_hf",
             ],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
@@ -784,17 +348,17 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 2, 4096, 256), torch.bfloat16)],
         {
             "model_names": [
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b5_img_cls_hf",
+                "pt_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b4_img_cls_hf",
+                "pt_segformer_mit_b2_img_cls_hf",
+                "pt_segformer_mit_b0_img_cls_hf",
+                "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b3_img_cls_hf",
+                "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b1_img_cls_hf",
             ],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
@@ -806,17 +370,17 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 5, 1024, 256), torch.bfloat16)],
         {
             "model_names": [
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b5_img_cls_hf",
+                "pt_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b4_img_cls_hf",
+                "pt_segformer_mit_b2_img_cls_hf",
+                "pt_segformer_mit_b0_img_cls_hf",
+                "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b3_img_cls_hf",
+                "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b1_img_cls_hf",
             ],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
@@ -828,61 +392,17 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 8, 256, 256), torch.bfloat16)],
         {
             "model_names": [
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    pytest.param(
-        (
-            Softmax1,
-            [((2, 16, 1, 1), torch.float32)],
-            {
-                "model_names": ["pt_stereo_facebook_musicgen_small_music_generation_hf"],
-                "pcc": 0.99,
-                "args": {"dim": "-1"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
-    ),
-    (
-        Softmax1,
-        [((2, 12, 13, 13), torch.float32)],
-        {
-            "model_names": [
-                "pt_stereo_facebook_musicgen_small_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
-                "pt_stereo_facebook_musicgen_large_music_generation_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((2, 16, 1, 13), torch.float32)],
-        {"model_names": ["pt_stereo_facebook_musicgen_small_music_generation_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((64, 3, 49, 49), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-                "pt_swin_swin_s_img_cls_torchvision",
+                "pt_segformer_mit_b5_img_cls_hf",
+                "pt_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b4_img_cls_hf",
+                "pt_segformer_mit_b2_img_cls_hf",
+                "pt_segformer_mit_b0_img_cls_hf",
+                "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b3_img_cls_hf",
+                "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b1_img_cls_hf",
             ],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
@@ -891,45 +411,28 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Softmax1,
-        [((16, 6, 49, 49), torch.bfloat16)],
+        [((1, 24, 1, 1), torch.float32)],
+        {"model_names": ["pt_stereo_medium_music_generation_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 12, 25, 25), torch.float32)],
         {
             "model_names": [
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-                "pt_swin_swin_s_img_cls_torchvision",
+                "pt_stereo_medium_music_generation_hf",
+                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
+                "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
+                "pt_stereo_small_music_generation_hf",
+                "pt_stereo_large_music_generation_hf",
             ],
             "pcc": 0.99,
-            "default_df_override": "Float16_b",
             "args": {"dim": "-1"},
         },
     ),
     (
         Softmax1,
-        [((4, 12, 49, 49), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-                "pt_swin_swin_s_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 24, 49, 49), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-                "pt_swin_swin_s_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
+        [((1, 24, 1, 25), torch.float32)],
+        {"model_names": ["pt_stereo_medium_music_generation_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
     (
         Softmax1,
@@ -972,6 +475,350 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Softmax2,
+        [((1, 16, 4, 8400), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_yolov8_yolov8x_obj_det_github",
+                "pt_yolov10_yolov10x_obj_det_github",
+                "pt_yolo_world_default_obj_det_github",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+                "pt_yolov9_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "1"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 12, 13, 13), torch.float32)],
+        {
+            "model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Softmax2,
+        [((1, 10), torch.float32)],
+        {"model_names": ["onnx_mnist_base_img_cls_github"], "pcc": 0.99, "args": {"dim": "1"}},
+    ),
+    (
+        Softmax0,
+        [((1, 6, 1, 1), torch.float32)],
+        {"model_names": ["onnx_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+    ),
+    (
+        Softmax0,
+        [((1, 6, 1500, 1500), torch.float32)],
+        {"model_names": ["onnx_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+    ),
+    (
+        Softmax1,
+        [((1, 6, 1500, 1500), torch.float32)],
+        {"model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax0,
+        [((1, 6, 1, 1500), torch.float32)],
+        {"model_names": ["onnx_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+    ),
+    (
+        Softmax0,
+        [((1, 2, 400, 400), torch.float32)],
+        {"model_names": ["onnx_yolov10_default_obj_det_github"], "pcc": 0.99, "args": {"dim": "3"}},
+    ),
+    (
+        Softmax2,
+        [((1, 16, 4, 8400), torch.float32)],
+        {
+            "model_names": [
+                "onnx_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
+                "onnx_yolov9_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 12, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "pt_albert_base_v1_mlm_hf",
+                "pt_albert_base_v1_token_cls_hf",
+                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                "pt_bert_bert_base_uncased_mlm_hf",
+                "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
+                "pt_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
+                "pt_albert_base_v2_mlm_hf",
+                "pt_albert_base_v2_token_cls_hf",
+                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
+                "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
+                "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
+                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+                "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 12, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_bert_bert_base_uncased_mlm_hf",
+                "onnx_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "onnx_albert_base_v2_mlm_hf",
+                "onnx_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                "onnx_albert_base_v1_mlm_hf",
+                "onnx_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 16, 197, 197), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_beit_large_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
+                "pt_vit_large_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 16, 588, 588), torch.float32)],
+        {"model_names": ["pt_deepseek_1_3b_instruct_qa_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 32, 12, 12), torch.float32)],
+        {
+            "model_names": [
+                "pt_phi_1_5_microsoft_phi_1_5_token_cls_hf",
+                "pt_phi1_microsoft_phi_1_token_cls_hf",
+                "pt_ministral_ministral_3b_instruct_clm_hf",
+                "pt_ministral_ministral_8b_instruct_clm_hf",
+                "pt_mistral_7b_clm_hf",
+                "pt_mistral_7b_instruct_v03_clm_hf",
+                "pt_phi2_microsoft_phi_2_pytdml_token_cls_hf",
+                "pt_phi2_microsoft_phi_2_token_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((64, 3, 49, 49), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((16, 6, 49, 49), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((4, 12, 49, 49), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 24, 49, 49), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 12, 257, 257), torch.float32)],
+        {
+            "model_names": ["onnx_mgp_alibaba_damo_mgp_str_base_scene_text_recognition_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Softmax3,
+        [((1, 27, 257), torch.float32)],
+        {
+            "model_names": ["onnx_mgp_alibaba_damo_mgp_str_base_scene_text_recognition_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "2"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 8, 1, 1), torch.float32)],
+        {
+            "model_names": ["onnx_t5_t5_small_text_gen_hf", "onnx_whisper_openai_whisper_base_speech_recognition_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 8, 61, 61), torch.float32)],
+        {"model_names": ["onnx_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+    ),
+    (
+        Softmax1,
+        [((1, 8, 61, 61), torch.float32)],
+        {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax0,
+        [((1, 8, 1, 61), torch.float32)],
+        {"model_names": ["onnx_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+    ),
+    (
+        Softmax0,
+        [((1, 8, 1500, 1500), torch.float32)],
+        {"model_names": ["onnx_whisper_openai_whisper_base_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+    ),
+    (
+        Softmax1,
+        [((1, 8, 1500, 1500), torch.float32)],
+        {"model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax0,
+        [((1, 8, 1, 1500), torch.float32)],
+        {"model_names": ["onnx_whisper_openai_whisper_base_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+    ),
+    (
+        Softmax1,
+        [((1, 16, 5, 5), torch.float32)],
+        {
+            "model_names": [
+                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
+                "pt_gptneo_gpt_neo_1_3b_seq_cls_hf",
+                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 12, 384, 384), torch.float32)],
+        {
+            "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 12, 256, 256), torch.float32)],
+        {
+            "model_names": [
+                "pt_opt_facebook_opt_125m_clm_hf",
+                "pt_gptneo_gpt_neo_125m_clm_hf",
+                "pt_gpt_gpt2_text_gen_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 1, 512, 50176), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 8, 512, 512), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 1, 1, 512), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 12, 29, 29), torch.float32)],
+        {"model_names": ["pt_qwen_v2_1_5b_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
         Softmax1,
         [((64, 4, 64, 64), torch.float32)],
         {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-1"}},
@@ -992,85 +839,243 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
     (
-        Softmax1,
-        [((64, 3, 64, 64), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
         Softmax0,
-        [((64, 3, 64, 64), torch.float32)],
+        [((1, 1, 512, 3025), torch.float32)],
         {
-            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"],
+            "model_names": ["onnx_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
             "pcc": 0.99,
             "args": {"dim": "3"},
         },
     ),
     (
-        Softmax1,
-        [((16, 6, 64, 64), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
         Softmax0,
-        [((16, 6, 64, 64), torch.float32)],
-        {
-            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "3"},
-        },
-    ),
-    (
-        Softmax1,
-        [((4, 12, 64, 64), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax0,
-        [((4, 12, 64, 64), torch.float32)],
-        {
-            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "3"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 24, 64, 64), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax0,
-        [((1, 24, 64, 64), torch.float32)],
-        {
-            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "3"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 16, 197, 197), torch.bfloat16)],
+        [((1, 8, 512, 512), torch.float32)],
         {
             "model_names": [
-                "pt_vit_google_vit_large_patch16_224_img_cls_hf",
-                "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
-                "pt_vit_vit_l_16_img_cls_torchvision",
+                "onnx_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
+                "onnx_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 8, 512, 512), torch.float32)],
+        {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax0,
+        [((1, 1, 1, 512), torch.float32)],
+        {
+            "model_names": [
+                "onnx_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
+                "onnx_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 12, 201, 201), torch.float32)],
+        {"model_names": ["onnx_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+    ),
+    (
+        Softmax1,
+        [((1, 8, 522, 522), torch.float32)],
+        {"model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax0,
+        [((64, 3, 64, 64), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Softmax1,
+        [((64, 3, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+                "pt_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax0,
+        [((16, 6, 64, 64), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Softmax1,
+        [((16, 6, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+                "pt_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax0,
+        [((4, 12, 64, 64), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Softmax1,
+        [((4, 12, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+                "pt_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 24, 64, 64), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_masked_img_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 24, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+                "pt_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 3, 197, 197), torch.bfloat16)],
+        {
+            "model_names": ["pt_deit_tiny_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 1, 19200, 300), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 2, 4800, 300), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 5, 1200, 300), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 8, 300, 300), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 16, 6, 6), torch.float32)],
+        {"model_names": ["pt_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((4, 32, 31, 31), torch.bfloat16)],
+        {
+            "model_names": ["pt_qwen_v3_embedding_4b_sentence_embed_gen_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 16, 513, 513), torch.float32)],
+        {
+            "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 16, 61, 61), torch.float32)],
+        {
+            "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 16, 513, 61), torch.float32)],
+        {
+            "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 12, 197, 197), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_vit_base_img_cls_hf",
+                "pt_deit_base_distilled_img_cls_hf",
+                "pt_vit_vit_b_16_img_cls_torchvision",
+                "pt_deit_base_img_cls_hf",
+                "pt_beit_base_img_cls_hf",
             ],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
@@ -1078,14 +1083,82 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Softmax1,
-        [((1, 12, 50, 50), torch.bfloat16)],
+        Softmax0,
+        [((1, 12, 197, 197), torch.float32)],
         {
-            "model_names": ["pt_vit_vit_b_32_img_cls_torchvision"],
+            "model_names": [
+                "onnx_deit_facebook_deit_base_patch16_224_img_cls_hf",
+                "onnx_beit_microsoft_beit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
+            ],
             "pcc": 0.99,
-            "default_df_override": "Float16_b",
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 6, 197, 197), torch.float32)],
+        {"model_names": ["onnx_deit_facebook_deit_small_patch16_224_img_cls_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+    ),
+    (
+        Softmax1,
+        [((1, 12, 16, 16), torch.float32)],
+        {
+            "model_names": ["pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
+            "pcc": 0.99,
             "args": {"dim": "-1"},
         },
+    ),
+    (
+        Softmax1,
+        [((1, 16, 384, 384), torch.float32)],
+        {
+            "model_names": [
+                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 16, 384, 384), torch.float32)],
+        {"model_names": ["onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+    ),
+    (
+        Softmax1,
+        [((1, 12, 5, 5), torch.float32)],
+        {"model_names": ["pt_gptneo_gpt_neo_125m_seq_cls_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 32, 32, 32), torch.float32)],
+        {
+            "model_names": ["pt_opt_facebook_opt_1_3b_qa_hf", "pt_opt_facebook_opt_1_3b_seq_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((12, 1, 1), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((12, 24, 24), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((12, 1, 24), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 12, 201, 201), torch.bfloat16)],
+        {"model_names": ["pt_vilt_vqa_qa_hf"], "pcc": 0.99, "default_df_override": "Float16_b", "args": {"dim": "-1"}},
     ),
     (
         Softmax1,
@@ -1099,53 +1172,48 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Softmax1,
-        [((1, 16, 101, 101), torch.float32)],
-        {"model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 16, 1500, 1500), torch.float32)],
-        {"model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 16, 101, 1500), torch.float32)],
-        {"model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
         [((16, 256, 256), torch.float32)],
-        {
-            "model_names": ["pt_xglm_facebook_xglm_1_7b_clm_hf", "pt_xglm_facebook_xglm_564m_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
+        {"model_names": ["pt_xglm_xglm_1_7b_clm_hf", "pt_xglm_xglm_564m_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
     (
         Softmax1,
-        [((1, 2, 400, 400), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10n_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax2,
-        [((1, 16, 4, 8400), torch.bfloat16)],
+        [((1, 32, 4, 4), torch.float32)],
         {
             "model_names": [
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-                "pt_yolo_world_default_obj_det_github",
-                "pt_yolov8_yolov8x_obj_det_github",
-                "pt_yolov9_default_obj_det_github",
+                "pt_llama3_llama_3_2_1b_seq_cls_hf",
+                "pt_llama3_llama_3_2_1b_instruct_seq_cls_hf",
+                "pt_llama3_huggyllama_7b_seq_cls_hf",
+                "pt_llama3_llama_3_1_8b_instruct_seq_cls_hf",
+                "pt_llama3_llama_3_1_8b_seq_cls_hf",
+                "pt_llama3_llama_3_8b_instruct_seq_cls_hf",
+                "pt_llama3_llama_3_8b_seq_cls_hf",
             ],
             "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 32, 11, 11), torch.float32)],
+        {
+            "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 12, 10, 10), torch.float32)],
+        {"model_names": ["pt_roberta_xlm_base_mlm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 16, 50, 50), torch.bfloat16)],
+        {
+            "model_names": ["pt_vit_vit_l_32_img_cls_torchvision"],
+            "pcc": 0.99,
             "default_df_override": "Float16_b",
-            "args": {"dim": "1"},
+            "args": {"dim": "-1"},
         },
     ),
     (
@@ -1153,6 +1221,89 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 5, 400, 400), torch.bfloat16)],
         {
             "model_names": ["pt_yolov10_yolov10x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 16, 197, 197), torch.float32)],
+        {
+            "model_names": [
+                "onnx_beit_microsoft_beit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 3, 197, 197), torch.float32)],
+        {"model_names": ["onnx_deit_facebook_deit_tiny_patch16_224_img_cls_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+    ),
+    (
+        Softmax1,
+        [((2, 8, 7, 7), torch.float32)],
+        {"model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax0,
+        [((2, 8, 7, 7), torch.float32)],
+        {"model_names": ["onnx_clip_openai_clip_vit_base_patch32_text_gen_hf_text"], "pcc": 0.99, "args": {"dim": "3"}},
+    ),
+    (
+        Softmax1,
+        [((1, 32, 5, 5), torch.float32)],
+        {
+            "model_names": [
+                "pt_phi1_microsoft_phi_1_seq_cls_hf",
+                "pt_phi_1_5_microsoft_phi_1_5_seq_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_seq_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 12, 513, 513), torch.float32)],
+        {
+            "model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 12, 61, 61), torch.float32)],
+        {
+            "model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 12, 513, 61), torch.float32)],
+        {
+            "model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 12, 204, 204), torch.bfloat16)],
+        {"model_names": ["pt_vilt_mlm_mlm_hf"], "pcc": 0.99, "default_df_override": "Float16_b", "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 12, 50, 50), torch.bfloat16)],
+        {
+            "model_names": ["pt_vit_vit_b_32_img_cls_torchvision"],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
             "args": {"dim": "-1"},
@@ -1189,6 +1340,56 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Softmax0,
+        [((1, 12, 1, 1), torch.float32)],
+        {"model_names": ["onnx_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+    ),
+    (
+        Softmax0,
+        [((1, 12, 1500, 1500), torch.float32)],
+        {"model_names": ["onnx_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+    ),
+    (
+        Softmax1,
+        [((1, 12, 1500, 1500), torch.float32)],
+        {"model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax0,
+        [((1, 12, 1, 1500), torch.float32)],
+        {"model_names": ["onnx_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+    ),
+    (
+        Softmax1,
+        [((1, 12, 9, 9), torch.float32)],
+        {"model_names": ["pt_albert_imdb_seq_cls_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 12, 35, 35), torch.float32)],
+        {"model_names": ["pt_qwen_coder_1_5b_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 16, 1, 1), torch.float32)],
+        {"model_names": ["pt_stereo_small_music_generation_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 16, 1, 25), torch.float32)],
+        {"model_names": ["pt_stereo_small_music_generation_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 8, 513, 513), torch.float32)],
+        {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 8, 513, 61), torch.float32)],
+        {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
         Softmax1,
         [((1, 8, 80, 27), torch.bfloat16)],
         {
@@ -1200,218 +1401,13 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Softmax1,
-        [((1, 71, 6, 6), torch.float32)],
-        {"model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 16, 50, 50), torch.bfloat16)],
+        [((1, 2, 400, 400), torch.bfloat16)],
         {
-            "model_names": ["pt_vit_vit_l_32_img_cls_torchvision"],
+            "model_names": ["pt_yolov10_yolov10n_obj_det_github"],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
             "args": {"dim": "-1"},
         },
-    ),
-    (
-        Softmax1,
-        [((1, 16, 6, 6), torch.float32)],
-        {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 12, 29, 29), torch.float32)],
-        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 3, 197, 197), torch.bfloat16)],
-        {
-            "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 14, 29, 29), torch.float32)],
-        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 1000), torch.float32)],
-        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax0,
-        [((1, 12, 13, 13), torch.float32)],
-        {
-            "model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "3"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 32, 32, 32), torch.float32)],
-        {
-            "model_names": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 16, 32, 32), torch.float32)],
-        {
-            "model_names": [
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_qa_hf",
-                "pt_bloom_bigscience_bloom_1b1_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 14, 39, 39), torch.float32)],
-        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    pytest.param(
-        (
-            Softmax1,
-            [((1, 6, 1, 1), torch.float32)],
-            {
-                "model_names": [
-                    "pt_t5_google_flan_t5_small_text_gen_hf",
-                    "pt_whisper_openai_whisper_tiny_speech_recognition_hf",
-                ],
-                "pcc": 0.99,
-                "args": {"dim": "-1"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
-    ),
-    (
-        Softmax1,
-        [((1, 6, 61, 61), torch.float32)],
-        {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 6, 1, 61), torch.float32)],
-        {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax0,
-        [((1, 6, 197, 197), torch.float32)],
-        {"model_names": ["onnx_deit_facebook_deit_small_patch16_224_img_cls_hf"], "pcc": 0.99, "args": {"dim": "3"}},
-    ),
-    (
-        Softmax1,
-        [((1, 12, 32, 32), torch.float32)],
-        {
-            "model_names": ["pt_opt_facebook_opt_125m_qa_hf", "pt_opt_facebook_opt_125m_seq_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 14, 35, 35), torch.float32)],
-        {"model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    pytest.param(
-        (
-            Softmax1,
-            [((2, 24, 1, 1), torch.float32)],
-            {
-                "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
-                "pcc": 0.99,
-                "args": {"dim": "-1"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
-    ),
-    (
-        Softmax1,
-        [((2, 24, 1, 13), torch.float32)],
-        {"model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 12, 201, 201), torch.bfloat16)],
-        {
-            "model_names": ["pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax0,
-        [((1, 2, 400, 400), torch.float32)],
-        {"model_names": ["onnx_yolov10_default_obj_det_github"], "pcc": 0.99, "args": {"dim": "3"}},
-    ),
-    pytest.param(
-        (
-            Softmax2,
-            [((1, 16, 4, 8400), torch.float32)],
-            {
-                "model_names": ["onnx_yolov10_default_obj_det_github", "onnx_yolov8_default_obj_det_github"],
-                "pcc": 0.99,
-                "args": {"dim": "1"},
-            },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.dtype() == DataType::BFLOAT16 || input.dtype() == DataType::BFLOAT8_B"
-            )
-        ],
-    ),
-    (
-        Softmax1,
-        [((1, 12, 14, 14), torch.float32)],
-        {"model_names": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 16, 588, 588), torch.float32)],
-        {"model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    pytest.param(
-        (
-            Softmax1,
-            [((1, 8, 1, 1), torch.float32)],
-            {
-                "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
-                "pcc": 0.99,
-                "args": {"dim": "-1"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
-    ),
-    (
-        Softmax1,
-        [((1, 8, 1500, 1500), torch.float32)],
-        {"model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 8, 1, 1500), torch.float32)],
-        {"model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 6, 1500, 1500), torch.float32)],
-        {"model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 6, 1, 1500), torch.float32)],
-        {"model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
     (
         Softmax0,
@@ -1423,32 +1419,246 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Softmax0,
-        [((1, 12, 197, 197), torch.float32)],
+        Softmax3,
+        [((8, 100, 100), torch.float32)],
         {
             "model_names": [
-                "onnx_deit_facebook_deit_base_patch16_224_img_cls_hf",
-                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
             ],
+            "pcc": 0.99,
+            "args": {"dim": "2"},
+        },
+    ),
+    (
+        Softmax3,
+        [((8, 280, 280), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "2"},
+        },
+    ),
+    (
+        Softmax3,
+        [((8, 100, 280), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "2"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 1, 512, 50176), torch.float32)],
+        {
+            "model_names": ["onnx_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
             "pcc": 0.99,
             "args": {"dim": "3"},
         },
     ),
     (
         Softmax1,
-        [((1, 12, 9, 9), torch.float32)],
-        {"model_names": ["pt_albert_textattack_albert_base_v2_imdb_seq_cls_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+        [((1, 12, 257, 257), torch.bfloat16)],
+        {
+            "model_names": ["pt_mgp_default_scene_text_recognition_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
     ),
     (
         Softmax1,
-        [((2, 8, 7, 7), torch.float32)],
-        {"model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"], "pcc": 0.99, "args": {"dim": "-1"}},
+        [((1, 27, 257), torch.bfloat16)],
+        {
+            "model_names": ["pt_mgp_default_scene_text_recognition_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 1, 512, 3025), torch.bfloat16)],
+        {
+            "model_names": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 16, 29, 29), torch.float32)],
+        {"model_names": ["pt_qwen1_5_0_5b_chat_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 14, 39, 39), torch.float32)],
+        {"model_names": ["pt_qwen_v2_0_5b_instruct_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 6, 513, 513), torch.float32)],
+        {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 6, 61, 61), torch.float32)],
+        {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 6, 513, 61), torch.float32)],
+        {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 1000), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax0,
+        [((1, 64, 334, 334), torch.float32)],
+        {"model_names": ["onnx_fuyu_adept_fuyu_8b_clm_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+    ),
+    (
+        Softmax1,
+        [((1, 64, 334, 334), torch.float32)],
+        {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax0,
+        [((1, 1, 19200, 300), torch.float32)],
+        {
+            "model_names": ["onnx_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 2, 4800, 300), torch.float32)],
+        {
+            "model_names": ["onnx_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 5, 1200, 300), torch.float32)],
+        {
+            "model_names": ["onnx_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 8, 300, 300), torch.float32)],
+        {
+            "model_names": ["onnx_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 16, 577, 577), torch.float32)],
+        {"model_names": ["pt_llava_1_5_7b_cond_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 32, 596, 596), torch.float32)],
+        {"model_names": ["pt_llava_1_5_7b_cond_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 32, 1, 1), torch.float32)],
+        {"model_names": ["pt_stereo_large_music_generation_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 32, 1, 25), torch.float32)],
+        {"model_names": ["pt_stereo_large_music_generation_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 6, 197, 197), torch.bfloat16)],
+        {
+            "model_names": ["pt_deit_small_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((2, 10, 4096, 4096), torch.bfloat16)],
+        {
+            "model_names": ["pt_stable_diffusion_stable_diffusion_xl_base_1_0_cond_gen_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((2, 10, 4096, 77), torch.bfloat16)],
+        {
+            "model_names": ["pt_stable_diffusion_stable_diffusion_xl_base_1_0_cond_gen_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((2, 20, 1024, 1024), torch.bfloat16)],
+        {
+            "model_names": ["pt_stable_diffusion_stable_diffusion_xl_base_1_0_cond_gen_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((2, 20, 1024, 77), torch.bfloat16)],
+        {
+            "model_names": ["pt_stable_diffusion_stable_diffusion_xl_base_1_0_cond_gen_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
     ),
     (
         Softmax1,
         [((1, 20, 2, 2), torch.float32)],
         {
-            "model_names": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"],
+            "model_names": [
+                "pt_whisper_openai_whisper_large_v3_clm_hf",
+                "pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 20, 1500, 1500), torch.float32)],
+        {
+            "model_names": [
+                "pt_whisper_openai_whisper_large_v3_clm_hf",
+                "pt_whisper_openai_whisper_large_speech_recognition_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1"},
         },
@@ -1457,69 +1667,24 @@ forge_modules_and_shapes_dtypes_list = [
         Softmax1,
         [((1, 20, 2, 1500), torch.float32)],
         {
-            "model_names": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"],
+            "model_names": [
+                "pt_whisper_openai_whisper_large_v3_clm_hf",
+                "pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1"},
         },
     ),
     (
         Softmax3,
-        [((8, 100, 100), torch.float32)],
-        {"model_names": ["onnx_detr_facebook_detr_resnet_50_obj_det_hf"], "pcc": 0.99, "args": {"dim": "2"}},
-    ),
-    (
-        Softmax3,
-        [((8, 280, 280), torch.float32)],
-        {"model_names": ["onnx_detr_facebook_detr_resnet_50_obj_det_hf"], "pcc": 0.99, "args": {"dim": "2"}},
-    ),
-    (
-        Softmax3,
-        [((8, 100, 280), torch.float32)],
-        {"model_names": ["onnx_detr_facebook_detr_resnet_50_obj_det_hf"], "pcc": 0.99, "args": {"dim": "2"}},
+        [((1, 100, 2240), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99, "args": {"dim": "2"}},
     ),
     (
         Softmax1,
-        [((1, 12, 384, 384), torch.float32)],
+        [((8, 100, 100), torch.bfloat16)],
         {
-            "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 8, 522, 522), torch.float32)],
-        {"model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 12, 7, 7), torch.float32)],
-        {
-            "model_names": ["pt_gpt_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Softmax1,
-        [((1, 16, 5, 5), torch.float32)],
-        {"model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 8, 256, 2048), torch.float32)],
-        {"model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 8, 2048, 256), torch.float32)],
-        {"model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 12, 204, 204), torch.bfloat16)],
-        {
-            "model_names": ["pt_vilt_dandelin_vilt_b32_mlm_mlm_hf"],
+            "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
             "args": {"dim": "-1"},
@@ -1527,96 +1692,206 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Softmax1,
-        [((1, 12, 256, 256), torch.float32)],
+        [((8, 850, 850), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((8, 100, 850), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 100, 6800), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 32, 1063, 1063), torch.float32)],
+        {"model_names": ["pt_deepseek_7b_instruct_qa_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 12, 522, 522), torch.float32)],
+        {
+            "model_names": ["pt_falcon3_tiiuae_falcon3_3b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 71, 6, 6), torch.float32)],
+        {"model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 8, 356, 356), torch.float32)],
+        {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 16, 356, 356), torch.float32)],
+        {"model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 20, 256, 256), torch.float32)],
+        {"model_names": ["pt_gptneo_gpt_neo_2_7b_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 20, 5, 5), torch.float32)],
+        {"model_names": ["pt_gptneo_gpt_neo_2_7b_seq_cls_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 24, 256, 256), torch.float32)],
+        {
+            "model_names": ["pt_llama3_llama_3_2_3b_clm_hf", "pt_llama3_llama_3_2_3b_instruct_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 24, 4, 4), torch.float32)],
+        {
+            "model_names": ["pt_llama3_llama_3_2_3b_instruct_seq_cls_hf", "pt_llama3_llama_3_2_3b_seq_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 32, 13, 13), torch.float32)],
         {
             "model_names": [
-                "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
-                "pt_gpt_gpt2_text_gen_hf",
-                "pt_opt_facebook_opt_125m_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_token_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1"},
         },
     ),
-    pytest.param(
-        (
-            Softmax1,
-            [((1, 12, 1, 1), torch.float32)],
-            {
-                "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
-                "pcc": 0.99,
-                "args": {"dim": "-1"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
+    (
+        Softmax1,
+        [((1, 40, 5, 5), torch.float32)],
+        {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
     (
         Softmax1,
-        [((1, 12, 1500, 1500), torch.float32)],
+        [((1, 40, 12, 12), torch.float32)],
+        {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 28, 13, 13), torch.float32)],
+        {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 32, 128, 128), torch.float32)],
+        {"model_names": ["pt_qwen_v3_4b_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((4, 16, 31, 31), torch.bfloat16)],
+        {
+            "model_names": ["pt_qwen_v3_embedding_0_6b_sentence_embed_gen_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax1,
+        [((1, 8, 101, 101), torch.float32)],
+        {"model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 8, 101, 1500), torch.float32)],
+        {"model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 20, 101, 101), torch.float32)],
+        {"model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 20, 101, 1500), torch.float32)],
+        {"model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 16, 101, 101), torch.float32)],
+        {"model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 16, 1500, 1500), torch.float32)],
+        {"model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 16, 101, 1500), torch.float32)],
+        {"model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 12, 101, 101), torch.float32)],
         {"model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
     (
         Softmax1,
-        [((1, 12, 1, 1500), torch.float32)],
+        [((1, 12, 101, 1500), torch.float32)],
         {"model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
     (
-        Softmax0,
-        [((1, 3, 197, 197), torch.float32)],
-        {"model_names": ["onnx_deit_facebook_deit_tiny_patch16_224_img_cls_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+        Softmax1,
+        [((1, 6, 101, 101), torch.float32)],
+        {"model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
     (
         Softmax1,
-        [((1, 8, 513, 513), torch.float32)],
-        {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 8, 61, 61), torch.float32)],
-        {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 8, 513, 61), torch.float32)],
-        {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((1, 64, 334, 334), torch.float32)],
-        {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    pytest.param(
-        (
-            Softmax1,
-            [((2, 32, 1, 1), torch.float32)],
-            {
-                "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
-                "pcc": 0.99,
-                "args": {"dim": "-1"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
-    ),
-    (
-        Softmax1,
-        [((2, 32, 1, 13), torch.float32)],
-        {"model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+        [((1, 6, 101, 1500), torch.float32)],
+        {"model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
 ]
 
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
-def test_module(forge_module_and_shapes_dtypes):
+@pytest.mark.parametrize("training_test", [False, True], ids=["inference", "training"])
+def test_module(forge_module_and_shapes_dtypes, training_test):
 
     record_forge_op_name("Softmax")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
-    pcc = metadata.pop("pcc")
+    pcc = metadata.get("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        if metadata_name == "model_names":
+        if metadata_name in ["pcc"]:
+            continue
+        elif metadata_name == "model_names":
             record_op_model_names(metadata_value)
         elif metadata_name == "args":
             record_forge_op_args(metadata_value)
@@ -1627,7 +1902,7 @@ def test_module(forge_module_and_shapes_dtypes):
 
     max_int = 1000
     inputs = [
-        Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int)
+        Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int, requires_grad=training_test)
         for operand_shape, operand_dtype in operand_shapes_dtypes
     ]
 
@@ -1635,13 +1910,19 @@ def test_module(forge_module_and_shapes_dtypes):
 
     for name, parameter in framework_model._parameters.items():
         parameter_tensor = Tensor.create_torch_tensor(
-            shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int
+            shape=parameter.shape.get_pytorch_shape(),
+            dtype=parameter.pt_data_format,
+            max_int=max_int,
+            requires_grad=training_test,
         )
         framework_model.set_parameter(name, parameter_tensor)
 
     for name, constant in framework_model._constants.items():
         constant_tensor = Tensor.create_torch_tensor(
-            shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int
+            shape=constant.shape.get_pytorch_shape(),
+            dtype=constant.pt_data_format,
+            max_int=max_int,
+            requires_grad=training_test,
         )
         framework_model.set_constant(name, constant_tensor)
 
@@ -1651,6 +1932,12 @@ def test_module(forge_module_and_shapes_dtypes):
     if "default_df_override" in metadata.keys():
         compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])
 
-    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, training=training_test)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        with_backward=training_test,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+    )

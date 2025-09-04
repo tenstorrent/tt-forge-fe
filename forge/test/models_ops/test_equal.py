@@ -21,14 +21,14 @@ from forge.forge_property_utils import (
 import pytest
 
 
-class Notequal0(ForgeModule):
+class Equal0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("notequal0_const_1", shape=(1,), dtype=torch.int64)
+        self.add_constant("equal0_const_1", shape=(1,), dtype=torch.int64)
 
-    def forward(self, notequal_input_0):
-        notequal_output_1 = forge.op.NotEqual("", notequal_input_0, self.get_constant("notequal0_const_1"))
-        return notequal_output_1
+    def forward(self, equal_input_0):
+        equal_output_1 = forge.op.Equal("", equal_input_0, self.get_constant("equal0_const_1"))
+        return equal_output_1
 
 
 def ids_func(param):
@@ -39,20 +39,17 @@ def ids_func(param):
 
 forge_modules_and_shapes_dtypes_list = [
     (
-        Notequal0,
+        Equal0,
         [((1, 7), torch.int64)],
-        {"model_names": ["pt_gpt_gpt2_sequence_classification_seq_cls_hf"], "pcc": 0.99},
+        {"model_names": ["onnx_gpt_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"], "pcc": 0.99},
     ),
+    (Equal0, [((1, 1, 256), torch.int64)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
     (
-        Notequal0,
+        Equal0,
         [((1, 128), torch.int64)],
-        {"model_names": ["pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf"], "pcc": 0.99},
+        {"model_names": ["onnx_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf"], "pcc": 0.99},
     ),
-    (Notequal0, [((1, 11), torch.int64)], {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99}),
-    (Notequal0, [((1, 10), torch.int64)], {"model_names": ["pt_roberta_xlm_base_mlm_hf"], "pcc": 0.99}),
-    (Notequal0, [((1, 9), torch.int64)], {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99}),
-    (Notequal0, [((1, 4), torch.int64)], {"model_names": ["pt_llama3_huggyllama_7b_seq_cls_hf"], "pcc": 0.99}),
-    (Notequal0, [((1, 5), torch.int64)], {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99}),
+    (Equal0, [((1, 596), torch.int64)], {"model_names": ["pt_llava_1_5_7b_cond_gen_hf"], "pcc": 0.99}),
 ]
 
 
@@ -61,7 +58,7 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.parametrize("training_test", [False, True], ids=["inference", "training"])
 def test_module(forge_module_and_shapes_dtypes, training_test):
 
-    record_forge_op_name("NotEqual")
+    record_forge_op_name("Equal")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 

@@ -48,13 +48,78 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Reducemax0,
-        [((1, 12, 8, 8), torch.float32)],
+        [((1, 8, 12, 12), torch.float32)],
         {
             "model_names": [
-                "pd_bert_bert_base_uncased_seq_cls_padlenlp",
-                "pd_chineseclip_text_ofa_sys_chinese_clip_vit_base_patch16_text_enc_padlenlp",
-                "pd_blip_text_salesforce_blip_image_captioning_base_text_enc_padlenlp",
+                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
             ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducemax0,
+        [((1, 12, 6625), torch.float32)],
+        {
+            "model_names": ["pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducemax0,
+        [((1, 12, 14, 14), torch.float32)],
+        {
+            "model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducemax0,
+        [((1, 12, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "pd_bert_bert_base_uncased_qa_padlenlp",
+                "pd_ernie_1_0_mlm_padlenlp",
+                "pd_ernie_1_0_qa_padlenlp",
+                "pd_bert_chinese_roberta_base_mlm_padlenlp",
+                "pd_bert_bert_base_uncased_mlm_padlenlp",
+                "pd_ernie_1_0_seq_cls_padlenlp",
+                "pd_roberta_rbt4_ch_seq_cls_padlenlp",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducemax0,
+        [((1, 12, 197, 197), torch.float32)],
+        {
+            "model_names": [
+                "pd_clip_vision_openai_clip_vit_base_patch16_img_enc_padlenlp",
+                "pd_chineseclip_ofa_sys_chinese_clip_vit_base_patch16_img_text_pairing_padlenlp",
+                "pd_chineseclip_vision_ofa_sys_chinese_clip_vit_base_patch16_img_enc_padlenlp",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducemax0,
+        [((1, 25, 97), torch.float32)],
+        {
+            "model_names": ["pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducemax0,
+        [((1, 12, 97), torch.float32)],
+        {
+            "model_names": ["pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels"],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -64,11 +129,72 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 12, 11, 11), torch.float32)],
         {
             "model_names": [
-                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
                 "pd_albert_chinese_tiny_mlm_padlenlp",
                 "pd_roberta_rbt4_ch_clm_padlenlp",
                 "pd_bert_chinese_roberta_base_qa_padlenlp",
+                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
             ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducemax0,
+        [((1, 12, 15, 15), torch.float32)],
+        {
+            "model_names": ["pd_bert_bert_base_japanese_seq_cls_padlenlp"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducemax0,
+        [((1, 12, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "pd_bert_bert_base_uncased_seq_cls_padlenlp",
+                "pd_blip_text_salesforce_blip_image_captioning_base_text_enc_padlenlp",
+                "pd_chineseclip_text_ofa_sys_chinese_clip_vit_base_patch16_text_enc_padlenlp",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducemax0,
+        [((1, 12, 577, 577), torch.float32)],
+        {
+            "model_names": [
+                "pd_blip_vision_salesforce_blip_image_captioning_base_img_enc_padlenlp",
+                "pd_blip_salesforce_blip_image_captioning_base_img_captioning_padlenlp",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducemax0,
+        [((4, 12, 5, 5), torch.float32)],
+        {
+            "model_names": ["pd_chineseclip_ofa_sys_chinese_clip_vit_base_patch16_img_text_pairing_padlenlp"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducemax0,
+        [((1, 25, 6625), torch.float32)],
+        {
+            "model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducemax0,
+        [((1, 12, 10, 10), torch.float32)],
+        {
+            "model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -105,120 +231,31 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reducemax0,
-        [((1, 12, 9, 9), torch.float32)],
+        [((2, 12, 4, 4), torch.float32)],
         {
-            "model_names": [
-                "pd_roberta_rbt4_ch_seq_cls_padlenlp",
-                "pd_bert_chinese_roberta_base_mlm_padlenlp",
-                "pd_bert_bert_base_uncased_mlm_padlenlp",
-                "pd_bert_bert_base_uncased_qa_padlenlp",
-                "pd_ernie_1_0_seq_cls_padlenlp",
-                "pd_ernie_1_0_qa_padlenlp",
-                "pd_ernie_1_0_mlm_padlenlp",
-            ],
+            "model_names": ["pd_blip_salesforce_blip_image_captioning_base_img_captioning_padlenlp"],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
-    ),
-    (
-        Reducemax0,
-        [((1, 12, 14, 14), torch.float32)],
-        {
-            "model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reducemax0,
-        [((1, 12, 15, 15), torch.float32)],
-        {
-            "model_names": ["pd_bert_bert_base_japanese_seq_cls_padlenlp"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reducemax0,
-        [((1, 12, 10, 10), torch.float32)],
-        {
-            "model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reducemax0,
-        [((1, 8, 12, 12), torch.float32)],
-        {
-            "model_names": [
-                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
-                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    pytest.param(
-        (
-            Reducemax0,
-            [((1, 12, 6625), torch.float32)],
-            {
-                "model_names": ["pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels"],
-                "pcc": 0.99,
-                "args": {"dim": "-1", "keep_dim": "True"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
-    ),
-    (
-        Reducemax0,
-        [((1, 12, 97), torch.float32)],
-        {
-            "model_names": ["pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    pytest.param(
-        (
-            Reducemax0,
-            [((1, 25, 6625), torch.float32)],
-            {
-                "model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"],
-                "pcc": 0.99,
-                "args": {"dim": "-1", "keep_dim": "True"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
-    ),
-    pytest.param(
-        (
-            Reducemax0,
-            [((1, 25, 97), torch.float32)],
-            {
-                "model_names": ["pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels"],
-                "pcc": 0.99,
-                "args": {"dim": "-1", "keep_dim": "True"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
 ]
 
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
-def test_module(forge_module_and_shapes_dtypes):
+@pytest.mark.parametrize("training_test", [False, True], ids=["inference", "training"])
+def test_module(forge_module_and_shapes_dtypes, training_test):
 
     record_forge_op_name("ReduceMax")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
-    pcc = metadata.pop("pcc")
+    pcc = metadata.get("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        if metadata_name == "model_names":
+        if metadata_name in ["pcc"]:
+            continue
+        elif metadata_name == "model_names":
             record_op_model_names(metadata_value)
         elif metadata_name == "args":
             record_forge_op_args(metadata_value)
@@ -229,7 +266,7 @@ def test_module(forge_module_and_shapes_dtypes):
 
     max_int = 1000
     inputs = [
-        Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int)
+        Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int, requires_grad=training_test)
         for operand_shape, operand_dtype in operand_shapes_dtypes
     ]
 
@@ -237,13 +274,19 @@ def test_module(forge_module_and_shapes_dtypes):
 
     for name, parameter in framework_model._parameters.items():
         parameter_tensor = Tensor.create_torch_tensor(
-            shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int
+            shape=parameter.shape.get_pytorch_shape(),
+            dtype=parameter.pt_data_format,
+            max_int=max_int,
+            requires_grad=training_test,
         )
         framework_model.set_parameter(name, parameter_tensor)
 
     for name, constant in framework_model._constants.items():
         constant_tensor = Tensor.create_torch_tensor(
-            shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int
+            shape=constant.shape.get_pytorch_shape(),
+            dtype=constant.pt_data_format,
+            max_int=max_int,
+            requires_grad=training_test,
         )
         framework_model.set_constant(name, constant_tensor)
 
@@ -253,6 +296,12 @@ def test_module(forge_module_and_shapes_dtypes):
     if "default_df_override" in metadata.keys():
         compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])
 
-    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, training=training_test)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        with_backward=training_test,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+    )
