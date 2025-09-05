@@ -39,6 +39,15 @@ class Stack1(ForgeModule):
         return stack_output_1
 
 
+class Stack2(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, stack_input_0):
+        stack_output_1 = forge.op.Stack("", stack_input_0, axis=-4)
+        return stack_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -52,7 +61,6 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
                 "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
             ],
             "pcc": 0.99,
@@ -62,19 +70,52 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Stack1,
         [
-            ((2, 1, 2048), torch.float32),
-            ((2, 1, 2048), torch.float32),
-            ((2, 1, 2048), torch.float32),
-            ((2, 1, 2048), torch.float32),
+            ((1, 1, 2048), torch.float32),
+            ((1, 1, 2048), torch.float32),
+            ((1, 1, 2048), torch.float32),
+            ((1, 1, 2048), torch.float32),
         ],
         {
             "model_names": [
-                "pt_stereo_facebook_musicgen_small_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
-                "pt_stereo_facebook_musicgen_large_music_generation_hf",
+                "pt_stereo_medium_music_generation_hf",
+                "pt_stereo_small_music_generation_hf",
+                "pt_stereo_large_music_generation_hf",
             ],
             "pcc": 0.99,
             "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Stack0,
+        [((1, 5, 16, 16), torch.float32), ((1, 5, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"axis": "-1"},
+        },
+    ),
+    (
+        Stack0,
+        [((1, 25, 34, 64), torch.bfloat16), ((1, 25, 34, 64), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-1"},
+        },
+    ),
+    (
+        Stack2,
+        [((3, 300, 300), torch.bfloat16)],
+        {
+            "model_names": ["pt_ssd300_vgg16_ssd300_vgg16_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-4"},
         },
     ),
 ]
@@ -82,16 +123,19 @@ forge_modules_and_shapes_dtypes_list = [
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
-def test_module(forge_module_and_shapes_dtypes):
+@pytest.mark.parametrize("training_test", [False, True], ids=["inference", "training"])
+def test_module(forge_module_and_shapes_dtypes, training_test):
 
     record_forge_op_name("Stack")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
-    pcc = metadata.pop("pcc")
+    pcc = metadata.get("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        if metadata_name == "model_names":
+        if metadata_name in ["pcc"]:
+            continue
+        elif metadata_name == "model_names":
             record_op_model_names(metadata_value)
         elif metadata_name == "args":
             record_forge_op_args(metadata_value)
@@ -102,7 +146,7 @@ def test_module(forge_module_and_shapes_dtypes):
 
     max_int = 1000
     inputs = [
-        Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int)
+        Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int, requires_grad=training_test)
         for operand_shape, operand_dtype in operand_shapes_dtypes
     ]
 
@@ -110,13 +154,19 @@ def test_module(forge_module_and_shapes_dtypes):
 
     for name, parameter in framework_model._parameters.items():
         parameter_tensor = Tensor.create_torch_tensor(
-            shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int
+            shape=parameter.shape.get_pytorch_shape(),
+            dtype=parameter.pt_data_format,
+            max_int=max_int,
+            requires_grad=training_test,
         )
         framework_model.set_parameter(name, parameter_tensor)
 
     for name, constant in framework_model._constants.items():
         constant_tensor = Tensor.create_torch_tensor(
-            shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int
+            shape=constant.shape.get_pytorch_shape(),
+            dtype=constant.pt_data_format,
+            max_int=max_int,
+            requires_grad=training_test,
         )
         framework_model.set_constant(name, constant_tensor)
 
@@ -126,6 +176,12 @@ def test_module(forge_module_and_shapes_dtypes):
     if "default_df_override" in metadata.keys():
         compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])
 
-    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, training=training_test)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        with_backward=training_test,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+    )
