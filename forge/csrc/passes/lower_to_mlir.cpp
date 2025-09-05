@@ -170,6 +170,10 @@ class AttributeMapper
 
         add_op_mapping("upsample2d", "scale_factor", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
 
+        // Broadcast
+        add_op_mapping(
+            "broadcast", "broadcast_dimensions", AttributeRemap(std::nullopt, TargetType::DenseI64ArrayAttr));
+
         // Add more default mappings here
     }
 };
@@ -811,6 +815,7 @@ class MLIRGenerator
         lowering_handler_map["avg_pool2d"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::AvgPool2dOp>;
         lowering_handler_map["batchnorm"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::BatchNormOp>;
         lowering_handler_map["bitwise_and"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::BitwiseAndOp>;
+        lowering_handler_map["broadcast"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::BroadcastOp>;
         lowering_handler_map["cast"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::TypecastOp>;
         lowering_handler_map["clip"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ClampScalarOp>;
         lowering_handler_map["concatenate"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ConcatOp>;
