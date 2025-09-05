@@ -1,4 +1,3 @@
-
 name: Test
 
 on:
@@ -162,6 +161,7 @@ jobs:
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       build: ${{ needs.set-inputs.outputs.buildtype}}
+
   run-tests:
     if: success() || failure()
     needs:
