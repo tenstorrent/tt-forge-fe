@@ -6,22 +6,25 @@
 import math
 import torch
 
-from typing import List, Dict
+from typing import List
 from loguru import logger
 
-from forge.verify.config import VerifyConfig
-from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
-
-from test.operators.utils import TensorUtils, VerifyUtils
-from test.operators.utils import ValueRanges
-from test.operators.utils import InputSource
-from test.operators.utils import TestVector
-from test.operators.utils import TestPlan
-from test.operators.utils import TestCollection
-from test.operators.utils import TestCollectionCommon
-from test.operators.utils import TestCollectionTorch
-from test.operators.utils.utils import PytorchUtils, TestDevice
-from test.operators.pytorch.ids.loader import TestIdsDataLoader
+from ...utils import (
+    InputSource,
+    PytorchUtils,
+    TensorUtils,
+    TestCollection,
+    TestCollectionCommon,
+    TestCollectionTorch,
+    TestDevice,
+    TestPlan,
+    TestVector,
+    ValueCheckerUtils,
+    ValueRanges,
+    VerifyConfig,
+    VerifyUtils,
+)
+from ..ids import TestIdsDataLoader
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -98,7 +101,6 @@ class TestVerification:
         cls,
         test_device: TestDevice,
         test_vector: TestVector,
-        input_params: List[Dict] = [],
         warm_reset: bool = False,
     ):
         operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
@@ -124,23 +126,22 @@ class TestVerification:
         logger.trace(f"***input_shapes: {input_shapes}")
 
         # Using AllCloseValueChecker in all cases except for integer data formats
-        verify_config: VerifyConfig
         if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
-            verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
+            value_checker = ValueCheckerUtils.automatic()
         else:
-            verify_config = VerifyConfig(value_checker=AllCloseValueChecker())
+            value_checker = ValueCheckerUtils.all_close()
 
-        VerifyUtils.verify(
+        verify_config = VerifyConfig(
             model=pytorch_model,
             test_device=test_device,
             input_shapes=input_shapes,
-            input_params=input_params,
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             warm_reset=warm_reset,
             value_range=value_range,
-            verify_config=verify_config,
+            value_checker=value_checker,
         )
+        VerifyUtils.verify(verify_config)
 
 
 class TestParamsData:
