@@ -64,12 +64,16 @@ on:
         description: 'Filters for tests (comma separated)'
         required: false
         type: string
+      test-expression:
+        description: 'Run tests which match the given substring expression'
+        required: false
+        type: string
 
 permissions:
   packages: write
   checks: write
 
-run-name: "Test (Rebuild: ${{ inputs.rebuild }} - Preset: ${{ inputs.preset }} - Mark: ${{ inputs.test_mark }} - ${{ inputs.sh-runner && format('{0}-shared', inputs.runs-on) || (inputs.runs-on) }} - ${{ inputs.test_group_cnt }} - Ops: ${{ inputs.operators }} - Filters: ${{ inputs.filters }})"
+run-name: "Test (Rebuild: ${{ inputs.rebuild }} - Preset: ${{ inputs.preset }} - Mark: ${{ inputs.test_mark }} - ${{ inputs.sh-runner && format('{0}-shared', inputs.runs-on) || (inputs.runs-on) }} - ${{ inputs.test_group_cnt }} - Ops: ${{ inputs.operators }} - Filters: ${{ inputs.filters }} - Test Expression: ${{ inputs.test-expression }})"
 
 jobs:
 
@@ -89,9 +93,10 @@ jobs:
           echo "- On Crash: ${{ inputs.on-crash }}" >> $GITHUB_STEP_SUMMARY
           echo "- Operators: ${{ inputs.operators }}" >> $GITHUB_STEP_SUMMARY
           echo "- Filters: ${{ inputs.filters }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Test Expression: ${{ inputs.test-expression }}" >> $GITHUB_STEP_SUMMARY
       - name: Save inputs to file
         run: |
-          echo '{ "branch_name": "${{ github.ref_name }}", "rebuild": "${{ inputs.rebuild }}", "preset": "${{ inputs.preset }}", "test_mark": "${{ inputs.test_mark }}", "runs-on": "${{ inputs.runs-on }}", "sh-runner": "$${{ inputs.sh-runner }}", "test_group_cnt": "${{ inputs.test_group_cnt }}", "on-crash": "${{ inputs.on-crash }}", "operators": "${{ inputs.operators }}", "filters": "${{ inputs.filters }}" }' > inputs.json
+          echo '{ "branch_name": "${{ github.ref_name }}", "rebuild": "${{ inputs.rebuild }}", "preset": "${{ inputs.preset }}", "test_mark": "${{ inputs.test_mark }}", "runs-on": "${{ inputs.runs-on }}", "sh-runner": "$${{ inputs.sh-runner }}", "test_group_cnt": "${{ inputs.test_group_cnt }}", "on-crash": "${{ inputs.on-crash }}", "operators": "${{ inputs.operators }}", "filters": "${{ inputs.filters }}", "test-expression": "${{ inputs.test-expression }}" }' > inputs.json
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -113,6 +118,7 @@ jobs:
       runs-on: ${{ steps.set-inputs.outputs.runs-on }}
       operators: ${{ steps.set-inputs.outputs.operators }}
       filters: ${{ steps.set-inputs.outputs.filters }}
+      test-expression: ${{ steps.set-inputs.outputs.test-expression }}
       run_id: ${{ steps.set-inputs.outputs.runid }}
       continue_on_crash: ${{ inputs.on-crash == 'Continue' }}
     steps:
@@ -130,6 +136,7 @@ jobs:
           echo "runs-on=[{\"runs-on\": \"${{ inputs.runs-on }}\"}]" >> $GITHUB_OUTPUT
           echo "operators=${{ inputs.operators }}" >> $GITHUB_OUTPUT
           echo "filters=${{ inputs.filters }}" >> $GITHUB_OUTPUT
+          echo "test-expression=${{ inputs.test-expression }}" >> $GITHUB_OUTPUT
           case "${{ inputs.preset }}" in
             "Full Model Passing")
               echo "test_mark=nightly and not xfail" >> $GITHUB_OUTPUT
@@ -179,4 +186,5 @@ jobs:
       sh-runner: ${{ inputs.sh-runner }}
       operators: ${{ needs.set-inputs.outputs.operators }}
       filters: ${{ needs.set-inputs.outputs.filters }}
+      test-expression: ${{ needs.set-inputs.outputs.test-expression }}
       run_id: ${{ needs.set-inputs.outputs.run_id }}
