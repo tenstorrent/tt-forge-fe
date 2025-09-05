@@ -42,42 +42,42 @@ jobs:
     with:
       mlir_override: ${{ inputs.mlir_override }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-  # build-docs:
-  #   needs: docker-build
-  #   uses: ./.github/workflows/build-docs.yml
-  #   permissions:
-  #     contents: read
-  #     pages: write
-  #     id-token: write
-  #   secrets: inherit
-  #   with:
-  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
-  # test:
-  #   needs:
-  #     - docker-build
-  #     - build
-  #   uses: ./.github/workflows/test-sub.yml
-  #   secrets: inherit
-  #   with:
-  #     test_mark: 'push'
-  #     test_group_cnt: 2
-  #     test_group_ids: '[1,2]'
-  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
-  #     run_id: ${{ github.run_id }}
-  #     runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
+  build-docs:
+    needs: docker-build
+    uses: ./.github/workflows/build-docs.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    secrets: inherit
+    with:
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  test:
+    needs:
+      - docker-build
+      - build
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      test_mark: 'push'
+      test_group_cnt: 2
+      test_group_ids: '[1,2]'
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      run_id: ${{ github.run_id }}
+      runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
 
   perf-benchmark:
     if: inputs.run_perf_benchmark || (vars.RUN_PERF_ON_UPLIFT == 'true'  && github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'uplift'))
     needs:
       - docker-build
       - build
-    uses: tenstorrent/tt-forge/.github/workflows/perf-benchmark.yml@vvukoman/check-perf-regression
+    uses: tenstorrent/tt-forge/.github/workflows/perf-benchmark.yml@main
     secrets: inherit
     with:
       project: tt-forge-fe
       run_id: ${{ github.run_id }}
       run_id_source: tt-forge-fe
-      ref: vvukoman/check-perf-regression
+      ref: main
       on_uplift_pr: true
 
     #   uses: ./.github/workflows/perf-benchmark-sub.yml
@@ -92,7 +92,9 @@ jobs:
       - pre-commit
       - spdx
       - docker-build
+      - build-docs
       - build
+      - test
       - perf-benchmark
     runs-on: Ubuntu-latest
     steps:
