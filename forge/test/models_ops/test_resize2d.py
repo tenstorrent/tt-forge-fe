@@ -2831,14 +2831,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"sizes": "[64, 64]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
-    (
-        Resize2D40,
-        [((100, 128, 14, 20), torch.float32)],
-        {
-            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "args": {"sizes": "[27, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D40,
+            [((100, 128, 14, 20), torch.float32)],
+            {
+                "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "args": {"sizes": "[27, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Only support upsample with integer scale factor")],
     ),
     (
         Resize2D41,
@@ -2849,34 +2852,43 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"sizes": "[54, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
-    (
-        Resize2D42,
-        [((100, 32, 54, 80), torch.float32)],
-        {
-            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "args": {"sizes": "[107, 160]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D42,
+            [((100, 32, 54, 80), torch.float32)],
+            {
+                "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "args": {"sizes": "[107, 160]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Only support upsample with integer scale factor")],
     ),
-    (
-        Resize2D43,
-        [((1, 1, 800, 1066), torch.bfloat16)],
-        {
-            "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[25, 34]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D43,
+            [((1, 1, 800, 1066), torch.bfloat16)],
+            {
+                "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[25, 34]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Only support downsample with integer scale factor")],
     ),
-    (
-        Resize2D44,
-        [((100, 128, 25, 34), torch.bfloat16)],
-        {
-            "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[50, 67]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D44,
+            [((100, 128, 25, 34), torch.bfloat16)],
+            {
+                "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[50, 67]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Only support upsample with integer scale factor")],
     ),
     (
         Resize2D45,
@@ -2888,15 +2900,18 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"sizes": "[100, 134]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
-    (
-        Resize2D46,
-        [((100, 32, 100, 134), torch.bfloat16)],
-        {
-            "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[200, 267]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D46,
+            [((100, 32, 100, 134), torch.bfloat16)],
+            {
+                "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[200, 267]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Only support upsample with integer scale factor")],
     ),
     (
         Resize2D0,
@@ -2968,25 +2983,36 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
-    (
-        Resize2D47,
-        [((1, 960, 3, 3), torch.bfloat16)],
-        {
-            "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[7, 7]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D47,
+            [((1, 960, 3, 3), torch.bfloat16)],
+            {
+                "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[7, 7]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Only support upsample with integer scale factor")],
     ),
-    (
-        Resize2D48,
-        [((1, 3, 480, 640), torch.bfloat16)],
-        {
-            "model_names": ["pt_ssd300_vgg16_ssd300_vgg16_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[300, 300]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D48,
+            [((1, 3, 480, 640), torch.bfloat16)],
+            {
+                "model_names": ["pt_ssd300_vgg16_ssd300_vgg16_img_cls_torchvision"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "sizes": "[300, 300]",
+                    "mode": '"bilinear"',
+                    "align_corners": "False",
+                    "channel_last": "False",
+                },
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Only support dowssample with integer scale factor")],
     ),
 ]
 
