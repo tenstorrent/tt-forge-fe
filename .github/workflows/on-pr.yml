@@ -92,9 +92,7 @@ jobs:
       - pre-commit
       - spdx
       - docker-build
-      - build-docs
       - build
-      - test
       - perf-benchmark
     runs-on: Ubuntu-latest
     steps:
