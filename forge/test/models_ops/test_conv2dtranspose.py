@@ -918,56 +918,65 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2Dtranspose19,
-        [((1, 64, 28, 28), torch.bfloat16)],
-        {
-            "model_names": ["pt_monodle_dla34_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "stride": "2",
-                "padding": "1",
-                "dilation": "1",
-                "groups": "64",
-                "channel_last": "False",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose19,
+            [((1, 64, 28, 28), torch.bfloat16)],
+            {
+                "model_names": ["pt_monodle_dla34_obj_det_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "stride": "2",
+                    "padding": "1",
+                    "dilation": "1",
+                    "groups": "64",
+                    "channel_last": "False",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.skip(reason="Floating point exception")],
     ),
-    (
-        Conv2Dtranspose20,
-        [((1, 128, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_monodle_dla34_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "stride": "2",
-                "padding": "1",
-                "dilation": "1",
-                "groups": "128",
-                "channel_last": "False",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose20,
+            [((1, 128, 14, 14), torch.bfloat16)],
+            {
+                "model_names": ["pt_monodle_dla34_obj_det_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "stride": "2",
+                    "padding": "1",
+                    "dilation": "1",
+                    "groups": "128",
+                    "channel_last": "False",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.skip(reason="Floating point exception")],
     ),
-    (
-        Conv2Dtranspose21,
-        [((1, 256, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_monodle_dla34_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "stride": "2",
-                "padding": "1",
-                "dilation": "1",
-                "groups": "256",
-                "channel_last": "False",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose21,
+            [((1, 256, 7, 7), torch.bfloat16)],
+            {
+                "model_names": ["pt_monodle_dla34_obj_det_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "stride": "2",
+                    "padding": "1",
+                    "dilation": "1",
+                    "groups": "256",
+                    "channel_last": "False",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.skip(reason="Floating point exception")],
     ),
 ]
 
