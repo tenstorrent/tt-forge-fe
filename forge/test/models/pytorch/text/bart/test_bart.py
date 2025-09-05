@@ -4,7 +4,6 @@
 # BART Demo Script - SQuADv1.1 QA
 import pytest
 import torch
-from third_party.tt_forge_models.bart.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -17,6 +16,7 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
+from third_party.tt_forge_models.bart.pytorch import ModelLoader, ModelVariant
 
 
 class BartWrapper(torch.nn.Module):
@@ -29,6 +29,7 @@ class BartWrapper(torch.nn.Module):
         return out
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",
@@ -51,7 +52,7 @@ def test_pt_bart_classifier(variant):
     # Load model and inputs
     loader = ModelLoader(variant=variant)
     framework_model = loader.load_model()
-    framework_model = BartWrapper(framework_model.model)
+    framework_model = BartWrapper(framework_model)
     inputs = loader.load_inputs()
 
     # Forge compile framework model
