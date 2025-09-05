@@ -62,7 +62,7 @@ jobs:
           fi
   perf-benchmark:
     needs: set-inputs
-    uses: tenstorrent/tt-forge/.github/workflows/perf-benchmark.yml@main
+    uses: tenstorrent/tt-forge/.github/workflows/perf-benchmark.yml@vvukoman/check-perf-regression
     secrets: inherit
     with:
       project: tt-forge-fe
