@@ -1010,3 +1010,67 @@ def test_depth_to_space(input_shape, upscale_factor):
 
     # Clean up exported ONNX file
     os.remove(onnx_path)
+
+
+@pytest.mark.parametrize(
+    "input_shape, fill_value, threshold",
+    [
+        ((8,), 0.0, 0.5),
+        ((4, 4), -1.0, 0.3),
+        ((2, 3, 5), 2.5, 0.7),
+        ((1, 3, 32, 32), 0.5, 0.5),
+    ],
+)
+@pytest.mark.push
+def test_masked_fill(input_shape, fill_value, threshold):
+    class MaskedFillModel(nn.Module):
+        def __init__(self, fill_value, threshold):
+            super().__init__()
+            self.fill_value = fill_value
+            self.threshold = threshold
+
+        def forward(self, x):
+            mask = x > self.threshold
+            return x.masked_fill(mask, self.fill_value)
+
+    inputs = [torch.randn(*input_shape)]
+
+    framework_model = MaskedFillModel(fill_value, threshold)
+    framework_model.eval()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "input_shape",
+    [
+        (2, 3, 4),
+        (1, 10),
+        (5, 5, 5),
+        (8,),
+    ],
+)
+@pytest.mark.push
+def test_new_zeros(input_shape):
+    class NewZerosModel(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            z = x.new_zeros(x.shape)
+            cond = x > 0
+            return torch.where(cond, x, z)
+
+    input_tensor = torch.randn(input_shape)
+    inputs = [input_tensor]
+
+    model = NewZerosModel()
+    model.eval()
+
+    compiled_model = forge.compile(
+        model,
+        sample_inputs=inputs,
+    )
+
+    verify(inputs, model, compiled_model)
