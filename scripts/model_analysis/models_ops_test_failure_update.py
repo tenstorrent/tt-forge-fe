@@ -892,7 +892,7 @@ def extract_data_from_report(report_file_path: str):
     )
 
     # Regex pattern to extract module name and shapes/dtypes from the test case function string.
-    regex = r"\[([^\[]+)-\[(.*)\]\]"
+    regex = r"\[([^\[]+)-([^\[]+)-\[(.*)\]\]"
 
     # Dictionary to hold the update configuration info.
     models_ops_test_update_info = {}
@@ -919,8 +919,8 @@ def extract_data_from_report(report_file_path: str):
         # Use regex to extract module name and shapes/dtypes from the test case function string.
         match = re.search(regex, test_case_func)
         if match:
-            module_name = match.group(1)
-            shapes_and_dtypes = match.group(2)
+            module_name = match.group(2)
+            shapes_and_dtypes = match.group(3)
             test_config["module_name"] = module_name
             test_config["shapes_and_dtypes"] = f"[{shapes_and_dtypes}]"
 
