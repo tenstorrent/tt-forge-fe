@@ -4667,14 +4667,23 @@ class DecomposeFloor(DFPatternCallback):
         return floor_result
 
 
-class DecomposeZerosToFull(DFPatternCallback):
+class DecomposeOnesOrZerosToFull(DFPatternCallback):
     def __init__(self):
         super().__init__()
-        self.pattern = is_op("zeros")()
+        self.zeros = is_op("zeros")()
+        self.ones = is_op("ones")()
+        self.pattern = self.zeros | self.ones
 
     def callback(self, pre, post, node_map):
         shape = pre.attrs.shape
         dtype = pre.attrs.dtype
+        op_name = node_map[self.pattern][0].op.name
+        value = None
+        if op_name == "zeros":
+            value = 0
+        elif op_name == "ones":
+            value = 1
+        assert value is not None, "Either zeros or ones should be matched"
         return tvm.relay.full(tvm.relay.const(0, dtype=dtype), shape=shape, dtype=dtype)
 
 
@@ -4850,7 +4859,7 @@ def run_forge_compile_passes(
         relay_module,
         [
             DecomposeDepthToSpace(),
-            DecomposeZerosToFull(),
+            DecomposeOnesOrZerosToFull(),
             DecomposeMeshgrid(),
             DecomposeGridSample(),
             DecomposeFloor(),
