@@ -3122,24 +3122,6 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Layernorm16,
-        [((1, 1, 768), torch.float32)],
-        {
-            "model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "epsilon": "1e-05"},
-        },
-    ),
-    (
-        Layernorm16,
-        [((1, 24, 768), torch.float32)],
-        {
-            "model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "epsilon": "1e-05"},
-        },
-    ),
-    (
         Layernorm55,
         [((1, 4096, 96), torch.float32)],
         {

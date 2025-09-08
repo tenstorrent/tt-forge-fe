@@ -949,16 +949,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Gelu1,
-        [((1, 24, 3072), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"approximate": '"none"'}},
-    ),
-    (
-        Gelu1,
-        [((1, 1, 3072), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"approximate": '"none"'}},
-    ),
-    (
-        Gelu1,
         [((1, 4096, 384), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf"],

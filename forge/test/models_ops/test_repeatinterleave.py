@@ -323,7 +323,7 @@ class Repeatinterleave33(ForgeModule):
         super().__init__(name)
 
     def forward(self, repeatinterleave_input_0):
-        repeatinterleave_output_1 = forge.op.RepeatInterleave("", repeatinterleave_input_0, repeats=24, dim=2)
+        repeatinterleave_output_1 = forge.op.RepeatInterleave("", repeatinterleave_input_0, repeats=160, dim=3)
         return repeatinterleave_output_1
 
 
@@ -332,7 +332,7 @@ class Repeatinterleave34(ForgeModule):
         super().__init__(name)
 
     def forward(self, repeatinterleave_input_0):
-        repeatinterleave_output_1 = forge.op.RepeatInterleave("", repeatinterleave_input_0, repeats=160, dim=3)
+        repeatinterleave_output_1 = forge.op.RepeatInterleave("", repeatinterleave_input_0, repeats=9, dim=2)
         return repeatinterleave_output_1
 
 
@@ -341,7 +341,7 @@ class Repeatinterleave35(ForgeModule):
         super().__init__(name)
 
     def forward(self, repeatinterleave_input_0):
-        repeatinterleave_output_1 = forge.op.RepeatInterleave("", repeatinterleave_input_0, repeats=9, dim=2)
+        repeatinterleave_output_1 = forge.op.RepeatInterleave("", repeatinterleave_input_0, repeats=39, dim=2)
         return repeatinterleave_output_1
 
 
@@ -350,7 +350,7 @@ class Repeatinterleave36(ForgeModule):
         super().__init__(name)
 
     def forward(self, repeatinterleave_input_0):
-        repeatinterleave_output_1 = forge.op.RepeatInterleave("", repeatinterleave_input_0, repeats=39, dim=2)
+        repeatinterleave_output_1 = forge.op.RepeatInterleave("", repeatinterleave_input_0, repeats=2, dim=0)
         return repeatinterleave_output_1
 
 
@@ -359,7 +359,7 @@ class Repeatinterleave37(ForgeModule):
         super().__init__(name)
 
     def forward(self, repeatinterleave_input_0):
-        repeatinterleave_output_1 = forge.op.RepeatInterleave("", repeatinterleave_input_0, repeats=2, dim=0)
+        repeatinterleave_output_1 = forge.op.RepeatInterleave("", repeatinterleave_input_0, repeats=850, dim=2)
         return repeatinterleave_output_1
 
 
@@ -368,7 +368,7 @@ class Repeatinterleave38(ForgeModule):
         super().__init__(name)
 
     def forward(self, repeatinterleave_input_0):
-        repeatinterleave_output_1 = forge.op.RepeatInterleave("", repeatinterleave_input_0, repeats=850, dim=2)
+        repeatinterleave_output_1 = forge.op.RepeatInterleave("", repeatinterleave_input_0, repeats=100, dim=2)
         return repeatinterleave_output_1
 
 
@@ -377,7 +377,7 @@ class Repeatinterleave39(ForgeModule):
         super().__init__(name)
 
     def forward(self, repeatinterleave_input_0):
-        repeatinterleave_output_1 = forge.op.RepeatInterleave("", repeatinterleave_input_0, repeats=100, dim=2)
+        repeatinterleave_output_1 = forge.op.RepeatInterleave("", repeatinterleave_input_0, repeats=8, dim=2)
         return repeatinterleave_output_1
 
 
@@ -386,20 +386,11 @@ class Repeatinterleave40(ForgeModule):
         super().__init__(name)
 
     def forward(self, repeatinterleave_input_0):
-        repeatinterleave_output_1 = forge.op.RepeatInterleave("", repeatinterleave_input_0, repeats=8, dim=2)
-        return repeatinterleave_output_1
-
-
-class Repeatinterleave41(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, repeatinterleave_input_0):
         repeatinterleave_output_1 = forge.op.RepeatInterleave("", repeatinterleave_input_0, repeats=356, dim=2)
         return repeatinterleave_output_1
 
 
-class Repeatinterleave42(ForgeModule):
+class Repeatinterleave41(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1672,26 +1663,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Repeatinterleave0,
-        [((1, 1, 1, 24), torch.int64)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"repeats": "1", "dim": "0"}},
-    ),
-    (
-        Repeatinterleave1,
-        [((1, 1, 1, 24), torch.int64)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"repeats": "1", "dim": "1"}},
-    ),
-    (
-        Repeatinterleave33,
-        [((1, 1, 1, 24), torch.int64)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"repeats": "24", "dim": "2"}},
-    ),
-    (
-        Repeatinterleave4,
-        [((1, 1, 1, 24), torch.int64)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"repeats": "1", "dim": "2"}},
-    ),
-    (
-        Repeatinterleave0,
         [((1, 1, 1280), torch.bfloat16)],
         {
             "model_names": ["pt_vit_vit_h_14_img_cls_torchvision"],
@@ -1790,7 +1761,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Repeatinterleave34,
+        Repeatinterleave33,
         [((1, 3, 160, 1, 2), torch.bfloat16)],
         {
             "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280"],
@@ -1815,7 +1786,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_albert_imdb_seq_cls_hf"], "pcc": 0.99, "args": {"repeats": "1", "dim": "1"}},
     ),
     (
-        Repeatinterleave35,
+        Repeatinterleave34,
         [((1, 1, 1, 9), torch.int64)],
         {"model_names": ["pt_albert_imdb_seq_cls_hf"], "pcc": 0.99, "args": {"repeats": "9", "dim": "2"}},
     ),
@@ -1850,7 +1821,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_qwen_v2_0_5b_instruct_clm_hf"], "pcc": 0.99, "args": {"repeats": "1", "dim": "1"}},
     ),
     (
-        Repeatinterleave36,
+        Repeatinterleave35,
         [((1, 1, 1, 39), torch.int64)],
         {"model_names": ["pt_qwen_v2_0_5b_instruct_clm_hf"], "pcc": 0.99, "args": {"repeats": "39", "dim": "2"}},
     ),
@@ -1934,7 +1905,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Repeatinterleave37,
+            Repeatinterleave36,
             [((1,), torch.bfloat16)],
             {
                 "model_names": ["pt_stable_diffusion_stable_diffusion_xl_base_1_0_cond_gen_hf"],
@@ -1970,7 +1941,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Repeatinterleave38,
+        Repeatinterleave37,
         [((1, 1, 1, 850), torch.bfloat16)],
         {
             "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -1980,7 +1951,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Repeatinterleave39,
+        Repeatinterleave38,
         [((1, 1, 1, 850), torch.bfloat16)],
         {
             "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
@@ -2018,7 +1989,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "args": {"repeats": "1", "dim": "1"}},
     ),
     (
-        Repeatinterleave40,
+        Repeatinterleave39,
         [((1, 1, 1, 356, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "args": {"repeats": "8", "dim": "2"}},
     ),
@@ -2041,7 +2012,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Repeatinterleave41,
+        Repeatinterleave40,
         [((1, 1, 1, 356), torch.int64)],
         {
             "model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf", "pt_gemma_google_gemma_1_1_7b_it_qa_hf"],
@@ -2060,7 +2031,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "args": {"repeats": "1", "dim": "1"}},
     ),
     (
-        Repeatinterleave40,
+        Repeatinterleave39,
         [((1, 1, 1, 512, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "args": {"repeats": "8", "dim": "2"}},
     ),
@@ -2075,7 +2046,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "args": {"repeats": "1", "dim": "1"}},
     ),
     (
-        Repeatinterleave42,
+        Repeatinterleave41,
         [((1, 1, 1, 512), torch.int64)],
         {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "args": {"repeats": "512", "dim": "2"}},
     ),

@@ -48,11 +48,6 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Repeat0,
-        [((1, 1, 256), torch.bool)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"repeats": "[1, 1, 1]"}},
-    ),
-    (
-        Repeat0,
         [((1, 100, 256), torch.float32)],
         {
             "model_names": [

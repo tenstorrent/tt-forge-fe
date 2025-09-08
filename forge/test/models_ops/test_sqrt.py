@@ -155,7 +155,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pd_resnet_101_img_cls_paddlemodels",
                 "onnx_densenet_densenet169_img_cls_torchvision",
                 "pd_mobilenetv1_basic_img_cls_paddlemodels",
-                "pt_speecht5_tts_tts_text_to_speech_hf",
                 "pd_resnet_18_img_cls_paddlemodels",
                 "onnx_densenet_densenet121_img_cls_torchvision",
                 "pd_densenet_121_img_cls_paddlemodels",
@@ -3753,7 +3752,6 @@ forge_modules_and_shapes_dtypes_list = [
         [((2240,), torch.bfloat16)],
         {"model_names": ["pt_regnet_regnet_y_120_img_cls_hf"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
-    (Sqrt0, [((80,), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
     (
         Sqrt0,
         [((1, 1, 1, 64), torch.float32)],

@@ -333,16 +333,6 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Greater0,
-        [((1, 1, 24, 24), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
-    ),
-    (
-        Greater0,
-        [((1, 1, 1, 24), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
-    ),
     (Greater0, [((1, 1, 10, 10), torch.float32)], {"model_names": ["pt_roberta_xlm_base_mlm_hf"], "pcc": 0.99}),
     (
         Greater0,

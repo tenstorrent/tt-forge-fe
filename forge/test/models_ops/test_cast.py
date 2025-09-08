@@ -734,36 +734,6 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_bloom_default_clm_hf"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
     ),
     (
-        Cast3,
-        [((1, 1, 256), torch.bool)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dtype": "torch.int64"}},
-    ),
-    (
-        Cast1,
-        [((1, 1, 256), torch.bool)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
-    ),
-    (
-        Cast0,
-        [((1, 1, 24, 24), torch.int64)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dtype": "torch.float32"}},
-    ),
-    (
-        Cast0,
-        [((1, 1, 24, 24), torch.bool)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dtype": "torch.float32"}},
-    ),
-    (
-        Cast0,
-        [((1, 1, 1, 24), torch.int64)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dtype": "torch.float32"}},
-    ),
-    (
-        Cast0,
-        [((1, 1, 1, 24), torch.bool)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dtype": "torch.float32"}},
-    ),
-    (
         Cast2,
         [((1, 10), torch.bool)],
         {"model_names": ["pt_roberta_xlm_base_mlm_hf"], "pcc": 0.99, "args": {"dtype": "torch.int32"}},

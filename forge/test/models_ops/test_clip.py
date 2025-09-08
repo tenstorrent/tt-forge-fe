@@ -2329,16 +2329,6 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Clip0,
-        [((1, 1, 24, 24), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"min": "0.0", "max": "1.0"}},
-    ),
-    (
-        Clip0,
-        [((1, 1, 1, 24), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"min": "0.0", "max": "1.0"}},
-    ),
-    (
         Clip1,
         [((1, 32, 257, 257), torch.bfloat16)],
         {

@@ -69,30 +69,30 @@ class Where3(ForgeModule):
 class Where4(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("where4_const_2", shape=(1,), dtype=torch.float32)
+        self.add_constant("where4_const_1", shape=(1,), dtype=torch.float32)
+        self.add_constant("where4_const_2", shape=(1, 1, 7, 7), dtype=torch.float32)
 
-    def forward(self, where_input_0, where_input_1):
-        where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where4_const_2"))
+    def forward(self, where_input_0):
+        where_output_1 = forge.op.Where(
+            "", where_input_0, self.get_constant("where4_const_1"), self.get_constant("where4_const_2")
+        )
         return where_output_1
 
 
 class Where5(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("where5_const_1", shape=(1,), dtype=torch.float32)
-        self.add_constant("where5_const_2", shape=(1, 1, 7, 7), dtype=torch.float32)
+        self.add_constant("where5_const_2", shape=(2441216,), dtype=torch.float32)
 
-    def forward(self, where_input_0):
-        where_output_1 = forge.op.Where(
-            "", where_input_0, self.get_constant("where5_const_1"), self.get_constant("where5_const_2")
-        )
+    def forward(self, where_input_0, where_input_1):
+        where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where5_const_2"))
         return where_output_1
 
 
 class Where6(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("where6_const_2", shape=(2441216,), dtype=torch.float32)
+        self.add_constant("where6_const_2", shape=(1, 256, 6, 20), dtype=torch.bfloat16)
 
     def forward(self, where_input_0, where_input_1):
         where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where6_const_2"))
@@ -102,7 +102,7 @@ class Where6(ForgeModule):
 class Where7(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("where7_const_2", shape=(1, 256, 6, 20), dtype=torch.bfloat16)
+        self.add_constant("where7_const_2", shape=(1, 256, 12, 40), dtype=torch.bfloat16)
 
     def forward(self, where_input_0, where_input_1):
         where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where7_const_2"))
@@ -112,7 +112,7 @@ class Where7(ForgeModule):
 class Where8(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("where8_const_2", shape=(1, 256, 12, 40), dtype=torch.bfloat16)
+        self.add_constant("where8_const_2", shape=(1, 128, 12, 40), dtype=torch.bfloat16)
 
     def forward(self, where_input_0, where_input_1):
         where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where8_const_2"))
@@ -122,7 +122,7 @@ class Where8(ForgeModule):
 class Where9(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("where9_const_2", shape=(1, 128, 12, 40), dtype=torch.bfloat16)
+        self.add_constant("where9_const_2", shape=(1, 128, 24, 80), dtype=torch.bfloat16)
 
     def forward(self, where_input_0, where_input_1):
         where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where9_const_2"))
@@ -132,7 +132,7 @@ class Where9(ForgeModule):
 class Where10(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("where10_const_2", shape=(1, 128, 24, 80), dtype=torch.bfloat16)
+        self.add_constant("where10_const_2", shape=(1, 64, 24, 80), dtype=torch.bfloat16)
 
     def forward(self, where_input_0, where_input_1):
         where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where10_const_2"))
@@ -142,7 +142,7 @@ class Where10(ForgeModule):
 class Where11(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("where11_const_2", shape=(1, 64, 24, 80), dtype=torch.bfloat16)
+        self.add_constant("where11_const_2", shape=(1, 64, 48, 160), dtype=torch.bfloat16)
 
     def forward(self, where_input_0, where_input_1):
         where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where11_const_2"))
@@ -152,7 +152,7 @@ class Where11(ForgeModule):
 class Where12(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("where12_const_2", shape=(1, 64, 48, 160), dtype=torch.bfloat16)
+        self.add_constant("where12_const_2", shape=(1, 32, 48, 160), dtype=torch.bfloat16)
 
     def forward(self, where_input_0, where_input_1):
         where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where12_const_2"))
@@ -162,7 +162,7 @@ class Where12(ForgeModule):
 class Where13(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("where13_const_2", shape=(1, 32, 48, 160), dtype=torch.bfloat16)
+        self.add_constant("where13_const_2", shape=(1, 32, 96, 320), dtype=torch.bfloat16)
 
     def forward(self, where_input_0, where_input_1):
         where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where13_const_2"))
@@ -172,7 +172,7 @@ class Where13(ForgeModule):
 class Where14(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("where14_const_2", shape=(1, 32, 96, 320), dtype=torch.bfloat16)
+        self.add_constant("where14_const_2", shape=(1, 16, 96, 320), dtype=torch.bfloat16)
 
     def forward(self, where_input_0, where_input_1):
         where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where14_const_2"))
@@ -182,20 +182,10 @@ class Where14(ForgeModule):
 class Where15(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("where15_const_2", shape=(1, 16, 96, 320), dtype=torch.bfloat16)
+        self.add_constant("where15_const_2", shape=(1, 16, 192, 640), dtype=torch.bfloat16)
 
     def forward(self, where_input_0, where_input_1):
         where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where15_const_2"))
-        return where_output_1
-
-
-class Where16(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("where16_const_2", shape=(1, 16, 192, 640), dtype=torch.bfloat16)
-
-    def forward(self, where_input_0, where_input_1):
-        where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where16_const_2"))
         return where_output_1
 
 
@@ -264,11 +254,6 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Where4,
-        [((1, 1, 256), torch.bool), ((1, 1, 256), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
-    ),
-    (
         Where3,
         [((1, 1, 256, 256), torch.bool)],
         {
@@ -286,7 +271,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_nanogpt_financialsupport_nanogpt_text_gen_hf"], "pcc": 0.99},
     ),
     (
-        Where5,
+        Where4,
         [((1, 1, 7, 7), torch.bool)],
         {"model_names": ["onnx_nanogpt_financialsupport_nanogpt_text_gen_hf"], "pcc": 0.99},
     ),
@@ -304,7 +289,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_clip_openai_clip_vit_base_patch32_text_gen_hf_text"], "pcc": 0.99},
     ),
     (
-        Where6,
+        Where5,
         [((2441216,), torch.bool), ((2441216,), torch.float32)],
         {"model_names": ["pt_llava_1_5_7b_cond_gen_hf"], "pcc": 0.99},
     ),
@@ -314,7 +299,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_llava_1_5_7b_cond_gen_hf"], "pcc": 0.99},
     ),
     (
-        Where7,
+        Where6,
         [((1, 256, 6, 20), torch.bool), ((1, 256, 6, 20), torch.bfloat16)],
         {
             "model_names": [
@@ -352,7 +337,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Where8,
+        Where7,
         [((1, 256, 12, 40), torch.bool), ((1, 256, 12, 40), torch.bfloat16)],
         {
             "model_names": [
@@ -390,7 +375,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Where9,
+        Where8,
         [((1, 128, 12, 40), torch.bool), ((1, 128, 12, 40), torch.bfloat16)],
         {
             "model_names": [
@@ -428,7 +413,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Where10,
+        Where9,
         [((1, 128, 24, 80), torch.bool), ((1, 128, 24, 80), torch.bfloat16)],
         {
             "model_names": [
@@ -466,7 +451,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Where11,
+        Where10,
         [((1, 64, 24, 80), torch.bool), ((1, 64, 24, 80), torch.bfloat16)],
         {
             "model_names": [
@@ -504,7 +489,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Where12,
+        Where11,
         [((1, 64, 48, 160), torch.bool), ((1, 64, 48, 160), torch.bfloat16)],
         {
             "model_names": [
@@ -542,7 +527,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Where13,
+        Where12,
         [((1, 32, 48, 160), torch.bool), ((1, 32, 48, 160), torch.bfloat16)],
         {
             "model_names": [
@@ -580,7 +565,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Where14,
+        Where13,
         [((1, 32, 96, 320), torch.bool), ((1, 32, 96, 320), torch.bfloat16)],
         {
             "model_names": [
@@ -618,7 +603,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Where15,
+        Where14,
         [((1, 16, 96, 320), torch.bool), ((1, 16, 96, 320), torch.bfloat16)],
         {
             "model_names": [
@@ -656,7 +641,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Where16,
+        Where15,
         [((1, 16, 192, 640), torch.bool), ((1, 16, 192, 640), torch.bfloat16)],
         {
             "model_names": [

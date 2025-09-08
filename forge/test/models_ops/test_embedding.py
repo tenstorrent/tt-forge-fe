@@ -663,7 +663,7 @@ class Embedding50(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding50.weight_1",
-            forge.Parameter(*(81, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256008, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -676,7 +676,7 @@ class Embedding51(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding51.weight_1",
-            forge.Parameter(*(256008, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128256, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -689,7 +689,7 @@ class Embedding52(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding52.weight_1",
-            forge.Parameter(*(128256, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(51200, 2560), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -702,7 +702,7 @@ class Embedding53(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding53.weight_1",
-            forge.Parameter(*(51200, 2560), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(250002, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -715,7 +715,7 @@ class Embedding54(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding54.weight_1",
-            forge.Parameter(*(250002, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(49408, 512), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -728,7 +728,7 @@ class Embedding55(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding55.weight_1",
-            forge.Parameter(*(49408, 512), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(77, 512), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -741,7 +741,7 @@ class Embedding56(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding56.weight_1",
-            forge.Parameter(*(77, 512), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(151936, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -754,7 +754,7 @@ class Embedding57(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding57.weight_1",
-            forge.Parameter(*(151936, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(51865, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -767,7 +767,7 @@ class Embedding58(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding58.weight_1",
-            forge.Parameter(*(51865, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(2049, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -780,7 +780,7 @@ class Embedding59(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding59.weight_1",
-            forge.Parameter(*(2049, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32064, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -793,7 +793,7 @@ class Embedding60(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding60.weight_1",
-            forge.Parameter(*(32064, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32000, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -806,7 +806,7 @@ class Embedding61(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding61.weight_1",
-            forge.Parameter(*(32000, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(131072, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -819,7 +819,7 @@ class Embedding62(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding62.weight_1",
-            forge.Parameter(*(131072, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32768, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -832,7 +832,7 @@ class Embedding63(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding63.weight_1",
-            forge.Parameter(*(32768, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32064, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -845,7 +845,7 @@ class Embedding64(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding64.weight_1",
-            forge.Parameter(*(32064, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(2049, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -858,7 +858,7 @@ class Embedding65(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding65.weight_1",
-            forge.Parameter(*(2049, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(51866, 1280), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -871,7 +871,7 @@ class Embedding66(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding66.weight_1",
-            forge.Parameter(*(51866, 1280), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256008, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -884,7 +884,7 @@ class Embedding67(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding67.weight_1",
-            forge.Parameter(*(256008, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(102400, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -897,7 +897,7 @@ class Embedding68(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding68.weight_1",
-            forge.Parameter(*(102400, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(131072, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -910,7 +910,7 @@ class Embedding69(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding69.weight_1",
-            forge.Parameter(*(131072, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(65024, 4544), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -923,7 +923,7 @@ class Embedding70(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding70.weight_1",
-            forge.Parameter(*(65024, 4544), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256000, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -936,7 +936,7 @@ class Embedding71(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding71.weight_1",
-            forge.Parameter(*(256000, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256000, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -949,7 +949,7 @@ class Embedding72(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding72.weight_1",
-            forge.Parameter(*(256000, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(50257, 2560), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -962,7 +962,7 @@ class Embedding73(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding73.weight_1",
-            forge.Parameter(*(50257, 2560), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128256, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -975,7 +975,7 @@ class Embedding74(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding74.weight_1",
-            forge.Parameter(*(128256, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128256, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -988,7 +988,7 @@ class Embedding75(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding75.weight_1",
-            forge.Parameter(*(128256, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(100352, 5120), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -1001,7 +1001,7 @@ class Embedding76(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding76.weight_1",
-            forge.Parameter(*(100352, 5120), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(152064, 3584), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -1014,7 +1014,7 @@ class Embedding77(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding77.weight_1",
-            forge.Parameter(*(152064, 3584), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(151936, 2560), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -1027,7 +1027,7 @@ class Embedding78(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding78.weight_1",
-            forge.Parameter(*(151936, 2560), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(151669, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
         )
 
     def forward(self, embedding_input_0):
@@ -1040,7 +1040,7 @@ class Embedding79(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding79.weight_1",
-            forge.Parameter(*(151669, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float16_b),
+            forge.Parameter(*(51865, 1280), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
@@ -1053,24 +1053,11 @@ class Embedding80(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "embedding80.weight_1",
-            forge.Parameter(*(51865, 1280), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
-
-    def forward(self, embedding_input_0):
-        embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_parameter("embedding80.weight_1"))
-        return embedding_output_1
-
-
-class Embedding81(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_parameter(
-            "embedding81.weight_1",
             forge.Parameter(*(51865, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, embedding_input_0):
-        embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_parameter("embedding81.weight_1"))
+        embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_parameter("embedding80.weight_1"))
         return embedding_output_1
 
 
@@ -2031,16 +2018,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Embedding50,
-        [((1, 24), torch.int64)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "max_int": 80},
-    ),
-    (
-        Embedding1,
-        [((24, 24), torch.int64), ((320, 64), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "max_int": 319},
-    ),
-    (
-        Embedding51,
         [((1, 256), torch.int64)],
         {"model_names": ["pt_xglm_xglm_1_7b_clm_hf"], "pcc": 0.99, "max_int": 256007},
     ),
@@ -2064,7 +2041,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_gptneo_gpt_neo_125m_clm_hf"], "pcc": 0.99, "max_int": 2047},
     ),
     (
-        Embedding52,
+        Embedding51,
         [((1, 4), torch.int64)],
         {
             "model_names": ["pt_llama3_llama_3_2_1b_seq_cls_hf", "pt_llama3_llama_3_2_1b_instruct_seq_cls_hf"],
@@ -2073,7 +2050,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding53,
+        Embedding52,
         [((1, 11), torch.int64)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -2087,7 +2064,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_qwen_v3_0_6b_clm_hf"], "pcc": 0.99, "max_int": 151935},
     ),
     (
-        Embedding54,
+        Embedding53,
         [((1, 10), torch.int64)],
         {"model_names": ["pt_roberta_xlm_base_mlm_hf"], "pcc": 0.99, "max_int": 250001},
     ),
@@ -2107,7 +2084,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding55,
+        Embedding54,
         [((2, 7), torch.int64)],
         {
             "model_names": [
@@ -2119,7 +2096,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding56,
+        Embedding55,
         [((1, 7), torch.int64)],
         {"model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"], "pcc": 0.99, "max_int": 76},
     ),
@@ -2143,7 +2120,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding57,
+        Embedding56,
         [((1, 128), torch.int64)],
         {"model_names": ["pt_qwen_v3_1_7b_clm_hf"], "pcc": 0.99, "max_int": 151935},
     ),
@@ -2184,7 +2161,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding58,
+        Embedding57,
         [((1, 1), torch.int64)],
         {"model_names": ["onnx_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99, "max_int": 51864},
     ),
@@ -2263,7 +2240,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_qwen_coder_1_5b_clm_hf"], "pcc": 0.99, "max_int": 151935},
     ),
     (
-        Embedding59,
+        Embedding58,
         [((1, 1), torch.int64)],
         {"model_names": ["pt_stereo_small_music_generation_hf"], "pcc": 0.99, "max_int": 2048},
     ),
@@ -2391,12 +2368,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_llava_1_5_7b_cond_gen_hf"], "pcc": 0.99, "max_int": 576},
     ),
     (
-        Embedding60,
+        Embedding59,
         [((1, 596), torch.int64)],
         {"model_names": ["pt_llava_1_5_7b_cond_gen_hf"], "pcc": 0.99, "max_int": 32063},
     ),
     (
-        Embedding61,
+        Embedding60,
         [((1, 12), torch.int64)],
         {
             "model_names": ["pt_ministral_ministral_3b_instruct_clm_hf", "pt_mistral_7b_clm_hf"],
@@ -2405,17 +2382,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding62,
+        Embedding61,
         [((1, 12), torch.int64)],
         {"model_names": ["pt_ministral_ministral_8b_instruct_clm_hf"], "pcc": 0.99, "max_int": 131071},
     ),
     (
-        Embedding63,
+        Embedding62,
         [((1, 12), torch.int64)],
         {"model_names": ["pt_mistral_7b_instruct_v03_clm_hf"], "pcc": 0.99, "max_int": 32767},
     ),
     (
-        Embedding64,
+        Embedding63,
         [((1, 256), torch.int64)],
         {
             "model_names": [
@@ -2428,7 +2405,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding65,
+        Embedding64,
         [((1, 1), torch.int64)],
         {"model_names": ["pt_stereo_large_music_generation_hf"], "pcc": 0.99, "max_int": 2048},
     ),
@@ -2443,7 +2420,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "max_int": 1},
     ),
     (
-        Embedding66,
+        Embedding65,
         [((1, 2), torch.int64)],
         {
             "model_names": [
@@ -2455,12 +2432,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding67,
+        Embedding66,
         [((1, 256), torch.int64)],
         {"model_names": ["pt_xglm_xglm_564m_clm_hf"], "pcc": 0.99, "max_int": 256007},
     ),
     (
-        Embedding52,
+        Embedding51,
         [((1, 256), torch.int64)],
         {
             "model_names": ["pt_llama3_llama_3_2_1b_clm_hf", "pt_llama3_llama_3_2_1b_instruct_clm_hf"],
@@ -2479,12 +2456,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf"], "pcc": 0.99, "max_int": 511},
     ),
     (
-        Embedding68,
+        Embedding67,
         [((1, 1063), torch.int64)],
         {"model_names": ["pt_deepseek_7b_instruct_qa_hf"], "pcc": 0.99, "max_int": 102399},
     ),
     (
-        Embedding69,
+        Embedding68,
         [((1, 522), torch.int64)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_3b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf"],
@@ -2493,27 +2470,27 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding70,
+        Embedding69,
         [((1, 6), torch.int64)],
         {"model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99, "max_int": 65023},
     ),
     (
-        Embedding71,
+        Embedding70,
         [((1, 356), torch.int64)],
         {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "max_int": 255999},
     ),
     (
-        Embedding72,
+        Embedding71,
         [((1, 356), torch.int64)],
         {"model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99, "max_int": 255999},
     ),
     (
-        Embedding71,
+        Embedding70,
         [((1, 512), torch.int64)],
         {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "max_int": 255999},
     ),
     (
-        Embedding73,
+        Embedding72,
         [((1, 256), torch.int64)],
         {"model_names": ["pt_gptneo_gpt_neo_2_7b_clm_hf"], "pcc": 0.99, "max_int": 50256},
     ),
@@ -2523,7 +2500,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_gptneo_gpt_neo_2_7b_clm_hf"], "pcc": 0.99, "max_int": 2047},
     ),
     (
-        Embedding73,
+        Embedding72,
         [((1, 5), torch.int64)],
         {"model_names": ["pt_gptneo_gpt_neo_2_7b_seq_cls_hf"], "pcc": 0.99, "max_int": 50256},
     ),
@@ -2533,17 +2510,17 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_gptneo_gpt_neo_2_7b_seq_cls_hf"], "pcc": 0.99, "max_int": 2047},
     ),
     (
-        Embedding61,
+        Embedding60,
         [((1, 256), torch.int64)],
         {"model_names": ["pt_llama3_huggyllama_7b_clm_hf"], "pcc": 0.99, "max_int": 31999},
     ),
     (
-        Embedding61,
+        Embedding60,
         [((1, 4), torch.int64)],
         {"model_names": ["pt_llama3_huggyllama_7b_seq_cls_hf"], "pcc": 0.99, "max_int": 31999},
     ),
     (
-        Embedding74,
+        Embedding73,
         [((1, 256), torch.int64)],
         {
             "model_names": [
@@ -2557,7 +2534,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding74,
+        Embedding73,
         [((1, 4), torch.int64)],
         {
             "model_names": [
@@ -2571,7 +2548,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding75,
+        Embedding74,
         [((1, 256), torch.int64)],
         {
             "model_names": ["pt_llama3_llama_3_2_3b_clm_hf", "pt_llama3_llama_3_2_3b_instruct_clm_hf"],
@@ -2580,7 +2557,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding75,
+        Embedding74,
         [((1, 4), torch.int64)],
         {
             "model_names": ["pt_llama3_llama_3_2_3b_instruct_seq_cls_hf", "pt_llama3_llama_3_2_3b_seq_cls_hf"],
@@ -2589,12 +2566,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding53,
+        Embedding52,
         [((1, 256), torch.int64)],
         {"model_names": ["pt_phi2_microsoft_phi_2_pytdml_clm_hf"], "pcc": 0.99, "max_int": 51199},
     ),
     (
-        Embedding53,
+        Embedding52,
         [((1, 12), torch.int64)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
@@ -2603,7 +2580,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding64,
+        Embedding63,
         [((1, 5), torch.int64)],
         {
             "model_names": [
@@ -2615,7 +2592,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding64,
+        Embedding63,
         [((1, 13), torch.int64)],
         {
             "model_names": [
@@ -2627,23 +2604,23 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding76,
+        Embedding75,
         [((1, 5), torch.int64)],
         {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "max_int": 100351},
     ),
     (
-        Embedding76,
+        Embedding75,
         [((1, 12), torch.int64)],
         {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99, "max_int": 100351},
     ),
     (
-        Embedding77,
+        Embedding76,
         [((1, 13), torch.int64)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "max_int": 152063},
     ),
-    (Embedding78, [((1, 128), torch.int64)], {"model_names": ["pt_qwen_v3_4b_clm_hf"], "pcc": 0.99, "max_int": 151935}),
+    (Embedding77, [((1, 128), torch.int64)], {"model_names": ["pt_qwen_v3_4b_clm_hf"], "pcc": 0.99, "max_int": 151935}),
     (
-        Embedding79,
+        Embedding78,
         [((4, 31), torch.int64)],
         {
             "model_names": ["pt_qwen_v3_embedding_0_6b_sentence_embed_gen_hf"],
@@ -2658,17 +2635,17 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"], "pcc": 0.99, "max_int": 51864},
     ),
     (
-        Embedding80,
+        Embedding79,
         [((1, 101), torch.int64)],
         {"model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"], "pcc": 0.99, "max_int": 51864},
     ),
     (
-        Embedding81,
+        Embedding80,
         [((1, 101), torch.int64)],
         {"model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"], "pcc": 0.99, "max_int": 51864},
     ),
     (
-        Embedding58,
+        Embedding57,
         [((1, 101), torch.int64)],
         {"model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99, "max_int": 51864},
     ),

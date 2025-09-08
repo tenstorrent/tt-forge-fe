@@ -1085,16 +1085,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (Subtract7, [((1, 1, 32, 32), torch.int32)], {"model_names": ["pt_bloom_default_clm_hf"], "pcc": 0.99}),
     (
-        Subtract0,
-        [((1, 1, 24, 24), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
-    ),
-    (
-        Subtract0,
-        [((1, 1, 1, 24), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
-    ),
-    (
         Subtract8,
         [((1, 1, 1, 201), torch.bfloat16)],
         {"model_names": ["pt_vilt_vqa_qa_hf"], "pcc": 0.99, "default_df_override": "Float16_b"},

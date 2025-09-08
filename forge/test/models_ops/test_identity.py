@@ -2120,43 +2120,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
-        [((1, 1, 768), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
-    ),
-    (Identity0, [((12, 1, 1), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
-    (
-        Identity0,
-        [((1, 24, 768), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((12, 24, 24), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 24, 3072), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((12, 1, 24), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 1, 3072), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 256, 2), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
-    ),
-    (Identity0, [((1, 80, 2), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
-    (
-        Identity0,
         [((1, 4096, 96), torch.float32)],
         {"model_names": ["pt_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf"], "pcc": 0.99},
     ),

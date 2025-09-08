@@ -1156,24 +1156,6 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1"},
         },
     ),
-    pytest.param(
-        (
-            Softmax1,
-            [((12, 1, 1), torch.float32)],
-            {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-        ),
-        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
-    ),
-    (
-        Softmax1,
-        [((12, 24, 24), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Softmax1,
-        [((12, 1, 24), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
     (
         Softmax1,
         [((1, 12, 201, 201), torch.bfloat16)],

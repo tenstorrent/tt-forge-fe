@@ -78,7 +78,6 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (Tanh0, [((1, 32, 6144), torch.float32)], {"model_names": ["pt_bloom_default_clm_hf"], "pcc": 0.99}),
-    (Tanh0, [((1, 256, 2), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
     (
         Tanh0,
         [((1, 768), torch.bfloat16)],

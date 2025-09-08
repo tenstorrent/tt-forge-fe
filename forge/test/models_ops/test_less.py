@@ -34,17 +34,17 @@ class Less0(ForgeModule):
 class Less1(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("less1_const_0", shape=(1, 256), dtype=torch.float32)
+        self.add_constant("less1_const_1", shape=(1, 256, 6, 20), dtype=torch.bfloat16)
 
-    def forward(self, less_input_1):
-        less_output_1 = forge.op.Less("", self.get_constant("less1_const_0"), less_input_1)
+    def forward(self, less_input_0):
+        less_output_1 = forge.op.Less("", less_input_0, self.get_constant("less1_const_1"))
         return less_output_1
 
 
 class Less2(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("less2_const_1", shape=(1, 256, 6, 20), dtype=torch.bfloat16)
+        self.add_constant("less2_const_1", shape=(1, 256, 12, 40), dtype=torch.bfloat16)
 
     def forward(self, less_input_0):
         less_output_1 = forge.op.Less("", less_input_0, self.get_constant("less2_const_1"))
@@ -54,7 +54,7 @@ class Less2(ForgeModule):
 class Less3(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("less3_const_1", shape=(1, 256, 12, 40), dtype=torch.bfloat16)
+        self.add_constant("less3_const_1", shape=(1, 128, 12, 40), dtype=torch.bfloat16)
 
     def forward(self, less_input_0):
         less_output_1 = forge.op.Less("", less_input_0, self.get_constant("less3_const_1"))
@@ -64,7 +64,7 @@ class Less3(ForgeModule):
 class Less4(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("less4_const_1", shape=(1, 128, 12, 40), dtype=torch.bfloat16)
+        self.add_constant("less4_const_1", shape=(1, 128, 24, 80), dtype=torch.bfloat16)
 
     def forward(self, less_input_0):
         less_output_1 = forge.op.Less("", less_input_0, self.get_constant("less4_const_1"))
@@ -74,7 +74,7 @@ class Less4(ForgeModule):
 class Less5(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("less5_const_1", shape=(1, 128, 24, 80), dtype=torch.bfloat16)
+        self.add_constant("less5_const_1", shape=(1, 64, 24, 80), dtype=torch.bfloat16)
 
     def forward(self, less_input_0):
         less_output_1 = forge.op.Less("", less_input_0, self.get_constant("less5_const_1"))
@@ -84,7 +84,7 @@ class Less5(ForgeModule):
 class Less6(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("less6_const_1", shape=(1, 64, 24, 80), dtype=torch.bfloat16)
+        self.add_constant("less6_const_1", shape=(1, 64, 48, 160), dtype=torch.bfloat16)
 
     def forward(self, less_input_0):
         less_output_1 = forge.op.Less("", less_input_0, self.get_constant("less6_const_1"))
@@ -94,7 +94,7 @@ class Less6(ForgeModule):
 class Less7(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("less7_const_1", shape=(1, 64, 48, 160), dtype=torch.bfloat16)
+        self.add_constant("less7_const_1", shape=(1, 32, 48, 160), dtype=torch.bfloat16)
 
     def forward(self, less_input_0):
         less_output_1 = forge.op.Less("", less_input_0, self.get_constant("less7_const_1"))
@@ -104,7 +104,7 @@ class Less7(ForgeModule):
 class Less8(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("less8_const_1", shape=(1, 32, 48, 160), dtype=torch.bfloat16)
+        self.add_constant("less8_const_1", shape=(1, 32, 96, 320), dtype=torch.bfloat16)
 
     def forward(self, less_input_0):
         less_output_1 = forge.op.Less("", less_input_0, self.get_constant("less8_const_1"))
@@ -114,7 +114,7 @@ class Less8(ForgeModule):
 class Less9(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("less9_const_1", shape=(1, 32, 96, 320), dtype=torch.bfloat16)
+        self.add_constant("less9_const_1", shape=(1, 16, 96, 320), dtype=torch.bfloat16)
 
     def forward(self, less_input_0):
         less_output_1 = forge.op.Less("", less_input_0, self.get_constant("less9_const_1"))
@@ -124,20 +124,10 @@ class Less9(ForgeModule):
 class Less10(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("less10_const_1", shape=(1, 16, 96, 320), dtype=torch.bfloat16)
+        self.add_constant("less10_const_1", shape=(1, 16, 192, 640), dtype=torch.bfloat16)
 
     def forward(self, less_input_0):
         less_output_1 = forge.op.Less("", less_input_0, self.get_constant("less10_const_1"))
-        return less_output_1
-
-
-class Less11(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("less11_const_1", shape=(1, 16, 192, 640), dtype=torch.bfloat16)
-
-    def forward(self, less_input_0):
-        less_output_1 = forge.op.Less("", less_input_0, self.get_constant("less11_const_1"))
         return less_output_1
 
 
@@ -153,9 +143,8 @@ forge_modules_and_shapes_dtypes_list = [
         [((1,), torch.int64)],
         {"model_names": ["onnx_gpt_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"], "pcc": 0.99},
     ),
-    (Less1, [((1, 256), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
     (
-        Less2,
+        Less1,
         [((1, 256, 6, 20), torch.bfloat16)],
         {
             "model_names": [
@@ -174,7 +163,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Less3,
+        Less2,
         [((1, 256, 12, 40), torch.bfloat16)],
         {
             "model_names": [
@@ -193,7 +182,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Less4,
+        Less3,
         [((1, 128, 12, 40), torch.bfloat16)],
         {
             "model_names": [
@@ -212,7 +201,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Less5,
+        Less4,
         [((1, 128, 24, 80), torch.bfloat16)],
         {
             "model_names": [
@@ -231,7 +220,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Less6,
+        Less5,
         [((1, 64, 24, 80), torch.bfloat16)],
         {
             "model_names": [
@@ -250,7 +239,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Less7,
+        Less6,
         [((1, 64, 48, 160), torch.bfloat16)],
         {
             "model_names": [
@@ -269,7 +258,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Less8,
+        Less7,
         [((1, 32, 48, 160), torch.bfloat16)],
         {
             "model_names": [
@@ -288,7 +277,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Less9,
+        Less8,
         [((1, 32, 96, 320), torch.bfloat16)],
         {
             "model_names": [
@@ -307,7 +296,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Less10,
+        Less9,
         [((1, 16, 96, 320), torch.bfloat16)],
         {
             "model_names": [
@@ -326,7 +315,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Less11,
+        Less10,
         [((1, 16, 192, 640), torch.bfloat16)],
         {
             "model_names": [

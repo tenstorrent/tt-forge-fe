@@ -555,7 +555,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "onnx_resnet_50_img_cls_hf",
                 "onnx_vovnet_vovnet27s_obj_det_osmr",
                 "pd_mobilenetv1_basic_img_cls_paddlemodels",
-                "pt_speecht5_tts_tts_text_to_speech_hf",
                 "pt_vgg_vgg19_obj_det_osmr",
                 "pt_yolox_yolox_nano_obj_det_torchhub",
                 "onnx_dla_dla60x_c_visual_bb_torchvision",
@@ -9578,7 +9577,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_tiny_obj_det_torchhub",
                 "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
                 "onnx_vovnet_vovnet27s_obj_det_osmr",
-                "pt_speecht5_tts_tts_text_to_speech_hf",
                 "pt_yolox_yolox_nano_obj_det_torchhub",
                 "pt_yolox_yolox_l_obj_det_torchhub",
                 "onnx_efficientnet_efficientnet_b0_img_cls_timm",
@@ -13455,21 +13453,6 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
             "args": {"dim": "1"},
         },
-    ),
-    (
-        Unsqueeze2,
-        [((1, 256), torch.bool)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim": "0"}},
-    ),
-    (
-        Unsqueeze0,
-        [((1, 24), torch.int64)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim": "1"}},
-    ),
-    (
-        Unsqueeze1,
-        [((1, 1, 24), torch.int64)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim": "2"}},
     ),
     (
         Unsqueeze0,

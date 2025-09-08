@@ -43,7 +43,6 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 7), torch.int64)],
         {"model_names": ["onnx_gpt_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"], "pcc": 0.99},
     ),
-    (Equal0, [((1, 1, 256), torch.int64)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
     (
         Equal0,
         [((1, 128), torch.int64)],

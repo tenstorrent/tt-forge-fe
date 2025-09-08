@@ -8483,7 +8483,6 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 2240, 7, 7), torch.bfloat16)],
         {"model_names": ["pt_regnet_regnet_y_120_img_cls_hf"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
-    (Relu0, [((1, 1, 256), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
     (
         Relu0,
         [((1, 112, 7, 7), torch.bfloat16)],

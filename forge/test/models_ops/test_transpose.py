@@ -310,7 +310,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf",
                 "pt_distilbert_distilbert_base_cased_mlm_hf",
                 "pt_gptneo_gpt_neo_125m_seq_cls_hf",
-                "pt_speecht5_tts_tts_text_to_speech_hf",
                 "pt_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
                 "pt_swin_swin_v2_s_img_cls_torchvision",
                 "pt_albert_base_v2_mlm_hf",
@@ -1439,7 +1438,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf",
                 "pt_distilbert_distilbert_base_cased_mlm_hf",
                 "pt_gptneo_gpt_neo_125m_seq_cls_hf",
-                "pt_speecht5_tts_tts_text_to_speech_hf",
                 "pt_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
                 "pt_swin_swin_v2_s_img_cls_torchvision",
                 "pt_albert_base_v2_mlm_hf",
@@ -1486,7 +1484,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf",
                 "pt_distilbert_distilbert_base_cased_mlm_hf",
                 "pt_gptneo_gpt_neo_125m_seq_cls_hf",
-                "pt_speecht5_tts_tts_text_to_speech_hf",
                 "pt_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
                 "pt_swin_swin_v2_s_img_cls_torchvision",
                 "pt_albert_base_v2_mlm_hf",
@@ -8813,11 +8810,7 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Transpose1,
         [((768, 256), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision", "pt_speecht5_tts_tts_text_to_speech_hf"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
+        {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
     ),
     (
         Transpose4,
@@ -8876,7 +8869,6 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_swin_swin_v2_b_img_cls_torchvision",
                 "pt_nbeats_trend_basis_time_series_forecasting_github",
-                "pt_speecht5_tts_tts_text_to_speech_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -12885,18 +12877,10 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Transpose1,
-        [((256, 80), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
-    ),
-    (
         Transpose0,
         [((1, 1, 12, 64), torch.float32)],
         {
-            "model_names": [
-                "pt_speecht5_tts_tts_text_to_speech_hf",
-                "onnx_whisper_openai_whisper_small_speech_recognition_hf",
-            ],
+            "model_names": ["onnx_whisper_openai_whisper_small_speech_recognition_hf"],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
         },
@@ -12905,10 +12889,7 @@ forge_modules_and_shapes_dtypes_list = [
         Transpose1,
         [((12, 1, 64), torch.float32)],
         {
-            "model_names": [
-                "pt_speecht5_tts_tts_text_to_speech_hf",
-                "onnx_whisper_openai_whisper_small_speech_recognition_hf",
-            ],
+            "model_names": ["onnx_whisper_openai_whisper_small_speech_recognition_hf"],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
         },
@@ -12917,10 +12898,7 @@ forge_modules_and_shapes_dtypes_list = [
         Transpose1,
         [((12, 64, 1), torch.float32)],
         {
-            "model_names": [
-                "pt_speecht5_tts_tts_text_to_speech_hf",
-                "onnx_whisper_openai_whisper_small_speech_recognition_hf",
-            ],
+            "model_names": ["onnx_whisper_openai_whisper_small_speech_recognition_hf"],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
         },
@@ -12929,10 +12907,7 @@ forge_modules_and_shapes_dtypes_list = [
         Transpose0,
         [((1, 12, 1, 64), torch.float32)],
         {
-            "model_names": [
-                "pt_speecht5_tts_tts_text_to_speech_hf",
-                "onnx_whisper_openai_whisper_small_speech_recognition_hf",
-            ],
+            "model_names": ["onnx_whisper_openai_whisper_small_speech_recognition_hf"],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
         },
@@ -12945,56 +12920,6 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
         },
-    ),
-    (
-        Transpose0,
-        [((1, 24, 12, 64), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
-    ),
-    (
-        Transpose1,
-        [((12, 24, 64), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
-    ),
-    (
-        Transpose0,
-        [((12, 24, 64), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
-    ),
-    (
-        Transpose1,
-        [((24, 24, 64), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
-    ),
-    (
-        Transpose0,
-        [((24, 12, 24), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
-    ),
-    (
-        Transpose1,
-        [((12, 64, 24), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
-    ),
-    (
-        Transpose0,
-        [((1, 12, 24, 64), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
-    ),
-    (
-        Transpose1,
-        [((160, 768), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
-    ),
-    (
-        Transpose1,
-        [((1, 2, 80), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
-    ),
-    (
-        Transpose1,
-        [((1, 80, 2), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
     ),
     (
         Transpose0,
