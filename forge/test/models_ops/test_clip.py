@@ -84,6 +84,15 @@ class Clip6(ForgeModule):
         return clip_output_1
 
 
+class Clip7(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, clip_input_0):
+        clip_output_1 = forge.op.Clip("", clip_input_0, min=1e-12, max=3.3895313892515355e38)
+        return clip_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -2959,50 +2968,35 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"min": "0.0", "max": "6.0"},
         },
     ),
-    pytest.param(
-        (
-            Clip3,
-            [((1, 1, 80, 80), torch.bfloat16)],
-            {
-                "model_names": ["pt_yolo_world_default_obj_det_github"],
-                "pcc": 0.99,
-                "default_df_override": "Float16_b",
-                "args": {"min": "1e-12", "max": "3.4028234663852886e+38"},
-            },
-        ),
-        marks=[
-            pytest.mark.skip(reason="RuntimeError: value cannot be converted to type at::BFloat16 without overflow")
-        ],
+    (
+        Clip7,
+        [((1, 1, 80, 80), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_world_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"min": "1e-12", "max": "3.3895313892515355e+38"},
+        },
     ),
-    pytest.param(
-        (
-            Clip3,
-            [((1, 1, 40, 40), torch.bfloat16)],
-            {
-                "model_names": ["pt_yolo_world_default_obj_det_github"],
-                "pcc": 0.99,
-                "default_df_override": "Float16_b",
-                "args": {"min": "1e-12", "max": "3.4028234663852886e+38"},
-            },
-        ),
-        marks=[
-            pytest.mark.skip(reason="RuntimeError: value cannot be converted to type at::BFloat16 without overflow")
-        ],
+    (
+        Clip7,
+        [((1, 1, 40, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_world_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"min": "1e-12", "max": "3.3895313892515355e+38"},
+        },
     ),
-    pytest.param(
-        (
-            Clip3,
-            [((1, 1, 20, 20), torch.bfloat16)],
-            {
-                "model_names": ["pt_yolo_world_default_obj_det_github"],
-                "pcc": 0.99,
-                "default_df_override": "Float16_b",
-                "args": {"min": "1e-12", "max": "3.4028234663852886e+38"},
-            },
-        ),
-        marks=[
-            pytest.mark.skip(reason="RuntimeError: value cannot be converted to type at::BFloat16 without overflow")
-        ],
+    (
+        Clip7,
+        [((1, 1, 20, 20), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_world_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"min": "1e-12", "max": "3.3895313892515355e+38"},
+        },
     ),
     (
         Clip1,
@@ -3289,20 +3283,15 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"min": "0.0", "max": "1.0"},
         },
     ),
-    pytest.param(
-        (
-            Clip3,
-            [((1, 1, 38, 38), torch.bfloat16)],
-            {
-                "model_names": ["pt_ssd300_vgg16_ssd300_vgg16_img_cls_torchvision"],
-                "pcc": 0.99,
-                "default_df_override": "Float16_b",
-                "args": {"min": "1e-12", "max": "3.4028234663852886e+38"},
-            },
-        ),
-        marks=[
-            pytest.mark.skip(reason="RuntimeError: value cannot be converted to type at::BFloat16 without overflow")
-        ],
+    (
+        Clip7,
+        [((1, 1, 38, 38), torch.bfloat16)],
+        {
+            "model_names": ["pt_ssd300_vgg16_ssd300_vgg16_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"min": "1e-12", "max": "3.3895313892515355e+38"},
+        },
     ),
     (
         Clip0,
