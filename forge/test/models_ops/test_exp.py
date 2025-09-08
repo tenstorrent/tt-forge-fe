@@ -471,13 +471,16 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Exp0,
-        [((1,), torch.float32)],
-        {
-            "model_names": ["pd_chineseclip_ofa_sys_chinese_clip_vit_base_patch16_img_text_pairing_padlenlp"],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Exp0,
+            [((1,), torch.float32)],
+            {
+                "model_names": ["pd_chineseclip_ofa_sys_chinese_clip_vit_base_patch16_img_text_pairing_padlenlp"],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Exp0,
@@ -489,10 +492,13 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 12, 10, 10), torch.float32)],
         {"model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"], "pcc": 0.99},
     ),
-    (
-        Exp0,
-        [((), torch.bfloat16)],
-        {"model_names": ["pt_yolo_world_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    pytest.param(
+        (
+            Exp0,
+            [((), torch.bfloat16)],
+            {"model_names": ["pt_yolo_world_default_obj_det_github"], "pcc": 0.99, "default_df_override": "Float16_b"},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Exp0,

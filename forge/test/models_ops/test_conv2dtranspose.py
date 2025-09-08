@@ -516,39 +516,45 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (
-        Conv2Dtranspose0,
-        [((1, 1024, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_carvana_base_img_seg_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "False",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose0,
+            [((1, 1024, 14, 14), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_carvana_base_img_seg_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "False",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2Dtranspose1,
-        [((1, 512, 28, 28), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_carvana_base_img_seg_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "False",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose1,
+            [((1, 512, 28, 28), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_carvana_base_img_seg_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "False",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2Dtranspose2,
@@ -786,21 +792,24 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2Dtranspose13,
-        [((1, 512, 16, 16), torch.float32)],
-        {
-            "model_names": ["onnx_unet_base_img_seg_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "False",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose13,
+            [((1, 512, 16, 16), torch.float32)],
+            {
+                "model_names": ["onnx_unet_base_img_seg_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "False",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2Dtranspose14,

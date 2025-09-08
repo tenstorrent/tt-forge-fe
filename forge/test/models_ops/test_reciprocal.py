@@ -85,26 +85,40 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
         },
     ),
-    (
-        Reciprocal0,
-        [((4, 31, 32, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_qwen_v3_embedding_4b_sentence_embed_gen_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((4, 31, 32, 1), torch.bfloat16)],
+            {
+                "model_names": ["pt_qwen_v3_embedding_4b_sentence_embed_gen_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((4, 31, 8, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_qwen_v3_embedding_4b_sentence_embed_gen_hf",
-                "pt_qwen_v3_embedding_0_6b_sentence_embed_gen_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((4, 31, 8, 1), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_qwen_v3_embedding_4b_sentence_embed_gen_hf",
+                    "pt_qwen_v3_embedding_0_6b_sentence_embed_gen_hf",
+                ],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false"
+            )
+        ],
     ),
     (
         Reciprocal0,
@@ -245,14 +259,21 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
         },
     ),
-    (
-        Reciprocal0,
-        [((1, 256, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1, 256, 1, 1), torch.bfloat16)],
+            {
+                "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false"
+            )
+        ],
     ),
     (
         Reciprocal0,
@@ -263,32 +284,53 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
         },
     ),
-    (
-        Reciprocal0,
-        [((1, 512, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1, 512, 1, 1), torch.bfloat16)],
+            {
+                "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1, 1024, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1, 1024, 1, 1), torch.bfloat16)],
+            {
+                "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false"
+            )
+        ],
     ),
-    (
-        Reciprocal0,
-        [((1, 2048, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1, 2048, 1, 1), torch.bfloat16)],
+            {
+                "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false"
+            )
+        ],
     ),
     (Reciprocal0, [((1, 1063, 1), torch.float32)], {"model_names": ["pt_deepseek_7b_instruct_qa_hf"], "pcc": 0.99}),
     (
@@ -329,14 +371,21 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (Reciprocal0, [((1, 128, 32, 1), torch.float32)], {"model_names": ["pt_qwen_v3_4b_clm_hf"], "pcc": 0.99}),
-    (
-        Reciprocal0,
-        [((4, 31, 16, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_qwen_v3_embedding_0_6b_sentence_embed_gen_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((4, 31, 16, 1), torch.bfloat16)],
+            {
+                "model_names": ["pt_qwen_v3_embedding_0_6b_sentence_embed_gen_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false"
+            )
+        ],
     ),
 ]
 

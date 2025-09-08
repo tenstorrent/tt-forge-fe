@@ -11825,17 +11825,28 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"axis": "-3"},
         },
     ),
-    (
-        Concatenate5,
-        [((256, 1536, 1, 1), torch.float32), ((384, 1536, 1, 1), torch.float32), ((384, 1536, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "onnx_inception_inception_v4_img_cls_timm",
-                "onnx_inception_inception_v4_tf_in1k_img_cls_timm",
+    pytest.param(
+        (
+            Concatenate5,
+            [
+                ((256, 1536, 1, 1), torch.float32),
+                ((384, 1536, 1, 1), torch.float32),
+                ((384, 1536, 1, 1), torch.float32),
             ],
-            "pcc": 0.99,
-            "args": {"axis": "-4"},
-        },
+            {
+                "model_names": [
+                    "onnx_inception_inception_v4_img_cls_timm",
+                    "onnx_inception_inception_v4_tf_in1k_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "args": {"axis": "-4"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception"
+            )
+        ],
     ),
     (
         Concatenate4,

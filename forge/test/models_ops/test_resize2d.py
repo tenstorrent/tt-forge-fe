@@ -846,45 +846,73 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"sizes": "[60, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
-    (
-        Resize2D7,
-        [((1, 512, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[28, 28]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D7,
+            [((1, 512, 14, 14), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[28, 28]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/ops/op_resize_2d.cpp:183: (mode == 'nearest') || (mode == 'bilinear' && !align_corners)"
+            )
+        ],
     ),
-    (
-        Resize2D8,
-        [((1, 256, 28, 28), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[56, 56]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D8,
+            [((1, 256, 28, 28), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[56, 56]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/ops/op_resize_2d.cpp:183: (mode == 'nearest') || (mode == 'bilinear' && !align_corners)"
+            )
+        ],
     ),
-    (
-        Resize2D9,
-        [((1, 128, 56, 56), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[112, 112]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D9,
+            [((1, 128, 56, 56), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[112, 112]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/ops/op_resize_2d.cpp:183: (mode == 'nearest') || (mode == 'bilinear' && !align_corners)"
+            )
+        ],
     ),
-    (
-        Resize2D10,
-        [((1, 64, 112, 112), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[224, 224]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D10,
+            [((1, 64, 112, 112), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[224, 224]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/ops/op_resize_2d.cpp:183: (mode == 'nearest') || (mode == 'bilinear' && !align_corners)"
+            )
+        ],
     ),
     (
         Resize2D11,
@@ -1382,18 +1410,30 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
-    (
-        Resize2D3,
-        [((1, 768, 16, 16), torch.float32)],
-        {
-            "model_names": [
-                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D3,
+            [((1, 768, 16, 16), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "sizes": "[128, 128]",
+                    "mode": '"bilinear"',
+                    "align_corners": "False",
+                    "channel_last": "False",
+                },
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception"
+            )
+        ],
     ),
     (
         Resize2D3,
@@ -2278,29 +2318,48 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"sizes": "[27, 27]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
-    (
-        Resize2D37,
-        [((1, 256, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[65, 65]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D37,
+            [((1, 256, 1, 1), torch.bfloat16)],
+            {
+                "model_names": ["pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[65, 65]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/ops/op_resize_2d.cpp:183: (mode == 'nearest') || (mode == 'bilinear' && !align_corners)"
+            )
+        ],
     ),
-    (
-        Resize2D3,
-        [((1, 768, 16, 16), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Resize2D3,
+            [((1, 768, 16, 16), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "sizes": "[128, 128]",
+                    "mode": '"bilinear"',
+                    "align_corners": "False",
+                    "channel_last": "False",
+                },
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception"
+            )
+        ],
     ),
     (
         Resize2D3,

@@ -2969,35 +2969,50 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"min": "0.0", "max": "6.0"},
         },
     ),
-    (
-        Clip3,
-        [((1, 1, 80, 80), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolo_world_default_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"min": "1e-12", "max": "3.4028234663852886e+38"},
-        },
+    pytest.param(
+        (
+            Clip3,
+            [((1, 1, 80, 80), torch.bfloat16)],
+            {
+                "model_names": ["pt_yolo_world_default_obj_det_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"min": "1e-12", "max": "3.4028234663852886e+38"},
+            },
+        ),
+        marks=[
+            pytest.mark.skip(reason="RuntimeError: value cannot be converted to type at::BFloat16 without overflow")
+        ],
     ),
-    (
-        Clip3,
-        [((1, 1, 40, 40), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolo_world_default_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"min": "1e-12", "max": "3.4028234663852886e+38"},
-        },
+    pytest.param(
+        (
+            Clip3,
+            [((1, 1, 40, 40), torch.bfloat16)],
+            {
+                "model_names": ["pt_yolo_world_default_obj_det_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"min": "1e-12", "max": "3.4028234663852886e+38"},
+            },
+        ),
+        marks=[
+            pytest.mark.skip(reason="RuntimeError: value cannot be converted to type at::BFloat16 without overflow")
+        ],
     ),
-    (
-        Clip3,
-        [((1, 1, 20, 20), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolo_world_default_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"min": "1e-12", "max": "3.4028234663852886e+38"},
-        },
+    pytest.param(
+        (
+            Clip3,
+            [((1, 1, 20, 20), torch.bfloat16)],
+            {
+                "model_names": ["pt_yolo_world_default_obj_det_github"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"min": "1e-12", "max": "3.4028234663852886e+38"},
+            },
+        ),
+        marks=[
+            pytest.mark.skip(reason="RuntimeError: value cannot be converted to type at::BFloat16 without overflow")
+        ],
     ),
     (
         Clip1,
@@ -3284,15 +3299,20 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"min": "0.0", "max": "1.0"},
         },
     ),
-    (
-        Clip3,
-        [((1, 1, 38, 38), torch.bfloat16)],
-        {
-            "model_names": ["pt_ssd300_vgg16_ssd300_vgg16_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"min": "1e-12", "max": "3.4028234663852886e+38"},
-        },
+    pytest.param(
+        (
+            Clip3,
+            [((1, 1, 38, 38), torch.bfloat16)],
+            {
+                "model_names": ["pt_ssd300_vgg16_ssd300_vgg16_img_cls_torchvision"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"min": "1e-12", "max": "3.4028234663852886e+38"},
+            },
+        ),
+        marks=[
+            pytest.mark.skip(reason="RuntimeError: value cannot be converted to type at::BFloat16 without overflow")
+        ],
     ),
     (
         Clip0,

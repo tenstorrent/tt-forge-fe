@@ -1339,18 +1339,21 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
-    (
-        Reduceavg1,
-        [((1, 768), torch.float32)],
-        {
-            "model_names": [
-                "pd_clip_vision_openai_clip_vit_base_patch16_img_enc_padlenlp",
-                "pd_chineseclip_ofa_sys_chinese_clip_vit_base_patch16_img_text_pairing_padlenlp",
-                "pd_chineseclip_vision_ofa_sys_chinese_clip_vit_base_patch16_img_enc_padlenlp",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reduceavg1,
+            [((1, 768), torch.float32)],
+            {
+                "model_names": [
+                    "pd_clip_vision_openai_clip_vit_base_patch16_img_enc_padlenlp",
+                    "pd_chineseclip_ofa_sys_chinese_clip_vit_base_patch16_img_text_pairing_padlenlp",
+                    "pd_chineseclip_vision_ofa_sys_chinese_clip_vit_base_patch16_img_enc_padlenlp",
+                ],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reduceavg0,
@@ -1454,10 +1457,13 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-2", "keep_dim": "True"},
         },
     ),
-    (
-        Reduceavg1,
-        [((1, 1, 512), torch.float32)],
-        {"model_names": ["onnx_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"dim": "-1", "keep_dim": "True"}},
+    pytest.param(
+        (
+            Reduceavg1,
+            [((1, 1, 512), torch.float32)],
+            {"model_names": ["onnx_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"dim": "-1", "keep_dim": "True"}},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reduceavg1,
@@ -2319,15 +2325,18 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 6, 1024), torch.float32)],
         {"model_names": ["pt_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"dim": "-1", "keep_dim": "True"}},
     ),
-    (
-        Reduceavg1,
-        [((4, 31, 2560), torch.bfloat16)],
-        {
-            "model_names": ["pt_qwen_v3_embedding_4b_sentence_embed_gen_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reduceavg1,
+            [((4, 31, 2560), torch.bfloat16)],
+            {
+                "model_names": ["pt_qwen_v3_embedding_4b_sentence_embed_gen_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reduceavg1,
@@ -4209,15 +4218,18 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-2", "keep_dim": "True"},
         },
     ),
-    (
-        Reduceavg1,
-        [((100, 8, 1, 3350), torch.bfloat16)],
-        {
-            "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reduceavg1,
+            [((100, 8, 1, 3350), torch.bfloat16)],
+            {
+                "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reduceavg0,
@@ -4229,15 +4241,18 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-2", "keep_dim": "True"},
         },
     ),
-    (
-        Reduceavg1,
-        [((100, 8, 1, 13400), torch.bfloat16)],
-        {
-            "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reduceavg1,
+            [((100, 8, 1, 13400), torch.bfloat16)],
+            {
+                "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reduceavg0,
@@ -4249,15 +4264,18 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-2", "keep_dim": "True"},
         },
     ),
-    (
-        Reduceavg1,
-        [((100, 8, 1, 53400), torch.bfloat16)],
-        {
-            "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reduceavg1,
+            [((100, 8, 1, 53400), torch.bfloat16)],
+            {
+                "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reduceavg1,

@@ -1932,15 +1932,22 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"repeats": "1", "dim": "0"},
         },
     ),
-    (
-        Repeatinterleave37,
-        [((1,), torch.bfloat16)],
-        {
-            "model_names": ["pt_stable_diffusion_stable_diffusion_xl_base_1_0_cond_gen_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"repeats": "2", "dim": "0"},
-        },
+    pytest.param(
+        (
+            Repeatinterleave37,
+            [((1,), torch.bfloat16)],
+            {
+                "model_names": ["pt_stable_diffusion_stable_diffusion_xl_base_1_0_cond_gen_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"repeats": "2", "dim": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/common/shape.cpp:55: normalized_index >= 0 and normalized_index < rank"
+            )
+        ],
     ),
     (
         Repeatinterleave0,

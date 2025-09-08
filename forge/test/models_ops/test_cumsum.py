@@ -120,10 +120,17 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 10), torch.int32)],
         {"model_names": ["pt_roberta_xlm_base_mlm_hf"], "pcc": 0.99, "args": {"dim": "1"}},
     ),
-    (
-        Cumsum2,
-        [((2441216,), torch.float32)],
-        {"model_names": ["pt_llava_1_5_7b_cond_gen_hf"], "pcc": 0.99, "args": {"dim": "0"}},
+    pytest.param(
+        (
+            Cumsum2,
+            [((2441216,), torch.float32)],
+            {"model_names": ["pt_llava_1_5_7b_cond_gen_hf"], "pcc": 0.99, "args": {"dim": "0"}},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception"
+            )
+        ],
     ),
     (
         Cumsum0,

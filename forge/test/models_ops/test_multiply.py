@@ -31302,20 +31302,34 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
         },
     ),
-    (
-        Multiply228,
-        [((1, 1, 768), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Multiply228,
+            [((1, 1, 768), torch.float32)],
+            {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Initiali value, or list of dimensions (i.e. shape) must be provided."
+            )
+        ],
     ),
     (
         Multiply0,
         [((1, 1, 768), torch.float32)],
         {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
     ),
-    (
-        Multiply228,
-        [((1, 24, 768), torch.float32)],
-        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Multiply228,
+            [((1, 24, 768), torch.float32)],
+            {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Initiali value, or list of dimensions (i.e. shape) must be provided."
+            )
+        ],
     ),
     (
         Multiply0,

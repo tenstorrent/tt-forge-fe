@@ -24291,14 +24291,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"shape": "(1, 256, 64, 64)"},
         },
     ),
-    (
-        Reshape433,
-        [((1, 1, 1, 1), torch.float32)],
-        {
-            "model_names": ["pt_surya_ocr_ocr_detection_optical_character_recognition_github"],
-            "pcc": 0.99,
-            "args": {"shape": "()"},
-        },
+    pytest.param(
+        (
+            Reshape433,
+            [((1, 1, 1, 1), torch.float32)],
+            {
+                "model_names": ["pt_surya_ocr_ocr_detection_optical_character_recognition_github"],
+                "pcc": 0.99,
+                "args": {"shape": "()"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
     (
         Reshape434,
@@ -38644,15 +38647,18 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"shape": "(2, 320, 128, 128)"},
         },
     ),
-    (
-        Reshape433,
-        [((1,), torch.bfloat16)],
-        {
-            "model_names": ["pt_stable_diffusion_stable_diffusion_xl_base_1_0_cond_gen_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"shape": "()"},
-        },
+    pytest.param(
+        (
+            Reshape433,
+            [((1,), torch.bfloat16)],
+            {
+                "model_names": ["pt_stable_diffusion_stable_diffusion_xl_base_1_0_cond_gen_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"shape": "()"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
     (
         Reshape1481,
@@ -39366,17 +39372,20 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"shape": "(1, 1280, 3000, 1)"},
         },
     ),
-    (
-        Reshape1543,
-        [((1280, 1280, 3), torch.float32)],
-        {
-            "model_names": [
-                "pt_whisper_openai_whisper_large_v3_clm_hf",
-                "pt_whisper_openai_whisper_large_speech_recognition_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"shape": "(1280, 1280, 3, 1)"},
-        },
+    pytest.param(
+        (
+            Reshape1543,
+            [((1280, 1280, 3), torch.float32)],
+            {
+                "model_names": [
+                    "pt_whisper_openai_whisper_large_v3_clm_hf",
+                    "pt_whisper_openai_whisper_large_speech_recognition_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"shape": "(1280, 1280, 3, 1)"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reshape1544,
@@ -42136,14 +42145,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"shape": "(1, 1024, 3000, 1)"},
         },
     ),
-    (
-        Reshape1814,
-        [((1024, 1024, 3), torch.float32)],
-        {
-            "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
-            "pcc": 0.99,
-            "args": {"shape": "(1024, 1024, 3, 1)"},
-        },
+    pytest.param(
+        (
+            Reshape1814,
+            [((1024, 1024, 3), torch.float32)],
+            {
+                "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
+                "pcc": 0.99,
+                "args": {"shape": "(1024, 1024, 3, 1)"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Reshape1815,

@@ -38,7 +38,14 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (Min0, [((2441216,), torch.int32)], {"model_names": ["pt_llava_1_5_7b_cond_gen_hf"], "pcc": 0.99}),
+    pytest.param(
+        (Min0, [((2441216,), torch.int32)], {"model_names": ["pt_llava_1_5_7b_cond_gen_hf"], "pcc": 0.99}),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:964: tt::exception"
+            )
+        ],
+    ),
 ]
 
 

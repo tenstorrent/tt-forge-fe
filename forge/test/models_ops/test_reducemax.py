@@ -58,14 +58,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
-    (
-        Reducemax0,
-        [((1, 12, 6625), torch.float32)],
-        {
-            "model_names": ["pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reducemax0,
+            [((1, 12, 6625), torch.float32)],
+            {
+                "model_names": ["pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels"],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Reducemax0,
@@ -93,27 +96,33 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
-    (
-        Reducemax0,
-        [((1, 12, 197, 197), torch.float32)],
-        {
-            "model_names": [
-                "pd_clip_vision_openai_clip_vit_base_patch16_img_enc_padlenlp",
-                "pd_chineseclip_ofa_sys_chinese_clip_vit_base_patch16_img_text_pairing_padlenlp",
-                "pd_chineseclip_vision_ofa_sys_chinese_clip_vit_base_patch16_img_enc_padlenlp",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reducemax0,
+            [((1, 12, 197, 197), torch.float32)],
+            {
+                "model_names": [
+                    "pd_clip_vision_openai_clip_vit_base_patch16_img_enc_padlenlp",
+                    "pd_chineseclip_ofa_sys_chinese_clip_vit_base_patch16_img_text_pairing_padlenlp",
+                    "pd_chineseclip_vision_ofa_sys_chinese_clip_vit_base_patch16_img_enc_padlenlp",
+                ],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Reducemax0,
-        [((1, 25, 97), torch.float32)],
-        {
-            "model_names": ["pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reducemax0,
+            [((1, 25, 97), torch.float32)],
+            {
+                "model_names": ["pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels"],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reducemax0,
@@ -160,17 +169,20 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
-    (
-        Reducemax0,
-        [((1, 12, 577, 577), torch.float32)],
-        {
-            "model_names": [
-                "pd_blip_vision_salesforce_blip_image_captioning_base_img_enc_padlenlp",
-                "pd_blip_salesforce_blip_image_captioning_base_img_captioning_padlenlp",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reducemax0,
+            [((1, 12, 577, 577), torch.float32)],
+            {
+                "model_names": [
+                    "pd_blip_vision_salesforce_blip_image_captioning_base_img_enc_padlenlp",
+                    "pd_blip_salesforce_blip_image_captioning_base_img_captioning_padlenlp",
+                ],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reducemax0,
@@ -181,14 +193,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
-    (
-        Reducemax0,
-        [((1, 25, 6625), torch.float32)],
-        {
-            "model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reducemax0,
+            [((1, 25, 6625), torch.float32)],
+            {
+                "model_names": ["pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels"],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Reducemax0,

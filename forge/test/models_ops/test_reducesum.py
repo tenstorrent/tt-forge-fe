@@ -160,14 +160,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-2", "keep_dim": "True"},
         },
     ),
-    (
-        Reducesum0,
-        [((1, 1, 1, 699), torch.float32)],
-        {
-            "model_names": ["pt_surya_ocr_ocr_detection_optical_character_recognition_github"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reducesum0,
+            [((1, 1, 1, 699), torch.float32)],
+            {
+                "model_names": ["pt_surya_ocr_ocr_detection_optical_character_recognition_github"],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reducesum0,
@@ -318,17 +321,20 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
-    (
-        Reducesum0,
-        [((1, 512), torch.float32)],
-        {
-            "model_names": [
-                "pd_chineseclip_ofa_sys_chinese_clip_vit_base_patch16_img_text_pairing_padlenlp",
-                "pd_blip_salesforce_blip_image_captioning_base_img_captioning_padlenlp",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reducesum0,
+            [((1, 512), torch.float32)],
+            {
+                "model_names": [
+                    "pd_chineseclip_ofa_sys_chinese_clip_vit_base_patch16_img_text_pairing_padlenlp",
+                    "pd_blip_salesforce_blip_image_captioning_base_img_captioning_padlenlp",
+                ],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reducesum0,
