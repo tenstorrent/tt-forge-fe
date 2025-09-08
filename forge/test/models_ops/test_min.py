@@ -21,14 +21,14 @@ from forge.forge_property_utils import (
 import pytest
 
 
-class Notequal0(ForgeModule):
+class Min0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("notequal0_const_1", shape=(1,), dtype=torch.int64)
+        self.add_constant("min0_const_1", shape=(1, 1), dtype=torch.int32)
 
-    def forward(self, notequal_input_0):
-        notequal_output_1 = forge.op.NotEqual("", notequal_input_0, self.get_constant("notequal0_const_1"))
-        return notequal_output_1
+    def forward(self, min_input_0):
+        min_output_1 = forge.op.Min("", min_input_0, self.get_constant("min0_const_1"))
+        return min_output_1
 
 
 def ids_func(param):
@@ -38,21 +38,14 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (
-        Notequal0,
-        [((1, 7), torch.int64)],
-        {"model_names": ["pt_gpt_gpt2_sequence_classification_seq_cls_hf"], "pcc": 0.99},
+    pytest.param(
+        (Min0, [((2441216,), torch.int32)], {"model_names": ["pt_llava_1_5_7b_cond_gen_hf"], "pcc": 0.99}),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:964: tt::exception"
+            )
+        ],
     ),
-    (
-        Notequal0,
-        [((1, 128), torch.int64)],
-        {"model_names": ["pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf"], "pcc": 0.99},
-    ),
-    (Notequal0, [((1, 11), torch.int64)], {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99}),
-    (Notequal0, [((1, 10), torch.int64)], {"model_names": ["pt_roberta_xlm_base_mlm_hf"], "pcc": 0.99}),
-    (Notequal0, [((1, 9), torch.int64)], {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99}),
-    (Notequal0, [((1, 4), torch.int64)], {"model_names": ["pt_llama3_huggyllama_7b_seq_cls_hf"], "pcc": 0.99}),
-    (Notequal0, [((1, 5), torch.int64)], {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99}),
 ]
 
 
@@ -61,7 +54,7 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.parametrize("training_test", [False, True], ids=["inference", "training"])
 def test_module(forge_module_and_shapes_dtypes, training_test):
 
-    record_forge_op_name("NotEqual")
+    record_forge_op_name("Min")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
