@@ -26,6 +26,7 @@
 #include "mlir/IR/BuiltinAttributes.h"
 #include "mlir/IR/Value.h"
 #include "mlir/IR/ValueRange.h"
+#include "ops/op.hpp"
 #include "passes/extract_unique_op_configuration.hpp"
 #include "runtime/tt_device.hpp"
 #include "utils/logger.hpp"
@@ -184,9 +185,7 @@ class MLIRGenerator
     {
         graphModule_ = mlir::ModuleOp::create(get_module_location(module), module.name());
 
-        graphModule_->setAttr(
-            mlir::tt::ttcore::SystemDescAttr::name,
-            mlir::tt::ttcore::SystemDescAttr::getDefault(builder_.getContext(), get_device_arch()));
+        graphModule_->setAttr(mlir::tt::ttcore::SystemDescAttr::name, get_system_desc_attr(graphModule_));
         builder_.setInsertionPointToStart(&graphModule_.getBodyRegion().front());
 
         // Collect all the supported TTIR operations
@@ -290,7 +289,7 @@ class MLIRGenerator
     }
 
     // Convert a TTForge attribute to an MLIR attribute.
-    mlir::Attribute convert_to_mlir_attribute(const tt::ForgeOpAttr &value, TargetType target_type)
+    mlir::Attribute convert_to_mlir_attribute(const tt::ops::Attr &value, TargetType target_type)
     {
         if (target_type != TargetType::SourceType)
         {
@@ -504,12 +503,13 @@ class MLIRGenerator
     /// Emit an MLIR operation for a TTForge node.
     mlir::Value emit_mlir_tt_forge_operation(tt::graphlib::Graph *graph, tt::graphlib::OpNode *op_node)
     {
-        auto handler = lowering_handler_map.find(op_node->op_name());
+        auto handler = lowering_handler_map.find(op_node->op_as_string());
         // There is no known lowering handler for this operation. Report error.
         if (handler == lowering_handler_map.end())
         {
-            log_error("Unsupported operation for lowering from TTForge to TTIR: {}", op_node->op_name());
-            throw std::runtime_error("Unsupported operation for lowering from TTForge to TTIR: " + op_node->op_name());
+            log_error("Unsupported operation for lowering from TTForge to TTIR: {}", op_node->op_as_string());
+            throw std::runtime_error(
+                "Unsupported operation for lowering from TTForge to TTIR: " + op_node->op_as_string());
         }
 
         // Call the handler to lower the TTForge op to MLIR
@@ -533,9 +533,9 @@ class MLIRGenerator
 
         // Map forge to MLIR attributes for this operation.
         llvm::SmallVector<mlir::NamedAttribute> mlir_attributes;
-        for (const auto &[name, value] : op_node->op_type().attrs())
+        for (const auto &[name, value] : op_node->op().attrs())
         {
-            auto [mapped_name, target_type] = attr_mapper_.get_mapped_name_and_type(op_node->op_name(), name);
+            auto [mapped_name, target_type] = attr_mapper_.get_mapped_name_and_type(op_node->op_as_string(), name);
 
             mlir_attributes.push_back(
                 builder_.getNamedAttr(mapped_name, convert_to_mlir_attribute(value, target_type)));
@@ -562,9 +562,9 @@ class MLIRGenerator
 
         // Map forge to MLIR attributes for this operation.
         llvm::SmallVector<mlir::NamedAttribute> mlir_attributes;
-        for (const auto &[name, value] : op_node->op_type().attrs())
+        for (const auto &[name, value] : op_node->op().attrs())
         {
-            auto [mapped_name, target_type] = attr_mapper_.get_mapped_name_and_type(op_node->op_name(), name);
+            auto [mapped_name, target_type] = attr_mapper_.get_mapped_name_and_type(op_node->op_as_string(), name);
 
             mlir_attributes.push_back(
                 builder_.getNamedAttr(mapped_name, convert_to_mlir_attribute(value, target_type)));
@@ -656,18 +656,26 @@ class MLIRGenerator
         builder_.create<mlir::func::ReturnOp>(builder_.getUnknownLoc(), mlir::ValueRange(returnValues));
     }
 
-    /// Get device Architecture from TTSystem
-    mlir::tt::ttcore::Arch get_device_arch()
+    /// Get SystemDescAttr from TTSystem
+    mlir::tt::ttcore::SystemDescAttr get_system_desc_attr(mlir::ModuleOp module)
     {
         TTSystem &system = TTSystem::get_system();
         TT_ASSERT(!system.devices.empty() && system.devices[0], "No available device found");
-        ARCH tt_arch = system.devices[0]->arch;
-        switch (tt_arch)
+
+        // Add this check
+        TT_ASSERT(system.system_desc.handle, "System descriptor handle is null");
+
+        auto systemDescResult = mlir::tt::ttcore::SystemDescAttr::getFromBuffer(
+            builder_.getContext(),
+            system.system_desc.handle.get(),
+            [&]() -> mlir::InFlightDiagnostic { return module->emitOpError(); });
+
+        if (mlir::failed(systemDescResult))
         {
-            case ARCH::WORMHOLE_B0: return mlir::tt::ttcore::Arch::WormholeB0;
-            case ARCH::BLACKHOLE: return mlir::tt::ttcore::Arch::Blackhole;
-            default: TT_THROW("Unsupported architecture: {}", to_string_arch(tt_arch)); unreachable();
+            throw std::runtime_error("Failed to create SystemDescAttr from runtime system descriptor");
         }
+
+        return systemDescResult.value();
     }
 
     /// Get the MLIR data type for a TTForge node.
@@ -822,7 +830,8 @@ class MLIRGenerator
         lowering_handler_map["greater"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::GreaterThanOp>;
         lowering_handler_map["index"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::IndexOp>;
         lowering_handler_map["leaky_relu"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LeakyReluOp>;
-        lowering_handler_map["less"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LessEqualOp>;
+        lowering_handler_map["less"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LessThanOp>;
+        lowering_handler_map["less_equal"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LessEqualOp>;
         lowering_handler_map["log"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LogOp>;
         lowering_handler_map["logical_not"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LogicalNotOp>;
         lowering_handler_map["matmul"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MatmulOp>;

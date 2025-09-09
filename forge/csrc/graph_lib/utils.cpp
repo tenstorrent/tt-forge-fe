@@ -987,14 +987,14 @@ std::unique_ptr<Node> connect_queue_src_to_queue_user(Graph *graph, Node *queue,
     TT_ASSERT(op_edges.size() == 1, "connect_queue_src_to_queue_user can only be called on nodes with one operand");
 
     Edge src_edge = op_edges[0];
-    std::vector<graphlib::OpType> operand_tms = graph->get_edge_attributes(src_edge)->get_tms();
+    std::vector<ops::Op> operand_tms = graph->get_edge_attributes(src_edge)->get_tms();
 
     // if we want to remove queue at the end, we won't remove user_edge now since it will be done in
     // graph->remove_node() if we only wan't to connect queue src to its dest (determined by user_edge), we will delete
     // user_edge.
     std::shared_ptr<EdgeAttributes> user_edge_attrs =
         remove_queue ? graph->get_edge_attributes(user_edge) : graph->remove_edge(user_edge);
-    std::vector<graphlib::OpType> user_tms = user_edge_attrs->get_tms();
+    std::vector<ops::Op> user_tms = user_edge_attrs->get_tms();
 
     Edge new_edge(
         src_edge.producer_node_id,
@@ -1004,7 +1004,7 @@ std::unique_ptr<Node> connect_queue_src_to_queue_user(Graph *graph, Node *queue,
         user_edge.edge_type);
     graph->add_edge(new_edge);
 
-    std::vector<graphlib::OpType> new_edge_tms;
+    std::vector<ops::Op> new_edge_tms;
     new_edge_tms.insert(new_edge_tms.end(), operand_tms.begin(), operand_tms.end());
     new_edge_tms.insert(new_edge_tms.end(), user_tms.begin(), user_tms.end());
 
@@ -1023,11 +1023,11 @@ std::unique_ptr<Node> bypass_node(Graph *graph, Node *node, bool remove_node, st
     TT_ASSERT(op_edges.size() == 1, "bypass_node can only be called on nodes with one operand");
 
     Edge src_edge = op_edges[0];
-    std::vector<graphlib::OpType> operand_tms = graph->get_edge_attributes(src_edge)->get_tms();
+    std::vector<ops::Op> operand_tms = graph->get_edge_attributes(src_edge)->get_tms();
 
     for (Edge &user : graph->user_data_edges(node))
     {
-        std::vector<graphlib::OpType> user_tms = graph->get_edge_attributes(user)->get_tms();
+        std::vector<ops::Op> user_tms = graph->get_edge_attributes(user)->get_tms();
 
         Edge new_edge(
             src_edge.producer_node_id,
@@ -1037,7 +1037,7 @@ std::unique_ptr<Node> bypass_node(Graph *graph, Node *node, bool remove_node, st
             user.edge_type);
         graph->add_edge(new_edge);
 
-        std::vector<graphlib::OpType> new_edge_tms;
+        std::vector<ops::Op> new_edge_tms;
         new_edge_tms.insert(new_edge_tms.end(), operand_tms.begin(), operand_tms.end());
         new_edge_tms.insert(new_edge_tms.end(), user_tms.begin(), user_tms.end());
 
@@ -1202,7 +1202,7 @@ std::vector<Node *> subgraph(const Graph *graph, Node *producer, Node *consumer)
 void convert_implicit_to_explicit_bcasts(Graph *graph, Edge edge)
 {
     auto edge_attr = graph->get_edge_attributes(edge);
-    for (OpType &op_type : graph->get_edge_attributes(edge)->get_tms())
+    for (ops::Op &op_type : graph->get_edge_attributes(edge)->get_tms())
     {
         if (op_type.type() == ops::OpType::Broadcast)
             op_type.set_attr("explicit_bcast", true);
@@ -1259,8 +1259,8 @@ bool swap_broadcast_dims(graphlib::Graph *graph, graphlib::Edge edge, int old_di
 {
     bool swapped = false;
     auto tms = graph->get_edge_attributes(edge)->get_tms();
-    std::vector<graphlib::OpType> new_tms;
-    for (graphlib::OpType &op_type : tms)
+    std::vector<ops::Op> new_tms;
+    for (ops::Op &op_type : tms)
     {
         if (op_type.type() == ops::OpType::Broadcast)
         {
@@ -1269,8 +1269,8 @@ bool swap_broadcast_dims(graphlib::Graph *graph, graphlib::Edge edge, int old_di
             bool explicit_bcast = op_type.attr_as<bool>("explicit_bcast");
             if (dim == old_dim)
             {
-                new_tms.push_back(graphlib::OpType(
-                    "broadcast", {}, {{"dim", new_dim}, {"size", size}, {"explicit_bcast", explicit_bcast}}));
+                new_tms.push_back(ops::Op(
+                    ops::OpType::Broadcast, {{"dim", new_dim}, {"size", size}, {"explicit_bcast", explicit_bcast}}));
                 swapped = true;
             }
             else
@@ -1295,11 +1295,11 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Edge edge)
         graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(node);
         if (not op)
             return consumer_size;
-        if (op->new_op_type() == ops::OpType::Reshape)
+        if (op->op_type() == ops::OpType::Reshape)
             return producer_size;
-        if (op->new_op_type() == ops::OpType::Squeeze)
+        if (op->op_type() == ops::OpType::Squeeze)
             return (consumer_size + 1);
-        if (op->new_op_type() == ops::OpType::Unsqueeze)
+        if (op->op_type() == ops::OpType::Unsqueeze)
             return (consumer_size - 1);
         return consumer_size;
     };
@@ -1311,14 +1311,14 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Edge edge)
         return;
 
     graphlib::OpNode *consumer = dynamic_cast<graphlib::OpNode *>(graph->node_by_id(edge.consumer_node_id));
-    if (consumer and consumer->new_op_type() == ops::OpType::Embedding)
+    if (consumer and consumer->op_type() == ops::OpType::Embedding)
         return;
 
     // This is one of the few cases where we actually want to move tms downstream
     auto tms = graph->get_edge_attributes(edge)->get_tms();
     graph->get_edge_attributes(edge)->set_tms({});
 
-    auto insert = [graph](graphlib::Edge edge, std::string op, std::uint32_t rank) -> graphlib::Edge
+    auto insert = [graph](graphlib::Edge edge, ops::OpType op_type, std::uint32_t rank) -> graphlib::Edge
     {
         graphlib::Node *producer = graph->node_by_id(edge.producer_node_id);
         graphlib::Node *consumer = graph->node_by_id(edge.consumer_node_id);
@@ -1328,14 +1328,12 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Edge edge)
         TT_ASSERT(inherit);
         // If there are 2 edges from the same producer to the same consumer (eg. eltwise binary op),
         // need edge_creation_id to differentiate naming.
-        std::string name = producer->name() + "_" + consumer->name() + "_" + op + std::to_string(rank) + "_" +
-                           std::to_string(edge.edge_creation_id);
+        std::string name = producer->name() + "_" + consumer->name() + "_" + ops::Op(op_type).as_string() +
+                           std::to_string(rank) + "_" + std::to_string(edge.edge_creation_id);
         graphlib::OpNode *change_rank = dynamic_cast<graphlib::OpNode *>(
             graph->add_node(inherit->clone(name), graph->get_subgraph_id_for_node(producer->id())));
         TT_ASSERT(change_rank);
-        auto attr = (op == "squeeze") ? std::vector<graphlib::OpType::Attr>{0}
-                                      : std::vector<graphlib::OpType::Attr>{0, ((int)rank - 1)};
-        change_rank->change_op_type(op, attr, graphlib::OpType::Attrs{{"dim", attr[0]}});
+        change_rank->change_op(op_type, {{"dim", 0}});
         change_rank->set_shape(producer->shape().as_rank(rank));
         change_rank->tag("dont_erase", true);
         auto [incoming_edge, outgoing_edge] = insert_node_on_edge(graph, edge, change_rank);
@@ -1351,25 +1349,25 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Edge edge)
     while (producer_size < consumer_size)
     {
         producer_size++;
-        edge = insert(edge, "unsqueeze", producer_size);
+        edge = insert(edge, ops::OpType::Unsqueeze, producer_size);
     }
 
     while (producer_size > consumer_size)
     {
         producer_size--;
         TT_ASSERT(producer_size > 0);
-        edge = insert(edge, "squeeze", producer_size);
+        edge = insert(edge, ops::OpType::Squeeze, producer_size);
     }
 
     int diff = (int)producer_size - orig_producer_size;
-    for (OpType &op_type : tms)
+    for (ops::Op &op : tms)
     {
-        if (op_type.type() == ops::OpType::Broadcast)
+        if (op.type() == ops::OpType::Broadcast)
         {
-            int dim = op_type.attr_as<int>("dim");
+            int dim = op.attr_as<int>("dim");
             if (dim >= 0)
             {
-                op_type.set_attr("dim", dim + diff);
+                op.set_attr("dim", dim + diff);
             }
         }
     }
@@ -1404,7 +1402,7 @@ graphlib::Edge clone_input_forking_edge(graphlib::Graph *graph, graphlib::Edge u
     return new_edge;
 }
 
-graphlib::Shape default_tm_evaluator(graphlib::OpType const &tm, graphlib::Shape shape, graphlib::IRLevel ir_level)
+graphlib::Shape default_tm_evaluator(ops::Op const &tm, graphlib::Shape shape, graphlib::IRLevel ir_level)
 {
     std::vector<Shape> shapes = {shape};
     std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(tm, shapes);
@@ -1430,8 +1428,8 @@ void calculate_and_set_node_shape(Graph *graph, Node *node)
     for (graphlib::Edge &e : graph->operand_data_edges(node))
     {
         auto operand_shape = graph->node_by_id(e.producer_node_id)->shape();
-        std::vector<OpType> tms = graph->get_edge_attributes(e)->get_tms();
-        for (OpType tm : tms)
+        std::vector<ops::Op> tms = graph->get_edge_attributes(e)->get_tms();
+        for (ops::Op tm : tms)
         {
             std::vector<Shape> shapes = {operand_shape};
             std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(tm, shapes);
@@ -1459,7 +1457,7 @@ void calculate_and_set_node_shape(Graph *graph, Node *node)
     if (node->node_type() != NodeType::kPyOp)
         return;
 
-    graphlib::OpType op_type = dynamic_cast<graphlib::OpNode *>(node)->op_type();
+    ops::Op op_type = dynamic_cast<graphlib::OpNode *>(node)->op();
 
     std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(op_type, operand_shapes);
 
@@ -1880,13 +1878,13 @@ bool is_consteval_capable_input_no_operand_forks(Graph *graph, InputNode *input)
         else
             return false;
 
-    ops::OpType op_type = user_ops[0]->new_op_type();
-    if (not std::all_of(user_ops.begin(), user_ops.end(), [op_type](OpNode *n) { return n->new_op_type() == op_type; }))
+    ops::OpType op_type = user_ops[0]->op_type();
+    if (not std::all_of(user_ops.begin(), user_ops.end(), [op_type](OpNode *n) { return n->op_type() == op_type; }))
         return false;
 
-    auto attrs = user_ops[0]->op_legacy_attrs();
+    auto attrs = user_ops[0]->op_attrs();
     for (OpNode *op : user_ops)
-        if (attrs != op->op_legacy_attrs())
+        if (attrs != op->op_attrs())
             return false;
 
     return true;

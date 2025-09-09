@@ -56,6 +56,13 @@ _OPERATORS = [
         instantiate=True,
         constructor_params=[],
     ),
+    OperatorDefinition(
+        "max_pool_2d",
+        "torch.nn.MaxPool2d",
+        1,
+        instantiate=True,
+        constructor_params=[],
+    ),
     # Unary operators (implemented)
     OperatorDefinition("relu", "torch.relu", 1),
     OperatorDefinition("sqrt", "torch.sqrt", 1),
@@ -206,6 +213,9 @@ _OPERATORS = [
     ),
     # Activation functions
     OperatorDefinition("layer_norm", "torch.nn.LayerNorm", 1),
+    OperatorDefinition("batch_norm_1d", "torch.nn.BatchNorm1d", 1),
+    OperatorDefinition("batch_norm_2d", "torch.nn.BatchNorm2d", 1),
+    OperatorDefinition("batch_norm_3d", "torch.nn.BatchNorm3d", 1),
 ]
 
 

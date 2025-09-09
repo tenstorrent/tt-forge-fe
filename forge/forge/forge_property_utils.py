@@ -259,6 +259,32 @@ def build_module_name(
     return module_name
 
 
+class ExecutionRunMode(Enum):
+    INFERENCE = auto()
+    TRAINING = auto()
+
+    @classmethod
+    def to_str(cls, value):
+        return value.name
+
+    @classmethod
+    def from_training_param(cls, training: bool):
+        return cls.TRAINING if training else cls.INFERENCE
+
+
+class ExecutionPass(Enum):
+    FORWARD = auto()
+    BACKWARD = auto()
+
+    @classmethod
+    def to_str(cls, value):
+        return value.name
+
+    @classmethod
+    def from_str(cls, value):
+        return cls[value.upper()]
+
+
 class ExecutionStage(Enum):
     FAILED_BEFORE_FORGE_COMPILATION_INITIATION = auto()
     FAILED_TVM_RELAY_IRMODULE_GENERATION = auto()
@@ -514,6 +540,8 @@ class Tags:
     model_name: Optional[str] = None
     bringup_status: str = ""
     execution_stage: str = ""
+    run_mode: str = ""
+    execution_pass: str = ""
     pcc: Optional[float] = None
     atol: Optional[float] = None
     rtol: Optional[float] = None
@@ -677,6 +705,25 @@ class ForgePropertyHandler:
         """
         self.add("tags.execution_stage", ExecutionStage.to_str(execution_stage))
 
+    def record_execution_run_mode(self, execution_run_mode: ExecutionRunMode):
+        """
+        Records the execution run mode (as run_mode)in the tags.
+
+        Args:
+            execution_run_mode (ExecutionRunMode): The execution run mode value.
+        """
+        self.add("tags.run_mode", ExecutionRunMode.to_str(execution_run_mode))
+
+    def record_execution_pass(self, execution_pass: ExecutionPass):
+
+        """
+        Records the execution pass (as execution_pass) in the tags.
+
+        Args:
+            execution_pass (ExecutionPass): The execution pass value.
+        """
+        self.add("tags.execution_pass", ExecutionPass.to_str(execution_pass))
+
     def record_execution(self, execution_stage: ExecutionStage):
         """
         Records the execution depth and stage in the tags.
@@ -799,6 +846,34 @@ forge_property_handler_var = contextvars.ContextVar("forge_property_handler_var"
 
 # Next section contains global recording functions. They all use forge_property_handler context variable to
 # record various properties.
+
+
+def record_execution_run_mode(execution_run_mode: ExecutionRunMode):
+    """
+    Records the execution run mode in the tags.
+
+    Args:
+        execution_run_mode (ExecutionRunMode): The execution run mode value.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    fph.record_execution_run_mode(execution_run_mode)
+
+
+def record_execution_pass(execution_pass: ExecutionPass):
+    """
+    Records the execution pass in the tags.
+
+    Args:
+        execution_pass (ExecutionPass): The execution pass value.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    fph.record_execution_pass(execution_pass)
 
 
 def record_execution(execution_stage: ExecutionStage):

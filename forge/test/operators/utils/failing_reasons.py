@@ -978,8 +978,8 @@ class FailingReasons(Enum):
         ],
     )
 
-    NOT_IMPLEMENTED = FailingReason(
-        description="Not implemented operator",
+    NOT_IMPLEMENTED_OLD = FailingReason(
+        description="Not implemented operator old",
         checks=[
             ExceptionCheck(
                 class_name="RuntimeError",
@@ -1018,6 +1018,13 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
+        ],
+    )
+
+    SOURCE_MAPS_NOT_POPULATED = FailingReason(
+        description="Source maps are not populated",
+        checks=[
+            # sum	tvm._ffi.base.TVMError: Traceback (most recent call last):
             # E       tvm._ffi.base.TVMError: Traceback (most recent call last):
             # E         12: _ZN3tvm7runtime13PackedFuncObj
             # E         11: tvm::runtime::TypedPackedFunc<tvm::RelayExpr (tvm::runtime::Array<tvm::relay::DFPatternCallback, void>, tvm::RelayExpr, tvm::IRModule)>::AssignTypedLambda<tvm::RelayExpr (*)(tvm::runtime::Array<tvm::relay::DFPatternCallback, void>, tvm::RelayExpr, tvm::IRModule)>(tvm::RelayExpr (*)(tvm::runtime::Array<tvm::relay::DFPatternCallback, void>, tvm::RelayExpr, tvm::IRModule), std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}::operator()(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*) const
@@ -1043,6 +1050,9 @@ class FailingReasons(Enum):
                     M.contains("Traceback (most recent call last)"),
                 ],
                 error_log=[
+                    M.contains(
+                        "TVMError: The source maps are not populated for this module. Please use `tvm.relay.transform.AnnotateSpans` to attach source maps for error reporting."
+                    ),
                     M.regex("tensor type .* has .* dimensions, while .* has .* dimensions"),
                     M.last_line(M.contains("tvm/_ffi/base.py:")),
                 ],
@@ -1509,6 +1519,10 @@ class FailingReasons(Enum):
 
     UNSUPPORTED_DIMENSION = FailingReason(
         description="Unsupported dimension",
+    )
+
+    NORMALIZATION_ONLY_LAST_DIM = FailingReason(
+        description="Normalization only over last dimension",
         checks=[
             # layer_norm	AssertionError: Support only normalization over last one dimension.
             # >       assert ndims == 1, "Support only normalization over last one dimension."
@@ -1941,7 +1955,7 @@ class FailingReasons(Enum):
         description="Value conversion overflow",
         checks=[
             # clamp	RuntimeError: value cannot be converted to type at::BFloat16 without overflow
-            # >       ref_output = self.cpp_op_type.eval(values)
+            # >       ref_output = self.op.eval(values)
             # E       RuntimeError: value cannot be converted to type at::BFloat16 without overflow
             # forge/op/common.py:61: RuntimeError
             ExceptionCheck(
@@ -1951,7 +1965,7 @@ class FailingReasons(Enum):
                     M.starts_with("value cannot be converted to type at::BFloat16 without overflow"),
                 ],
                 error_log=[
-                    M.contains(">       ref_output = self.cpp_op_type.eval(values)"),
+                    M.contains(">       ref_output = self.op.eval(values)"),
                     M.last_line(M.contains("forge/op/common.py:")),
                 ],
             ),
@@ -2142,5 +2156,164 @@ class FailingReasons(Enum):
                     ),
                 ],
             ),
+        ],
+    )
+
+    AXIS_OUT_OF_BOUNDS = FailingReason(
+        description="Axis out of bounds error",
+        checks=[
+            # E       tvm.error.InternalError: Traceback (most recent call last):
+            # E         10: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<tvm::IRModule (tvm::transform::Pass, tvm::IRModule)>::AssignTypedLambda<tvm::transform::__mk_TVM9::{lambda(tvm::transform::Pass, tvm::IRModule)#1}>(tvm::transform::__mk_TVM9::{lambda(tvm::transform::Pass, tvm::IRModule)#1}, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, tvm::runtime::TVMRetValue)
+            # E         9: tvm::transform::Pass::operator()(tvm::IRModule) const
+            # E         8: tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+            # E         7: tvm::transform::ModulePassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
+            # E         6: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<tvm::IRModule (tvm::IRModule, tvm::transform::PassContext)>::AssignTypedLambda<tvm::relay::transform::InferType()::{lambda(tvm::IRModule, tvm::transform::PassContext const&)#1}>(tvm::relay::transform::InferType()::{lambda(tvm::IRModule, tvm::transform::PassContext const&)#1})::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+            # E         5: tvm::relay::TypeInferencer::Infer(tvm::GlobalVar, tvm::relay::Function)
+            # E         4: tvm::relay::TypeSolver::Solve()
+            # E         3: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<bool (tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)>::AssignTypedLambda<bool (*)(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)>(bool (*)(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&))::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
+            # E         2: tvm::relay::ReduceRel(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)
+            # E         1: std::vector<tvm::PrimExpr, std::allocator<tvm::PrimExpr> > tvm::relay::ReduceShapeImpl<tvm::relay::ReduceAttrs>(std::vector<tvm::PrimExpr, std::allocator<tvm::PrimExpr> > const&, tvm::relay::ReduceAttrs const*, tvm::TypeReporter const&)
+            # E         0: tvm::relay::GetReduceAxes(unsigned int, tvm::runtime::Array<tvm::Integer, void> const&, bool)
+            # E         File "/__w/tt-forge-fe/tt-forge-fe/third_party/tvm/src/relay/op/tensor/reduce.cc", line 71
+            # E       InternalError: Check failed: (axis < indim) is false: Axis out of bounds in reduce operator.
+            # venv/lib/python3.10/site-packages/tvm/_ffi/base.py:479: InternalError
+            ExceptionCheck(
+                class_name="tvm.error.InternalError",
+                component=ComponentChecker.TVM.value,
+                error_log=[
+                    M.contains(
+                        "E       InternalError: Check failed: (axis < indim) is false: Axis out of bounds in reduce operator."
+                    ),
+                    M.last_line(M.contains("tvm/_ffi/base.py:")),
+                ],
+            ),
+        ],
+    )
+
+    UNSUPPORTED_DILATION = FailingReason(
+        description="Unsupported dilation, currently only support dilation = 1",
+        checks=[
+            # E       RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/ops/op_max_pool_2d.cpp:123: dilation_height == 1 && dilation_width == 1
+            # E       info:
+            # E       info:
+            # E       Currently only support dilation = 1
+            ExceptionCheck(
+                class_name="RuntimeError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    M.contains("forge/csrc/ops/op_max_pool_2d.cpp"),
+                    M.contains("dilation_height == 1 && dilation_width == 1"),
+                ],
+                error_log=[
+                    M.last_line(M.contains("forge/op/common.py")),
+                ],
+            ),
+        ],
+    )
+
+    AUTOSHARDING_ERROR = FailingReason(
+        description="autosharding could not determine valid shard scheme, please check tensor dimensions",
+        checks=[
+            # E       RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/generic/generic_pools.cpp:110: sw_parallel_config.has_value()
+            # E       info:
+            # E       autosharding could not determine valid shard scheme, please check tensor dimensions
+            ExceptionCheck(
+                class_name="RuntimeError",
+                component=ComponentChecker.TTNN.value,
+                message=[
+                    M.contains(
+                        "third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/generic/generic_pools.cpp"
+                    ),
+                    M.contains("sw_parallel_config.has_value()"),
+                ],
+                error_log=[
+                    M.last_line(M.contains("forge/compiled_graph_state.py")),
+                ],
+            ),
+        ],
+    )
+
+    CORE_CHANNELS_MODULUS_NOT_ZERO = FailingReason(
+        description="Channels: 1, num core channels: 2; channels % num_cores_channels == 0",
+        checks=[
+            # E       RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/conv/conv2d/conv2d_utils.cpp:314: channels % num_cores_channels == 0
+            # E       info:
+            # E       Channels: 1, num core channels: 2
+            ExceptionCheck(
+                class_name="RuntimeError",
+                component=ComponentChecker.METAL.value,
+                message=[
+                    M.contains(
+                        "third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/conv/conv2d/conv2d_utils.cpp"
+                    ),
+                    M.contains("channels % num_cores_channels == 0"),
+                ],
+                error_log=[
+                    M.last_line(M.contains("forge/compiled_graph_state.py")),
+                ],
+            )
+        ],
+    )
+
+    ASYMMETRIC_KERNEL_NOT_SUPPORTED = FailingReason(
+        description="Asymmetric kernel is not supported",
+        checks=[
+            # def populate_maxpool2d_args(graph, nid, compiler_cfg):
+            #         ...
+            # >       assert all([dim == kernel_size[0] for dim in kernel_size])
+            # E       AssertionError
+            # /localdev/kmilanovic/src/forge/forge_wheels/venv/lib/python3.10/site-packages/forge/tvm_to_python.py
+            ExceptionCheck(
+                class_name="AssertionError",
+                component=ComponentChecker.TVM.value,
+                message=[],
+                error_log=[
+                    M.contains("def populate_maxpool2d_args("),
+                    M.contains(">       assert all([dim == kernel_size[0] for dim in kernel_size])"),
+                    M.last_line(M.contains("forge/tvm_to_python.py:")),
+                ],
+            )
+        ],
+    )
+
+    ASYMMETRIC_STRIDE_NOT_SUPPORTED = FailingReason(
+        description="Asymmetric stride is not supported",
+        checks=[
+            # def populate_maxpool2d_args(graph, nid, compiler_cfg):
+            #         ...
+            # >       assert all([stride == strides[0] for stride in strides])
+            # E       AssertionError
+            # /localdev/kmilanovic/src/forge/forge_wheels/venv/lib/python3.10/site-packages/forge/tvm_to_python.py:902: AssertionError
+            ExceptionCheck(
+                class_name="AssertionError",
+                component=ComponentChecker.TVM.value,
+                message=[],
+                error_log=[
+                    M.contains("def populate_maxpool2d_args("),
+                    M.contains(">       assert all([stride == strides[0] for stride in strides])"),
+                    M.last_line(M.contains("forge/tvm_to_python.py:")),
+                ],
+            )
+        ],
+    )
+
+    ASYMMETRIC_DILATION_NOT_SUPPORTED = FailingReason(
+        description="Asymmetric dilation is not supported",
+        checks=[
+            # def populate_maxpool2d_args(graph, nid, compiler_cfg):
+            #         ...
+            # >       assert all([dim == dilation[0] for dim in dilation])
+            # E       AssertionError
+            # /localdev/kmilanovic/src/forge/forge_wheels/venv/lib/python3.10/site-packages/forge/tvm_to_python.py:927: AssertionError
+            ExceptionCheck(
+                class_name="AssertionError",
+                component=ComponentChecker.TVM.value,
+                message=[],
+                error_log=[
+                    M.contains("def populate_maxpool2d_args("),
+                    M.contains(">       assert all([dim == dilation[0] for dim in dilation])"),
+                    M.last_line(M.contains("forge/tvm_to_python.py:")),
+                ],
+            )
         ],
     )

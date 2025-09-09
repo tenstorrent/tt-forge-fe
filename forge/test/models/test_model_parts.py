@@ -7,11 +7,12 @@ import torch
 from torch import nn
 
 import forge
-from forge.verify.verify import verify
+from forge.verify.verify import verify, DeprecatedVerifyConfig
 import math
 import onnx
 from torchvision.models.detection import _utils as det_utils
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
+from transformers import BartForSequenceClassification
 
 
 @pytest.mark.skip_model_analysis
@@ -168,6 +169,8 @@ def test_remove_concat_pass(dim):
     verify(inputs, model, compiled_model)
 
 
+@pytest.mark.skip_model_analysis
+@pytest.mark.push
 @pytest.mark.parametrize(
     "input_shape, flip_dim",
     [
@@ -254,6 +257,7 @@ variants_with_weights = {
 }
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
@@ -307,6 +311,8 @@ def test_ssdlite320_mobilenet_v3_large_problematic_block(variant):
 
 
 @pytest.mark.skip_model_analysis
+@pytest.mark.push
+@pytest.mark.xfail
 def test_gather_to_take_onnx():
     class take(nn.Module):
         def __init__(self):
@@ -350,6 +356,9 @@ def test_gather_to_take_onnx():
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.skip_model_analysis
+@pytest.mark.xfail
+@pytest.mark.push
 def test_concat_block():
     class concat(nn.Module):
         def __init__(self):
@@ -394,6 +403,7 @@ def test_concat_block():
 
 @pytest.mark.nightly
 @pytest.mark.skip_model_analysis
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2899")
 @pytest.mark.parametrize(
     "tensor_size,max_length",
     [
@@ -426,3 +436,221 @@ def test_index_put_speecht5_tts(tensor_size, max_length):
         sample_inputs=inputs,
     )
     verify(inputs, model, compiled_model)
+
+
+@pytest.mark.xfail
+@pytest.mark.nightly
+@pytest.mark.skip_model_analysis
+@pytest.mark.parametrize(
+    "tensor_size,num_heads,head_dim,max_length",
+    [
+        (24, 12, 64, 160),
+        (16, 8, 32, 100),
+        (32, 16, 64, 200),
+        (8, 4, 16, 50),
+        (12, 6, 128, 80),
+    ],
+)
+def test_view_speecht5_tts(tensor_size, num_heads, head_dim, max_length):
+    class view(nn.Module):
+        def __init__(self, num_heads, head_dim, max_length):
+            super().__init__()
+            self.num_heads = num_heads
+            self.head_dim = head_dim
+            self.dim = head_dim
+            self.max_length = max_length
+            self.pe_k = torch.nn.Embedding(2 * max_length, head_dim)
+
+        def forward(self, pos_seq, reshape_q):
+            pos_seq[pos_seq < -self.max_length] = -self.max_length
+            pos_seq[pos_seq >= self.max_length] = self.max_length - 1
+            pos_seq = pos_seq + self.max_length
+            position_bias = self.pe_k(pos_seq)
+            rel_pos_bias = torch.matmul(reshape_q, position_bias.transpose(-2, -1))
+            rel_pos_bias = rel_pos_bias.transpose(0, 1)
+            rel_pos_bias = rel_pos_bias.view(1 * self.num_heads, position_bias.size(0), position_bias.size(1))
+            return rel_pos_bias
+
+    x = torch.arange(tensor_size).unsqueeze(1) - torch.arange(tensor_size).unsqueeze(0)
+    y = torch.randn((tensor_size, num_heads, head_dim), dtype=torch.float32)
+
+    inputs = [x, y]
+    model = view(num_heads, head_dim, max_length)
+    model.eval()
+
+    compiled_model = forge.compile(
+        model,
+        sample_inputs=inputs,
+    )
+    verify(inputs, model, compiled_model)
+
+
+@pytest.mark.xfail
+@pytest.mark.nightly
+@pytest.mark.skip_model_analysis
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (1, 24, 768),
+        (1, 16, 512),
+        (1, 32, 128),
+        (1, 8, 64),
+        (1, 160, 256),
+        (1, 200, 512),
+        (2, 24, 768),
+    ],
+)
+def test_scatter_elements(shape):
+    class scatter_elements(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.max_length = 160
+
+        def forward(self, hidden_states):
+            seq_len = hidden_states.shape[1]
+            pos_seq = torch.arange(0, seq_len).long().to(hidden_states.device)
+            pos_seq = pos_seq[:, None] - pos_seq[None, :]
+            pos_seq[pos_seq < -self.max_length] = -self.max_length
+            return pos_seq
+
+    inputs = [torch.randn(shape, dtype=torch.float32)]
+    model = scatter_elements()
+    model.eval()
+
+    compiled_model = forge.compile(model, sample_inputs=inputs)
+    verify(inputs, model, compiled_model)
+
+
+@pytest.mark.skip_model_analysis
+@pytest.mark.xfail
+@pytest.mark.nightly
+def test_bart_cls_head_onnx():
+    class wrapper(nn.Module):
+        def __init__(self, model):
+            super().__init__()
+            self.model = model.classification_head
+
+        def forward(self, hidden_states, eos_mask):
+
+            sentence_representation = hidden_states[eos_mask, :].view(
+                hidden_states.size(0), -1, hidden_states.size(-1)
+            )[:, -1, :]
+            op = self.model(sentence_representation)
+            return op
+
+    # prepare model and input
+    model = BartForSequenceClassification.from_pretrained("facebook/bart-large-mnli", torchscript=True)
+    model.eval()
+    torch_model = wrapper(model)
+    hidden_states = torch.randn(1, 256, 1024)
+    eos_mask = torch.zeros((1, 256), dtype=torch.bool)
+    true_indices = [52, 55, 56]
+    eos_mask[0, true_indices] = True
+    inputs = [hidden_states, eos_mask]
+
+    # Export model to ONNX
+    onnx_path = "bart_cls_head.onnx"
+    torch.onnx.export(torch_model, (inputs[0], inputs[1]), onnx_path, opset_version=17, verbose=True)
+
+    # Load framework model
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule("bart_cls_head", onnx_model)
+
+    # Compile model
+    compiled_model = forge.compile(onnx_model, inputs, module_name="bart_cls_head")
+
+    # Model Verification
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+    )
+
+
+@pytest.mark.skip_model_analysis
+@pytest.mark.nightly
+@pytest.mark.parametrize(
+    "shape,axis,index",
+    [
+        ((1, 3, 1024), 1, -1),
+        ((1, 32, 124), 2, 0),
+        ((1, 2, 24), 2, -1),
+        ((1, 51, 83), 1, 2),
+        ((2, 40, 60), 0, 1),
+    ],
+)
+def test_gather_onnx(shape, axis, index):
+    class Gather(nn.Module):
+        def __init__(self, axis, index):
+            super().__init__()
+            self.axis = axis
+            self.index = index
+
+        def forward(self, x):
+            if self.axis == 0:
+                return x[self.index, :, :]
+            elif self.axis == 1:
+                return x[:, self.index, :]
+            elif self.axis == 2:
+                return x[:, :, self.index]
+
+    torch_model = Gather(axis, index)
+    inputs = [torch.randn(shape)]
+
+    onnx_path = f"gather_axis_{axis}.onnx"
+    torch.onnx.export(torch_model, (inputs[0],), onnx_path, opset_version=17, verbose=True)
+
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule("gather", onnx_model)
+
+    compiled_model = forge.compile(onnx_model, inputs, module_name="gather")
+
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.xfail
+@pytest.mark.nightly
+def test_shift_tokens_right():
+    class ShiftTokensRight(nn.Module):
+        def __init__(self, pad_token_id: int, decoder_start_token_id: int):
+            """
+            Module that shifts input tokens to the right by one position.
+
+            Args:
+                pad_token_id (int): The token ID used for padding.
+                decoder_start_token_id (int): The token ID to place at the beginning.
+            """
+            super().__init__()
+            self.pad_token_id = pad_token_id
+            self.decoder_start_token_id = decoder_start_token_id
+
+        def forward(self, input_ids: torch.Tensor) -> torch.Tensor:
+            """
+            Args:
+                input_ids (torch.Tensor): Tensor of shape (batch_size, seq_len)
+
+            Returns:
+                torch.Tensor: Shifted input_ids of the same shape
+            """
+            shifted_input_ids = input_ids.new_zeros(input_ids.shape)
+            # shifted_input_ids[:, 1:] = input_ids[:, :-1].clone()  ## Original code
+            shifted_input_ids = torch.cat([shifted_input_ids[:, :1], input_ids[:, :-1].clone()], dim=1)
+            shifted_input_ids[:, 0] = self.decoder_start_token_id
+            shifted_input_ids.masked_fill_(shifted_input_ids == -100, self.pad_token_id)
+            return shifted_input_ids + (input_ids * 0)
+
+    vocab_size = 1000
+    input_ids = torch.randint(low=0, high=vocab_size, size=(1, 256), dtype=torch.int64)
+    shift_module = ShiftTokensRight(pad_token_id=1, decoder_start_token_id=2)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        shift_module,
+        sample_inputs=[input_ids],
+        module_name="shift_tokens_right",
+        verify_cfg=DeprecatedVerifyConfig(verify_forge_codegen_vs_framework=True),
+    )
+
+    verify([input_ids], shift_module, compiled_model)

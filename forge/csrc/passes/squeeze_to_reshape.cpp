@@ -7,6 +7,7 @@
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
+#include "ops/op.hpp"
 #include "passes/commute_utils.hpp"
 
 namespace tt::passes
@@ -20,18 +21,18 @@ bool squeeze_to_reshape(graphlib::Graph *graph)
         if (not op)
             continue;
 
-        if (op->new_op_type() != ops::OpType::Squeeze and op->new_op_type() != ops::OpType::Unsqueeze)
+        if (op->op_type() != ops::OpType::Squeeze and op->op_type() != ops::OpType::Unsqueeze)
             continue;
 
         std::vector<uint32_t> shape_vec = op->shape().as_vector();
-        std::vector<graphlib::OpType::Attr> shape;
+        std::vector<ops::Attr> shape;
 
         for (uint32_t d : shape_vec)
         {
             shape.push_back((int)d);
         }
 
-        op->change_op_type("reshape");
+        op->change_op(ops::OpType::Reshape);
         graphlib::Shape new_shape = graphlib::Shape::create(shape_vec);
         update_reshape_attr(op, new_shape);
         changed_anything = true;

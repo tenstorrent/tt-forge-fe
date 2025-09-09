@@ -24,7 +24,6 @@ from test.models.pytorch.vision.yolo.model_utils.yolo_utils import (
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_yolov9(forge_tmp_path):
     # Record Forge Property
     module_name = record_model_properties(

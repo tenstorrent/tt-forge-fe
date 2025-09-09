@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import re
 import json
+import ast
 
 from loguru import logger
 
@@ -14,7 +15,7 @@ import pytest
 from forge.module import OnnxModule, ForgeModule, TFLiteModule
 from forge.verify.config import _get_global_verify_config
 import forge
-from forge.tensor import to_pt_tensors
+from forge.tensor import to_pt_tensors, forge_dataformat_to_pytorch_dtype
 from forge.tvm_utils import flatten_inputs
 
 import os
@@ -1189,6 +1190,19 @@ def populate_clip_transpose_args(graph, nid, compiler_cfg):
 
     if max == float("inf"):
         max = "float('inf')"
+
+    if compiler_cfg.default_df_override is not None:
+        torch_dtype = forge_dataformat_to_pytorch_dtype(compiler_cfg.default_df_override)
+        min_val = torch.finfo(torch_dtype).min
+        max_val = torch.finfo(torch_dtype).max
+        if isinstance(min, str):
+            min = ast.literal_eval(min)
+        if isinstance(max, str):
+            max = ast.literal_eval(max)
+        if min < min_val:
+            min = str(min_val)
+        if max > max_val:
+            max = str(max_val)
 
     args.append(("min", f"{min}"))
     args.append(("max", f"{max}"))

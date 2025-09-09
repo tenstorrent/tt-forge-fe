@@ -20,12 +20,12 @@ void fuse_pad_conv2d(graphlib::Graph *graph)
     for (auto *node : graphlib::topological_sort(*graph))
     {
         graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(node);
-        if (not op or op->new_op_type() != ops::OpType::Pad)
+        if (not op or op->op_type() != ops::OpType::Pad)
         {
             continue;
         }
 
-        auto attrs = op->op_named_attrs();
+        auto attrs = op->op_attrs();
         auto padding_variant = attrs["padding"];
 
         if (std::get<int>(attrs["mode"]) != 0)  // "constant" mode
@@ -58,7 +58,7 @@ void fuse_pad_conv2d(graphlib::Graph *graph)
         for (auto *user : users)
         {
             graphlib::OpNode *user_op = dynamic_cast<graphlib::OpNode *>(user);
-            if (not user_op or user_op->new_op_type() != ops::OpType::Conv2d)
+            if (not user_op or user_op->op_type() != ops::OpType::Conv2d)
             {
                 all_users_are_conv2d = false;
                 break;
@@ -72,7 +72,7 @@ void fuse_pad_conv2d(graphlib::Graph *graph)
         for (auto user : users)
         {
             graphlib::OpNode *user_op = dynamic_cast<graphlib::OpNode *>(user);
-            graphlib::OpType::Attrs conv_attrs = user_op->op_named_attrs();
+            ops::Attrs conv_attrs = user_op->op_attrs();
             TT_ASSERT(conv_attrs.size() == 7 && "Expected 7 attributes in conv2d op but got {}", conv_attrs.size());
 
             // Conv2d attributes [stride, dilation, groups, padding]

@@ -1,2 +1,2 @@
-surya-ocr==0.13.0
 pillow
+surya-ocr==0.15.4

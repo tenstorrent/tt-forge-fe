@@ -19,7 +19,7 @@ namespace tt::passes
 {
 
 using OpShapesType = std::vector<graphlib::Shape>;
-using OpAttrsType = std::vector<graphlib::OpType>;
+using OpAttrsType = std::vector<ops::Op>;
 using OpShapesAttrsType = std::pair<OpShapesType, OpAttrsType>;
 using UniqueOpShapesAttrsType = std::map<std::string, std::vector<OpShapesAttrsType>>;
 

@@ -9,7 +9,7 @@ Verify by evaluating the forge graph
 import os
 from typing import Tuple, Dict, List, Any
 
-from forge.module import FrameworkModule
+from forge.module import ForgeModule, FrameworkModule
 from loguru import logger
 from forge.forgeglobal import align_up_tile
 
@@ -36,9 +36,11 @@ from forge.verify.compare import compare_tensor_to_golden
 from forge.verify.utils import convert_to_supported_pytorch_dtype
 from forge.forge_property_utils import (
     ExecutionStage,
+    ExecutionPass,
     ModelGroup,
     get_model_group,
     record_execution,
+    record_execution_pass,
     record_verify_config,
     record_consistency_limits,
     record_emitc_status,
@@ -299,7 +301,7 @@ def check_dtypes(fw_dtype: torch.dtype, co_dtype: torch.dtype):
         raise ValueError(f"Dtype mismatch: framework_model.dtype={fw_dtype}, compiled_model.dtype={co_dtype}")
 
 
-def verify_backward(
+def _verify_backward(
     inputs: List[torch.Tensor],
     output_grad: torch.Tensor,
     framework_output: torch.Tensor,
@@ -314,6 +316,8 @@ def verify_backward(
     Runs backward on both models with the same inputs and performs various validation checks
     based on the provided verification configuration. Checks can include output size matching,
     dtype consistency, shape equivalence, and numeric value comparison.
+
+    This method does not record the PASSED execution stage, as it is only used as a private method in verify.
 
     Parameters:
         inputs: List of tensor inputs
@@ -330,6 +334,9 @@ def verify_backward(
         logger.warning("Verification is disabled")
         return
 
+    # Record execution pass
+    record_execution_pass(ExecutionPass.BACKWARD)
+
     assert compiled_model.training(), "Compiled model must be in compiled for training for backward verification"
 
     # Check if inputs are of the correct type
@@ -344,8 +351,10 @@ def verify_backward(
     if not isinstance(compiled_output, torch.Tensor):
         raise TypeError(f"Compiled output tensor must be of type {torch.Tensor}, but got {type(compiled_output)}")
 
-    if not isinstance(framework_model, torch.nn.Module):
-        raise TypeError(f"Framework model must be of type {torch.nn.Module}, but got {type(framework_model)}")
+    if not isinstance(framework_model, torch.nn.Module) and not isinstance(framework_model, ForgeModule):
+        raise TypeError(
+            f"Framework model must be of type {[torch.nn.Module, ForgeModule]}, but got {type(framework_model)}"
+        )
     if not isinstance(compiled_model, verify_cfg.compiled_model_types):
         raise TypeError(
             f"Compiled model must be of type {verify_cfg.compiled_model_types}, but got {type(compiled_model)}"
@@ -353,8 +362,11 @@ def verify_backward(
 
     # Zero out gradients
     [input.grad.zero_() for input in inputs if input.grad is not None]
-    framework_model.zero_grad()
+    # For torch.nn.Module gradient accumulation can happen and we need to make sure to remove initial values of gradient values
+    if isinstance(framework_model, torch.nn.Module):
+        framework_model.zero_grad()
 
+    record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
     # 1st step: run backward pass for the networks and get gradients
     compiled_model.gradient_inputs = [CTensor(output_grad)]
     co_gradient_outputs = compiled_model.backward()
@@ -365,9 +377,12 @@ def verify_backward(
         co_gradients[name] = grad.to_torch().clone() if name.startswith("grad_acc_") else grad.to_torch()
 
     # Run backward on framework model
-    framework_model.zero_grad()
+    # Parameter tensors should be shared between framework and compiled model, so we need to make sure to zero out gradients for modules that have accumulation
+    if isinstance(framework_model, torch.nn.Module):
+        framework_model.zero_grad()
     framework_output.backward(gradient=output_grad)
 
+    record_execution(ExecutionStage.FAILED_VERIFICATION)
     # 2nd step: verify gradients
     for name in co_gradients:
         co_grad = co_gradients[name]
@@ -375,7 +390,12 @@ def verify_backward(
         if name.startswith("grad_acc_"):
             name = name.replace("grad_acc_", "")
             name = name.replace("_grad_accumulator", "")
-            fw_grad = framework_model.get_parameter(name).grad
+            if isinstance(framework_model, torch.nn.Module):
+                fw_grad = framework_model.get_parameter(name).grad
+            elif isinstance(framework_model, ForgeModule):
+                fw_grad = framework_model.get_parameter(name).value().grad
+            else:
+                raise TypeError(f"Unknown framework model type: {type(framework_model)}")
         elif name.startswith("output_grad_"):
             name = name.replace("output_grad_", "")
             fw_grad = inputs[compiled_model.fwd_compiled_graph_state.ordered_input_names.index(name)].grad
@@ -402,6 +422,7 @@ def verify(
     framework_model: FrameworkModule,
     compiled_model: CompiledModel,
     verify_cfg: VerifyConfig = None,
+    with_backward: bool = False,
 ):
     """
     Performs verification of a compiled model by comparing its outputs against a reference framework model.
@@ -452,6 +473,9 @@ def verify(
     fw_inputs = clone_framework_tensors(inputs)
     fw_out = framework_model(*fw_inputs)
     del fw_inputs
+
+    # Record execution pass
+    record_execution_pass(ExecutionPass.FORWARD)
 
     record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
     co_out = compiled_model(*inputs)
@@ -518,6 +542,18 @@ def verify(
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
 
+    # This will only work if model is compiled in training mode
+    if with_backward:
+        grad = torch.rand_like(fw_out[0])
+        _verify_backward(
+            inputs,
+            grad,
+            fw_out[0],
+            co_out[0],
+            framework_model,
+            compiled_model,
+            verify_cfg=verify_cfg,
+        )
     record_execution(ExecutionStage.PASSED)
 
     # Return both the framework and compiled model outputs

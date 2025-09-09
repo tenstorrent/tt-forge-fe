@@ -19,7 +19,7 @@ struct UnsupportedHWOpsError : public std::exception
 {
     std::string e;
     UnsupportedHWOpsError(std::string const &e) : e(e) {}
-    UnsupportedHWOpsError(graphlib::OpType const &op_type) : e(op_type.as_string()) {}
+    UnsupportedHWOpsError(ops::Op const &op_type) : e(op_type.as_string()) {}
     virtual char const *what() const noexcept override { return e.c_str(); }
 };
 

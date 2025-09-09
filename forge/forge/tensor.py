@@ -19,7 +19,8 @@ import keras
 
 from .forgeglobal import TILE_DIM, align_up_tile, round_up_div
 from forge._C import DataFormat
-from forge._C.graph import OpType, RuntimeTensorTransform, RuntimeTensorTransformType, get_constant_input_value
+from forge._C.graph import RuntimeTensorTransform, RuntimeTensorTransformType, get_constant_input_value
+from forge._C.ops import Op
 from forge.utils import detach_tensors
 from .utils import align_up
 
@@ -275,10 +276,11 @@ class Tensor(TensorBase):
         dtype: Optional[torch.dtype] = None,
         min_int: int = 0,
         max_int: int = 1000,
+        requires_grad: bool = False,
     ) -> torch.Tensor:
 
         if dtype in [torch.float16, torch.bfloat16, torch.float32, torch.float64]:
-            torch_tensor = torch.rand(shape, dtype=dtype)
+            torch_tensor = torch.rand(shape, dtype=dtype, requires_grad=requires_grad)
         elif dtype in [torch.int8, torch.uint8, torch.int16, torch.int32, torch.int64]:
             if min_int == max_int:
                 torch_tensor = torch.full(size=shape, fill_value=max_int, dtype=dtype)
@@ -287,7 +289,7 @@ class Tensor(TensorBase):
         elif dtype == torch.bool:
             torch_tensor = torch.randint(low=0, high=2, size=shape, dtype=dtype)  # this will create boolean tensor
         elif dtype is None:
-            torch_tensor = torch.rand(shape, dtype=torch.float32)
+            torch_tensor = torch.rand(shape, dtype=torch.float32, requires_grad=requires_grad)
         else:
             raise RuntimeError(f"[create_torch_tensor] - Unsupported dtype {dtype}")
 
@@ -301,10 +303,11 @@ class Tensor(TensorBase):
         min_int: int = 0,
         max_int: int = 1000,
         constant: bool = False,
+        requires_grad: bool = False,
     ) -> "TensorFromPytorch":
 
         torch_tensor = Tensor.create_torch_tensor(
-            shape=tensor_shape, dtype=torch_dtype, min_int=min_int, max_int=max_int
+            shape=tensor_shape, dtype=torch_dtype, min_int=min_int, max_int=max_int, requires_grad=requires_grad
         )
 
         return TensorFromPytorch(
@@ -351,6 +354,10 @@ class TensorFromPytorch(Tensor):
     @property
     def requires_grad(self) -> bool:
         return self._value.requires_grad
+
+    @property
+    def grad(self) -> torch.Tensor:
+        return self._value.grad
 
     def set_requires_grad(self, requires_grad: bool):
         self._value.requires_grad = requires_grad
@@ -929,15 +936,13 @@ def get_constant_inputs(
 
 
 def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]) -> torch.Tensor:
-    import forge.op.eval.forge as eval_module
-
     consteval_graph = consteval_trace.get(name, None)
 
     if consteval_graph is None:
         return inputs[name]
 
-    def eval_op(op_type, inputs):
-        op = OpType(op_type["type"], op_type["attrs"], op_type["named_attrs"])
+    def eval_op(op_node, inputs):
+        op = Op(op_node["type"], op_node["attrs"])
         return op.eval(inputs)
 
     logger.debug("ConstEval graph: {}", name)
@@ -956,10 +961,10 @@ def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]
                 operand_tensor = node_to_tensor[operand]
                 if node.get("input_tms", None):
                     for tm in node["input_tms"][input_index]:
-                        operand_tensor = eval_op(tm["op_type"], [operand_tensor])
+                        operand_tensor = eval_op(tm["op"], [operand_tensor])
                 inputs_after_tms.append(operand_tensor)
 
-            output = eval_op(node["op_type"], inputs_after_tms)
+            output = eval_op(node["op"], inputs_after_tms)
             node_to_tensor[node_name] = output
 
         elif node["opcode"] == "Output":

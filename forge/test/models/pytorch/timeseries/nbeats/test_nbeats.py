@@ -40,6 +40,7 @@ def test_nbeats_with_seasonality_basis(variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2928")
 @pytest.mark.parametrize("variant", [ModelVariant.GENERIC_BASIS])
 def test_nbeats_with_generic_basis(variant):
 
@@ -64,6 +65,7 @@ def test_nbeats_with_generic_basis(variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2928")
 @pytest.mark.parametrize("variant", [ModelVariant.TREND_BASIS])
 def test_nbeats_with_trend_basis(variant):
 

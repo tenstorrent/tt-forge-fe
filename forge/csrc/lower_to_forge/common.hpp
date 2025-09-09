@@ -17,18 +17,6 @@
 namespace tt
 {
 
-using ForgeOpAttr = ::std::variant<
-    std::string,
-    bool,
-    int,
-    float,
-    std::vector<int>,
-    std::vector<std::tuple<int, int, int>>,
-    std::vector<std::tuple<int, int, int, int>>>;
-using ForgeOpAttrs = ::std::map<std::string, ForgeOpAttr>;
-
-std::ostream &operator<<(std::ostream &os, const ForgeOpAttr &attr);
-
 enum class ExpPrecision : uint8_t
 {
     A = 0,

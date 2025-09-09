@@ -21,7 +21,6 @@ namespace py = pybind11;
 #include "graph_lib/graph.hpp"
 #include "graph_lib/python_bindings.hpp"
 #include "lower_to_forge/common.hpp"
-#include "ops/op.hpp"
 #include "ops/python_bindings.hpp"
 #include "passes/amp.hpp"
 #include "passes/consteval.hpp"
@@ -29,7 +28,6 @@ namespace py = pybind11;
 #include "passes/fracture.hpp"
 #include "passes/mlir_compiler.hpp"
 #include "passes/passes_utils.hpp"
-#include "passes/python_bindings.hpp"
 #include "passes/split_graph.hpp"
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
@@ -134,9 +132,6 @@ PYBIND11_MODULE(_C, m)
 
     py::module_ m_autograd = m.def_submodule("autograd", "Submodule defining autograd_engine.");
     AutogradModule(m_autograd);
-
-    py::module_ m_passes = m.def_submodule("passes", "API to Forge Passes");
-    PassesModule(m_passes);
 
     py::module m_runtime = m.def_submodule("runtime", "Submodule defining runtime functions");
     RuntimeModule(m_runtime);

@@ -23,7 +23,7 @@ namespace resize_2d
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Resize2d, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "Resize2d expects 1 input tensor");
@@ -63,7 +63,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Resize2d, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "Resize2d expects 1 input shape");
@@ -111,7 +111,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -124,8 +124,7 @@ NodeContext backward(
     unreachable();
 }
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Resize2d, "Wrong op type.");
     TT_ASSERT(inputs.size() == 1, "Resize2d expects 1 input");
@@ -152,7 +151,7 @@ void decompose_initial(
     // operation
     if ((size_h == input_h) && (size_w == input_w))
     {
-        result = dc.op(graphlib::OpType("nop"), {result});
+        result = dc.op(Op(OpType::Nop), {result});
         dc.fuse(result);
         return;
     }
@@ -172,8 +171,8 @@ void decompose_initial(
     if (!channel_last)
     {
         // Changing the Layout from NCHW to NHWC as ttir.upsample2d supports only the NHWC layout
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
+        result = dc.op(Op(OpType::Transpose, {{"dim0", -3}, {"dim1", -2}}), {result});
+        result = dc.op(Op(OpType::Transpose, {{"dim0", -2}, {"dim1", -1}}), {result});
     }
 
     if (is_upsampling_height && is_upsampling_width)
@@ -186,11 +185,7 @@ void decompose_initial(
         scale_factor.push_back(size_h / input_h);
         scale_factor.push_back(size_w / input_w);
         result = dc.op(
-            graphlib::OpType(
-                "upsample2d",
-                {scale_factor, mode, true},
-                {{"scale_factor", scale_factor}, {"mode", mode}, {"channel_last", true}}),
-            {result});
+            Op(OpType::Upsample2d, {{"scale_factor", scale_factor}, {"mode", mode}, {"channel_last", true}}), {result});
     }
     else
     {
@@ -200,9 +195,8 @@ void decompose_initial(
         // int scale_factor = channel_last ? static_cast<int>(input_shape[input_shape.size() - 3]) / sizes[0]
         //                                 : static_cast<int>(input_shape[input_shape.size() - 2]) / sizes[0];
         // result = dc.op(
-        //     graphlib::OpType(
+        //     Op(
         //         "downsample2d",
-        //         {scale_factor, resize_method, true},
         //         {{"scale_factor", scale_factor}, {"mode", resize_method}, {"channel_last", true}}),
         //     {result});
     }
@@ -210,8 +204,8 @@ void decompose_initial(
     if (!channel_last)
     {
         // Changing the Layout back to NCHW from NHWC after operation
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
+        result = dc.op(Op(OpType::Transpose, {{"dim0", -2}, {"dim1", -1}}), {result});
+        result = dc.op(Op(OpType::Transpose, {{"dim0", -3}, {"dim1", -2}}), {result});
     }
 
     dc.fuse(result);

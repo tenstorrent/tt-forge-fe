@@ -21,7 +21,7 @@ namespace sqrt
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Sqrt, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "Sqrt should have one input");
@@ -31,7 +31,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Sqrt, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "Sqrt should have one input");
@@ -41,7 +41,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -55,9 +55,9 @@ NodeContext backward(
     TT_ASSERT(op.attrs().size() == 0, "Sqrt should not have any attributes");
 
     auto constant_half = ac.autograd->create_constant(ac, 0.5f);
-    auto reciprocal = ac.autograd->create_op(ac, graphlib::OpType("reciprocal"), {output});
-    auto mult = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {reciprocal, constant_half});
-    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {mult, gradient});
+    auto reciprocal = ac.autograd->create_op(ac, Op(OpType::Reciprocal), {output});
+    auto mult = ac.autograd->create_op(ac, Op(OpType::Multiply), {reciprocal, constant_half});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {mult, gradient});
 }
 
 }  // namespace sqrt

@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 from typing import Union, Tuple
 
+from forge._C.ops import OpType
 from ..tensor import Tensor
 from ..parameter import Parameter
 from .common import ForgeOp as op
@@ -38,7 +39,7 @@ def MaxPool1d(
     assert type(padding) is int, f"Unsupported arg type: type of padding ({type(padding)}) != int"
 
     return op(
-        "max_pool1d",
+        OpType.MaxPool1d,
         name,
         activations,
         kernel_size=kernel_size,
@@ -100,7 +101,7 @@ def MaxPool2d(
     padding = [padding[2], padding[0], padding[3], padding[1]]
 
     return op(
-        "max_pool2d",
+        OpType.MaxPool2d,
         name,
         activations,
         kernel=kernel_size,
@@ -153,7 +154,7 @@ def AvgPool1d(
 
     dilation = 1  # Only as place holder to standardize interface with MaxPool2d
     return op(
-        "avg_pool1d",
+        OpType.AvgPool1d,
         name,
         activations,
         kernel_size=kernel_size[0],
@@ -215,7 +216,7 @@ def AvgPool2d(
     dilation = (1, 1)
 
     return op(
-        "avg_pool2d",
+        OpType.AvgPool2d,
         name,
         activations,
         kernel=kernel_size,

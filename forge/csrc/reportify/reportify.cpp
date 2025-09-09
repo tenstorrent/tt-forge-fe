@@ -177,9 +177,11 @@ json node_to_json(const graphlib::Node* node, const graphlib::Graph* graph)
     {
         const graphlib::PyOpNode* opnode = node->as<graphlib::PyOpNode>();
         ret_json["ir"] = "forge";
-        ret_json["class"] = opnode->op_type().as_string();
-        ret_json["type"] = opnode->op_type().name();
-        to_json(ret_json, opnode->op_type());
+        std::stringstream ss;
+        ss << opnode->op();
+        ret_json["class"] = ss.str();
+        ret_json["type"] = opnode->op().as_string();
+        to_json(ret_json, opnode->op());
         ret_json["gradient_op"] = opnode->is_gradient_op();
     }
     else if (node->node_type() == graphlib::NodeType::kQueue)
@@ -202,7 +204,7 @@ json node_to_json(const graphlib::Node* node, const graphlib::Graph* graph)
     // Record input TMs, if any, on the input edges
     for (graphlib::Edge e : graph->operand_data_edges(node))
     {
-        std::vector<graphlib::OpType> tms = graph->get_edge_attributes(e)->get_tms();
+        std::vector<ops::Op> tms = graph->get_edge_attributes(e)->get_tms();
         ret_json["input_tms"][e.consumer_input_port_id] = json::array();
         if (tms.size() > 0)
         {

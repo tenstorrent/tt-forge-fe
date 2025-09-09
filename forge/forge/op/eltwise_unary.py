@@ -5,6 +5,7 @@ from typing import Union
 import torch
 
 from forge._C import DataFormat
+from forge._C.ops import OpType
 from ..tensor import Tensor, pytorch_dtype_to_forge_dataformat
 from .common import ForgeOp as op
 
@@ -27,7 +28,7 @@ def Abs(name: str, operandA: Tensor) -> Tensor:
         Forge tensor
     """
 
-    return op("abs", name, operandA).get_tensor()
+    return op(OpType.Abs, name, operandA).get_tensor()
 
 
 def Cast(name: str, operandA: Tensor, dtype: Union[torch.dtype, DataFormat]) -> Tensor:
@@ -51,7 +52,7 @@ def Cast(name: str, operandA: Tensor, dtype: Union[torch.dtype, DataFormat]) -> 
         Forge tensor
     """
     dtype = pytorch_dtype_to_forge_dataformat(dtype)
-    return op("cast", name, operandA, dtype=dtype).get_tensor(out_df=dtype)
+    return op(OpType.Cast, name, operandA, dtype=dtype).get_tensor(out_df=dtype)
 
 
 def Exp(name: str, operandA: Tensor) -> Tensor:
@@ -73,7 +74,7 @@ def Exp(name: str, operandA: Tensor) -> Tensor:
         Forge tensor
     """
 
-    return op("exp", name, operandA).get_tensor()
+    return op(OpType.Exp, name, operandA).get_tensor()
 
 
 def Log(name: str, operandA: Tensor) -> Tensor:
@@ -96,7 +97,7 @@ def Log(name: str, operandA: Tensor) -> Tensor:
         Forge tensor
     """
 
-    return op("log", name, operandA).get_tensor()
+    return op(OpType.Log, name, operandA).get_tensor()
 
 
 def Pow(name: str, operandA: Tensor, exponent: Union[int, float]) -> Tensor:
@@ -119,7 +120,7 @@ def Pow(name: str, operandA: Tensor, exponent: Union[int, float]) -> Tensor:
         Forge tensor
     """
 
-    return op("pow", name, operandA, exponent=exponent).get_tensor()
+    return op(OpType.Pow, name, operandA, exponent=exponent).get_tensor()
 
 
 def Identity(name: str, operandA: Tensor, unsqueeze: str = None, unsqueeze_dim: int = None) -> Tensor:
@@ -148,9 +149,9 @@ def Identity(name: str, operandA: Tensor, unsqueeze: str = None, unsqueeze_dim: 
     """
 
     if unsqueeze == None and unsqueeze_dim == None:
-        return op("nop", name, operandA).get_tensor()
+        return op(OpType.Nop, name, operandA).get_tensor()
     else:
-        return op("nop", name, operandA, unsqueeze=unsqueeze, unsqueeze_dim=unsqueeze_dim).get_tensor()
+        return op(OpType.Nop, name, operandA, unsqueeze=unsqueeze, unsqueeze_dim=unsqueeze_dim).get_tensor()
 
 
 def Reciprocal(name: str, operandA: Tensor) -> Tensor:
@@ -172,7 +173,7 @@ def Reciprocal(name: str, operandA: Tensor) -> Tensor:
         Forge tensor
     """
 
-    return op("reciprocal", name, operandA).get_tensor()
+    return op(OpType.Reciprocal, name, operandA).get_tensor()
 
 
 def Sqrt(name: str, operandA: Tensor) -> Tensor:
@@ -194,7 +195,7 @@ def Sqrt(name: str, operandA: Tensor) -> Tensor:
         Forge tensor
     """
 
-    return op("sqrt", name, operandA).get_tensor()
+    return op(OpType.Sqrt, name, operandA).get_tensor()
 
 
 def Relu(name: str, operandA: Tensor) -> Tensor:
@@ -216,7 +217,7 @@ def Relu(name: str, operandA: Tensor) -> Tensor:
         Forge tensor
     """
 
-    return op("relu", name, operandA).get_tensor()
+    return op(OpType.Relu, name, operandA).get_tensor()
 
 
 def LeakyRelu(name: str, operandA: Tensor, alpha: float) -> Tensor:
@@ -241,7 +242,7 @@ def LeakyRelu(name: str, operandA: Tensor, alpha: float) -> Tensor:
         Forge tensor
     """
 
-    return op("leaky_relu", name, operandA, attrs=(alpha,), parameter=alpha).get_tensor()
+    return op(OpType.LeakyRelu, name, operandA, parameter=alpha).get_tensor()
 
 
 def Gelu(name: str, operandA: Tensor, approximate="none") -> Tensor:
@@ -267,7 +268,7 @@ def Gelu(name: str, operandA: Tensor, approximate="none") -> Tensor:
         Forge tensor
     """
 
-    return op("gelu", name, operandA, attrs=(approximate,), approximate=approximate).get_tensor()
+    return op(OpType.Gelu, name, operandA, approximate=approximate).get_tensor()
 
 
 def Sigmoid(name: str, operandA: Tensor) -> Tensor:
@@ -288,7 +289,7 @@ def Sigmoid(name: str, operandA: Tensor) -> Tensor:
         Forge tensor
     """
 
-    return op("sigmoid", name, operandA).get_tensor()
+    return op(OpType.Sigmoid, name, operandA).get_tensor()
 
 
 def Clip(name: str, operandA: Tensor, min: float, max: float) -> Tensor:
@@ -315,7 +316,7 @@ def Clip(name: str, operandA: Tensor, min: float, max: float) -> Tensor:
         Forge tensor
     """
 
-    return op("clip", name, operandA, min=min, max=max).get_tensor()
+    return op(OpType.Clip, name, operandA, min=min, max=max).get_tensor()
 
 
 def Sine(name: str, operandA: Tensor) -> Tensor:
@@ -336,7 +337,7 @@ def Sine(name: str, operandA: Tensor) -> Tensor:
         Forge tensor
     """
 
-    return op("sine", name, operandA).get_tensor()
+    return op(OpType.Sine, name, operandA).get_tensor()
 
 
 def Atan(name: str, operandA: Tensor) -> Tensor:
@@ -357,7 +358,7 @@ def Atan(name: str, operandA: Tensor) -> Tensor:
         Forge tensor
     """
 
-    return op("atan", name, operandA).get_tensor()
+    return op(OpType.Atan, name, operandA).get_tensor()
 
 
 def Cosine(name: str, operandA: Tensor) -> Tensor:
@@ -378,7 +379,7 @@ def Cosine(name: str, operandA: Tensor) -> Tensor:
         Forge tensor
     """
 
-    return op("cosine", name, operandA).get_tensor()
+    return op(OpType.Cosine, name, operandA).get_tensor()
 
 
 def Tanh(name: str, operandA: Tensor) -> Tensor:
@@ -400,7 +401,7 @@ def Tanh(name: str, operandA: Tensor) -> Tensor:
         Forge tensor
     """
 
-    return op("tanh", name, operandA).get_tensor()
+    return op(OpType.Tanh, name, operandA).get_tensor()
 
 
 def LogicalNot(name: str, operandA: Tensor) -> Tensor:
@@ -422,7 +423,7 @@ def LogicalNot(name: str, operandA: Tensor) -> Tensor:
         Forge tensor
     """
 
-    return op("logical_not", name, operandA).get_tensor()
+    return op(OpType.LogicalNot, name, operandA).get_tensor()
 
 
 def Erf(name: str, operandA: Tensor) -> Tensor:
@@ -443,4 +444,4 @@ def Erf(name: str, operandA: Tensor) -> Tensor:
         Forge tensor
     """
 
-    return op("erf", name, operandA).get_tensor()
+    return op(OpType.Erf, name, operandA).get_tensor()
