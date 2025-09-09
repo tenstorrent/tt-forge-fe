@@ -1,0 +1,143 @@
+name: Download Artifact
+description: |
+  Download an artifact from a GitHub workflow run and extract it to a specified path.
+  Uses the GitHub CLI (`gh run download`). Retries on failure.
+
+inputs:
+  name:
+    description: 'Name of the artifact to download'
+    required: true
+  path:
+    description: 'Path where to download the artifact (must be within the workspace)'
+    required: false
+  repository:
+    description: 'Repository from which to download the artifact (format: owner/repo)'
+    required: false
+    default: ${{ github.repository }}
+  run_id:
+    description: 'Run ID of the workflow run from which to download the artifact'
+    required: false
+    default: ${{ github.run_id }}
+  retry_count:
+    description: 'Number of times to retry download if it fails'
+    required: false
+    default: '3'
+  retry_wait:
+    description: 'Time to wait between retries in seconds'
+    required: false
+    default: '10'
+  github_token:
+    description: 'GitHub token used for authentication'
+    required: false
+    default: ${{ github.token }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Ensure gh CLI and unzip/tar are available
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        if ! command -v gh >/dev/null 2>&1; then
+          echo "gh CLI not found — attempting to install (Debian/Ubuntu) ..."
+          if [ -f /etc/debian_version ]; then
+            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg >/dev/null 2>&1
+            sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+            sudo apt update
+            sudo apt install -y gh unzip tar
+          else
+            echo "Runner is not Debian-like and gh was not found. Please ensure 'gh' is available on the runner."
+            exit 1
+          fi
+        fi
+
+    - name: Download and extract artifact
+      shell: bash
+      env:
+        ARTIFACT_NAME: ${{ inputs.name }}
+        DOWNLOAD_PATH: ${{ inputs.path }}
+        REPOSITORY: ${{ inputs.repository }}
+        RUN_ID: ${{ inputs.run_id }}
+        RETRY_COUNT: ${{ inputs.retry_count }}
+        RETRY_WAIT: ${{ inputs.retry_wait }}
+        GITHUB_WORKSPACE: ${{ github.workspace }}
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      run: |
+        set -euo pipefail
+
+        # Authenticate gh with token (if not already authenticated)
+        if ! gh auth status >/dev/null 2>&1; then
+          if [ -z "${GITHUB_TOKEN:-}" ]; then
+            echo "Error: GITHUB_TOKEN is not set, cannot authenticate gh."
+            exit 1
+          fi
+          echo "${GITHUB_TOKEN}" | gh auth login --with-token
+        fi
+
+        # Resolve download path
+        if [ -z "${DOWNLOAD_PATH:-}" ]; then
+          path="${GITHUB_WORKSPACE}"
+        else
+          path=$(realpath -m "${DOWNLOAD_PATH}")
+        fi
+
+        # Ensure path is inside workspace
+        case "$path" in
+          "${GITHUB_WORKSPACE}"* ) ;;
+          *)
+            echo "Error: download path must be inside the GitHub workspace: ${GITHUB_WORKSPACE}"
+            exit 1
+            ;;
+        esac
+
+        if [ "$path" != "${GITHUB_WORKSPACE}" ]; then
+          echo "Preparing download directory: $path"
+          rm -rf -- "$path"
+          mkdir -p -- "$path"
+        fi
+
+        download_with_gh() {
+          echo "Running: gh run download ${RUN_ID} --repo ${REPOSITORY} --name ${ARTIFACT_NAME} --dir ${path}"
+          if ! gh run download "${RUN_ID}" --repo "${REPOSITORY}" --name "${ARTIFACT_NAME}" --dir "${path}"; then
+            echo "gh run download failed"
+            return 1
+          fi
+
+          # Extract any inner zip/tar files
+          shopt -s nullglob
+          for file in "${path}"/*; do
+            case "$file" in
+              *.zip)
+                echo "Unzipping: $file"
+                unzip -o "$file" -d "$path" && rm -f "$file"
+                ;;
+              *.tar|*.tar.gz|*.tgz|*.tar.bz2|*.tar.xz)
+                echo "Extracting tar: $file"
+                tar -xf "$file" -C "$path" && rm -f "$file"
+                ;;
+            esac
+          done
+          shopt -u nullglob
+          return 0
+        }
+
+        success=false
+        for attempt in $(seq 1 "${RETRY_COUNT}"); do
+          echo "Attempt $attempt of ${RETRY_COUNT}..."
+          if download_with_gh; then
+            success=true
+            break
+          else
+            echo "Attempt $attempt failed. Retrying in ${RETRY_WAIT} seconds..."
+            sleep "${RETRY_WAIT}"
+          fi
+        done
+
+        if [ "$success" = false ]; then
+          echo "Failed to download artifact '${ARTIFACT_NAME}' from run ${RUN_ID} in ${REPOSITORY} after ${RETRY_COUNT} attempts."
+          exit 1
+        fi
+
+        echo "Artifact downloaded and extracted successfully to ${path}"

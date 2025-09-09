@@ -163,7 +163,7 @@ jobs:
       - name: Download Generated Models Ops Tests
         if: ${{ inputs.run_models_ops_tests }}
         continue-on-error: true
-        uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
+        uses: tenstorrent/tt-forge-fe/.github/actions/download-artifact@pchandrasekaran/test_model_analysis
         with:
           name: generated-models-ops-tests
           run_id: ${{ inputs.run_id }}

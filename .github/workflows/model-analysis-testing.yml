@@ -1,0 +1,67 @@
+name: Model Analysis Testing
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["pchandrasekaran/test_model_analysis"]
+
+permissions:
+  packages: write
+  checks: write
+
+jobs:
+
+  docker-build:
+    uses: ./.github/workflows/build-image.yml
+    secrets: inherit
+
+  run-models-ops-tests:
+    needs:
+      - docker-build
+
+    runs-on: ["in-service", "n150" ]
+
+    container:
+      image: ${{ needs.docker-build.outputs.docker-image }}
+      options: --device /dev/tenstorrent/0
+      volumes:
+        - /dev/hugepages:/dev/hugepages
+        - /dev/hugepages-1G:/dev/hugepages-1G
+        - /etc/udev/rules.d:/etc/udev/rules.d
+        - /lib/modules:/lib/modules
+        - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+        - /mnt/dockercache:/mnt/dockercache
+
+    steps:
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+          echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
+
+      - name: Git safe dir
+        run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
+
+      - uses: actions/checkout@v4
+        with:
+            submodules: recursive
+            fetch-depth: 0 # Fetch all history and tags
+            token: ${{ secrets.GH_TOKEN }}
+
+      # Clean everything from submodules (needed to avoid issues
+      # with cmake generated files leftover from previous builds)
+      - name: Cleanup submodules
+        run: |
+            git submodule foreach --recursive git clean -ffdx
+            git submodule foreach --recursive git reset --hard
+
+      - name: Download Generated Models Ops Tests
+        continue-on-error: true
+        uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
+        with:
+          name: generated-models-ops-tests
+          run_id: 17286243878
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          path: forge/test/models_ops
