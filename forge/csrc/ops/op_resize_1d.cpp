@@ -76,16 +76,6 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     const size_t rank = input_shape.size();
     size_t w_idx = channel_last ? rank - 2 : rank - 1;
 
-    int input_w = static_cast<int>(input_shape[w_idx]);
-
-    // Determine whether it is upsample or downsample
-    bool is_upsampling = (size >= input_w);
-
-    if (is_upsampling)
-        TT_ASSERT((size % input_w == 0), "Only support upsample with integer scale factor");
-    else
-        TT_ASSERT((input_w % size == 0), "Only support downsample with integer scale factor");
-
     std::vector<uint32_t> output_shape = input_shape;
     output_shape[w_idx] = static_cast<uint32_t>(size);
 
@@ -134,11 +124,19 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
 
     // Determine whether it is upsample or downsample
     bool is_upsampling = (size >= input_w);
-    if (!is_upsampling)
+
+    // Decompose resize1d op with nearest interpolation into repeat_interleave/conv2d ops if it is downsampling or
+    // floating scalar factor(i.e output_size % width !=0) because the ttnn.upsample op only accepts integer scalar
+    // factor
+    if (mode == "nearest" && ((size % input_w != 0) || (!is_upsampling)))
     {
-        TT_THROW("Resize1d doesn't support downsampling");
-        unreachable();
+        std::vector<int> sizes = {size};
+        tt::ops::op_common::decompose_nearest_interpolation(dc, result, sizes, channel_last);
+        return;
     }
+
+    // Downsampling is not supported for other interpolation modes(i.e linear)
+    TT_ASSERT(is_upsampling, "OpType::Resize1d doesn't support downsampling for {} interpolation mode", mode);
 
     // ---------------------------------------------------------------------
     // Decompose resize1d into upsample2d by inserting a singleton spatial dim
@@ -167,6 +165,8 @@ void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<N
         result = dc.op(Op(OpType::Transpose, {{"dim0", -2}, {"dim1", -1}}), {result});
     }
 
+    // TTNN upsample op doesn't support align_corners parameter
+    // Issue Link: https://github.com/tenstorrent/tt-metal/issues/27001
     TT_ASSERT(
         (mode == "nearest") || (mode == "linear" && !align_corners),
         "align_corners argument not supported in upsample2d op with {} interpolation mode",
