@@ -59,7 +59,7 @@ def test_whisper_large_v3_speech_translation(variant):
     loader = ModelLoader(variant=variant)
     model = loader.load_model()
     input_features = loader.load_inputs()
-    framework_model = Wrapper(framework_model)
+    framework_model = Wrapper(model)
 
     # Get decoder inputs
     decoder_input_ids = torch.tensor([[1, 1]]) * model.config.decoder_start_token_id

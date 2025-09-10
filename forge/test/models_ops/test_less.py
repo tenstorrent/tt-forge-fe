@@ -131,6 +131,16 @@ class Less10(ForgeModule):
         return less_output_1
 
 
+class Less11(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("less11_const_0", shape=(1, 256), dtype=torch.float32)
+
+    def forward(self, less_input_1):
+        less_output_1 = forge.op.Less("", self.get_constant("less11_const_0"), less_input_1)
+        return less_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -333,6 +343,7 @@ forge_modules_and_shapes_dtypes_list = [
             "default_df_override": "Float16_b",
         },
     ),
+    (Less11, [((1, 256), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
 ]
 
 

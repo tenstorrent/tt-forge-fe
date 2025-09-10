@@ -14,8 +14,6 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.deepcogito.model_utils.model import CogitoWrapper
-
 
 @pytest.mark.out_of_memory
 @pytest.mark.xfail
@@ -35,9 +33,8 @@ def test_cogito_generation(variant):
 
     # Load model and inputs
     loader = ModelLoader(variant=variant)
-    model = loader.load_model()
-    framework_model = CogitoWrapper(model)
-    framework_model.eval()
+    framework_model = loader.load_model()
+    framework_model.config.return_dict = False
     inputs_dict = loader.load_inputs()
     sample_inputs = [inputs_dict["input_ids"]]
 

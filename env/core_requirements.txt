@@ -2,15 +2,15 @@ setuptools>=61
 # This is needed to avoid issue https://yyz-gitlab.local.tenstorrent.com/devops/devops/-/issues/95
 # jax requires any version of optax which requires any version of chex which in turn
 # requires jax>=0.4.6 which conflicts with our jax == 0.3.16
-# TODO: Remove when jax library is upgraded
-chex==0.1.6
+# JAX 0.7 compatible dependencies
+chex>=0.1.7
 dataclasses-json==0.5.7
 datasets==2.14.6
 decorator==5.1.1
 flatbuffers==24.3.25
 # This is needed to prevent AttributeError: module 'ml_dtypes' has no attribute 'float8_e4m3b11'
-flax==0.10.6
-jax==0.6.1
+flax>=0.10.6
+jax==0.7.1
 loguru==0.5.3
 networkx==2.8.5
 numpy==1.26.4
@@ -33,7 +33,7 @@ ultralytics==8.3.91
 paddlepaddle==2.6.2
 paddlenlp==2.8.1
 aistudio-sdk==0.2.6
-pytorch_forecasting==1.0.0
+pytorch_forecasting
 patool
 openpyxl==3.1.5
 GitPython==3.1.44
@@ -43,6 +43,6 @@ ase==3.24.0
 hippynn==0.0.3
 bi-lstm-crf==0.2.1
 peft
-pyclipper==1.3.0
+pyclipper>=1.3.0
 shapely==2.1.1
 pyarrow==20.0.0

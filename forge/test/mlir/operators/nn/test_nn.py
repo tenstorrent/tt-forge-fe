@@ -210,6 +210,55 @@ def test_interpolate(shape, mode, scale_factor):
 
 
 @pytest.mark.parametrize(
+    "scale_factor_or_size",
+    [
+        0.5,
+        2.6,
+        (9, 5),
+        (3, 14),
+        (19, 25),
+        (3, 5),
+        (11,),
+        (15,),
+        (5,),
+        (3,),
+    ],
+)
+@pytest.mark.parametrize(
+    "input_shape",
+    [
+        (1, 3, 7),
+        (1, 3, 5, 7),
+    ],
+)
+@pytest.mark.push
+def test_resize2d_nearest_interpolation(input_shape, scale_factor_or_size):
+
+    if isinstance(scale_factor_or_size, tuple) and (
+        (len(scale_factor_or_size) == 2 and len(input_shape) != 4)
+        or (len(scale_factor_or_size) == 1 and len(input_shape) != 3)
+    ):
+        pytest.skip("Invalid Config")
+
+    class Resize(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            if isinstance(scale_factor_or_size, float):
+                return nn.functional.interpolate(x, scale_factor=scale_factor_or_size, mode="nearest")
+            else:
+                return nn.functional.interpolate(x, size=scale_factor_or_size, mode="nearest")
+
+    inputs = [torch.rand(input_shape)]
+
+    framework_model = Resize()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
     "input_shape, target_height, target_width",
     [
         pytest.param(
