@@ -277,6 +277,8 @@ tt::graphlib::NodeContext decompose_constant_mode(
 
     return concat_patches(context, top_pad.get(), result, bot_pad.get(), params.height_dim);
 }
+void decompose_nearest_interpolation(
+    tt::DecomposingContext &dc, const tt::graphlib::NodeContext &activation, std::vector<int> sizes, bool channel_last);
 
 }  // namespace op_common
 }  // namespace ops
