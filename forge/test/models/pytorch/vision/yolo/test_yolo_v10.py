@@ -23,7 +23,9 @@ from forge.verify.verify import verify
 from test.models.pytorch.vision.yolo.model_utils.yolo_utils import YoloWrapper
 
 variants = [
-    ModelVariant.YOLOV10X,
+    pytest.param(
+        ModelVariant.YOLOV10X, marks=pytest.mark.my_check
+        ),
     ModelVariant.YOLOV10N,
 ]
 
