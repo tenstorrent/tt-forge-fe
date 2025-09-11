@@ -2955,6 +2955,15 @@ class Index325(ForgeModule):
         return index_output_1
 
 
+class Index326(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=24, stride=1)
+        return index_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -13782,6 +13791,60 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "default_df_override": "Float16_b",
             "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index171,
+        [((1, 24, 44, 128), torch.float32)],
+        {
+            "model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index172,
+        [((1, 24, 44, 128), torch.float32)],
+        {
+            "model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index171,
+        [((1, 8, 44, 128), torch.float32)],
+        {
+            "model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index172,
+        [((1, 8, 44, 128), torch.float32)],
+        {
+            "model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index30,
+        [((1, 1876, 768), torch.float32)],
+        {
+            "model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index326,
+        [((1, 600, 768), torch.float32)],
+        {
+            "model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "24", "stride": "1"},
         },
     ),
 ]

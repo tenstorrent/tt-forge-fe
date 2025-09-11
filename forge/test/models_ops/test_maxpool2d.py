@@ -3914,6 +3914,30 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
+    pytest.param(
+        (
+            Maxpool2D3,
+            [((1, 64, 608, 784), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "2",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /proj_sw/user_dev/pchandrasekaran/Forge3/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 75669504 B L1 buffer across 64 banks, where each bank needs to store 1182336 B"
+            )
+        ],
+    ),
 ]
 
 

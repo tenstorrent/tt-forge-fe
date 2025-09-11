@@ -49,6 +49,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf"], "pcc": 0.99},
     ),
     (Equal0, [((1, 596), torch.int64)], {"model_names": ["pt_llava_1_5_7b_cond_gen_hf"], "pcc": 0.99}),
+    (Equal0, [((1, 1, 256), torch.int64)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
 ]
 
 

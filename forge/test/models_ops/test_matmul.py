@@ -2003,6 +2003,16 @@ class Matmul158(ForgeModule):
         return matmul_output_1
 
 
+class Matmul159(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("matmul159_const_1", shape=(1, 1, 44), dtype=torch.float32)
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul159_const_1"))
+        return matmul_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -5498,6 +5508,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_albert_imdb_seq_cls_hf",
                 "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
                 "onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf",
+                "pt_speecht5_tts_tts_text_to_speech_hf",
             ],
             "pcc": 0.99,
         },
@@ -9639,12 +9650,24 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Matmul2,
         [((12, 1, 64), torch.float32), ((12, 64, 1), torch.float32)],
-        {"model_names": ["onnx_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99},
+        {
+            "model_names": [
+                "onnx_whisper_openai_whisper_small_speech_recognition_hf",
+                "pt_speecht5_tts_tts_text_to_speech_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Matmul2,
         [((12, 1, 1), torch.float32), ((12, 1, 64), torch.float32)],
-        {"model_names": ["onnx_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99},
+        {
+            "model_names": [
+                "onnx_whisper_openai_whisper_small_speech_recognition_hf",
+                "pt_speecht5_tts_tts_text_to_speech_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Matmul2,
@@ -14478,6 +14501,121 @@ forge_modules_and_shapes_dtypes_list = [
         Matmul2,
         [((1, 101, 384), torch.float32), ((384, 51865), torch.float32)],
         {"model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((44, 3072), torch.float32), ((3072, 3072), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul159,
+        [((1, 64, 1), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((44, 3072), torch.float32), ((3072, 1024), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((24, 44, 128), torch.float32), ((24, 128, 44), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((24, 44, 44), torch.float32), ((24, 44, 128), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((44, 3072), torch.float32), ((3072, 8192), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 44, 8192), torch.float32), ((8192, 3072), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 44, 3072), torch.float32), ((3072, 128256), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 1, 80), torch.float32), ((80, 256), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 1, 256), torch.float32), ((256, 256), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 1, 256), torch.float32), ((256, 768), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 1, 768), torch.float32), ((768, 768), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((24, 768), torch.float32), ((768, 768), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((12, 24, 64), torch.float32), ((12, 64, 24), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((24, 12, 64), torch.float32), ((24, 64, 24), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((12, 24, 24), torch.float32), ((12, 24, 64), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 24, 768), torch.float32), ((768, 3072), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 24, 3072), torch.float32), ((3072, 768), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((12, 1, 64), torch.float32), ((12, 64, 24), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((12, 1, 24), torch.float32), ((12, 24, 64), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 1, 768), torch.float32), ((768, 3072), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 1, 3072), torch.float32), ((3072, 768), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 1, 768), torch.float32), ((768, 160), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
     ),
 ]
 
