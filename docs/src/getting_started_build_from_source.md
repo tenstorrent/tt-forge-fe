@@ -118,7 +118,6 @@ This section goes over additional required dependencies. You may wish to check i
 sudo apt install -y \
     g++ \
     libstdc++-12-dev \
-    libgmock-dev \
     libnuma-dev \
     libhwloc-dev \
     doxygen \
@@ -130,13 +129,6 @@ sudo apt install -y \
 ```bash
 wget -q https://github.com/dmakoviichuk-tt/mpi-ulfm/releases/download/v5.0.7-ulfm/openmpi-ulfm_5.0.7-1_amd64.deb -O /tmp/openmpi-ulfm.deb && \
 sudo apt install -y /tmp/openmpi-ulfm.deb
-```
-
-3. Export environment variables:
-
-```bash
-export PATH=/opt/openmpi-v5.0.7-ulfm/bin:$PATH
-export LD_LIBRARY_PATH=/opt/openmpi-v5.0.7-ulfm/lib:$LD_LIBRARY_PATH
 ```
 
 ## Building the Environment
@@ -173,7 +165,7 @@ source env/activate
 5. Initialize and update submodules:
 
 ```bash
-sudo git submodule update --init --recursive -f
+git submodule update --init --recursive -f
 ```
 
 6. Build the environment:
