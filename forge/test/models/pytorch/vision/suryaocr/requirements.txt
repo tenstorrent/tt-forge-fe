@@ -1,1 +1,2 @@
+pillow
 surya-ocr==0.15.4
