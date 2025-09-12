@@ -23,7 +23,7 @@ variants = [
     ModelVariant.GHOSTNET_100_IN1K,
     pytest.param(
         ModelVariant.GHOSTNETV2_100_IN1K,
-        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/1656")],
+        marks=[pytest.mark.xfail],
     ),
 ]
 
@@ -39,6 +39,8 @@ def test_ghostnet_timm(variant):
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
     )
+    if variant == ModelVariant.GHOSTNETV2_100_IN1K :
+        pytest.xfail("https://github.com/tenstorrent/tt-forge-fe/issues/2940")
 
     # Load model and inputs
     loader = ModelLoader(variant=variant)
