@@ -29,7 +29,9 @@ from forge.verify.verify import verify
 variants_img_classification = [
     ModelVariant.MIT_B0,
     ModelVariant.MIT_B1,
-    ModelVariant.MIT_B2,
+    pytest.param(
+        ModelVariant.MIT_B2, marks=pytest.mark.my_check
+        ),
     ModelVariant.MIT_B3,
     ModelVariant.MIT_B4,
     ModelVariant.MIT_B5,

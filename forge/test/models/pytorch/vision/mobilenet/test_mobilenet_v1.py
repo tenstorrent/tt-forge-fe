@@ -57,7 +57,12 @@ def test_mobilenetv1_basic(variant):
     loader.print_cls_results(co_out)
 
 
-variants = [ModelVariant.MOBILENET_V1_075_192_HF, ModelVariant.MOBILENET_V1_100_224_HF]
+variants = [
+    ModelVariant.MOBILENET_V1_075_192_HF, 
+    pytest.param(
+        ModelVariant.MOBILENET_V1_100_224_HF, marks=pytest.mark.my_check
+        ),
+    ]
 
 
 @pytest.mark.nightly
