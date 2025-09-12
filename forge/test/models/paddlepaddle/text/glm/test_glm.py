@@ -13,11 +13,13 @@ from forge.forge_property_utils import Framework, Source, Task, ModelArch, recor
 
 from paddlenlp.transformers import GLMTokenizer, GLMForConditionalGeneration
 
-variants = ["THUDM/glm-515m", "THUDM/glm-2b", "THUDM/glm-large-chinese"]
+variants = ["THUDM/glm-515m",
+            pytest.param("THUDM/glm-2b", marks=[pytest.mark.crash_test]),
+            "THUDM/glm-large-chinese"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail()
+# @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_glm(variant):
     # Record Forge properties
