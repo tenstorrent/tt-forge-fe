@@ -10,7 +10,7 @@ license = { file = "LICENSE" }
 authors = [
   { name = "Tenstorrent", email = "info@tenstorrent.com" }
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 keywords = ["forge", "machine learning", "tenstorrent"]
 
 classifiers = [
