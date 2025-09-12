@@ -5444,6 +5444,28 @@ class Add468(ForgeModule):
         return add_output_1
 
 
+class Add469(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("add469_const_1", shape=(1, 1, 44, 44), dtype=torch.float32)
+
+    def forward(self, add_input_0):
+        add_output_1 = forge.op.Add("", add_input_0, self.get_constant("add469_const_1"))
+        return add_output_1
+
+
+class Add470(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "add470.weight_1", forge.Parameter(*(80,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+        )
+
+    def forward(self, add_input_0):
+        add_output_1 = forge.op.Add("", add_input_0, self.get_parameter("add470.weight_1"))
+        return add_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -8770,6 +8792,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pd_densenet_121_img_cls_paddlemodels",
                 "pd_resnet_152_img_cls_paddlemodels",
                 "pd_resnet_50_img_cls_paddlemodels",
+                "pt_speecht5_tts_tts_text_to_speech_hf",
             ],
             "pcc": 0.99,
         },
@@ -8788,6 +8811,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pd_densenet_121_img_cls_paddlemodels",
                 "pd_resnet_152_img_cls_paddlemodels",
                 "pd_resnet_50_img_cls_paddlemodels",
+                "pt_speecht5_tts_tts_text_to_speech_hf",
             ],
             "pcc": 0.99,
         },
@@ -12069,6 +12093,11 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Add0,
+        [((16,), torch.bfloat16), ((1,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
         Add86,
         [((16,), torch.bfloat16)],
         {
@@ -12118,6 +12147,11 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "default_df_override": "Float16_b",
         },
+    ),
+    (
+        Add86,
+        [((16,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
         Add0,
@@ -12250,6 +12284,11 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Add0,
+        [((32,), torch.bfloat16), ((1,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
         Add87,
         [((32,), torch.bfloat16)],
         {
@@ -12354,6 +12393,11 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "default_df_override": "Float16_b",
         },
+    ),
+    (
+        Add87,
+        [((32,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
         Add0,
@@ -12581,6 +12625,11 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Add0,
+        [((64,), torch.bfloat16), ((1,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
         Add88,
         [((64,), torch.bfloat16)],
         {
@@ -12710,6 +12759,11 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "default_df_override": "Float16_b",
         },
+    ),
+    (
+        Add88,
+        [((64,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
         Add0,
@@ -13016,6 +13070,11 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Add0,
+        [((128,), torch.bfloat16), ((1,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
         Add89,
         [((128,), torch.bfloat16)],
         {
@@ -13134,6 +13193,11 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "default_df_override": "Float16_b",
         },
+    ),
+    (
+        Add89,
+        [((128,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
         Add0,
@@ -13336,6 +13400,11 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Add0,
+        [((256,), torch.bfloat16), ((1,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
         Add90,
         [((256,), torch.bfloat16)],
         {
@@ -13458,6 +13527,11 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "default_df_override": "Float16_b",
         },
+    ),
+    (
+        Add90,
+        [((256,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
         Add0,
@@ -16785,6 +16859,11 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Add0,
+        [((1024,), torch.bfloat16), ((1,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
         Add112,
         [((1024,), torch.bfloat16)],
         {
@@ -16860,6 +16939,11 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "default_df_override": "Float16_b",
         },
+    ),
+    (
+        Add112,
+        [((1024,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
         Add0,
@@ -17075,6 +17159,11 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Add0,
+        [((512,), torch.bfloat16), ((1,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
         Add113,
         [((512,), torch.bfloat16)],
         {
@@ -17185,6 +17274,11 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "default_df_override": "Float16_b",
         },
+    ),
+    (
+        Add113,
+        [((512,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
         Add0,
@@ -17599,6 +17693,11 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Add0,
+        [((2048,), torch.bfloat16), ((1,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
         Add114,
         [((2048,), torch.bfloat16)],
         {
@@ -17653,6 +17752,11 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "default_df_override": "Float16_b",
         },
+    ),
+    (
+        Add114,
+        [((2048,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
         Add113,
@@ -39372,7 +39476,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Add0,
         [((1, 1, 768), torch.float32), ((1, 1, 768), torch.float32)],
-        {"model_names": ["onnx_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99},
+        {
+            "model_names": [
+                "onnx_whisper_openai_whisper_small_speech_recognition_hf",
+                "pt_speecht5_tts_tts_text_to_speech_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Add142,
@@ -49070,6 +49180,179 @@ forge_modules_and_shapes_dtypes_list = [
         Add128,
         [((1, 101, 1536), torch.float32)],
         {"model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
+    ),
+    (Add3, [((1, 44, 1), torch.float32)], {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99}),
+    (
+        Add0,
+        [((1, 24, 44, 128), torch.float32), ((1, 24, 44, 128), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99},
+    ),
+    (
+        Add0,
+        [((1, 8, 44, 128), torch.float32), ((1, 8, 44, 128), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99},
+    ),
+    (
+        Add469,
+        [((1, 24, 44, 44), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99},
+    ),
+    (
+        Add0,
+        [((1, 44, 3072), torch.float32), ((1, 44, 3072), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99},
+    ),
+    (Add32, [((1, 1, 256), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
+    (Add12, [((1, 1, 768), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
+    (
+        Add0,
+        [((1, 24, 768), torch.float32), ((1, 24, 768), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (Add12, [((1, 24, 768), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
+    (
+        Add0,
+        [((12, 24, 24), torch.float32), ((12, 24, 24), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Add0,
+        [((1, 1, 24, 24), torch.float32), ((1, 1, 24, 24), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Add0,
+        [((1, 12, 24, 24), torch.float32), ((1, 1, 24, 24), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (Add13, [((1, 24, 3072), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
+    (
+        Add0,
+        [((1, 1, 1, 24), torch.float32), ((1, 1, 1, 24), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Add0,
+        [((1, 12, 1, 24), torch.float32), ((1, 1, 1, 24), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (Add13, [((1, 1, 3072), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
+    (Add237, [((1, 1, 160), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
+    (
+        Add0,
+        [((1, 256, 2), torch.float32), ((256, 1), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Add0,
+        [((80,), torch.float32), ((1,), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (Add470, [((80,), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
+    (
+        Add0,
+        [((1, 80, 2), torch.float32), ((80, 1), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Add0,
+        [((1, 2, 80), torch.float32), ((1, 2, 80), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
+    ),
+    (
+        Add0,
+        [((1, 64, 608, 784), torch.bfloat16), ((64, 1, 1), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Add0,
+        [((1, 64, 304, 392), torch.bfloat16), ((64, 1, 1), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Add0,
+        [((1, 256, 304, 392), torch.bfloat16), ((256, 1, 1), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Add0,
+        [((1, 256, 304, 392), torch.bfloat16), ((1, 256, 304, 392), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Add0,
+        [((1, 128, 304, 392), torch.bfloat16), ((128, 1, 1), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Add0,
+        [((1, 128, 152, 196), torch.bfloat16), ((128, 1, 1), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Add0,
+        [((1, 512, 152, 196), torch.bfloat16), ((512, 1, 1), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Add0,
+        [((1, 512, 152, 196), torch.bfloat16), ((1, 512, 152, 196), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Add0,
+        [((1, 256, 152, 196), torch.bfloat16), ((256, 1, 1), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Add0,
+        [((1, 256, 76, 98), torch.bfloat16), ((256, 1, 1), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Add0,
+        [((1, 1024, 76, 98), torch.bfloat16), ((1024, 1, 1), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Add0,
+        [((1, 1024, 76, 98), torch.bfloat16), ((1, 1024, 76, 98), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Add0,
+        [((1, 512, 76, 98), torch.bfloat16), ((512, 1, 1), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Add0,
+        [((1, 512, 38, 49), torch.bfloat16), ((512, 1, 1), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Add0,
+        [((1, 2048, 38, 49), torch.bfloat16), ((2048, 1, 1), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Add0,
+        [((1, 2048, 38, 49), torch.bfloat16), ((1, 2048, 38, 49), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Add0,
+        [((1, 32, 608, 784), torch.bfloat16), ((32, 1, 1), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Add0,
+        [((1, 16, 1216, 1568), torch.bfloat16), ((16, 1, 1), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Add0,
+        [((1, 1, 1216, 1568), torch.bfloat16), ((1, 1, 1), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
 ]
 

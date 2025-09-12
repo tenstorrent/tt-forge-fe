@@ -399,6 +399,15 @@ class Repeatinterleave41(ForgeModule):
         return repeatinterleave_output_1
 
 
+class Repeatinterleave42(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, repeatinterleave_input_0):
+        repeatinterleave_output_1 = forge.op.RepeatInterleave("", repeatinterleave_input_0, repeats=24, dim=2)
+        return repeatinterleave_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -1185,6 +1194,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_phi4_microsoft_phi_4_token_cls_hf",
                 "pt_qwen_v2_qwen_qwen2_7b_token_cls_hf",
                 "pt_qwen_v3_4b_clm_hf",
+                "pt_cogito_v1_preview_llama_3b_text_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"repeats": "1", "dim": "0"},
@@ -1224,6 +1234,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_phi4_microsoft_phi_4_token_cls_hf",
                 "pt_qwen_v2_qwen_qwen2_7b_token_cls_hf",
                 "pt_qwen_v3_4b_clm_hf",
+                "pt_cogito_v1_preview_llama_3b_text_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"repeats": "1", "dim": "2"},
@@ -2157,6 +2168,44 @@ forge_modules_and_shapes_dtypes_list = [
         Repeatinterleave6,
         [((1, 4, 1, 13, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "args": {"repeats": "7", "dim": "2"}},
+    ),
+    (
+        Repeatinterleave0,
+        [((1, 8, 1, 44, 128), torch.float32)],
+        {
+            "model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"repeats": "1", "dim": "0"},
+        },
+    ),
+    (
+        Repeatinterleave30,
+        [((1, 8, 1, 44, 128), torch.float32)],
+        {
+            "model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"repeats": "3", "dim": "2"},
+        },
+    ),
+    (
+        Repeatinterleave0,
+        [((1, 1, 1, 24), torch.int64)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"repeats": "1", "dim": "0"}},
+    ),
+    (
+        Repeatinterleave1,
+        [((1, 1, 1, 24), torch.int64)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"repeats": "1", "dim": "1"}},
+    ),
+    (
+        Repeatinterleave42,
+        [((1, 1, 1, 24), torch.int64)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"repeats": "24", "dim": "2"}},
+    ),
+    (
+        Repeatinterleave4,
+        [((1, 1, 1, 24), torch.int64)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"repeats": "1", "dim": "2"}},
     ),
 ]
 

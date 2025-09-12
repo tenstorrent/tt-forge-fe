@@ -1061,6 +1061,19 @@ class Embedding80(ForgeModule):
         return embedding_output_1
 
 
+class Embedding81(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "embedding81.weight_1",
+            forge.Parameter(*(81, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, embedding_input_0):
+        embedding_output_1 = forge.op.Embedding("", embedding_input_0, self.get_parameter("embedding81.weight_1"))
+        return embedding_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -2653,6 +2666,21 @@ forge_modules_and_shapes_dtypes_list = [
         Embedding19,
         [((1, 101), torch.int64)],
         {"model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99, "max_int": 51864},
+    ),
+    (
+        Embedding74,
+        [((1, 44), torch.int64)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99, "max_int": 128255},
+    ),
+    (
+        Embedding81,
+        [((1, 24), torch.int64)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "max_int": 80},
+    ),
+    (
+        Embedding1,
+        [((24, 24), torch.int64), ((320, 64), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "max_int": 319},
     ),
 ]
 

@@ -434,7 +434,10 @@ class UniqueOperations(dict):
             if named_parameters is not None:
                 new_operand_shapes = []
                 for operand_type, operand_shape, operand_name in zip(operand_types, operand_shapes, operand_names):
-                    if operand_type == NodeType.Constant:
+                    if (
+                        operand_type == NodeType.Constant
+                        or (operand_type == NodeType.Parameter and len(operand_shape) == 0)
+                    ) and operand_name in named_parameters:
                         if len(named_parameters[operand_name].shape) == 0:
                             new_operand_shapes.append((torch.numel(named_parameters[operand_name]),))
                         else:

@@ -560,6 +560,61 @@ class Resize2D48(ForgeModule):
         return resize2d_output_1
 
 
+class Resize2D49(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[76, 98], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
+class Resize2D50(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[152, 196], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
+class Resize2D51(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[304, 392], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
+class Resize2D52(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[608, 784], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
+class Resize2D53(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[1216, 1568], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -2900,7 +2955,11 @@ forge_modules_and_shapes_dtypes_list = [
                 "args": {"sizes": "[27, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
             },
         ),
-        marks=[pytest.mark.skip(reason="Only support upsample with integer scale factor")],
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception Out of Memory: Not enough space to allocate 774897664 B L1 buffer across 64 banks, where each bank needs to store 12107776 B"
+            )
+        ],
     ),
     (
         Resize2D41,
@@ -2921,7 +2980,11 @@ forge_modules_and_shapes_dtypes_list = [
                 "args": {"sizes": "[107, 160]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
             },
         ),
-        marks=[pytest.mark.skip(reason="Only support upsample with integer scale factor")],
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception Out of Memory: Not enough space to allocate 7117209600 B DRAM buffer across 12 banks, where each bank needs to store 593100800 B"
+            )
+        ],
     ),
     pytest.param(
         (
@@ -2934,7 +2997,11 @@ forge_modules_and_shapes_dtypes_list = [
                 "args": {"sizes": "[25, 34]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
             },
         ),
-        marks=[pytest.mark.skip(reason="Only support downsample with integer scale factor")],
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception Out of Memory: Not enough space to allocate 7117209600 B DRAM buffer across 12 banks, where each bank needs to store 593100800 B"
+            )
+        ],
     ),
     pytest.param(
         (
@@ -2947,7 +3014,11 @@ forge_modules_and_shapes_dtypes_list = [
                 "args": {"sizes": "[50, 67]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
             },
         ),
-        marks=[pytest.mark.skip(reason="Only support upsample with integer scale factor")],
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception Out of Memory: Not enough space to allocate 7117209600 B DRAM buffer across 12 banks, where each bank needs to store 593100800 B"
+            )
+        ],
     ),
     (
         Resize2D45,
@@ -2970,7 +3041,11 @@ forge_modules_and_shapes_dtypes_list = [
                 "args": {"sizes": "[200, 267]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
             },
         ),
-        marks=[pytest.mark.skip(reason="Only support upsample with integer scale factor")],
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception  Out of Memory: Not enough space to allocate 231991296 B L1 buffer across 61 banks, where each bank needs to store 3803136 B"
+            )
+        ],
     ),
     (
         Resize2D0,
@@ -3042,18 +3117,15 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
-    pytest.param(
-        (
-            Resize2D47,
-            [((1, 960, 3, 3), torch.bfloat16)],
-            {
-                "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
-                "pcc": 0.99,
-                "default_df_override": "Float16_b",
-                "args": {"sizes": "[7, 7]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
-            },
-        ),
-        marks=[pytest.mark.skip(reason="Only support upsample with integer scale factor")],
+    (
+        Resize2D47,
+        [((1, 960, 3, 3), torch.bfloat16)],
+        {
+            "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[7, 7]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
     ),
     pytest.param(
         (
@@ -3071,7 +3143,61 @@ forge_modules_and_shapes_dtypes_list = [
                 },
             },
         ),
-        marks=[pytest.mark.skip(reason="Only support dowssample with integer scale factor")],
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ tt-forge-fe/forge/csrc/ops/op_resize_2d.cpp:196: tt::exception Downsample2d is not supported for bilinear interpolation mode"
+            )
+        ],
+    ),
+    (
+        Resize2D49,
+        [((1, 2048, 38, 49), torch.bfloat16)],
+        {
+            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[76, 98]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D50,
+        [((1, 256, 76, 98), torch.bfloat16)],
+        {
+            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[152, 196]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D51,
+        [((1, 128, 152, 196), torch.bfloat16)],
+        {
+            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[304, 392]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D52,
+        [((1, 64, 304, 392), torch.bfloat16)],
+        {
+            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[608, 784]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D53,
+        [((1, 32, 608, 784), torch.bfloat16)],
+        {
+            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[1216, 1568]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
     ),
 ]
 

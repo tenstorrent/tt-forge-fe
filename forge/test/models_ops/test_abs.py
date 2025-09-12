@@ -368,6 +368,8 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (Abs0, [((1, 1, 512, 512), torch.float32)], {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99}),
+    (Abs0, [((1, 1, 24, 24), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
+    (Abs0, [((1, 1, 1, 24), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
 ]
 
 

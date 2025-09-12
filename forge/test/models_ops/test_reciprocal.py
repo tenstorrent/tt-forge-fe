@@ -387,6 +387,11 @@ forge_modules_and_shapes_dtypes_list = [
             )
         ],
     ),
+    (
+        Reciprocal0,
+        [((1, 44, 1), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99},
+    ),
 ]
 
 

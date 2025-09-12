@@ -84,9 +84,9 @@ def test_segformer_image_classification_pytorch(variant):
 
 
 variants_semseg = [
-    pytest.param(SemSegVariant.B0_FINETUNED, marks=pytest.mark.xfail),
-    pytest.param(SemSegVariant.B1_FINETUNED, marks=pytest.mark.xfail),
-    pytest.param(SemSegVariant.B2_FINETUNED, marks=[pytest.mark.out_of_memory, pytest.mark.xfail]),
+    pytest.param(SemSegVariant.B0_FINETUNED),
+    pytest.param(SemSegVariant.B1_FINETUNED),
+    pytest.param(SemSegVariant.B2_FINETUNED, marks=pytest.mark.xfail),
     pytest.param(SemSegVariant.B3_FINETUNED, marks=pytest.mark.xfail),
     pytest.param(SemSegVariant.B4_FINETUNED, marks=pytest.mark.xfail),
 ]
@@ -108,6 +108,7 @@ def test_segformer_semantic_segmentation_pytorch(variant):
     # Load model and inputs via loader
     loader = SemSegLoader(variant)
     framework_model = loader.load_model(dtype_override=torch.bfloat16)
+    framework_model.config.return_dict = False
     input_dict = loader.load_inputs(dtype_override=torch.bfloat16)
     inputs = [input_dict["pixel_values"]]
 

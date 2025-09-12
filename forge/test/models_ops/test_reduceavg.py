@@ -4443,6 +4443,15 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
+    (
+        Reduceavg1,
+        [((1, 44, 3072), torch.float32)],
+        {
+            "model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
 ]
 
 

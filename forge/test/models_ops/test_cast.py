@@ -1139,6 +1139,36 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 5), torch.bool)],
         {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "args": {"dtype": "torch.int32"}},
     ),
+    (
+        Cast3,
+        [((1, 1, 256), torch.bool)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dtype": "torch.int64"}},
+    ),
+    (
+        Cast1,
+        [((1, 1, 256), torch.bool)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dtype": "torch.bool"}},
+    ),
+    (
+        Cast0,
+        [((1, 1, 24, 24), torch.int64)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dtype": "torch.float32"}},
+    ),
+    (
+        Cast0,
+        [((1, 1, 24, 24), torch.bool)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dtype": "torch.float32"}},
+    ),
+    (
+        Cast0,
+        [((1, 1, 1, 24), torch.int64)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dtype": "torch.float32"}},
+    ),
+    (
+        Cast0,
+        [((1, 1, 1, 24), torch.bool)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dtype": "torch.float32"}},
+    ),
 ]
 
 

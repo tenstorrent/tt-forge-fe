@@ -229,6 +229,11 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (Sine0, [((1, 5, 128), torch.float32)], {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99}),
     (Sine0, [((1, 13, 128), torch.float32)], {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99}),
+    (
+        Sine0,
+        [((1, 44, 128), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99},
+    ),
 ]
 
 
