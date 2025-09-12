@@ -62,6 +62,7 @@ def test_unet_qubvel_pytorch():
         source=Source.TORCH_HUB,
         task=Task.IMAGE_SEGMENTATION,
     )
+    pytest.xfail("https://github.com/tenstorrent/tt-forge-fe/issues/2940")
 
     loader = ModelLoader(variant=ModelVariant.SMP_UNET_RESNET101)
     framework_model = loader.load_model(dtype_override=torch.bfloat16)
