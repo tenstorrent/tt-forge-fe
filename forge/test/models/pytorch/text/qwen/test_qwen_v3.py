@@ -106,6 +106,8 @@ def test_qwen3_embedding(variant):
         variant=variant,
         task=Task.SENTENCE_EMBEDDING_GENERATION,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.GENERALITY if variant == EmbeddingVariant.QWEN_3_EMBEDDING_0_6B else ModelGroup.RED,
+        priority=ModelPriority.P2 if variant == EmbeddingVariant.QWEN_3_EMBEDDING_0_6B else ModelPriority.P1,
     )
 
     if variant in [EmbeddingVariant.QWEN_3_EMBEDDING_4B, EmbeddingVariant.QWEN_3_EMBEDDING_8B]:

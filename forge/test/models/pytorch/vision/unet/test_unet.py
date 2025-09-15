@@ -83,7 +83,12 @@ def test_unet_qubvel_pytorch():
 @pytest.mark.xfail
 def test_unet_torchhub_pytorch():
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model=ModelArch.UNET, source=Source.TORCH_HUB, task=Task.IMAGE_SEGMENTATION
+        framework=Framework.PYTORCH,
+        model=ModelArch.UNET,
+        source=Source.TORCH_HUB,
+        task=Task.IMAGE_SEGMENTATION,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
 
     loader = ModelLoader(variant=ModelVariant.TORCHHUB_BRAIN_UNET)
