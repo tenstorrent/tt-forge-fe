@@ -490,6 +490,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pd_densenet_121_img_cls_paddlemodels",
                 "pd_resnet_152_img_cls_paddlemodels",
                 "pd_resnet_50_img_cls_paddlemodels",
+                "pt_speecht5_tts_tts_text_to_speech_hf",
             ],
             "pcc": 0.99,
         },
@@ -1543,6 +1544,11 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Divide3,
+        [((16,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Divide3,
         [((32,), torch.bfloat16)],
         {
             "model_names": [
@@ -1648,6 +1654,11 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "default_df_override": "Float16_b",
         },
+    ),
+    (
+        Divide3,
+        [((32,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     (
         Divide3,
@@ -1785,6 +1796,11 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Divide3,
+        [((64,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Divide3,
         [((128,), torch.bfloat16)],
         {
             "model_names": [
@@ -1905,6 +1921,11 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "default_df_override": "Float16_b",
         },
+    ),
+    (
+        Divide3,
+        [((128,), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
     ),
     pytest.param(
         (
@@ -2033,6 +2054,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pcc": 0.99,
                 "default_df_override": "Float16_b",
             },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Divide3,
+            [((256,), torch.bfloat16)],
+            {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
@@ -2667,6 +2696,14 @@ forge_modules_and_shapes_dtypes_list = [
     pytest.param(
         (
             Divide3,
+            [((1024,), torch.bfloat16)],
+            {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Divide3,
             [((512,), torch.bfloat16)],
             {
                 "model_names": [
@@ -2784,6 +2821,14 @@ forge_modules_and_shapes_dtypes_list = [
     pytest.param(
         (
             Divide3,
+            [((512,), torch.bfloat16)],
+            {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Divide3,
             [((2048,), torch.bfloat16)],
             {
                 "model_names": [
@@ -2837,6 +2882,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pcc": 0.99,
                 "default_df_override": "Float16_b",
             },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Divide3,
+            [((2048,), torch.bfloat16)],
+            {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
@@ -6364,6 +6417,8 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
+    (Divide0, [((1, 1, 256), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
+    (Divide1, [((80,), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
 ]
 
 

@@ -1888,6 +1888,29 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 6, 101, 1500), torch.float32)],
         {"model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
+    (
+        Softmax1,
+        [((1, 24, 44, 44), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    pytest.param(
+        (
+            Softmax1,
+            [((12, 1, 1), torch.float32)],
+            {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    (
+        Softmax1,
+        [((12, 24, 24), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((12, 1, 24), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
 ]
 
 
