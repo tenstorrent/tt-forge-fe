@@ -13,6 +13,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -35,6 +36,7 @@ def test_mobilenetv2_basic(variant):
         source=Source.TORCH_HUB,
         task=Task.IMAGE_CLASSIFICATION,
         group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
 
     # Load the model and inputs
