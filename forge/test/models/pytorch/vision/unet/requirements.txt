@@ -1,0 +1,2 @@
+pillow==11.3.0
+pytorchcv==0.0.67
