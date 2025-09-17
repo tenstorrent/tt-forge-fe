@@ -37,7 +37,7 @@ static void validate_input_shapes(
     }
 }
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Stack, "Wrong op type.");
     TT_ASSERT(tensors.size() >= 1, "Stack should have at least one input tensor.");
@@ -48,7 +48,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Stack, "Wrong op type.");
     TT_ASSERT(in_shapes.size() >= 1, "Stack should have at least one input shape.");
@@ -79,7 +79,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -93,8 +93,7 @@ NodeContext backward(
     return nullptr;
 }
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Stack, "Wrong op type.");
     TT_ASSERT(op.attrs().size() == 1, "Stack should have 1 attr.");
@@ -120,12 +119,12 @@ void decompose_initial(
 
     for (const auto &input : inputs)
     {
-        auto reshaped = dc.op(graphlib::OpType("unsqueeze", {}, {{"dim", dim}}), {input});
+        auto reshaped = dc.op(Op(OpType::Unsqueeze, {{"dim", dim}}), {input});
         unsqueezed_inputs.push_back(reshaped);
     }
 
     // Concatenate along the stack dimension
-    auto result = dc.op(graphlib::OpType("concatenate", {}, {{"dim", dim}}), unsqueezed_inputs);
+    auto result = dc.op(Op(OpType::Concatenate, {{"dim", dim}}), unsqueezed_inputs);
     dc.fuse(result);
 }
 

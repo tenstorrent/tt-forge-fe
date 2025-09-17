@@ -23,7 +23,7 @@ namespace repeat_interleave
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::RepeatInterleave, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "RepeatInterleave should have one operand.");
@@ -41,7 +41,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::RepeatInterleave, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "RepeatInterleave should have one operand.");
@@ -62,7 +62,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -88,14 +88,12 @@ NodeContext backward(
     shape[dim] = repeats;
     shape.insert(shape.begin() + dim, grad_shape[dim] / repeats);
 
-    NodeContext reshaped = ac.autograd->create_op(ac, graphlib::OpType("reshape", {}, {{"shape", shape}}), {gradient});
+    NodeContext reshaped = ac.autograd->create_op(ac, Op(OpType::Reshape, {{"shape", shape}}), {gradient});
 
     NodeContext reduced = ac.autograd->create_op(
-        ac,
-        graphlib::OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>{dim + 1}}, {"keep_dim", true}}),
-        {reshaped});
+        ac, Op(OpType::ReduceSum, {{"dim_arg", std::vector<int>{dim + 1}}, {"keep_dim", true}}), {reshaped});
 
-    NodeContext squeezed = ac.autograd->create_op(ac, graphlib::OpType("squeeze", {}, {{"dim", dim + 1}}), {reduced});
+    NodeContext squeezed = ac.autograd->create_op(ac, Op(OpType::Squeeze, {{"dim", dim + 1}}), {reduced});
 
     return squeezed;
 }

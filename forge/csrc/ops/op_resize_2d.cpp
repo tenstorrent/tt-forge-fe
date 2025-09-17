@@ -23,7 +23,7 @@ namespace resize_2d
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Resize2d, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "Resize2d expects 1 input tensor");
@@ -41,7 +41,9 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 
     torch::nn::functional::InterpolateFuncOptions options = torch::nn::functional::InterpolateFuncOptions();
     options = options.size(std::vector<int64_t>{sizes[0], sizes[1]});
-    if (align_corners)
+
+    // align_corners option can be only set to bilinear interpolation mode
+    if (align_corners && mode != "nearest")
         options = options.align_corners(align_corners);
 
     if (mode == "nearest")
@@ -61,7 +63,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Resize2d, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "Resize2d expects 1 input shape");
@@ -79,28 +81,6 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
     size_t h_idx = channel_last ? rank - 3 : rank - 2;
     size_t w_idx = channel_last ? rank - 2 : rank - 1;
 
-    int input_h = static_cast<int>(input_shape[h_idx]);
-    int input_w = static_cast<int>(input_shape[w_idx]);
-
-    // Determine whether each spatial dimension will be upsampling (increasing size)
-    bool is_upsampling_height = (size_h >= input_h);
-    bool is_upsampling_width = (size_w >= input_w);
-
-    // Mixed up/downsample not allowed
-    if (is_upsampling_height != is_upsampling_width)
-    {
-        TT_THROW(
-            "OpType::Resize2d does not support one spatial dimension as upsample and another spatial dimension as "
-            "downsample");
-    }
-
-    if (is_upsampling_height && is_upsampling_width)
-        TT_ASSERT(
-            (size_h % input_h == 0) && (size_w % input_w == 0), "Only support upsample with integer scale factor");
-    else
-        TT_ASSERT(
-            (input_h % size_h == 0) && (input_w % size_w == 0), "Only support downsample with integer scale factor");
-
     std::vector<uint32_t> output_shape = input_shape;
     output_shape[h_idx] = static_cast<uint32_t>(size_h);
     output_shape[w_idx] = static_cast<uint32_t>(size_w);
@@ -109,7 +89,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -122,8 +102,7 @@ NodeContext backward(
     unreachable();
 }
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Resize2d, "Wrong op type.");
     TT_ASSERT(inputs.size() == 1, "Resize2d expects 1 input");
@@ -146,61 +125,76 @@ void decompose_initial(
     int input_h = static_cast<int>(input_shape[h_idx]);
     int input_w = static_cast<int>(input_shape[w_idx]);
 
+    // If the resize2d up/down sampling sizes matches with input height and width, there is no need for up/down sampling
+    // operation
+    if ((size_h == input_h) && (size_w == input_w))
+    {
+        result = dc.op(Op(OpType::Nop), {result});
+        dc.fuse(result);
+        return;
+    }
+
     // Determine whether each spatial dimension will be upsampling (increasing size)
     bool is_upsampling_height = (size_h >= input_h);
     bool is_upsampling_width = (size_w >= input_w);
 
-    // Mixed up/downsample not allowed
-    if (is_upsampling_height != is_upsampling_width)
+    // Decompose resize2d op with nearest interpolation into repeat_interleave/conv2d ops if it is downsampling or mixed
+    // sampling(up & down)  or floating scalar factor(i.e output_size % spatial_dimemsion !=0) because the ttnn.upsample
+    // op only accepts integer scalar factor
+    if (mode == "nearest" &&
+        ((size_h % input_h != 0) || (size_w % input_w != 0) || (!is_upsampling_height && !is_upsampling_width) ||
+         (is_upsampling_height != is_upsampling_width)))
     {
-        TT_THROW(
-            "OpType::Resize2d does not support one spatial dimension as upsample and another spatial dimension as "
-            "downsample");
+        tt::ops::op_common::decompose_nearest_interpolation(dc, result, sizes, channel_last);
+        return;
     }
 
-    if (!channel_last)
-    {
-        // Changing the Layout from NCHW to NHWC as ttir.upsample2d supports only the NHWC layout
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
-    }
+    // Mixed up/down sampling is not supported for other interpolation modes(i.e bilinear)
+    TT_ASSERT(
+        is_upsampling_height == is_upsampling_width,
+        "OpType::Resize2d does not support one spatial dimension as upsample and another spatial dimension as "
+        "downsample for {} interpolation mode",
+        mode);
 
     if (is_upsampling_height && is_upsampling_width)
     {
-        if (align_corners)
+        // TTNN upsample op expects scalar_factor to be of integer type.
+        TT_ASSERT(
+            (size_h % input_h == 0) && (size_w % input_w == 0),
+            "OpType::Resize2d only support upsampling with integer scale factor for {} interpolation mode",
+            mode);
+
+        // TTNN upsample op doesn't support align_corners parameter
+        // Issue Link: https://github.com/tenstorrent/tt-metal/issues/27001
+        TT_ASSERT(
+            (mode == "nearest") || (mode == "bilinear" && !align_corners),
+            "align_corners argument not supported in upsample2d op with {} interpolation mode",
+            mode);
+
+        if (!channel_last)
         {
-            TT_THROW("align_corners argument not supported in upsample2d op");
+            // Changing the Layout from NCHW to NHWC as ttir.upsample2d supports only the NHWC layout
+            result = dc.op(Op(OpType::Transpose, {{"dim0", -3}, {"dim1", -2}}), {result});
+            result = dc.op(Op(OpType::Transpose, {{"dim0", -2}, {"dim1", -1}}), {result});
         }
+
         std::vector<int> scale_factor;
         scale_factor.push_back(size_h / input_h);
         scale_factor.push_back(size_w / input_w);
         result = dc.op(
-            graphlib::OpType(
-                "upsample2d",
-                {scale_factor, mode, true},
-                {{"scale_factor", scale_factor}, {"mode", mode}, {"channel_last", true}}),
-            {result});
+            Op(OpType::Upsample2d, {{"scale_factor", scale_factor}, {"mode", mode}, {"channel_last", true}}), {result});
+
+        if (!channel_last)
+        {
+            // Changing the Layout back to NCHW from NHWC after operation
+            result = dc.op(Op(OpType::Transpose, {{"dim0", -2}, {"dim1", -1}}), {result});
+            result = dc.op(Op(OpType::Transpose, {{"dim0", -3}, {"dim1", -2}}), {result});
+        }
     }
     else
     {
-        TT_THROW("Downsample2d is not supported yet.");
+        TT_THROW("Downsample2d is not supported for {} interpolation mode", mode);
         unreachable();
-        // TODO: Implement downsample2d
-        // int scale_factor = channel_last ? static_cast<int>(input_shape[input_shape.size() - 3]) / sizes[0]
-        //                                 : static_cast<int>(input_shape[input_shape.size() - 2]) / sizes[0];
-        // result = dc.op(
-        //     graphlib::OpType(
-        //         "downsample2d",
-        //         {scale_factor, resize_method, true},
-        //         {{"scale_factor", scale_factor}, {"mode", resize_method}, {"channel_last", true}}),
-        //     {result});
-    }
-
-    if (!channel_last)
-    {
-        // Changing the Layout back to NCHW from NHWC after operation
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -2}, {"dim1", -1}}), {result});
-        result = dc.op(graphlib::OpType("transpose", {}, {{"dim0", -3}, {"dim1", -2}}), {result});
     }
 
     dc.fuse(result);

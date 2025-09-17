@@ -22,7 +22,7 @@ namespace pow
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Pow, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "Pow should have one input.");
@@ -32,7 +32,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Pow, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "Pow should have one input.");
@@ -41,7 +41,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -61,14 +61,14 @@ NodeContext backward(
     auto exponent_const = ac.autograd->create_constant(ac, exponent);
 
     // Compute reciprocal of input: 1/x
-    auto reciprocal = ac.autograd->create_op(ac, graphlib::OpType("reciprocal"), {inputs[0]});
+    auto reciprocal = ac.autograd->create_op(ac, Op(OpType::Reciprocal), {inputs[0]});
 
     // Compute n * x^n / x = n * output / x
-    auto partial_grad = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {output, reciprocal});
-    auto derivative = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {exponent_const, partial_grad});
+    auto partial_grad = ac.autograd->create_op(ac, Op(OpType::Multiply), {output, reciprocal});
+    auto derivative = ac.autograd->create_op(ac, Op(OpType::Multiply), {exponent_const, partial_grad});
 
     // Apply chain rule: derivative * gradient
-    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {derivative, gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {derivative, gradient});
 }
 
 }  // namespace pow

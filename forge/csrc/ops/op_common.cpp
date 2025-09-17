@@ -7,6 +7,7 @@
 #include "autograd/autograd.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
+#include "graph_lib/utils.hpp"
 #include "lower_to_forge/common.hpp"
 #include "torch/extension.h"  // Needed for c++ to/from python type conversion.
 #include "torch/torch.h"
@@ -148,8 +149,8 @@ tt::graphlib::NodeContext reduce_broadcast_dimensions(
             continue;
 
         int dim = static_cast<int>(i);
-        result_grad = ac.autograd->create_op(
-            ac, graphlib::OpType("reduce_sum", {}, {{"keep_dim", true}, {"dim_arg", dim}}), {result_grad});
+        result_grad =
+            ac.autograd->create_op(ac, Op(OpType::ReduceSum, {{"keep_dim", true}, {"dim_arg", dim}}), {result_grad});
     }
 
     return result_grad;
@@ -182,18 +183,6 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> reduce_ops_shap
     return {graphlib::Shape::create(ret), {}};
 }
 
-std::string get_resize_method(int method)
-{
-    TT_ASSERT(method >= 0 && method <= 2, "Unsupported resize method: " + std::to_string(method));
-    if (method == 0)
-        return "nearest";
-    else if (method == 1)
-        return "bilinear";
-    else if (method == 2)
-        return "cubic";
-    unreachable();
-}
-
 std::vector<at::Tensor> promote_floating_dtypes(const std::vector<at::Tensor> &tensors)
 {
     std::vector<at::Tensor> result;
@@ -211,6 +200,242 @@ std::vector<at::Tensor> promote_floating_dtypes(const std::vector<at::Tensor> &t
             result.emplace_back(t.clone());
 
     return result;
+}
+
+/**
+ * \brief Decompose nearest-neighbor interpolation into repeat + conv ops.
+ *
+ * This function decomposes nearest-neighbor interpolation (1D/2D) into:
+ *   - **Upsampling** using `repeat_interleave`, where elements are expanded.
+ *   - **Downsampling** using depthwise `conv2d` with a "pick-first" kernel,
+ *     which selects the top-left (or first) element in each stride window.
+ *
+ * ---------------------------
+ * How up/down factors are computed:
+ * ---------------------------
+ * Given:
+ *   - input size:  in_size
+ *   - target size: out_size
+ *   - gcd = gcd(in_size, out_size)
+ *
+ *   up   = out_size / gcd      # repeat factor (how many times each element is copied)
+ *   down = in_size / gcd       # stride factor (how many input elements get collapsed)
+ *
+ * Meaning:
+ *   - If up > 1   → do `repeat_interleave` `up` times.
+ *   - If down != 1 → do depthwise `conv2d` with stride=down (pick-first rule).
+ *
+ * ---------------------------
+ * Examples
+ * ---------------------------
+ *
+ * (A) 1D floating scale factor:
+ *   Input:   (N, C, 7)
+ *   Target:  size=(9)
+ *   gcd(7,9)=1
+ *   → up=9, down=7
+ *   - Step 1: repeat each element 9 times → shape (N, C, 63)
+ *   - Step 2: conv with stride=7 (pick-first) → shape (N, C, 9)
+ *   - Intuition: expand then shrink to approximate ratio 7→9.
+ *
+ * (B) 1D downsampling:
+ *   Input:   (N, C, 50)
+ *   Target:  size=(10)
+ *   gcd(50,10)=10
+ *   → up=1, down=5
+ *   - No repeat (up=1).
+ *   - Depthwise conv with stride=5 picks every 5th element → (N, C, 10).
+ *
+ * (C) 2D floating scale factor:
+ *   Input:   (1, 3, 7, 11)   # (N, C, H, W)
+ *   Target:  size=(9, 15)
+ *
+ *   For H: gcd(7,9)=1 → up_h=9, down_h=7
+ *   For W: gcd(11,15)=1 → up_w=15, down_w=11
+ *
+ *   - Repeat each row 9 times (up_h=9).
+ *   - Repeat each column 15 times (up_w=15).
+ *   - Conv stride=7 along H (down_h=7).
+ *   - Conv stride=11 along W (down_w=11).
+ *   Result shape: (1, 3, 9, 15).
+ *
+ *   # Example counts:
+ *   - Each pixel expanded to a (9×15) block before conv.
+ *   - Conv collapses every group of (7×11).
+ *
+ * (D) 2D mixed sampling (up in one dim, down in other):
+ *   Input:   (1, 3, 5, 7)
+ *   Target:  size=(10, 5)
+ *
+ *   For H: gcd(5,10)=5 → up_h=2, down_h=1
+ *       → repeat rows 2× (upsample height).
+ *   For W: gcd(7,5)=1 → up_w=5, down_w=7
+ *       → repeat cols 5×, then conv stride=7 (downsample width).
+ *
+ *   Result shape: (1, 3, 10, 5).
+ *
+ * (E) 2D downsampling only:
+ *   Input:   (1, 3, 5, 7)
+ *   Target:  size=(3, 5)
+ *
+ *   For H: gcd(5,3)=1 → up_h=3, down_h=5
+ *       → conv stride=5 (no repeat).
+ *   For W: gcd(7,5)=1 → up_w=5, down_w=7
+ *       → conv stride=7 (no repeat).
+ *
+ *   Result shape: (1, 3, 3, 5).
+ *
+ * ---------------------------
+ * Summary:
+ *   - up_h/up_w   → number of times each pixel is repeated (expand factor).
+ *   - down_h/down_w → stride used in conv2d (collapse factor).
+ */
+void decompose_nearest_interpolation(
+    tt::DecomposingContext &dc, const tt::graphlib::NodeContext &activation, std::vector<int> sizes, bool channel_last)
+{
+    tt::graphlib::NodeContext result = activation;
+    graphlib::Shape act_shape = activation.shape;
+    const size_t rank = act_shape.size();
+
+    // Helper: repeat_interleave
+    // Expands each element along a given dim "repeats" times.
+    // Used for upsampling when up > 1.
+    auto repeat_if_needed = [&](const tt::graphlib::NodeContext &in, int repeats, int dim) -> tt::graphlib::NodeContext
+    {
+        if (repeats > 1)
+        {
+            return dc.op(ops::Op(OpType::RepeatInterleave, {{"repeats", repeats}, {"dim", dim}}), {in});
+        }
+        return in;
+    };
+
+    // Helper: conv2d_with_weight
+    // Applies depthwise conv2d with a kernel that has a single "1"
+    // at the top-left position, all other values 0.
+    // Effect: for stride = down, it keeps the 1st element of each
+    // block of length "down", discarding the rest.
+    auto conv2d_with_weight = [&](const tt::graphlib::NodeContext &in,
+                                  const std::vector<int64_t> &weight_shape,
+                                  const std::vector<int> &stride) -> tt::graphlib::NodeContext
+    {
+        at::ScalarType datatype = tt::graphlib::data_format_to_scalar_type(in.output_df);
+
+        at::Tensor weight_tensor = torch::zeros(weight_shape, torch::TensorOptions().dtype(datatype));
+        weight_tensor.index_put_({torch::indexing::Slice(), 0, 0, 0}, 1.0);
+
+        tt::graphlib::NodeContext weight = dc.tensor(weight_tensor);
+
+        std::vector<int> padding = {0, 0, 0, 0};         // no padding
+        std::vector<int> dilation = {1, 1};              // no dilation
+        int groups = static_cast<int>(weight_shape[0]);  // depthwise = 1 kernel per channel
+
+        return dc.op(
+            ops::Op(
+                OpType::Conv2d,
+                {{"stride", stride},
+                 {"groups", groups},
+                 {"padding", padding},
+                 {"dilation", dilation},
+                 {"channel_last", channel_last}}),
+            {in, weight});
+    };
+
+    // ======================
+    // Handle 1D interpolation case (rank=3)
+    // Tensor shape: (N, C, W) or (N, W, C)
+    // ======================
+    if (rank == 3)
+    {
+        size_t c_dim = channel_last ? rank - 1 : rank - 2;
+        size_t w_dim = channel_last ? rank - 2 : rank - 1;
+
+        int input_c = static_cast<int>(act_shape[c_dim]);
+        int input_w = static_cast<int>(act_shape[w_dim]);
+        int size_w = sizes[0];
+
+        // Compute gcd-based decomposition
+        int g_w = std::gcd(size_w, input_w);
+        int up_w = size_w / g_w;     // repeat factor (upsample)
+        int down_w = input_w / g_w;  // stride factor (downsample)
+
+        // --- Step 1: Upsample if needed
+        result = repeat_if_needed(result, up_w, static_cast<int>(w_dim));
+
+        // --- Step 2: Downsample if needed (down_w != 1)
+        if (down_w != 1)
+        {
+            // conv2d expects 4D input, so unsqueeze
+            result = dc.op(ops::Op(OpType::Unsqueeze, {{"dim", static_cast<int>(w_dim)}}), {result});
+
+            // Build depthwise kernel of shape (C,1,1,down_w)
+            // Stride (1, down_w) collapses every block of width down_w → picks first element
+            std::vector<int64_t> weight_shape = {input_c, 1, 1, down_w};
+            std::vector<int> stride = {1, down_w};
+
+            result = conv2d_with_weight(result, weight_shape, stride);
+
+            // Remove the temporary dimension back to original rank
+            result = dc.op(ops::Op(OpType::Squeeze, {{"dim", static_cast<int>(w_dim)}}), {result});
+        }
+
+        // Fuse result into graph
+        dc.fuse(result);
+    }
+    // ======================
+    // Handle 2D interpolation case (rank=4)
+    // Tensor shape: (N, C, H, W) or (N, H, W, C)
+    // ======================
+    else if (rank == 4)
+    {
+        size_t c_dim = channel_last ? rank - 1 : rank - 3;
+        size_t h_dim = channel_last ? rank - 3 : rank - 2;
+        size_t w_dim = channel_last ? rank - 2 : rank - 1;
+
+        int input_c = static_cast<int>(act_shape[c_dim]);
+        int input_h = static_cast<int>(act_shape[h_dim]);
+        int input_w = static_cast<int>(act_shape[w_dim]);
+        int size_h = sizes[0];
+        int size_w = sizes[1];
+
+        // Compute gcd decomposition for both H and W
+        int g_h = std::gcd(size_h, input_h);
+        int g_w = std::gcd(size_w, input_w);
+        int up_h = size_h / g_h;     // repeat factor along height
+        int up_w = size_w / g_w;     // repeat factor along width
+        int down_h = input_h / g_h;  // stride factor along height
+        int down_w = input_w / g_w;  // stride factor along width
+
+        // --- Step 1: Upsample (expand each element if up_h/up_w > 1)
+        result = repeat_if_needed(result, up_h, static_cast<int>(h_dim));
+        result = repeat_if_needed(result, up_w, static_cast<int>(w_dim));
+
+        // --- Step 2: Downsample width (if down_w != 1)
+        if (down_w != 1)
+        {
+            // Kernel: (C,1,1,down_w), stride (1,down_w)
+            // Collapses groups of width down_w into 1 → picks first col in each block
+            std::vector<int64_t> weight_shape = {input_c, 1, 1, down_w};
+            std::vector<int> stride = {1, down_w};
+            result = conv2d_with_weight(result, weight_shape, stride);
+        }
+
+        // --- Step 3: Downsample height (if down_h != 1)
+        if (down_h != 1)
+        {
+            // Kernel: (C,1,down_h,1), stride (down_h,1)
+            // Collapses groups of height down_h into 1 → picks first row in each block
+            std::vector<int64_t> weight_shape = {input_c, 1, down_h, 1};
+            std::vector<int> stride = {down_h, 1};
+            result = conv2d_with_weight(result, weight_shape, stride);
+        }
+
+        dc.fuse(result);
+    }
+    else
+    {
+        TT_THROW("Nearest interpolation is supported only for 3d and 4d inputs");
+        unreachable();
+    }
 }
 
 }  // namespace op_common

@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 from typing import Union, Tuple, List
+from forge._C.ops import OpType
 from ..forgeglobal import TILE_DIM
 from .common import ForgeOp as op
 from ..tensor import Tensor, pytorch_dtype_to_forge_dataformat
@@ -41,7 +42,7 @@ def Transpose(name: str, operandA: Tensor, dim0: int, dim1: int) -> Tensor:
     if dim0 > dim1:
         dim0, dim1 = dim1, dim0
 
-    return op("transpose", name, operandA, attrs=(dim0, dim1), dim0=dim0, dim1=dim1).get_tensor()
+    return op(OpType.Transpose, name, operandA, dim0=dim0, dim1=dim1).get_tensor()
 
 
 def Reshape(name: str, operandA: Tensor, shape: Tuple[int, ...]) -> Tensor:
@@ -81,7 +82,7 @@ def Reshape(name: str, operandA: Tensor, shape: Tuple[int, ...]) -> Tensor:
 
     assert tensor_volume == volume
 
-    return op("reshape", name, operandA, shape=shape).get_tensor()
+    return op(OpType.Reshape, name, operandA, shape=shape).get_tensor()
 
 
 def Index(name: str, operandA: Tensor, dim: int, start: int, stop: int = None, stride: int = 1) -> Tensor:
@@ -147,9 +148,7 @@ def Index(name: str, operandA: Tensor, dim: int, start: int, stop: int = None, s
     assert stop <= operandA.shape[dim]
     assert stride <= operandA.shape[dim]
 
-    return op(
-        "index", name, operandA, attrs=(dim, start, stop, stride), dim=dim, start=start, stop=stop, stride=stride
-    ).get_tensor()
+    return op(OpType.Index, name, operandA, dim=dim, start=start, stop=stop, stride=stride).get_tensor()
 
 
 def AdvIndex(
@@ -183,7 +182,7 @@ def AdvIndex(
     if dim < 0:
         dim += len(operandA.shape)
 
-    return op("adv_index", name, operandA, operandB, dim=dim).get_tensor()
+    return op(OpType.AdvIndex, name, operandA, operandB, dim=dim).get_tensor()
 
 
 def Select(
@@ -242,7 +241,7 @@ def Select(
     assert (start + length) <= stride, f"(start = {start} + length = {length}) should be <= stride = {stride}"
     assert (start + length) > 0, f"(start = {start} + length = {length}) should be > 0"
 
-    return op("select", name, operandA, dim=dim, begin=index[0], length=index[1], stride=stride).get_tensor()
+    return op(OpType.Select, name, operandA, dim=dim, begin=index[0], length=index[1], stride=stride).get_tensor()
 
 
 def Pad(
@@ -309,12 +308,11 @@ def Pad(
         "value": value,
         "channel_last": channel_last,
     }
-    attrs = named_attrs["padding"] + [named_attrs["mode"], named_attrs["value"], named_attrs["channel_last"]]
+
     return op(
-        "pad",
+        OpType.Pad,
         name,
         operandA,
-        attrs=attrs,
         **named_attrs,
     ).get_tensor()
 
@@ -358,7 +356,7 @@ def ConstantPad(
     }
 
     return op(
-        "constant_pad",
+        OpType.ConstantPad,
         name,
         operandA,
         attrs=[],
@@ -390,7 +388,7 @@ def Broadcast(name: str, operandA: Tensor, dim: int, shape: int) -> Tensor:
         Forge tensor
     """
 
-    return op("broadcast", name, operandA, dim=dim, size=shape).get_tensor()
+    return op(OpType.Broadcast, name, operandA, dim=dim, size=shape).get_tensor()
 
 
 def Repeat(name: str, operandA: Tensor, repeats: List[int]) -> Tensor:
@@ -424,7 +422,7 @@ def Repeat(name: str, operandA: Tensor, repeats: List[int]) -> Tensor:
     Tensor
         Forge tensor
     """
-    return op("repeat", name, operandA, repeats=repeats).get_tensor()
+    return op(OpType.Repeat, name, operandA, repeats=repeats).get_tensor()
 
 
 def RepeatInterleave(name: str, operandA: Tensor, repeats: int, dim: int) -> Tensor:
@@ -459,7 +457,7 @@ def RepeatInterleave(name: str, operandA: Tensor, repeats: int, dim: int) -> Ten
         Forge tensor
     """
     return op(
-        "repeat_interleave",
+        OpType.RepeatInterleave,
         name,
         operandA,
         repeats=repeats,
@@ -488,7 +486,7 @@ def Unsqueeze(name: str, operandA: Tensor, dim: int) -> Tensor:
         Forge tensor
     """
 
-    return op("unsqueeze", name, operandA, attrs=(dim,), dim=dim).get_tensor()
+    return op(OpType.Unsqueeze, name, operandA, dim=dim).get_tensor()
 
 
 def Squeeze(name: str, operandA: Tensor, dim: int) -> Tensor:
@@ -512,7 +510,7 @@ def Squeeze(name: str, operandA: Tensor, dim: int) -> Tensor:
         Forge tensor
     """
 
-    return op("squeeze", name, operandA, attrs=(dim,), dim=dim).get_tensor()
+    return op(OpType.Squeeze, name, operandA, dim=dim).get_tensor()
 
 
 def PixelShuffle(name: str, operandA: Tensor, upscale_factor: int) -> Tensor:
@@ -532,4 +530,4 @@ def PixelShuffle(name: str, operandA: Tensor, upscale_factor: int) -> Tensor:
     Tensor
         Forge tensor
     """
-    return op("pixel_shuffle", name, operandA, upscale_factor=upscale_factor).get_tensor()
+    return op(OpType.PixelShuffle, name, operandA, upscale_factor=upscale_factor).get_tensor()

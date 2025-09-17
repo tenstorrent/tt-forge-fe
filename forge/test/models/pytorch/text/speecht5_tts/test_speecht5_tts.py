@@ -31,7 +31,6 @@ class Wrapper(torch.nn.Module):
     [
         pytest.param(
             ModelVariant.TTS,
-            marks=[pytest.mark.xfail],
         ),
     ],
 )

@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+from forge._C.ops import OpType
 from ..tensor import Tensor
 from .common import ForgeOp as op
 
@@ -30,7 +31,7 @@ def ReduceSum(name: str, operandA: Tensor, dim: int, keep_dim: bool = True) -> T
     # if dim < 0:
     #     dim += 4
 
-    return op("reduce_sum", name, operandA, dim_arg=[dim], keep_dim=keep_dim).get_tensor()
+    return op(OpType.ReduceSum, name, operandA, dim_arg=[dim], keep_dim=keep_dim).get_tensor()
 
 
 def ReduceAvg(name: str, operandA: Tensor, dim: int, keep_dim: bool = True) -> Tensor:
@@ -58,7 +59,7 @@ def ReduceAvg(name: str, operandA: Tensor, dim: int, keep_dim: bool = True) -> T
     # if dim < 0:
     #     dim += 4
 
-    return op("reduce_avg", name, operandA, dim_arg=[dim], keep_dim=keep_dim).get_tensor()
+    return op(OpType.ReduceAvg, name, operandA, dim_arg=[dim], keep_dim=keep_dim).get_tensor()
 
 
 def ReduceMax(name: str, operandA: Tensor, dim: int, keep_dim: bool = True) -> Tensor:
@@ -83,7 +84,7 @@ def ReduceMax(name: str, operandA: Tensor, dim: int, keep_dim: bool = True) -> T
     """
     assert (dim >= -4) and (dim <= 3)
 
-    return op("reduce_max", name, operandA, dim_arg=[dim], keep_dim=keep_dim).get_tensor()
+    return op(OpType.ReduceMax, name, operandA, dim_arg=[dim], keep_dim=keep_dim).get_tensor()
 
 
 def Argmax(name: str, operandA: Tensor, dim: int = None, keep_dim=False) -> Tensor:
@@ -118,4 +119,4 @@ def Argmax(name: str, operandA: Tensor, dim: int = None, keep_dim=False) -> Tens
             dim += len(operandA.shape)
         kwargs["dim_arg"] = [dim]
 
-    return op("argmax", name, operandA, **kwargs).get_tensor()
+    return op(OpType.Argmax, name, operandA, **kwargs).get_tensor()

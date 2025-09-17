@@ -21,6 +21,7 @@ concurrency:
 permissions:
   packages: write
   checks: write
+  id-token: write
 
 jobs:
   spdx:
@@ -77,6 +78,7 @@ jobs:
       run_id: ${{ github.run_id }}
       run_id_source: tt-forge-fe
       ref: main
+      on_uplift_pr: true
 
     #   uses: ./.github/workflows/perf-benchmark-sub.yml
     # secrets: inherit

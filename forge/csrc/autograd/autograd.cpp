@@ -128,7 +128,7 @@ Node *autograd_engine::combine_incoming_gradients(Node *node)
     for (int i = 1; i < (int)out_grads.size(); i++)
     {
         NodeContext out_grad(out_grads[i]);
-        sum = create_backward_op(graphlib::OpType("add"), {sum, out_grad}, node, 0, i - 1, "combine");
+        sum = create_backward_op(ops::Op(ops::OpType::Add), {sum, out_grad}, node, 0, i - 1, "combine");
     }
 
     Node *final_out = graph->node_by_id(sum.id);
@@ -164,7 +164,7 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
             if (output->is_loss_output())
             {
                 // Grad of loss is 1. Create constant and use that as "input".
-                py::object eval_module = py::module_::import("forge.op.eval");
+                py::object eval_module = py::module_::import("forge.op.common");
                 auto const_tensor = make_shared_py_object(eval_module.attr("create_constant_tensor_from_tensor")(
                     std::vector<float>{1.0}, node->shape().as_vector(), node->output_df()));
                 auto const_node = graph->add_node(
@@ -235,7 +235,7 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
         if (brcst.size() != 0)
         {
             Node *nop_node = graph->add_node(
-                graphlib::create_node<graphlib::PyOpNode>("broadcast_out_" + node->name(), "nop"),
+                graphlib::create_node<graphlib::PyOpNode>("broadcast_out_" + node->name(), ops::Op(ops::OpType::Nop)),
                 graph->get_subgraph_id_for_node(node->id()));
             nop_node->set_shape(node->shape());
             nop_node->set_epoch_type(graphlib::NodeEpochType::Backward);
@@ -329,7 +329,7 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
                     auto reshape_node = graph->add_node(
                         graphlib::create_node<graphlib::PyOpNode>(
                             "reshape_out_grad_" + node->name(),
-                            OpType("reshape", {}, {{"shape", node->shape().as_vector<int>()}})),
+                            ops::Op(ops::OpType::Reshape, {{"shape", node->shape().as_vector<int>()}})),
                         graph->get_subgraph_id_for_node(node->id()));
                     reshape_node->set_shape(node->shape());
                     reshape_node->set_output_df(node->output_df());
@@ -387,16 +387,16 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
             autograd_context ac{this, node, (int)edge.consumer_input_port_id};
 
             NodeContext ret_gradient =
-                op_node->op_type().backward(ac, edge.consumer_input_port_id, operands, NodeContext(node), gradient);
+                op_node->op().backward(ac, edge.consumer_input_port_id, operands, NodeContext(node), gradient);
 
             // Check for broadcast, and create sequence of reduce ops if there are any
             NodeContext last_out = ret_gradient;
             int created_op_index = 0;
-            for (graphlib::OpType tm : graph->get_edge_attributes(edge)->get_tms())
+            for (ops::Op tm : graph->get_edge_attributes(edge)->get_tms())
             {
                 if (tm.type() == ops::OpType::Broadcast)
                 {
-                    TT_ASSERT(tm.legacy_attrs_.size() <= 3);
+                    TT_ASSERT(tm.attrs().size() <= 3);
                     log_debug(
                         tt::LogAutograd,
                         "Edge has broadcast: dim={} size={}",
@@ -406,7 +406,7 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
 
                     NodeContext src = last_out;
                     last_out = create_backward_op(
-                        OpType("reduce_sum", {}, {{"dim_arg", std::vector<int>({dim})}, {"keep_dim", true}}),
+                        ops::Op(ops::OpType::ReduceSum, {{"dim_arg", std::vector<int>({dim})}, {"keep_dim", true}}),
                         {src},
                         node,
                         edge.consumer_input_port_id,
@@ -478,7 +478,7 @@ void autograd_engine::create_optimizer_graph()
                         auto cast_node = graph->add_node(
                             graphlib::create_node<graphlib::PyOpNode>(
                                 final_optimizer_output->name() + "_cast",
-                                graphlib::OpType("cast", {}, {{"dtype", static_cast<int>(param_df)}})),
+                                ops::Op(ops::OpType::Cast, {{"dtype", static_cast<int>(param_df)}})),
                             0);
                         cast_node->set_shape(final_optimizer_output->shape());
                         cast_node->set_output_df(param_df);
@@ -547,18 +547,17 @@ Graph *autograd_engine::run()
     return graph;
 }
 
-NodeContext autograd_engine::create_op(
-    autograd_context &self, const graphlib::OpType &op_type, const std::vector<NodeContext> &operands)
+NodeContext autograd_engine::create_op(autograd_context &self, ops::Op op, const std::vector<NodeContext> &operands)
 {
     if (self.epoch_type == graphlib::NodeEpochType::Backward)
     {
         return self.autograd->create_backward_op(
-            op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
+            std::move(op), operands, self.current_fwd_op, self.operand, self.created_op_index++);
     }
     else if (self.epoch_type == graphlib::NodeEpochType::Optimizer)
     {
         return self.autograd->create_optimizer_op(
-            op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
+            std::move(op), operands, self.current_fwd_op, self.operand, self.created_op_index++);
     }
 
     throw std::runtime_error("Expected autograd_context.epoch_type to be Backward or Optimizer");
@@ -571,7 +570,7 @@ NodeContext autograd_engine::create_constant_tensor(struct autograd_context &sel
 
 // Create a backward op for the given fwd op's operand
 NodeContext autograd_engine::create_backward_op(
-    const graphlib::OpType &type,
+    ops::Op op,
     const std::vector<NodeContext> &operands,
     Node *current_fwd_op,
     int operand_index,
@@ -583,10 +582,10 @@ NodeContext autograd_engine::create_backward_op(
     std::string op_name = "bw_in" + std::to_string(operand_index) + "_" + current_fwd_op->name() + "_";
     if (name_prefix.length() > 0)
         op_name += name_prefix + "_";
-    op_name += type.name() + "_" + std::to_string(created_op_index);
+    op_name += op.as_string() + "_" + std::to_string(created_op_index);
 
     auto node = graph->add_node(
-        graphlib::create_node<graphlib::PyOpNode>(op_name, type),
+        graphlib::create_node<graphlib::PyOpNode>(op_name, std::move(op)),
         graph->get_subgraph_id_for_node(current_fwd_op->id()));
 
     int i = 0;
@@ -615,7 +614,7 @@ NodeContext autograd_engine::create_backward_op(
 
 // Create a backward op for the given fwd op's operand
 NodeContext autograd_engine::create_optimizer_op(
-    const graphlib::OpType &type,
+    ops::Op op,
     const std::vector<NodeContext> &operands,
     Node *current_fwd_op,
     int operand_index,
@@ -637,7 +636,7 @@ NodeContext autograd_engine::create_optimizer_op(
                                 "_" + std::to_string(operand.id);
         auto cast_node = graph->add_node(
             graphlib::create_node<graphlib::PyOpNode>(
-                cast_name, graphlib::OpType("cast", {}, {{"dtype", static_cast<int>(DataFormat::Float32)}})),
+                cast_name, ops::Op(ops::OpType::Cast, {{"dtype", static_cast<int>(DataFormat::Float32)}})),
             graph->get_subgraph_id_for_node(current_fwd_op->id()));
 
         graph->add_edge(Edge(operand.id, operand.output_index, cast_node->id(), 0, graphlib::EdgeType::kData));
@@ -654,11 +653,10 @@ NodeContext autograd_engine::create_optimizer_op(
         op_name += name_prefix + "_";
     }
 
-    op_name += type.name() + "_" + std::to_string(created_op_index);
+    op_name += op.as_string() + "_" + std::to_string(created_op_index);
 
     auto node = graph->add_node(
-        graphlib::create_node<graphlib::PyOpNode>(op_name, type),
-        graph->get_subgraph_id_for_node(current_fwd_op->id()));
+        graphlib::create_node<graphlib::PyOpNode>(op_name, op), graph->get_subgraph_id_for_node(current_fwd_op->id()));
     for (size_t i = 0; i < casted_operands.size(); ++i)
     {
         const NodeContext &n = casted_operands[i];
@@ -670,7 +668,7 @@ NodeContext autograd_engine::create_optimizer_op(
     {
         operand_shapes.push_back(graph->node_by_id(n.id)->shape());
     }
-    std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(type, operand_shapes);
+    std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(op, operand_shapes);
 
     node->set_shape(Shape(std::get<0>(shape_data)));
     node->set_optimizer();

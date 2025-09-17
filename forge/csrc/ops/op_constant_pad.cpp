@@ -18,7 +18,7 @@ namespace ops
 namespace constant_pad
 {
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::ConstantPad, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "ConstantPad should have exactly 1 input tensor");
@@ -41,7 +41,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::ConstantPad, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "ConstantPad should have exactly 1 input shape");
@@ -65,7 +65,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
 }
 
 graphlib::NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -104,7 +104,7 @@ graphlib::NodeContext backward(
             int new_size = original_size - low_pad - high_pad;
             int stop = low_pad + new_size;
 
-            graphlib::OpType index_op("index");
+            Op index_op(OpType::Index);
             index_op.set_attr("dim", dim);
             index_op.set_attr("start", low_pad);
             index_op.set_attr("stop", stop);

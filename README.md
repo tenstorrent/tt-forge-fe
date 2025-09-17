@@ -1,5 +1,6 @@
 [![Tests][tests badge]][tests]
 [![Codecov][codecov badge]][codecov]
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/tenstorrent/tt-forge-fe)
 
 <div align="center">
 
@@ -65,5 +66,7 @@ This repo is a part of Tenstorrent’s bounty program. If you are interested in 
 
 [codecov]: https://codecov.io/gh/tenstorrent/tt-forge-fe
 [tests]: https://github.com/tenstorrent/tt-forge-fe/actions/workflows/on-push.yml?query=branch%3Amain
+[deepwiki]: https://deepwiki.com/tenstorrent/tt-forge-fe
 [codecov badge]: https://codecov.io/gh/tenstorrent/tt-forge-fe/graph/badge.svg
 [tests badge]: https://github.com/tenstorrent/tt-forge-fe/actions/workflows/on-push.yml/badge.svg?query=branch%3Amain
+[deepwiki badge]: https://deepwiki.com/badge.svg

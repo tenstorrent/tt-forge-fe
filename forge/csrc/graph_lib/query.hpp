@@ -26,7 +26,7 @@ inline std::string view_op_type(Node const* node)
 {
     if (auto op = dynamic_cast<OpNode const*>(node); op != nullptr)
     {
-        return op->op_name();
+        return op->op_as_string();
     }
     return std::string{};
 }

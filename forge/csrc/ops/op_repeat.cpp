@@ -22,7 +22,7 @@ namespace repeat
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Repeat, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "Repeat should have one input tensor.");
@@ -34,7 +34,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Repeat, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "Repeat should have one input shape.");
@@ -61,7 +61,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 
 // TODO: Implement backward pass
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -74,8 +74,7 @@ NodeContext backward(
     unreachable();
 }
 
-void decompose_initial(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_initial(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Repeat, "Wrong op type.");
     TT_ASSERT(inputs.size() == 1, "Repeat should have one input.");
@@ -94,11 +93,9 @@ void decompose_initial(
         std::vector<std::uint32_t> new_shape(repeats.size() - input_shape.size(), 1);
         new_shape.insert(new_shape.end(), input_shape.begin(), input_shape.end());
 
-        graphlib::OpType::Attrs reshape_attrs = {{"shape", std::vector<int>(new_shape.begin(), new_shape.end())}};
-        result = dc.op(graphlib::OpType("reshape", {}, reshape_attrs), {result});
-
-        graphlib::OpType::Attrs repeat_attrs = {{"repeats", repeats}};
-        result = dc.op(graphlib::OpType("repeat", {}, repeat_attrs), {result});
+        result =
+            dc.op(Op(OpType::Reshape, {{"shape", std::vector<int>(new_shape.begin(), new_shape.end())}}), {result});
+        result = dc.op(Op(OpType::Repeat, {{"repeats", repeats}}), {result});
         dc.fuse(result);
     }
 }

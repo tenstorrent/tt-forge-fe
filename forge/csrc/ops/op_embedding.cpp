@@ -22,7 +22,7 @@ namespace embedding
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Embedding, "Wrong op type.");
     TT_ASSERT(tensors.size() == 2, "Embedding should have exactly 2 input tensors.");
@@ -31,7 +31,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Embedding, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 2, "Embedding should have exactly 2 input shapes.");
@@ -45,7 +45,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -55,8 +55,7 @@ NodeContext backward(
 {
     TT_DBG_ASSERT(op.type() == OpType::Embedding, "Wrong op type.");
 
-    auto embedding_bw_context =
-        ac.autograd->create_op(ac, graphlib::OpType("embedding_bw"), {inputs[0], inputs[1], gradient});
+    auto embedding_bw_context = ac.autograd->create_op(ac, Op(OpType::EmbeddingBw), {inputs[0], inputs[1], gradient});
     embedding_bw_context.output_df = inputs[1].output_df;
     return embedding_bw_context;
 }

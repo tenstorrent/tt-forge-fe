@@ -10,6 +10,8 @@ from typing import Dict, List, Optional, Tuple
 import numpy as np
 import torch
 
+from forge._C.ops import Op, OpType
+
 from forge.compiled_graph_state import CompiledModel
 from forge.tensor import Tensor
 from forge.parameter import Parameter
@@ -169,8 +171,8 @@ class SGD(Optimizer):
     def generate_op_trace(self, ac, parameter, gradient):
         lr = ac.input("lr", (1,), dtype=self.forge_dtype)
 
-        grad_times_lr = ac.op("multiply", (gradient, lr))
-        param_minus_lr_times_grad = ac.op("subtract", (parameter, grad_times_lr))
+        grad_times_lr = ac.op(Op(OpType.Multiply), (gradient, lr))
+        param_minus_lr_times_grad = ac.op(Op(OpType.Subtract), (parameter, grad_times_lr))
 
         return param_minus_lr_times_grad
 
@@ -329,71 +331,71 @@ class Adam(Optimizer):
             weight_decay = None
 
         if weight_decay and not self.enable_adam_w:
-            weight_decay_times_param = ac.op("multiply", (weight_decay, parameter))
-            gradient = ac.op("add", (gradient, weight_decay_times_param))
+            weight_decay_times_param = ac.op(Op(OpType.Multiply), (weight_decay, parameter))
+            gradient = ac.op(Op(OpType.Add), (gradient, weight_decay_times_param))
 
         # self.mean = self.beta1 * self.mean + one_minus_beta1 * gradient
         mean = ac.input("mean", parameter.shape, copy_consteval_operations=True, dtype=self.forge_dtype)
         beta1 = ac.tensor(torch.full(parameter_shape, self.beta1, dtype=self.torch_dtype))
         one_minus_beta1 = ac.tensor(torch.full(parameter_shape, 1 - self.beta1, dtype=self.torch_dtype))
-        mean_times_beta1 = ac.op("multiply", (mean, beta1))
-        gradient_times_one_minus_beta1 = ac.op("multiply", (gradient, one_minus_beta1))
-        updated_mean = ac.op("add", (mean_times_beta1, gradient_times_one_minus_beta1))
+        mean_times_beta1 = ac.op(Op(OpType.Multiply), (mean, beta1))
+        gradient_times_one_minus_beta1 = ac.op(Op(OpType.Multiply), (gradient, one_minus_beta1))
+        updated_mean = ac.op(Op(OpType.Add), (mean_times_beta1, gradient_times_one_minus_beta1))
 
         # self.variance = self.beta2 * self.variance + one_minus_beta2 * gradient**2
         variance = ac.input("variance", parameter.shape, copy_consteval_operations=True, dtype=self.forge_dtype)
         beta2 = ac.tensor(torch.full(parameter_shape, self.beta2, dtype=self.torch_dtype))
         one_minus_beta2 = ac.tensor(torch.full(parameter_shape, 1 - self.beta2, dtype=self.torch_dtype))
-        variance_times_beta2 = ac.op("multiply", (variance, beta2))
-        gradient_squared = ac.op("multiply", (gradient, gradient))
-        gradient_squared_times_one_minus_beta2 = ac.op("multiply", (gradient_squared, one_minus_beta2))
-        updated_variance = ac.op("add", (variance_times_beta2, gradient_squared_times_one_minus_beta2))
+        variance_times_beta2 = ac.op(Op(OpType.Multiply), (variance, beta2))
+        gradient_squared = ac.op(Op(OpType.Multiply), (gradient, gradient))
+        gradient_squared_times_one_minus_beta2 = ac.op(Op(OpType.Multiply), (gradient_squared, one_minus_beta2))
+        updated_variance = ac.op(Op(OpType.Add), (variance_times_beta2, gradient_squared_times_one_minus_beta2))
         if self.bias_correction:
             # bias_correction1 = 1 - beta1 ** step
             beta1_one = ac.tensor(torch.full(parameter_shape, 1.0, dtype=self.torch_dtype))
             beta1_pow = ac.input(
                 "beta1_pow", parameter.shape, disable_consteval=True, dtype=self.forge_dtype
             )  # stores beta1 ** step
-            updated_beta1_pow = ac.op("multiply", (beta1_pow, beta1))
-            bias_correction1 = ac.op("subtract", (beta1_one, updated_beta1_pow))
-            reciprocal_bias_correction1 = ac.op("reciprocal", (bias_correction1,))
+            updated_beta1_pow = ac.op(Op(OpType.Multiply), (beta1_pow, beta1))
+            bias_correction1 = ac.op(Op(OpType.Subtract), (beta1_one, updated_beta1_pow))
+            reciprocal_bias_correction1 = ac.op(Op(OpType.Reciprocal), (bias_correction1,))
 
             # bias_correction2 = 1 - beta2 ** step
             beta2_one = ac.tensor(torch.full(parameter_shape, 1.0, dtype=self.torch_dtype))
             beta2_pow = ac.input(
                 "beta2_pow", parameter.shape, disable_consteval=True, dtype=self.forge_dtype
             )  # stores beta2 ** step
-            updated_beta2_pow = ac.op("multiply", (beta2_pow, beta2))
-            bias_correction2 = ac.op("subtract", (beta2_one, updated_beta2_pow))
-            sqrt_bias_correction2 = ac.op("sqrt", (bias_correction2,))
-            reciprocal_sqrt_bias_correction2 = ac.op("reciprocal", (sqrt_bias_correction2,))
+            updated_beta2_pow = ac.op(Op(OpType.Multiply), (beta2_pow, beta2))
+            bias_correction2 = ac.op(Op(OpType.Subtract), (beta2_one, updated_beta2_pow))
+            sqrt_bias_correction2 = ac.op(Op(OpType.Sqrt), (bias_correction2,))
+            reciprocal_sqrt_bias_correction2 = ac.op(Op(OpType.Reciprocal), (sqrt_bias_correction2,))
 
             # sqrt_of_variance / sqrt_bias_correction2
-            sqrt_of_variance_biased = ac.op("sqrt", (updated_variance,))
-            sqrt_of_variance = ac.op("multiply", (sqrt_of_variance_biased, reciprocal_sqrt_bias_correction2))
+            sqrt_of_variance_biased = ac.op(Op(OpType.Sqrt), (updated_variance,))
+            sqrt_of_variance = ac.op(Op(OpType.Multiply), (sqrt_of_variance_biased, reciprocal_sqrt_bias_correction2))
         else:
-            sqrt_of_variance = ac.op("sqrt", (updated_variance,))
+            sqrt_of_variance = ac.op(Op(OpType.Sqrt), (updated_variance,))
 
         epsilon = ac.tensor(torch.full(parameter_shape, self.epsilon, dtype=self.torch_dtype))
-        sqrt_of_variance_plus_epsilon = ac.op("add", (sqrt_of_variance, epsilon))
-        reciprocal_of_sqrt_of_variance_plus_epsilon = ac.op("reciprocal", (sqrt_of_variance_plus_epsilon,))
+        sqrt_of_variance_plus_epsilon = ac.op(Op(OpType.Add), (sqrt_of_variance, epsilon))
+        reciprocal_of_sqrt_of_variance_plus_epsilon = ac.op(Op(OpType.Reciprocal), (sqrt_of_variance_plus_epsilon,))
 
         if self.bias_correction:
             # mean / bias_correction1
-            updated_mean_unbiased = ac.op("multiply", (updated_mean, reciprocal_bias_correction1))
+            updated_mean_unbiased = ac.op(Op(OpType.Multiply), (updated_mean, reciprocal_bias_correction1))
             mean_times_reciprocal_of_sqrt_of_variance_plus_epsilon = ac.op(
-                "multiply", (updated_mean_unbiased, reciprocal_of_sqrt_of_variance_plus_epsilon)
+                Op(OpType.Multiply), (updated_mean_unbiased, reciprocal_of_sqrt_of_variance_plus_epsilon)
             )
         else:
             mean_times_reciprocal_of_sqrt_of_variance_plus_epsilon = ac.op(
-                "multiply", (updated_mean, reciprocal_of_sqrt_of_variance_plus_epsilon)
+                Op(OpType.Multiply), (updated_mean, reciprocal_of_sqrt_of_variance_plus_epsilon)
             )
 
         if weight_decay and self.enable_adam_w:
             # weight_decay * param + mean/sqrt(var)
-            weight_decay_times_param = ac.op("multiply", (weight_decay, parameter))
+            weight_decay_times_param = ac.op(Op(OpType.Multiply), (weight_decay, parameter))
             mean_times_reciprocal_of_sqrt_of_variance_plus_epsilon_plus_weight_decay_times_param = ac.op(
-                "add", (mean_times_reciprocal_of_sqrt_of_variance_plus_epsilon, weight_decay_times_param)
+                Op(OpType.Add), (mean_times_reciprocal_of_sqrt_of_variance_plus_epsilon, weight_decay_times_param)
             )
         else:
             mean_times_reciprocal_of_sqrt_of_variance_plus_epsilon_plus_weight_decay_times_param = (
@@ -402,9 +404,10 @@ class Adam(Optimizer):
 
         lr = ac.input("lr", parameter.shape, dtype=self.forge_dtype)
         parameter_delta = ac.op(
-            "multiply", (mean_times_reciprocal_of_sqrt_of_variance_plus_epsilon_plus_weight_decay_times_param, lr)
+            Op(OpType.Multiply),
+            (mean_times_reciprocal_of_sqrt_of_variance_plus_epsilon_plus_weight_decay_times_param, lr),
         )
-        updated_parameter = ac.op("subtract", (parameter, parameter_delta))
+        updated_parameter = ac.op(Op(OpType.Subtract), (parameter, parameter_delta))
 
         # in the old spatial1, there was a loopback for each of {updated_mean, updated_variance}
         ac.loopback(updated_mean, mean)

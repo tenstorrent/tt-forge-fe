@@ -22,7 +22,7 @@ namespace tanh
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Tanh, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "Tanh should have one input.");
@@ -31,7 +31,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Tanh, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "Tanh should have one input.");
@@ -40,7 +40,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -56,14 +56,14 @@ NodeContext backward(
     // We can use the output (which is tanh(x)) to compute this efficiently
 
     // Compute tanh²(x)
-    auto tanh_squared = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {output, output});
+    auto tanh_squared = ac.autograd->create_op(ac, Op(OpType::Multiply), {output, output});
 
     // Compute 1 - tanh²(x)
     auto one = ac.autograd->create_constant(ac, 1.0f);
-    auto derivative = ac.autograd->create_op(ac, graphlib::OpType("subtract"), {one, tanh_squared});
+    auto derivative = ac.autograd->create_op(ac, Op(OpType::Subtract), {one, tanh_squared});
 
     // Apply chain rule: derivative * gradient
-    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {derivative, gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {derivative, gradient});
 }
 
 }  // namespace tanh

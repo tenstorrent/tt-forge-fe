@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 //
 // SPDX-License-Identifier: Apache-2.0
+#include "ops/op.hpp"
 #include "passes/fracture.hpp"
 #include "test/common.hpp"
 
@@ -18,7 +19,7 @@ static int count_nodes(
         {
             auto* t = dynamic_cast<T*>(n);
             return t and t->name().find(name_filter) != std::string::npos and
-                   (op_type.empty() or (t->template as<graphlib::OpNode>()->op_name() == op_type));
+                   (op_type.empty() or (t->template as<graphlib::OpNode>()->op().as_string() == op_type));
         }));
 }
 
@@ -52,7 +53,7 @@ static bool fully_connected(graphlib::Graph* graph)
 struct FractureFF : public ForgeGraphTest
 {
    protected:
-    virtual std::vector<OpType*> create_graph() override
+    virtual std::vector<OpNode*> create_graph() override
     {
         std::uint32_t seq_len = 128;
         std::uint32_t embed = 384;
@@ -62,9 +63,9 @@ struct FractureFF : public ForgeGraphTest
         auto Win = create_parameter(shape(1, 1, embed, hidden));
         auto Wout = create_parameter(shape(1, 1, hidden, embed));
 
-        auto e0 = create_op("matmul", {act, Win});
-        auto gelu = create_op("gelu", {e0});
-        auto e1 = create_op("matmul", {gelu, Wout});
+        auto e0 = create_op(ops::Op(ops::OpType::Matmul), {act, Win});
+        auto gelu = create_op(ops::Op(ops::OpType::Gelu), {e0});
+        auto e1 = create_op(ops::Op(ops::OpType::Matmul), {gelu, Wout});
 
         Win_name = Win->name();
         Wout_name = Wout->name();
@@ -179,7 +180,7 @@ TEST_F(FractureFF, 2d_weight_stationary_mixed_factors)
 struct FractureDimSwitch : public ForgeGraphTest
 {
    protected:
-    virtual std::vector<OpType*> create_graph() override
+    virtual std::vector<OpNode*> create_graph() override
     {
         std::uint32_t seq_len = 128;
         std::uint32_t embed = 384;
@@ -188,8 +189,8 @@ struct FractureDimSwitch : public ForgeGraphTest
         auto act = create_activation(shape(1, 1, seq_len, embed));
         auto Win = create_parameter(shape(1, 1, embed, hidden));
 
-        auto gelu0 = create_op("gelu", {act});
-        auto ff1 = create_op("matmul", {gelu0, Win});
+        auto gelu0 = create_op(ops::Op(ops::OpType::Gelu), {act});
+        auto ff1 = create_op(ops::Op(ops::OpType::Matmul), {gelu0, Win});
 
         gelu0_name = gelu0->name();
         ff1_name = ff1->name();
@@ -219,15 +220,15 @@ TEST_F(FractureDimSwitch, dim_switch)
 struct FractureSimpleMixedFactors : public ForgeGraphTest, public testing::WithParamInterface<std::pair<int, int>>
 {
    protected:
-    virtual std::vector<OpType*> create_graph() override
+    virtual std::vector<OpNode*> create_graph() override
     {
         std::uint32_t r = 128;
         std::uint32_t c = 128;
 
         auto act = create_activation(shape(1, 1, r, c));
 
-        auto gelu0 = create_op("gelu", {act});
-        auto gelu1 = create_op("gelu", {gelu0});
+        auto gelu0 = create_op(ops::Op(ops::OpType::Gelu), {act});
+        auto gelu1 = create_op(ops::Op(ops::OpType::Gelu), {gelu0});
 
         gelu0_name = gelu0->name();
         gelu1_name = gelu1->name();
@@ -269,7 +270,7 @@ INSTANTIATE_TEST_SUITE_P(
 struct FractureLayers : public ForgeGraphTest
 {
    protected:
-    virtual std::vector<OpType*> create_graph() override
+    virtual std::vector<OpNode*> create_graph() override
     {
         std::uint32_t seq_len = 128;
         std::uint32_t embed = 384;
@@ -277,16 +278,19 @@ struct FractureLayers : public ForgeGraphTest
 
         auto act = create_activation(shape(1, 1, seq_len, embed));
 
-        OpType* out = nullptr;
+        OpNode* out = nullptr;
         for (int layer = 0; layer < num_layers; ++layer)
         {
             auto Win = create_parameter(shape(1, 1, embed, hidden));
             auto Wout = create_parameter(shape(1, 1, hidden, embed));
             auto layer_name = "layer." + std::to_string(layer) + ".";
 
-            auto e0 = create_op(layer_name + "e0", "matmul", {out ? (graphlib::Node*)out : (graphlib::Node*)act, Win});
-            auto gelu = create_op(layer_name + "gelu", "gelu", {e0});
-            auto e1 = create_op(layer_name + "e1", "matmul", {gelu, Wout});
+            auto e0 = create_op(
+                layer_name + "e0",
+                ops::Op(ops::OpType::Matmul),
+                {out ? (graphlib::Node*)out : (graphlib::Node*)act, Win});
+            auto gelu = create_op(layer_name + "gelu", ops::Op(ops::OpType::Gelu), {e0});
+            auto e1 = create_op(layer_name + "e1", ops::Op(ops::OpType::Matmul), {gelu, Wout});
 
             out = e1;
         }
@@ -296,7 +300,7 @@ struct FractureLayers : public ForgeGraphTest
 
     int fracture_factor(int) const { return 2; }
 
-    std::vector<OpType*> layer0;
+    std::vector<ops::Op*> layer0;
     int num_layers = 3;
 };
 

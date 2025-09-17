@@ -3,8 +3,55 @@
 # SPDX-License-Identifier: Apache-2.0
 from typing import List, Tuple, Union
 
+from forge._C.ops import OpType
 from ..tensor import Tensor
 from .common import ForgeOp as op
+
+
+def Resize1d(
+    name: str,
+    operandA: Tensor,
+    size: int,
+    mode: str = "nearest",
+    align_corners: bool = False,
+    channel_last: bool = False,
+) -> Tensor:
+    """
+    Resize input activations, with default mode 'nearest'
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+        Input operand A
+
+    size: int
+        The target size to extrapolate
+
+    mode: str
+        Interpolation mode
+
+    channel_last: bool
+        Whether the input is in channel-last format (NWC)
+
+    """
+
+    assert isinstance(size, int)
+    assert mode in ["nearest", "linear"], "Only support nearest and linear mode for now"
+
+    result: Tensor = op(
+        OpType.Resize1d,
+        name,
+        operandA,
+        size=size,
+        mode=mode,
+        align_corners=align_corners,
+        channel_last=channel_last,
+    ).get_tensor()
+
+    return result
 
 
 def Resize2d(
@@ -41,7 +88,7 @@ def Resize2d(
     assert mode in ["nearest", "bilinear"], "Only support nearest and bilinear mode for now"
 
     result: Tensor = op(
-        "resize2d",
+        OpType.Resize2d,
         name,
         operandA,
         sizes=sizes,
@@ -92,10 +139,9 @@ def Upsample2d(
         scale_factor = (scale_factor, scale_factor)
 
     result: Tensor = op(
-        "upsample2d",
+        OpType.Upsample2d,
         name,
         operandA,
-        attrs=(scale_factor, mode, channel_last),
         scale_factor=scale_factor,
         mode=mode,
         channel_last=channel_last,
@@ -146,10 +192,9 @@ def Downsample2d(
         scale_factor = (scale_factor, scale_factor)
 
     result: Tensor = op(
-        "downsample2d",
+        OpType.Downsample2d,
         name,
         operandA,
-        attrs=(scale_factor, mode, channel_last),
         scale_factor=scale_factor,
         mode=mode,
         channel_last=channel_last,

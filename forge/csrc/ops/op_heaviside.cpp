@@ -23,14 +23,14 @@ namespace heaviside
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_ASSERT(tensors.size() == 2, "Heaviside should have two input tensors.");
     return torch::heaviside(tensors[0], tensors[1]);
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Heaviside, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 2, "Heaviside should have two input shapes.");
@@ -40,7 +40,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -55,8 +55,7 @@ NodeContext backward(
 /**
  * Decompose Heaviside: result = (x > 0) + (x == 0) * y
  */
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_DBG_ASSERT(op.type() == OpType::Heaviside, "Wrong op type.");
     TT_ASSERT(inputs.size() == 2, "Heaviside should have two inputs");
@@ -64,11 +63,11 @@ void decompose_post_autograd(
     auto x = inputs[0];
     auto y = inputs[1];
 
-    auto zero = dc.op(graphlib::OpType("constant", {}, {{"c", 0.0f}}), {});
-    auto x_gt = dc.op(graphlib::OpType("greater"), {x, zero});
-    auto x_eq = dc.op(graphlib::OpType("equal"), {x, zero});
-    auto res = dc.op(graphlib::OpType("multiply"), {x_eq, y});
-    res = dc.op(graphlib::OpType("add"), {res, x_gt});
+    auto zero = dc.op(Op(OpType::Constant, {{"c", 0.0f}}), {});
+    auto x_gt = dc.op(Op(OpType::Greater), {x, zero});
+    auto x_eq = dc.op(Op(OpType::Equal), {x, zero});
+    auto res = dc.op(Op(OpType::Multiply), {x_eq, y});
+    res = dc.op(Op(OpType::Add), {res, x_gt});
 
     dc.fuse(res, 0);
 }

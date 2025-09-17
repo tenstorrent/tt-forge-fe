@@ -282,29 +282,6 @@ void GraphModule(py::module &m_graph)
         .def_readonly("shape", &graphlib::NodeContext::shape)
         .def_readonly("output_df", &graphlib::NodeContext::output_df);
 
-    py::class_<tt::graphlib::OpType, tt::raw_ptr<tt::graphlib::OpType>>(m_graph, "OpType")
-        .def(
-            py::init([](std::string const &op,
-                        std::vector<tt::graphlib::OpType::Attr> const &attr,
-                        tt::graphlib::OpType::Attrs const &named_attrs)
-                     { return graphlib::OpType(op, attr, named_attrs); }),
-            py::arg("op"),
-            py::arg("attr") = std::vector<tt::graphlib::OpType::Attr>{},
-            py::arg("named_attrs") = tt::graphlib::OpType::Attrs{})
-        .def_readonly("op", &tt::graphlib::OpType::op_)
-        .def_readonly("attr", &tt::graphlib::OpType::legacy_attrs_)
-        .def_readonly("named_attrs", &tt::graphlib::OpType::named_attrs_)
-        .def("eval", &tt::graphlib::OpType::eval)
-        .def("shape", &tt::graphlib::OpType::shape)
-        .def(
-            "__getattr__",
-            [](tt::graphlib::OpType const &op_type, std::string const &name) { return op_type.attrs().at(name); })
-        .def(
-            "__setattr__",
-            [](tt::graphlib::OpType &op_type, std::string const &name, tt::graphlib::OpType::Attr value)
-            { return op_type.set_attr(name, value); })
-        .def("__repr__", [](tt::graphlib::OpType const &op_type) { return op_type.as_string(); });
-
     py::enum_<tt::graphlib::UBlockOrder>(m_graph, "UBlockOrder")
         .value("R", tt::graphlib::UBlockOrder::R)
         .value("C", tt::graphlib::UBlockOrder::C)
@@ -315,7 +292,6 @@ void GraphModule(py::module &m_graph)
         .value("ReinterpretShape", tt::graphlib::RuntimeTensorTransformType::ReinterpretShape)
         .value("EmbeddingIndex", tt::graphlib::RuntimeTensorTransformType::EmbeddingIndex)
         .value("ConstantInput", tt::graphlib::RuntimeTensorTransformType::ConstantInput)
-        .value("Unpad", tt::graphlib::RuntimeTensorTransformType::Unpad)
         .value("Concatenate", tt::graphlib::RuntimeTensorTransformType::Concatenate)
         .export_values();
 
@@ -377,17 +353,17 @@ void GraphModule(py::module &m_graph)
         "create_op_node",
         [](Graph *graph,
            const std::string &name,
-           const graphlib::OpType &op_type,
+           const ops::Op &op,
            const std::vector<std::uint32_t> &shape,
            tt::DataFormat data_format,
            const int subgraph_index,
            graphlib::TagHints tags)
         {
-            auto node = graph->add_node(graphlib::create_node<graphlib::PyOpNode>(name, op_type), subgraph_index);
+            auto node = graph->add_node(graphlib::create_node<graphlib::PyOpNode>(name, op), subgraph_index);
             node->set_shape(Shape::create(shape));
             node->set_output_df(data_format);
             node->as<graphlib::TaggedNode>()->tag("original_op_name", name);
-            node->as<graphlib::TaggedNode>()->tag("original_op_type", op_type.name());
+            node->as<graphlib::TaggedNode>()->tag("original_op_type", op.as_string());
             node->as<graphlib::TaggedNode>()->add_tags(tags);
             return node->id();
         });
@@ -709,7 +685,7 @@ void GraphModule(py::module &m_graph)
     m_graph_query.def("op_type", graphlib::query::op_type);
 }
 
-py::object eval_op(graphlib::OpType type, std::vector<py::object> inputs)
+py::object eval_op(ops::Op type, std::vector<py::object> inputs)
 {
     std::vector<at::Tensor> tensors;
 
@@ -719,8 +695,8 @@ py::object eval_op(graphlib::OpType type, std::vector<py::object> inputs)
     py::object result = py::cast(type.eval(tensors));
 
     log_trace(LogEval, "  eval_op: {}", type);
-    py::object common_module = py::module_::import("forge.op.eval");
-    common_module.attr("eval_debug_print")(type.name(), inputs, result);
+    py::object common_module = py::module_::import("forge.op.common");
+    common_module.attr("eval_debug_print")(type.as_string(), inputs, result);
 
     return result;
 }
@@ -732,7 +708,7 @@ py::object eval_golden_transforms(graphlib::Node *node, py::object tensor, bool 
         return tensor;
 
     log_trace(LogEval, "Undo golden transforms: {}", node->name());
-    for (graphlib::OpType const &op_type : op->get_golden_transforms())
+    for (ops::Op const &op_type : op->get_golden_transforms())
     {
         // Don't eval reshapes on output as its already done by reinterpret shape.
         // Don't eval transpose on output as transposed tensor should be passed to output node.
@@ -767,7 +743,7 @@ void eval_partial_datacopy_golden_transforms(
     }
     else
     {
-        graphlib::OpType overlay("add");
+        ops::Op overlay(ops::OpType::Add);
         ret.at(output_index) = eval_op(overlay, {ret.at(output_index), output_tensor});
     }
 }
@@ -813,26 +789,26 @@ bool compare_tensor_to_golden(
 
 py::object create_constant_tensor(float constant_value, std::pair<int, int> constant_dims, DataFormat df)
 {
-    py::object eval_module = py::module_::import("forge.op.eval");
+    py::object eval_module = py::module_::import("forge.op.common");
     return eval_module.attr("create_constant_tensor_from_value")(constant_value, constant_dims, df);
 }
 
 py::object create_constant_tensor(const std::vector<float> &tensor_value, const Shape &tensor_shape, tt::DataFormat df)
 {
-    py::object eval_module = py::module_::import("forge.op.eval");
+    py::object eval_module = py::module_::import("forge.op.common");
     return eval_module.attr("create_constant_tensor_from_tensor")(tensor_value, tensor_shape.as_vector(), df);
 }
 
 void dump_tensor(py::object tensor, std::string filename)
 {
-    py::object eval_module = py::module_::import("forge.op.eval");
+    py::object eval_module = py::module_::import("forge.op.common");
     eval_module.attr("dump_tensor")(tensor, filename);
 }
 
 // Evaluate TMs
-py::object eval_tms(py::object tensor, const std::vector<graphlib::OpType> &tms)
+py::object eval_tms(py::object tensor, const std::vector<ops::Op> &tms)
 {
-    for (graphlib::OpType tm : tms)
+    for (ops::Op tm : tms)
     {
         std::vector<py::object> inputs;
         inputs.push_back(tensor);
@@ -934,7 +910,7 @@ py::object consteval_input(
         graphlib::OpNode *op_node = node->as<graphlib::OpNode>();
 
         std::vector<py::object> inputs = eval_operand_tms(consteval_graph, node, node_outputs);
-        output = eval_op(op_node->op_type(), inputs);
+        output = eval_op(op_node->op(), inputs);
 
         node_outputs[op_node->id()].push_back(output);
     }
@@ -994,8 +970,8 @@ py::object eval_reinterpret_shape(Graph *graph, Node *node, py::object input_val
         node->shape(),
         runtime_tensor_transform.reinterpreted_shape);
 
-    graphlib::OpType reinterpret_shape(
-        "reshape", {}, {{"shape", runtime_tensor_transform.reinterpreted_shape.as_vector<int>()}});
+    ops::Op reinterpret_shape(
+        ops::OpType::Reshape, {{"shape", runtime_tensor_transform.reinterpreted_shape.as_vector<int>()}});
     return eval_op(reinterpret_shape, {input_value});
 }
 
@@ -1016,40 +992,6 @@ py::object eval_constant_input(Graph *, Node *node, py::object input_value)
         return input_value;
     }
     return runtime_tensor_transform.get_constant_input_tensor();
-}
-
-py::object eval_unpad(Graph *graph, Node *node, py::object input_value)
-{
-    graphlib::OutputNode *output_node = dynamic_cast<graphlib::OutputNode *>(node);
-    if (!output_node)
-        return input_value;
-
-    graphlib::RuntimeTensorTransform runtime_tensor_transform = output_node->get_runtime_tensor_transform();
-    if (runtime_tensor_transform.type != graphlib::RuntimeTensorTransformType::Unpad)
-        return input_value;
-
-    // Determine forge_unpad attributes based on original and padded shape
-    graphlib::Shape original_shape = runtime_tensor_transform.unpadded_shape;
-    int orig_c = original_shape[-1];
-    int orig_r = original_shape[-2];
-
-    graphlib::Shape padded_shape = node->shape();
-    int pad_ct = (padded_shape[-1] / graphlib::Shape::FORGE_TILE_DIM) - graphlib::Shape::to_forge(original_shape).ct();
-    if (pad_ct < 0)
-        pad_ct = 0;
-    int pad_rt = (padded_shape[-2] / graphlib::Shape::FORGE_TILE_DIM) - graphlib::Shape::to_forge(original_shape).rt();
-    if (pad_rt < 0)
-        pad_rt = 0;
-
-    // Populate attributes and construct forge_unpad op for evaluation
-    std::vector<graphlib::OpType::Attr> attr;
-    attr.emplace_back(pad_rt);
-    attr.emplace_back(pad_ct);
-    attr.emplace_back(orig_r);
-    attr.emplace_back(orig_c);
-
-    graphlib::OpType unpad("forge_unpad", attr);
-    return eval_op(unpad, {input_value});
 }
 
 py::object eval_concatenate(
@@ -1097,7 +1039,7 @@ py::object eval_concatenate(
         }
     }
 
-    graphlib::OpType prestride_act("concatenate", {}, {{"dim", runtime_tensor_transform.concat_dim}});
+    ops::Op prestride_act(ops::OpType::Concatenate, {{"dim", runtime_tensor_transform.concat_dim}});
     return eval_op(prestride_act, concat_inputs);
 }
 
@@ -1128,9 +1070,6 @@ std::vector<py::object> eval_runtime_tensor_transform(
                 break;
             case graphlib::RuntimeTensorTransformType::ConstantInput:
                 ret.push_back(eval_constant_input(graph, node, input_value));
-                break;
-            case graphlib::RuntimeTensorTransformType::Unpad:
-                ret.push_back(eval_unpad(graph, node, input_value));
                 break;
             case graphlib::RuntimeTensorTransformType::Concatenate:
                 // Concatenate will join multiple outputs togeter, pass full vectors
@@ -1385,11 +1324,11 @@ eval_graph(
 
         try
         {
-            log_trace(LogEval, "Eval node: {} - {} - Shape{}", op_node->name(), op_node->op_type(), op_node->shape());
+            log_trace(LogEval, "Eval node: {} - {} - Shape{}", op_node->name(), op_node->op(), op_node->shape());
 
             std::vector<py::object> inputs = eval_operand_tms(graph, node, node_outputs);
 
-            py::object obj = eval_op(op_node->op_type(), inputs);
+            py::object obj = eval_op(op_node->op(), inputs);
 
             auto gradient_edges = graph->operand_edges(
                 node, [](const auto &edge) { return edge.edge_type == graphlib::EdgeType::kAutogradFwdToGradient; });

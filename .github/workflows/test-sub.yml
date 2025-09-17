@@ -35,6 +35,10 @@ on:
         description: 'Filters for tests (comma separated)'
         required: false
         type: string
+      test-expression:
+        description: 'Run tests which match the given substring expression'
+        required: false
+        type: string
       run_id:
         description: 'Run id the workflow where to find installation (or else it will search)'
         required: false
@@ -166,7 +170,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           path: forge/test/models_ops
 
-      - name: Run Test
+      - name: Collect Test
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_HOME: /mnt/dockercache/huggingface
@@ -181,25 +185,48 @@ jobs:
           source env/activate
           echo "Collecting tests for group ${{ matrix.test_group_id }} with mark '${{ inputs.test_mark }}'..."
           set +e
-          pytest --splits ${{ inputs.test_group_cnt }} \
-               --group ${{ matrix.test_group_id }} \
-               --splitting-algorithm least_duration \
-               -m "${{ inputs.test_mark }}" --collect-only -q \
+          pytest_args=(
+            "--splits" "${{ inputs.test_group_cnt }}"
+            "--group" "${{ matrix.test_group_id }}"
+            "--splitting-algorithm" "least_duration"
+            "-m" "${{ inputs.test_mark }}"
+            "--collect-only"
+          )
+          if [ -n "${{ inputs.test-expression }}" ]; then
+            pytest_args+=("-k" "${{ inputs.test-expression }}")
+          fi
+          pytest "${pytest_args[@]}" -q \
                 | sed -n '/^Collected tests /,/^collected /p' | sed '/^[Cc]ollected /d' >.pytest_tests_to_run
 
           if [ $? -ne 0 ]; then
             echo "Failed to collect tests. Doing dry run..."
             set -e
-            pytest --splits ${{ inputs.test_group_cnt }} \
-                --group ${{ matrix.test_group_id }} \
-                --splitting-algorithm least_duration \
-                -m "${{ inputs.test_mark }}" --collect-only -svv
+            pytest "${pytest_args[@]}" -svv
             exit 1
           fi
           echo "Collected tests."
-          # enable next line for debugging
-          # cat .pytest_tests_to_run
+          cp .pytest_tests_to_run collected_test_list
 
+      - name: Upload collected tests
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: collected-test-list-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: collected_test_list
+
+      - name: Run Test
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HOME: /mnt/dockercache/huggingface
+          IRD_LF_CACHE: ${{ vars.IRD_LF_CACHE }}
+          FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
+          HF_HUB_DISABLE_PROGRESS_BARS: 1
+          FORGE_DISABLE_REPORTIFY_DUMP: 1
+          OPERATORS: ${{ inputs.operators }}
+          FILTERS: ${{ inputs.filters }}
+        shell: bash
+        run: |
+          source env/activate
           python .github/workflows/test_runner.py  \
                --junit-xml=${{ steps.strings.outputs.test_report_path }} \
                --log-memory-usage \

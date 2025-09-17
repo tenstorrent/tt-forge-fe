@@ -26,7 +26,7 @@ class Squeeze0(ForgeModule):
         super().__init__(name)
 
     def forward(self, squeeze_input_0):
-        squeeze_output_1 = forge.op.Squeeze("", squeeze_input_0, dim=-1)
+        squeeze_output_1 = forge.op.Squeeze("", squeeze_input_0, dim=1)
         return squeeze_output_1
 
 
@@ -35,7 +35,7 @@ class Squeeze1(ForgeModule):
         super().__init__(name)
 
     def forward(self, squeeze_input_0):
-        squeeze_output_1 = forge.op.Squeeze("", squeeze_input_0, dim=-2)
+        squeeze_output_1 = forge.op.Squeeze("", squeeze_input_0, dim=-3)
         return squeeze_output_1
 
 
@@ -44,7 +44,7 @@ class Squeeze2(ForgeModule):
         super().__init__(name)
 
     def forward(self, squeeze_input_0):
-        squeeze_output_1 = forge.op.Squeeze("", squeeze_input_0, dim=1)
+        squeeze_output_1 = forge.op.Squeeze("", squeeze_input_0, dim=-2)
         return squeeze_output_1
 
 
@@ -53,7 +53,7 @@ class Squeeze3(ForgeModule):
         super().__init__(name)
 
     def forward(self, squeeze_input_0):
-        squeeze_output_1 = forge.op.Squeeze("", squeeze_input_0, dim=-3)
+        squeeze_output_1 = forge.op.Squeeze("", squeeze_input_0, dim=-1)
         return squeeze_output_1
 
 
@@ -62,7 +62,7 @@ class Squeeze4(ForgeModule):
         super().__init__(name)
 
     def forward(self, squeeze_input_0):
-        squeeze_output_1 = forge.op.Squeeze("", squeeze_input_0, dim=2)
+        squeeze_output_1 = forge.op.Squeeze("", squeeze_input_0, dim=-5)
         return squeeze_output_1
 
 
@@ -80,7 +80,7 @@ class Squeeze6(ForgeModule):
         super().__init__(name)
 
     def forward(self, squeeze_input_0):
-        squeeze_output_1 = forge.op.Squeeze("", squeeze_input_0, dim=4)
+        squeeze_output_1 = forge.op.Squeeze("", squeeze_input_0, dim=2)
         return squeeze_output_1
 
 
@@ -89,7 +89,7 @@ class Squeeze7(ForgeModule):
         super().__init__(name)
 
     def forward(self, squeeze_input_0):
-        squeeze_output_1 = forge.op.Squeeze("", squeeze_input_0, dim=3)
+        squeeze_output_1 = forge.op.Squeeze("", squeeze_input_0, dim=4)
         return squeeze_output_1
 
 
@@ -98,7 +98,7 @@ class Squeeze8(ForgeModule):
         super().__init__(name)
 
     def forward(self, squeeze_input_0):
-        squeeze_output_1 = forge.op.Squeeze("", squeeze_input_0, dim=-5)
+        squeeze_output_1 = forge.op.Squeeze("", squeeze_input_0, dim=3)
         return squeeze_output_1
 
 
@@ -111,43 +111,32 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Squeeze0,
-        [((1, 384, 1), torch.float32)],
+        [((1, 1, 512), torch.float32)],
         {
             "model_names": [
-                "onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
-                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
-                "pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf",
-                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
+                "onnx_mlp_mixer_mixer_s16_224_img_cls_timm",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_mlp_mixer_mixer_s32_224_img_cls_timm",
             ],
             "pcc": 0.99,
-            "args": {"dim": "-1"},
+            "args": {"dim": "1"},
         },
     ),
     (
         Squeeze1,
+        [((1, 1, 512), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-3"}},
+    ),
+    (
+        Squeeze2,
         [((1, 16384, 1, 64), torch.float32)],
         {
             "model_names": [
-                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
-                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
                 "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
                 "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 256, 1, 64), torch.float32)],
-        {
-            "model_names": [
                 "onnx_segformer_nvidia_mit_b2_img_cls_hf",
-                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
                 "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2"},
@@ -155,150 +144,796 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Squeeze2,
-        [((1, 1, 512), torch.float32)],
-        {"model_names": ["onnx_segformer_nvidia_mit_b2_img_cls_hf"], "pcc": 0.99, "args": {"dim": "1"}},
-    ),
-    (
-        Squeeze1,
-        [((1, 2048, 1, 1), torch.bfloat16)],
+        [((1, 256, 1, 64), torch.float32)],
         {
             "model_names": [
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnet_w32_pose_estimation_timm",
-                "pt_hrnet_hrnet_w40_pose_estimation_timm",
-                "pt_hrnet_hrnet_w44_pose_estimation_timm",
-                "pt_hrnet_hrnet_w48_pose_estimation_timm",
-                "pt_hrnet_hrnet_w64_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_mobilenetv3_ssd_resnet50_img_cls_torchvision",
-                "pt_regnet_regnet_x_16gf_img_cls_torchvision",
-                "pt_resnet_50_img_cls_hf",
-                "pt_resnet_resnet101_img_cls_torchvision",
-                "pt_resnet_resnet50_img_cls_torchvision",
-                "pt_resnext_resnext101_32x8d_wsl_img_cls_torchhub",
-                "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
-                "pt_wideresnet_wide_resnet50_2_img_cls_timm",
-                "pt_wideresnet_wide_resnet50_2_img_cls_torchvision",
-                "pt_xception_xception65_img_cls_timm",
-                "pt_xception_xception71_tf_in1k_img_cls_timm",
-                "pt_hrnet_hrnet_w30_pose_estimation_timm",
-                "pt_resnet_resnet152_img_cls_torchvision",
-                "pt_xception_xception41_img_cls_timm",
-                "pt_xception_xception71_img_cls_timm",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
-                "pt_mobilenetv3_ssd_resnet101_img_cls_torchvision",
-                "pt_resnext_resnext101_32x8d_img_cls_torchhub",
-                "pt_wideresnet_wide_resnet101_2_img_cls_timm",
-                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet152_img_cls_torchvision",
-                "pt_resnet_50_img_cls_timm",
-                "pt_xception_xception_img_cls_timm",
-                "pt_resnext_resnext50_32x4d_img_cls_torchhub",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
-                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
+                "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
-            "default_df_override": "Float16_b",
             "args": {"dim": "-2"},
         },
     ),
     (
-        Squeeze0,
-        [((1, 2048, 1), torch.bfloat16)],
+        Squeeze3,
+        [((1, 120, 12, 1), torch.float32)],
         {
             "model_names": [
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnet_w32_pose_estimation_timm",
-                "pt_hrnet_hrnet_w40_pose_estimation_timm",
-                "pt_hrnet_hrnet_w44_pose_estimation_timm",
-                "pt_hrnet_hrnet_w48_pose_estimation_timm",
-                "pt_hrnet_hrnet_w64_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_mobilenetv3_ssd_resnet50_img_cls_torchvision",
-                "pt_regnet_regnet_x_16gf_img_cls_torchvision",
-                "pt_resnet_50_img_cls_hf",
-                "pt_resnet_resnet101_img_cls_torchvision",
-                "pt_resnet_resnet50_img_cls_torchvision",
-                "pt_resnext_resnext101_32x8d_wsl_img_cls_torchhub",
-                "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
-                "pt_wideresnet_wide_resnet50_2_img_cls_timm",
-                "pt_wideresnet_wide_resnet50_2_img_cls_torchvision",
-                "pt_xception_xception65_img_cls_timm",
-                "pt_xception_xception71_tf_in1k_img_cls_timm",
-                "pt_hrnet_hrnet_w30_pose_estimation_timm",
-                "pt_resnet_resnet152_img_cls_torchvision",
-                "pt_xception_xception41_img_cls_timm",
-                "pt_xception_xception71_img_cls_timm",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
-                "pt_mobilenetv3_ssd_resnet101_img_cls_torchvision",
-                "pt_resnext_resnext101_32x8d_img_cls_torchhub",
-                "pt_wideresnet_wide_resnet101_2_img_cls_timm",
-                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet152_img_cls_torchvision",
-                "pt_resnet_50_img_cls_timm",
-                "pt_xception_xception_img_cls_timm",
-                "pt_resnext_resnext50_32x4d_img_cls_torchhub",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
-                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
+                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
             ],
             "pcc": 0.99,
-            "default_df_override": "Float16_b",
             "args": {"dim": "-1"},
         },
     ),
     (
-        Squeeze1,
-        [((1, 1, 768), torch.float32)],
+        Squeeze4,
+        [((1, 1, 8, 12, 15), torch.float32)],
         {
             "model_names": [
-                "pd_bert_bert_base_uncased_seq_cls_padlenlp",
-                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
-                "pd_roberta_rbt4_ch_seq_cls_padlenlp",
-                "pd_bert_bert_base_japanese_seq_cls_padlenlp",
-                "pd_ernie_1_0_seq_cls_padlenlp",
-                "pd_chineseclip_text_ofa_sys_chinese_clip_vit_base_patch16_text_enc_padlenlp",
-                "pd_blip_text_salesforce_blip_image_captioning_base_text_enc_padlenlp",
+                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-5"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 120, 1, 12), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2"},
         },
     ),
     (
-        Squeeze1,
-        [((1, 1024, 1, 1), torch.float32)],
+        Squeeze2,
+        [((1, 512, 1, 1), torch.float32)],
         {
-            "model_names": [
-                "pd_googlenet_base_img_cls_paddlemodels",
-                "pd_mobilenetv1_basic_img_cls_paddlemodels",
-                "pt_swin_swin_v2_b_img_cls_torchvision",
-                "pd_densenet_121_img_cls_paddlemodels",
-            ],
+            "model_names": ["pd_resnet_34_img_cls_paddlemodels", "pd_resnet_18_img_cls_paddlemodels"],
             "pcc": 0.99,
             "args": {"dim": "-2"},
         },
     ),
     (
-        Squeeze0,
-        [((1, 1024, 1), torch.float32)],
+        Squeeze3,
+        [((1, 512, 1), torch.float32)],
         {
-            "model_names": [
-                "pd_googlenet_base_img_cls_paddlemodels",
-                "pd_mobilenetv1_basic_img_cls_paddlemodels",
-                "pt_swin_swin_v2_b_img_cls_torchvision",
-                "pd_densenet_121_img_cls_paddlemodels",
-            ],
+            "model_names": ["pd_resnet_34_img_cls_paddlemodels", "pd_resnet_18_img_cls_paddlemodels"],
             "pcc": 0.99,
             "args": {"dim": "-1"},
         },
     ),
     (
         Squeeze3,
-        [((1, 1024, 1), torch.float32)],
+        [((1, 14, 1), torch.float32)],
+        {"model_names": ["pt_albert_squad2_qa_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Squeeze2,
+        [((1, 2208, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 2208, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 1280, 1, 1), torch.bfloat16)],
         {
             "model_names": [
-                "pt_nbeats_generic_basis_clm_hf",
-                "pt_nbeats_seasionality_basis_clm_hf",
-                "pt_nbeats_trend_basis_clm_hf",
+                "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
+                "pt_efficientnet_hf_hub_timm_tf_efficientnet_b0_aa_in1k_img_cls_timm",
+                "pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm",
+                "pt_efficientnet_timm_efficientnet_b0_img_cls_timm",
+                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
+                "pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf",
+                "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
+                "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+                "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
+                "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "pt_efficientnet_hf_hub_timm_efficientnet_b0_ra_in1k_img_cls_timm",
+                "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                "pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf",
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_mobilenetv2_basic_img_cls_torchhub",
+                "pt_mobilenetv2_mobilenet_v2_torchvision_img_cls_torchvision",
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 1280, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
+                "pt_efficientnet_hf_hub_timm_tf_efficientnet_b0_aa_in1k_img_cls_timm",
+                "pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm",
+                "pt_efficientnet_timm_efficientnet_b0_img_cls_timm",
+                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
+                "pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf",
+                "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
+                "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
+                "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
+                "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "pt_efficientnet_hf_hub_timm_efficientnet_b0_ra_in1k_img_cls_timm",
+                "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                "pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf",
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_mobilenetv2_basic_img_cls_torchhub",
+                "pt_mobilenetv2_mobilenet_v2_torchvision_img_cls_torchvision",
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 1792, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
+                "pt_efficientnet_timm_efficientnet_b4_img_cls_timm",
+                "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 1792, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
+                "pt_efficientnet_timm_efficientnet_b4_img_cls_timm",
+                "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 2560, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_efficientnet_efficientnet_b7_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 2560, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_efficientnet_efficientnet_b7_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze0,
+        [((1, 1, 512), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mlp_mixer_base_img_cls_github",
+                "pt_mlp_mixer_mixer_s16_224_img_cls_timm",
+                "pt_mlp_mixer_mixer_s32_224_img_cls_timm",
+                "pt_segformer_mit_b5_img_cls_hf",
+                "pt_segformer_mit_b4_img_cls_hf",
+                "pt_segformer_mit_b2_img_cls_hf",
+                "pt_segformer_mit_b3_img_cls_hf",
+                "pt_segformer_mit_b1_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 768, 196, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
+                "pt_vit_base_img_cls_hf",
+                "pt_deit_base_distilled_img_cls_hf",
+                "pt_deit_base_img_cls_hf",
+                "pt_beit_base_img_cls_hf",
+                "pt_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze0,
+        [((1, 1, 768), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b32_224_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
+                "pt_beit_base_img_cls_hf",
+                "pt_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 512, 196, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 512, 49, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 32, 1), torch.float32)],
+        {
+            "model_names": [
+                "pt_opt_facebook_opt_350m_qa_hf",
+                "pt_opt_facebook_opt_1_3b_qa_hf",
+                "pt_opt_facebook_opt_125m_qa_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 2048, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_resnet_resnet101_img_cls_torchvision",
+                "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
+                "pt_xception_xception41_img_cls_timm",
+                "pt_regnet_regnet_x_16gf_img_cls_torchvision",
+                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
+                "pt_hrnet_hrnet_w18_small_img_cls_timm",
+                "pt_hrnet_hrnet_w30_img_cls_timm",
+                "pt_wideresnet_wide_resnet50_2_img_cls_torchvision",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_img_cls_timm",
+                "pt_hrnet_hrnet_w18_small_v2_img_cls_timm",
+                "pt_hrnet_hrnet_w32_img_cls_timm",
+                "pt_hrnet_hrnet_w40_img_cls_timm",
+                "pt_hrnet_hrnet_w44_img_cls_timm",
+                "pt_hrnet_hrnet_w48_img_cls_timm",
+                "pt_resnet_resnet50_timm_img_cls_timm",
+                "pt_resnext_resnext101_32x8d_wsl_img_cls_torchhub",
+                "pt_wideresnet_wide_resnet101_2_timm_img_cls_timm",
+                "pt_xception_xception71_img_cls_timm",
+                "pt_resnet_50_img_cls_hf",
+                "pt_resnet_resnet152_img_cls_torchvision",
+                "pt_resnext_resnext101_32x8d_img_cls_torchhub",
+                "pt_wideresnet_wide_resnet50_2_timm_img_cls_timm",
+                "pt_hrnet_hrnet_w18_img_cls_timm",
+                "pt_xception_xception71_tf_in1k_img_cls_timm",
+                "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
+                "pt_resnet_resnet50_img_cls_torchvision",
+                "pt_hrnet_hrnet_w64_img_cls_timm",
+                "pt_resnext_resnext50_32x4d_img_cls_torchhub",
+                "pt_xception_xception65_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 2048, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_resnet_resnet101_img_cls_torchvision",
+                "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
+                "pt_xception_xception41_img_cls_timm",
+                "pt_regnet_regnet_x_16gf_img_cls_torchvision",
+                "pt_efficientnet_efficientnet_b5_img_cls_torchvision",
+                "pt_hrnet_hrnet_w18_small_img_cls_timm",
+                "pt_hrnet_hrnet_w30_img_cls_timm",
+                "pt_wideresnet_wide_resnet50_2_img_cls_torchvision",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_img_cls_timm",
+                "pt_hrnet_hrnet_w18_small_v2_img_cls_timm",
+                "pt_hrnet_hrnet_w32_img_cls_timm",
+                "pt_hrnet_hrnet_w40_img_cls_timm",
+                "pt_hrnet_hrnet_w44_img_cls_timm",
+                "pt_hrnet_hrnet_w48_img_cls_timm",
+                "pt_resnet_resnet50_timm_img_cls_timm",
+                "pt_resnext_resnext101_32x8d_wsl_img_cls_torchhub",
+                "pt_wideresnet_wide_resnet101_2_timm_img_cls_timm",
+                "pt_xception_xception71_img_cls_timm",
+                "pt_resnet_50_img_cls_hf",
+                "pt_resnet_resnet152_img_cls_torchvision",
+                "pt_resnext_resnext101_32x8d_img_cls_torchhub",
+                "pt_wideresnet_wide_resnet50_2_timm_img_cls_timm",
+                "pt_hrnet_hrnet_w18_img_cls_timm",
+                "pt_xception_xception71_tf_in1k_img_cls_timm",
+                "pt_efficientnet_hf_hub_timm_efficientnet_b5_in12k_ft_in1k_img_cls_timm",
+                "pt_resnet_resnet50_img_cls_torchvision",
+                "pt_hrnet_hrnet_w64_img_cls_timm",
+                "pt_resnext_resnext50_32x4d_img_cls_torchhub",
+                "pt_xception_xception65_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 64, 16384, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_mit_b5_img_cls_hf",
+                "pt_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b4_img_cls_hf",
+                "pt_segformer_mit_b2_img_cls_hf",
+                "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b3_img_cls_hf",
+                "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b1_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 16384, 1, 64), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_mit_b5_img_cls_hf",
+                "pt_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b4_img_cls_hf",
+                "pt_segformer_mit_b2_img_cls_hf",
+                "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b3_img_cls_hf",
+                "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b1_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 256, 1, 64), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_mit_b5_img_cls_hf",
+                "pt_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b4_img_cls_hf",
+                "pt_segformer_mit_b2_img_cls_hf",
+                "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b3_img_cls_hf",
+                "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b1_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 256, 16384, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_mit_b5_img_cls_hf",
+                "pt_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b4_img_cls_hf",
+                "pt_segformer_mit_b2_img_cls_hf",
+                "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b3_img_cls_hf",
+                "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b1_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 128, 4096, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_mit_b5_img_cls_hf",
+                "pt_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b4_img_cls_hf",
+                "pt_segformer_mit_b2_img_cls_hf",
+                "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b3_img_cls_hf",
+                "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b1_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 512, 4096, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_mit_b5_img_cls_hf",
+                "pt_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b4_img_cls_hf",
+                "pt_segformer_mit_b2_img_cls_hf",
+                "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b3_img_cls_hf",
+                "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b1_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 320, 1024, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_mit_b5_img_cls_hf",
+                "pt_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b4_img_cls_hf",
+                "pt_segformer_mit_b2_img_cls_hf",
+                "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b3_img_cls_hf",
+                "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b1_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 1280, 1024, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_mit_b5_img_cls_hf",
+                "pt_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b4_img_cls_hf",
+                "pt_segformer_mit_b2_img_cls_hf",
+                "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b3_img_cls_hf",
+                "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b1_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 512, 256, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_mit_b5_img_cls_hf",
+                "pt_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b4_img_cls_hf",
+                "pt_segformer_mit_b2_img_cls_hf",
+                "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b3_img_cls_hf",
+                "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b1_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 2048, 256, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_mit_b5_img_cls_hf",
+                "pt_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b4_img_cls_hf",
+                "pt_segformer_mit_b2_img_cls_hf",
+                "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b3_img_cls_hf",
+                "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_mit_b1_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 1024, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_swin_swin_b_img_cls_torchvision",
+                "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_googlenet_googlenet_img_cls_torchvision",
+                "pt_vovnet_ese_vovnet39b_img_cls_timm",
+                "pt_mobilenetv1_google_mobilenet_v1_1_0_224_img_cls_hf",
+                "pt_vovnet_ese_vovnet19b_dw_img_cls_timm",
+                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_img_cls_timm",
+                "pt_mobilenetv1_mobilenetv1_100_ra4_e3600_r224_in1k_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+                "pt_vovnet_ese_vovnet99b_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 1024, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_swin_swin_b_img_cls_torchvision",
+                "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_googlenet_googlenet_img_cls_torchvision",
+                "pt_vovnet_ese_vovnet39b_img_cls_timm",
+                "pt_mobilenetv1_google_mobilenet_v1_1_0_224_img_cls_hf",
+                "pt_vovnet_ese_vovnet19b_dw_img_cls_timm",
+                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_img_cls_timm",
+                "pt_mobilenetv1_mobilenetv1_100_ra4_e3600_r224_in1k_img_cls_timm",
+                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
+                "pt_vovnet_ese_vovnet99b_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 25088, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_vgg_torchvision_vgg16_img_cls_torchvision",
+                "pt_vgg_19_obj_det_hf",
+                "pt_vgg_torchvision_vgg19_img_cls_torchvision",
+                "pt_vgg_torchvision_vgg13_bn_img_cls_torchvision",
+                "pt_vgg_torchvision_vgg11_bn_img_cls_torchvision",
+                "pt_vgg_torchvision_vgg19_bn_img_cls_torchvision",
+                "pt_vgg_torchvision_vgg16_bn_img_cls_torchvision",
+                "pt_vgg_vgg19_bn_obj_det_torchhub",
+                "pt_vgg_torchvision_vgg13_img_cls_torchvision",
+                "pt_vgg_torchvision_vgg11_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 25088, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_vgg_torchvision_vgg16_img_cls_torchvision",
+                "pt_vgg_19_obj_det_hf",
+                "pt_vgg_torchvision_vgg19_img_cls_torchvision",
+                "pt_vgg_torchvision_vgg13_bn_img_cls_torchvision",
+                "pt_vgg_torchvision_vgg11_bn_img_cls_torchvision",
+                "pt_vgg_torchvision_vgg19_bn_img_cls_torchvision",
+                "pt_vgg_torchvision_vgg16_bn_img_cls_torchvision",
+                "pt_vgg_vgg19_bn_obj_det_torchhub",
+                "pt_vgg_torchvision_vgg13_img_cls_torchvision",
+                "pt_vgg_torchvision_vgg11_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 85, 6400, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_yolox_yolox_m_obj_det_torchhub",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolox_yolox_x_obj_det_torchhub",
+                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "pt_yolox_yolox_l_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 85, 1600, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_yolox_yolox_m_obj_det_torchhub",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolox_yolox_x_obj_det_torchhub",
+                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "pt_yolox_yolox_l_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 85, 400, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_yolox_yolox_m_obj_det_torchhub",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolox_yolox_x_obj_det_torchhub",
+                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "pt_yolox_yolox_l_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze0,
+        [((1, 1, 768), torch.float32)],
+        {
+            "model_names": [
+                "onnx_mlp_mixer_mixer_b16_224_img_cls_timm",
+                "onnx_mlp_mixer_mixer_b32_224_img_cls_timm",
+                "onnx_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
+                "onnx_beit_microsoft_beit_base_patch16_224_img_cls_hf",
+                "onnx_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
+                "onnx_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
+                "onnx_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 1, 768), torch.float32)],
+        {
+            "model_names": [
+                "pd_clip_vision_openai_clip_vit_base_patch16_img_enc_padlenlp",
+                "pd_bert_bert_base_japanese_seq_cls_padlenlp",
+                "pd_bert_bert_base_uncased_seq_cls_padlenlp",
+                "pd_blip_text_salesforce_blip_image_captioning_base_text_enc_padlenlp",
+                "pd_blip_vision_salesforce_blip_image_captioning_base_img_enc_padlenlp",
+                "pd_chineseclip_ofa_sys_chinese_clip_vit_base_patch16_img_text_pairing_padlenlp",
+                "pd_chineseclip_text_ofa_sys_chinese_clip_vit_base_patch16_text_enc_padlenlp",
+                "pd_chineseclip_vision_ofa_sys_chinese_clip_vit_base_patch16_img_enc_padlenlp",
+                "pd_blip_salesforce_blip_image_captioning_base_img_captioning_padlenlp",
+                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
+                "pd_ernie_1_0_seq_cls_padlenlp",
+                "pd_roberta_rbt4_ch_seq_cls_padlenlp",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 9216, 1, 1), torch.float32)],
+        {"model_names": ["pd_alexnet_base_img_cls_paddlemodels"], "pcc": 0.99, "args": {"dim": "-2"}},
+    ),
+    (
+        Squeeze3,
+        [((1, 9216, 1), torch.float32)],
+        {"model_names": ["pd_alexnet_base_img_cls_paddlemodels"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Squeeze1,
+        [((1, 1, 14), torch.float32)],
+        {"model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"], "pcc": 0.99, "args": {"dim": "-3"}},
+    ),
+    (
+        Squeeze1,
+        [((1, 1, 9), torch.float32)],
+        {
+            "model_names": ["pd_bert_bert_base_uncased_qa_padlenlp", "pd_ernie_1_0_qa_padlenlp"],
+            "pcc": 0.99,
+            "args": {"dim": "-3"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 288, 1, 25), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze1,
+        [((1, 1, 288), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3"},
@@ -306,26 +941,18 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Squeeze1,
-        [((1, 1152, 1, 1), torch.float32)],
-        {"model_names": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99, "args": {"dim": "-2"}},
+        [((1, 1, 96), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3"},
+        },
     ),
     (
-        Squeeze0,
-        [((1, 1152, 1), torch.float32)],
-        {"model_names": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Squeeze1,
-        [((1, 1280, 1, 1), torch.float32)],
-        {"model_names": ["pd_mobilenetv2_basic_img_cls_paddlemodels"], "pcc": 0.99, "args": {"dim": "-2"}},
-    ),
-    (
-        Squeeze0,
-        [((1, 1280, 1), torch.float32)],
-        {"model_names": ["pd_mobilenetv2_basic_img_cls_paddlemodels"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Squeeze1,
+        Squeeze2,
         [((1, 9216, 1, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -339,7 +966,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Squeeze0,
+        Squeeze3,
         [((1, 9216, 1), torch.bfloat16)],
         {
             "model_names": [
@@ -353,326 +980,14 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Squeeze0,
-        [((1, 256, 16, 32, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 768, 196, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
-                "pt_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
-                "pt_vit_google_vit_base_patch16_224_img_cls_hf",
-                "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
-                "pt_beit_microsoft_beit_base_patch16_224_img_cls_hf",
-                "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
-                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 384, 196, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_deit_facebook_deit_small_patch16_224_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 2208, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 2208, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 1664, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_densenet_densenet169_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 1664, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_densenet_densenet169_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 1280, 1, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b0_img_cls_timm",
-                "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b0_ra_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_tf_efficientnet_b0_aa_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
-                "pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf",
-                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-                "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
-                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
-                "pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf",
-                "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
-                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
-                "pt_mobilenetv2_basic_img_cls_torchhub",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 1280, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b0_img_cls_timm",
-                "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b1_img_cls_torchvision",
-                "pt_efficientnet_hf_hub_timm_efficientnet_b0_ra_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_tf_efficientnet_b0_aa_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_tf_efficientnetv2_s_in21k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm",
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
-                "pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf",
-                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-                "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
-                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
-                "pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf",
-                "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
-                "pt_mobilenetv3_mobilenetv3_large_100_img_cls_timm",
-                "pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm",
-                "pt_mobilenetv2_basic_img_cls_torchhub",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 1792, 1, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
-                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b4_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 1792, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_hf_hub_timm_efficientnet_b4_ra2_in1k_img_cls_timm",
-                "pt_efficientnet_hf_hub_timm_efficientnetv2_rw_s_ra2_in1k_img_cls_timm",
-                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
-                "pt_efficientnet_efficientnet_b4_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 64, 19200, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 19200, 1, 64), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 300, 1, 64), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 256, 19200, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 128, 4800, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 512, 4800, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 320, 1200, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 1280, 1200, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 512, 300, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 2048, 300, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
         Squeeze3,
-        [((1, 1, 480, 640), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-3"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 1024, 1, 1), torch.bfloat16)],
+        [((1, 1024, 196, 1), torch.bfloat16)],
         {
             "model_names": [
-                "pt_googlenet_base_img_cls_torchvision",
-                "pt_swin_swin_b_img_cls_torchvision",
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_mobilenetv1_google_mobilenet_v1_1_0_224_img_cls_hf",
-                "pt_mobilenetv1_mobilenetv1_100_ra4_e3600_r224_in1k_img_cls_timm",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
-                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 1024, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_googlenet_base_img_cls_torchvision",
-                "pt_swin_swin_b_img_cls_torchvision",
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_mobilenetv1_google_mobilenet_v1_1_0_224_img_cls_hf",
-                "pt_mobilenetv1_mobilenetv1_100_ra4_e3600_r224_in1k_img_cls_timm",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
-                "pt_densenet_densenet121_img_cls_torchvision",
-                "pt_mobilenetv3_mobilenetv3_small_100_img_cls_timm",
-                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                "pt_beit_large_img_cls_hf",
+                "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_l16_224_img_cls_timm",
+                "pt_vit_large_img_cls_hf",
             ],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
@@ -681,46 +996,13 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Squeeze0,
-        [((1, 768, 256, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_mgp_alibaba_damo_mgp_str_base_scene_text_recognition_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 27, 257, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_mgp_alibaba_damo_mgp_str_base_scene_text_recognition_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 768, 257, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_mgp_alibaba_damo_mgp_str_base_scene_text_recognition_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze2,
-        [((1, 1, 768), torch.bfloat16)],
+        [((1, 1, 1024), torch.bfloat16)],
         {
             "model_names": [
-                "pt_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
-                "pt_mlp_mixer_mixer_b32_224_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
-                "pt_beit_microsoft_beit_base_patch16_224_img_cls_hf",
-                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
+                "pt_beit_large_img_cls_hf",
+                "pt_mlp_mixer_mixer_l32_224_img_cls_timm",
+                "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_l16_224_img_cls_timm",
             ],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
@@ -728,7 +1010,33 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Squeeze0,
+        Squeeze2,
+        [((1, 1920, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_regnet_regnet_x_8gf_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 1920, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_regnet_regnet_x_8gf_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
         [((1, 768, 49, 1), torch.bfloat16)],
         {
             "model_names": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm"],
@@ -738,47 +1046,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Squeeze0,
-        [((1, 1024, 196, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_mlp_mixer_mixer_l16_224_img_cls_timm",
-                "pt_vit_google_vit_large_patch16_224_img_cls_hf",
-                "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
-                "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
         Squeeze2,
-        [((1, 1, 1024), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_mlp_mixer_mixer_l16_224_img_cls_timm",
-                "pt_mlp_mixer_mixer_l32_224_img_cls_timm",
-                "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
-                "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 1024, 49, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
         [((1, 960, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub"],
@@ -788,7 +1056,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Squeeze0,
+        Squeeze3,
         [((1, 960, 1), torch.bfloat16)],
         {
             "model_names": ["pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub"],
@@ -798,76 +1066,45 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Squeeze1,
-        [((1, 576, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 576, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 512, 1, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_mobilenetv3_ssd_resnet18_img_cls_torchvision",
-                "pt_resnet_resnet18_img_cls_torchvision",
-                "pt_resnet_resnet34_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet34_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 512, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_mobilenetv3_ssd_resnet18_img_cls_torchvision",
-                "pt_resnet_resnet18_img_cls_torchvision",
-                "pt_resnet_resnet34_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet34_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze4,
-        [((1, 512, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_mlp_mixer_base_img_cls_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "2"},
-        },
-    ),
-    (
         Squeeze5,
         [((1, 1, 1024, 1), torch.float32)],
         {
             "model_names": [
-                "pt_nbeats_generic_basis_clm_hf",
-                "pt_nbeats_seasionality_basis_clm_hf",
-                "pt_nbeats_trend_basis_clm_hf",
+                "pt_nbeats_generic_basis_time_series_forecasting_github",
+                "pt_nbeats_trend_basis_time_series_forecasting_github",
+                "pt_nbeats_seasonality_basis_time_series_forecasting_github",
+                "onnx_nbeats_seasionality_basis_time_series_forecasting_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-4"},
+        },
+    ),
+    (
+        Squeeze1,
+        [((1, 1024, 1), torch.float32)],
+        {
+            "model_names": [
+                "pt_nbeats_generic_basis_time_series_forecasting_github",
+                "pt_nbeats_trend_basis_time_series_forecasting_github",
+                "pt_nbeats_seasonality_basis_time_series_forecasting_github",
+                "onnx_nbeats_seasionality_basis_time_series_forecasting_github",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 1024, 1), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_v2_b_img_cls_torchvision",
+                "pd_googlenet_base_img_cls_paddlemodels",
+                "pd_mobilenetv1_basic_img_cls_paddlemodels",
+                "pd_densenet_121_img_cls_paddlemodels",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
         },
     ),
     (
@@ -875,588 +1112,44 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 1, 1024, 72), torch.float32)],
         {
             "model_names": [
-                "pt_nbeats_generic_basis_clm_hf",
-                "pt_nbeats_seasionality_basis_clm_hf",
-                "pt_nbeats_trend_basis_clm_hf",
+                "pt_nbeats_generic_basis_time_series_forecasting_github",
+                "pt_nbeats_trend_basis_time_series_forecasting_github",
+                "pt_nbeats_seasonality_basis_time_series_forecasting_github",
+                "onnx_nbeats_seasionality_basis_time_series_forecasting_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-4"},
         },
     ),
     (
-        Squeeze3,
+        Squeeze1,
         [((1, 1024, 72), torch.float32)],
         {
             "model_names": [
-                "pt_nbeats_generic_basis_clm_hf",
-                "pt_nbeats_seasionality_basis_clm_hf",
-                "pt_nbeats_trend_basis_clm_hf",
+                "pt_nbeats_generic_basis_time_series_forecasting_github",
+                "pt_nbeats_trend_basis_time_series_forecasting_github",
+                "pt_nbeats_seasonality_basis_time_series_forecasting_github",
+                "onnx_nbeats_seasionality_basis_time_series_forecasting_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3"},
         },
     ),
     (
-        Squeeze1,
-        [((1, 1, 1, 1024), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 512, 1, 322), torch.bfloat16)],
-        {
-            "model_names": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 3025, 1, 322), torch.bfloat16)],
-        {
-            "model_names": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 512, 1, 1024), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 512, 1, 261), torch.bfloat16)],
-        {
-            "model_names": ["pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 50176, 1, 261), torch.bfloat16)],
-        {
-            "model_names": ["pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 512, 1, 512), torch.bfloat16)],
-        {
-            "model_names": ["pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 50176, 1, 512), torch.bfloat16)],
-        {
-            "model_names": ["pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze1,
+        Squeeze2,
         [((1, 1088, 1, 1), torch.bfloat16)],
         {
-            "model_names": ["pt_regnet_facebook_regnet_y_040_img_cls_hf"],
+            "model_names": ["pt_regnet_regnet_y_040_img_cls_hf"],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
             "args": {"dim": "-2"},
         },
     ),
     (
-        Squeeze0,
+        Squeeze3,
         [((1, 1088, 1), torch.bfloat16)],
         {
-            "model_names": ["pt_regnet_facebook_regnet_y_040_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 1296, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_facebook_regnet_y_064_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 1296, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_facebook_regnet_y_064_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 2016, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_facebook_regnet_y_080_img_cls_hf", "pt_regnet_regnet_y_8gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 2016, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_facebook_regnet_y_080_img_cls_hf", "pt_regnet_regnet_y_8gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 2240, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 2240, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 400, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_x_400mf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 400, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_x_400mf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 672, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_x_800mf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 672, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_x_800mf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 1920, 1, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_x_8gf_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 1920, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_x_8gf_img_cls_torchvision",
-                "pt_densenet_densenet201_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 3024, 1, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_y_16gf_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_160_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 3024, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_y_16gf_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_160_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 888, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_y_1_6gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 888, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_y_1_6gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 3712, 1, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_y_32gf_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_320_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 3712, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_y_32gf_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_320_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 1512, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_y_3_2gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 1512, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_y_3_2gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 440, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 440, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 784, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_y_800mf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 784, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_y_800mf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 64, 16384, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 16384, 1, 64), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 256, 1, 64), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 256, 16384, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 128, 4096, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 512, 4096, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 320, 1024, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 1280, 1024, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 512, 256, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 2048, 256, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-            ],
+            "model_names": ["pt_regnet_regnet_y_040_img_cls_hf"],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
             "args": {"dim": "-1"},
@@ -1464,185 +1157,12 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Squeeze2,
-        [((1, 1, 512), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_mlp_mixer_mixer_s16_224_img_cls_timm",
-                "pt_mlp_mixer_mixer_s32_224_img_cls_timm",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 32, 16384, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 16384, 1, 32), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 256, 1, 32), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 128, 16384, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 64, 4096, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 256, 4096, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 160, 1024, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 640, 1024, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 256, 256, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 1024, 256, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 96, 3136, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 768, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_mobilenetv1_google_mobilenet_v1_0_75_192_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
         [((1, 768, 1, 1), torch.bfloat16)],
         {
             "model_names": [
                 "pt_swin_swin_t_img_cls_torchvision",
-                "pt_swin_swin_s_img_cls_torchvision",
                 "pt_mobilenetv1_google_mobilenet_v1_0_75_192_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
@@ -1650,57 +1170,14 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Squeeze1,
-        [((1, 768, 1, 1), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 768, 1), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 25088, 1, 1), torch.bfloat16)],
+        Squeeze3,
+        [((1, 768, 1), torch.bfloat16)],
         {
             "model_names": [
-                "pt_vgg_vgg11_bn_img_cls_torchvision",
-                "pt_vgg_vgg13_bn_img_cls_torchvision",
-                "pt_vgg_vgg16_bn_img_cls_torchvision",
-                "pt_vgg_vgg19_bn_obj_det_torchhub",
-                "pt_vgg_19_obj_det_hf",
-                "pt_vgg_vgg16_img_cls_torchvision",
-                "pt_vgg_vgg11_img_cls_torchvision",
-                "pt_vgg_vgg13_img_cls_torchvision",
-                "pt_vgg_vgg19_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 25088, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_vgg_vgg11_bn_img_cls_torchvision",
-                "pt_vgg_vgg13_bn_img_cls_torchvision",
-                "pt_vgg_vgg16_bn_img_cls_torchvision",
-                "pt_vgg_vgg19_bn_obj_det_torchhub",
-                "pt_vgg_19_obj_det_hf",
-                "pt_vgg_vgg16_img_cls_torchvision",
-                "pt_vgg_vgg11_img_cls_torchvision",
-                "pt_vgg_vgg13_img_cls_torchvision",
-                "pt_vgg_vgg19_img_cls_torchvision",
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_mobilenetv1_google_mobilenet_v1_0_75_192_img_cls_hf",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
@@ -1708,140 +1185,30 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Squeeze1,
-        [((1, 4096, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_vgg_vgg19_bn_obj_det_timm"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 4096, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_vgg_vgg19_bn_obj_det_timm"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((3, 50, 1, 1, 768), torch.bfloat16)],
-        {
-            "model_names": ["pt_vit_vit_b_32_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((3, 1370, 1, 1, 1280), torch.bfloat16)],
-        {
-            "model_names": ["pt_vit_vit_h_14_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze4,
-        [((1, 4, 1, 40, 40, 80), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolo_world_default_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "2"},
-        },
-    ),
-    (
-        Squeeze4,
-        [((1, 2, 1, 80, 80, 80), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolo_world_default_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "2"},
-        },
-    ),
-    (
-        Squeeze6,
-        [((1, 80, 80, 80, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolo_world_default_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "4"},
-        },
-    ),
-    (
-        Squeeze7,
-        [((1, 8, 80, 1, 32), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolo_world_default_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "3"},
-        },
-    ),
-    (
-        Squeeze6,
-        [((1, 80, 40, 40, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolo_world_default_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "4"},
-        },
-    ),
-    (
-        Squeeze4,
-        [((1, 8, 1, 20, 20, 80), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolo_world_default_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "2"},
-        },
-    ),
-    (
-        Squeeze6,
-        [((1, 80, 20, 20, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolo_world_default_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "4"},
-        },
-    ),
-    (
-        Squeeze0,
+        Squeeze3,
         [((1, 85, 2704, 1), torch.bfloat16)],
         {
-            "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub", "pt_yolox_yolox_tiny_obj_det_torchhub"],
+            "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub", "pt_yolox_yolox_nano_obj_det_torchhub"],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
             "args": {"dim": "-1"},
         },
     ),
     (
-        Squeeze0,
+        Squeeze3,
         [((1, 85, 676, 1), torch.bfloat16)],
         {
-            "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub", "pt_yolox_yolox_tiny_obj_det_torchhub"],
+            "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub", "pt_yolox_yolox_nano_obj_det_torchhub"],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
             "args": {"dim": "-1"},
         },
     ),
     (
-        Squeeze0,
+        Squeeze3,
         [((1, 85, 169, 1), torch.bfloat16)],
         {
-            "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub", "pt_yolox_yolox_tiny_obj_det_torchhub"],
+            "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub", "pt_yolox_yolox_nano_obj_det_torchhub"],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
             "args": {"dim": "-1"},
@@ -1849,54 +1216,49 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Squeeze0,
-        [((1, 85, 6400, 1), torch.bfloat16)],
+        [((1, 1, 1024), torch.float32)],
         {
             "model_names": [
-                "pt_yolox_yolox_s_obj_det_torchhub",
-                "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolox_yolox_l_obj_det_torchhub",
-                "pt_yolox_yolox_m_obj_det_torchhub",
-                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "onnx_mlp_mixer_mixer_l32_224_img_cls_timm",
+                "onnx_mlp_mixer_mixer_l16_224_img_cls_timm",
+                "onnx_beit_microsoft_beit_large_patch16_224_img_cls_hf",
+                "onnx_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
             ],
             "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 85, 1600, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolox_yolox_s_obj_det_torchhub",
-                "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolox_yolox_l_obj_det_torchhub",
-                "pt_yolox_yolox_m_obj_det_torchhub",
-                "pt_yolox_yolox_darknet_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 85, 400, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolox_yolox_s_obj_det_torchhub",
-                "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolox_yolox_l_obj_det_torchhub",
-                "pt_yolox_yolox_m_obj_det_torchhub",
-                "pt_yolox_yolox_darknet_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
+            "args": {"dim": "1"},
         },
     ),
     (
         Squeeze1,
+        [((1, 1, 1024), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-3"}},
+    ),
+    (
+        Squeeze2,
+        [((1, 16384, 1, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 256, 1, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
         [((1, 2048, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -1909,7 +1271,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Squeeze0,
+        Squeeze3,
         [((1, 2048, 1), torch.float32)],
         {
             "model_names": [
@@ -1922,8 +1284,202 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Squeeze3,
+        [((1, 5, 16, 32, 1), torch.float32)],
+        {
+            "model_names": [
+                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 384, 1), torch.float32)],
+        {
+            "model_names": [
+                "pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf",
+                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
+                "onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 1536, 1, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
+                "pt_inception_inception_v4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 1536, 1), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
+                "pt_inception_inception_v4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 1, 1, 1024), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 512, 1, 261), torch.bfloat16)],
+        {
+            "model_names": ["pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 50176, 1, 261), torch.bfloat16)],
+        {
+            "model_names": ["pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 512, 1, 1024), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 1024, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_v2_b_img_cls_torchvision",
+                "pd_googlenet_base_img_cls_paddlemodels",
+                "pd_mobilenetv1_basic_img_cls_paddlemodels",
+                "pd_densenet_121_img_cls_paddlemodels",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 4096, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_vgg_vgg19_bn_obj_det_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 4096, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_vgg_vgg19_bn_obj_det_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 1, 1, 1024), torch.float32)],
+        {
+            "model_names": [
+                "onnx_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
+                "onnx_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze5,
+        [((1, 1, 1, 1024), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-4"}},
+    ),
+    (
+        Squeeze2,
+        [((1, 512, 1, 322), torch.float32)],
+        {
+            "model_names": ["onnx_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 3025, 1, 322), torch.float32)],
+        {
+            "model_names": ["onnx_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 512, 1, 1024), torch.float32)],
+        {
+            "model_names": [
+                "onnx_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
+                "onnx_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
         Squeeze0,
-        [((1, 128, 1), torch.float32)],
+        [((1, 1, 256), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"dim": "1"}},
+    ),
+    (
+        Squeeze1,
+        [((1, 1, 256), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-3"}},
+    ),
+    (
+        Squeeze3,
+        [((1, 25, 1), torch.float32)],
         {
             "model_names": [
                 "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
@@ -1934,238 +1490,143 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Squeeze1,
-        [((1, 1536, 1, 1), torch.bfloat16)],
+        Squeeze3,
+        [((1, 768, 576, 1), torch.float32)],
         {
             "model_names": [
-                "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_inception_inception_v4_img_cls_timm",
+                "pd_blip_vision_salesforce_blip_image_captioning_base_img_enc_padlenlp",
+                "pd_blip_salesforce_blip_image_captioning_base_img_captioning_padlenlp",
             ],
             "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 1536, 1), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_efficientnet_efficientnet_b3_img_cls_torchvision",
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_inception_inception_v4_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
             "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 2304, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 2304, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 512, 196, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 7392, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 7392, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze2,
-        [((1, 1, 256), torch.bfloat16)],
-        {
-            "model_names": ["pt_segformer_nvidia_mit_b0_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((3, 50, 1, 1, 1024), torch.bfloat16)],
-        {
-            "model_names": ["pt_vit_vit_l_32_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 2560, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_efficientnet_efficientnet_b7_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 2560, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_efficientnet_efficientnet_b7_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 512, 49, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 2520, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_x_32gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 2520, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_x_32gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 1008, 1, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_x_3_2gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 1008, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_regnet_regnet_x_3_2gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 192, 196, 1), torch.bfloat16)],
-        {
-            "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 768, 1, 128), torch.float32)],
-        {"model_names": ["pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf"], "pcc": 0.99, "args": {"dim": "-2"}},
-    ),
-    (
-        Squeeze1,
-        [((1, 3072, 1, 128), torch.float32)],
-        {"model_names": ["pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf"], "pcc": 0.99, "args": {"dim": "-2"}},
-    ),
-    (
-        Squeeze1,
-        [((3, 197, 1, 1, 768), torch.bfloat16)],
-        {
-            "model_names": ["pt_vit_vit_b_16_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((3, 197, 1, 1, 1024), torch.bfloat16)],
-        {
-            "model_names": ["pt_vit_vit_l_16_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"dim": "-2"},
         },
     ),
     (
         Squeeze4,
-        [((1, 1, 1, 2048), torch.float32)],
-        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "2"}},
+        [((1, 1, 12, 577, 64), torch.float32)],
+        {
+            "model_names": [
+                "pd_blip_vision_salesforce_blip_image_captioning_base_img_enc_padlenlp",
+                "pd_blip_salesforce_blip_image_captioning_base_img_captioning_padlenlp",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-5"},
+        },
     ),
     (
         Squeeze2,
-        [((1, 1, 2048), torch.float32)],
-        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "1"}},
+        [((4, 1, 768), torch.float32)],
+        {
+            "model_names": ["pd_chineseclip_ofa_sys_chinese_clip_vit_base_patch16_img_text_pairing_padlenlp"],
+            "pcc": 0.99,
+            "args": {"dim": "-2"},
+        },
     ),
     (
-        Squeeze1,
-        [((1, 1000, 1, 1), torch.bfloat16)],
+        Squeeze3,
+        [((1, 192, 196, 1), torch.bfloat16)],
         {
-            "model_names": ["pt_dla_dla34_in1k_img_cls_timm"],
+            "model_names": ["pt_deit_tiny_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 64, 19200, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 19200, 1, 64), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
             "args": {"dim": "-2"},
         },
     ),
     (
-        Squeeze0,
-        [((1, 1000, 1), torch.bfloat16)],
+        Squeeze2,
+        [((1, 300, 1, 64), torch.bfloat16)],
         {
-            "model_names": ["pt_dla_dla34_in1k_img_cls_timm"],
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 256, 19200, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 128, 4800, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 512, 4800, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 320, 1200, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 1280, 1200, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 512, 300, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 2048, 300, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
             "pcc": 0.99,
             "default_df_override": "Float16_b",
             "args": {"dim": "-1"},
@@ -2173,6 +1634,26 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Squeeze1,
+        [((1, 1, 480, 640), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-3"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 1024, 49, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
         [((1, 912, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_x_1_6gf_img_cls_torchvision"],
@@ -2182,7 +1663,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Squeeze0,
+        Squeeze3,
         [((1, 912, 1), torch.bfloat16)],
         {
             "model_names": ["pt_regnet_regnet_x_1_6gf_img_cls_torchvision"],
@@ -2192,173 +1673,278 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Squeeze2,
+        [((1, 3712, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_y_320_img_cls_hf", "pt_regnet_regnet_y_32gf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
         Squeeze3,
-        [((1, 1, 9), torch.float32)],
+        [((1, 3712, 1), torch.bfloat16)],
         {
-            "model_names": ["pd_bert_bert_base_uncased_qa_padlenlp", "pd_ernie_1_0_qa_padlenlp"],
+            "model_names": ["pt_regnet_regnet_y_320_img_cls_hf", "pt_regnet_regnet_y_32gf_img_cls_torchvision"],
             "pcc": 0.99,
-            "args": {"dim": "-3"},
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
         },
     ),
     (
-        Squeeze1,
-        [((1, 512, 1, 1), torch.float32)],
+        Squeeze2,
+        [((1, 1512, 1, 1), torch.bfloat16)],
         {
-            "model_names": ["pd_resnet_18_img_cls_paddlemodels", "pd_resnet_34_img_cls_paddlemodels"],
+            "model_names": ["pt_regnet_regnet_y_3_2gf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 1512, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_y_3_2gf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 768, 1, 128), torch.float32)],
+        {"model_names": ["pt_squeezebert_squeezebert_mnli_seq_cls_hf"], "pcc": 0.99, "args": {"dim": "-2"}},
+    ),
+    (
+        Squeeze2,
+        [((1, 3072, 1, 128), torch.float32)],
+        {"model_names": ["pt_squeezebert_squeezebert_mnli_seq_cls_hf"], "pcc": 0.99, "args": {"dim": "-2"}},
+    ),
+    (
+        Squeeze2,
+        [((1, 768, 1, 1), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_t_img_cls_torchvision", "pt_swin_swin_v2_s_img_cls_torchvision"],
             "pcc": 0.99,
             "args": {"dim": "-2"},
         },
     ),
     (
-        Squeeze0,
-        [((1, 512, 1), torch.float32)],
-        {
-            "model_names": ["pd_resnet_18_img_cls_paddlemodels", "pd_resnet_34_img_cls_paddlemodels"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
-    ),
-    (
-        Squeeze0,
-        [((1, 32, 1), torch.float32)],
+        Squeeze3,
+        [((1, 768, 1), torch.float32)],
         {
             "model_names": [
-                "pt_opt_facebook_opt_125m_qa_hf",
-                "pt_opt_facebook_opt_350m_qa_hf",
-                "pt_opt_facebook_opt_1_3b_qa_hf",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+                "pt_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1"},
         },
     ),
     (
-        Squeeze1,
-        [((1, 16384, 1, 32), torch.float32)],
+        Squeeze2,
+        [((1, 1152, 1, 1), torch.float32)],
+        {"model_names": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99, "args": {"dim": "-2"}},
+    ),
+    (
+        Squeeze3,
+        [((1, 1152, 1), torch.float32)],
+        {"model_names": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Squeeze2,
+        [((1, 400, 1, 1), torch.bfloat16)],
         {
-            "model_names": [
-                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
-                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-            ],
+            "model_names": ["pt_regnet_regnet_x_400mf_img_cls_torchvision"],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {"dim": "-2"},
         },
     ),
     (
-        Squeeze1,
-        [((1, 256, 1, 32), torch.float32)],
+        Squeeze3,
+        [((1, 400, 1), torch.bfloat16)],
         {
-            "model_names": [
-                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
-                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-            ],
+            "model_names": ["pt_regnet_regnet_x_400mf_img_cls_torchvision"],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 2240, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_y_120_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 2240, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_y_120_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 32, 16384, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_segformer_mit_b0_img_cls_hf", "pt_segformer_b0_finetuned_ade_512_512_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 16384, 1, 32), torch.bfloat16)],
+        {
+            "model_names": ["pt_segformer_mit_b0_img_cls_hf", "pt_segformer_b0_finetuned_ade_512_512_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {"dim": "-2"},
         },
     ),
     (
         Squeeze2,
-        [((1, 1, 256), torch.float32)],
-        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"dim": "1"}},
-    ),
-    (
-        Squeeze3,
-        [((1, 1, 14), torch.float32)],
-        {"model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"], "pcc": 0.99, "args": {"dim": "-3"}},
-    ),
-    (
-        Squeeze0,
-        [((1, 14, 1), torch.float32)],
-        {"model_names": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Squeeze3,
-        [((1, 1, 11), torch.float32)],
-        {"model_names": ["pd_bert_chinese_roberta_base_qa_padlenlp"], "pcc": 0.99, "args": {"dim": "-3"}},
-    ),
-    (
-        Squeeze0,
-        [((1, 120, 12, 1), torch.float32)],
+        [((1, 256, 1, 32), torch.bfloat16)],
         {
-            "model_names": [
-                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
-                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
-            ],
+            "model_names": ["pt_segformer_mit_b0_img_cls_hf", "pt_segformer_b0_finetuned_ade_512_512_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 128, 16384, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_segformer_mit_b0_img_cls_hf", "pt_segformer_b0_finetuned_ade_512_512_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 64, 4096, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_segformer_mit_b0_img_cls_hf", "pt_segformer_b0_finetuned_ade_512_512_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 256, 4096, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_segformer_mit_b0_img_cls_hf", "pt_segformer_b0_finetuned_ade_512_512_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 160, 1024, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_segformer_mit_b0_img_cls_hf", "pt_segformer_b0_finetuned_ade_512_512_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 640, 1024, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_segformer_mit_b0_img_cls_hf", "pt_segformer_b0_finetuned_ade_512_512_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 256, 256, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_segformer_mit_b0_img_cls_hf", "pt_segformer_b0_finetuned_ade_512_512_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 1024, 256, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_segformer_mit_b0_img_cls_hf", "pt_segformer_b0_finetuned_ade_512_512_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze0,
+        [((1, 1, 256), torch.bfloat16)],
+        {
+            "model_names": ["pt_segformer_mit_b0_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 96, 4096, 1), torch.float32)],
+        {
+            "model_names": ["pt_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf"],
             "pcc": 0.99,
             "args": {"dim": "-1"},
         },
     ),
     (
-        Squeeze8,
-        [((1, 1, 8, 12, 15), torch.float32)],
+        Squeeze2,
+        [((3, 1370, 1, 1, 1280), torch.bfloat16)],
         {
-            "model_names": [
-                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
-                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
-            ],
+            "model_names": ["pt_vit_vit_h_14_img_cls_torchvision"],
             "pcc": 0.99,
-            "args": {"dim": "-5"},
-        },
-    ),
-    (
-        Squeeze1,
-        [((1, 120, 1, 12), torch.float32)],
-        {
-            "model_names": [
-                "pd_paddleocr_v4_rec_ch_scene_text_recognition_paddlemodels",
-                "pd_paddleocr_v4_rec_en_scene_text_recognition_paddlemodels",
-            ],
-            "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {"dim": "-2"},
         },
     ),
     (
-        Squeeze1,
-        [((1, 9216, 1, 1), torch.float32)],
-        {"model_names": ["pd_alexnet_base_img_cls_paddlemodels"], "pcc": 0.99, "args": {"dim": "-2"}},
-    ),
-    (
-        Squeeze0,
-        [((1, 9216, 1), torch.float32)],
-        {"model_names": ["pd_alexnet_base_img_cls_paddlemodels"], "pcc": 0.99, "args": {"dim": "-1"}},
-    ),
-    (
-        Squeeze1,
-        [((1, 288, 1, 25), torch.float32)],
+        Squeeze2,
+        [((1, 1000, 1, 1), torch.bfloat16)],
         {
-            "model_names": [
-                "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
-                "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-            ],
+            "model_names": ["pt_dla_dla34_in1k_img_cls_timm"],
             "pcc": 0.99,
+            "default_df_override": "Float16_b",
             "args": {"dim": "-2"},
         },
     ),
     (
         Squeeze3,
-        [((1, 1, 288), torch.float32)],
+        [((1, 1000, 1), torch.bfloat16)],
         {
-            "model_names": [
-                "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
-                "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-            ],
+            "model_names": ["pt_dla_dla34_in1k_img_cls_timm"],
             "pcc": 0.99,
-            "args": {"dim": "-3"},
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
         },
     ),
     (
-        Squeeze3,
-        [((1, 1, 96), torch.float32)],
-        {
-            "model_names": [
-                "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
-                "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3"},
-        },
-    ),
-    (
-        Squeeze1,
+        Squeeze2,
         [((1, 1408, 1, 1), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -2368,7 +1954,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Squeeze0,
+        Squeeze3,
         [((1, 1408, 1), torch.bfloat16)],
         {
             "model_names": ["pt_efficientnet_efficientnet_b2_img_cls_torchvision"],
@@ -2377,21 +1963,783 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1"},
         },
     ),
+    (
+        Squeeze2,
+        [((1, 1296, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_y_064_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 1296, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_y_064_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 440, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 440, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 512, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_resnet_resnet18_img_cls_torchvision", "pt_resnet_resnet34_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 512, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_resnet_resnet18_img_cls_torchvision", "pt_resnet_resnet34_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((3, 197, 1, 1, 768), torch.bfloat16)],
+        {
+            "model_names": ["pt_vit_vit_b_16_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((3, 50, 1, 1, 1024), torch.bfloat16)],
+        {
+            "model_names": ["pt_vit_vit_l_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 512, 1, 512), torch.bfloat16)],
+        {
+            "model_names": ["pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 50176, 1, 512), torch.bfloat16)],
+        {
+            "model_names": ["pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 2016, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_y_080_img_cls_hf", "pt_regnet_regnet_y_8gf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 2016, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_y_080_img_cls_hf", "pt_regnet_regnet_y_8gf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 96, 3136, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((3, 50, 1, 1, 768), torch.bfloat16)],
+        {
+            "model_names": ["pt_vit_vit_b_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 1664, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_densenet_densenet169_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 1664, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_densenet_densenet169_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 888, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_y_1_6gf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 888, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_y_1_6gf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((3, 197, 1, 1, 1024), torch.bfloat16)],
+        {
+            "model_names": ["pt_vit_vit_l_16_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze6,
+        [((1, 4, 1, 40, 40, 80), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_world_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "2"},
+        },
+    ),
+    (
+        Squeeze6,
+        [((1, 2, 1, 80, 80, 80), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_world_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "2"},
+        },
+    ),
+    (
+        Squeeze7,
+        [((1, 80, 80, 80, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_world_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "4"},
+        },
+    ),
+    (
+        Squeeze8,
+        [((1, 8, 80, 1, 32), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_world_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Squeeze7,
+        [((1, 80, 40, 40, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_world_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "4"},
+        },
+    ),
+    (
+        Squeeze6,
+        [((1, 8, 1, 20, 20, 80), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_world_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "2"},
+        },
+    ),
+    (
+        Squeeze7,
+        [((1, 80, 20, 20, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_world_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "4"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 512, 1, 512), torch.float32)],
+        {
+            "model_names": ["onnx_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 50176, 1, 512), torch.float32)],
+        {
+            "model_names": ["onnx_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze1,
+        [((1, 1, 11), torch.float32)],
+        {"model_names": ["pd_bert_chinese_roberta_base_qa_padlenlp"], "pcc": 0.99, "args": {"dim": "-3"}},
+    ),
+    (
+        Squeeze2,
+        [((2, 1, 768), torch.float32)],
+        {
+            "model_names": ["pd_blip_salesforce_blip_image_captioning_base_img_captioning_padlenlp"],
+            "pcc": 0.99,
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 1280, 1, 1), torch.float32)],
+        {"model_names": ["pd_mobilenetv2_basic_img_cls_paddlemodels"], "pcc": 0.99, "args": {"dim": "-2"}},
+    ),
+    (
+        Squeeze3,
+        [((1, 1280, 1), torch.float32)],
+        {"model_names": ["pd_mobilenetv2_basic_img_cls_paddlemodels"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Squeeze3,
+        [((1, 768, 256, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_mgp_default_scene_text_recognition_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 27, 257, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_mgp_default_scene_text_recognition_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 768, 257, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_mgp_default_scene_text_recognition_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 576, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 576, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 512, 1, 322), torch.bfloat16)],
+        {
+            "model_names": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 3025, 1, 322), torch.bfloat16)],
+        {
+            "model_names": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 1008, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_x_3_2gf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 1008, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_x_3_2gf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 3024, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_y_16gf_img_cls_torchvision", "pt_regnet_regnet_y_160_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 3024, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_y_16gf_img_cls_torchvision", "pt_regnet_regnet_y_160_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 784, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_y_800mf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 784, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_y_800mf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze5,
+        [((1, 1, 1, 64), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-4"}},
+    ),
+    (
+        Squeeze1,
+        [((1, 1, 64), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-3"}},
+    ),
+    (
+        Squeeze2,
+        [((1, 64), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-2"}},
+    ),
+    (
+        Squeeze5,
+        [((1, 1, 1, 256), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-4"}},
+    ),
+    (
+        Squeeze2,
+        [((1, 256), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-2"}},
+    ),
+    (
+        Squeeze5,
+        [((1, 1, 1, 512), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-4"}},
+    ),
+    (
+        Squeeze2,
+        [((1, 512), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-2"}},
+    ),
+    (
+        Squeeze5,
+        [((1, 1, 1, 128), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-4"}},
+    ),
+    (
+        Squeeze1,
+        [((1, 1, 128), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-3"}},
+    ),
+    (
+        Squeeze2,
+        [((1, 128), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-2"}},
+    ),
+    (
+        Squeeze2,
+        [((1, 1024), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-2"}},
+    ),
+    (
+        Squeeze5,
+        [((1, 1, 1, 2048), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-4"}},
+    ),
+    (
+        Squeeze6,
+        [((1, 1, 1, 2048), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "2"}},
+    ),
+    (
+        Squeeze1,
+        [((1, 1, 2048), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-3"}},
+    ),
+    (
+        Squeeze0,
+        [((1, 1, 2048), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "1"}},
+    ),
+    (
+        Squeeze2,
+        [((1, 2048), torch.float32)],
+        {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-2"}},
+    ),
+    (
+        Squeeze2,
+        [((1, 19200, 1, 64), torch.float32)],
+        {
+            "model_names": ["onnx_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 300, 1, 64), torch.float32)],
+        {
+            "model_names": ["onnx_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze1,
+        [((1, 1, 480, 640), torch.float32)],
+        {
+            "model_names": ["onnx_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-3"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 1024, 576, 1), torch.float32)],
+        {"model_names": ["pt_llava_1_5_7b_cond_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Squeeze2,
+        [((1, 7392, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 7392, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 384, 196, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_deit_small_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 2304, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 2304, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_efficientnet_efficientnet_b6_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 2520, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_x_32gf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 2520, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_x_32gf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 672, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_x_800mf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 672, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_regnet_regnet_x_800mf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze8,
+        [((1, 100, 8, 1, 280), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99, "args": {"dim": "3"}},
+    ),
+    (
+        Squeeze3,
+        [((1, 256, 850, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 25, 34, 128, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 850, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze5,
+        [((100, 1, 32, 200, 267), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-4"},
+        },
+    ),
+    (
+        Squeeze5,
+        [((100, 1, 64, 100, 134), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-4"},
+        },
+    ),
+    (
+        Squeeze5,
+        [((100, 1, 128, 50, 67), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-4"},
+        },
+    ),
+    (
+        Squeeze5,
+        [((100, 1, 256, 25, 34), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-4"},
+        },
+    ),
+    (
+        Squeeze8,
+        [((1, 100, 8, 1, 850), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "3"},
+        },
+    ),
+    (
+        Squeeze2,
+        [((1, 100, 6800, 1, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-2"},
+        },
+    ),
+    (
+        Squeeze3,
+        [((1, 100, 6800, 1), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Squeeze5,
+        [((100, 1, 8, 25, 34), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-4"},
+        },
+    ),
+    (
+        Squeeze5,
+        [((1, 3, 480, 640), torch.bfloat16)],
+        {
+            "model_names": ["pt_ssd300_vgg16_ssd300_vgg16_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"dim": "-4"},
+        },
+    ),
 ]
 
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
-def test_module(forge_module_and_shapes_dtypes):
+@pytest.mark.parametrize("training_test", [False, True], ids=["inference", "training"])
+def test_module(forge_module_and_shapes_dtypes, training_test):
 
     record_forge_op_name("Squeeze")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
-    pcc = metadata.pop("pcc")
+    pcc = metadata.get("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        if metadata_name == "model_names":
+        if metadata_name in ["pcc"]:
+            continue
+        elif metadata_name == "model_names":
             record_op_model_names(metadata_value)
         elif metadata_name == "args":
             record_forge_op_args(metadata_value)
@@ -2402,7 +2750,7 @@ def test_module(forge_module_and_shapes_dtypes):
 
     max_int = 1000
     inputs = [
-        Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int)
+        Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int, requires_grad=training_test)
         for operand_shape, operand_dtype in operand_shapes_dtypes
     ]
 
@@ -2410,13 +2758,19 @@ def test_module(forge_module_and_shapes_dtypes):
 
     for name, parameter in framework_model._parameters.items():
         parameter_tensor = Tensor.create_torch_tensor(
-            shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int
+            shape=parameter.shape.get_pytorch_shape(),
+            dtype=parameter.pt_data_format,
+            max_int=max_int,
+            requires_grad=training_test,
         )
         framework_model.set_parameter(name, parameter_tensor)
 
     for name, constant in framework_model._constants.items():
         constant_tensor = Tensor.create_torch_tensor(
-            shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int
+            shape=constant.shape.get_pytorch_shape(),
+            dtype=constant.pt_data_format,
+            max_int=max_int,
+            requires_grad=training_test,
         )
         framework_model.set_constant(name, constant_tensor)
 
@@ -2426,6 +2780,12 @@ def test_module(forge_module_and_shapes_dtypes):
     if "default_df_override" in metadata.keys():
         compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])
 
-    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, training=training_test)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        with_backward=training_test,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+    )

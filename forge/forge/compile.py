@@ -28,6 +28,7 @@ from forge._C import ForgeGraphModule, GraphType
 import forge._C.autograd as pyautograd
 import forge._C.graph as pygraph
 from forge._C.graph import Graph
+from forge._C.ops import Op, OpType
 from forge._C.runtime import Binary
 import forge.ci as ci
 from forge.module import Module, ForgeModule, wrap_module, AnyModule
@@ -38,7 +39,9 @@ from forge.tensor import Tensor, to_pt_tensors, AnyTensor
 from forge.verify import DeprecatedVerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
 from forge.forge_property_utils import (
     ExecutionStage,
+    ExecutionRunMode,
     record_execution,
+    record_execution_run_mode,
     record_compiler_config,
     record_flatbuffer_details,
 )
@@ -236,6 +239,8 @@ def compile_main(
     training = training or optimizer is not None
 
     record_compiler_config(compiler_cfg)
+    # Record information needed to differentiate between inference and training compilation
+    record_execution_run_mode(ExecutionRunMode.from_training_param(training))
     record_execution(ExecutionStage.FAILED_TVM_RELAY_IRMODULE_GENERATION)
 
     compile_context: CompileContext = CompileContext(
@@ -1235,7 +1240,7 @@ def generate_graph(
                 nop = create_op_node(
                     graph,
                     f"_passthrough_nop_{output}",
-                    OpType("nop"),
+                    Op(OpType.Nop),
                     tensor.shape.get_pytorch_shape(),
                     tensor.data_format,
                     subgraph_idx,
@@ -1306,8 +1311,8 @@ def generate_graph(
                     recorded_parameters[input_name] = inq
                 continue
 
-        elif tensor.src_op.op_type == "constant":
-            constant_value = tensor.src_op.named_attrs["c"]
+        elif tensor.src_op.op.type() == OpType.Constant:
+            constant_value = tensor.src_op.op.attrs()["c"]
             constant = create_constant_input(
                 graph,
                 "constant_" + str(port_index) + "_" + graph.get_node_name(output),
@@ -1336,7 +1341,7 @@ def generate_graph(
         op = create_op_node(
             graph,
             tensor.src_op.name,
-            tensor.src_op.cpp_op_type,
+            tensor.src_op.op,
             tensor.shape.get_pytorch_shape(),
             tensor.data_format,
             subgraph_idx,

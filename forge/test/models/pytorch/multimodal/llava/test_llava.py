@@ -55,6 +55,8 @@ def test_llava(variant):
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
     )
+    if variant == ConditionalGenModelVariant.LLAVA_1_5_7B:
+        pytest.xfail(reason="Requires multi-chip support")
 
     loader = ConditionalGenModelLoader()
     framework_model = loader.load_model()

@@ -23,7 +23,7 @@ namespace softmax_bw
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_ASSERT(tensors.size() == 3, "Softmax backward should have three operands.");
     TT_ASSERT(op.attrs().size() == 1, "Softmax backward should have one attribute.");
@@ -45,7 +45,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::SoftmaxBw, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 3, "Softmax backward should have three operands.");
@@ -55,7 +55,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -67,8 +67,7 @@ NodeContext backward(
     unreachable();
 }
 
-void decompose_post_autograd(
-    const graphlib::OpType &old_op_type, const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
+void decompose_post_autograd(const Op &op, DecomposingContext &dc, const std::vector<NodeContext> &inputs)
 {
     TT_ASSERT(inputs.size() == 3, "Softmax backward should have three operands.");
     TT_ASSERT(op.attrs().size() == 1, "Softmax backward should have one attribute.");
@@ -81,12 +80,10 @@ void decompose_post_autograd(
     TT_ASSERT(idx < output.shape.size(), "Given dimension is out of the shape");
 
     // Decompose: result = (grad - torch.sum(grad * output, dim=dim, keepdim=True)) * output
-    auto grad_out = dc.op(graphlib::OpType("multiply"), {grad, output});
-    auto gout_sum = dc.op(
-        graphlib::OpType("reduce_sum", {dim, true}, {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}),
-        {grad_out});
-    auto gout_sub = dc.op(graphlib::OpType("subtract"), {grad, gout_sum});
-    auto result = dc.op(graphlib::OpType("multiply"), {gout_sub, output});
+    auto grad_out = dc.op(Op(OpType::Multiply), {grad, output});
+    auto gout_sum = dc.op(Op(OpType::ReduceSum, {{"dim_arg", std::vector<int>{dim}}, {"keep_dim", true}}), {grad_out});
+    auto gout_sub = dc.op(Op(OpType::Subtract), {grad, gout_sum});
+    auto result = dc.op(Op(OpType::Multiply), {gout_sub, output});
     dc.fuse(result);
 }
 

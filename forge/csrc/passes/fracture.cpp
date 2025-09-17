@@ -162,8 +162,7 @@ static void handle_writeback_golden_transforms(
     graphlib::OutputNode* output, graphlib::OutputNode* fractured_output, NDSlice::Slice slice)
 {
     constexpr bool channel_last = false;
-    std::vector<graphlib::OpType::Attr> pad = {
-        0 /*padding_left*/, 0 /*padding_right*/, 0 /*padding_top*/, 0 /*padding_bottom*/, channel_last};
+    std::vector<int> pad = {0 /*padding_left*/, 0 /*padding_right*/, 0 /*padding_top*/, 0 /*padding_bottom*/};
 
     for (auto [dim, index, factor] : slice.indices)
     {
@@ -175,7 +174,8 @@ static void handle_writeback_golden_transforms(
         pad[pad_idx + 1] = dim_size - (index + 1) * chunk_size;
     }
 
-    fractured_output->add_golden_transform(graphlib::OpType("pad", pad));
+    fractured_output->add_golden_transform(
+        ops::Op(ops::OpType::Pad, {{"padding", pad}, {"channel_last", channel_last}}));
     fractured_output->set_partial_datacopy_golden_output_index(*output->get_partial_datacopy_golden_output_index());
 }
 
@@ -196,7 +196,7 @@ static std::unique_ptr<graphlib::PyOpNode> create_slice(
 
     int start = i * (int)shape[dim];
     int length = (int)shape[dim];
-    graphlib::OpType select("select", {}, {{"dim", dim}, {"begin", start}, {"length", length}, {"stride", stride}});
+    ops::Op select(ops::OpType::Select, {{"dim", dim}, {"begin", start}, {"length", length}, {"stride", stride}});
     auto new_op = graphlib::create_node<graphlib::PyOpNode>(new_op_name, select);
     new_op->set_shape(shape);
     new_op->set_epoch_type(op->get_epoch_type());
@@ -227,8 +227,8 @@ static std::unique_ptr<graphlib::PyOpNode> create_gather(
     std::string new_op_name,
     std::uint32_t fracture_group_id)
 {
-    graphlib::OpType gather_op =
-        (dim == NDSlice::k_dim) ? graphlib::OpType("add", {}, {}) : graphlib::OpType("concatenate", {}, {{"dim", dim}});
+    ops::Op gather_op =
+        (dim == NDSlice::k_dim) ? ops::Op(ops::OpType::Add) : ops::Op(ops::OpType::Concatenate, {{"dim", dim}});
 
     graphlib::Shape shape = operand_shape;
     if (gather_op.type() == ops::OpType::Concatenate)
@@ -239,7 +239,7 @@ static std::unique_ptr<graphlib::PyOpNode> create_gather(
     auto gather = graphlib::create_node<graphlib::PyOpNode>(new_op_name, gather_op);
     gather->set_epoch_type(op->get_epoch_type());
     gather->set_output_df(op->output_df());
-    gather->change_op_type(gather_op);
+    gather->change_op(gather_op);
     gather->set_shape(shape);
     // tag the gather node with the fracture group id
     gather->as<graphlib::TaggedNode>()->tag("fracture_group_id", fracture_group_id);
@@ -606,7 +606,7 @@ static FracturedNodes gather(
         for (graphlib::NodeId& gather_op_id : gathered_ops)
         {
             graphlib::PyOpNode* gather_op = graph->node_by_id(gather_op_id)->as<graphlib::PyOpNode>();
-            if (gather_op->new_op_type() == ops::OpType::Add)
+            if (gather_op->op_type() == ops::OpType::Add)
             {
                 gather_op = graphlib::cascade_nary_to_binary_op(graph, gather_op)->as<graphlib::PyOpNode>();
                 gather_op_id = gather_op->id();
@@ -752,7 +752,7 @@ static FracturedNodes fracture_op(
     bool fractured_k = nd_slice.get_factor(NDSlice::k_dim) > 1;
 
     if (fractured_k and not op->is_matmul())
-        log_fatal("Illegal dim specified for op type {}, k_dim only legal for matmul op types", op->op_name());
+        log_fatal("Illegal dim specified for op type {}, k_dim only legal for matmul op types", op->op_as_string());
 
     log_debug(LogFracture, "  {:8} {:16} {}", "op", op->name(), nd_slice);
     for (auto const& slice : nd_slice.get_slices())
@@ -791,14 +791,14 @@ static FracturedNodes fracture_tm(
     std::unordered_map<graphlib::NodeId, FracturedNodes> const& node_to_fractured_nodes,
     FractureGroup const& group)
 {
-    if (op->new_op_type() == ops::OpType::Unsqueeze or op->new_op_type() == ops::OpType::Squeeze or
-        op->new_op_type() == ops::OpType::Transpose)
+    if (op->op_type() == ops::OpType::Unsqueeze or op->op_type() == ops::OpType::Squeeze or
+        op->op_type() == ops::OpType::Transpose)
     {
         auto [nd_slice, fractured_ops] = fracture_op(graph, op, node_to_fractured_nodes, group);
-        if (op->new_op_type() == ops::OpType::Transpose)
+        if (op->op_type() == ops::OpType::Transpose)
         {
-            int dim0 = op->op_type().attr_as<int>("dim0");
-            int dim1 = op->op_type().attr_as<int>("dim1");
+            int dim0 = op->op().attr_as<int>("dim0");
+            int dim1 = op->op().attr_as<int>("dim1");
             int factor0 = nd_slice.get_factor(dim0);
             int factor1 = nd_slice.get_factor(dim1);
             nd_slice = nd_slice.replace_factor(dim0, factor1);
@@ -806,10 +806,10 @@ static FracturedNodes fracture_tm(
         }
         return std::make_pair(nd_slice, fractured_ops);
     }
-    else if (op->new_op_type() == ops::OpType::Select)
+    else if (op->op_type() == ops::OpType::Select)
     {
         NDSlice nd_slice = get_node_nd_slice(graph, op, node_to_fractured_nodes, group);
-        int select_dim = std::get<int>(op->op_legacy_attrs().at(0));
+        int select_dim = op->op_attr_as<int>("dim");
         if (nd_slice.get_factor(select_dim) != 1)
             log_fatal(
                 "Op {}: Cannot fracture along select dimension[{}] factor[{}]",
@@ -820,7 +820,7 @@ static FracturedNodes fracture_tm(
     }
     else
     {
-        log_fatal(LogFracture, "Unsupported op fracture type: {} {}", op->name(), op->op_name());
+        log_fatal(LogFracture, "Unsupported op fracture type: {} {}", op->name(), op->op_as_string());
     }
 }
 

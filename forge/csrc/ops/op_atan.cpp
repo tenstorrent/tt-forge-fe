@@ -19,7 +19,7 @@ namespace ops
 namespace atan
 {
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Atan, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "Atan should have one input");
@@ -27,7 +27,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Atan, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "Atan should have one input");
@@ -35,7 +35,7 @@ std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
 }
 
 tt::graphlib::NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     tt::autograd::autograd_context &ac,
     int operand,
@@ -52,17 +52,17 @@ tt::graphlib::NodeContext backward(
     TT_ASSERT(operand == 0, "Invalid operand index");
 
     // x^2
-    auto x_squared = ac.autograd->create_op(ac, graphlib::OpType("multiply"), {inputs[0], inputs[0]});
+    auto x_squared = ac.autograd->create_op(ac, Op(OpType::Multiply), {inputs[0], inputs[0]});
 
     // 1 + x^2
     auto one = ac.autograd->create_constant(ac, 1.0);
-    auto one_plus_x_squared = ac.autograd->create_op(ac, graphlib::OpType("add"), {one, x_squared});
+    auto one_plus_x_squared = ac.autograd->create_op(ac, Op(OpType::Add), {one, x_squared});
 
     // 1 / (1 + x^2)
-    auto derivative = ac.autograd->create_op(ac, graphlib::OpType("divide"), {one, one_plus_x_squared});
+    auto derivative = ac.autograd->create_op(ac, Op(OpType::Divide), {one, one_plus_x_squared});
 
     // derivative * gradient
-    return ac.autograd->create_op(ac, graphlib::OpType("multiply"), {derivative, gradient});
+    return ac.autograd->create_op(ac, Op(OpType::Multiply), {derivative, gradient});
 }
 
 }  // namespace atan

@@ -6,13 +6,37 @@
 #include <pybind11/operators.h>
 #include <pybind11/stl.h>
 
+#include <utils/raw_ptr.hpp>
+
 #include "ops/op.hpp"
+
+PYBIND11_DECLARE_HOLDER_TYPE(T, tt::raw_ptr<T>);
 
 namespace tt
 {
 
 void OpsModule(py::module &m_ops)
 {
+    py::class_<tt::ops::Op, tt::raw_ptr<tt::ops::Op>>(m_ops, "Op")
+        .def(
+            py::init([](std::string const &op_name, tt::ops::Attrs const &attrs) { return ops::Op(op_name, attrs); }),
+            py::arg("op_name"),
+            py::arg("attrs") = tt::ops::Attrs{})
+        .def(
+            py::init([](ops::OpType type, tt::ops::Attrs const &attrs) { return ops::Op(type, attrs); }),
+            py::arg("type"),
+            py::arg("attrs") = tt::ops::Attrs{})
+        .def("eval", &tt::ops::Op::eval)
+        .def("shape", &tt::ops::Op::shape)
+        .def("__getattr__", [](tt::ops::Op const &op, std::string const &name) { return op.attrs().at(name); })
+        .def(
+            "__setattr__",
+            [](tt::ops::Op &op_type, std::string const &name, tt::ops::Attr value)
+            { return op_type.set_attr(name, value); })
+        .def("__repr__", [](tt::ops::Op const &op_type) { return op_type.as_string(); })
+        .def("type", &tt::ops::Op::type)
+        .def("attrs", &tt::ops::Op::attrs);
+
     py::enum_<ops::OpType>(m_ops, "OpType")
         .value("Abs", ops::OpType::Abs)
         .value("AdaptiveMaxPool2d", ops::OpType::AdaptiveMaxPool2d)
@@ -80,6 +104,7 @@ void OpsModule(py::module &m_ops)
         .value("Repeat", ops::OpType::Repeat)
         .value("RepeatInterleave", ops::OpType::RepeatInterleave)
         .value("Reshape", ops::OpType::Reshape)
+        .value("Resize1d", ops::OpType::Resize1d)
         .value("Resize2d", ops::OpType::Resize2d)
         .value("Select", ops::OpType::Select)
         .value("Sigmoid", ops::OpType::Sigmoid)

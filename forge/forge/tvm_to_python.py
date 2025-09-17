@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import re
 import json
+import ast
 
 from loguru import logger
 
@@ -14,7 +15,7 @@ import pytest
 from forge.module import OnnxModule, ForgeModule, TFLiteModule
 from forge.verify.config import _get_global_verify_config
 import forge
-from forge.tensor import to_pt_tensors
+from forge.tensor import to_pt_tensors, forge_dataformat_to_pytorch_dtype
 from forge.tvm_utils import flatten_inputs
 
 import os
@@ -1190,6 +1191,19 @@ def populate_clip_transpose_args(graph, nid, compiler_cfg):
     if max == float("inf"):
         max = "float('inf')"
 
+    if compiler_cfg.default_df_override is not None:
+        torch_dtype = forge_dataformat_to_pytorch_dtype(compiler_cfg.default_df_override)
+        min_val = torch.finfo(torch_dtype).min
+        max_val = torch.finfo(torch_dtype).max
+        if isinstance(min, str):
+            min = ast.literal_eval(min)
+        if isinstance(max, str):
+            max = ast.literal_eval(max)
+        if min < min_val:
+            min = str(min_val)
+        if max > max_val:
+            max = str(max_val)
+
     args.append(("min", f"{min}"))
     args.append(("max", f"{max}"))
     return args
@@ -1258,6 +1272,47 @@ def populate_pad_args(graph, nid, compiler_cfg):
             f"{channel_last}",
         )
     )
+
+    return args
+
+
+def populate_resize1d_args(graph, nid, compiler_cfg):
+    args = []
+    node = graph["nodes"][nid]
+
+    sizes = [int(x) for x in node["attrs"]["size"][0]]
+    assert len(sizes) == 1, "Resize1D should only have one size dimension"
+
+    method = node["attrs"]["method"][0][0]
+    mode = "nearest" if method == "nearest_neighbor" else method
+
+    assert mode in ["nearest", "linear"], "Resize1d op only support nearest and linear mode for now"
+    assert int(node["attrs"]["num_inputs"]) == 1
+
+    args.append(
+        (
+            "size",
+            f"{sizes[0]}",
+        )
+    )
+    args.append(
+        (
+            "mode",
+            f'"{mode}"',
+        )
+    )
+
+    coordinate_transform_mode = node["attrs"]["coordinate_transformation_mode"][0][0]
+    align_corners = "True" if coordinate_transform_mode == "align_corners" else "False"
+    args.append(
+        (
+            "align_corners",
+            f"{align_corners}",
+        )
+    )
+
+    channel_last = bool(int(node["attrs"]["layout"][0][0] == "NWC"))
+    args.append(("channel_last", f"{channel_last}"))
 
     return args
 
@@ -1443,6 +1498,7 @@ tvm_to_forge_op_map = {
     "greater_equal": "greater_equal",
     "greater": "greater",
     "identity": "identity",
+    "image.resize1d": "resize1d",
     "image.resize2d": "resize2d",
     "layernorm": "layernorm",
     "less_equal": "less_equal",
@@ -1559,6 +1615,7 @@ forge_op_to_function_name = {
     "repeat": "forge.op.Repeat",
     "repeat_interleave": "forge.op.RepeatInterleave",
     "reshape": "forge.op.Reshape",
+    "resize1d": "forge.op.Resize1d",
     "resize2d": "forge.op.Resize2d",
     "select": "forge.op.Select",
     "sigmoid": "forge.op.Sigmoid",
@@ -1604,6 +1661,7 @@ forge_ops_needing_arguments = {
     "repeat": populate_repeat_args,
     "repeat_interleave": populate_repeat_interleave_args,
     "reshape": populate_reshape_args,
+    "resize1d": populate_resize1d_args,
     "resize2d": populate_resize2d_args,
     "select": populate_select_args,
     "softmax": populate_softmax_args,

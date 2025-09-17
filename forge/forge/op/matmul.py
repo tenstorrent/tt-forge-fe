@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 from typing import Optional, Union
 
+from forge._C.ops import OpType
 from ..tensor import Tensor
 from ..parameter import Parameter
 from .common import ForgeOp as op
@@ -33,9 +34,9 @@ def Matmul(
 
     if name == "":
         name = f"matmul_{get_unique_node_id()}"
-    result: Tensor = op("matmul", name, operandA, operandB).get_tensor()
+    result: Tensor = op(OpType.Matmul, name, operandA, operandB).get_tensor()
 
     if bias is not None:
-        result = op("add", name + ".bias", result, bias).get_tensor()
+        result = op(OpType.Add, name + ".bias", result, bias).get_tensor()
 
     return result

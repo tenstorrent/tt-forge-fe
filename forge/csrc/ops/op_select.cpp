@@ -22,7 +22,7 @@ namespace select
 {
 using namespace graphlib;
 
-at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::vector<at::Tensor> &tensors)
+at::Tensor eval(const Op &op, const std::vector<at::Tensor> &tensors)
 {
     TT_DBG_ASSERT(op.type() == OpType::Select, "Wrong op type.");
     TT_ASSERT(tensors.size() == 1, "Select should have one operand.");
@@ -71,7 +71,7 @@ at::Tensor eval(const graphlib::OpType &old_op_type, const Op &op, const std::ve
 }
 
 std::tuple<Shape, std::vector<DimBroadcast>> shape(
-    const graphlib::OpType &old_op_type, const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
+    const Op &op, const std::vector<std::vector<std::uint32_t>> &in_shapes)
 {
     TT_DBG_ASSERT(op.type() == OpType::Select, "Wrong op type.");
     TT_ASSERT(in_shapes.size() == 1, "Select should have one operand.");
@@ -103,7 +103,7 @@ std::tuple<Shape, std::vector<DimBroadcast>> shape(
 }
 
 NodeContext backward(
-    const graphlib::OpType &old_op_type,
+
     const Op &op,
     autograd::autograd_context &ac,
     int operand,
@@ -157,8 +157,8 @@ NodeContext backward(
             }
             else
             {
-                grad_return = ac.autograd->create_op(
-                    ac, graphlib::OpType("concatenate", {}, {{"dim", dim}}), {grad_return, zero_slice});
+                grad_return =
+                    ac.autograd->create_op(ac, Op(OpType::Concatenate, {{"dim", dim}}), {grad_return, zero_slice});
             }
         }
 
@@ -168,8 +168,7 @@ NodeContext backward(
         // Pass the gradient for selected part
         NodeContext grad_slice = ac.autograd->create_op(
             ac,
-            graphlib::OpType(
-                "select", {}, {{"dim", dim}, {"begin", grad_offset}, {"length", length}, {"stride", current_size}}),
+            Op(OpType::Select, {{"dim", dim}, {"begin", grad_offset}, {"length", length}, {"stride", current_size}}),
             {gradient});
 
         if (!grad_return_initialized)
@@ -179,8 +178,8 @@ NodeContext backward(
         }
         else
         {
-            grad_return = ac.autograd->create_op(
-                ac, graphlib::OpType("concatenate", {}, {{"dim", dim}}), {grad_return, grad_slice});
+            grad_return =
+                ac.autograd->create_op(ac, Op(OpType::Concatenate, {{"dim", dim}}), {grad_return, grad_slice});
         }
 
         grad_offset += length;
@@ -200,8 +199,8 @@ NodeContext backward(
             {
                 NodeContext zero_slice = ac.autograd->create_constant_tensor(ac, torch::zeros(zero_post_pad_shape));
 
-                grad_return = ac.autograd->create_op(
-                    ac, graphlib::OpType("concatenate", {}, {{"dim", dim}}), {grad_return, zero_slice});
+                grad_return =
+                    ac.autograd->create_op(ac, Op(OpType::Concatenate, {{"dim", dim}}), {grad_return, zero_slice});
             }
         }
     }

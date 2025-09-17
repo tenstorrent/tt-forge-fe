@@ -60,7 +60,7 @@ class Resize2D3(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[30, 40], mode="bilinear", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[128, 128], mode="bilinear", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -71,7 +71,7 @@ class Resize2D4(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[60, 80], mode="bilinear", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[32, 32], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -82,7 +82,7 @@ class Resize2D5(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[120, 160], mode="bilinear", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[30, 40], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -93,7 +93,7 @@ class Resize2D6(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[240, 320], mode="bilinear", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[60, 80], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -104,7 +104,7 @@ class Resize2D7(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[480, 640], mode="bilinear", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[28, 28], mode="bilinear", align_corners=True, channel_last=False
         )
         return resize2d_output_1
 
@@ -115,7 +115,7 @@ class Resize2D8(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[20, 64], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[56, 56], mode="bilinear", align_corners=True, channel_last=False
         )
         return resize2d_output_1
 
@@ -126,7 +126,7 @@ class Resize2D9(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[40, 128], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[112, 112], mode="bilinear", align_corners=True, channel_last=False
         )
         return resize2d_output_1
 
@@ -137,7 +137,7 @@ class Resize2D10(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[80, 256], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[224, 224], mode="bilinear", align_corners=True, channel_last=False
         )
         return resize2d_output_1
 
@@ -148,7 +148,7 @@ class Resize2D11(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[160, 512], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[40, 40], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -159,7 +159,7 @@ class Resize2D12(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[320, 1024], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[80, 80], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -225,7 +225,7 @@ class Resize2D18(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[30, 40], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[27, 27], mode="bilinear", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -236,7 +236,7 @@ class Resize2D19(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[60, 80], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[64, 64], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -247,7 +247,7 @@ class Resize2D20(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[128, 128], mode="bilinear", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[20, 20], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -258,7 +258,7 @@ class Resize2D21(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[64, 64], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[26, 26], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -269,7 +269,7 @@ class Resize2D22(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[32, 32], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[52, 52], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -280,7 +280,7 @@ class Resize2D23(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[28, 28], mode="bilinear", align_corners=True, channel_last=False
+            "", resize2d_input_0, sizes=[30, 30], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -291,7 +291,7 @@ class Resize2D24(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[56, 56], mode="bilinear", align_corners=True, channel_last=False
+            "", resize2d_input_0, sizes=[60, 60], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -302,7 +302,7 @@ class Resize2D25(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[112, 112], mode="bilinear", align_corners=True, channel_last=False
+            "", resize2d_input_0, sizes=[20, 64], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -313,7 +313,7 @@ class Resize2D26(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[224, 224], mode="bilinear", align_corners=True, channel_last=False
+            "", resize2d_input_0, sizes=[40, 128], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -324,7 +324,7 @@ class Resize2D27(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[112, 112], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[80, 256], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -335,7 +335,7 @@ class Resize2D28(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[224, 224], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[160, 512], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -346,7 +346,7 @@ class Resize2D29(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[40, 40], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[320, 1024], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -357,7 +357,7 @@ class Resize2D30(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[80, 80], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[112, 112], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -368,7 +368,7 @@ class Resize2D31(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[20, 20], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[16, 16], mode="nearest", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -379,7 +379,7 @@ class Resize2D32(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[30, 30], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[30, 40], mode="bilinear", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -390,7 +390,7 @@ class Resize2D33(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[60, 60], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[60, 80], mode="bilinear", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -401,7 +401,7 @@ class Resize2D34(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[26, 26], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[120, 160], mode="bilinear", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -412,7 +412,7 @@ class Resize2D35(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[52, 52], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[240, 320], mode="bilinear", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -423,7 +423,7 @@ class Resize2D36(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[27, 27], mode="bilinear", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[480, 640], mode="bilinear", align_corners=False, channel_last=False
         )
         return resize2d_output_1
 
@@ -434,7 +434,7 @@ class Resize2D37(ForgeModule):
 
     def forward(self, resize2d_input_0):
         resize2d_output_1 = forge.op.Resize2d(
-            "", resize2d_input_0, sizes=[16, 16], mode="nearest", align_corners=False, channel_last=False
+            "", resize2d_input_0, sizes=[65, 65], mode="bilinear", align_corners=True, channel_last=False
         )
         return resize2d_output_1
 
@@ -450,6 +450,171 @@ class Resize2D38(ForgeModule):
         return resize2d_output_1
 
 
+class Resize2D39(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[128, 128], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
+class Resize2D40(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[27, 40], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
+class Resize2D41(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[54, 80], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
+class Resize2D42(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[107, 160], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
+class Resize2D43(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[25, 34], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
+class Resize2D44(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[50, 67], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
+class Resize2D45(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[100, 134], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
+class Resize2D46(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[200, 267], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
+class Resize2D47(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[7, 7], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
+class Resize2D48(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[300, 300], mode="bilinear", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
+class Resize2D49(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[76, 98], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
+class Resize2D50(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[152, 196], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
+class Resize2D51(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[304, 392], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
+class Resize2D52(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[608, 784], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
+class Resize2D53(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[1216, 1568], mode="nearest", align_corners=False, channel_last=False
+        )
+        return resize2d_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -459,2254 +624,69 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Resize2D0,
-        [((1, 18, 28, 28), torch.bfloat16)],
+        [((1, 64, 28, 28), torch.float32)],
         {
-            "model_names": [
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
-            ],
+            "model_names": ["onnx_hrnet_hrnetv2_w64_img_cls_osmr"],
             "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D0,
-        [((1, 18, 14, 14), torch.bfloat16)],
+        [((1, 64, 14, 14), torch.float32)],
         {
-            "model_names": [
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
-            ],
+            "model_names": ["onnx_hrnet_hrnetv2_w64_img_cls_osmr"],
             "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D1,
-        [((1, 36, 14, 14), torch.bfloat16)],
+        [((1, 128, 14, 14), torch.float32)],
         {
-            "model_names": [
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
-            ],
+            "model_names": ["onnx_hrnet_hrnetv2_w64_img_cls_osmr"],
             "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D0,
-        [((1, 18, 7, 7), torch.bfloat16)],
+        [((1, 64, 7, 7), torch.float32)],
         {
-            "model_names": [
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
-            ],
+            "model_names": ["onnx_hrnet_hrnetv2_w64_img_cls_osmr"],
             "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D1,
-        [((1, 36, 7, 7), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D2,
-        [((1, 72, 7, 7), torch.bfloat16)],
+        [((1, 64, 7, 7), torch.float32)],
         {
-            "model_names": [
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
-                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
-            ],
+            "model_names": ["onnx_hrnet_hrnet_w18_small_v1_img_cls_osmr"],
             "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[14, 14]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 32, 28, 28), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 32, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D1,
-        [((1, 32, 14, 14), torch.bfloat16)],
+        [((1, 128, 7, 7), torch.float32)],
         {
-            "model_names": [
-                "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
-                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
-            ],
+            "model_names": ["onnx_hrnet_hrnetv2_w64_img_cls_osmr"],
             "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D1,
-        [((1, 64, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 64, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w64_pose_estimation_timm", "pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 32, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D1,
-        [((1, 32, 7, 7), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
-                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D1,
-        [((1, 64, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 64, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w64_pose_estimation_timm", "pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D2,
-        [((1, 64, 7, 7), torch.bfloat16)],
+        [((1, 256, 7, 7), torch.float32)],
         {
-            "model_names": [
-                "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
-                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
-            ],
+            "model_names": ["onnx_hrnet_hrnetv2_w64_img_cls_osmr"],
             "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[14, 14]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D2,
-        [((1, 128, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[14, 14]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D1,
-        [((1, 128, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w64_pose_estimation_timm", "pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 40, 28, 28), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 40, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D1,
-        [((1, 80, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 40, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D1,
-        [((1, 80, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D2,
-        [((1, 160, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[14, 14]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 44, 28, 28), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 44, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D1,
-        [((1, 88, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 44, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D1,
-        [((1, 88, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D2,
-        [((1, 176, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[14, 14]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 48, 28, 28), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w48_pose_estimation_timm", "pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 48, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w48_pose_estimation_timm", "pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D1,
-        [((1, 96, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w48_pose_estimation_timm", "pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 48, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w48_pose_estimation_timm", "pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D1,
-        [((1, 96, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w48_pose_estimation_timm", "pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D2,
-        [((1, 192, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w48_pose_estimation_timm", "pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[14, 14]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 64, 28, 28), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w64_pose_estimation_timm", "pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D1,
-        [((1, 128, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w64_pose_estimation_timm", "pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D2,
-        [((1, 256, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnet_w64_pose_estimation_timm", "pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[14, 14]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D3,
-        [((1, 64, 15, 20), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[30, 40]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
-        },
-    ),
-    (
-        Resize2D4,
-        [((1, 64, 30, 40), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[60, 80]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
-        },
-    ),
-    (
-        Resize2D5,
-        [((1, 64, 60, 80), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[120, 160]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
-        },
-    ),
-    (
-        Resize2D6,
-        [((1, 64, 120, 160), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[240, 320]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
-        },
-    ),
-    (
-        Resize2D7,
-        [((1, 64, 240, 320), torch.bfloat16)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[480, 640]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 30, 28, 28), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 30, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D1,
-        [((1, 60, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 30, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D1,
-        [((1, 60, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D2,
-        [((1, 120, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[14, 14]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D8,
-        [((1, 256, 10, 32), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[20, 64]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D9,
-        [((1, 128, 20, 64), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[40, 128]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D10,
-        [((1, 64, 40, 128), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[80, 256]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D11,
-        [((1, 32, 80, 256), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[160, 512]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D12,
-        [((1, 16, 160, 512), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[320, 1024]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D13,
-        [((1, 256, 6, 20), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[12, 40]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D14,
-        [((1, 128, 12, 40), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[24, 80]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D15,
-        [((1, 64, 24, 80), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[48, 160]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D16,
-        [((1, 32, 48, 160), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[96, 320]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D17,
-        [((1, 16, 96, 320), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[192, 640]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D18,
-        [((1, 256, 15, 20), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn18fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn34fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
-                "pt_yolo_v4_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[30, 40]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D19,
-        [((1, 256, 30, 40), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn18fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn34fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[60, 80]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D20,
-        [((1, 256, 16, 16), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
-        },
-    ),
-    (
-        Resize2D21,
-        [((1, 256, 16, 16), torch.bfloat16)],
-        {
-            "model_names": ["pt_fpn_base_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[64, 64]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D22,
-        [((1, 256, 16, 16), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolo_v3_default_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[32, 32]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D20,
-        [((1, 256, 32, 32), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
-        },
-    ),
-    (
-        Resize2D20,
-        [((1, 256, 64, 64), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
-        },
-    ),
-    (
-        Resize2D20,
-        [((1, 256, 128, 128), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
-        },
-    ),
-    pytest.param(
-        (
-            Resize2D20,
-            [((1, 768, 16, 16), torch.bfloat16)],
-            {
-                "model_names": [
-                    "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                    "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                    "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                ],
-                "pcc": 0.99,
-                "default_df_override": "Float16_b",
-                "args": {
-                    "sizes": "[128, 128]",
-                    "mode": '"bilinear"',
-                    "align_corners": "False",
-                    "channel_last": "False",
-                },
-            },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception"
-            )
-        ],
-    ),
-    (
-        Resize2D20,
-        [((1, 768, 32, 32), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
-        },
-    ),
-    (
-        Resize2D20,
-        [((1, 768, 64, 64), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
-        },
-    ),
-    pytest.param(
-        (
-            Resize2D20,
-            [((1, 768, 128, 128), torch.bfloat16)],
-            {
-                "model_names": [
-                    "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                    "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                    "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                ],
-                "pcc": 0.99,
-                "default_df_override": "Float16_b",
-                "args": {
-                    "sizes": "[128, 128]",
-                    "mode": '"bilinear"',
-                    "align_corners": "False",
-                    "channel_last": "False",
-                },
-            },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception"
-            )
-        ],
-    ),
-    pytest.param(
-        (
-            Resize2D23,
-            [((1, 512, 14, 14), torch.bfloat16)],
-            {
-                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-                "pcc": 0.99,
-                "default_df_override": "Float16_b",
-                "args": {"sizes": "[28, 28]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: align_corners argument not supported in upsample2d op")],
-    ),
-    pytest.param(
-        (
-            Resize2D24,
-            [((1, 256, 28, 28), torch.bfloat16)],
-            {
-                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-                "pcc": 0.99,
-                "default_df_override": "Float16_b",
-                "args": {"sizes": "[56, 56]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: align_corners argument not supported in upsample2d op")],
-    ),
-    pytest.param(
-        (
-            Resize2D25,
-            [((1, 128, 56, 56), torch.bfloat16)],
-            {
-                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-                "pcc": 0.99,
-                "default_df_override": "Float16_b",
-                "args": {"sizes": "[112, 112]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: align_corners argument not supported in upsample2d op")],
-    ),
-    pytest.param(
-        (
-            Resize2D26,
-            [((1, 64, 112, 112), torch.bfloat16)],
-            {
-                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-                "pcc": 0.99,
-                "default_df_override": "Float16_b",
-                "args": {"sizes": "[224, 224]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: align_corners argument not supported in upsample2d op")],
-    ),
-    (
-        Resize2D2,
-        [((1, 2048, 7, 7), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[14, 14]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D1,
-        [((1, 256, 14, 14), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 128, 28, 28), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D27,
-        [((1, 64, 56, 56), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[112, 112]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D28,
-        [((1, 32, 112, 112), torch.bfloat16)],
-        {
-            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[224, 224]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D29,
-        [((1, 256, 20, 20), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-                "pt_yolox_yolox_s_obj_det_torchhub",
-                "pt_yolox_yolox_darknet_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[40, 40]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D30,
-        [((1, 128, 40, 40), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10n_obj_det_github",
-                "pt_yolov8_yolov8n_obj_det_github",
-                "pt_yolox_yolox_s_obj_det_torchhub",
-                "pt_yolox_yolox_darknet_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[80, 80]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D29,
-        [((1, 640, 20, 20), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolov10_yolov10x_obj_det_github",
-                "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolov8_yolov8x_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[40, 40]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D30,
-        [((1, 640, 40, 40), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov10_yolov10x_obj_det_github", "pt_yolov8_yolov8x_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[80, 80]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D31,
-        [((1, 512, 10, 10), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5l_img_cls_torchhub_320x320"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[20, 20]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D29,
-        [((1, 256, 20, 20), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolo_v5_yolov5l_img_cls_torchhub_320x320",
-                "pt_yolo_v5_yolov5s_img_cls_torchhub_640x640",
-                "onnx_yolov10_default_obj_det_github",
-                "onnx_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[40, 40]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D32,
-        [((1, 512, 15, 15), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5l_img_cls_torchhub_480x480"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[30, 30]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D33,
-        [((1, 256, 30, 30), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5l_img_cls_torchhub_480x480"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[60, 60]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D31,
-        [((1, 384, 10, 10), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_320x320"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[20, 20]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D29,
-        [((1, 192, 20, 20), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_320x320"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[40, 40]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D32,
-        [((1, 384, 15, 15), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[30, 30]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D33,
-        [((1, 192, 30, 30), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[60, 60]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D31,
-        [((1, 128, 10, 10), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5n_img_cls_torchhub_320x320"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[20, 20]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D29,
-        [((1, 64, 20, 20), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5n_img_cls_torchhub_320x320"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[40, 40]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D32,
-        [((1, 256, 15, 15), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_480x480"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[30, 30]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D33,
-        [((1, 128, 30, 30), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_480x480"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[60, 60]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D30,
-        [((1, 128, 40, 40), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolo_v5_yolov5s_img_cls_torchhub_640x640",
-                "onnx_yolov10_default_obj_det_github",
-                "onnx_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[80, 80]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D32,
-        [((1, 640, 15, 15), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[30, 30]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D33,
-        [((1, 320, 30, 30), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[60, 60]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D29,
-        [((1, 640, 20, 20), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[40, 40]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D30,
-        [((1, 320, 40, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[80, 80]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D29,
-        [((1, 512, 20, 20), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_yolo_world_default_obj_det_github",
-                "pt_yolox_yolox_l_obj_det_torchhub",
-                "pt_yolov9_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[40, 40]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D30,
-        [((1, 256, 40, 40), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolo_world_default_obj_det_github", "pt_yolox_yolox_l_obj_det_torchhub"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[80, 80]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D34,
-        [((1, 128, 13, 13), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[26, 26]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D35,
-        [((1, 64, 26, 26), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[52, 52]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D30,
-        [((1, 320, 40, 40), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[80, 80]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D29,
-        [((1, 512, 20, 20), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5l_img_cls_torchhub_640x640"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[40, 40]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D30,
-        [((1, 256, 40, 40), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolo_v5_yolov5l_img_cls_torchhub_640x640",
-                "pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[80, 80]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D32,
-        [((1, 128, 15, 15), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5n_img_cls_torchhub_480x480"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[30, 30]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D33,
-        [((1, 64, 30, 30), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5n_img_cls_torchhub_480x480"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[60, 60]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D29,
-        [((1, 384, 20, 20), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[40, 40]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D30,
-        [((1, 192, 40, 40), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[80, 80]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    pytest.param(
-        (
-            Resize2D20,
-            [((1, 768, 16, 16), torch.float32)],
-            {
-                "model_names": [
-                    "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                    "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                    "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                ],
-                "pcc": 0.99,
-                "args": {
-                    "sizes": "[128, 128]",
-                    "mode": '"bilinear"',
-                    "align_corners": "False",
-                    "channel_last": "False",
-                },
-            },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception"
-            )
-        ],
-    ),
-    (
-        Resize2D20,
-        [((1, 768, 32, 32), torch.float32)],
-        {
-            "model_names": [
-                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
-        },
-    ),
-    (
-        Resize2D20,
-        [((1, 768, 64, 64), torch.float32)],
-        {
-            "model_names": [
-                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
-        },
-    ),
-    pytest.param(
-        (
-            Resize2D20,
-            [((1, 768, 128, 128), torch.float32)],
-            {
-                "model_names": [
-                    "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                    "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                    "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                ],
-                "pcc": 0.99,
-                "args": {
-                    "sizes": "[128, 128]",
-                    "mode": '"bilinear"',
-                    "align_corners": "False",
-                    "channel_last": "False",
-                },
-            },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception"
-            )
-        ],
-    ),
-    (
-        Resize2D36,
-        [((1, 16, 27, 27), torch.bfloat16)],
-        {
-            "model_names": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[27, 27]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
-        },
-    ),
-    (
-        Resize2D37,
-        [((1, 256, 8, 8), torch.bfloat16)],
-        {
-            "model_names": ["pt_fpn_base_img_cls_torchvision"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[16, 16]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 16, 28, 28), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
-                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 16, 14, 14), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
-                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 16, 7, 7), torch.bfloat16)],
-        {
-            "model_names": [
-                "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
-                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
-            ],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D19,
-        [((1, 128, 30, 40), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolo_v4_default_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[60, 80]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D31,
-        [((1, 640, 10, 10), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[20, 20]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D29,
-        [((1, 320, 20, 20), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[40, 40]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D36,
-        [((1, 12, 27, 27), torch.bfloat16)],
-        {
-            "model_names": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {"sizes": "[27, 27]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
-        },
-    ),
-    pytest.param(
-        (
-            Resize2D23,
-            [((1, 256, 1, 1), torch.bfloat16)],
-            {
-                "model_names": ["pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf"],
-                "pcc": 0.99,
-                "default_df_override": "Float16_b",
-                "args": {"sizes": "[28, 28]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: align_corners argument not supported in upsample2d op")],
-    ),
-    (
-        Resize2D21,
-        [((1, 128, 32, 32), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolo_v3_default_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[64, 64]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D29,
-        [((1, 384, 20, 20), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_640x640"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[40, 40]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D30,
-        [((1, 192, 40, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_640x640"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[80, 80]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D31,
-        [((1, 256, 10, 10), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_320x320"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[20, 20]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D29,
-        [((1, 128, 20, 20), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolo_v5_yolov5s_img_cls_torchhub_320x320",
-                "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[40, 40]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D30,
-        [((1, 512, 40, 40), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolov9_default_obj_det_github"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[80, 80]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D30,
-        [((1, 64, 40, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5n_img_cls_torchhub_640x640"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[80, 80]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D38,
-        [((1, 128, 80, 80), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[160, 160]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D34,
-        [((1, 192, 13, 13), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[26, 26]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D35,
-        [((1, 96, 26, 26), torch.bfloat16)],
-        {
-            "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
-            "pcc": 0.99,
-            "default_df_override": "Float16_b",
-            "args": {
-                "sizes": "[52, 52]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 30, 28, 28), torch.float32)],
-        {
-            "model_names": ["onnx_hrnet_hrnetv2_w30_img_cls_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 30, 14, 14), torch.float32)],
-        {
-            "model_names": ["onnx_hrnet_hrnetv2_w30_img_cls_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D1,
-        [((1, 60, 14, 14), torch.float32)],
-        {
-            "model_names": ["onnx_hrnet_hrnetv2_w30_img_cls_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D0,
-        [((1, 30, 7, 7), torch.float32)],
-        {
-            "model_names": ["onnx_hrnet_hrnetv2_w30_img_cls_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D1,
-        [((1, 60, 7, 7), torch.float32)],
-        {
-            "model_names": ["onnx_hrnet_hrnetv2_w30_img_cls_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D2,
-        [((1, 120, 7, 7), torch.float32)],
-        {
-            "model_names": ["onnx_hrnet_hrnetv2_w30_img_cls_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[14, 14]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
-        },
-    ),
-    (
-        Resize2D20,
         [((1, 256, 16, 16), torch.float32)],
         {
             "model_names": [
@@ -2718,7 +698,16 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D20,
+        Resize2D4,
+        [((1, 256, 16, 16), torch.float32)],
+        {
+            "model_names": ["onnx_yolo_v3_default_obj_det_github"],
+            "pcc": 0.99,
+            "args": {"sizes": "[32, 32]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D3,
         [((1, 256, 32, 32), torch.float32)],
         {
             "model_names": [
@@ -2730,7 +719,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D20,
+        Resize2D3,
         [((1, 256, 64, 64), torch.float32)],
         {
             "model_names": [
@@ -2742,7 +731,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Resize2D20,
+        Resize2D3,
         [((1, 256, 128, 128), torch.float32)],
         {
             "model_names": [
@@ -2755,100 +744,1018 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Resize2D0,
-        [((1, 18, 28, 28), torch.float32)],
+        [((1, 18, 28, 28), torch.bfloat16)],
         {
-            "model_names": ["onnx_hrnet_hrnetv2_w18_img_cls_osmr", "onnx_hrnet_hrnet_w18_small_v2_img_cls_osmr"],
+            "model_names": [
+                "pt_hrnet_hrnetv2_w18_osmr_img_cls_osmr",
+                "pt_hrnet_hrnet_w18_small_v2_osmr_img_cls_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_img_cls_timm",
+                "pt_hrnet_hrnet_w18_small_v2_img_cls_timm",
+                "pt_hrnet_hrnet_w18_img_cls_timm",
+            ],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D0,
-        [((1, 18, 14, 14), torch.float32)],
+        [((1, 18, 14, 14), torch.bfloat16)],
         {
-            "model_names": ["onnx_hrnet_hrnetv2_w18_img_cls_osmr", "onnx_hrnet_hrnet_w18_small_v2_img_cls_osmr"],
+            "model_names": [
+                "pt_hrnet_hrnetv2_w18_osmr_img_cls_osmr",
+                "pt_hrnet_hrnet_w18_small_v2_osmr_img_cls_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_img_cls_timm",
+                "pt_hrnet_hrnet_w18_small_v2_img_cls_timm",
+                "pt_hrnet_hrnet_w18_img_cls_timm",
+            ],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D1,
-        [((1, 36, 14, 14), torch.float32)],
+        [((1, 36, 14, 14), torch.bfloat16)],
         {
-            "model_names": ["onnx_hrnet_hrnetv2_w18_img_cls_osmr", "onnx_hrnet_hrnet_w18_small_v2_img_cls_osmr"],
+            "model_names": [
+                "pt_hrnet_hrnetv2_w18_osmr_img_cls_osmr",
+                "pt_hrnet_hrnet_w18_small_v2_osmr_img_cls_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_img_cls_timm",
+                "pt_hrnet_hrnet_w18_small_v2_img_cls_timm",
+                "pt_hrnet_hrnet_w18_img_cls_timm",
+            ],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D0,
-        [((1, 18, 7, 7), torch.float32)],
+        [((1, 18, 7, 7), torch.bfloat16)],
         {
-            "model_names": ["onnx_hrnet_hrnetv2_w18_img_cls_osmr", "onnx_hrnet_hrnet_w18_small_v2_img_cls_osmr"],
+            "model_names": [
+                "pt_hrnet_hrnetv2_w18_osmr_img_cls_osmr",
+                "pt_hrnet_hrnet_w18_small_v2_osmr_img_cls_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_img_cls_timm",
+                "pt_hrnet_hrnet_w18_small_v2_img_cls_timm",
+                "pt_hrnet_hrnet_w18_img_cls_timm",
+            ],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D1,
-        [((1, 36, 7, 7), torch.float32)],
+        [((1, 36, 7, 7), torch.bfloat16)],
         {
-            "model_names": ["onnx_hrnet_hrnetv2_w18_img_cls_osmr", "onnx_hrnet_hrnet_w18_small_v2_img_cls_osmr"],
+            "model_names": [
+                "pt_hrnet_hrnetv2_w18_osmr_img_cls_osmr",
+                "pt_hrnet_hrnet_w18_small_v2_osmr_img_cls_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_img_cls_timm",
+                "pt_hrnet_hrnet_w18_small_v2_img_cls_timm",
+                "pt_hrnet_hrnet_w18_img_cls_timm",
+            ],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D2,
-        [((1, 72, 7, 7), torch.float32)],
+        [((1, 72, 7, 7), torch.bfloat16)],
         {
-            "model_names": ["onnx_hrnet_hrnetv2_w18_img_cls_osmr", "onnx_hrnet_hrnet_w18_small_v2_img_cls_osmr"],
+            "model_names": [
+                "pt_hrnet_hrnetv2_w18_osmr_img_cls_osmr",
+                "pt_hrnet_hrnet_w18_small_v2_osmr_img_cls_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_img_cls_timm",
+                "pt_hrnet_hrnet_w18_small_v2_img_cls_timm",
+                "pt_hrnet_hrnet_w18_img_cls_timm",
+            ],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[14, 14]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D5,
+        [((1, 256, 15, 20), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_retinanet_retinanet_rn152fpn_obj_det_github",
+                "pt_retinanet_retinanet_rn34fpn_obj_det_github",
+                "pt_retinanet_retinanet_rn101fpn_obj_det_github",
+                "pt_retinanet_retinanet_rn18fpn_obj_det_github",
+                "pt_retinanet_retinanet_rn50fpn_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[30, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D6,
+        [((1, 256, 30, 40), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_retinanet_retinanet_rn152fpn_obj_det_github",
+                "pt_retinanet_retinanet_rn34fpn_obj_det_github",
+                "pt_retinanet_retinanet_rn101fpn_obj_det_github",
+                "pt_retinanet_retinanet_rn18fpn_obj_det_github",
+                "pt_retinanet_retinanet_rn50fpn_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[60, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D5,
+        [((1, 256, 15, 20), torch.float32)],
+        {
+            "model_names": [
+                "pt_retinanet_retinanet_rn34fpn_obj_det_hf",
+                "pt_retinanet_retinanet_rn18fpn_obj_det_hf",
+                "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
+                "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
+                "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
+                "onnx_yolo_v4_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {"sizes": "[30, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D6,
+        [((1, 256, 30, 40), torch.float32)],
+        {
+            "model_names": [
+                "pt_retinanet_retinanet_rn34fpn_obj_det_hf",
+                "pt_retinanet_retinanet_rn18fpn_obj_det_hf",
+                "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
+                "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
+                "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"sizes": "[60, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    pytest.param(
+        (
+            Resize2D7,
+            [((1, 512, 14, 14), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[28, 28]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
             },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/ops/op_resize_2d.cpp:183: (mode == 'nearest') || (mode == 'bilinear' && !align_corners)"
+            )
+        ],
+    ),
+    pytest.param(
+        (
+            Resize2D8,
+            [((1, 256, 28, 28), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[56, 56]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/ops/op_resize_2d.cpp:183: (mode == 'nearest') || (mode == 'bilinear' && !align_corners)"
+            )
+        ],
+    ),
+    pytest.param(
+        (
+            Resize2D9,
+            [((1, 128, 56, 56), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[112, 112]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/ops/op_resize_2d.cpp:183: (mode == 'nearest') || (mode == 'bilinear' && !align_corners)"
+            )
+        ],
+    ),
+    pytest.param(
+        (
+            Resize2D10,
+            [((1, 64, 112, 112), torch.bfloat16)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[224, 224]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/ops/op_resize_2d.cpp:183: (mode == 'nearest') || (mode == 'bilinear' && !align_corners)"
+            )
+        ],
+    ),
+    (
+        Resize2D11,
+        [((1, 256, 20, 20), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_yolo_v5_yolov5s_img_cls_torchhub_640x640",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolo_v5_yolov5l_img_cls_torchhub_320x320",
+                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[40, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D12,
+        [((1, 128, 40, 40), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_yolo_v5_yolov5s_img_cls_torchhub_640x640",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "pt_yolov10_yolov10n_obj_det_github",
+                "pt_yolov8_yolov8n_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[80, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D11,
+        [((1, 640, 20, 20), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_yolo_v5_yolov5x_img_cls_torchhub_640x640",
+                "pt_yolov8_yolov8x_obj_det_github",
+                "pt_yolox_yolox_x_obj_det_torchhub",
+                "pt_yolov10_yolov10x_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[40, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D12,
+        [((1, 320, 40, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640", "pt_yolox_yolox_x_obj_det_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[80, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D12,
+        [((1, 640, 40, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov8_yolov8x_obj_det_github", "pt_yolov10_yolov10x_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[80, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D11,
+        [((1, 384, 20, 20), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolox_yolox_m_obj_det_torchhub", "pt_yolo_v5_yolov5m_img_cls_torchhub_640x640"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[40, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D12,
+        [((1, 192, 40, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolox_yolox_m_obj_det_torchhub", "pt_yolo_v5_yolov5m_img_cls_torchhub_640x640"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[80, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D13,
+        [((1, 256, 6, 20), torch.float32)],
+        {
+            "model_names": [
+                "onnx_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_stereo_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"sizes": "[12, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D14,
+        [((1, 128, 12, 40), torch.float32)],
+        {
+            "model_names": [
+                "onnx_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_stereo_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"sizes": "[24, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D15,
+        [((1, 64, 24, 80), torch.float32)],
+        {
+            "model_names": [
+                "onnx_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_stereo_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"sizes": "[48, 160]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D16,
+        [((1, 32, 48, 160), torch.float32)],
+        {
+            "model_names": [
+                "onnx_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_stereo_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"sizes": "[96, 320]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D17,
+        [((1, 16, 96, 320), torch.float32)],
+        {
+            "model_names": [
+                "onnx_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "onnx_monodepth2_stereo_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"sizes": "[192, 640]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D11,
+        [((1, 256, 20, 20), torch.float32)],
+        {
+            "model_names": [
+                "onnx_yolov10_default_obj_det_github",
+                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "onnx_yolov8_default_obj_det_github",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "onnx_yolo_v5_yolov5l_img_cls_torchhub_320x320",
+            ],
+            "pcc": 0.99,
+            "args": {"sizes": "[40, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D12,
+        [((1, 128, 40, 40), torch.float32)],
+        {
+            "model_names": [
+                "onnx_yolov10_default_obj_det_github",
+                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "onnx_yolov8_default_obj_det_github",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "args": {"sizes": "[80, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D18,
+        [((1, 16, 27, 27), torch.bfloat16)],
+        {
+            "model_names": ["pt_beit_large_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[27, 27]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 32, 28, 28), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnetv2_w32_osmr_img_cls_osmr", "pt_hrnet_hrnet_w32_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 32, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnetv2_w32_osmr_img_cls_osmr", "pt_hrnet_hrnet_w32_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 32, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w18_small_img_cls_timm", "pt_hrnet_hrnet_w18_small_v1_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 64, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnetv2_w32_osmr_img_cls_osmr", "pt_hrnet_hrnet_w32_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 64, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w64_img_cls_timm", "pt_hrnet_hrnetv2_w64_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 32, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnetv2_w32_osmr_img_cls_osmr", "pt_hrnet_hrnet_w32_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 32, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w18_small_img_cls_timm", "pt_hrnet_hrnet_w18_small_v1_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 64, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnetv2_w32_osmr_img_cls_osmr", "pt_hrnet_hrnet_w32_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D2,
+        [((1, 64, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w18_small_img_cls_timm", "pt_hrnet_hrnet_w18_small_v1_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 64, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w64_img_cls_timm", "pt_hrnet_hrnetv2_w64_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D2,
+        [((1, 128, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnetv2_w32_osmr_img_cls_osmr", "pt_hrnet_hrnet_w32_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 128, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w64_img_cls_timm", "pt_hrnet_hrnetv2_w64_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D3,
+        [((1, 256, 16, 16), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D19,
+        [((1, 256, 16, 16), torch.bfloat16)],
+        {
+            "model_names": ["pt_fpn_base_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[64, 64]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D4,
+        [((1, 256, 16, 16), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v3_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[32, 32]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D3,
+        [((1, 256, 32, 32), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D3,
+        [((1, 256, 64, 64), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D3,
+        [((1, 256, 128, 128), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D20,
+        [((1, 256, 10, 10), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_320x320"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[20, 20]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D11,
+        [((1, 128, 20, 20), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_yolo_v5_yolov5s_img_cls_torchhub_320x320",
+                "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[40, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D21,
+        [((1, 192, 13, 13), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[26, 26]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D22,
+        [((1, 96, 26, 26), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[52, 52]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 30, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_hrnet_hrnetv2_w30_img_cls_osmr"],
+            "pcc": 0.99,
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 30, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_hrnet_hrnetv2_w30_img_cls_osmr"],
+            "pcc": 0.99,
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 60, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_hrnet_hrnetv2_w30_img_cls_osmr"],
+            "pcc": 0.99,
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 30, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_hrnet_hrnetv2_w30_img_cls_osmr"],
+            "pcc": 0.99,
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 60, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_hrnet_hrnetv2_w30_img_cls_osmr"],
+            "pcc": 0.99,
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D2,
+        [((1, 120, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_hrnet_hrnetv2_w30_img_cls_osmr"],
+            "pcc": 0.99,
+            "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    pytest.param(
+        (
+            Resize2D3,
+            [((1, 768, 16, 16), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "sizes": "[128, 128]",
+                    "mode": '"bilinear"',
+                    "align_corners": "False",
+                    "channel_last": "False",
+                },
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception"
+            )
+        ],
+    ),
+    (
+        Resize2D3,
+        [((1, 768, 32, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D3,
+        [((1, 768, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D3,
+        [((1, 768, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D23,
+        [((1, 384, 15, 15), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[30, 30]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D24,
+        [((1, 192, 30, 30), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[60, 60]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 16, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_hrnet_hrnet_w18_small_v1_img_cls_osmr"],
+            "pcc": 0.99,
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 16, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_hrnet_hrnet_w18_small_v1_img_cls_osmr"],
+            "pcc": 0.99,
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 32, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_hrnet_hrnet_w18_small_v1_img_cls_osmr"],
+            "pcc": 0.99,
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 32, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_hrnet_hrnet_w18_small_v1_img_cls_osmr"],
+            "pcc": 0.99,
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 16, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_hrnet_hrnet_w18_small_v1_img_cls_osmr"],
+            "pcc": 0.99,
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 44, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_hrnet_hrnetv2_w44_img_cls_osmr"],
+            "pcc": 0.99,
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 44, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_hrnet_hrnetv2_w44_img_cls_osmr"],
+            "pcc": 0.99,
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 88, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_hrnet_hrnetv2_w44_img_cls_osmr"],
+            "pcc": 0.99,
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 44, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_hrnet_hrnetv2_w44_img_cls_osmr"],
+            "pcc": 0.99,
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 88, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_hrnet_hrnetv2_w44_img_cls_osmr"],
+            "pcc": 0.99,
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D2,
+        [((1, 176, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_hrnet_hrnetv2_w44_img_cls_osmr"],
+            "pcc": 0.99,
+            "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D20,
+        [((1, 128, 10, 10), torch.float32)],
+        {
+            "model_names": ["onnx_yolo_v5_yolov5n_img_cls_torchhub_320x320"],
+            "pcc": 0.99,
+            "args": {"sizes": "[20, 20]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D11,
+        [((1, 64, 20, 20), torch.float32)],
+        {
+            "model_names": ["onnx_yolo_v5_yolov5n_img_cls_torchhub_320x320"],
+            "pcc": 0.99,
+            "args": {"sizes": "[40, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D25,
+        [((1, 256, 10, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"sizes": "[20, 64]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D26,
+        [((1, 128, 20, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"sizes": "[40, 128]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D27,
+        [((1, 64, 40, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"sizes": "[80, 256]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D28,
+        [((1, 32, 80, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"sizes": "[160, 512]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D29,
+        [((1, 16, 160, 512), torch.float32)],
+        {
+            "model_names": [
+                "onnx_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                "onnx_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"sizes": "[320, 1024]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D20,
+        [((1, 256, 10, 10), torch.float32)],
+        {
+            "model_names": ["onnx_yolo_v5_yolov5s_img_cls_torchhub_320x320"],
+            "pcc": 0.99,
+            "args": {"sizes": "[20, 20]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D11,
+        [((1, 128, 20, 20), torch.float32)],
+        {
+            "model_names": ["onnx_yolo_v5_yolov5s_img_cls_torchhub_320x320"],
+            "pcc": 0.99,
+            "args": {"sizes": "[40, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D30,
         [((1, 24, 14, 14), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[112, 112]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[112, 112]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -2860,26 +1767,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "onnx_hrnet_hrnetv2_w48_img_cls_osmr",
             ],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
-        Resize2D27,
+        Resize2D30,
         [((1, 24, 28, 28), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[112, 112]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[112, 112]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -2888,208 +1785,744 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
-        Resize2D27,
+        Resize2D30,
         [((1, 24, 56, 56), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[112, 112]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[112, 112]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
-        Resize2D27,
+        Resize2D30,
         [((1, 96, 56, 56), torch.float32)],
         {
             "model_names": ["pd_paddleocr_v4_det_ch_scene_text_detection_paddlemodels"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[112, 112]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[112, 112]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D31,
+        [((1, 256, 8, 8), torch.bfloat16)],
+        {
+            "model_names": ["pt_fpn_base_img_cls_torchvision"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[16, 16]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D32,
+        [((1, 64, 15, 20), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[30, 40]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D33,
+        [((1, 64, 30, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[60, 80]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D34,
+        [((1, 64, 60, 80), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[120, 160]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D35,
+        [((1, 64, 120, 160), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[240, 320]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D36,
+        [((1, 64, 240, 320), torch.bfloat16)],
+        {
+            "model_names": ["pt_glpn_kitti_default_depth_estimation_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[480, 640]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D0,
-        [((1, 44, 28, 28), torch.float32)],
+        [((1, 16, 28, 28), torch.bfloat16)],
         {
-            "model_names": ["onnx_hrnet_hrnetv2_w44_img_cls_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w18_small_img_cls_timm", "pt_hrnet_hrnet_w18_small_v1_osmr_img_cls_osmr"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D0,
-        [((1, 44, 14, 14), torch.float32)],
+        [((1, 16, 14, 14), torch.bfloat16)],
         {
-            "model_names": ["onnx_hrnet_hrnetv2_w44_img_cls_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w18_small_img_cls_timm", "pt_hrnet_hrnet_w18_small_v1_osmr_img_cls_osmr"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 16, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w18_small_img_cls_timm", "pt_hrnet_hrnet_w18_small_v1_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 30, 28, 28), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w30_img_cls_timm", "pt_hrnet_hrnetv2_w30_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 30, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w30_img_cls_timm", "pt_hrnet_hrnetv2_w30_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D1,
-        [((1, 88, 14, 14), torch.float32)],
+        [((1, 60, 14, 14), torch.bfloat16)],
         {
-            "model_names": ["onnx_hrnet_hrnetv2_w44_img_cls_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w30_img_cls_timm", "pt_hrnet_hrnetv2_w30_osmr_img_cls_osmr"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D0,
-        [((1, 44, 7, 7), torch.float32)],
+        [((1, 30, 7, 7), torch.bfloat16)],
         {
-            "model_names": ["onnx_hrnet_hrnetv2_w44_img_cls_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w30_img_cls_timm", "pt_hrnet_hrnetv2_w30_osmr_img_cls_osmr"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D1,
-        [((1, 88, 7, 7), torch.float32)],
+        [((1, 60, 7, 7), torch.bfloat16)],
         {
-            "model_names": ["onnx_hrnet_hrnetv2_w44_img_cls_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w30_img_cls_timm", "pt_hrnet_hrnetv2_w30_osmr_img_cls_osmr"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D2,
-        [((1, 176, 7, 7), torch.float32)],
+        [((1, 120, 7, 7), torch.bfloat16)],
         {
-            "model_names": ["onnx_hrnet_hrnetv2_w44_img_cls_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w30_img_cls_timm", "pt_hrnet_hrnetv2_w30_osmr_img_cls_osmr"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[14, 14]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D20,
+        [((1, 512, 10, 10), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5l_img_cls_torchhub_320x320"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[20, 20]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D20,
+        [((1, 384, 10, 10), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_320x320"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[20, 20]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D11,
+        [((1, 192, 20, 20), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_320x320"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[40, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D20,
+        [((1, 128, 10, 10), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5n_img_cls_torchhub_320x320"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[20, 20]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D11,
+        [((1, 64, 20, 20), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5n_img_cls_torchhub_320x320"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[40, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D23,
+        [((1, 128, 15, 15), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5n_img_cls_torchhub_480x480"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[30, 30]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D24,
+        [((1, 64, 30, 30), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5n_img_cls_torchhub_480x480"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[60, 60]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D11,
+        [((1, 512, 20, 20), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_yolox_yolox_l_obj_det_torchhub",
+                "pt_yolo_v5_yolov5l_img_cls_torchhub_640x640",
+                "pt_yolo_world_default_obj_det_github",
+                "pt_yolov9_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[40, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D12,
+        [((1, 256, 40, 40), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_yolox_yolox_l_obj_det_torchhub",
+                "pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280",
+                "pt_yolo_v5_yolov5l_img_cls_torchhub_640x640",
+                "pt_yolo_world_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[80, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D21,
+        [((1, 192, 13, 13), torch.float32)],
+        {
+            "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {"sizes": "[26, 26]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D22,
+        [((1, 96, 26, 26), torch.float32)],
+        {
+            "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {"sizes": "[52, 52]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D0,
-        [((1, 64, 28, 28), torch.float32)],
+        [((1, 18, 28, 28), torch.float32)],
         {
-            "model_names": ["onnx_hrnet_hrnetv2_w64_img_cls_osmr"],
+            "model_names": ["onnx_hrnet_hrnetv2_w18_img_cls_osmr", "onnx_hrnet_hrnet_w18_small_v2_img_cls_osmr"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D0,
-        [((1, 64, 14, 14), torch.float32)],
+        [((1, 18, 14, 14), torch.float32)],
         {
-            "model_names": ["onnx_hrnet_hrnetv2_w64_img_cls_osmr"],
+            "model_names": ["onnx_hrnet_hrnetv2_w18_img_cls_osmr", "onnx_hrnet_hrnet_w18_small_v2_img_cls_osmr"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D1,
-        [((1, 128, 14, 14), torch.float32)],
+        [((1, 36, 14, 14), torch.float32)],
         {
-            "model_names": ["onnx_hrnet_hrnetv2_w64_img_cls_osmr"],
+            "model_names": ["onnx_hrnet_hrnetv2_w18_img_cls_osmr", "onnx_hrnet_hrnet_w18_small_v2_img_cls_osmr"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D0,
-        [((1, 64, 7, 7), torch.float32)],
+        [((1, 18, 7, 7), torch.float32)],
         {
-            "model_names": ["onnx_hrnet_hrnetv2_w64_img_cls_osmr"],
+            "model_names": ["onnx_hrnet_hrnetv2_w18_img_cls_osmr", "onnx_hrnet_hrnet_w18_small_v2_img_cls_osmr"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D1,
-        [((1, 128, 7, 7), torch.float32)],
+        [((1, 36, 7, 7), torch.float32)],
         {
-            "model_names": ["onnx_hrnet_hrnetv2_w64_img_cls_osmr"],
+            "model_names": ["onnx_hrnet_hrnetv2_w18_img_cls_osmr", "onnx_hrnet_hrnet_w18_small_v2_img_cls_osmr"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
         Resize2D2,
-        [((1, 256, 7, 7), torch.float32)],
+        [((1, 72, 7, 7), torch.float32)],
         {
-            "model_names": ["onnx_hrnet_hrnetv2_w64_img_cls_osmr"],
+            "model_names": ["onnx_hrnet_hrnetv2_w18_img_cls_osmr", "onnx_hrnet_hrnet_w18_small_v2_img_cls_osmr"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[14, 14]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
+            "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D20,
+        [((1, 384, 10, 10), torch.float32)],
+        {
+            "model_names": ["onnx_yolo_v5_yolov5m_img_cls_torchhub_320x320"],
+            "pcc": 0.99,
+            "args": {"sizes": "[20, 20]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D11,
+        [((1, 192, 20, 20), torch.float32)],
+        {
+            "model_names": ["onnx_yolo_v5_yolov5m_img_cls_torchhub_320x320"],
+            "pcc": 0.99,
+            "args": {"sizes": "[40, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 40, 28, 28), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w40_img_cls_timm", "pt_hrnet_hrnetv2_w40_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 40, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w40_img_cls_timm", "pt_hrnet_hrnetv2_w40_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 80, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w40_img_cls_timm", "pt_hrnet_hrnetv2_w40_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 40, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w40_img_cls_timm", "pt_hrnet_hrnetv2_w40_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 80, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w40_img_cls_timm", "pt_hrnet_hrnetv2_w40_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D2,
+        [((1, 160, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w40_img_cls_timm", "pt_hrnet_hrnetv2_w40_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 44, 28, 28), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w44_img_cls_timm", "pt_hrnet_hrnetv2_w44_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 44, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w44_img_cls_timm", "pt_hrnet_hrnetv2_w44_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 88, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w44_img_cls_timm", "pt_hrnet_hrnetv2_w44_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 44, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w44_img_cls_timm", "pt_hrnet_hrnetv2_w44_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 88, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w44_img_cls_timm", "pt_hrnet_hrnetv2_w44_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D2,
+        [((1, 176, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w44_img_cls_timm", "pt_hrnet_hrnetv2_w44_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 48, 28, 28), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w48_img_cls_timm", "pt_hrnet_hrnetv2_w48_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 48, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w48_img_cls_timm", "pt_hrnet_hrnetv2_w48_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 96, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w48_img_cls_timm", "pt_hrnet_hrnetv2_w48_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 48, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w48_img_cls_timm", "pt_hrnet_hrnetv2_w48_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 96, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w48_img_cls_timm", "pt_hrnet_hrnetv2_w48_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D2,
+        [((1, 192, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w48_img_cls_timm", "pt_hrnet_hrnetv2_w48_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D23,
+        [((1, 256, 15, 15), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_480x480"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[30, 30]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D24,
+        [((1, 128, 30, 30), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_480x480"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[60, 60]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D21,
+        [((1, 128, 13, 13), torch.float32)],
+        {
+            "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {"sizes": "[26, 26]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D22,
+        [((1, 64, 26, 26), torch.float32)],
+        {
+            "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {"sizes": "[52, 52]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D18,
+        [((1, 12, 27, 27), torch.float32)],
+        {
+            "model_names": ["onnx_beit_microsoft_beit_base_patch16_224_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"sizes": "[27, 27]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    pytest.param(
+        (
+            Resize2D37,
+            [((1, 256, 1, 1), torch.bfloat16)],
+            {
+                "model_names": ["pt_mobilenetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[65, 65]", "mode": '"bilinear"', "align_corners": "True", "channel_last": "False"},
             },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/ops/op_resize_2d.cpp:183: (mode == 'nearest') || (mode == 'bilinear' && !align_corners)"
+            )
+        ],
+    ),
+    pytest.param(
+        (
+            Resize2D3,
+            [((1, 768, 16, 16), torch.bfloat16)],
+            {
+                "model_names": [
+                    "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "sizes": "[128, 128]",
+                    "mode": '"bilinear"',
+                    "align_corners": "False",
+                    "channel_last": "False",
+                },
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception"
+            )
+        ],
+    ),
+    (
+        Resize2D3,
+        [((1, 768, 32, 32), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D3,
+        [((1, 768, 64, 64), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D3,
+        [((1, 768, 128, 128), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[128, 128]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D20,
+        [((1, 640, 10, 10), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[20, 20]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D11,
+        [((1, 320, 20, 20), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[40, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D11,
+        [((1, 512, 20, 20), torch.float32)],
+        {
+            "model_names": ["pt_yolox_yolox_l_obj_det_torchhub", "onnx_yolov9_default_obj_det_github"],
+            "pcc": 0.99,
+            "args": {"sizes": "[40, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D12,
+        [((1, 256, 40, 40), torch.float32)],
+        {
+            "model_names": ["pt_yolox_yolox_l_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {"sizes": "[80, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D21,
+        [((1, 128, 13, 13), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[26, 26]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D22,
+        [((1, 64, 26, 26), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[52, 52]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D18,
+        [((1, 16, 27, 27), torch.float32)],
+        {
+            "model_names": ["onnx_beit_microsoft_beit_large_patch16_224_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"sizes": "[27, 27]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -3098,12 +2531,7 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["onnx_hrnet_hrnetv2_w48_img_cls_osmr"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -3112,12 +2540,7 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["onnx_hrnet_hrnetv2_w48_img_cls_osmr"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -3126,12 +2549,7 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["onnx_hrnet_hrnetv2_w48_img_cls_osmr"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[56, 56]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -3140,12 +2558,7 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["onnx_hrnet_hrnetv2_w48_img_cls_osmr"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[28, 28]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
-            },
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
     (
@@ -3154,12 +2567,636 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": ["onnx_hrnet_hrnetv2_w48_img_cls_osmr"],
             "pcc": 0.99,
-            "args": {
-                "sizes": "[14, 14]",
-                "mode": '"nearest"',
-                "align_corners": "False",
-                "channel_last": "False",
+            "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D20,
+        [((1, 512, 10, 10), torch.float32)],
+        {
+            "model_names": ["onnx_yolo_v5_yolov5l_img_cls_torchhub_320x320"],
+            "pcc": 0.99,
+            "args": {"sizes": "[20, 20]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D12,
+        [((1, 64, 40, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5n_img_cls_torchhub_640x640"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[80, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D38,
+        [((1, 128, 80, 80), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[160, 160]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D11,
+        [((1, 384, 20, 20), torch.float32)],
+        {
+            "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {"sizes": "[40, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D12,
+        [((1, 192, 40, 40), torch.float32)],
+        {
+            "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {"sizes": "[80, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D12,
+        [((1, 512, 40, 40), torch.float32)],
+        {
+            "model_names": ["onnx_yolov9_default_obj_det_github"],
+            "pcc": 0.99,
+            "args": {"sizes": "[80, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D18,
+        [((1, 12, 27, 27), torch.bfloat16)],
+        {
+            "model_names": ["pt_beit_base_img_cls_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[27, 27]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D23,
+        [((1, 640, 15, 15), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[30, 30]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D24,
+        [((1, 320, 30, 30), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[60, 60]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D20,
+        [((1, 640, 10, 10), torch.float32)],
+        {
+            "model_names": ["onnx_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
+            "pcc": 0.99,
+            "args": {"sizes": "[20, 20]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D11,
+        [((1, 320, 20, 20), torch.float32)],
+        {
+            "model_names": ["onnx_yolo_v5_yolov5x_img_cls_torchhub_320x320"],
+            "pcc": 0.99,
+            "args": {"sizes": "[40, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D23,
+        [((1, 512, 15, 15), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5l_img_cls_torchhub_480x480"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[30, 30]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D24,
+        [((1, 256, 30, 30), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v5_yolov5l_img_cls_torchhub_480x480"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[60, 60]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D11,
+        [((1, 640, 20, 20), torch.float32)],
+        {
+            "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {"sizes": "[40, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D12,
+        [((1, 320, 40, 40), torch.float32)],
+        {
+            "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {"sizes": "[80, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D32,
+        [((1, 64, 15, 20), torch.float32)],
+        {
+            "model_names": ["onnx_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "args": {"sizes": "[30, 40]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D33,
+        [((1, 64, 30, 40), torch.float32)],
+        {
+            "model_names": ["onnx_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "args": {"sizes": "[60, 80]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D34,
+        [((1, 64, 60, 80), torch.float32)],
+        {
+            "model_names": ["onnx_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "args": {"sizes": "[120, 160]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D35,
+        [((1, 64, 120, 160), torch.float32)],
+        {
+            "model_names": ["onnx_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "args": {"sizes": "[240, 320]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D36,
+        [((1, 64, 240, 320), torch.float32)],
+        {
+            "model_names": ["onnx_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "args": {"sizes": "[480, 640]", "mode": '"bilinear"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D0,
+        [((1, 64, 28, 28), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w64_img_cls_timm", "pt_hrnet_hrnetv2_w64_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 128, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w64_img_cls_timm", "pt_hrnet_hrnetv2_w64_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D2,
+        [((1, 256, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w64_img_cls_timm", "pt_hrnet_hrnetv2_w64_osmr_img_cls_osmr"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D19,
+        [((2, 1280, 32, 32), torch.bfloat16)],
+        {
+            "model_names": ["pt_stable_diffusion_stable_diffusion_xl_base_1_0_cond_gen_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[64, 64]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D39,
+        [((2, 640, 64, 64), torch.bfloat16)],
+        {
+            "model_names": ["pt_stable_diffusion_stable_diffusion_xl_base_1_0_cond_gen_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[128, 128]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D12,
+        [((1, 512, 40, 40), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolov9_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[80, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D19,
+        [((1, 128, 32, 32), torch.float32)],
+        {
+            "model_names": ["onnx_yolo_v3_default_obj_det_github"],
+            "pcc": 0.99,
+            "args": {"sizes": "[64, 64]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D6,
+        [((1, 128, 30, 40), torch.float32)],
+        {
+            "model_names": ["onnx_yolo_v4_default_obj_det_github"],
+            "pcc": 0.99,
+            "args": {"sizes": "[60, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D13,
+        [((1, 256, 6, 20), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[12, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D14,
+        [((1, 128, 12, 40), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[24, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D15,
+        [((1, 64, 24, 80), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[48, 160]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D16,
+        [((1, 32, 48, 160), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[96, 320]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D17,
+        [((1, 16, 96, 320), torch.bfloat16)],
+        {
+            "model_names": [
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[192, 640]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D19,
+        [((1, 128, 32, 32), torch.bfloat16)],
+        {
+            "model_names": ["pt_yolo_v3_default_obj_det_github"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[64, 64]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    pytest.param(
+        (
+            Resize2D40,
+            [((100, 128, 14, 20), torch.float32)],
+            {
+                "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "args": {"sizes": "[27, 40]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
             },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception Out of Memory: Not enough space to allocate 774897664 B L1 buffer across 64 banks, where each bank needs to store 12107776 B"
+            )
+        ],
+    ),
+    (
+        Resize2D41,
+        [((100, 64, 27, 40), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"sizes": "[54, 80]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    pytest.param(
+        (
+            Resize2D42,
+            [((100, 32, 54, 80), torch.float32)],
+            {
+                "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "args": {"sizes": "[107, 160]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception Out of Memory: Not enough space to allocate 7117209600 B DRAM buffer across 12 banks, where each bank needs to store 593100800 B"
+            )
+        ],
+    ),
+    pytest.param(
+        (
+            Resize2D43,
+            [((1, 1, 800, 1066), torch.bfloat16)],
+            {
+                "model_names": ["pt_detr_resnet_50_obj_det_hf", "pt_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[25, 34]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception Out of Memory: Not enough space to allocate 7117209600 B DRAM buffer across 12 banks, where each bank needs to store 593100800 B"
+            )
+        ],
+    ),
+    pytest.param(
+        (
+            Resize2D44,
+            [((100, 128, 25, 34), torch.bfloat16)],
+            {
+                "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[50, 67]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception Out of Memory: Not enough space to allocate 7117209600 B DRAM buffer across 12 banks, where each bank needs to store 593100800 B"
+            )
+        ],
+    ),
+    (
+        Resize2D45,
+        [((100, 64, 50, 67), torch.bfloat16)],
+        {
+            "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[100, 134]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    pytest.param(
+        (
+            Resize2D46,
+            [((100, 32, 100, 134), torch.bfloat16)],
+            {
+                "model_names": ["pt_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {"sizes": "[200, 267]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception  Out of Memory: Not enough space to allocate 231991296 B L1 buffer across 61 banks, where each bank needs to store 3803136 B"
+            )
+        ],
+    ),
+    (
+        Resize2D0,
+        [((1, 72, 28, 28), torch.bfloat16)],
+        {
+            "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[56, 56]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 120, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D1,
+        [((1, 240, 14, 14), torch.bfloat16)],
+        {
+            "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[28, 28]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D2,
+        [((1, 200, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D2,
+        [((1, 184, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D2,
+        [((1, 480, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D2,
+        [((1, 672, 7, 7), torch.bfloat16)],
+        {
+            "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[14, 14]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D47,
+        [((1, 960, 3, 3), torch.bfloat16)],
+        {
+            "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[7, 7]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    pytest.param(
+        (
+            Resize2D48,
+            [((1, 3, 480, 640), torch.bfloat16)],
+            {
+                "model_names": ["pt_ssd300_vgg16_ssd300_vgg16_img_cls_torchvision"],
+                "pcc": 0.99,
+                "default_df_override": "Float16_b",
+                "args": {
+                    "sizes": "[300, 300]",
+                    "mode": '"bilinear"',
+                    "align_corners": "False",
+                    "channel_last": "False",
+                },
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ tt-forge-fe/forge/csrc/ops/op_resize_2d.cpp:196: tt::exception Downsample2d is not supported for bilinear interpolation mode"
+            )
+        ],
+    ),
+    (
+        Resize2D49,
+        [((1, 2048, 38, 49), torch.bfloat16)],
+        {
+            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[76, 98]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D50,
+        [((1, 256, 76, 98), torch.bfloat16)],
+        {
+            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[152, 196]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D51,
+        [((1, 128, 152, 196), torch.bfloat16)],
+        {
+            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[304, 392]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D52,
+        [((1, 64, 304, 392), torch.bfloat16)],
+        {
+            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[608, 784]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
+        },
+    ),
+    (
+        Resize2D53,
+        [((1, 32, 608, 784), torch.bfloat16)],
+        {
+            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"sizes": "[1216, 1568]", "mode": '"nearest"', "align_corners": "False", "channel_last": "False"},
         },
     ),
 ]
@@ -3167,16 +3204,19 @@ forge_modules_and_shapes_dtypes_list = [
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
-def test_module(forge_module_and_shapes_dtypes):
+@pytest.mark.parametrize("training_test", [False, True], ids=["inference", "training"])
+def test_module(forge_module_and_shapes_dtypes, training_test):
 
     record_forge_op_name("Resize2d")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
-    pcc = metadata.pop("pcc")
+    pcc = metadata.get("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        if metadata_name == "model_names":
+        if metadata_name in ["pcc"]:
+            continue
+        elif metadata_name == "model_names":
             record_op_model_names(metadata_value)
         elif metadata_name == "args":
             record_forge_op_args(metadata_value)
@@ -3187,7 +3227,7 @@ def test_module(forge_module_and_shapes_dtypes):
 
     max_int = 1000
     inputs = [
-        Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int)
+        Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int, requires_grad=training_test)
         for operand_shape, operand_dtype in operand_shapes_dtypes
     ]
 
@@ -3195,13 +3235,19 @@ def test_module(forge_module_and_shapes_dtypes):
 
     for name, parameter in framework_model._parameters.items():
         parameter_tensor = Tensor.create_torch_tensor(
-            shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int
+            shape=parameter.shape.get_pytorch_shape(),
+            dtype=parameter.pt_data_format,
+            max_int=max_int,
+            requires_grad=training_test,
         )
         framework_model.set_parameter(name, parameter_tensor)
 
     for name, constant in framework_model._constants.items():
         constant_tensor = Tensor.create_torch_tensor(
-            shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int
+            shape=constant.shape.get_pytorch_shape(),
+            dtype=constant.pt_data_format,
+            max_int=max_int,
+            requires_grad=training_test,
         )
         framework_model.set_constant(name, constant_tensor)
 
@@ -3211,6 +3257,12 @@ def test_module(forge_module_and_shapes_dtypes):
     if "default_df_override" in metadata.keys():
         compiler_cfg.default_df_override = forge.DataFormat.from_json(metadata["default_df_override"])
 
-    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+    compiled_model = compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, training=training_test)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        with_backward=training_test,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+    )

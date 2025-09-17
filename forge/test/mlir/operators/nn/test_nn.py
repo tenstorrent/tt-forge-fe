@@ -139,9 +139,6 @@ def test_conv2d(input_shape, in_channels, out_channels, kernel_size, padding):
             3,
             (1, 1, 1, 1),
             False,
-            marks=pytest.mark.xfail(
-                reason="Runtime Error  : Shard page size must currently have L1 aligned page size."
-            ),
         ),
         pytest.param(
             (1, 3, 32, 32),
@@ -187,6 +184,12 @@ def test_maxpool2d(input_shape, kernel_size, stride_size, padding, ceil_mode):
         pytest.param((1, 3, 128, 128), "bilinear", (2, 3)),
         pytest.param((1, 4, 12, 16), "nearest", (3, 4)),
         pytest.param((1, 4, 12, 16), "bilinear", (3, 4)),
+        pytest.param((1, 4, 12), "nearest", 2),
+        pytest.param((1, 4, 12), "linear", 2),
+        pytest.param((1, 7, 9), "nearest", 3),
+        pytest.param((1, 7, 9), "linear", 3),
+        pytest.param((1, 3, 128), "nearest", 2),
+        pytest.param((1, 3, 128), "linear", 2),
     ],
 )
 @pytest.mark.push
@@ -201,6 +204,55 @@ def test_interpolate(shape, mode, scale_factor):
     inputs = [torch.rand(shape)]
 
     framework_model = Interpolate()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "scale_factor_or_size",
+    [
+        0.5,
+        2.6,
+        (9, 5),
+        (3, 14),
+        (19, 25),
+        (3, 5),
+        (11,),
+        (15,),
+        (5,),
+        (3,),
+    ],
+)
+@pytest.mark.parametrize(
+    "input_shape",
+    [
+        (1, 3, 7),
+        (1, 3, 5, 7),
+    ],
+)
+@pytest.mark.push
+def test_resize2d_nearest_interpolation(input_shape, scale_factor_or_size):
+
+    if isinstance(scale_factor_or_size, tuple) and (
+        (len(scale_factor_or_size) == 2 and len(input_shape) != 4)
+        or (len(scale_factor_or_size) == 1 and len(input_shape) != 3)
+    ):
+        pytest.skip("Invalid Config")
+
+    class Resize(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            if isinstance(scale_factor_or_size, float):
+                return nn.functional.interpolate(x, scale_factor=scale_factor_or_size, mode="nearest")
+            else:
+                return nn.functional.interpolate(x, size=scale_factor_or_size, mode="nearest")
+
+    inputs = [torch.rand(input_shape)]
+
+    framework_model = Resize()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model)

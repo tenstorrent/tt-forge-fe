@@ -21,7 +21,6 @@
 #include "passes/fuse_conv2d_bias.hpp"
 #include "passes/fuse_pad_conv2d.hpp"
 #include "passes/fuse_per_channel_ops.hpp"
-#include "passes/fuse_redundant_tm_sequence.hpp"
 #include "passes/generate_initial_flops_estimate.hpp"
 #include "passes/insert_inverse_on_io.hpp"
 #include "passes/mlir_compiler.hpp"

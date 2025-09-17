@@ -309,7 +309,7 @@ class OutputNode : public QueueNode
     RuntimeTensorTransform runtime_tensor_transform;
     // The golden info is needed if we fractured the output and need to reconstruct it for golden comparison
     std::optional<int> partial_datacopy_golden_output_index;
-    std::vector<OpType> golden_transforms;
+    std::vector<ops::Op> golden_transforms;
     OutputType output_type_;
 
    public:
@@ -356,264 +356,67 @@ class OutputNode : public QueueNode
 
     RuntimeTensorTransform &get_runtime_tensor_transform() { return this->runtime_tensor_transform; }
 
-    void add_golden_transform(OpType const &op_type) { golden_transforms.insert(golden_transforms.begin(), op_type); }
-    void set_golden_transforms(std::vector<OpType> const &other) { golden_transforms = other; }
-    std::vector<OpType> const &get_golden_transforms() const { return golden_transforms; }
-    std::vector<OpType> &get_golden_transforms() { return golden_transforms; }
+    void add_golden_transform(ops::Op const &op_type) { golden_transforms.insert(golden_transforms.begin(), op_type); }
+    void set_golden_transforms(std::vector<ops::Op> const &other) { golden_transforms = other; }
+    std::vector<ops::Op> const &get_golden_transforms() const { return golden_transforms; }
+    std::vector<ops::Op> &get_golden_transforms() { return golden_transforms; }
     void set_partial_datacopy_golden_output_index(int index) { partial_datacopy_golden_output_index = index; }
     std::optional<int> get_partial_datacopy_golden_output_index() { return partial_datacopy_golden_output_index; }
-};
-
-struct OpType
-{
-    friend class ops::Op;
-    using Attr = ForgeOpAttr;
-    using Attrs = ForgeOpAttrs;
-
-    std::string op_;
-    std::vector<Attr> legacy_attrs_;  // legacy path
-    Attrs named_attrs_;               // new path
-
-   private:
-    ops::Op new_op_;
-
-   public:
-    OpType(std::string const &op, std::vector<Attr> const &attr = {}, Attrs named_attrs = {}) :
-        op_(op), legacy_attrs_(attr), named_attrs_(std::move(named_attrs)), new_op_(*this)
-    {
-    }
-
-    bool operator==(const ops::OpType other_type) const { return type() == other_type; }
-    bool operator!=(const ops::OpType other_type) const { return !(operator==(other_type)); }
-
-    bool operator==(const OpType &other) const
-    {
-        return *this == other.type() and legacy_attrs_ == other.legacy_attrs_ and named_attrs_ == other.named_attrs_;
-    }
-    bool operator!=(const OpType &other) const { return !(*this == other); }
-
-    ops::OpType type() const { return new_op_.type(); }
-    ops::Op const &new_op() const { return new_op_; }
-
-    const Attrs &attrs() const { return named_attrs_; }
-    bool has_attr(const std::string &attr_name) const { return named_attrs_.find(attr_name) != named_attrs_.end(); }
-
-    template <typename T>
-    T const &attr_as(std::string const &name) const
-    {
-        return std::get<T>(attr(name));
-    }
-
-    template <typename T>
-    T &attr_as(std::string const &name)
-    {
-        return std::get<T>(attr(name));
-    }
-
-    void set_attr(std::string const &name, Attr attr)
-    {
-        named_attrs_[name] = attr;
-        new_op_.set_attr(name, std::move(attr));
-    }
-
-    bool remove_attr(const std::string &attr_name)
-    {
-        bool removed = named_attrs_.erase(attr_name) > 0;
-        if (removed)
-            new_op_.remove_attr(attr_name);
-
-        return removed;
-    }
-
-    void clear_attrs()
-    {
-        named_attrs_.clear();
-        new_op_.clear_attrs();
-    }
-
-    const std::string &name() const { return op_; }
-
-    std::string as_string() const
-    {
-        std::string ret = op_;
-        if (legacy_attrs_.size() > 0)
-        {
-            ret += "(";
-            for (unsigned int i = 0; i < legacy_attrs_.size(); i++)
-            {
-                if (std::holds_alternative<bool>(legacy_attrs_[i]))
-                {
-                    ret += std::to_string(std::get<bool>(legacy_attrs_[i])) + ",";
-                }
-                else if (std::holds_alternative<int>(legacy_attrs_[i]))
-                {
-                    ret += std::to_string(std::get<int>(legacy_attrs_[i])) + ",";
-                }
-                else if (std::holds_alternative<float>(legacy_attrs_[i]))
-                {
-                    ret += std::to_string(std::get<float>(legacy_attrs_[i])) + ",";
-                }
-                else if (std::holds_alternative<std::string>(legacy_attrs_[i]))
-                {
-                    ret += std::get<std::string>(legacy_attrs_[i]) + ",";
-                }
-                else if (std::holds_alternative<std::vector<int>>(legacy_attrs_[i]))
-                {
-                    auto attr_val = std::get<std::vector<int>>(legacy_attrs_[i]);
-                    size_t num_items = attr_val.size();
-
-                    ret += "[";
-                    for (size_t j = 0; j < num_items; ++j)
-                    {
-                        ret += std::to_string(attr_val[j]);
-                        if (j < num_items - 1)
-                            ret += ", ";
-                    }
-                    ret += "], ";
-                }
-                else
-                {
-                    TT_ASSERT(false, "Unknown alternative in Attr");
-                }
-            }
-            // ret += "(" + std::to_string(attr[0]);
-            // for (std::size_t i = 1; i < attr.size(); i++) ret += "," + std::to_string(attr[i]);
-            ret += ")";
-        }
-
-        if (named_attrs_.size() > 0)
-        {
-            using tt::operator<<;
-            std::stringstream ss;
-            bool first = true;
-            ss << "{";
-            for (auto const &[name, value] : named_attrs_)
-            {
-                if (not first)
-                    ss << ", ";
-                ss << name << ": " << value;
-                first = false;
-            }
-            ss << "}";
-            ret += ss.str();
-        }
-        return ret;
-    }
-
-    /**
-     * Calculations. This is temporary implementation in ops transition period. It will be deleted once all ops are
-     * migrated from python to cpp.
-     */
-
-    at::Tensor eval(const std::vector<at::Tensor> &tensors) const;
-    std::tuple<graphlib::Shape, std::vector<graphlib::DimBroadcast>> shape(
-        const std::vector<std::vector<std::uint32_t>> &inputs) const;
-
-    tt::graphlib::NodeContext backward(
-        tt::autograd::autograd_context &context,
-        int operand,
-        const std::vector<tt::graphlib::NodeContext> &inputs,
-        const tt::graphlib::NodeContext &output,
-        const tt::graphlib::NodeContext &gradient) const;
-
-    template <DecomposeEpoch epoch>
-    void decompose(DecomposingContext &dc, const std::vector<tt::graphlib::NodeContext> &inputs) const;
-
-    long initial_flops_estimate(const std::vector<std::vector<std::uint32_t>> &inputs) const;
-
-    bool is_tm() const;
-    bool is_eltwise() const;
-    bool is_eltwise_unary() const;
-    bool is_eltwise_binary() const;
-    bool is_eltwise_nary() const;
-
-   private:
-    /**
-     * Returns attribute based on provided string. Since map::at throws if element does not exist but without any useful
-     * info, we will assert to get detailed error message.
-     */
-    const ForgeOpAttr &attr(const std::string &name) const
-    {
-        TT_ASSERT(has_attr(name), "Non existing attribute: {}", name);
-        return named_attrs_.at(name);
-    }
-
-    ForgeOpAttr &attr(const std::string &name)
-    {
-        TT_ASSERT(has_attr(name), "Non existing attribute: {}", name);
-        return named_attrs_.at(name);
-    }
 };
 
 class OpNode : public TaggedNode
 {
    private:
-    OpType op_type_;
+    ops::Op op_;
     bool gradient_op_;  // accumulator op
-    std::vector<OpType> golden_transforms;
+    std::vector<ops::Op> golden_transforms;
 
     // fusing/graph changes have the output of this node be equal to a different golden node
     bool has_golden_id_ = false;
     std::uint32_t golden_id_;
 
    public:
-    OpNode(const std::string &name, const std::string &op_type, NodeType node_type) :
-        TaggedNode(name, node_type), op_type_(op_type), gradient_op_(false)
-    {
-    }
-    OpNode(const std::string &name, OpType op_type, NodeType node_type) :
-        TaggedNode(name, node_type), op_type_(op_type), gradient_op_(false)
+    OpNode(const std::string &name, ops::Op op, NodeType node_type) :
+        TaggedNode(name, node_type), op_(std::move(op)), gradient_op_(false)
     {
     }
 
-    ops::Op const &new_op() const { return op_type_.new_op(); }
-    void change_op_type(OpType const &new_op_type) { op_type_ = new_op_type; }
-    void change_op_type(const std::string &new_op_type, std::vector<OpType::Attr> attrs = {})
-    {
-        op_type_ = OpType(new_op_type, attrs);
-    }
-    void change_op_type(const std::string &new_op_type, std::vector<OpType::Attr> attrs, OpType::Attrs named_attrs)
-    {
-        op_type_ = OpType(new_op_type, attrs, named_attrs);
-    }
-    ops::OpType new_op_type() const { return new_op().type(); }
-    OpType const &op_type() const { return op_type_; }
+    void change_op(ops::Op op) { op_ = std::move(op); }
+    void change_op(ops::OpType type, ops::Attrs attrs = {}) { op_ = ops::Op(type, std::move(attrs)); }
+    ops::OpType op_type() const { return op().type(); }
+    ops::Op const &op() const { return op_; }
     IRLevel get_ir_level() const { return IRLevel::IR_TT_FORGE; }
-    const std::string &op_name() const { return op_type_.name(); }
-    const std::vector<OpType::Attr> &op_legacy_attrs() const { return op_type_.legacy_attrs_; }
-    const OpType::Attrs &op_named_attrs() { return op_type_.named_attrs_; }
+    const std::string &op_as_string() const { return op_.as_string(); }
+    const ops::Attrs &op_attrs() { return op_.attrs(); }
     template <typename T>
     const T &op_attr_as(std::string const &name) const
     {
-        return op_type_.attr_as<T>(name);
+        return op_.attr_as<T>(name);
     }
-    void set_op_attr(const std::string &name, OpType::Attr value) { op_type_.set_attr(name, std::move(value)); }
+    void set_op_attr(const std::string &name, ops::Attr value) { op_.set_attr(name, std::move(value)); }
 
     void set_gradient_op(bool value = true) { gradient_op_ = value; }
     bool is_gradient_op() const { return gradient_op_; }
-    bool is_embedding() const
-    {
-        return new_op_type() == ops::OpType::Embedding || new_op_type() == ops::OpType::EmbeddingBw;
-    }
-    bool is_matmul() const { return new_op_type() == ops::OpType::Matmul; }
+    bool is_embedding() const { return op_type() == ops::OpType::Embedding || op_type() == ops::OpType::EmbeddingBw; }
+    bool is_matmul() const { return op_type() == ops::OpType::Matmul; }
     bool is_reduce() const
     {
-        return new_op_type() == ops::OpType::ReduceAvg or new_op_type() == ops::OpType::ReduceMax or
-               new_op_type() == ops::OpType::ReduceSum;
+        return op_type() == ops::OpType::ReduceAvg or op_type() == ops::OpType::ReduceMax or
+               op_type() == ops::OpType::ReduceSum;
     }
-    bool is_add() const { return new_op_type() == ops::OpType::Add; }
-    bool is_maximum() const { return new_op_type() == ops::OpType::Maximum; }
-    bool is_tm() const { return op_type_.is_tm(); };
-    bool is_eltwise() const { return op_type_.is_eltwise(); };
-    bool is_eltwise_unary() const { return op_type_.is_eltwise_unary(); }
-    bool is_eltwise_binary() const { return op_type_.is_eltwise_binary(); }
-    bool is_eltwise_nary() const { return op_type_.is_eltwise_nary(); }
+    bool is_add() const { return op_type() == ops::OpType::Add; }
+    bool is_maximum() const { return op_type() == ops::OpType::Maximum; }
+    bool is_tm() const { return op_.is_tm(); };
+    bool is_eltwise() const { return op_.is_eltwise(); };
+    bool is_eltwise_unary() const { return op_.is_eltwise_unary(); }
+    bool is_eltwise_binary() const { return op_.is_eltwise_binary(); }
+    bool is_eltwise_nary() const { return op_.is_eltwise_nary(); }
 
     void set_output_df_from_operands(const Graph *graph);
-    void add_golden_transform(OpType const &op_type) { golden_transforms.insert(golden_transforms.begin(), op_type); }
-    void set_golden_transforms(std::vector<OpType> const &other) { golden_transforms = other; }
-    std::vector<OpType> const &get_golden_transforms() const { return golden_transforms; }
-    std::vector<OpType> &get_golden_transforms() { return golden_transforms; }
+    void add_golden_transform(ops::Op const &op_type) { golden_transforms.insert(golden_transforms.begin(), op_type); }
+    void set_golden_transforms(std::vector<ops::Op> const &other) { golden_transforms = other; }
+    std::vector<ops::Op> const &get_golden_transforms() const { return golden_transforms; }
+    std::vector<ops::Op> &get_golden_transforms() { return golden_transforms; }
 
     void set_golden_id(std::uint32_t golden_id)
     {
@@ -632,8 +435,7 @@ class OpNode : public TaggedNode
 class PyOpNode : public OpNode
 {
    public:
-    PyOpNode(const std::string &name, const std::string &op_type) : OpNode(name, op_type, NodeType::kPyOp) {}
-    PyOpNode(const std::string &name, OpType op_type) : OpNode(name, op_type, NodeType::kPyOp) {}
+    PyOpNode(const std::string &name, ops::Op op) : OpNode(name, op, NodeType::kPyOp) {}
     virtual std::unique_ptr<Node> clone(std::string const &name = "") const override;
 
     void copy_parent_op_attributes(PyOpNode *node);
@@ -645,7 +447,7 @@ class EdgeAttributes
 {
    private:
     EdgeType edge_type_;
-    std::vector<OpType> tms;
+    std::vector<ops::Op> tms;
     UBlockOrder ublock_order = UBlockOrder::R;
 
    public:
@@ -656,23 +458,19 @@ class EdgeAttributes
     void clear_broadcast_dims();
     void set_broadcast_dim(int dim, int size_or_factor, bool explicit_bcast = false)
     {
-        tms.push_back(
-            OpType("broadcast", {}, {{"dim", dim}, {"size", size_or_factor}, {"explicit_bcast", explicit_bcast}}));
+        tms.push_back(ops::Op(
+            ops::OpType::Broadcast, {{"dim", dim}, {"size", size_or_factor}, {"explicit_bcast", explicit_bcast}}));
     }
     void remove_broadcast_dim(int dim);
     inline UBlockOrder get_ublock_order() const { return ublock_order; }
     inline void set_ublock_order(UBlockOrder new_ublock_order) { ublock_order = new_ublock_order; }
-    void append_tm(OpType type) { tms.push_back(type); }
-    void set_tms(std::vector<OpType> new_tms) { tms = new_tms; }
-    void append_tms(std::vector<OpType> new_tms) { tms.insert(tms.end(), new_tms.begin(), new_tms.end()); }
-    void prepend_tm(std::string op_type, std::vector<OpType::Attr> attrs)
-    {
-        tms.insert(tms.begin(), OpType(op_type, attrs));
-    }
-    void prepend_tm(OpType type) { tms.insert(tms.begin(), type); }
+    void append_tm(ops::Op type) { tms.push_back(type); }
+    void set_tms(std::vector<ops::Op> new_tms) { tms = new_tms; }
+    void append_tms(std::vector<ops::Op> new_tms) { tms.insert(tms.end(), new_tms.begin(), new_tms.end()); }
+    void prepend_tm(ops::Op type) { tms.insert(tms.begin(), type); }
 
-    const std::vector<OpType> &get_tms() const { return tms; }
-    std::vector<OpType> &get_tms() { return tms; }
+    const std::vector<ops::Op> &get_tms() const { return tms; }
+    std::vector<ops::Op> &get_tms() { return tms; }
 
     // Copy values from another edge attributes
     void copy_from(const EdgeAttributes &other)
@@ -751,7 +549,7 @@ bool op_type_is_accumulate(const std::string &type);
 
 std::ostream &operator<<(std::ostream &out, const NodeType &opcode);
 std::ostream &operator<<(std::ostream &out, InputNodeType t);
-std::ostream &operator<<(std::ostream &out, const OpType &op_type);
+std::ostream &operator<<(std::ostream &out, const ops::Op &op_type);
 std::ostream &operator<<(std::ostream &out, const UBlockOrder &ublock_order);
 
 inline std::string to_string(InputNodeType t)
@@ -774,12 +572,12 @@ inline std::string to_string(InputNodeType t)
 }  // namespace tt
 
 template <>
-struct fmt::formatter<tt::graphlib::OpType> : fmt::formatter<std::string_view>
+struct fmt::formatter<tt::ops::Op> : fmt::formatter<std::string_view>
 {
-    inline auto format(const tt::graphlib::OpType &op_type, fmt::format_context &ctx) const -> decltype(ctx.out())
+    inline auto format(const tt::ops::Op &op, fmt::format_context &ctx) const -> decltype(ctx.out())
     {
         std::ostringstream oss;
-        oss << op_type;
+        oss << op;
         return fmt::formatter<std::string_view>::format(oss.str(), ctx);
     }
 };

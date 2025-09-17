@@ -18,17 +18,17 @@ namespace tt
 
 // TODO: move tags to a vector of enums
 NodeContext DecomposingContext::op(
-    graphlib::OpType const &op_type,
+    ops::Op const &op,
     std::vector<NodeContext> const &operands,
     bool copy_tms,
     bool dont_decompose,
     bool optimize_hoist,
     DataFormat output_df)
 {
-    std::string suffix = ".dc." + op_type.name() + "." + std::to_string(op_index);
+    std::string suffix = ".dc." + op.as_string() + "." + std::to_string(op_index);
 
     graphlib::PyOpNode *new_node = this->graph->add_node(
-        graphlib::create_node<graphlib::PyOpNode>(this->node_->name() + suffix, op_type), subgraph_idx);
+        graphlib::create_node<graphlib::PyOpNode>(this->node_->name() + suffix, op), subgraph_idx);
 
     if (dont_decompose)
     {
@@ -57,7 +57,7 @@ NodeContext DecomposingContext::op(
     std::vector<std::vector<std::uint32_t>> operand_tuples;
     for (NodeContext const &op_node : operands) operand_tuples.push_back(op_node.shape.as_vector());
 
-    auto ret = op_type.shape(operand_tuples);
+    auto ret = op.shape(operand_tuples);
     graphlib::Shape shape = std::get<0>(ret);
     std::vector<graphlib::DimBroadcast> broadcasts = std::get<1>(ret);
 
@@ -231,7 +231,7 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_tt_forge_gr
 
             graphlib::PyOpNode *py_node = node->as<graphlib::PyOpNode>();
 
-            graphlib::OpType op = py_node->op_type();
+            ops::Op op = py_node->op();
             if (py_node->as<graphlib::TaggedNode>()->has_tag("dont_decompose"))
             {
                 continue;

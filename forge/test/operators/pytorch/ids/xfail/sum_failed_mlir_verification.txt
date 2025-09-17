@@ -1,4 +1,4 @@
-# xfail_sum_NOT_IMPLEMENTED ids
+# xfail_sum_FAILED_MLIR_VERIFICATION ids
 
 sum-FROM_ANOTHER_OP-None-(1, 3, 4)-None-None
 sum-FROM_ANOTHER_OP-None-(1, 45, 17)-None-None

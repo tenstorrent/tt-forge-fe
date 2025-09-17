@@ -32,7 +32,7 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
 
     // Create reshape: (2, 12) -> (2, 2, 6)
     auto reshape_node = add_node<graphlib::PyOpNode>(
-        *graph, "reshape", graphlib::OpType("reshape", {}, {{"shape", std::vector{2, 2, 6}}}), {input_node});
+        *graph, "reshape", ops::Op(ops::OpType::Reshape, {{"shape", std::vector{2, 2, 6}}}), {input_node});
 
     reshape_node->set_shape(graphlib::Shape::create({2, 2, 6}));
 
@@ -40,24 +40,24 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
     auto index1_node = add_node<graphlib::PyOpNode>(
         *graph,
         "index1",
-        graphlib::OpType("index", {}, {{"dim", 1}, {"start", 0}, {"stop", 1}, {"stride", 1}}),
+        ops::Op(ops::OpType::Index, {{"dim", 1}, {"start", 0}, {"stop", 1}, {"stride", 1}}),
         {reshape_node});
     index1_node->set_shape(graphlib::Shape::create({2, 1, 6}));
 
     auto index2_node = add_node<graphlib::PyOpNode>(
         *graph,
         "index2",
-        graphlib::OpType("index", {}, {{"dim", 1}, {"start", 1}, {"stop", 2}, {"stride", 1}}),
+        ops::Op(ops::OpType::Index, {{"dim", 1}, {"start", 1}, {"stop", 2}, {"stride", 1}}),
         {reshape_node});
     index2_node->set_shape(graphlib::Shape::create({2, 1, 6}));
 
     // Create squeeze operations
     auto squeeze1_node = add_node<graphlib::PyOpNode>(
-        *graph, "squeeze1", graphlib::OpType("reshape", {}, {{"shape", std::vector{2, 6}}}), {index1_node});
+        *graph, "squeeze1", ops::Op(ops::OpType::Reshape, {{"shape", std::vector{2, 6}}}), {index1_node});
     squeeze1_node->set_shape(graphlib::Shape::create({2, 6}));
 
     auto squeeze2_node = add_node<graphlib::PyOpNode>(
-        *graph, "squeeze2", graphlib::OpType("reshape", {}, {{"shape", std::vector{2, 6}}}), {index2_node});
+        *graph, "squeeze2", ops::Op(ops::OpType::Reshape, {{"shape", std::vector{2, 6}}}), {index2_node});
     squeeze2_node->set_shape(graphlib::Shape::create({2, 6}));
 
     // Create outputs
@@ -71,7 +71,7 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
         if (node->node_type() == graphlib::kPyOp)
         {
             auto op_node = node->as<graphlib::PyOpNode>();
-            if (op_node->new_op_type() == ops::OpType::Index)
+            if (op_node->op_type() == ops::OpType::Index)
                 index_count_before++;
         }
     }
@@ -94,7 +94,7 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
         if (node->node_type() == graphlib::kPyOp)
         {
             auto op_node = node->as<graphlib::PyOpNode>();
-            if (op_node->new_op_type() == ops::OpType::Index)
+            if (op_node->op_type() == ops::OpType::Index)
                 index_count_after++;
         }
     }
@@ -106,7 +106,7 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
         if (node->node_type() == graphlib::kPyOp)
         {
             auto op_node = node->as<graphlib::PyOpNode>();
-            if (op_node->new_op_type() == ops::OpType::Index)
+            if (op_node->op_type() == ops::OpType::Index)
             {
                 // Check connection to input
                 auto operands = graph->operands(node);
@@ -114,13 +114,10 @@ TEST_F(DecomposeNdReshapeSplitTest, basic_dimension_split_optimization)
                 EXPECT_EQ(operands[0]->name(), "input") << "Index should connect directly to input";
 
                 // Check attributes
-                auto attrs = op_node->op_legacy_attrs();
-                EXPECT_EQ(attrs.size(), 4) << "Index should have 4 attributes";
-
-                int dim = std::get<int>(attrs[0]);
-                int start = std::get<int>(attrs[1]);
-                int stop = std::get<int>(attrs[2]);
-                int stride = std::get<int>(attrs[3]);
+                int dim = op_node->op_attr_as<int>("dim");
+                int start = op_node->op_attr_as<int>("start");
+                int stop = op_node->op_attr_as<int>("stop");
+                int stride = op_node->op_attr_as<int>("stride");
 
                 EXPECT_EQ(dim, 1) << "Index should operate on dimension 1";
                 EXPECT_EQ(stop - start, 6) << "Index slice size should be 6";
@@ -139,7 +136,7 @@ TEST_F(DecomposeNdReshapeSplitTest, invalid_cases_should_be_skipped)
     // Rank change > 1 (should be skipped)
     auto input1 = create_input(*graph, "input1", graphlib::Shape::create({2, 12}));
     auto reshape1 = add_node<graphlib::PyOpNode>(
-        *graph, "reshape1", graphlib::OpType("reshape", {}, {{"shape", std::vector{2, 2, 2, 3}}}), {input1});
+        *graph, "reshape1", ops::Op(ops::OpType::Reshape, {{"shape", std::vector{2, 2, 2, 3}}}), {input1});
     reshape1->set_shape(graphlib::Shape::create({2, 2, 2, 3}));
     create_output(*graph, "out1", reshape1);
 
