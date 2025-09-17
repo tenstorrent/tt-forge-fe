@@ -123,6 +123,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_yolo_v4_default_obj_det_github"], "pcc": 0.99},
     ),
     (Tanh0, [((1, 512, 15, 20), torch.float32)], {"model_names": ["onnx_yolo_v4_default_obj_det_github"], "pcc": 0.99}),
+    (Tanh0, [((1, 256, 2), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
 ]
 
 

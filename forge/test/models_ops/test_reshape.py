@@ -16455,6 +16455,240 @@ class Reshape1825(ForgeModule):
         return reshape_output_1
 
 
+class Reshape1826(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(44, 3072))
+        return reshape_output_1
+
+
+class Reshape1827(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 44, 24, 128))
+        return reshape_output_1
+
+
+class Reshape1828(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 44, 3072))
+        return reshape_output_1
+
+
+class Reshape1829(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(24, 44, 128))
+        return reshape_output_1
+
+
+class Reshape1830(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 44, 8, 128))
+        return reshape_output_1
+
+
+class Reshape1831(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 24, 44, 44))
+        return reshape_output_1
+
+
+class Reshape1832(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(24, 44, 44))
+        return reshape_output_1
+
+
+class Reshape1833(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 24, 44, 128))
+        return reshape_output_1
+
+
+class Reshape1834(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 44, 8192))
+        return reshape_output_1
+
+
+class Reshape1835(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(24, 768))
+        return reshape_output_1
+
+
+class Reshape1836(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 24, 12, 64))
+        return reshape_output_1
+
+
+class Reshape1837(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 24, 768))
+        return reshape_output_1
+
+
+class Reshape1838(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(12, 24, 64))
+        return reshape_output_1
+
+
+class Reshape1839(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 12, 24, 64))
+        return reshape_output_1
+
+
+class Reshape1840(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 12, 24, 24))
+        return reshape_output_1
+
+
+class Reshape1841(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(12, 24, 24))
+        return reshape_output_1
+
+
+class Reshape1842(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 12, 1, 24))
+        return reshape_output_1
+
+
+class Reshape1843(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(12, 1, 24))
+        return reshape_output_1
+
+
+class Reshape1844(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 2, 80))
+        return reshape_output_1
+
+
+class Reshape1845(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 80, 2, 1))
+        return reshape_output_1
+
+
+class Reshape1846(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(256, 80, 5, 1))
+        return reshape_output_1
+
+
+class Reshape1847(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 256, 2))
+        return reshape_output_1
+
+
+class Reshape1848(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 256, 2, 1))
+        return reshape_output_1
+
+
+class Reshape1849(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(256, 256, 5, 1))
+        return reshape_output_1
+
+
+class Reshape1850(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(80, 256, 5, 1))
+        return reshape_output_1
+
+
+class Reshape1851(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 80, 2))
+        return reshape_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -24050,6 +24284,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf",
+                "pt_speecht5_tts_tts_text_to_speech_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 768)"},
@@ -24059,7 +24294,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reshape432,
         [((1, 1, 768), torch.float32)],
         {
-            "model_names": ["onnx_whisper_openai_whisper_small_speech_recognition_hf"],
+            "model_names": [
+                "onnx_whisper_openai_whisper_small_speech_recognition_hf",
+                "pt_speecht5_tts_tts_text_to_speech_hf",
+            ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1, 12, 64)"},
         },
@@ -33227,7 +33465,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reshape1101,
         [((1, 768), torch.float32)],
         {
-            "model_names": ["onnx_whisper_openai_whisper_small_speech_recognition_hf"],
+            "model_names": [
+                "onnx_whisper_openai_whisper_small_speech_recognition_hf",
+                "pt_speecht5_tts_tts_text_to_speech_hf",
+            ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1, 768)"},
         },
@@ -33245,7 +33486,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reshape1102,
         [((1, 12, 1, 64), torch.float32)],
         {
-            "model_names": ["onnx_whisper_openai_whisper_small_speech_recognition_hf"],
+            "model_names": [
+                "onnx_whisper_openai_whisper_small_speech_recognition_hf",
+                "pt_speecht5_tts_tts_text_to_speech_hf",
+            ],
             "pcc": 0.99,
             "args": {"shape": "(12, 1, 64)"},
         },
@@ -33254,7 +33498,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reshape1103,
         [((12, 1, 64), torch.float32)],
         {
-            "model_names": ["onnx_whisper_openai_whisper_small_speech_recognition_hf"],
+            "model_names": [
+                "onnx_whisper_openai_whisper_small_speech_recognition_hf",
+                "pt_speecht5_tts_tts_text_to_speech_hf",
+            ],
             "pcc": 0.99,
             "args": {"shape": "(1, 12, 1, 64)"},
         },
@@ -33263,7 +33510,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reshape431,
         [((1, 1, 12, 64), torch.float32)],
         {
-            "model_names": ["onnx_whisper_openai_whisper_small_speech_recognition_hf"],
+            "model_names": [
+                "onnx_whisper_openai_whisper_small_speech_recognition_hf",
+                "pt_speecht5_tts_tts_text_to_speech_hf",
+            ],
             "pcc": 0.99,
             "args": {"shape": "(1, 768)"},
         },
@@ -42193,6 +42443,177 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {"shape": "(6, 101, 1500)"},
         },
+    ),
+    (
+        Reshape1826,
+        [((1, 44, 3072), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(44, 3072)"}},
+    ),
+    (
+        Reshape1827,
+        [((44, 3072), torch.float32)],
+        {
+            "model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 44, 24, 128)"},
+        },
+    ),
+    (
+        Reshape1828,
+        [((44, 3072), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 44, 3072)"}},
+    ),
+    (
+        Reshape1829,
+        [((1, 24, 44, 128), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(24, 44, 128)"}},
+    ),
+    (
+        Reshape1830,
+        [((44, 1024), torch.float32)],
+        {
+            "model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 44, 8, 128)"},
+        },
+    ),
+    (
+        Reshape1829,
+        [((1, 8, 3, 44, 128), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(24, 44, 128)"}},
+    ),
+    (
+        Reshape1831,
+        [((24, 44, 44), torch.float32)],
+        {
+            "model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 24, 44, 44)"},
+        },
+    ),
+    (
+        Reshape1832,
+        [((1, 24, 44, 44), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(24, 44, 44)"}},
+    ),
+    (
+        Reshape1833,
+        [((24, 44, 128), torch.float32)],
+        {
+            "model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 24, 44, 128)"},
+        },
+    ),
+    (
+        Reshape1826,
+        [((1, 44, 24, 128), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(44, 3072)"}},
+    ),
+    (
+        Reshape1834,
+        [((44, 8192), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 44, 8192)"}},
+    ),
+    (
+        Reshape1057,
+        [((1, 1, 256), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(1, 256)"}},
+    ),
+    (
+        Reshape1835,
+        [((1, 24, 768), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(24, 768)"}},
+    ),
+    (
+        Reshape1836,
+        [((1, 24, 768), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(1, 24, 12, 64)"}},
+    ),
+    (
+        Reshape1837,
+        [((24, 768), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(1, 24, 768)"}},
+    ),
+    (
+        Reshape1838,
+        [((1, 12, 24, 64), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(12, 24, 64)"}},
+    ),
+    (
+        Reshape1838,
+        [((12, 24, 64), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(12, 24, 64)"}},
+    ),
+    (
+        Reshape1839,
+        [((12, 24, 64), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(1, 12, 24, 64)"}},
+    ),
+    (
+        Reshape1840,
+        [((12, 24, 24), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(1, 12, 24, 24)"}},
+    ),
+    (
+        Reshape1841,
+        [((1, 12, 24, 24), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(12, 24, 24)"}},
+    ),
+    (
+        Reshape1835,
+        [((1, 24, 12, 64), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(24, 768)"}},
+    ),
+    (
+        Reshape1842,
+        [((12, 1, 24), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(1, 12, 1, 24)"}},
+    ),
+    (
+        Reshape1843,
+        [((1, 12, 1, 24), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(12, 1, 24)"}},
+    ),
+    (
+        Reshape1844,
+        [((1, 1, 160), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(1, 2, 80)"}},
+    ),
+    (
+        Reshape1845,
+        [((1, 80, 2), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(1, 80, 2, 1)"}},
+    ),
+    (
+        Reshape1846,
+        [((256, 80, 5), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(256, 80, 5, 1)"}},
+    ),
+    (
+        Reshape1847,
+        [((1, 256, 2, 1), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(1, 256, 2)"}},
+    ),
+    (
+        Reshape1848,
+        [((1, 256, 2), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(1, 256, 2, 1)"}},
+    ),
+    (
+        Reshape1849,
+        [((256, 256, 5), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(256, 256, 5, 1)"}},
+    ),
+    (
+        Reshape1850,
+        [((80, 256, 5), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(80, 256, 5, 1)"}},
+    ),
+    (
+        Reshape1851,
+        [((1, 80, 2, 1), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99, "args": {"shape": "(1, 80, 2)"}},
     ),
 ]
 

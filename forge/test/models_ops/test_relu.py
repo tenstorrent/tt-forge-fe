@@ -10398,6 +10398,77 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (Relu0, [((1, 61, 4096), torch.float32)], {"model_names": ["pt_t5_t5_large_text_gen_hf"], "pcc": 0.99}),
     (Relu0, [((1, 513, 4096), torch.float32)], {"model_names": ["pt_t5_t5_large_text_gen_hf"], "pcc": 0.99}),
+    (Relu0, [((1, 1, 256), torch.float32)], {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99}),
+    (
+        Relu0,
+        [((1, 64, 608, 784), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Relu0,
+        [((1, 64, 304, 392), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Relu0,
+        [((1, 256, 304, 392), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Relu0,
+        [((1, 128, 304, 392), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Relu0,
+        [((1, 128, 152, 196), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Relu0,
+        [((1, 512, 152, 196), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Relu0,
+        [((1, 256, 152, 196), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Relu0,
+        [((1, 256, 76, 98), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Relu0,
+        [((1, 1024, 76, 98), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Relu0,
+        [((1, 512, 76, 98), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Relu0,
+        [((1, 512, 38, 49), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Relu0,
+        [((1, 2048, 38, 49), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Relu0,
+        [((1, 32, 608, 784), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
+    (
+        Relu0,
+        [((1, 16, 1216, 1568), torch.bfloat16)],
+        {"model_names": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "default_df_override": "Float16_b"},
+    ),
 ]
 
 

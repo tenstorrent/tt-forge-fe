@@ -10,6 +10,7 @@ from forge.forge_property_utils import (
     Framework,
     ModelArch,
     ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -93,8 +94,10 @@ def test_falcon_3(variant):
         ModelVariant.FALCON_10B,
     ]:
         group = ModelGroup.RED
+        priority = ModelPriority.P1
     else:
         group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -104,6 +107,7 @@ def test_falcon_3(variant):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=group,
+        priority=priority,
     )
 
     if variant != ModelVariant.FALCON_1B:

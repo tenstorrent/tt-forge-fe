@@ -55,8 +55,7 @@ def test_albert_masked_lm_onnx(size, variant, forge_tmp_path):
 
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AlbertTokenizer.from_pretrained, model_ckpt)
-    framework_model = download_model(AlbertForMaskedLM.from_pretrained, model_ckpt, return_dict=False)
-
+    framework_model_pytorch = download_model(AlbertForMaskedLM.from_pretrained, model_ckpt, return_dict=False)
     # Load data sample
     sample_text = "The capital of France is [MASK]."
 
@@ -74,7 +73,7 @@ def test_albert_masked_lm_onnx(size, variant, forge_tmp_path):
     # Export to ONNX
     onnx_path = f"{forge_tmp_path}/{variant}.onnx"
     torch.onnx.export(
-        framework_model,
+        framework_model_pytorch,
         tuple(inputs),
         onnx_path,
         input_names=["input_ids", "attention_mask"],
@@ -101,10 +100,11 @@ def test_albert_masked_lm_onnx(size, variant, forge_tmp_path):
         compiled_model,
     )
 
-    # post processing
     predicted_token_class_ids = co_out[0].argmax(-1)
-    predicted_token_class_ids = torch.masked_select(predicted_token_class_ids, (input_tokens["attention_mask"][0] == 1))
-    predicted_tokens_classes = [framework_model.config.id2label[t.item()] for t in predicted_token_class_ids]
+    predicted_token_class_ids = torch.masked_select(predicted_token_class_ids, input_tokens["attention_mask"][0] == 1)
+
+    # Decode into readable text
+    predicted_text = tokenizer.decode(predicted_token_class_ids.tolist(), skip_special_tokens=True)
 
     print(f"Context: {sample_text}")
-    print(f"Answer: {predicted_tokens_classes}")
+    print(f"Answer: {predicted_text}")
