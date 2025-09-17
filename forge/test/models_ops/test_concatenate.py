@@ -23777,6 +23777,61 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"axis": "-1"},
         },
     ),
+    (
+        Concatenate7,
+        [((1, 44, 64), torch.float32), ((1, 44, 64), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99, "args": {"axis": "-1"}},
+    ),
+    (
+        Concatenate7,
+        [((1, 24, 44, 64), torch.float32), ((1, 24, 44, 64), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99, "args": {"axis": "-1"}},
+    ),
+    (
+        Concatenate7,
+        [((1, 8, 44, 64), torch.float32), ((1, 8, 44, 64), torch.float32)],
+        {"model_names": ["pt_cogito_v1_preview_llama_3b_text_gen_hf"], "pcc": 0.99, "args": {"axis": "-1"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 2048, 76, 98), torch.bfloat16), ((1, 1024, 76, 98), torch.bfloat16)],
+        {
+            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 256, 152, 196), torch.bfloat16), ((1, 512, 152, 196), torch.bfloat16)],
+        {
+            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 128, 304, 392), torch.bfloat16), ((1, 256, 304, 392), torch.bfloat16)],
+        {
+            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 64, 608, 784), torch.bfloat16), ((1, 64, 608, 784), torch.bfloat16)],
+        {
+            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
+            "pcc": 0.99,
+            "default_df_override": "Float16_b",
+            "args": {"axis": "-3"},
+        },
+    ),
 ]
 
 

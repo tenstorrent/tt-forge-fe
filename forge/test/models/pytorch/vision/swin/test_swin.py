@@ -21,6 +21,8 @@ from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
     ModelArch,
+    ModelGroup,
+    ModelPriority,
     Source,
     Task,
     record_model_properties,
@@ -127,6 +129,13 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_swin_torchvision(variant):
 
+    if variant == ModelVariant.SWIN_V2_S:
+        group = ModelGroup.RED
+        priority = ModelPriority.P1
+    else:
+        group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
+
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
@@ -134,6 +143,8 @@ def test_swin_torchvision(variant):
         variant=variant.value,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
+        group=group,
+        priority=priority,
     )
 
     # Load model and input using ModelLoader

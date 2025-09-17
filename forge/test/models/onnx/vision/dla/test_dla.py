@@ -1,39 +1,46 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
-
 # SPDX-License-Identifier: Apache-2.0
-import onnx
-import os
-import requests
-import pytest
-import torchvision.transforms as transforms
-from datasets import load_dataset
 
-from test.models.pytorch.vision.dla.model_utils.utils import post_processing
+import pytest
+import torch
+import os
+from third_party.tt_forge_models.dla.pytorch import ModelLoader, ModelVariant
+import onnx
+
 import forge
-from forge.verify.verify import verify
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
-from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
+from forge.verify.verify import verify
 
 
 variants = [
-    "dla34",
-    "dla46_c",
-    "dla46x_c",
-    "dla60x_c",
-    "dla60",
-    "dla60x",
-    "dla102",
-    "dla102x",
-    "dla102x2",
-    "dla169",
+    ModelVariant.DLA34,
+    ModelVariant.DLA46_C,
+    ModelVariant.DLA46X_C,
+    ModelVariant.DLA60,
+    ModelVariant.DLA60X,
+    ModelVariant.DLA60X_C,
+    pytest.param(
+        ModelVariant.DLA102, marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2947")
+    ),
+    ModelVariant.DLA102X,
+    ModelVariant.DLA102X2,
+    pytest.param(
+        ModelVariant.DLA169, marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2947")
+    ),
 ]
 
 
-@pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
+@pytest.mark.parametrize("variant", variants)
 def test_dla_onnx(variant, tmp_path):
-
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
@@ -43,46 +50,38 @@ def test_dla_onnx(variant, tmp_path):
         source=Source.TORCHVISION,
     )
 
-    # Load data sample
-    dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
-    image = next(iter(dataset.skip(10)))["image"]
+    # Load model and input using tt_forge_models
+    loader = ModelLoader(variant=variant)
+    torch_model = loader.load_model()
+    input_tensor = loader.load_inputs()
+    inputs = [input_tensor]
 
-    # Preprocessing
-    transform = transforms.Compose(
-        [
-            transforms.Resize(256),
-            transforms.CenterCrop(224),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-        ]
-    )
-    img_tensor = transform(image).unsqueeze(0)
-    inputs = [img_tensor]
-
-    onnx_path = f"{tmp_path}/dla_{variant}_Opset18.onnx"
+    # Export ONNX
+    onnx_path = tmp_path / f"{variant}_exported.onnx"
     if not os.path.exists(onnx_path):
-        if not os.path.exists("dla"):
-            os.mkdir("dla")
-        url = f"https://github.com/onnx/models/raw/main/Computer_Vision/{variant}_Opset18_timm/{variant}_Opset18.onnx?download="
-        response = requests.get(url, stream=True)
-        with open(onnx_path, "wb") as f:
-            f.write(response.content)
+        torch.onnx.export(
+            torch_model,
+            input_tensor,
+            onnx_path,
+            input_names=["input"],
+            output_names=["output"],
+            opset_version=18,
+            dynamic_axes={"input": {0: "batch"}, "output": {0: "batch"}},
+        )
 
-    # Load DLA model
-    model_name = f"dla_{variant}_onnx"
-    onnx_model = onnx.load(onnx_path)
-    onnx.checker.check_model(onnx_model)
+    # Load exported ONNX model
+    model_name = f"onnx_dla_{variant}"
+    onnx_model = onnx.load(str(onnx_path))
     framework_model = forge.OnnxModule(model_name, onnx_model)
 
-    # Forge compile framework model
-    compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
+    # Compile
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Adjust verify config for known numerical sensitivity
     verify_cfg = VerifyConfig()
-    if variant == "dla102x2":
-        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
 
-    # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+    # Verify
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
-    # post processing
-    post_processing(co_out)
+    # Post-processing
+    loader.print_cls_results(co_out)

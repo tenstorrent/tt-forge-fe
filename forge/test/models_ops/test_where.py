@@ -189,6 +189,16 @@ class Where15(ForgeModule):
         return where_output_1
 
 
+class Where16(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("where16_const_2", shape=(1,), dtype=torch.float32)
+
+    def forward(self, where_input_0, where_input_1):
+        where_output_1 = forge.op.Where("", where_input_0, where_input_1, self.get_constant("where16_const_2"))
+        return where_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -677,6 +687,11 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "default_df_override": "Float16_b",
         },
+    ),
+    (
+        Where16,
+        [((1, 1, 256), torch.bool), ((1, 1, 256), torch.float32)],
+        {"model_names": ["pt_speecht5_tts_tts_text_to_speech_hf"], "pcc": 0.99},
     ),
 ]
 
