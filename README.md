@@ -69,4 +69,4 @@ This repo is a part of Tenstorrent’s bounty program. If you are interested in 
 [deepwiki]: https://deepwiki.com/tenstorrent/tt-forge-fe
 [codecov badge]: https://codecov.io/gh/tenstorrent/tt-forge-fe/graph/badge.svg
 [tests badge]: https://github.com/tenstorrent/tt-forge-fe/actions/workflows/on-push.yml/badge.svg?query=branch%3Amain
-[deepwiki badge]: https:/deepwiki.com/badge.svg
+[deepwiki badge]: https://deepwiki.com/badge.svg
