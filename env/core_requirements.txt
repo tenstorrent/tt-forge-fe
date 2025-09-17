@@ -10,7 +10,7 @@ decorator==5.1.1
 flatbuffers==24.3.25
 # This is needed to prevent AttributeError: module 'ml_dtypes' has no attribute 'float8_e4m3b11'
 flax>=0.10.6
-jax==0.7.0
+jax==0.7.1
 loguru==0.5.3
 networkx==2.8.5
 numpy==1.26.4
