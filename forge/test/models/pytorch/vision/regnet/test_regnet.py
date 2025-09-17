@@ -99,7 +99,7 @@ def test_regnet_torchvision(variant):
         source=Source.TORCHVISION,
     )
     if variant == ModelVariant.Y_128GF:
-        pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2888")
+        pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2949")
 
     # Load model and inputs
     loader = ModelLoader(variant=variant)

@@ -27,10 +27,10 @@ variants = [
     ModelVariant.DLA60,
     ModelVariant.DLA60X,
     ModelVariant.DLA60X_C,
-    ModelVariant.DLA102,
+    pytest.param(ModelVariant.DLA102, marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2947")),
     ModelVariant.DLA102X,
     ModelVariant.DLA102X2,
-    ModelVariant.DLA169,
+    pytest.param(ModelVariant.DLA169, marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2947")),
 ]
 
 

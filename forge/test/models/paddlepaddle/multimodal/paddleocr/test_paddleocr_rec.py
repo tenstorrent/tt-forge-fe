@@ -34,7 +34,7 @@ os.makedirs(cache_dir, exist_ok=True)
 
 @pytest.mark.nightly
 @pytest.mark.xfail(variant in ["v4_rec_ch", "v0_rec_ch"] for variant, urls in model_urls.items())(
-    reason="https://github.com/tenstorrent/tt-forge-fe/issues/2888"
+    reason="https://github.com/tenstorrent/tt-forge-fe/issues/2948"
 )
 @pytest.mark.parametrize(
     "variant,url",
