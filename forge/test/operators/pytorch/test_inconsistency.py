@@ -16,10 +16,10 @@ import pytest
 from loguru import logger
 from typing import List
 
-from test.operators.utils import DeviceUtils
-from test.operators.utils import TestVector
-from test.operators.utils import TestCollection
-from test.operators.utils import TestQuery
+from ..utils.frontend.forge.provider import DeviceUtils
+from ..utils import TestVector
+from ..utils import TestCollection
+from ..utils import TestQuery
 
 from .test_all import TestSuiteData
 from .test_all import TestQueries
