@@ -3,6 +3,10 @@ This document walks you through how to set up TT-Forge-FE using a Docker image. 
 * [Installing a Wheel](getting_started.md) - if you do not want to use Docker, and prefer to use a virtual environment by itself instead, use this method.
 * [Building from Source](getting_started_build_from_source.md) - if you plan to develop TT-Forge-FE further, you must build from source, and should use this method.
 
+> **NOTE:** TT-Forge-FE is a framework agnostic frontend that can convert any model to a generic
+> Intermediate Representation (IR) that can then be converted to a Tenstorrent specific IR for use with
+> Tenstorrent hardware. TT-Forge-FE is for use with single-chip systems only.
+
 The following topics are covered:
 
 * [Configuring Hardware](#configuring-hardware)

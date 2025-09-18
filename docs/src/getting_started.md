@@ -1,5 +1,9 @@
 # Getting Started
-This document walks you through how to set up TT-Forge-FE. TT-Forge-FE is a framework agnostic frontend that can convert any model to a generic Intermediate Representation (IR) that can then be converted to a Tenstorrent specific IR for use with Tenstorrent hardware. This is the main Getting Started page. There are two additional Getting Started pages depending on what you want to do. They are all described here, with links provided to each.
+This document walks you through how to set up TT-Forge-FE. This is the main Getting Started page. There are two additional Getting Started pages depending on what you want to do. They are all described here, with links provided to each.
+
+> **NOTE:** TT-Forge-FE is a framework agnostic frontend  that can convert any model to a generic
+> Intermediate Representation (IR) that can then be converted to a Tenstorrent specific IR for use with
+> Tenstorrent hardware. TT-Forge-FE is for use with single-chip systems only.
 
 The following topics are covered:
 
