@@ -9,6 +9,7 @@ from third_party.tt_forge_models.llava.pytorch import (
 from third_party.tt_forge_models.llava.pytorch import (
     ModelVariant as ConditionalGenModelVariant,
 )
+from transformers import AutoProcessor
 
 import forge
 from forge.forge_property_utils import (
@@ -21,6 +22,7 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
+from PIL import Image
 
 
 class Wrapper(torch.nn.Module):
@@ -39,9 +41,10 @@ LLAVA_VARIANTS = [
 ]
 
 
+@pytest.mark.crash_test
 @pytest.mark.out_of_memory
 @pytest.mark.nightly
-@pytest.mark.xfail
+# @pytest.mark.xfail
 @pytest.mark.parametrize("variant", LLAVA_VARIANTS)
 def test_llava(variant):
 
@@ -62,9 +65,29 @@ def test_llava(variant):
     framework_model = loader.load_model()
     framework_model = Wrapper(framework_model)
 
+    # Build prompt
+    conversation = [
+        {
+            "role": "user",
+            "content": [
+                {"type": "image"},
+                {"type": "text", "text": "What’s shown in this image?"}],
+        }
+    ]
+    processor = AutoProcessor.from_pretrained("llava-hf/llava-1.5-7b-hf")
+    text_prompt = processor.apply_chat_template(
+        conversation, padding=True, add_generation_prompt=True
+    )
+    image = Image.open('forge/test/models/pytorch/multimodal/llava/australia.jpg')
+    # Preprocess
+    inputs = processor(images=image, text=text_prompt, return_tensors="pt")
+
+    input_ids = inputs["input_ids"]
+    attention_mask = inputs["attention_mask"]
+    pixel_values = inputs["pixel_values"]
+
     # Input sample
-    inputs = loader.load_inputs()
-    inputs = [inputs["input_ids"], inputs["attention_mask"], inputs["pixel_values"]]
+    inputs = [input_ids, attention_mask, pixel_values]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
