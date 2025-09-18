@@ -8,7 +8,7 @@
 import math
 import torch
 
-from test.operators.utils import TensorUtils
+from ...utils import TensorUtils
 
 
 class ModelFromAnotherOp(torch.nn.Module):
