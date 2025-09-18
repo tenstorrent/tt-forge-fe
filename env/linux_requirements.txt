@@ -1,7 +1,7 @@
 # First include all requirements from the Distribution build
 -r core_requirements.txt
 
-clang-format==14.0.3
+clang-format==18.1.7
 diffusers==0.32.1
 pytest==6.2.4
 pytest-timeout==2.0.1
