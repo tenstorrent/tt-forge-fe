@@ -78,7 +78,7 @@ def test_gemma_pytorch_v2(variant):
     )
     if variant == CausalLMVariant.GEMMA_2_9B_IT:
         pytest.xfail(reason="Requires multi-chip support")
-    elif variant == "google/gemma-2-2b-it":
+    elif variant == CausalLMVariant.GEMMA_2_2B_IT:
         pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2844")
 
     # Load model and input via loader

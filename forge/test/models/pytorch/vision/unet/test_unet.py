@@ -91,6 +91,7 @@ def test_unet_torchhub_pytorch():
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
     )
+    pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2956")
 
     loader = ModelLoader(variant=ModelVariant.TORCHHUB_BRAIN_UNET)
     framework_model = loader.load_model(dtype_override=torch.bfloat16)
