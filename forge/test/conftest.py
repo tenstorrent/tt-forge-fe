@@ -664,6 +664,25 @@ def pytest_collection_modifyitems(config, items):
             for n in nodeids:
                 print(n)
 
+    for item in items:
+        callspec = getattr(item, "callspec", None)
+        if not callspec:
+            continue
+
+        training_val = callspec.params.get("training_test", None)
+
+        # xfail_if_models_ops_training
+        marker = item.get_closest_marker("xfail_if_models_ops_training")
+        if marker and training_val is True:
+            reason = marker.kwargs.get("reason", "no reason")
+            item.add_marker(pytest.mark.xfail(reason=reason))
+
+        # skip_if_models_ops_training
+        marker = item.get_closest_marker("skip_if_models_ops_training")
+        if marker and training_val is True:
+            reason = marker.kwargs.get("reason", "no reason")
+            item.add_marker(pytest.mark.skip(reason=reason))
+
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_call(item):
