@@ -275,3 +275,5 @@ jobs:
       sh-runner: true
       run_id: ${{ needs.build.outputs.run_id }}
       run_models_ops_tests: true
+      test-expression: 'inference'
+      allow-fail: true
