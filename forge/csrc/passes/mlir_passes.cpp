@@ -97,7 +97,7 @@ void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module, const std::
         output == MLIROutputKind::Flatbuffer || output == MLIROutputKind::Cpp || output == MLIROutputKind::SharedObject,
         "Handling only Flatbuffer and Cpp output correctly.");
 
-    const char* pipeline_name;
+    const char *pipeline_name;
     if constexpr (output == MLIROutputKind::Flatbuffer)
     {
         pipeline_name = "ttir-to-ttnn-backend-pipeline";
@@ -106,7 +106,7 @@ void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module, const std::
     {
         pipeline_name = "ttir-to-emitc-pipeline";
     }
-    else // SharedObject
+    else  // SharedObject
     {
         pipeline_name = "ttir-to-emitc-pipeline";
     }
