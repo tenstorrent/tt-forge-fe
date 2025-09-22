@@ -40,7 +40,7 @@ void register_mlir_passes()
     (void)_;
 }
 
-std::string config_to_pipeline_options(const std::optional<MLIRConfig> &mlir_config, MLIROutputKind output)
+std::string config_to_pipeline_options(const std::optional<MLIRConfig> &mlir_config)
 {
     std::stringstream options{""};
 
@@ -72,12 +72,6 @@ std::string config_to_pipeline_options(const std::optional<MLIRConfig> &mlir_con
         }
         // Add custom configuration options.
         options << " " << mlir_config->custom_config;
-    }
-
-    // Add target-dylib flag for SharedObject output
-    if (output == MLIROutputKind::SharedObject)
-    {
-        options << " target-dylib=true";
     }
 
     return options.str();
@@ -121,7 +115,13 @@ void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module, const std::
     };
 
     // Pipeline options are empty for now.
-    std::string options{config_to_pipeline_options(mlir_config, output)};
+    std::string options{config_to_pipeline_options(mlir_config)};
+
+    // Add target-dylib flag for SharedObject output
+    if constexpr (output == MLIROutputKind::SharedObject)
+    {
+        options += " target-dylib=true";
+    }
 
     auto result = pipelineInfo->addToPipeline(pm, options, err_handler);
     if (mlir::failed(result))
