@@ -32,6 +32,8 @@ def test_vgg19_unet():
         variant="default",
         task=Task.SEMANTIC_SEGMENTATION,
         source=Source.GITHUB,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
     pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2888")
 

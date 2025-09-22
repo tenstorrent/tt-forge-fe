@@ -88,8 +88,6 @@ def test_unet_torchhub_pytorch():
         model=ModelArch.UNET,
         source=Source.TORCH_HUB,
         task=Task.IMAGE_SEGMENTATION,
-        group=ModelGroup.RED,
-        priority=ModelPriority.P1,
     )
     pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2956")
 
