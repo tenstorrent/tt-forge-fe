@@ -36,6 +36,7 @@ class ErrorMessageUpdater:
         """
         fatal_error_message_list = [
             "Unsupported data type",
+            "Invalid input index",
         ]
         for line in lines:
             if "fatal" in line.lower():
@@ -133,6 +134,32 @@ def rename_marker(marker: str) -> str:
         return "xpass"
     else:
         return marker_lower
+
+
+def extract_test_kind(test_case: str) -> str:
+    """
+    Extract the test kind ('inference' or 'training') from a parameterized pytest test-case string.
+
+    The function expects `test_case` to contain a parameter block with square brackets where the
+    first segment before a hyphen indicates the test kind. For example:
+        "forge/test/models_ops/test_add.py::test_module[inference-Add0-...]"  -> "inference"
+        "forge/test/models_ops/test_avgpool1d.py::test_module[training-Avgpool1D0-...]" -> "training"
+
+    Args:
+        test_case (str): Full test-case identifier (typically the string printed by pytest that
+                         includes file path, function name and parameterization).
+
+    Returns:
+        str or None: The extracted test kind string ("inference" or "training") if present;
+                     otherwise `None` when the expected pattern is not found.
+    """
+    pattern = re.compile(r"\[([^-]+)-")
+    match = pattern.search(test_case)
+    test_kind = None
+    if match:
+        test_kind = match.group(1)
+        assert test_kind in ["inference", "training"], "Test Kind should be inference or training"
+    return test_kind
 
 
 def extract_unique_test_file_paths(test_cases: List[str]) -> set:
@@ -293,11 +320,11 @@ def extract_models_ops_test_params(file_path: str, return_marker_with_reason: bo
 
 def extract_test_cases_and_status(
     log_files: List[str], target_dirs: Optional[List[str]] = None, target_statuses: Optional[List[str]] = None
-) -> Dict[str, Dict[str, str]]:
+) -> Dict[str, Dict[str, Dict[str, str]]]:
     """
-    Extract test cases and their statuses from provided log files.
+    Extract test kind, test cases and their statuses from provided log files.
 
-    This function processes each log file and extracts test case names along with their statuses
+    This function processes each log file and extracts test case names along with their statuses and test kind
     using a regular expression pattern. It supports filtering by target directories paths and target statuses.
     The extraction halts upon encountering the "==== FAILURES ====" marker in a log file.
 
@@ -311,12 +338,12 @@ def extract_test_cases_and_status(
             Defaults to None, meaning no status filtering is applied.
 
     Returns:
-        Dict[str, Dict[str, str]]: A dictionary where keys are test statuses (e.g., 'PASSED', 'FAILED', 'SKIP', 'XFAIL')
-        and values are dictionaries mapping test case names (as strings) to their associated reason (as a string).
+        Dict[str, Dict[str, Dict[str, str]]]: A dictionary where keys are test kind and values are dictionaries mapping test statuses (e.g., 'PASSED', 'FAILED', 'SKIP', 'XFAIL')
+        to their associated test case names which is dictionaries that maps their associated reason (as a string).
         An empty string is used as a placeholder for the reason if none is provided.
     """
-    # Initialize a dictionary to map statuses to their corresponding test cases and reasons.
-    status_to_tests_and_reason = {}
+    # Initialize a dictionary to map test kind to their corresponding statuses which again maps to their corresponding test cases and reasons.
+    test_kind_to_status_to_tests_and_reason = {}
 
     # Compile a regular expression pattern to capture the test case and status from each line.
     # The pattern explanation:
@@ -340,9 +367,10 @@ def extract_test_cases_and_status(
                 # Attempt to match the line with the regex pattern.
                 match = pattern.match(line)
                 if match:
-                    # Extract the test case name and status from the regex match groups.
+                    # Extract the test case name, status and test kind from the regex match groups.
                     test_case = match.group(1).strip()
                     status = match.group(2).strip()
+                    test_kind = extract_test_kind(test_case)
 
                     # convert 'SKIPPED' to 'SKIP'.
                     if status == "SKIPPED":
@@ -354,12 +382,15 @@ def extract_test_cases_and_status(
                         # Filter by target statuses if provided.
                         # Include the test case if target_statuses is None or if the status is in the provided list.
                         if target_statuses is None or status in target_statuses:
-                            # If the status is already in the dictionary, add the test case to its inner dictionary.
-                            if status in status_to_tests_and_reason:
-                                status_to_tests_and_reason[status][test_case] = ""
+                            if test_kind in test_kind_to_status_to_tests_and_reason:
+                                # If the status is already in the dictionary, add the test case to its inner dictionary.
+                                if status in test_kind_to_status_to_tests_and_reason[test_kind]:
+                                    test_kind_to_status_to_tests_and_reason[test_kind][status][test_case] = ""
+                                else:
+                                    # Otherwise, create a new entry for this status with the test case.
+                                    test_kind_to_status_to_tests_and_reason[test_kind][status] = {test_case: ""}
                             else:
-                                # Otherwise, create a new entry for this status with the test case.
-                                status_to_tests_and_reason[status] = {test_case: ""}
+                                test_kind_to_status_to_tests_and_reason[test_kind] = {status: {test_case: ""}}
 
                 # Stop processing further lines once the failures section is reached.
                 if "==== FAILURES ====" in line:
@@ -368,12 +399,12 @@ def extract_test_cases_and_status(
             # Log a warning if the provided log file path does not exist.
             logger.warning(f"Provided path {log_file} does not exist!")
 
-    return status_to_tests_and_reason
+    return test_kind_to_status_to_tests_and_reason
 
 
 def update_reason_for_xfailed_skipped_test(
-    status_to_tests_and_reason: Dict[str, Dict[str, str]]
-) -> Dict[str, Dict[str, str]]:
+    test_kind_to_status_to_tests_and_reason: Dict[str, Dict[str, Dict[str, str]]]
+) -> Dict[str, Dict[str, Dict[str, str]]]:
     """
     Update the reasons for test cases marked as 'XFAIL' or 'SKIP' based on marker details extracted from test files.
 
@@ -387,58 +418,63 @@ def update_reason_for_xfailed_skipped_test(
          update the test case's reason in the input dictionary.
 
     Args:
-        status_to_tests_and_reason (Dict[str, Dict[str, str]]):
-            A dictionary mapping statuses (e.g., 'SKIP', 'XFAIL') to dictionaries of test case strings and their reasons.
+        test_kind_to_status_to_tests_and_reason (Dict[str, Dict[str, Dict[str, str]]]):
+            A dictionary mapping test kind to dictionarie sof statuses (e.g., 'SKIP', 'XFAIL') to dictionaries of test case strings and their reasons.
 
     Returns:
-        Dict[str, Dict[str, str]]: The updated dictionary with reasons for test cases modified based on the marker data.
+        Dict[str, Dict[str, Dict[str, str]]]: The updated dictionary with reasons for test cases modified based on the marker data.
     """
-    test_cases = []  # Accumulate test case strings for 'SKIP' and 'XFAIL'
 
-    # Collect test cases for 'SKIP' status if present.
-    if "SKIP" in status_to_tests_and_reason.keys():
-        test_cases.extend(status_to_tests_and_reason["SKIP"])
+    for test_kind, status_to_tests_and_reason in test_kind_to_status_to_tests_and_reason.items():
 
-    # Collect test cases for 'XFAIL' status if present.
-    if "XFAIL" in status_to_tests_and_reason.keys():
-        test_cases.extend(status_to_tests_and_reason["XFAIL"])
+        test_cases = []  # Accumulate test case strings for 'SKIP' and 'XFAIL'
 
-    # Remove duplicate test cases.
-    test_cases = list(set(test_cases))
+        # Collect test cases for 'SKIP' status if present.
+        if "SKIP" in status_to_tests_and_reason.keys():
+            test_cases.extend(status_to_tests_and_reason["SKIP"])
 
-    # Extract unique file paths from the collected test case strings.
-    unique_test_file_paths = extract_unique_test_file_paths(test_cases=test_cases)
+        # Collect test cases for 'XFAIL' status if present.
+        if "XFAIL" in status_to_tests_and_reason.keys():
+            test_cases.extend(status_to_tests_and_reason["XFAIL"])
 
-    # For each unique test file path, extract marker information along with reasons.
-    for test_file_path in unique_test_file_paths:
-        # The function returns a tuple; we are interested in the marker information dictionary.
-        _, marker_with_reason_and_params = extract_models_ops_test_params(
-            file_path=test_file_path, return_marker_with_reason=True
-        )
-        # Iterate over each marker (e.g., 'skip', 'xfail') and its associated reason and parameter list.
-        for marker, reason_with_params in marker_with_reason_and_params.items():
-            for reason, params in reason_with_params.items():
-                for param in params:
-                    # Check if the uppercase version of the marker exists in our input dictionary.
-                    if marker.upper() in status_to_tests_and_reason.keys():
-                        # Iterate through test cases for this marker.
-                        for test in status_to_tests_and_reason[marker.upper()].keys():
-                            # If both parts of the test parameter (e.g., module and function names) are found in the test string,
-                            # update the reason for that test case.
-                            if param[0] in test and param[1] in test:
-                                status_to_tests_and_reason[marker.upper()][test] = reason
-                                break  # Once updated, no need to check further for this test case.
-    return status_to_tests_and_reason
+        # Remove duplicate test cases.
+        test_cases = list(set(test_cases))
+
+        # Extract unique file paths from the collected test case strings.
+        unique_test_file_paths = extract_unique_test_file_paths(test_cases=test_cases)
+
+        # For each unique test file path, extract marker information along with reasons.
+        for test_file_path in unique_test_file_paths:
+            # The function returns a tuple; we are interested in the marker information dictionary.
+            _, marker_with_reason_and_params = extract_models_ops_test_params(
+                file_path=test_file_path, return_marker_with_reason=True
+            )
+            # Iterate over each marker (e.g., 'skip', 'xfail') and its associated reason and parameter list.
+            for marker, reason_with_params in marker_with_reason_and_params.items():
+                if test_kind == "training" and "_if_models_ops_training" in marker:
+                    marker = marker.replace("_if_models_ops_training", "")
+                for reason, params in reason_with_params.items():
+                    for param in params:
+                        # Check if the uppercase version of the marker exists in our input dictionary.
+                        if marker.upper() in status_to_tests_and_reason.keys():
+                            # Iterate through test cases for this marker.
+                            for test in test_kind_to_status_to_tests_and_reason[test_kind][marker.upper()].keys():
+                                # If both parts of the test parameter (e.g., module and function names) are found in the test string,
+                                # update the reason for that test case.
+                                if param[0] in test and param[1] in test:
+                                    test_kind_to_status_to_tests_and_reason[test_kind][marker.upper()][test] = reason
+                                    break  # Once updated, no need to check further for this test case.
+    return test_kind_to_status_to_tests_and_reason
 
 
 def extract_xfailed_and_skipped_tests_with_reason(
     log_files: List[str], models_ops_test_dir_path: str
-) -> Dict[str, Dict[str, str]]:
+) -> Dict[str, Dict[str, Dict[str, str]]]:
     """
-    Extract and update test cases with statuses 'XFAIL' and 'SKIP' from log files, including detailed reasons.
+    Extract and update test cases with statuses 'XFAIL' and 'SKIP' from log files, including detailed reasons and test kind(i.e inference/training).
 
     This function performs the following steps:
-      1. Uses `extract_test_cases_and_status` to retrieve test cases and their statuses from the provided log files,
+      1. Uses `extract_test_cases_and_status` to retrieve test kind(i.e inference/training), test cases and their statuses from the provided log files,
          filtering by the target directory paths and statuses ('XFAIL' and 'SKIP').
       2. If any test cases are found, it updates these entries with detailed reason information by calling
          `update_reason_for_xfailed_skipped_test`.
@@ -448,22 +484,22 @@ def extract_xfailed_and_skipped_tests_with_reason(
         models_ops_test_dir_path (str): The directory path to filter test cases (typically where the tests reside).
 
     Returns:
-        Dict[str, Dict[str, str]]: A dictionary mapping statuses ('XFAIL', 'SKIP') to dictionaries that map test case
+        Dict[str, Dict[str, Dict[str, str]]]: A dictionary mapping test kind('inference', 'training') to dictionaries that map statuses ('XFAIL', 'SKIP') to dictionaries that map test case
             strings to their corresponding reasons.
     """
-    # Extract test cases with statuses 'XFAIL' and 'SKIP' from the log files,
+    # Extract test cases with statuses 'XFAIL' and 'SKIP' and test kind 'inference' and 'training' from the log files,
     # filtering for those test cases within the specified directory.
-    status_to_tests_and_reason = extract_test_cases_and_status(
+    test_kind_to_status_to_tests_and_reason = extract_test_cases_and_status(
         log_files=log_files, target_dirs=[models_ops_test_dir_path], target_statuses=["XFAIL", "SKIP"]
     )
 
     # If test cases were found, update them with the marker-based reason information.
-    if len(status_to_tests_and_reason) != 0:
-        status_to_tests_and_reason = update_reason_for_xfailed_skipped_test(
-            status_to_tests_and_reason=status_to_tests_and_reason
+    if len(test_kind_to_status_to_tests_and_reason) != 0:
+        test_kind_to_status_to_tests_and_reason = update_reason_for_xfailed_skipped_test(
+            test_kind_to_status_to_tests_and_reason=test_kind_to_status_to_tests_and_reason
         )
 
-    return status_to_tests_and_reason
+    return test_kind_to_status_to_tests_and_reason
 
 
 def extract_failed_and_xpass_tests_with_failure_reason(
@@ -735,6 +771,194 @@ def update_params(models_ops_test_params, marker_with_test_config, marker_with_r
     return new_models_ops_test_params
 
 
+def remove_test_kind(
+    models_ops_test_update_info: Dict[str, Dict[str, Dict[str, List[Dict[str, str]]]]]
+) -> Dict[str, Dict[str, List[Dict[str, str]]]]:
+    """
+    Normalize and merge test-marker configuration mappings that are split by test kind
+    ("inference" and/or "training").
+
+    The model ops test update information represented as a nested structure keyed first by
+    test kind ("inference" or "training"), then by test file path, then by marker name
+    mapping to a list of test configuration dicts:
+
+    This function handles three cases and returns a single mapping in the following shape:
+        Dict[test_file_path, Dict[marker_name, List[test_config_dict]]]
+    where the top-level "test kind" layer is removed and marker entries are merged/normalized
+    according to the following rules:
+
+    1. Only one test kind present
+       - If the single kind is "inference":
+         * Look up any training-only markers in the test source (e.g. "skip_if_models_ops_training",
+           "xfail_if_models_ops_training") and append corresponding test configs to the
+           inference mapping under the training-specific marker names if those configs are not
+           already present.
+
+       * If the single kind is "training":
+         * Build a new mapping that contains inference markers found in the test source
+           (e.g. "skip", "xfail") and their associated configs. Then merge the original
+           training mapping into this new mapping avoiding duplicate entries.
+
+    2. Both "inference" and "training" present
+       - Start from the inference mapping and merge entries from the training mapping.
+         * For training markers that are suffixed with "_if_models_ops_training", derive the
+           corresponding inference marker by removing the suffix and attempt to avoid
+           duplicates when adding configs. If the inference mapping already contains the
+           (non-suffixed) marker, the training configs are appended either under the
+           suffixed marker or merged as appropriate to preserve intent.
+
+    Args:
+        models_ops_test_update_info: Dict[str, Dict[str, Dict[str, List[Dict[str, str]]]]]
+            A dictionary mapping each test kind to another dictonary that maps test file path to another dictionary that maps markers
+            to lists of test configuration dictionaries. Each configuration dictionary contains:
+                - "reason": The associated failure reason.
+                - "module_name": The extracted module name.
+                - "shapes_and_dtypes": The extracted shapes and dtypes information.
+
+    Returns:
+        models_ops_test_update_info: Dict[str, Dict[str, List[Dict[str, str]]]]
+            A dictionary mapping each  test file path to another dictionary that maps markers
+            to lists of test configuration dictionaries. Each configuration dictionary contains:
+                - "reason": The associated failure reason.
+                - "module_name": The extracted module name.
+                - "shapes_and_dtypes": The extracted shapes and dtypes information.
+    """
+    # If only one kind exists, handle the two single-kind subcases separately.
+    if len(models_ops_test_update_info.keys()) == 1:
+        assert any(
+            (test_kind in ["inference", "training"] for test_kind in models_ops_test_update_info)
+        ), "Either inference or training testkind should be present in models_ops_test_update_info"
+        test_kind = list(models_ops_test_update_info.keys())[0]
+
+        # Case: only inference present
+        if test_kind == "inference":
+            test_file_path_list = list(models_ops_test_update_info[test_kind].keys())
+
+            # Markers defined in source that apply only when training tests exist.
+            training_markers = ["skip_if_models_ops_training", "xfail_if_models_ops_training"]
+
+            # For each test file, examine its source markers and add any training-only marker configs
+            # that are not already present in the inference mapping.
+            for test_file_path in test_file_path_list:
+                _, marker_with_reason_and_params = extract_models_ops_test_params(
+                    file_path=test_file_path, return_marker_with_reason=True
+                )
+                for training_marker in training_markers:
+                    if training_marker in marker_with_reason_and_params.keys():
+                        for reason, params_list in marker_with_reason_and_params[training_marker].items():
+                            for param_tuple in params_list:
+                                # If the (module_name, shapes_and_dtypes) pair is not already present
+                                # in any existing test_config for this file, append it under the training marker.
+                                if not any(
+                                    [
+                                        param_tuple[0] == test_config["module_name"]
+                                        and param_tuple[1] == test_config["shapes_and_dtypes"]
+                                        for test_config_list in list(
+                                            models_ops_test_update_info[test_kind][test_file_path].values()
+                                        )
+                                        for test_config in test_config_list
+                                    ]
+                                ):
+                                    test_config = {}
+                                    test_config["module_name"] = param_tuple[0]
+                                    test_config["shapes_and_dtypes"] = param_tuple[1]
+                                    test_config["reason"] = reason
+                                    if training_marker in models_ops_test_update_info[test_kind][test_file_path]:
+                                        models_ops_test_update_info[test_kind][test_file_path][training_marker].append(
+                                            test_config
+                                        )
+                                    else:
+                                        models_ops_test_update_info[test_kind][test_file_path][training_marker] = [
+                                            test_config
+                                        ]
+
+            # Return only the mapping for the single kind (inference).
+            return models_ops_test_update_info[test_kind]
+
+        # Case: only training present
+        elif test_kind == "training":
+            new_models_ops_test_update_info = {}
+            test_file_path_list = list(models_ops_test_update_info[test_kind].keys())
+            # We will look for inference markers in source to construct a base mapping
+            inference_markers = ["skip", "xfail"]
+
+            # Populate new_models_ops_test_update_info with inference markers discovered in source files.
+            for test_file_path in test_file_path_list:
+                _, marker_with_reason_and_params = extract_models_ops_test_params(
+                    file_path=test_file_path, return_marker_with_reason=True
+                )
+                for marker, reason_with_params in marker_with_reason_and_params.items():
+                    if marker not in inference_markers:
+                        continue
+                    for reason, params_list in reason_with_params.items():
+                        for param_tuple in params_list:
+                            test_config = {}
+                            test_config["module_name"] = param_tuple[0]
+                            test_config["shapes_and_dtypes"] = param_tuple[1]
+                            test_config["reason"] = reason
+                            if test_file_path in new_models_ops_test_update_info:
+                                if marker in new_models_ops_test_update_info[test_file_path]:
+                                    new_models_ops_test_update_info[test_file_path][marker].append(test_config)
+                                else:
+                                    new_models_ops_test_update_info[test_file_path][marker] = [test_config]
+                            else:
+                                new_models_ops_test_update_info[test_file_path] = {marker: [test_config]}
+
+            # Merge original training mapping into the constructed inference-base mapping,
+            # avoiding duplicates.
+            for test_file_path, marker_with_test_config in models_ops_test_update_info[test_kind].items():
+                for marker, test_config_list in marker_with_test_config.items():
+                    for test_config in test_config_list:
+                        if not any(
+                            [
+                                test_config["module_name"] == new_test_config["module_name"]
+                                and test_config["shapes_and_dtypes"] == new_test_config["shapes_and_dtypes"]
+                                for new_test_config_list in list(
+                                    new_models_ops_test_update_info[test_file_path].values()
+                                )
+                                for new_test_config in new_test_config_list
+                            ]
+                        ):
+                            if test_file_path in new_models_ops_test_update_info:
+                                if marker in new_models_ops_test_update_info[test_file_path]:
+                                    new_models_ops_test_update_info[test_file_path][marker].append(test_config)
+                                else:
+                                    new_models_ops_test_update_info[test_file_path][marker] = [test_config]
+                            else:
+                                new_models_ops_test_update_info[test_file_path] = {marker: [test_config]}
+            return new_models_ops_test_update_info
+
+    assert all(
+        (test_kind in ["inference", "training"] for test_kind in models_ops_test_update_info)
+    ), "only inference and training testkind alone supported for now"
+
+    # If both kinds are present (expected normal case), merge training into inference.
+    new_models_ops_test_update_info = dict(models_ops_test_update_info["inference"])
+    for test_file_path, marker_with_test_config in models_ops_test_update_info["training"].items():
+        if test_file_path in new_models_ops_test_update_info:
+            for marker, test_config_list in marker_with_test_config.items():
+                inference_marker = marker.replace("_if_models_ops_training", "")
+                if inference_marker in new_models_ops_test_update_info[test_file_path] and marker in [
+                    "skip_if_models_ops_training",
+                    "xfail_if_models_ops_training",
+                ]:
+                    for test_config in test_config_list:
+                        if test_config not in new_models_ops_test_update_info[test_file_path][inference_marker]:
+                            if marker in new_models_ops_test_update_info[test_file_path].keys():
+                                new_models_ops_test_update_info[test_file_path][marker].append(test_config)
+                            else:
+                                new_models_ops_test_update_info[test_file_path][marker] = [test_config]
+                else:
+                    if marker in new_models_ops_test_update_info[test_file_path].keys():
+                        new_models_ops_test_update_info[test_file_path][marker].append(test_config)
+                    else:
+                        new_models_ops_test_update_info[test_file_path][marker] = [test_config]
+        else:
+            new_models_ops_test_update_info[test_file_path] = marker_with_test_config
+
+    return new_models_ops_test_update_info
+
+
 def update_models_ops_tests(models_ops_test_update_info: Dict[str, Dict[str, List[Dict[str, str]]]]):
     """
     Update test files with new test parameters that include marker configurations and failure reasons.
@@ -770,6 +994,10 @@ def update_models_ops_tests(models_ops_test_update_info: Dict[str, Dict[str, Lis
             marker_with_reason_and_params.pop("skip")
         if "xfail" in marker_with_reason_and_params.keys():
             marker_with_reason_and_params.pop("xfail")
+        if "skip_if_models_ops_training" in marker_with_reason_and_params.keys():
+            marker_with_reason_and_params.pop("skip_if_models_ops_training")
+        if "xfail_if_models_ops_training" in marker_with_reason_and_params.keys():
+            marker_with_reason_and_params.pop("xfail_if_models_ops_training")
 
         # Generate updated test parameter definitions with the new marker information
         new_models_ops_test_params = update_params(
@@ -812,16 +1040,16 @@ def create_report(
     report_file_path: str,
     failed_tests_with_reason: Dict[str, str],
     xpass_tests_with_reason: Dict[str, str],
-    status_to_tests_and_reason: Optional[Dict[str, Dict[str, str]]] = None,
+    test_kind_to_status_to_tests_and_reason: Optional[Dict[str, Dict[str, Dict[str, str]]]] = None,
 ):
     """
     Create an Excel report summarizing failed tests, XPASS tests, and
-    tests with additional markers (e.g., SKIP, XFAIL) along with their failure reasons.
+    tests with additional markers (e.g., SKIP, XFAIL) along with their failure reasons and test kind.
 
     This function generates an Excel report that consolidates:
       1. Failed test cases (from `failed_tests_with_reason`), each marked as "FAILED".
       2. XPASS test cases (from `xpass_tests_with_reason`) and marks them as "XPASS".
-      3. Additional test cases with marker information (from `status_to_tests_and_reason`, if provided).
+      3. Additional test cases with marker information (from `test_kind_to_status_to_tests_and_reason`, if provided).
          For these tests, the corresponding marker (e.g., "SKIP", "XFAIL") and the reason are included.
 
     The report is written to the file specified by `report_file_path` using the `create_excel_file` helper.
@@ -830,31 +1058,38 @@ def create_report(
         report_file_path (str): The file path where the Excel report will be saved.
         failed_tests_with_reason (Dict[str, str]): A dictionary mapping failed test cases to their failure reasons.
         xpass_tests_with_reason (Dict[str, str]): A dictionary mapping XPASS test cases to their associatedmessages or reasons.
-        status_to_tests_and_reason (Optional[Dict[str, Dict[str, str]]], optional):
-            A dictionary mapping marker names to a dictionary of test cases and their associated reasons.
-            Defaults to None, meaning only failed tests will be reported.
+        test_kind_to_status_to_tests_and_reason (Dict[str, Dict[str, Dict[str, str]]]], optional):
+            A dictionary mapping test kind to dictionarie sof statuses (e.g., 'SKIP', 'XFAIL') to dictionaries of test case strings and their reasons.
 
     Returns:
         None. The function writes the report to the specified file.
     """
     sheet_title = "model_ops_test"  # Title of the Excel sheet
-    headers = ["TestCases", "Marker", "Reason"]  # Column headers for the Excel report
+    headers = ["TestKind", "TestCases", "Marker", "Reason"]  # Column headers for the Excel report
     data = []  # List to hold rows of data for the report
 
     # Add each failed test case to the report data with a "FAILED" marker.
     for failed_test, failure_reason in failed_tests_with_reason.items():
-        data.append([failed_test, "FAILED", failure_reason])
+        test_kind = extract_test_kind(failed_test)
+        if test_kind is not None:
+            data.append([test_kind, failed_test, "FAILED", failure_reason])
 
     # Add each xpass test case to the report data with a "XPASS" marker.
     for xpass_test, failure_reason in xpass_tests_with_reason.items():
-        data.append([xpass_test, "XPASS", failure_reason])
+        test_kind = extract_test_kind(failed_test)
+        if test_kind is not None:
+            data.append([test_kind, xpass_test, "XPASS", failure_reason])
 
     # If additional test status information is provided, add those test cases to the report.
     # Note: The check ensures that the dictionary is not None and not empty.
-    if status_to_tests_and_reason is not None and len(status_to_tests_and_reason) != 0:
-        for marker, test_with_reason in status_to_tests_and_reason.items():
-            for test, reason in test_with_reason.items():
-                data.append([test, marker, reason])
+    if test_kind_to_status_to_tests_and_reason is not None and len(test_kind_to_status_to_tests_and_reason) != 0:
+        for test_kind, status_to_tests_and_reason in test_kind_to_status_to_tests_and_reason.items():
+            for marker, test_with_reason in status_to_tests_and_reason.items():
+                for test, reason in test_with_reason.items():
+                    data.append([test_kind, test, marker, reason])
+
+    # Sort by test kind, test cases and marker name
+    data = sorted(data, key=lambda r: (r[0], r[1], r[2]))
 
     # Create the Excel report using the provided helper function.
     create_excel_file(
@@ -869,7 +1104,7 @@ def extract_data_from_report(report_file_path: str):
     """
     Extract test update configuration information from an Excel report.
 
-    This function reads an Excel report that contains test case details, markers, and reasons,
+    This function reads an Excel report that contains test kind, test cases, markers, and reasons,
     then parses and organizes the data to generate a mapping of test file paths to marker configuration
     details for updating model ops tests.
 
@@ -877,8 +1112,8 @@ def extract_data_from_report(report_file_path: str):
         report_file_path (str): The file path to the Excel report.
 
     Returns:
-        Dict[str, Dict[str, List[Dict[str, str]]]]:
-            A dictionary mapping each test file path to another dictionary that maps markers
+        Dict[str, [str, Dict[str, List[Dict[str, str]]]]]:
+            A dictionary mapping each test kind to another dictonary that maps test file path to another dictionary that maps markers
             to lists of test configuration dictionaries. Each configuration dictionary contains:
                 - "reason": The associated failure reason.
                 - "module_name": The extracted module name.
@@ -888,7 +1123,7 @@ def extract_data_from_report(report_file_path: str):
     report_df = pd.read_excel(
         report_file_path,
         header=0,
-        usecols=["TestCases", "Marker", "Reason"],
+        usecols=["TestKind", "TestCases", "Marker", "Reason"],
     )
 
     # Regex pattern to extract module name and shapes/dtypes from the test case function string.
@@ -899,6 +1134,8 @@ def extract_data_from_report(report_file_path: str):
 
     # Iterate over each row in the DataFrame.
     for index, row in report_df.iterrows():
+        # Clean and extract the test kind string.
+        test_kind = str(row.TestKind).strip("\n")
         # Clean and extract the test case string.
         test_cases = str(row.TestCases).strip("\n")
         # Normalize the marker using the helper function.
@@ -924,16 +1161,23 @@ def extract_data_from_report(report_file_path: str):
             test_config["module_name"] = module_name
             test_config["shapes_and_dtypes"] = f"[{shapes_and_dtypes}]"
 
-        # Update the configuration dictionary for the test file.
-        # If the test file path already exists, update the marker configuration list.
-        if test_file_path in models_ops_test_update_info.keys():
-            if marker in models_ops_test_update_info[test_file_path].keys():
-                models_ops_test_update_info[test_file_path][marker].append(test_config)
+        # Replace xfail and skip marker with xfail_if_models_ops_training and skip_if_models_ops_training for training tests
+        if test_kind == "training" and marker in ["skip", "xfail"]:
+            marker += "_if_models_ops_training"
+
+        if test_kind in models_ops_test_update_info:
+            # Update the configuration dictionary for the test file.
+            # If the test file path already exists, update the marker configuration list.
+            if test_file_path in models_ops_test_update_info[test_kind]:
+                if marker in models_ops_test_update_info[test_kind][test_file_path].keys():
+                    models_ops_test_update_info[test_kind][test_file_path][marker].append(test_config)
+                else:
+                    models_ops_test_update_info[test_kind][test_file_path][marker] = [test_config]
             else:
-                models_ops_test_update_info[test_file_path][marker] = [test_config]
+                # Create a new entry for the test file path with the marker and configuration.
+                models_ops_test_update_info[test_kind][test_file_path] = {marker: [test_config]}
         else:
-            # Create a new entry for the test file path with the marker and configuration.
-            models_ops_test_update_info[test_file_path] = {marker: [test_config]}
+            models_ops_test_update_info[test_kind] = {test_file_path: {marker: [test_config]}}
 
     return models_ops_test_update_info
 
@@ -951,7 +1195,7 @@ def main():
     """
 
     parser = argparse.ArgumentParser(
-        description=("Update model ops tests with xfail marks based on pytest log failures. ")
+        description=("Update model ops tests with pytest markers based on pytest log failures. ")
     )
     parser.add_argument(
         "--log_files",
@@ -1002,10 +1246,11 @@ def main():
 
     if use_report and check_path(report_file_path):
         models_ops_test_update_info = extract_data_from_report(report_file_path=report_file_path)
+        models_ops_test_update_info = remove_test_kind(models_ops_test_update_info=models_ops_test_update_info)
         update_models_ops_tests(models_ops_test_update_info=models_ops_test_update_info)
         run_precommit(directory_path=models_ops_test_dir_path)
     else:
-        status_to_tests_and_reason = extract_xfailed_and_skipped_tests_with_reason(
+        test_kind_to_status_to_tests_and_reason = extract_xfailed_and_skipped_tests_with_reason(
             log_files=log_files, models_ops_test_dir_path=models_ops_test_dir_path
         )
 
@@ -1021,7 +1266,7 @@ def main():
             report_file_path=report_file_path,
             failed_tests_with_reason=failed_tests_with_reason,
             xpass_tests_with_reason=xpass_tests_with_reason,
-            status_to_tests_and_reason=status_to_tests_and_reason,
+            test_kind_to_status_to_tests_and_reason=test_kind_to_status_to_tests_and_reason,
         )
 
 
