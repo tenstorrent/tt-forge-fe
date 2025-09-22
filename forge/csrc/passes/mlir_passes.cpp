@@ -40,7 +40,7 @@ void register_mlir_passes()
     (void)_;
 }
 
-std::string config_to_pipeline_options(const std::optional<MLIRConfig> &mlir_config)
+std::string config_to_pipeline_options(const std::optional<MLIRConfig> &mlir_config, MLIROutputKind output)
 {
     std::stringstream options{""};
 
@@ -70,9 +70,14 @@ std::string config_to_pipeline_options(const std::optional<MLIRConfig> &mlir_con
             options << " enable-fusing-conv2d-with-multiply-pattern="
                     << *mlir_config->enable_fusing_conv2d_with_multiply_pattern;
         }
-
         // Add custom configuration options.
         options << " " << mlir_config->custom_config;
+    }
+
+    // Add target-dylib flag for SharedObject output
+    if (output == MLIROutputKind::SharedObject)
+    {
+        options << " target-dylib=true";
     }
 
     return options.str();
@@ -91,9 +96,21 @@ void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module, const std::
     static_assert(
         output == MLIROutputKind::Flatbuffer || output == MLIROutputKind::Cpp || output == MLIROutputKind::SharedObject,
         "Handling only Flatbuffer and Cpp output correctly.");
-    constexpr auto pipeline_name = (output == MLIROutputKind::Flatbuffer) ? "ttir-to-ttnn-backend-pipeline"
-                                   : (output == MLIROutputKind::Cpp)      ? "ttir-to-emitc-pipeline"
-                                                                          : "ttir-to-emitc-so-pipeline";
+
+    const char* pipeline_name;
+    if constexpr (output == MLIROutputKind::Flatbuffer)
+    {
+        pipeline_name = "ttir-to-ttnn-backend-pipeline";
+    }
+    else if constexpr (output == MLIROutputKind::Cpp)
+    {
+        pipeline_name = "ttir-to-emitc-pipeline";
+    }
+    else // SharedObject
+    {
+        pipeline_name = "ttir-to-emitc-pipeline";
+    }
+
     const auto pipelineInfo = mlir::PassPipelineInfo::lookup(pipeline_name);
 
     // Error handler for the pipeline. Will be called if there is an error during parsing of the pipeline options.
@@ -104,7 +121,7 @@ void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module, const std::
     };
 
     // Pipeline options are empty for now.
-    std::string options{config_to_pipeline_options(mlir_config)};
+    std::string options{config_to_pipeline_options(mlir_config, output)};
 
     auto result = pipelineInfo->addToPipeline(pm, options, err_handler);
     if (mlir::failed(result))
