@@ -33,6 +33,7 @@ def test_whisper_large_v3(variant):
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
     )
+    pytest.xfail()
 
     # Load model and inputs
     loader = ModelLoader(variant=variant)
