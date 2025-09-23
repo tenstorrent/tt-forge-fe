@@ -89,7 +89,6 @@ def test_unet_torchhub_pytorch():
         source=Source.TORCH_HUB,
         task=Task.IMAGE_SEGMENTATION,
     )
-    pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2956")
 
     loader = ModelLoader(variant=ModelVariant.TORCHHUB_BRAIN_UNET)
     framework_model = loader.load_model(dtype_override=torch.bfloat16)
