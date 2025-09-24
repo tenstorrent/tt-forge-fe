@@ -49,6 +49,7 @@ on:
           - "4"
           - "8"
           - "16"
+          - "32"
       on-crash:
         description: 'If test crashes, continue or restart test suite'
         required: false
