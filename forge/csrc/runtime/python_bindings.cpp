@@ -71,6 +71,31 @@ void RuntimeModule(py::module &m_runtime)
     py::class_<tt::DeviceSettings>(m_experimental, "DeviceSettings")
         .def(py::init<>())
         .def_readwrite("enable_program_cache", &tt::DeviceSettings::enable_program_cache);
+
+    // TTDevice bindings
+    py::class_<tt::TTDevice, std::shared_ptr<tt::TTDevice>>(m_experimental, "TTDevice")
+        .def_readonly("arch", &tt::TTDevice::arch)
+        .def_readonly("mmio", &tt::TTDevice::mmio)
+        .def_readonly("index", &tt::TTDevice::index)
+        .def("is_open", &tt::TTDevice::is_open)
+        .def("open_device", &tt::TTDevice::open_device, py::arg("settings") = DeviceSettings())
+        .def("close_device", &tt::TTDevice::close_device)
+        .def("configure_device", &tt::TTDevice::configure_device, py::arg("settings") = DeviceSettings());
+
+    // TTSystem bindings
+    py::class_<tt::TTSystem>(m_experimental, "TTSystem")
+        .def_readonly("chip_ids", &tt::TTSystem::chip_ids)
+        .def_readonly("devices", &tt::TTSystem::devices)
+        .def("close_devices", &tt::TTSystem::close_devices)
+        .def("configure_devices", &tt::TTSystem::configure_devices, py::arg("settings") = DeviceSettings())
+        .def_static(
+            "get_system",
+            &tt::TTSystem::get_system,
+            py::return_value_policy::reference,
+            "Get the singleton TTSystem instance")
+        .def_static(
+            "is_initialized", &tt::TTSystem::is_initialized, "Check if the TTSystem singleton has been initialized");
+
     m_experimental.def(
         "configure_devices",
         [](DeviceSettings settings) -> void { tt::TTSystem::get_system().configure_devices(settings); },
