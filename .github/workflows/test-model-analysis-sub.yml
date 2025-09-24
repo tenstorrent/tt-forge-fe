@@ -194,6 +194,7 @@ jobs:
                --log-memory-usage \
                --runxfail \
                --no-skips \
+               --forked \
                -vss \
             2>&1 | tee extract-and-export-unique-ops-configs.log
           exit_code=${PIPESTATUS[0]}
