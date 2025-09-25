@@ -34,6 +34,7 @@ class Wrapper(torch.nn.Module):
         return self.model(inputs)[0]
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",

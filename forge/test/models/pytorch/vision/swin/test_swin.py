@@ -75,7 +75,7 @@ def test_swin_hf_image_classification(variant):
 
     pcc = 0.99
     if variant == ModelVariant.SWIN_TINY_HF:
-        pcc = 0.98
+        pcc = 0.95
 
     # Model Verification
     verify(

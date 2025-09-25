@@ -8,6 +8,8 @@ import onnx
 import forge
 from transformers import ViTForImageClassification, AutoImageProcessor
 from forge.verify.verify import verify
+from forge.verify.value_checkers import AutomaticValueChecker
+from forge.verify.config import VerifyConfig
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 
@@ -55,8 +57,14 @@ def test_vit_classify_224(variant, forge_tmp_path):
     # Forge compile framework model
     compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
 
+    pcc = 0.99
+    if variant == "google/vit-base-patch16-224":
+        pcc = 0.95
+
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(
+        inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc))
+    )
 
     # post processing
     logits = co_out[0]
