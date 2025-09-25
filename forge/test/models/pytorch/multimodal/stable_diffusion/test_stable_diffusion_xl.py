@@ -49,7 +49,7 @@ class StableDiffusionXLWrapper(torch.nn.Module):
     [
         pytest.param(
             ModelVariant.STABLE_DIFFUSION_XL_BASE_1_0,
-            marks=[pytest.mark.xfail],
+            marks=[pytest.mark.xfail, pytest.mark.test_duration_check],
         ),
     ],
 )

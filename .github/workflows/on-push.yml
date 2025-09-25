@@ -3,7 +3,7 @@ name: On push
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: [ "pchandrasekaran/check_test_duration" ]
 
 permissions:
   packages: write
@@ -26,9 +26,9 @@ jobs:
     uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
-      test_mark: 'push'
+      test_mark: 'test_duration_check'
       test_group_cnt: 2
       test_group_ids: '[1,2]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ github.run_id }}
-      runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
+      runs-on: '[{"runs-on": "n150"}]'
