@@ -5,13 +5,12 @@
 # Failing rules for element-wise binary operators
 
 
-import forge
 import torch
 
-from test.operators.utils import TestCollection
-from test.operators.utils import FailingReasons
-from test.operators.utils import TestCollectionCommon
-from test.operators.pytorch.ids.loader import TestIdsDataLoader
+from ...utils import TestCollection
+from ...utils import FailingReasons
+from ...utils import TestCollectionCommon
+from ..ids import TestIdsDataLoader
 
 
 class TestIdsData:
@@ -157,7 +156,7 @@ class FailingRulesData:
         #     input_sources=[InputSource.FROM_HOST],
         #     input_shapes=[(1, 2, 3, 4)],
         #     dev_data_formats=[torch.int8],
-        #     math_fidelities=[forge.MathFidelity.HiFi4],
+        #     math_fidelities=[MathFidelity.HiFi4],
         #     failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
         # ),
         # # ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)
@@ -165,7 +164,7 @@ class FailingRulesData:
         #     input_sources=[InputSource.FROM_HOST],
         #     input_shapes=[(1, 2, 3, 4)],
         #     dev_data_formats=[torch.int64],
-        #     math_fidelities=[forge.MathFidelity.HiFi4],
+        #     math_fidelities=[MathFidelity.HiFi4],
         #     failing_reason=FailingReasons.DATA_MISMATCH,
         # ),
         common,
@@ -180,7 +179,7 @@ class FailingRulesData:
         #     input_sources=[InputSource.FROM_HOST],
         #     input_shapes=[(1, 2, 3, 4)],
         #     dev_data_formats=[torch.int8],
-        #     math_fidelities=[forge.MathFidelity.HiFi4],
+        #     math_fidelities=[MathFidelity.HiFi4],
         #     failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
         # ),
         # # RuntimeError: Tensor 2 - data type mismatch:
@@ -193,10 +192,10 @@ class FailingRulesData:
         #         torch.bfloat16,
         #     ],
         #     math_fidelities=[
-        #         forge.MathFidelity.LoFi,
-        #         forge.MathFidelity.HiFi2,
-        #         forge.MathFidelity.HiFi3,
-        #         forge.MathFidelity.HiFi4,
+        #         MathFidelity.LoFi,
+        #         MathFidelity.HiFi2,
+        #         MathFidelity.HiFi3,
+        #         MathFidelity.HiFi4,
         #     ],
         #     failing_reason=FailingReasons.DTYPE_MISMATCH,
         # ),
