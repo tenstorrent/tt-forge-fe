@@ -48,6 +48,7 @@ on:
 jobs:
   run-tests:
 
+    timeout-minutes: 1440 # Set job execution timeout to 1 day(default: 6 hours)
     strategy:
       fail-fast: false
       matrix:
@@ -155,7 +156,6 @@ jobs:
 
       - name: Extract and Export Unique Ops Configuration
         shell: bash
-        timeout-minutes: 1440 # Set execution time to 1 days(default: 6 hours)
         run: |
           set -o pipefail
           source env/activate
