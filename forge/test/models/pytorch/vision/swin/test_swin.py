@@ -4,6 +4,16 @@
 # STEP 0: import Forge library
 import pytest
 import torch
+from third_party.tt_forge_models.swin.image_classification.pytorch import (
+    ModelLoader,
+    ModelVariant,
+)
+from third_party.tt_forge_models.swin.masked_image_modeling.pytorch import (
+    ModelLoader as MaskedImageModelingLoader,
+)
+from third_party.tt_forge_models.swin.masked_image_modeling.pytorch import (
+    ModelVariant as MaskedImageModelingVariant,
+)
 
 import forge
 from forge._C import DataFormat
@@ -20,16 +30,6 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
-from third_party.tt_forge_models.swin.image_classification.pytorch import (
-    ModelLoader,
-    ModelVariant,
-)
-from third_party.tt_forge_models.swin.masked_image_modeling.pytorch import (
-    ModelLoader as MaskedImageModelingLoader,
-)
-from third_party.tt_forge_models.swin.masked_image_modeling.pytorch import (
-    ModelVariant as MaskedImageModelingVariant,
-)
 
 variants = [
     ModelVariant.SWIN_TINY_HF,
