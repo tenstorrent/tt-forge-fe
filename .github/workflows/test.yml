@@ -51,6 +51,7 @@ on:
           - "16"
           - "32"
           - "64"
+          - "100"
       on-crash:
         description: 'If test crashes, continue or restart test suite'
         required: false
