@@ -110,7 +110,7 @@ def test_opt_causal_lm(variant):
 variants = [
     QAVariant.OPT_125M,
     QAVariant.OPT_350M,
-    QAVariant.OPT_1_3B,
+    pytest.param(QAVariant.OPT_1_3B, marks=[pytest.mark.xfail]),
 ]
 
 

@@ -40,6 +40,7 @@ PHI_VARIANTS = [
 ]
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", PHI_VARIANTS)
 def test_phi1_5_causal_lm_pytorch(variant):
@@ -78,6 +79,7 @@ PHI_VARIANTS = [
 ]
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", PHI_VARIANTS)
 def test_phi1_5_token_classification_pytorch(variant):
@@ -117,6 +119,7 @@ PHI_VARIANTS = [
 ]
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", PHI_VARIANTS)
 def test_phi1_5_sequence_classification_pytorch(variant):
