@@ -65,6 +65,8 @@ on:
 jobs:
   run-tests:
 
+    timeout-minutes: 540 # Set job execution time to 9 hours(default: 6 hours)
+
     strategy:
       fail-fast: false
       matrix:
