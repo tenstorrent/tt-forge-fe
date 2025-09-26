@@ -51,6 +51,7 @@ on:
       continue-on-crash:
         description: 'Continue if test crashes, otherwise restart the test'
         required: false
+        default: true
         type: boolean
       sh-runner:
         description: 'Run tests using shared runners'
@@ -61,6 +62,10 @@ on:
         required: false
         default: false
         type: boolean
+      tests_to_filter:
+        description: 'Filter specific tests'
+        required: false
+        type: string
 
 jobs:
   run-tests:
@@ -194,6 +199,14 @@ jobs:
             "-m" "${{ inputs.test_mark }}"
             "--collect-only"
           )
+          if [ -n "${{ inputs.tests_to_filter }}" ]; then
+            # Split on commas and trim whitespace
+            IFS=',' read -r -a test_filters <<< "${{ inputs.tests_to_filter }}"
+            pytest_args+=("--tests_to_filter")
+            for tf in "${test_filters[@]}"; do
+              pytest_args+=("$(echo "$tf" | xargs)")
+            done
+          fi
           if [ -n "${{ inputs.test-expression }}" ]; then
             pytest_args+=("-k" "${{ inputs.test-expression }}")
           fi
@@ -232,6 +245,7 @@ jobs:
           python .github/workflows/test_runner.py  \
                --junit-xml=${{ steps.strings.outputs.test_report_path }} \
                --log-memory-usage \
+               --duration-json test_duration.json \
                $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi)
           exit_code=$?
 
@@ -248,6 +262,13 @@ jobs:
         with:
           name: test-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
           path: pytest.log
+
+      - name: Upload Test Duration
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: test-duration-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: test_duration.json
 
       - name: Upload Test Crash Log
         uses: actions/upload-artifact@v4

@@ -16,6 +16,11 @@ from forge.forge_property_utils import (
 from forge._C.verif import malloc_trim
 
 
+import json
+import os
+from typing import List, Dict, Any
+
+
 def pytest_addoption(parser):
     parser.addoption(
         "--log-memory-usage",
@@ -26,8 +31,73 @@ def pytest_addoption(parser):
     parser.addoption(
         "--tests_to_filter", nargs="+", type=str, help="List of test patterns to include (file paths or full test IDs)"
     )
+    parser.addoption(
+        "--duration-json",
+        action="store",
+        default="test_durations.json",
+        help="Path to write JSON file with test durations (default: test_durations.json)",
+    )
 
 
+@pytest.fixture(autouse=True)
+def _record_start_time(request):
+    """Autouse fixture: store start timestamp on the test node before the test run.
+       We don't compute duration here — that happens when pytest builds the report."""
+    request.node._start_time = time.time()
+    yield
+
+def _collect_reports(terminalreporter) -> List[Any]:
+    categories = ["passed", "failed", "skipped", "xfailed", "xpassed", "error"]
+    reports: List[Any] = []
+    for cat in categories:
+        reports.extend(terminalreporter.stats.get(cat, []))
+    return reports
+
+def pytest_terminal_summary(terminalreporter, exitstatus, config):
+    """Write collected reports to JSON file using durations that were added to the reports."""
+    out_path = config.getoption("--duration-json")
+    reports = _collect_reports(terminalreporter)
+
+    durations: List[Dict[str, Any]] = []
+    for rep in reports:
+        props = dict(getattr(rep, "user_properties", []) or [])
+        duration = props.get("duration_seconds")
+        entry = {
+            "nodeid": rep.nodeid,
+            "outcome": getattr(rep, "outcome", None),
+            "duration_seconds": round(float(duration), 6) if duration is not None else None,
+            "when": getattr(rep, "when", None),
+        }
+        durations.append(entry)
+
+    # Ensure output directory exists
+    out_dir = os.path.dirname(os.path.abspath(out_path)) or "."
+    if out_dir and not os.path.exists(out_dir):
+        os.makedirs(out_dir, exist_ok=True)
+
+    tmp_path = out_path + ".tmp"
+    with open(tmp_path, "w", encoding="utf-8") as f:
+        json.dump(durations, f, indent=2)
+    os.replace(tmp_path, out_path)
+    terminalreporter.write_sep("-", f"Test durations saved to {out_path} (count: {len(durations)})")
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    # let pytest create the report first
+    outcome = yield
+    rep = outcome.get_result()
+
+    # Only attach duration for the 'call' phase (actual test function)
+    if rep.when == "call":
+        start = getattr(item, "_start_time", None)
+        if start is not None:
+            duration = time.time() - start
+            # rep.user_properties is a list of (k, v) pairs
+            if not hasattr(rep, "user_properties") or rep.user_properties is None:
+                rep.user_properties = []
+            rep.user_properties.append(("duration_seconds", duration))
+            
 @pytest.fixture(scope="function")
 def forge_tmp_path(tmp_path):
     """
