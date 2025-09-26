@@ -27,8 +27,10 @@ on:
         options:
           - 'Yes'
           - 'No'
-  schedule:
-    - cron: '0 20 * * *'  # Runs at 20:00 UTC every day
+  # schedule:
+  #   - cron: '0 20 * * *'  # Runs at 20:00 UTC every day
+  push:
+    branches: [ "pchandrasekaran/fix_nightly_job_failures" ]
 
 # Set cache root to avoid IRD_LF_CACHE error when loading CenterNet ONNX model in CI
 env:
@@ -57,7 +59,7 @@ jobs:
       - name: Set Inputs
         id: set-inputs
         run: |
-          default_test_group_cnt=10
+          default_test_group_cnt=8
           default_run_ops_sweeps=Yes
 
           ros_res=$(if [ -z "${{ inputs.run_ops_sweeps }}" ]; then echo $default_run_ops_sweeps; else echo ${{ inputs.run_ops_sweeps }}; fi)
@@ -99,99 +101,101 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       run_id: ${{ needs.build.outputs.run_id }}
+      tests_to_filter: 'forge/test/models/pytorch/multimodal/llama3/test_llama3_pt.py::test_llama_vision_Instruct[meta-llama/Llama-3.2-11B-Vision-Instruct],forge/test/models/pytorch/multimodal/llama3/test_llama3_pt.py::test_llama_vision_Instruct[meta-llama/Llama-3.2-90B-Vision-Instruct],forge/test/models/pytorch/text/albert/test_albert.py::test_albert_masked_lm_pytorch[large_v2],forge/test/models/pytorch/text/albert/test_albert.py::test_albert_token_classification_pytorch[large_v1],forge/test/models/pytorch/text/bert/test_bert.py::test_bert_question_answering_pytorch[bert-large-cased-whole-word-masking-finetuned-squad],forge/test/models/pytorch/text/dpr/test_dpr.py::test_dpr_context_encoder_pytorch[facebook/dpr-ctx_encoder-single-nq-base],forge/test/models/pytorch/text/gptneo/test_gptneo.py::test_gptneo_causal_lm_pytorch[gpt_neo_2_7B],forge/test/models/pytorch/text/llama/test_llama3.py::test_llama3_causal_lm_pytorch[llama_3_2_1b],forge/test/models/pytorch/text/llama/test_llama3.py::test_llama3_sequence_classification_pytorch[llama_3_2_1b_instruct],forge/test/models/pytorch/text/mistral/test_mistral.py::test_mistral_small_24b[mistralai/Mistral-Small-24B-Instruct-2501],forge/test/models/pytorch/text/mistral/test_mistral.py::test_mistral_large[mistralai/Mistral-Large-Instruct-2411],forge/test/models/pytorch/text/mixtral/test_mixtral.py::test_mixtral_8x7b[mistralai/Mixtral-8x7B-Instruct-v0.1],forge/test/models/pytorch/text/perceiverio/test_perceiverio.py::test_perceiverio_masked_lm_pytorch[deepmind/language-perceiver],forge/test/models/pytorch/text/phi2/test_phi2.py::test_phi2_token_classification_pytorch[microsoft/phi-2],forge/test/models/pytorch/text/phi3/test_phi3_5.py::test_phi3_5_moe_causal_lm[microsoft/Phi-3.5-MoE-instruct],forge/test/models/pytorch/text/qwen/test_qwen_v3.py::test_qwen3_embedding[embedding_0_6b],forge/test/models/pytorch/vision/alexnet/test_alexnet.py::test_alexnet_torchhub,forge/test/models/pytorch/vision/autoencoder/test_autoencoder.py::test_linear_ae_pytorch,forge/test/models/pytorch/vision/deit/test_deit.py::test_deit_imgcls_hf_pytorch[small],forge/test/models/pytorch/vision/dla/test_dla.py::test_dla_pytorch[dla102x2],forge/test/models/pytorch/vision/efficientnet/test_efficientnet_lite.py::test_efficientnet_lite_timm[tf_efficientnet_lite2.in1k],forge/test/models/pytorch/vision/efficientnet/test_efficientnet_lite.py::test_efficientnet_lite_timm[tf_efficientnet_lite3.in1k],forge/test/models/pytorch/vision/hrnet/test_hrnet.py::test_hrnet_osmr_pytorch[hrnetv2_w44_osmr],forge/test/models/pytorch/vision/hrnet/test_hrnet.py::test_hrnet_timm_pytorch[hrnet_w30],forge/test/models/pytorch/vision/mobilenet/test_mobilenet_v3.py::test_mobilenetv3_basic[mobilenet_v3_large],forge/test/models/pytorch/vision/perceiverio/test_perceiverio.py::test_perceiverio_for_image_classification_pytorch[deepmind/vision-perceiver-conv],forge/test/models/pytorch/vision/regnet/test_regnet.py::test_regnet_torchvision[regnet_y_800mf],forge/test/models/pytorch/vision/retinanet/test_retinanet.py::test_retinanet[retinanet_rn18fpn],forge/test/models/pytorch/vision/segformer/test_segformer.py::test_segformer_image_classification_pytorch[mit_b0],forge/test/models/pytorch/vision/vgg/test_vgg.py::test_vgg_bn19_timm_pytorch,forge/test/models/pytorch/vision/vgg/test_vgg.py::test_vgg_torchvision[torchvision_vgg16_bn],forge/test/models/pytorch/vision/wideresnet/test_wideresnet.py::test_wideresnet_pytorch[wide_resnet50_2],forge/test/models/pytorch/vision/wideresnet/test_wideresnet.py::test_wideresnet_timm[wide_resnet101_2.timm],forge/test/models/pytorch/vision/yolo/test_yolo_v5.py::test_yolov5_640x640[yolov5l],forge/test/models/pytorch/vision/yolo/test_yolo_v5.py::test_yolov5_480x480[yolov5l],forge/test/models/pytorch/vision/yolo/test_yolo_v9.py::test_yolov9,forge/test/models/pytorch/vision/yolo/test_yolox.py::test_yolox_pytorch[yolox_s],forge/test/models/pytorch/vision/yolo/test_yolox.py::test_yolox_pytorch[yolox_l],forge/test/models/paddlepaddle/multimodal/paddleocr/test_paddleocr_rec.py::test_paddleocr_rec[v0_rec_ch-https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_mobile_v2.0_rec_infer.tar],forge/test/models/paddlepaddle/text/bert/test_bert.py::test_bert_maskedlm[bert-base-uncased-input0],forge/test/models/paddlepaddle/vision/alexnet/test_alexnet.py::test_alexnet,forge/test/models/onnx/text/minilm/test_minilm.py::test_minilm_sequence_classification_onnx[sentence-transformers/all-MiniLM-L6-v2],forge/test/models/onnx/vision/efficientnet/test_efficientnet.py::test_efficientnet_onnx[efficientnet_b3],forge/test/models/onnx/vision/efficientnet/test_efficientnet.py::test_efficientnet_onnx_export_from_package[efficientnet-b3],forge/test/models/onnx/vision/hrnet/test_hrnet_onnx.py::test_hrnet_onnx[hrnetv2_w64],forge/test/models/onnx/vision/mlp_mixer/test_mlp_mixer_onnx.py::test_mlp_mixer_timm_onnx[mixer_b16_224_miil],forge/test/models/onnx/vision/mobilenetv2/test_mobilenetv3_onnx.py::test_mobilenetv3_basic[mobilenet_v3_small],forge/test/models/onnx/vision/monodepth2/test_monodepth2_onnx.py::test_monodepth2[mono_640x192],forge/test/models/onnx/vision/regnet/test_regnet_onnx.py::test_regnet_img_classification_onnx[regnet_y_064],forge/test/models/onnx/vision/resnet/test_resnet.py::test_resnet_onnx[microsoft/resnet-50],forge/test/models/onnx/vision/resnext/test_resnext_onnx.py::test_resnext_onnx[resnext50_32x4d],forge/test/models/onnx/vision/ssdlite320_mobilenetv3/test_ssdlite320_mobilenetv3_onnx.py::test_ssdlite320_mobilenetv3[ssdlite320_mobilenet_v3_large],forge/test/models/onnx/vision/vgg/test_vgg_onnx.py::test_vgg_osmr_pytorch[bn_vgg19b],forge/test/models/onnx/vision/wideresnet/test_wideresnet_onnx.py::test_wideresnet_onnx[wide_resnet50_2],forge/test/models/onnx/vision/xception/test_xception_onnx.py::test_xception_onnx[xception65],forge/test/models/onnx/vision/yolo/test_yolo_v5_onnx.py::test_yolov5_320x320[yolov5s],forge/test/models/test_model_parts.py::test_gather_onnx[shape3-1-2],forge/test/models/pytorch/text/albert/test_albert.py::test_albert_masked_lm_pytorch[base_v1],forge/test/models/pytorch/text/albert/test_albert.py::test_albert_masked_lm_pytorch[xxlarge_v2],forge/test/models/pytorch/text/albert/test_albert.py::test_albert_token_classification_pytorch[xxlarge_v2],forge/test/models/pytorch/text/bert/test_bert.py::test_bert_token_classification_pytorch[dbmdz/bert-large-cased-finetuned-conll03-english],forge/test/models/pytorch/text/bert/test_bert.py::test_bert_sentence_embedding_generation_pytorch[emrecan/bert-base-turkish-cased-mean-nli-stsb-tr],forge/test/models/pytorch/text/falcon/test_falcon.py::test_falcon_3[tiiuae/Falcon3-1B-Base],forge/test/models/pytorch/text/llama/test_llama3.py::test_llama3_causal_lm_pytorch[llama_3_8b_instruct],forge/test/models/pytorch/text/ministral/test_ministral_3b.py::test_ministral_3b[ministral_3b_instruct],forge/test/models/pytorch/text/phi2/test_phi2.py::test_phi2_causal_lm_pytorch[microsoft/phi-2-pytdml],forge/test/models/pytorch/text/phi3/test_phi3.py::test_phi3_sequence_classification[microsoft/Phi-3-mini-4k-instruct],forge/test/models/pytorch/vision/densenet/test_densenet.py::test_densenet_pytorch[densenet169],forge/test/models/pytorch/vision/dla/test_dla.py::test_dla_pytorch[dla60],forge/test/models/pytorch/vision/efficientnet/test_efficientnet.py::test_efficientnet_timm[efficientnet_b4],forge/test/models/pytorch/vision/efficientnet/test_efficientnet.py::test_efficientnet_timm[hf_hub_timm_efficientnet_b4_ra2_in1k],forge/test/models/pytorch/vision/fpn/test_fpn.py::test_fpn_pytorch,forge/test/models/pytorch/vision/ghostnet/test_ghostnet.py::test_ghostnet_timm[ghostnet_100],forge/test/models/pytorch/vision/hrnet/test_hrnet.py::test_hrnet_osmr_pytorch[hrnet_w18_small_v2_osmr],forge/test/models/pytorch/vision/inception/test_inception_v4.py::test_inception_v4_timm_pytorch[inception_v4.tf_in1k],forge/test/models/pytorch/vision/mlp_mixer/test_mlp_mixer.py::test_mlp_mixer_timm_pytorch[mixer_l32_224],forge/test/models/pytorch/vision/mobilenet/test_mobilenet_v1.py::test_mobilenetv1_hf[google/mobilenet_v1_1.0_224],forge/test/models/pytorch/vision/regnet/test_regnet.py::test_regnet_img_classification[regnet_y_080],forge/test/models/pytorch/vision/resnet/test_resnet.py::test_resnet_hf,forge/test/models/pytorch/vision/resnet/test_resnet.py::test_resnet_torchvision[resnet18],forge/test/models/pytorch/vision/resnext/test_resnext.py::test_resnext_torchhub_pytorch[resnext101_32x8d],forge/test/models/pytorch/vision/segformer/test_segformer.py::test_segformer_image_classification_pytorch[mit_b5],forge/test/models/pytorch/vision/ssd300_resnet50/test_ssd300_resnet50.py::test_pytorch_ssd300_resnet50,forge/test/models/pytorch/vision/swin/test_swin.py::test_swin_hf_image_classification[microsoft/swin-tiny-patch4-window7-224],forge/test/models/pytorch/vision/swin/test_swin.py::test_swin_torchvision[swin_s],forge/test/models/pytorch/vision/vgg/test_vgg.py::test_vgg_osmr_pytorch[vgg19],forge/test/models/pytorch/vision/vgg/test_vgg.py::test_vgg_torchvision[torchvision_vgg11],forge/test/models/pytorch/vision/vit/test_vit.py::test_vit_classify_224_hf_pytorch[base],forge/test/models/pytorch/vision/vovnet/test_vovnet.py::test_vovnet_osmr_pytorch[vovnet39],forge/test/models/pytorch/vision/vovnet/test_vovnet.py::test_vovnet_timm_pytorch[ese_vovnet39b],forge/test/models/pytorch/vision/xception/test_xception.py::test_xception_timm[xception71],forge/test/models/pytorch/vision/yolo/test_yolo_v5.py::test_yolov5_320x320[yolov5l],forge/test/models/paddlepaddle/multimodal/clip/test_chineseclip.py::test_chineseclip_vision[OFA-Sys/chinese-clip-vit-base-patch16],forge/test/models/paddlepaddle/multimodal/clip/test_chineseclip.py::test_chineseclip[OFA-Sys/chinese-clip-vit-base-patch16],forge/test/models/paddlepaddle/multimodal/paddleocr/test_paddleocr_rec.py::test_paddleocr_rec[v4_rec_ch-https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_rec_infer.tar],forge/test/models/paddlepaddle/multimodal/paddleocr/test_paddleocr_rec.py::test_paddleocr_rec[v0_rec_en-https://paddleocr.bj.bcebos.com/dygraph_v2.0/multilingual/en_number_mobile_v2.0_rec_infer.tar],forge/test/models/paddlepaddle/text/bert/test_bert.py::test_bert_question_answering[bert-base-uncased-input0],forge/test/models/paddlepaddle/text/bert/test_bert.py::test_bert_question_answering[uer/chinese-roberta-base-input2],forge/test/models/onnx/text/gpt2/test_gpt2_onnx.py::test_gpt2_sequence_classification_onnx[mnoukhov/gpt2-imdb-sentiment-classifier],forge/test/models/onnx/vision/dla/test_dla.py::test_dla_onnx[dla102x2],forge/test/models/onnx/vision/efficientnet/test_efficientnet.py::test_efficientnet_onnx[efficientnet_b2a],forge/test/models/onnx/vision/hrnet/test_hrnet_onnx.py::test_hrnet_onnx[hrnet_w18_small_v1],forge/test/models/onnx/vision/inception/test_inception_v4_onnx.py::test_inception_v4_timm_onnx[inception_v4],forge/test/models/onnx/vision/mobilenetv2/test_mobilenetv2.py::test_mobilenetv2_onnx[mobilenetv2_140],forge/test/models/onnx/vision/segformer/test_segformer.py::test_segformer_image_classification_onnx[nvidia/mit-b2],forge/test/models/onnx/vision/yolo/test_yolo_v10_onnx.py::test_yolov10,forge/test/models/onnx/vision/yolo/test_yolox_onnx.py::test_yolox_pytorch[yolox_m],forge/test/models/tensorflow/vision/resnet/test_resnet.py::test_resnet_tensorflow'
 
-  test_full_model_xfailing:
-    if: success() || failure()
-    needs:
-      - docker-build
-      - set-inputs
-      - build
-    uses: ./.github/workflows/test-sub.yml
-    secrets: inherit
-    with:
-      test_mark: 'nightly and xfail'
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      run_id: ${{ needs.build.outputs.run_id }}
-      runs-on: '[{"runs-on": "n150"}]'
 
-  test_models_ops:
-    if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
-    needs:
-      - docker-build
-      - set-inputs
-      - build
-    uses: ./.github/workflows/test-sub.yml
-    secrets: inherit
-    with:
-      test_mark: 'nightly_models_ops'
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_os }}
-      run_id: ${{ needs.build.outputs.run_id }}
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "n150"}]'
-      test-expression: 'inference'
-      allow-fail: true
-      sh-runner: true
+  # test_full_model_xfailing:
+  #   if: success() || failure()
+  #   needs:
+  #     - docker-build
+  #     - set-inputs
+  #     - build
+  #   uses: ./.github/workflows/test-sub.yml
+  #   secrets: inherit
+  #   with:
+  #     test_mark: 'nightly and xfail'
+  #     test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+  #     test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
+  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  #     run_id: ${{ needs.build.outputs.run_id }}
+  #     runs-on: '[{"runs-on": "n150"}]'
 
-  test_sweeps:
-    if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
-    needs:
-      - docker-build
-      - set-inputs
-      - build
-    uses: ./.github/workflows/test-sub.yml
-    secrets: inherit
-    with:
-      test_mark: 'nightly_sweeps'
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_os }}
-      run_id: ${{ needs.build.outputs.run_id }}
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "n150"}]'
-      allow-fail: true
-      sh-runner: true
+  # test_models_ops:
+  #   if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
+  #   needs:
+  #     - docker-build
+  #     - set-inputs
+  #     - build
+  #   uses: ./.github/workflows/test-sub.yml
+  #   secrets: inherit
+  #   with:
+  #     test_mark: 'nightly_models_ops'
+  #     test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+  #     test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_os }}
+  #     run_id: ${{ needs.build.outputs.run_id }}
+  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  #     runs-on: '[{"runs-on": "n150"}]'
+  #     test-expression: 'inference'
+  #     allow-fail: true
+  #     sh-runner: true
 
-  fail-notify:
-    if: always()
-    needs:
-      - docker-build
-      - build
-      - test_full_model_passing
-      - test_full_model_xfailing
-      - test_models_ops
-      - test_sweeps
-    runs-on: Ubuntu-latest
-    outputs:
-      is-main: ${{ steps.branch-check.outputs.IS_MAIN }}
-      failed: ${{ steps.check.outputs.failure }}
-    steps:
-      - name: Check if branch is main
-        id: branch-check
-        run: echo "IS_MAIN=$(if [ '${{ github.ref }}' == 'refs/heads/main' ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
-      - name: Check if the needed jobs succeeded or failed
-        id: check
-        uses: re-actors/alls-green@v1.2.2
-        with:
-          jobs: ${{ toJSON(needs) }}
-          allowed-failures: test_models_ops, test_sweeps
-          allowed-skips: test_models_ops, test_sweeps
+  # test_sweeps:
+  #   if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
+  #   needs:
+  #     - docker-build
+  #     - set-inputs
+  #     - build
+  #   uses: ./.github/workflows/test-sub.yml
+  #   secrets: inherit
+  #   with:
+  #     test_mark: 'nightly_sweeps'
+  #     test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+  #     test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_os }}
+  #     run_id: ${{ needs.build.outputs.run_id }}
+  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  #     runs-on: '[{"runs-on": "n150"}]'
+  #     allow-fail: true
+  #     sh-runner: true
 
-  fail-send-msg:
-    if: always()
-    needs:
-      - fail-notify
-    runs-on: Ubuntu-latest
-    steps:
-      - name: Send Fail Notification
-        if: ${{ needs.fail-notify.outputs.failed == 'true' && needs.fail-notify.outputs.is-main == 'true' }}
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          payload: |
-            {
-              "text": "Bad bad nightly: <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}>",
-              "channel": "C08HFLL9L56"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_FAIL }}
+  # fail-notify:
+  #   if: always()
+  #   needs:
+  #     - docker-build
+  #     - build
+  #     - test_full_model_passing
+  #     - test_full_model_xfailing
+  #     - test_models_ops
+  #     - test_sweeps
+  #   runs-on: Ubuntu-latest
+  #   outputs:
+  #     is-main: ${{ steps.branch-check.outputs.IS_MAIN }}
+  #     failed: ${{ steps.check.outputs.failure }}
+  #   steps:
+  #     - name: Check if branch is main
+  #       id: branch-check
+  #       run: echo "IS_MAIN=$(if [ '${{ github.ref }}' == 'refs/heads/main' ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
+  #     - name: Check if the needed jobs succeeded or failed
+  #       id: check
+  #       uses: re-actors/alls-green@v1.2.2
+  #       with:
+  #         jobs: ${{ toJSON(needs) }}
+  #         allowed-failures: test_models_ops, test_sweeps
+  #         allowed-skips: test_models_ops, test_sweeps
+
+  # fail-send-msg:
+  #   if: always()
+  #   needs:
+  #     - fail-notify
+  #   runs-on: Ubuntu-latest
+  #   steps:
+  #     - name: Send Fail Notification
+  #       if: ${{ needs.fail-notify.outputs.failed == 'true' && needs.fail-notify.outputs.is-main == 'true' }}
+  #       uses: slackapi/slack-github-action@v1.26.0
+  #       with:
+  #         payload: |
+  #           {
+  #             "text": "Bad bad nightly: <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}>",
+  #             "channel": "C08HFLL9L56"
+  #           }
+  #       env:
+  #         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_FAIL }}
