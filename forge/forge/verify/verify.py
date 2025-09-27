@@ -446,7 +446,7 @@ def verify(
     # If model group is RED, turn on verify_emitc_correctness
     model_group = get_model_group()
     if model_group and model_group == ModelGroup.RED:
-        verify_cfg.verify_emitc_correctness = False 
+        verify_cfg.verify_emitc_correctness = True 
 
     record_verify_config(verify_cfg)
 
