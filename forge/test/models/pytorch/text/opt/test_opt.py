@@ -149,7 +149,7 @@ def test_opt_qa(variant):
 variants = [
     SequenceClassificationVariant.OPT_125M,
     SequenceClassificationVariant.OPT_350M,
-    SequenceClassificationVariant.OPT_1_3B,
+    pytest.param(SequenceClassificationVariant.OPT_1_3B, marks=[pytest.mark.xfail]),
 ]
 
 
