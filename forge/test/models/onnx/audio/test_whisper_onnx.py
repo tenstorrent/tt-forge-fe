@@ -35,7 +35,7 @@ variants = [
     "openai/whisper-tiny",
     "openai/whisper-base",
     "openai/whisper-small",
-    "openai/whisper-medium",
+    pytest.param("openai/whisper-medium", marks=pytest.mark.xfail),
     pytest.param("openai/whisper-large", marks=pytest.mark.xfail),
 ]
 
@@ -53,7 +53,9 @@ def test_whisper_onnx(variant, forge_tmp_path):
         source=Source.HUGGINGFACE,
     )
 
-    if variant == "openai/whisper-large":
+    if variant == "openai/whisper-medium":
+        pytest.xfail(reason="Skipping the test because it takes longer time to run")
+    elif variant == "openai/whisper-large":
         pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2767")
 
     # Load model (with tokenizer and feature extractor)

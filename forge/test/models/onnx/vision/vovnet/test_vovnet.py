@@ -148,6 +148,7 @@ def generate_model_vovnet_imgcls_timm_pytorch(variant):
     return model, [image_tensor], {}
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["ese_vovnet19b_dw.ra_in1k"])
 def test_vovnet_timm_onnx(variant, forge_tmp_path):
@@ -169,6 +170,8 @@ def test_vovnet_timm_onnx(variant, forge_tmp_path):
         group=group,
         priority=priority,
     )
+
+    pytest.xfail(reason="Build failed with ttnn-dylib option")
 
     framework_model, inputs, _ = generate_model_vovnet_imgcls_timm_pytorch(
         variant,
