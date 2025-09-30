@@ -56,7 +56,7 @@ This section walks you through downloading and installing a wheel. You can insta
 
 1. Make sure you are in an active virtual environment. This walkthrough uses the same environment you activated to look at TT-SMI in the [Configuring Hardware](#configuring-hardware) section.
 
-2. For this walkthrough, TT-Forge-FE is used. You need to install the **tt_forge** wheel: 
+2. For this walkthrough, TT-Forge-FE is used. You need to install the **tt_forge** wheel:
 
 ```bash
 pip install tt_forge --extra-index-url https://pypi.eng.aws.tenstorrent.com/
