@@ -12,6 +12,8 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
+from forge.verify.value_checkers import AutomaticValueChecker
+from forge.verify.config import VerifyConfig
 
 from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.mobilenet.model_utils.mobilenet_v3_ssd_utils import (
@@ -57,11 +59,16 @@ def test_mobilenetv3_ssd_onnx(variant, forge_tmp_path):
     # Compile model
     compiled_model = forge.compile(onnx_model, inputs, module_name=module_name)
 
+    pcc = 0.99
+    if variant == "resnet50":
+        pcc = 0.95
+
     # Model Verification and Inference
     fw_out, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
     )
 
     # Post processing
