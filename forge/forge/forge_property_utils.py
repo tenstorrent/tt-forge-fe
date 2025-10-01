@@ -260,8 +260,8 @@ def build_module_name(
 
 
 class ExecutionRunMode(Enum):
-    INFERENCE = auto()
-    TRAINING = auto()
+    INFERENCE = ("INFERENCE", "inference")
+    TRAINING = ("TRAINING", "training")
 
     @classmethod
     def to_str(cls, value):
@@ -273,8 +273,8 @@ class ExecutionRunMode(Enum):
 
 
 class ExecutionPass(Enum):
-    FORWARD = auto()
-    BACKWARD = auto()
+    FORWARD = ("FORWARD", "forward")
+    BACKWARD = ("BACKWARD", "backward")
 
     @classmethod
     def to_str(cls, value):

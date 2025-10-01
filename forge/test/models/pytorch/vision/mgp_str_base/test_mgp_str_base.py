@@ -31,7 +31,7 @@ class Wrapper(torch.nn.Module):
         return self.model(inputs)[0]
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2969")
 @pytest.mark.nightly
 def test_mgp_scene_text_recognition():
 
