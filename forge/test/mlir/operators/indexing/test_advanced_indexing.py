@@ -8,6 +8,15 @@ from torch import nn
 import forge
 from forge.verify.verify import verify
 
+import math
+from forge.config import CompilerConfig
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AllCloseValueChecker
+
+from test.operators.utils.compat import create_torch_inputs, verify_module_for_inputs
+from test.operators.utils.datatypes import ValueRanges
+from test.operators.utils.utils import TensorUtils
+
 
 @pytest.mark.parametrize(
     "tensor_and_indices",
@@ -308,3 +317,142 @@ def test_index_put(input_indices_values_accumulate):
 
     # Run verification
     verify(inputs, framework_model, compiled_model)
+
+
+# INDEX_COPY - FILL CACHE TESTS THAT ARE FAILING:
+
+# error message:
+## E       RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/kv_cache/device/update_cache_op.cpp:56: (num_blocks_of_work <= compute_with_storage_grid_size.x * compute_with_storage_grid_size.y)
+# test ids with this error:
+# test_fill_cache_error[{'index': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'dim': 2}-(1, 100, 100, 100)-ModelFromAnotherOp]
+# test_fill_cache_error[{'index': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'dim': 2}-(1, 100, 100, 100)-ModelDirect]
+# test_fill_cache_error[{'index': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'dim': 2}-(1, 100, 100, 100)-ModelConstEvalPass]
+
+# error message:
+# E       RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/kv_cache/device/update_cache_op.cpp:38: input_tensor.padded_shape()[0] == 1
+# test ids with this error:
+# test_fill_cache_error[{'index': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 'dim': 2}-(3, 11, 45, 17)-ModelFromAnotherOp]
+# test_fill_cache_error[{'index': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 'dim': 2}-(3, 11, 45, 17)-ModelDirect]
+# test_fill_cache_error[{'index': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 'dim': 2}-(3, 11, 45, 17)-ModelConstEvalPass]
+
+### run all: pytest -svv -rap 'forge/test/mlir/operators/indexing/test_advanced_indexing.py::test_fill_cache_error'
+### run single: pytest -svv -rap "forge/test/mlir/operators/indexing/test_advanced_indexing.py::test_fill_cache_error[{'index': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'dim': 2}-(1, 100, 100, 100)-ModelFromAnotherOp]"
+
+
+def make_source_shape(input_shape, dim, index):
+    m = len(index)
+    source_shape = list(input_shape)
+    source_shape[dim] = m
+    return tuple(source_shape)
+
+
+@pytest.mark.parametrize("model_type", ["ModelFromAnotherOp", "ModelDirect", "ModelConstEvalPass"])
+@pytest.mark.parametrize(
+    "input, dim, index",
+    [
+        pytest.param(
+            (1, 100, 100, 100),
+            2,
+            torch.tensor([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]),
+            id="{'index': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'dim': 2}-(1, 100, 100, 100)",
+        ),
+        pytest.param(
+            (3, 11, 45, 17),
+            2,
+            torch.tensor([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+            id="{'index': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 'dim': 2}-(3, 11, 45, 17)",
+        ),
+    ],
+)
+def test_fill_cache_error(model_type, input, dim, index):
+    class ModelFromAnotherOp(torch.nn.Module):
+        def __init__(self, dim, index):
+            super().__init__()
+            self.dim = dim
+            self.index = index
+
+        def forward(self, x, y):
+            xx = torch.add(x, x)
+            yy = torch.add(y, y)
+            return torch.Tensor.index_copy(xx, self.dim, self.index, yy)
+
+    class ModelDirect(torch.nn.Module):
+        def __init__(self, dim, index):
+            super().__init__()
+            self.dim = dim
+            self.index = index
+
+        def forward(self, x, y):
+            return torch.Tensor.index_copy(x, self.dim, self.index, y)
+
+    class ModelConstEvalPass(torch.nn.Module):
+        def __init__(self, self_shape, source_shape, dim, index, dtype, value_range):
+            super(ModelConstEvalPass, self).__init__()
+            self.dim = dim
+            self.index = index
+            c1 = TensorUtils.create_torch_constant(
+                input_shape=self_shape,
+                dev_data_format=dtype,
+                value_range=value_range,
+                random_seed=math.prod(self_shape),
+            )
+            c2 = TensorUtils.create_torch_constant(
+                input_shape=source_shape,
+                dev_data_format=dtype,
+                value_range=value_range,
+                random_seed=math.prod(source_shape),
+            )
+            self.register_buffer("c1", c1)
+            self.register_buffer("c2", c2)
+
+        def forward(self, x: torch.Tensor, y: torch.Tensor):
+            v1 = torch.Tensor.index_copy(self.c1, self.dim, self.index, self.c2)
+            # v2 = torch.add(x, x)
+            v2 = torch.Tensor.index_copy(x, self.dim, self.index, y)
+            # add consume inputs
+            add = torch.add(v1, v2)
+            return add
+
+    input_shape, dim, index = input, dim, index
+    value_range = ValueRanges.SMALL  # [-1, 1]
+
+    index = torch.tensor(index, dtype=torch.long)
+    self_shape = input_shape
+    source_shape = make_source_shape(input_shape, dim, index)
+    input_shapes = [self_shape, source_shape]
+    # prepare model
+
+    if model_type == "ModelConstEvalPass":
+        framework_model = eval(model_type)(
+            self_shape=self_shape,
+            source_shape=source_shape,
+            dim=dim,
+            index=index,
+            dtype=None,  # torch.float32
+            value_range=value_range,
+        )
+    else:
+        framework_model = eval(model_type)(
+            dim=dim,
+            index=index,
+        )
+
+    # prepare inputs
+    inputs = create_torch_inputs(
+        input_shapes=input_shapes,
+        dev_data_format=None,  # torch.float32
+        value_range=value_range,  # [-1, 1]
+    )
+
+    verify_config = VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2))
+
+    # this 2 lines will be executed in method `verify_module_for_inputs`, need to be like this because of pcc error level handling logic that is writthen in `verify_module_for_inputs`
+    ## compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    ## verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+    verify_module_for_inputs(
+        model=framework_model,
+        inputs=inputs,
+        compiler_cfg=CompilerConfig(),
+        verify_config=verify_config,
+        convert_to_forge=False,
+    )
