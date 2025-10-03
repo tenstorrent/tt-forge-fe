@@ -34,7 +34,7 @@ TT-Forge-FE is a front end component within the broader tt-forge ecosystem, whic
 # Current AI Framework Front End Projects
 - [TT-Forge-FE](https://github.com/tenstorrent/tt-forge-fe)
   - A TVM based graph compiler designed to optimize and transform computational graphs for deep learning models. Supports ingestion of PyTorch, ONNX, TensorFlow, PaddlePaddle and similar ML frameworks via TVM ([TT-TVM](https://github.com/tenstorrent/tt-tvm)).
-  - See [docs pages](https://docs.tenstorrent.com/tt-forge-fe/getting-started.html) for an overview and getting started guide.
+  - See [docs pages](https://docs.tenstorrent.com/tt-forge-fe/getting_started.html) for an overview and getting started guide.
 
 - [TT-Torch](https://github.com/tenstorrent/tt-torch)
 
