@@ -16,7 +16,7 @@ from test.utils import download_model
 variants_img_classification = [
     pytest.param("nvidia/mit-b0", marks=pytest.mark.push),
     pytest.param("nvidia/mit-b2"),
-    pytest.param("nvidia/mit-b3", marks=pytest.mark.xfail),
+    pytest.param("nvidia/mit-b3"),
     pytest.param("nvidia/mit-b4", marks=pytest.mark.xfail),
     pytest.param("nvidia/mit-b5", marks=pytest.mark.xfail),
 ]
@@ -35,7 +35,7 @@ def test_segformer_image_classification_onnx(variant, forge_tmp_path):
         source=Source.HUGGINGFACE,
     )
 
-    if variant in ["nvidia/mit-b3", "nvidia/mit-b4", "nvidia/mit-b5"]:
+    if variant in ["nvidia/mit-b4", "nvidia/mit-b5"]:
         pytest.xfail(reason="Fatal Python error: Aborted")
 
     # Load the model from HuggingFace
