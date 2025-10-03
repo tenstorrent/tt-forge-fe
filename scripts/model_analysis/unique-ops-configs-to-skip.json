@@ -1,0 +1,48 @@
+{
+    "Floating point exception": {
+      "Conv2dTranspose": [
+        {
+          "NodeTypes": ["Activation", "Parameter"],
+          "NodeShapes": ["(1, 64, 28, 28)", "(64, 1, 4, 4)"],
+          "NodeDtypes": ["torch.bfloat16", "torch.bfloat16"],
+          "NodeArgs": {
+            "stride": "2",
+            "padding": "1",
+            "dilation": "1",
+            "groups": "64",
+            "channel_last": "False",
+            "output_padding": "[0, 0]"
+          },
+          "TestKind": ["inference", "training"]
+        },
+        {
+          "NodeTypes": ["Activation", "Parameter"],
+          "NodeShapes": ["(1, 128, 14, 14)", "(128, 1, 4, 4)"],
+          "NodeDtypes": ["torch.bfloat16", "torch.bfloat16"],
+          "NodeArgs": {
+            "stride": "2",
+            "padding": "1",
+            "dilation": "1",
+            "groups": "128",
+            "channel_last": "False",
+            "output_padding": "[0, 0]"
+          },
+          "TestKind": ["inference", "training"]
+        },
+        {
+          "NodeTypes": ["Activation", "Parameter"],
+          "NodeShapes": ["(1, 256, 7, 7)", "(256, 1, 4, 4)"],
+          "NodeDtypes": ["torch.bfloat16", "torch.bfloat16"],
+          "NodeArgs": {
+            "stride": "2",
+            "padding": "1",
+            "dilation": "1",
+            "groups": "256",
+            "channel_last": "False",
+            "output_padding": "[0, 0]"
+          },
+          "TestKind": ["inference", "training"]
+        }
+      ]
+    }
+  }
