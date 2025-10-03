@@ -116,6 +116,7 @@ jobs:
             pytest.ini
             conftest.py
             .test_durations
+            scripts/
 
       - name: Setup Forge Models repo
         shell: bash
@@ -246,9 +247,6 @@ jobs:
             --file_paths extract-and-export-unique-ops-configs.log \
             --out_file .pytest_tests_to_run
 
-          # Default output value (in case of early exit)
-          contains=false
-
           # Check whether .pytest_tests_to_run contains any non-whitespace characters.
           if [[ -f .pytest_tests_to_run ]] && grep -q '[^[:space:]]' .pytest_tests_to_run; then
             echo ".pytest_tests_to_run is not empty — running test_runner.py"
@@ -257,16 +255,13 @@ jobs:
                 --no-skips \
                 -vss \
               2>&1 | tee failed-unique-ops-config-extraction.log
+            echo "contains_failed_tests=true" >> "$GITHUB_OUTPUT"
             exit_code=${PIPESTATUS[0]}
-            contains=true
           else
             echo ".pytest_tests_to_run is empty — skipping test_runner.py"
+            echo "contains_failed_tests=false" >> "$GITHUB_OUTPUT"
             exit_code=0
-            contains=false
           fi
-
-          # Export step output so other steps can read it
-          echo "contains_failed_tests=$contains" >> "$GITHUB_OUTPUT"
 
           # Exit with the runner/test exit code (0 when skipped)
           exit $exit_code
