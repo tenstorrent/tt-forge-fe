@@ -112,6 +112,7 @@ jobs:
       run_id: ${{ needs.build.outputs.run_id }}
       tests_to_filter: ${{ inputs.tests_to_filter }}
       allow-fail: true
+      max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
 
   generate-models-ops-tests:
 
@@ -275,3 +276,4 @@ jobs:
       sh-runner: true
       run_id: ${{ needs.build.outputs.run_id }}
       run_models_ops_tests: true
+      max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
