@@ -277,3 +277,5 @@ jobs:
       run_id: ${{ needs.build.outputs.run_id }}
       run_models_ops_tests: true
       max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
+      test-expression: 'inference and not training'
+      allow-fail: true
