@@ -44,10 +44,16 @@ on:
         description: 'Run tests using shared runners'
         required: false
         type: boolean
+      max-job-duration-minutes:
+        description: 'Set maximum execution time for the job in minutes. If the job exceeds this limit it will be cancelled and marked failed'
+        required: false
+        type: number
+        default: 360
 
 jobs:
   run-tests:
 
+    timeout-minutes: ${{ inputs.max-job-duration-minutes }}
     strategy:
       fail-fast: false
       matrix:
@@ -155,7 +161,6 @@ jobs:
 
       - name: Extract and Export Unique Ops Configuration
         shell: bash
-        timeout-minutes: 1440 # Set execution time to 1 days(default: 6 hours)
         run: |
           set -o pipefail
           source env/activate
