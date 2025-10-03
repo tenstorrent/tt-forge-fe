@@ -103,6 +103,7 @@ jobs:
         run: |
           echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
           echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
+          echo "test_report_path=reports/report_$JOB_ID.xml" >> "$GITHUB_OUTPUT"
 
       - name: Git safe dir
         run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
@@ -116,6 +117,7 @@ jobs:
             pytest.ini
             conftest.py
             .test_durations
+            scripts/
 
       - name: Setup Forge Models repo
         shell: bash
@@ -199,7 +201,7 @@ jobs:
                --log-memory-usage \
                --runxfail \
                --no-skips \
-               -vss \
+               -v \
             2>&1 | tee extract-and-export-unique-ops-configs.log
           exit_code=${PIPESTATUS[0]}
           exit $exit_code
@@ -224,3 +226,80 @@ jobs:
         with:
           name: models-unique-ops-config-${{ steps.fetch-job-id.outputs.job_id }}
           path: generated_modules/
+
+      - name: Extract and Run Failed tests
+        id: extract-and-run-failed-tests
+        if: success() || failure()
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          contains_failed_tests=false
+
+          # ensure we always write the output on exit (success or failure)
+          trap 'echo "contains_failed_tests=${contains_failed_tests}" >> "$GITHUB_OUTPUT"' EXIT
+
+          source env/activate
+
+          # If the file exists, remove it first (start with a clean slate).
+          if [[ -f .pytest_tests_to_run ]]; then
+            echo "Found existing .pytest_tests_to_run — removing it."
+            rm -f .pytest_tests_to_run
+          else
+            echo "No existing .pytest_tests_to_run found."
+          fi
+
+          # Collect failed tests into the file
+          python scripts/model_analysis/collect_failed_tests.py \
+            --file_paths extract-and-export-unique-ops-configs.log \
+            --out_file .pytest_tests_to_run
+
+          # Check whether .pytest_tests_to_run contains any non-whitespace characters.
+          if [[ -f .pytest_tests_to_run ]] && grep -q '[^[:space:]]' .pytest_tests_to_run; then
+            echo ".pytest_tests_to_run is not empty — running test_runner.py"
+            contains_failed_tests=true
+
+            # run the runner; capture exit but don't exit the step immediately
+            set +e
+            python .github/workflows/test_runner.py \
+                --junit-xml=${{ steps.strings.outputs.test_report_path }} \
+                --runxfail \
+                --no-skips \
+                -vss \
+              2>&1 | tee failed-unique-ops-config-extraction.log
+            rc=${PIPESTATUS[0]}
+            set -e
+
+            # propagate runner exit code (so the step fails if tests failed)
+            exit $rc
+          else
+            echo ".pytest_tests_to_run is empty — skipping test_runner.py"
+            contains_failed_tests=false
+            # explicit success
+            exit 0
+          fi
+
+      - name: Upload Unique Ops Configs Extraction Failure Log
+        uses: actions/upload-artifact@v4
+        if: ${{ always() && steps.extract-and-run-failed-tests.outputs.contains_failed_tests == 'true' }}
+        with:
+          name: failed-unique-ops-config-extraction-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: failed-unique-ops-config-extraction.log
+
+      - name: Upload Failed Test Report
+        uses: actions/upload-artifact@v4
+        if: ${{ always() && steps.extract-and-run-failed-tests.outputs.contains_failed_tests == 'true' }}
+        with:
+          name: test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: ${{ steps.strings.outputs.test_report_path }}
+
+      - name: Show Failed Test Report
+        uses: mikepenz/action-junit-report@v5
+        if: ${{ always() && steps.extract-and-run-failed-tests.outputs.contains_failed_tests == 'true' }}
+        with:
+          report_paths: ${{ steps.strings.outputs.test_report_path }}
+          check_name: TT-Forge-FE Tests
+          comment: false
+          updateComment: false
+          detailed_summary: true
+          group_suite: true
