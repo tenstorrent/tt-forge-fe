@@ -59,8 +59,6 @@ with open("README.md", "r") as f:
     long_description = f.read()
 
 # Compute requirements
-with open("env/core_requirements.txt", "r") as f:
-    core_requirements = f.read().splitlines()
 
 with open("env/dev_requirements.txt", "r") as f:
     dev_requirements = [r for r in f.read().splitlines() if not r.startswith("-r")]
@@ -155,7 +153,7 @@ def collect_model_requirements(requirements_root: str) -> list[str]:
 model_requirements_root = "forge/test/models"
 model_requirements = collect_model_requirements(model_requirements_root)
 
-requirements = core_requirements + dev_requirements + model_requirements
+requirements = dev_requirements + model_requirements
 
 # Compute a dynamic version from git
 short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()

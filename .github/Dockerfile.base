@@ -71,3 +71,23 @@ RUN add-apt-repository ppa:deadsnakes/ppa && \
 # Install python packages
 RUN pip install cmake \
     pytest
+
+# Set environment variables for toolchain directories
+ENV TTMLIR_TOOLCHAIN_DIR=/opt/ttmlir-toolchain
+ENV TTFORGE_TOOLCHAIN_DIR=/opt/ttforge-toolchain
+ENV TTMLIR_PYTHON_VERSION=python3.11
+
+# Create a directory for the build and toolchain
+ARG BUILD_DIR=/home/build
+RUN mkdir -p $BUILD_DIR && \
+    mkdir -p $TTMLIR_TOOLCHAIN_DIR && \
+    mkdir -p $TTFORGE_TOOLCHAIN_DIR
+
+# Create the virtual environment that forge-fe will use
+ENV TTFORGE_VENV_DIR=/opt/ttforge-toolchain/venv
+RUN python3.11 -m venv $TTFORGE_VENV_DIR
+
+# Copy and install core requirements in the forge-fe virtual environment
+COPY env/core_requirements.txt /tmp/core_requirements.txt
+RUN source $TTFORGE_VENV_DIR/bin/activate && \
+    pip install --ignore-installed -r /tmp/core_requirements.txt
