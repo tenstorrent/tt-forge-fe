@@ -44,10 +44,16 @@ on:
         description: 'Run tests using shared runners'
         required: false
         type: boolean
+      max-job-duration-minutes:
+        description: 'Set maximum execution time for the job in minutes. If the job exceeds this limit it will be cancelled and marked failed'
+        required: false
+        type: number
+        default: 360
 
 jobs:
   run-tests:
 
+    timeout-minutes: ${{ inputs.max-job-duration-minutes }}
     strategy:
       fail-fast: false
       matrix:
@@ -110,6 +116,7 @@ jobs:
             pytest.ini
             conftest.py
             .test_durations
+            scripts/
 
       - name: Setup Forge Models repo
         shell: bash
@@ -155,7 +162,6 @@ jobs:
 
       - name: Extract and Export Unique Ops Configuration
         shell: bash
-        timeout-minutes: 1440 # Set execution time to 1 days(default: 6 hours)
         run: |
           set -o pipefail
           source env/activate
@@ -194,7 +200,7 @@ jobs:
                --log-memory-usage \
                --runxfail \
                --no-skips \
-               -vss \
+               -v \
             2>&1 | tee extract-and-export-unique-ops-configs.log
           exit_code=${PIPESTATUS[0]}
           exit $exit_code
@@ -219,3 +225,50 @@ jobs:
         with:
           name: models-unique-ops-config-${{ steps.fetch-job-id.outputs.job_id }}
           path: generated_modules/
+
+      - name: Extract and Run Failed tests
+        id: extract-and-run-failed-tests
+        if: success() || failure()
+        shell: bash
+        run: |
+          set -o pipefail
+          source env/activate
+
+          # If the file exists, remove it first (start with a clean slate).
+          if [[ -f .pytest_tests_to_run ]]; then
+            echo "Found existing .pytest_tests_to_run — removing it."
+            rm -f .pytest_tests_to_run
+          else
+            echo "No existing .pytest_tests_to_run found."
+          fi
+
+          # Collect failed tests into the file
+          python scripts/model_analysis/collect_failed_tests.py \
+            --file_paths extract-and-export-unique-ops-configs.log \
+            --out_file .pytest_tests_to_run
+
+          # Check whether .pytest_tests_to_run contains any non-whitespace characters.
+          if [[ -f .pytest_tests_to_run ]] && grep -q '[^[:space:]]' .pytest_tests_to_run; then
+            echo ".pytest_tests_to_run is not empty — running test_runner.py"
+            python .github/workflows/test_runner.py \
+                --runxfail \
+                --no-skips \
+                -vss \
+              2>&1 | tee failed-unique-ops-config-extraction.log
+            echo "contains_failed_tests=true" >> "$GITHUB_OUTPUT"
+            exit_code=${PIPESTATUS[0]}
+          else
+            echo ".pytest_tests_to_run is empty — skipping test_runner.py"
+            echo "contains_failed_tests=false" >> "$GITHUB_OUTPUT"
+            exit_code=0
+          fi
+
+          # Exit with the runner/test exit code (0 when skipped)
+          exit $exit_code
+
+      - name: Upload Unique Ops Configs Extraction Failure Log
+        uses: actions/upload-artifact@v4
+        if: ${{ steps.extract-and-run-failed-tests.outputs.contains_failed_tests == 'true' }}
+        with:
+           name: failed-unique-ops-config-extraction-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+           path: failed-unique-ops-config-extraction.log

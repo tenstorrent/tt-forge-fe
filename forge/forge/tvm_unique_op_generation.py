@@ -8,6 +8,7 @@ from loguru import logger
 from typing import Any, Dict, Optional
 from collections.abc import MutableMapping
 from collections import Counter
+import ast
 
 import torch
 import onnx
@@ -618,18 +619,51 @@ def extract_and_export_unique_ops_config(
         export_unique_op_configuration_info(current_module_name, unique_operation_details, unique_ops_metadata)
 
 
-def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_test_output_directory_path: str):
+def get_unique_ops_configs_to_skip(file_path: str) -> Optional[Any]:
+    """
+    Load and return unique ops configs to skip from a JSON file.
+
+    Args:
+        file_path (str): Path to the JSON file.
+
+    Returns:
+        dict | list | None: Parsed JSON data if valid, else None.
+    """
+    if not os.path.exists(file_path):
+        # File does not exist
+        return None
+
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return data
+    except (json.JSONDecodeError, OSError):
+        # Invalid JSON or file cannot be read
+        return None
+
+
+def generate_models_ops_test(
+    unique_operations: UniqueOperations,
+    models_ops_test_output_directory_path: str,
+    configs_to_skip_file_path: Optional[str] = None,
+):
     """
     Generate models ops test forge modules with test function from the provided unique operation configuration extracted across all the models
     """
 
+    configs_to_skip = None
+    if configs_to_skip_file_path is not None:
+        configs_to_skip = get_unique_ops_configs_to_skip(configs_to_skip_file_path)
+
     # Iterate over the unique operations dictonary after sorting it by operation name.
     for forge_op_function_name in sorted(unique_operations):
 
-        module_metadata = {"forge_op_name": forge_op_function_name.split(".")[-1]}
+        forge_op_name = forge_op_function_name.split(".")[-1]
+
+        module_metadata = {"forge_op_name": forge_op_name}
 
         # Extract operation name from forge op function name
-        op_name = forge_op_function_name.split(".")[-1].lower()
+        op_name = forge_op_name.lower()
 
         module_name = "test_" + op_name
 
@@ -858,6 +892,51 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
                     and len(operation_metadata["markers"]) == 1
                 ):
                     markers_with_reasons = operation_metadata["markers"][0]
+
+                if configs_to_skip is not None:
+                    matched_config = False
+                    new_operand_dtypes = [
+                        pytorch_df_from_str(operand_dtype, "", return_as_str=True) for operand_dtype in operand_dtypes
+                    ]
+                    for reason, op_details in configs_to_skip.items():
+                        op_configs_list = op_details.get(forge_op_name)
+                        if not op_configs_list:
+                            continue
+                        for op_config in op_configs_list:
+                            cfg_operand_types = [NodeType.from_json(node_type) for node_type in op_config["NodeTypes"]]
+                            cfg_operand_shapes = [
+                                ast.literal_eval(node_shape) for node_shape in op_config["NodeShapes"]
+                            ]
+                            cfg_node_args = op_config.get("NodeArgs", {})
+                            cfg_test_kinds = op_config.get("TestKind", [])
+                            if (
+                                cfg_operand_types != operand_types
+                                or cfg_operand_shapes != operand_shapes
+                                or op_config["NodeDtypes"] != new_operand_dtypes
+                                or OpArgs(cfg_node_args) != args
+                            ):
+                                continue
+                            if not cfg_test_kinds:
+                                marker_name = "skip"
+                            elif len(cfg_test_kinds) == 1:
+                                single_kind = cfg_test_kinds[0]
+                                if single_kind == "training":
+                                    marker_name = "skip_if_models_ops_training"
+                                elif single_kind == "inference":
+                                    marker_name = "skip"
+                                else:
+                                    marker_name = "skip"
+                            else:
+                                assert all(k in {"inference", "training"} for k in cfg_test_kinds)
+                                marker_name = "skip"
+                            if markers_with_reasons is None:
+                                markers_with_reasons = []
+                            markers_with_reasons.append({"marker_name": marker_name, "reason": reason})
+                            matched_config = True
+                            break
+
+                        if matched_config:
+                            break
 
                 pytest_markers_with_reasons.append(markers_with_reasons)
                 pytest_metadata_list.append(pytest_metadata)
