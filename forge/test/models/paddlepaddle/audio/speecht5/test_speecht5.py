@@ -21,7 +21,7 @@ variants = ["microsoft/speecht5_asr"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail()
+@pytest.mark.check_crash
 @pytest.mark.parametrize("variant", variants)
 def test_speecht5_text_to_speech(variant):
     # Record Forge properties
