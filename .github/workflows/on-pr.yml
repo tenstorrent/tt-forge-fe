@@ -72,13 +72,13 @@ jobs:
     needs:
       - docker-build
       - build
-    uses: tenstorrent/tt-forge/.github/workflows/perf-benchmark.yml@main
+    uses: tenstorrent/tt-forge/.github/workflows/perf-benchmark.yml@vvukoman/fix-perf-regress-check
     secrets: inherit
     with:
       project: tt-forge-fe
       run_id: ${{ github.run_id }}
       run_id_source: tt-forge-fe
-      ref: main
+      ref: vvukoman/fix-perf-regress-check
       on_uplift_pr: true
 
     #   uses: ./.github/workflows/perf-benchmark-sub.yml
