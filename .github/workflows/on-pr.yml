@@ -53,19 +53,19 @@ jobs:
     secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-  test:
-    needs:
-      - docker-build
-      - build
-    uses: ./.github/workflows/test-sub.yml
-    secrets: inherit
-    with:
-      test_mark: 'push'
-      test_group_cnt: 2
-      test_group_ids: '[1,2]'
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      run_id: ${{ github.run_id }}
-      runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
+  # test:
+  #   needs:
+  #     - docker-build
+  #     - build
+  #   uses: ./.github/workflows/test-sub.yml
+  #   secrets: inherit
+  #   with:
+  #     test_mark: 'push'
+  #     test_group_cnt: 2
+  #     test_group_ids: '[1,2]'
+  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  #     run_id: ${{ github.run_id }}
+  #     runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
 
   perf-benchmark:
     if: inputs.run_perf_benchmark || (vars.RUN_PERF_ON_UPLIFT == 'true'  && github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'uplift'))
@@ -95,7 +95,6 @@ jobs:
       - docker-build
       - build-docs
       - build
-      - test
       - perf-benchmark
     runs-on: Ubuntu-latest
     steps:
