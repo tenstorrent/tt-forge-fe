@@ -104,6 +104,7 @@ jobs:
           echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
           echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
           echo "test_report_path=reports/report_$JOB_ID.xml" >> "$GITHUB_OUTPUT"
+          echo "runner-temp=$(pwd)/wheels" >> "$GITHUB_OUTPUT"
 
       - name: Git safe dir
         run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
@@ -131,6 +132,14 @@ jobs:
           git submodule foreach --recursive git clean -ffdx
           git submodule foreach --recursive git reset --hard
 
+      - name: Ensure artifact temp dir exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${{ steps.strings.outputs.runner-temp }}"
+          ls -ld "${{ steps.strings.outputs.runner-temp }}" || true
+          echo "Created artifact temp dir: ${{ steps.strings.outputs.runner-temp }}"
+
       - name: Download wheel
         if: ${{ inputs.run_id }}
         continue-on-error: true
@@ -139,6 +148,7 @@ jobs:
           name: forge-wheel
           run_id: ${{ inputs.run_id }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ steps.strings.outputs.runner-temp }}
 
       - name: Find and download forge wheel
         if: ${{ !inputs.run_id }}
@@ -152,14 +162,31 @@ jobs:
           repo: tenstorrent/tt-forge-fe
           check_artifacts: true
           search_artifacts: true
+          path: ${{ steps.strings.outputs.runner-temp }}
 
       - name: Install wheel
         shell: bash
         run: |
           source env/activate
-          pip install tt_tvm*.whl --force-reinstall
-          pip install tt_forge_fe*.whl --force-reinstall
+          ART_DIR="${{ steps.strings.outputs.runner-temp }}"
+          echo "Installing wheels from: $ART_DIR"
+          ls -al "$ART_DIR" || true
 
+          # Expand matching wheels into arrays; fail if none found
+          tvm_wheels=( "$ART_DIR"/tt_tvm*.whl )
+          forge_wheels=( "$ART_DIR"/tt_forge_fe*.whl )
+
+          if [[ ${#tvm_wheels[@]} -eq 0 ]]; then
+            echo "ERROR: No tt_tvm wheel found in $ART_DIR"
+            exit 1
+          fi
+
+          pip install "${tvm_wheels[@]}" --force-reinstall
+          if [[ ${#forge_wheels[@]} -ne 0 ]]; then
+            pip install "${forge_wheels[@]}" --force-reinstall || true
+          else
+            echo "No tt_forge_fe wheel found; continuing."
+          fi
 
       - name: Extract and Export Unique Ops Configuration
         shell: bash
@@ -198,6 +225,7 @@ jobs:
 
           python .github/workflows/test_runner.py  \
                --continue-after-crash \
+               --junit-xml=${{ steps.strings.outputs.test_report_path }} \
                --log-memory-usage \
                --runxfail \
                --no-skips \
@@ -286,16 +314,16 @@ jobs:
           name: failed-unique-ops-config-extraction-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
           path: failed-unique-ops-config-extraction.log
 
-      - name: Upload Failed Test Report
+      - name: Upload Test Report
         uses: actions/upload-artifact@v4
-        if: ${{ always() && steps.extract-and-run-failed-tests.outputs.contains_failed_tests == 'true' }}
+        if: always()
         with:
           name: test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ steps.fetch-job-id.outputs.job_id }}
           path: ${{ steps.strings.outputs.test_report_path }}
 
-      - name: Show Failed Test Report
+      - name: Show Test Report
         uses: mikepenz/action-junit-report@v5
-        if: ${{ always() && steps.extract-and-run-failed-tests.outputs.contains_failed_tests == 'true' }}
+        if: always()
         with:
           report_paths: ${{ steps.strings.outputs.test_report_path }}
           check_name: TT-Forge-FE Tests
