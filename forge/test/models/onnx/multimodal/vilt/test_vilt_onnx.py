@@ -60,7 +60,7 @@ def generate_model_vilt_question_answering_hf_pytorch(variant):
 variants = ["dandelin/vilt-b32-finetuned-vqa"]
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2969")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vilt_question_answering_onnx(variant, forge_tmp_path):

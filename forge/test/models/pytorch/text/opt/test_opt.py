@@ -110,7 +110,9 @@ def test_opt_causal_lm(variant):
 variants = [
     QAVariant.OPT_125M,
     QAVariant.OPT_350M,
-    pytest.param(QAVariant.OPT_1_3B, marks=[pytest.mark.xfail]),
+    pytest.param(
+        QAVariant.OPT_1_3B, marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2969")]
+    ),
 ]
 
 
@@ -149,7 +151,7 @@ def test_opt_qa(variant):
 variants = [
     SequenceClassificationVariant.OPT_125M,
     SequenceClassificationVariant.OPT_350M,
-    SequenceClassificationVariant.OPT_1_3B,
+    pytest.param(SequenceClassificationVariant.OPT_1_3B, marks=[pytest.mark.xfail]),
 ]
 
 

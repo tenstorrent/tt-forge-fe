@@ -25,7 +25,7 @@ class Wrapper(torch.nn.Module):
         return self.model(input_ids, attention_mask, decoder_input_values)[0]  # Return only the spectrogram tensor
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2969")
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",
