@@ -38,7 +38,7 @@ rm -rf "$OUTPUT_DIR"/*
 
 # Get list of artifact names
 echo "Fetching artifacts from run ID: $RUN_ID in $WORKFLOW_REPO"
-ARTIFACTS_JSON="$(gh api "/repos/$WORKFLOW_REPO/actions/runs/$RUN_ID/artifacts" --jq '.artifacts // []')"
+ARTIFACTS_JSON="$(gh api --paginate "/repos/$WORKFLOW_REPO/actions/runs/$RUN_ID/artifacts" --jq '.artifacts // []')"
 
 if [ "$(jq 'length' <<<"$ARTIFACTS_JSON")" -eq 0 ]; then
   echo "No artifacts found for run ID $RUN_ID"

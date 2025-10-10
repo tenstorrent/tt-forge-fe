@@ -81,6 +81,14 @@ def main():
             "and then combine it with unique ops configuration extracted for the list of models tests specified in the tests_to_filter and then generate models ops tests"
         ),
     )
+    parser.add_argument(
+        "--configs_to_skip_file_path",
+        default=os.path.join(os.getcwd(), "scripts/model_analysis/unique-ops-configs-to-skip.json"),
+        required=False,
+        help=(
+            "If the file path is provided, all those config present in the json file will skipped if it matches with the unique ops configs present in the generated models ops tests"
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -133,6 +141,7 @@ def main():
     generate_models_ops_test(
         unique_operations_across_all_models_ops_test,
         models_ops_tests_directory_path,
+        args.configs_to_skip_file_path,
     )
     run_precommit(directory_path=models_ops_tests_directory_path)
 

@@ -44,8 +44,8 @@ on:
         required: false
         type: boolean
         default: false
-  # schedule:
-  #   - cron: '0 0 * * *'  # Runs at 12:00 UTC every day
+  schedule:
+    - cron: '0 0 * * *'  # Runs at 12:00 UTC every day
 
 
 permissions:
@@ -74,7 +74,7 @@ jobs:
       - name: Inputs Management
         id: set-inputs
         run: |
-          default_test_group_cnt=10
+          default_test_group_cnt=12
           default_runs_on=n150
           default_create_pr=false
           tgc=$(if [ -z "${{ inputs.test_group_cnt }}" ]; then echo $default_test_group_cnt; else echo ${{ inputs.test_group_cnt }}; fi)
@@ -112,6 +112,7 @@ jobs:
       run_id: ${{ needs.build.outputs.run_id }}
       tests_to_filter: ${{ inputs.tests_to_filter }}
       allow-fail: true
+      max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
 
   generate-models-ops-tests:
 
@@ -275,3 +276,6 @@ jobs:
       sh-runner: true
       run_id: ${{ needs.build.outputs.run_id }}
       run_models_ops_tests: true
+      max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
+      test-expression: 'inference and not training'
+      allow-fail: true

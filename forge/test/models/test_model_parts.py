@@ -610,6 +610,7 @@ def test_gather_onnx(shape, axis, index):
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.xfail
 @pytest.mark.nightly
 def test_shift_tokens_right():
