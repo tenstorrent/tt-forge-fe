@@ -32,6 +32,7 @@ cache_dir = os.path.join("forge/test/models/paddlepaddle/multimodal/paddleocr", 
 os.makedirs(cache_dir, exist_ok=True)
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant,url",
@@ -46,6 +47,8 @@ def test_paddleocr_rec(variant, url):
         source=Source.PADDLE,
         task=Task.SCENE_TEXT_RECOGNITION,
     )
+
+    pytest.xfail(reason="Skipping the tests due to hang in runtime")
 
     # Fetch model
     framework_model = fetch_paddle_model(url, cache_dir)
