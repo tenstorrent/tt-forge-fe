@@ -74,6 +74,9 @@ std::string config_to_pipeline_options(const std::optional<MLIRConfig> &mlir_con
         options << " " << mlir_config->custom_config;
     }
 
+    options << " enable-fusing-conv2d-with-multiply-pattern="
+      << true;
+
     return options.str();
 }
 
