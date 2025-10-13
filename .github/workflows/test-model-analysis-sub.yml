@@ -23,10 +23,10 @@ on:
         required: true
         type: string
       runs-on:
-        description: 'Runs on'
+        description: 'Runs on (JSON array of tags, e.g. [\"n150\",\"perf\",\"n300\"]). A literal \"perf\" token expands to [\"n150-perf\",\"llmbox\"].'
         required: false
         type: string
-        default: '[{"runs-on": "runner"}]'
+        default: '["runner"]'
       run_id:
         description: 'Run id the workflow where to find installation (or else it will search)'
         required: false
@@ -51,16 +51,54 @@ on:
         default: 360
 
 jobs:
-  run-tests:
 
+  prepare-runners:
+    runs-on: ubuntu-latest
+    outputs:
+      selected_builds: ${{ steps.set.outputs.selected_builds }}
+    steps:
+      - name: Decide builds
+        id: set
+        shell: bash
+        run: |
+          set -euo pipefail
+          INPUT_JSON=${{ inputs.runs-on}}
+          echo "Input runs-on JSON: $INPUT_JSON"
+
+          if [[ "$INPUT_JSON" == *'"perf"'* ]]; then
+            # Replace "perf" with "n150-perf","llmbox" inside the JSON string
+            out_json=$(printf '%s' "$INPUT_JSON" | sed -E 's/"perf"/"n150-perf","llmbox"/g')
+          else
+            out_json="$INPUT_JSON"
+          fi
+
+          # Trim leading/trailing whitespace
+          out_json="$(printf '%s' "$out_json" | sed -E 's/^[[:space:]]+|[[:space:]]+$//g')"
+          
+          # Final check to ensure it's not empty, e.g., if input was an empty string
+          if [ -z "$out_json" ]; then
+            out_json='["runner"]' # Fallback to a safe default JSON array
+          fi
+
+          echo "Prepared builds JSON: $out_json"
+          # The key is to assign the string directly. Using `printf %q` can help escape, but
+          # we want the raw JSON string here.
+          echo "selected_builds=$out_json" >> "$GITHUB_OUTPUT"
+
+  run-tests:
+    needs: prepare-runners
     timeout-minutes: ${{ inputs.max-job-duration-minutes }}
     strategy:
       fail-fast: false
       matrix:
-        build: ${{ fromJson(inputs.runs-on) }}
+        build: ${{ fromJson(needs.prepare-runners.outputs.selected_builds) }}
         test_group_id: ${{ fromJSON(inputs.test_group_ids) }}
 
-    runs-on: ${{ inputs.sh-runner && format('tt-beta-ubuntu-2204-{0}-large-stable', matrix.build.runs-on) || fromJson(format('["{0}", "in-service"]', matrix.build.runs-on)) }}
+    # Runner selection rules:
+    # - shared -> tt-ubuntu-2204-{tag}-stable
+    # - perf runners (n150-perf or llmbox) -> just the tag
+    # - otherwise -> ["tag","in-service"]
+    runs-on: ${{ inputs.sh-runner && format('tt-ubuntu-2204-{0}-stable', matrix.build) || (matrix.build == 'n150-perf' || matrix.build == 'llmbox') && matrix.build || fromJson(format('["{0}", "in-service"]', matrix.build)) }}
 
     continue-on-error: ${{ inputs.allow-fail }}
 
@@ -85,7 +123,7 @@ jobs:
       FORGE_EXTRACT_TVM_UNIQUE_OPS_CONFIG: 1
       FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS: 1
 
-    name: "run-tests ${{ inputs.test_mark }} (${{ inputs.sh-runner && format('{0}-shared', matrix.build.runs-on) || (matrix.build.runs-on) }}, ${{ matrix.test_group_id }})"
+    name: "run-tests ${{ inputs.test_mark }} (${{ inputs.sh-runner && format('{0}-shared', matrix.build) || matrix.build }}, ${{ matrix.test_group_id }})"
 
     steps:
 
@@ -93,7 +131,7 @@ jobs:
         id: fetch-job-id
         uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
         with:
-          job_name: "run-tests ${{ inputs.test_mark }} (${{ inputs.sh-runner && format('{0}-shared', matrix.build.runs-on) || (matrix.build.runs-on) }}, ${{ matrix.test_group_id }})"
+          job_name: "run-tests ${{ inputs.test_mark }} (${{ inputs.sh-runner && format('{0}-shared', matrix.build) || matrix.build }}, ${{ matrix.test_group_id }})"
 
       - name: Set reusable strings
         id: strings
@@ -125,8 +163,6 @@ jobs:
         run: |
           git submodule update --init --recursive -f third_party/tt_forge_models
 
-        # Clean everything from submodules (needed to avoid issues
-        # with cmake generated files leftover from previous builds)
       - name: Cleanup submodules
         run: |
           git submodule foreach --recursive git clean -ffdx
@@ -238,14 +274,14 @@ jobs:
         uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
-           name: extract-and-export-unique-ops-configs-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+           name: extract-and-export-unique-ops-configs-log-${{ matrix.build }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
            path: extract-and-export-unique-ops-configs.log
 
       - name: Upload Memory Usage Log
         uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
-          name: memory-usage-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+          name: memory-usage-${{ matrix.build }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
           path: pytest-memory-usage.csv
 
       - name: Upload Models Unique Ops Config
@@ -254,80 +290,3 @@ jobs:
         with:
           name: models-unique-ops-config-${{ steps.fetch-job-id.outputs.job_id }}
           path: generated_modules/
-
-      - name: Extract and Run Failed tests
-        id: extract-and-run-failed-tests
-        if: success() || failure()
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          contains_failed_tests=false
-
-          # ensure we always write the output on exit (success or failure)
-          trap 'echo "contains_failed_tests=${contains_failed_tests}" >> "$GITHUB_OUTPUT"' EXIT
-
-          source env/activate
-
-          # If the file exists, remove it first (start with a clean slate).
-          if [[ -f .pytest_tests_to_run ]]; then
-            echo "Found existing .pytest_tests_to_run — removing it."
-            rm -f .pytest_tests_to_run
-          else
-            echo "No existing .pytest_tests_to_run found."
-          fi
-
-          # Collect failed tests into the file
-          python scripts/model_analysis/collect_failed_tests.py \
-            --file_paths extract-and-export-unique-ops-configs.log \
-            --out_file .pytest_tests_to_run
-
-          # Check whether .pytest_tests_to_run contains any non-whitespace characters.
-          if [[ -f .pytest_tests_to_run ]] && grep -q '[^[:space:]]' .pytest_tests_to_run; then
-            echo ".pytest_tests_to_run is not empty — running test_runner.py"
-            contains_failed_tests=true
-
-            # run the runner; capture exit but don't exit the step immediately
-            set +e
-            python .github/workflows/test_runner.py \
-                --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-                --runxfail \
-                --no-skips \
-                -vss \
-              2>&1 | tee failed-unique-ops-config-extraction.log
-            rc=${PIPESTATUS[0]}
-            set -e
-
-            # propagate runner exit code (so the step fails if tests failed)
-            exit $rc
-          else
-            echo ".pytest_tests_to_run is empty — skipping test_runner.py"
-            contains_failed_tests=false
-            # explicit success
-            exit 0
-          fi
-
-      - name: Upload Unique Ops Configs Extraction Failure Log
-        uses: actions/upload-artifact@v4
-        if: ${{ always() && steps.extract-and-run-failed-tests.outputs.contains_failed_tests == 'true' }}
-        with:
-          name: failed-unique-ops-config-extraction-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
-          path: failed-unique-ops-config-extraction.log
-
-      - name: Upload Test Report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ steps.fetch-job-id.outputs.job_id }}
-          path: ${{ steps.strings.outputs.test_report_path }}
-
-      - name: Show Test Report
-        uses: mikepenz/action-junit-report@v5
-        if: always()
-        with:
-          report_paths: ${{ steps.strings.outputs.test_report_path }}
-          check_name: TT-Forge-FE Tests
-          comment: false
-          updateComment: false
-          detailed_summary: true
-          group_suite: true

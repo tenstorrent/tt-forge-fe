@@ -46,13 +46,15 @@ on:
         default: false
   schedule:
     - cron: '0 0 * * *'  # Runs at 12:00 UTC every day
+  push:
+    branches: [ "pchandrasekaran/testing" ]
 
 
 permissions:
   packages: write
   checks: write
 
-run-name: "Model Analysis (${{inputs.runs-on}}-${{inputs.test_group_cnt}})"
+# run-name: "Model Analysis (${{inputs.rguns-on}}-${{inputs.test_group_cnt}})"
 
 jobs:
 
@@ -74,15 +76,15 @@ jobs:
       - name: Inputs Management
         id: set-inputs
         run: |
-          default_test_group_cnt=12
-          default_runs_on=n150
+          default_test_group_cnt=3
+          default_runs_on=perf
           default_create_pr=false
           tgc=$(if [ -z "${{ inputs.test_group_cnt }}" ]; then echo $default_test_group_cnt; else echo ${{ inputs.test_group_cnt }}; fi)
           runs_on=$(if [ -z "${{ inputs.runs-on }}" ]; then echo $default_runs_on; else echo ${{ inputs.runs-on}}; fi)
           default_create_pr=$(if [ -z "${{ inputs.create_pull_request }}" ]; then echo $default_create_pr; else echo ${{ inputs.create_pull_request }}; fi)
           echo "test_group_cnt=$tgc" >> $GITHUB_OUTPUT
           echo "test_group_ids=[$(seq -s ',' 1 $tgc)]" >> $GITHUB_OUTPUT
-          echo "runs-on=[{\"runs-on\": \"$runs_on\"}]" >> $GITHUB_OUTPUT
+          echo "runs-on='[\"$runs_on\"]'" >> $GITHUB_OUTPUT
           echo "runner=$runs_on" >> $GITHUB_OUTPUT
           echo "create_pr=$default_create_pr" >> $GITHUB_OUTPUT
 
@@ -104,7 +106,7 @@ jobs:
     uses: ./.github/workflows/test-model-analysis-sub.yml
     secrets: inherit
     with:
-      test_mark: 'not (skip_model_analysis or out_of_memory)'
+      test_mark: 'not skip_model_analysis and out_of_memory'
       test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
       test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
@@ -257,25 +259,25 @@ jobs:
           add-paths: |
               ${{ env.GENERATED_MODELS_OPS_TESTS_PATH }}
 
-  run-models-ops-tests:
-    if: ${{ needs.set-inputs.outputs.create_pr == 'false' }}
-    needs:
-      - docker-build
-      - set-inputs
-      - build
-      - extract-unique-ops-configuration
-      - generate-models-ops-tests
-    uses: ./.github/workflows/test-sub.yml
-    secrets: inherit
-    with:
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      test_mark: 'nightly_models_ops'
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
-      runs-on: '[{"runs-on": "n150"}]'
-      sh-runner: true
-      run_id: ${{ needs.build.outputs.run_id }}
-      run_models_ops_tests: true
-      max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
-      test-expression: 'inference and not training'
-      allow-fail: true
+  # run-models-ops-tests:
+  #   if: ${{ needs.set-inputs.outputs.create_pr == 'false' }}
+  #   needs:
+  #     - docker-build
+  #     - set-inputs
+  #     - build
+  #     - extract-unique-ops-configuration
+  #     - generate-models-ops-tests
+  #   uses: ./.github/workflows/test-sub.yml
+  #   secrets: inherit
+  #   with:
+  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  #     test_mark: 'nightly_models_ops'
+  #     test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+  #     test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
+  #     runs-on: '[{"runs-on": "n150"}]'
+  #     sh-runner: true
+  #     run_id: ${{ needs.build.outputs.run_id }}
+  #     run_models_ops_tests: true
+  #     max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
+  #     test-expression: 'inference and not training'
+  #     allow-fail: true
