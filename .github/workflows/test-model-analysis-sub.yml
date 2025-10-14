@@ -44,10 +44,16 @@ on:
         description: 'Run tests using shared runners'
         required: false
         type: boolean
+      max-job-duration-minutes:
+        description: 'Set maximum execution time for the job in minutes. If the job exceeds this limit it will be cancelled and marked failed'
+        required: false
+        type: number
+        default: 360
 
 jobs:
   run-tests:
 
+    timeout-minutes: ${{ inputs.max-job-duration-minutes }}
     strategy:
       fail-fast: false
       matrix:
@@ -97,6 +103,8 @@ jobs:
         run: |
           echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
           echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
+          echo "test_report_path=reports/report_$JOB_ID.xml" >> "$GITHUB_OUTPUT"
+          echo "runner-temp=$(pwd)/wheels" >> "$GITHUB_OUTPUT"
 
       - name: Git safe dir
         run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
@@ -110,6 +118,7 @@ jobs:
             pytest.ini
             conftest.py
             .test_durations
+            scripts/
 
       - name: Setup Forge Models repo
         shell: bash
@@ -123,6 +132,14 @@ jobs:
           git submodule foreach --recursive git clean -ffdx
           git submodule foreach --recursive git reset --hard
 
+      - name: Ensure artifact temp dir exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${{ steps.strings.outputs.runner-temp }}"
+          ls -ld "${{ steps.strings.outputs.runner-temp }}" || true
+          echo "Created artifact temp dir: ${{ steps.strings.outputs.runner-temp }}"
+
       - name: Download wheel
         if: ${{ inputs.run_id }}
         continue-on-error: true
@@ -131,6 +148,7 @@ jobs:
           name: forge-wheel
           run_id: ${{ inputs.run_id }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ steps.strings.outputs.runner-temp }}
 
       - name: Find and download forge wheel
         if: ${{ !inputs.run_id }}
@@ -144,18 +162,34 @@ jobs:
           repo: tenstorrent/tt-forge-fe
           check_artifacts: true
           search_artifacts: true
+          path: ${{ steps.strings.outputs.runner-temp }}
 
       - name: Install wheel
         shell: bash
         run: |
           source env/activate
-          pip install tt_tvm*.whl --force-reinstall
-          pip install tt_forge_fe*.whl --force-reinstall
+          ART_DIR="${{ steps.strings.outputs.runner-temp }}"
+          echo "Installing wheels from: $ART_DIR"
+          ls -al "$ART_DIR" || true
 
+          # Expand matching wheels into arrays; fail if none found
+          tvm_wheels=( "$ART_DIR"/tt_tvm*.whl )
+          forge_wheels=( "$ART_DIR"/tt_forge_fe*.whl )
+
+          if [[ ${#tvm_wheels[@]} -eq 0 ]]; then
+            echo "ERROR: No tt_tvm wheel found in $ART_DIR"
+            exit 1
+          fi
+
+          pip install "${tvm_wheels[@]}" --force-reinstall
+          if [[ ${#forge_wheels[@]} -ne 0 ]]; then
+            pip install "${forge_wheels[@]}" --force-reinstall || true
+          else
+            echo "No tt_forge_fe wheel found; continuing."
+          fi
 
       - name: Extract and Export Unique Ops Configuration
         shell: bash
-        timeout-minutes: 1440 # Set execution time to 1 days(default: 6 hours)
         run: |
           set -o pipefail
           source env/activate
@@ -191,10 +225,11 @@ jobs:
 
           python .github/workflows/test_runner.py  \
                --continue-after-crash \
+               --junit-xml=${{ steps.strings.outputs.test_report_path }} \
                --log-memory-usage \
                --runxfail \
                --no-skips \
-               -vss \
+               -v \
             2>&1 | tee extract-and-export-unique-ops-configs.log
           exit_code=${PIPESTATUS[0]}
           exit $exit_code
@@ -219,3 +254,80 @@ jobs:
         with:
           name: models-unique-ops-config-${{ steps.fetch-job-id.outputs.job_id }}
           path: generated_modules/
+
+      - name: Extract and Run Failed tests
+        id: extract-and-run-failed-tests
+        if: success() || failure()
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          contains_failed_tests=false
+
+          # ensure we always write the output on exit (success or failure)
+          trap 'echo "contains_failed_tests=${contains_failed_tests}" >> "$GITHUB_OUTPUT"' EXIT
+
+          source env/activate
+
+          # If the file exists, remove it first (start with a clean slate).
+          if [[ -f .pytest_tests_to_run ]]; then
+            echo "Found existing .pytest_tests_to_run — removing it."
+            rm -f .pytest_tests_to_run
+          else
+            echo "No existing .pytest_tests_to_run found."
+          fi
+
+          # Collect failed tests into the file
+          python scripts/model_analysis/collect_failed_tests.py \
+            --file_paths extract-and-export-unique-ops-configs.log \
+            --out_file .pytest_tests_to_run
+
+          # Check whether .pytest_tests_to_run contains any non-whitespace characters.
+          if [[ -f .pytest_tests_to_run ]] && grep -q '[^[:space:]]' .pytest_tests_to_run; then
+            echo ".pytest_tests_to_run is not empty — running test_runner.py"
+            contains_failed_tests=true
+
+            # run the runner; capture exit but don't exit the step immediately
+            set +e
+            python .github/workflows/test_runner.py \
+                --junit-xml=${{ steps.strings.outputs.test_report_path }} \
+                --runxfail \
+                --no-skips \
+                -vss \
+              2>&1 | tee failed-unique-ops-config-extraction.log
+            rc=${PIPESTATUS[0]}
+            set -e
+
+            # propagate runner exit code (so the step fails if tests failed)
+            exit $rc
+          else
+            echo ".pytest_tests_to_run is empty — skipping test_runner.py"
+            contains_failed_tests=false
+            # explicit success
+            exit 0
+          fi
+
+      - name: Upload Unique Ops Configs Extraction Failure Log
+        uses: actions/upload-artifact@v4
+        if: ${{ always() && steps.extract-and-run-failed-tests.outputs.contains_failed_tests == 'true' }}
+        with:
+          name: failed-unique-ops-config-extraction-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: failed-unique-ops-config-extraction.log
+
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: ${{ steps.strings.outputs.test_report_path }}
+
+      - name: Show Test Report
+        uses: mikepenz/action-junit-report@v5
+        if: always()
+        with:
+          report_paths: ${{ steps.strings.outputs.test_report_path }}
+          check_name: TT-Forge-FE Tests
+          comment: false
+          updateComment: false
+          detailed_summary: true
+          group_suite: true
