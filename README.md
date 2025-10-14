@@ -51,8 +51,8 @@ You can run a demo using the [TT-Forge-FE Getting Started](https://docs.tenstorr
 
 -----
 # Related Tenstorrent Projects
-- [TT-XLA](https://github.com/tenstorrent/tt-xla) - (single and multi-chip) For use with PyTorch, JAX, and TensorFlow
-- [TT-Forge-FE](https://github.com/tenstorrent/tt-forge-fe) - (single chip only) For use with ONNX and PaddlePaddle, it also runs PyTorch, however it is recommended to use TT-XLA for PyTorch
+- [TT-XLA](https://github.com/tenstorrent/tt-xla) - (single and multi-chip) For use with PyTorch and JAX
+- [TT-Forge-FE](https://github.com/tenstorrent/tt-forge-fe) - (single chip only) For use with TensorFlow, ONNX, and PaddlePaddle, it also runs PyTorch, however it is recommended to use TT-XLA for PyTorch
 - [TT-MLIR](https://github.com/tenstorrent/tt-mlir) - Open source compiler framework for compiling and optimizing machine learning models for Tenstorrent hardware
 - [TT-Metal](https://github.com/tenstorrent/tt-metal) - Low-level programming model, enabling kernel development for Tenstorrent hardware
 - [TT-TVM](https://github.com/tenstorrent/tt-tvm) - A compiler stack for deep learning systems designed to close the gap between the productivity-focused deep learning frameworks, and the performance and efficiency-focused hardware backends
