@@ -220,67 +220,67 @@ jobs:
           name: collected-test-list-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
           path: collected_test_list
 
-      - name: Run Test
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          HF_HOME: /mnt/dockercache/huggingface
-          IRD_LF_CACHE: ${{ vars.IRD_LF_CACHE }}
-          FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
-          HF_HUB_DISABLE_PROGRESS_BARS: 1
-          FORGE_DISABLE_REPORTIFY_DUMP: 1
-          OPERATORS: ${{ inputs.operators }}
-          FILTERS: ${{ inputs.filters }}
-        shell: bash
-        run: |
-          source env/activate
-          python .github/workflows/test_runner.py  \
-               --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-               --log-memory-usage \
-               $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi)
-          exit_code=$?
+      # - name: Run Test
+      #   env:
+      #     HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      #     HF_HOME: /mnt/dockercache/huggingface
+      #     IRD_LF_CACHE: ${{ vars.IRD_LF_CACHE }}
+      #     FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
+      #     HF_HUB_DISABLE_PROGRESS_BARS: 1
+      #     FORGE_DISABLE_REPORTIFY_DUMP: 1
+      #     OPERATORS: ${{ inputs.operators }}
+      #     FILTERS: ${{ inputs.filters }}
+      #   shell: bash
+      #   run: |
+      #     source env/activate
+      #     python .github/workflows/test_runner.py  \
+      #          --junit-xml=${{ steps.strings.outputs.test_report_path }} \
+      #          --log-memory-usage \
+      #          $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi)
+      #     exit_code=$?
 
-          if [ -f "crashed_pytest.log" ]; then
-            echo "Creating crash summary for the job..."
-            echo "### Crashed tests:" >>$GITHUB_STEP_SUMMARY
-            cat crashed_pytest.log >>$GITHUB_STEP_SUMMARY
-          fi
-          exit $exit_code
+      #     if [ -f "crashed_pytest.log" ]; then
+      #       echo "Creating crash summary for the job..."
+      #       echo "### Crashed tests:" >>$GITHUB_STEP_SUMMARY
+      #       cat crashed_pytest.log >>$GITHUB_STEP_SUMMARY
+      #     fi
+      #     exit $exit_code
 
-      - name: Upload Test Log
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: test-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
-          path: pytest.log
+      # - name: Upload Test Log
+      #   uses: actions/upload-artifact@v4
+      #   if: success() || failure()
+      #   with:
+      #     name: test-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+      #     path: pytest.log
 
-      - name: Upload Test Crash Log
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: test-crash-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
-          path: crashed_pytest.log
+      # - name: Upload Test Crash Log
+      #   uses: actions/upload-artifact@v4
+      #   if: success() || failure()
+      #   with:
+      #     name: test-crash-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+      #     path: crashed_pytest.log
 
-      - name: Upload Memory Usage Log
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: memory-usage-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
-          path: pytest-memory-usage.csv
+      # - name: Upload Memory Usage Log
+      #   uses: actions/upload-artifact@v4
+      #   if: success() || failure()
+      #   with:
+      #     name: memory-usage-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+      #     path: pytest-memory-usage.csv
 
-      - name: Upload Test Report
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ steps.fetch-job-id.outputs.job_id }}
-          path: ${{ steps.strings.outputs.test_report_path }}
+      # - name: Upload Test Report
+      #   uses: actions/upload-artifact@v4
+      #   if: success() || failure()
+      #   with:
+      #     name: test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ steps.fetch-job-id.outputs.job_id }}
+      #     path: ${{ steps.strings.outputs.test_report_path }}
 
-      - name: Show Test Report
-        uses: mikepenz/action-junit-report@v5
-        if: success() || failure()
-        with:
-          report_paths: ${{ steps.strings.outputs.test_report_path }}
-          check_name: TT-Forge-FE Tests
-          comment: false
-          updateComment: false
-          detailed_summary: true
-          group_suite: true
+      # - name: Show Test Report
+      #   uses: mikepenz/action-junit-report@v5
+      #   if: success() || failure()
+      #   with:
+      #     report_paths: ${{ steps.strings.outputs.test_report_path }}
+      #     check_name: TT-Forge-FE Tests
+      #     comment: false
+      #     updateComment: false
+      #     detailed_summary: true
+      #     group_suite: true

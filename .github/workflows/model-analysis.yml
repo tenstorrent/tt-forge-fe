@@ -46,13 +46,15 @@ on:
         default: false
   schedule:
     - cron: '0 0 * * *'  # Runs at 12:00 UTC every day
+  push:
+    branches: [ "pchandrasekaran/testing_machines" ]
 
 
 permissions:
   packages: write
   checks: write
 
-run-name: "Model Analysis (${{inputs.runs-on}}-${{inputs.test_group_cnt}})"
+# run-name: "Model Analysis (${{inputs.runs-on}}-${{inputs.test_group_cnt}})"
 
 jobs:
 
@@ -74,8 +76,8 @@ jobs:
       - name: Inputs Management
         id: set-inputs
         run: |
-          default_test_group_cnt=12
-          default_runs_on=n150
+          default_test_group_cnt=10
+          default_runs_on=tt-ubuntu-2204-n300-llmbox-viommu-stable
           default_create_pr=false
           tgc=$(if [ -z "${{ inputs.test_group_cnt }}" ]; then echo $default_test_group_cnt; else echo ${{ inputs.test_group_cnt }}; fi)
           runs_on=$(if [ -z "${{ inputs.runs-on }}" ]; then echo $default_runs_on; else echo ${{ inputs.runs-on}}; fi)
@@ -104,7 +106,7 @@ jobs:
     uses: ./.github/workflows/test-model-analysis-sub.yml
     secrets: inherit
     with:
-      test_mark: 'not (skip_model_analysis or out_of_memory)'
+      test_mark: 'not skip_model_analysis and out_of_memory'
       test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
       test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
@@ -113,169 +115,170 @@ jobs:
       tests_to_filter: ${{ inputs.tests_to_filter }}
       allow-fail: true
       max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
+      split-by-count: true
 
-  generate-models-ops-tests:
+  # generate-models-ops-tests:
 
-    needs:
-      - docker-build
-      - set-inputs
-      - build
-      - extract-unique-ops-configuration
+  #   needs:
+  #     - docker-build
+  #     - set-inputs
+  #     - build
+  #     - extract-unique-ops-configuration
 
-    runs-on: ["in-service", "${{ needs.set-inputs.outputs.runner }}" ]
+  #   runs-on: ["in-service", "${{ needs.set-inputs.outputs.runner }}" ]
 
-    container:
-      image: ${{ needs.docker-build.outputs.docker-image }}
-      options: --device /dev/tenstorrent/0
-      volumes:
-        - /dev/hugepages:/dev/hugepages
-        - /dev/hugepages-1G:/dev/hugepages-1G
-        - /etc/udev/rules.d:/etc/udev/rules.d
-        - /lib/modules:/lib/modules
-        - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
-        - /mnt/dockercache:/mnt/dockercache
+  #   container:
+  #     image: ${{ needs.docker-build.outputs.docker-image }}
+  #     options: --device /dev/tenstorrent/0
+  #     volumes:
+  #       - /dev/hugepages:/dev/hugepages
+  #       - /dev/hugepages-1G:/dev/hugepages-1G
+  #       - /etc/udev/rules.d:/etc/udev/rules.d
+  #       - /lib/modules:/lib/modules
+  #       - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+  #       - /mnt/dockercache:/mnt/dockercache
 
-    steps:
+  #   steps:
 
-      - name: Set reusable strings
-        id: strings
-        shell: bash
-        run: |
-          echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
-          echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
+  #     - name: Set reusable strings
+  #       id: strings
+  #       shell: bash
+  #       run: |
+  #         echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+  #         echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
 
-      - name: Git safe dir
-        run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
+  #     - name: Git safe dir
+  #       run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
 
-      - uses: actions/checkout@v4
-        with:
-            submodules: recursive
-            fetch-depth: 0 # Fetch all history and tags
-            token: ${{ secrets.GH_TOKEN }}
+  #     - uses: actions/checkout@v4
+  #       with:
+  #           submodules: recursive
+  #           fetch-depth: 0 # Fetch all history and tags
+  #           token: ${{ secrets.GH_TOKEN }}
 
-      # Clean everything from submodules (needed to avoid issues
-      # with cmake generated files leftover from previous builds)
-      - name: Cleanup submodules
-        run: |
-            git submodule foreach --recursive git clean -ffdx
-            git submodule foreach --recursive git reset --hard
+  #     # Clean everything from submodules (needed to avoid issues
+  #     # with cmake generated files leftover from previous builds)
+  #     - name: Cleanup submodules
+  #       run: |
+  #           git submodule foreach --recursive git clean -ffdx
+  #           git submodule foreach --recursive git reset --hard
 
-      - name: Set environment variables
-        shell: bash
-        run: |
-            OUTPUT=$(bash .github/model-analysis-config.sh)
-            # Assign the script output to GitHub environment variables
-            echo "$OUTPUT" | while IFS= read -r line; do
-              echo "$line" >> $GITHUB_ENV
-            done
+  #     - name: Set environment variables
+  #       shell: bash
+  #       run: |
+  #           OUTPUT=$(bash .github/model-analysis-config.sh)
+  #           # Assign the script output to GitHub environment variables
+  #           echo "$OUTPUT" | while IFS= read -r line; do
+  #             echo "$line" >> $GITHUB_ENV
+  #           done
 
-      - name: Download all Models Unique Ops Config artifacts
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          bash .github/download-model-analysis-artifacts.sh "${{ github.repository }}" "${{ github.run_id }}" "${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }}"
+  #     - name: Download all Models Unique Ops Config artifacts
+  #       shell: bash
+  #       env:
+  #         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       run: |
+  #         bash .github/download-model-analysis-artifacts.sh "${{ github.repository }}" "${{ github.run_id }}" "${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }}"
 
-      - name: Download wheel
-        if: ${{ needs.build.outputs.run_id }}
-        continue-on-error: true
-        uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
-        with:
-          name: forge-wheel
-          run_id: ${{ needs.build.outputs.run_id }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Download wheel
+  #       if: ${{ needs.build.outputs.run_id }}
+  #       continue-on-error: true
+  #       uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
+  #       with:
+  #         name: forge-wheel
+  #         run_id: ${{ needs.build.outputs.run_id }}
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install wheel
-        shell: bash
-        run: |
-          source env/activate
-          pip install tt_tvm*.whl --force-reinstall
-          pip install tt_forge_fe*.whl --force-reinstall
+  #     - name: Install wheel
+  #       shell: bash
+  #       run: |
+  #         source env/activate
+  #         pip install tt_tvm*.whl --force-reinstall
+  #         pip install tt_forge_fe*.whl --force-reinstall
 
-      - name: Generate Models Ops tests
-        shell: bash
-        run: |
-          source env/activate
-          set -o pipefail # Ensures that the exit code reflects the first command that fails
+  #     - name: Generate Models Ops tests
+  #       shell: bash
+  #       run: |
+  #         source env/activate
+  #         set -o pipefail # Ensures that the exit code reflects the first command that fails
 
-          command_args=(
-            "--extracted_unique_ops_config_directory_path" "${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }}"
-            "--models_ops_test_output_directory_path" "${{ env.MODELS_OPS_TEST_OUTPUT_DIR_PATH }}"
-            "--models_ops_test_package_name" "${{ env.MODELS_OPS_TEST_PACKAGE_NAME }}"
-          )
+  #         command_args=(
+  #           "--extracted_unique_ops_config_directory_path" "${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }}"
+  #           "--models_ops_test_output_directory_path" "${{ env.MODELS_OPS_TEST_OUTPUT_DIR_PATH }}"
+  #           "--models_ops_test_package_name" "${{ env.MODELS_OPS_TEST_PACKAGE_NAME }}"
+  #         )
 
-          if [ -n "${{ inputs.ops_to_filter }}" ]; then
-            # Split on commas and trim whitespace
-            IFS=',' read -r -a ops_filters <<< "${{ inputs.ops_to_filter }}"
-            command_args+=("--ops_to_filter")
-            for of in "${ops_filters[@]}"; do
-              command_args+=("$(echo "$of" | xargs)")
-            done
-          fi
+  #         if [ -n "${{ inputs.ops_to_filter }}" ]; then
+  #           # Split on commas and trim whitespace
+  #           IFS=',' read -r -a ops_filters <<< "${{ inputs.ops_to_filter }}"
+  #           command_args+=("--ops_to_filter")
+  #           for of in "${ops_filters[@]}"; do
+  #             command_args+=("$(echo "$of" | xargs)")
+  #           done
+  #         fi
 
-          if [[ "${{ inputs.override_existing_ops }}" == "true" && -n "${{ inputs.tests_to_filter }}" ]]; then
-            command_args+=("--override_existing_ops")
-          fi
+  #         if [[ "${{ inputs.override_existing_ops }}" == "true" && -n "${{ inputs.tests_to_filter }}" ]]; then
+  #           command_args+=("--override_existing_ops")
+  #         fi
 
-          python scripts/model_analysis/combine_and_generate_ops_tests.py "${command_args[@]}" \
-            2>&1 | tee ${{ env.SCRIPT_OUTPUT_LOG }}
+  #         python scripts/model_analysis/combine_and_generate_ops_tests.py "${command_args[@]}" \
+  #           2>&1 | tee ${{ env.SCRIPT_OUTPUT_LOG }}
 
-      - name: Upload Script Output Logs
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: script-outputs
-          path: ${{ env.SCRIPT_OUTPUT_LOG }}
+  #     - name: Upload Script Output Logs
+  #       uses: actions/upload-artifact@v4
+  #       if: success() || failure()
+  #       with:
+  #         name: script-outputs
+  #         path: ${{ env.SCRIPT_OUTPUT_LOG }}
 
-      - name: Upload Models Unique Ops Output
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: models-unique-ops-output
-          path: ${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }}
+  #     - name: Upload Models Unique Ops Output
+  #       uses: actions/upload-artifact@v4
+  #       if: success() || failure()
+  #       with:
+  #         name: models-unique-ops-output
+  #         path: ${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }}
 
-      - name: Upload Generated Models Ops Tests
-        uses: actions/upload-artifact@v4
-        if: ${{ needs.set-inputs.outputs.create_pr == 'false' }}
-        with:
-          name: generated-models-ops-tests
-          path: ${{ env.GENERATED_MODELS_OPS_TESTS_PATH }}
+  #     - name: Upload Generated Models Ops Tests
+  #       uses: actions/upload-artifact@v4
+  #       if: ${{ needs.set-inputs.outputs.create_pr == 'false' }}
+  #       with:
+  #         name: generated-models-ops-tests
+  #         path: ${{ env.GENERATED_MODELS_OPS_TESTS_PATH }}
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
-        if: ${{ needs.set-inputs.outputs.create_pr == 'true' }}
-        with:
-          branch: ${{ env.BRANCH_NAME }}
-          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          base: main
-          commit-message: ${{ env.COMMIT_MESSAGE }}
-          title: ${{ env.TITLE }}
-          body: ${{ env.BODY }}
-          delete-branch: true
-          token: ${{ secrets.GH_TOKEN }}
-          add-paths: |
-              ${{ env.GENERATED_MODELS_OPS_TESTS_PATH }}
+  #     - name: Create Pull Request
+  #       uses: peter-evans/create-pull-request@v7
+  #       if: ${{ needs.set-inputs.outputs.create_pr == 'true' }}
+  #       with:
+  #         branch: ${{ env.BRANCH_NAME }}
+  #         committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+  #         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+  #         base: main
+  #         commit-message: ${{ env.COMMIT_MESSAGE }}
+  #         title: ${{ env.TITLE }}
+  #         body: ${{ env.BODY }}
+  #         delete-branch: true
+  #         token: ${{ secrets.GH_TOKEN }}
+  #         add-paths: |
+  #             ${{ env.GENERATED_MODELS_OPS_TESTS_PATH }}
 
-  run-models-ops-tests:
-    if: ${{ needs.set-inputs.outputs.create_pr == 'false' }}
-    needs:
-      - docker-build
-      - set-inputs
-      - build
-      - extract-unique-ops-configuration
-      - generate-models-ops-tests
-    uses: ./.github/workflows/test-sub.yml
-    secrets: inherit
-    with:
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      test_mark: 'nightly_models_ops'
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
-      runs-on: '[{"runs-on": "n150"}]'
-      sh-runner: true
-      run_id: ${{ needs.build.outputs.run_id }}
-      run_models_ops_tests: true
-      max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
-      test-expression: 'inference and not training'
-      allow-fail: true
+  # run-models-ops-tests:
+  #   if: ${{ needs.set-inputs.outputs.create_pr == 'false' }}
+  #   needs:
+  #     - docker-build
+  #     - set-inputs
+  #     - build
+  #     - extract-unique-ops-configuration
+  #     - generate-models-ops-tests
+  #   uses: ./.github/workflows/test-sub.yml
+  #   secrets: inherit
+  #   with:
+  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  #     test_mark: 'nightly_models_ops'
+  #     test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+  #     test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
+  #     runs-on: '[{"runs-on": "n150"}]'
+  #     sh-runner: true
+  #     run_id: ${{ needs.build.outputs.run_id }}
+  #     run_models_ops_tests: true
+  #     max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
+  #     test-expression: 'inference and not training'
+  #     allow-fail: true
