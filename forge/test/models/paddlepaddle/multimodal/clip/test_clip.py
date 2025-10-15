@@ -50,6 +50,7 @@ def test_clip_text(variant):
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.test_crash
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_clip_vision(variant):

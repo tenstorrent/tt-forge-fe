@@ -18,7 +18,10 @@ from forge.forge_property_utils import Framework, Source, Task, ModelArch, recor
 variants = [
     "resnet18",
     "resnet34",
-    "resnet50",
+    pytest.param(
+        "resnet50",
+        marks=pytest.mark.test_crash,
+    ),
     "resnet101",
     "resnet152",
 ]

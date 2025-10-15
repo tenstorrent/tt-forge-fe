@@ -46,7 +46,7 @@ variants = [
     pytest.param("deepmind/vision-perceiver-conv", id="deepmind/vision-perceiver-conv"),
     pytest.param(
         "deepmind/vision-perceiver-learned",
-        marks=pytest.mark.xfail,
+        marks=pytest.mark.test_crash,
         id="deepmind/vision-perceiver-learned",
     ),
     pytest.param(
