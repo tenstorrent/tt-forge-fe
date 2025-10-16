@@ -96,7 +96,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       build: 'Release'
 
-  extract-unique-ops-configuration:
+  extract-unique-ops-configuration-non-oom:
     needs:
       - docker-build
       - set-inputs
@@ -114,13 +114,33 @@ jobs:
       allow-fail: true
       max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
 
+  extract-unique-ops-configuration-oom:
+    needs:
+      - docker-build
+      - set-inputs
+      - build
+    uses: ./.github/workflows/test-model-analysis-sub.yml
+    secrets: inherit
+    with:
+      test_mark: 'not skip_model_analysis and out_of_memory'
+      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      runs-on: '[{"runs-on": "tt-ubuntu-2204-n300-llmbox-stable"}]'
+      run_id: ${{ needs.build.outputs.run_id }}
+      tests_to_filter: ${{ inputs.tests_to_filter }}
+      allow-fail: true
+      max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
+      split-by-count: true
+
   generate-models-ops-tests:
 
     needs:
       - docker-build
       - set-inputs
       - build
-      - extract-unique-ops-configuration
+      - extract-unique-ops-configuration-non-oom
+      - extract-unique-ops-configuration-oom
 
     runs-on: ["in-service", "${{ needs.set-inputs.outputs.runner }}" ]
 
@@ -263,7 +283,8 @@ jobs:
       - docker-build
       - set-inputs
       - build
-      - extract-unique-ops-configuration
+      - extract-unique-ops-configuration-non-oom
+      - extract-unique-ops-configuration-oom
       - generate-models-ops-tests
     uses: ./.github/workflows/test-sub.yml
     secrets: inherit

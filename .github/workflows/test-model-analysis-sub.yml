@@ -49,6 +49,11 @@ on:
         required: false
         type: number
         default: 360
+      split-by-count:
+        description: 'If true, forces test splitting to be based purely on the number of tests per group (equal test count), ignoring historical test duration data.'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   run-tests:
@@ -60,7 +65,7 @@ jobs:
         build: ${{ fromJson(inputs.runs-on) }}
         test_group_id: ${{ fromJSON(inputs.test_group_ids) }}
 
-    runs-on: ${{ inputs.sh-runner && format('tt-beta-ubuntu-2204-{0}-large-stable', matrix.build.runs-on) || fromJson(format('["{0}", "in-service"]', matrix.build.runs-on)) }}
+    runs-on: ${{ (inputs.sh-runner && format('tt-beta-ubuntu-2204-{0}-large-stable', matrix.build.runs-on)) || (contains(matrix.build.runs-on, 'llmbox') && matrix.build.runs-on) || fromJson(format('["{0}", "in-service"]', matrix.build.runs-on)) }}
 
     continue-on-error: ${{ inputs.allow-fail }}
 
@@ -195,6 +200,20 @@ jobs:
           source env/activate
           echo "Collecting tests for group ${{ matrix.test_group_id }} with mark '${{ inputs.test_mark }}'..."
           set +e
+          # Use the new input to decide whether to force a count-based split
+          SHOULD_SPLIT_BY_COUNT='${{ inputs.split-by-count }}'
+          if [[ "$SHOULD_SPLIT_BY_COUNT" == "true" ]]; then
+              DURATIONS_FILE=".test_durations"
+              
+              # Removing the durations file forces the 'least_duration' algorithm 
+              # to fall back to an equal test count split.
+              if [[ -f $DURATIONS_FILE ]]; then
+                echo "Input 'split-by-count' is true. Found existing $DURATIONS_FILE. Removing it to force count-based split."
+                rm -f "$DURATIONS_FILE"
+              else
+                echo "Input 'split-by-count' is true, but $DURATIONS_FILE not found. Continuing."
+              fi
+          fi
           pytest_args=(
             "--splits" "${{ inputs.test_group_cnt }}"
             "--group" "${{ matrix.test_group_id }}"
