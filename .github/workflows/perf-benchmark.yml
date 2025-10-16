@@ -64,12 +64,12 @@ jobs:
           fi
   perf-benchmark:
     needs: set-inputs
-    uses: tenstorrent/tt-forge/.github/workflows/perf-benchmark.yml@main
+    uses: tenstorrent/tt-forge/.github/workflows/perf-benchmark.yml@vvukoman/perf-workflow-improvements
     secrets: inherit
     with:
       project: tt-forge-fe
       run_id: ${{ github.run_id }}
       run_id_source: tt-forge-fe
-      ref: ${{ needs.set-inputs.outputs.ref }}
+      ref: vvukoman/perf-workflow-improvements
       test-filter: ${{ inputs.test_filter }}
       sh-runner: ${{ inputs.sh-runner }}
