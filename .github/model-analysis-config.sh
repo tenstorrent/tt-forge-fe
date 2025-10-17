@@ -19,6 +19,7 @@ env_vars["MODELS_OPS_TEST_OUTPUT_DIR_PATH"]="forge/test"
 env_vars["MODELS_OPS_TEST_PACKAGE_NAME"]="models_ops"
 env_vars["SCRIPT_OUTPUT_LOG"]="generate_models_ops_test.log"
 env_vars["GENERATED_MODELS_OPS_TESTS_PATH"]="forge/test/models_ops/"
+env_vars["UNIQUE_OPS_CONFIG_ARTIFACT_PREFIX"]="models-unique-ops-config"
 
 
 for key in "${!env_vars[@]}"; do
