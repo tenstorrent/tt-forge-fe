@@ -55,7 +55,7 @@ def test_roberta_sequence_classification(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail()
+@pytest.mark.check_crash
 @pytest.mark.parametrize("variant", variants)
 def test_roberta_causal_lm(variant):
     # Record Forge properties
