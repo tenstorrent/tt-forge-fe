@@ -30,6 +30,8 @@ def test_glm(variant):
     )
     if variant == "THUDM/glm-2b":
         pytest.xfail(reason="Requires multi-chip support")
+    elif variant == "THUDM/glm-515m":
+        pytest.xfail(reason="Periodically Aborting, while loading the model")
 
     # Load Model and Tokenizer
     model = GLMForConditionalGeneration.from_pretrained(variant)

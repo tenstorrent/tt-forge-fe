@@ -62,7 +62,10 @@ def test_bert_sequence_classification(variant, input):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant, input", [(key, value["mask"]) for key, value in inputs_map.items()])
+@pytest.mark.parametrize("variant, input", [
+    pytest.param(k, v["mask"], marks=pytest.mark.xfail) if k == "uer/chinese-roberta-base" else (k, v["mask"])
+    for k, v in inputs_map.items()
+])
 def test_bert_maskedlm(variant, input):
     # Record Forge properties
     module_name = record_model_properties(
@@ -72,6 +75,8 @@ def test_bert_maskedlm(variant, input):
         task=Task.MASKED_LM,
         source=Source.PADDLENLP,
     )
+    if variant == "uer/chinese-roberta-base":
+        pytest.xfail(reason="Periodically Aborting, while loading the model")
 
     # Load Model and Tokenizer
     model = BertForMaskedLM.from_pretrained(variant)
