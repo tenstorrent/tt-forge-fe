@@ -28,39 +28,76 @@ echo "Artifact name prefix: $PREFIX"
 
 echo "Installing prerequisites (gh, jq) if missing..."
 if ! command -v gh &> /dev/null; then
-  sudo apt update -qq
-  sudo apt install -y gh jq
+  # On GitHub runners this should already be present; on other machines we attempt apt.
+  # If apt isn't available, user should preinstall gh/jq.
+  if command -v apt-get &> /dev/null; then
+    sudo apt-get update -qq
+    sudo apt-get install -y gh jq
+  else
+    echo "Please install 'gh' CLI and 'jq' manually (apt-get not found)." >&2
+    exit 1
+  fi
 else
-  echo "gh already installed"
+  echo "gh already installed: $(gh --version | head -n1)"
+fi
+
+if ! command -v jq &> /dev/null; then
+  if command -v apt-get &> /dev/null; then
+    sudo apt-get install -y jq
+  else
+    echo "Please install 'jq' manually (apt-get not found)." >&2
+    exit 1
+  fi
+else
+  echo "jq already installed: $(jq --version)"
 fi
 
 echo "Checking GitHub CLI authentication..."
 if ! gh auth status &> /dev/null; then
-  echo "GitHub CLI is not authenticated. Please run 'gh auth login' or set GH_TOKEN."
-  exit 1
+  # Try non-interactive login via token environment variable (GH_TOKEN or GITHUB_TOKEN)
+  if [ -n "${GH_TOKEN:-}" ]; then
+    echo "Authenticating gh using GH_TOKEN..."
+    printf '%s' "$GH_TOKEN" | gh auth login --with-token || true
+  elif [ -n "${GITHUB_TOKEN:-}" ]; then
+    echo "Authenticating gh using GITHUB_TOKEN..."
+    printf '%s' "$GITHUB_TOKEN" | gh auth login --with-token || true
+  else
+    echo "GitHub CLI is not authenticated and no GH_TOKEN/GITHUB_TOKEN present. Please run 'gh auth login' or set GH_TOKEN/GITHUB_TOKEN." >&2
+    exit 1
+  fi
+
+  # Verify again
+  if ! gh auth status &> /dev/null; then
+    echo "Failed to authenticate gh CLI after attempting token login." >&2
+    gh auth status || true
+    exit 1
+  fi
 else
-  gh auth status
+  gh auth status || true
 fi
 
 # Clean (create) the output directory
 echo "Preparing output directory: $OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
-rm -rf "$OUTPUT_DIR"/*
+rm -rf "${OUTPUT_DIR:?}"/*
 
 # Fetch the artifacts list JSON for the run
 echo "Fetching artifacts for run ID: $RUN_ID in $WORKFLOW_REPO"
-ARTIFACTS_JSON="$(gh api --paginate "/repos/$WORKFLOW_REPO/actions/runs/$RUN_ID/artifacts" --raw 2>/dev/null || true)"
+# NOTE: removed the unsupported --raw flag. gh api returns JSON on stdout.
+ARTIFACTS_JSON="$(gh api --paginate "/repos/$WORKFLOW_REPO/actions/runs/$RUN_ID/artifacts" 2>/dev/null || true)"
 
 # Validate JSON
 if [ -z "$ARTIFACTS_JSON" ]; then
-  echo "Failed to fetch artifacts or empty response for run ID $RUN_ID"
+  echo "Failed to fetch artifacts or empty response for run ID $RUN_ID" >&2
   exit 1
 fi
 
-# Check for any artifacts
-ART_COUNT="$(jq '.artifacts | length' <<<"$ARTIFACTS_JSON" 2>/dev/null || echo "0")"
+# Try to parse artifacts array length
+ART_COUNT="$(jq -r '.artifacts | length // 0' <<<"$ARTIFACTS_JSON" 2>/dev/null || echo "0")"
 if [ "$ART_COUNT" -eq 0 ]; then
   echo "No artifacts found for run ID $RUN_ID"
+  echo "Full artifacts list (for debugging):"
+  jq -r '.' <<<"$ARTIFACTS_JSON" || true
   exit 1
 fi
 
@@ -84,6 +121,7 @@ echo "Downloading ${#artifact_names[@]} selected artifact(s) using 'gh run downl
 for name in "${artifact_names[@]}"; do
   echo "Downloading artifact: $name"
   mkdir -p "$OUTPUT_DIR/$name"
+  # gh run download <run-id> --repo owner/repo --name <artifact name> --dir <dir>
   gh run download "$RUN_ID" \
     --repo "$WORKFLOW_REPO" \
     --name "$name" \
