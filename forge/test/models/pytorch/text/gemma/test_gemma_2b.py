@@ -61,7 +61,7 @@ def test_gemma_2b(variant):
     "variant",
     [
         pytest.param(CausalLMVariant.GEMMA_2_2B_IT, marks=pytest.mark.xfail),
-        pytest.param(CausalLMVariant.GEMMA_2_9B_IT, marks=[pytest.mark.xfail, pytest.mark.out_of_memory]),
+        pytest.param(CausalLMVariant.GEMMA_2_9B_IT, marks=[pytest.mark.xfail, pytest.mark.skip_model_analysis]),
     ],
 )
 def test_gemma_pytorch_v2(variant):
