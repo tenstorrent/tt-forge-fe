@@ -27,9 +27,7 @@ Gemma2DecoderLayer.forward = Gemma2DecoderLayer_patched_forward
         pytest.param(
             "google/gemma-2-2b-it",
         ),
-        pytest.param(
-            "google/gemma-2-9b-it",
-        ),
+        pytest.param("google/gemma-2-9b-it", marks=[pytest.mark.skip_model_analysis]),
     ],
 )
 def test_gemma_v2_onnx(variant, forge_tmp_path):

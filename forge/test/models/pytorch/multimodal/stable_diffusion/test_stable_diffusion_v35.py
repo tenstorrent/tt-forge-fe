@@ -43,19 +43,21 @@ class StableDiffusionWrapper(torch.nn.Module):
         return noise_pred
 
 
-@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",
     [
         pytest.param(
             ModelVariant.STABLE_DIFFUSION_3_5_MEDIUM,
+            marks=[pytest.mark.out_of_memory],
         ),
         pytest.param(
             ModelVariant.STABLE_DIFFUSION_3_5_LARGE,
+            marks=[pytest.mark.out_of_memory],
         ),
         pytest.param(
             ModelVariant.STABLE_DIFFUSION_3_5_LARGE_TURBO,
+            marks=[pytest.mark.skip_model_analysis],
         ),
     ],
 )
