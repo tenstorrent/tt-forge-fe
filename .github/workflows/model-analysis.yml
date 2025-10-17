@@ -3,10 +3,10 @@ name: Model Analysis
 on:
   workflow_dispatch:
     inputs:
-      test_group_cnt:
-        description: 'Test group count'
+      test_group_cnt_oom_and_non_oom:
+        description: 'Test group count for both OOM and Non-OOM(OOM stands for Out Of Memory)'
         required: false
-        default: "10"
+        default: "12"
         type: choice
         options:
           - "2"
@@ -15,17 +15,40 @@ on:
           - "8"
           - "10"
           - "12"
-      runs-on:
-        description: 'Runs on'
+          - "14"
+          - "16"
+          - "18"
+          - "20"
+      test_group_cnt_crashed:
+        description: 'Test group count for crashed tests cases'
         required: false
-        default: n150
+        default: "4"
         type: choice
         options:
-          - runner
+          - "2"
+          - "4"
+          - "6"
+          - "8"
+      runs-on-non-oom:
+        description: 'Runs on for Non-OOM'
+        required: false
+        default: "n150"
+        type: choice
+        options:
           - wormhole_b0
           - n150
           - n300
           - p150
+      runs-on-oom-and-crashed:
+        description: 'Runs on for OOM and crashed tests cases'
+        required: false
+        default: "tt-ubuntu-2204-n300-llmbox-stable"
+        type: choice
+        options:
+          - tt-ubuntu-2204-n300-llmbox-stable
+          - tt-ubuntu-2204-n300-llmbox-viommu-stable
+          - llmbox
+          - n150-perf
       tests_to_filter:
         description: 'Filter specific tests (comma-separated): Generate models ops tests only for the specified test commands'
         required: false
@@ -46,13 +69,14 @@ on:
         default: false
   schedule:
     - cron: '0 0 * * *'  # Runs at 12:00 UTC every day
-
+  # push:
+  #   branches: [ "pchandrasekaran/support_model_analysis_oom" ]
 
 permissions:
   packages: write
   checks: write
 
-run-name: "Model Analysis (${{inputs.runs-on}}-${{inputs.test_group_cnt}})"
+run-name: "Model Analysis Non-OOM (${{inputs.runs-on-non-oom}}-${{inputs.test_group_cnt_oom_and_non_oom}}), OOM(${{inputs.runs-on-oom-and-crashed}}-${{inputs.test_group_cnt_oom_and_non_oom}}) and Crashed (${{inputs.runs-on-oom-and-crashed}}-${{inputs.test_group_cnt_crashed}})"
 
 jobs:
 
@@ -65,26 +89,45 @@ jobs:
     needs: docker-build
     if: always()
     outputs:
-      test_group_cnt: ${{ steps.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ steps.set-inputs.outputs.test_group_ids }}
-      runs-on: ${{ steps.set-inputs.outputs.runs-on }}
-      runner: ${{ steps.set-inputs.outputs.runner}}
+      test_group_cnt_oom_and_non_oom: ${{ steps.set-inputs.outputs.test_group_cnt_oom_and_non_oom }}
+      test_group_ids_oom_and_non_oom: ${{ steps.set-inputs.outputs.test_group_ids_oom_and_non_oom }}
+      test_group_cnt_crashed: ${{ steps.set-inputs.outputs.test_group_cnt_crashed }}
+      test_group_ids_crashed: ${{ steps.set-inputs.outputs.test_group_ids_crashed }}
+      runs-on-non-oom: ${{ steps.set-inputs.outputs.runs-on-non-oom }}
+      runs-on-oom-and-crashed: ${{ steps.set-inputs.outputs.runs-on-oom-and-crashed }}
+      runner: ${{ steps.set-inputs.outputs.runner }}
       create_pr: ${{ steps.set-inputs.outputs.create_pr }}
+      oom_pytest_marker: ${{ steps.set-inputs.outputs.oom_pytest_marker }}
+      non_oom_pytest_marker: ${{ steps.set-inputs.outputs.non_oom_pytest_marker }}
     steps:
       - name: Inputs Management
         id: set-inputs
         run: |
-          default_test_group_cnt=12
-          default_runs_on=n150
+          default_test_group_cnt_oom_and_non_oom=12
+          default_test_group_cnt_crashed=4
+          default_runs_on_non_oom=n150
+          default_runs_on_oom_and_crashed=tt-ubuntu-2204-n300-llmbox-stable
           default_create_pr=false
-          tgc=$(if [ -z "${{ inputs.test_group_cnt }}" ]; then echo $default_test_group_cnt; else echo ${{ inputs.test_group_cnt }}; fi)
-          runs_on=$(if [ -z "${{ inputs.runs-on }}" ]; then echo $default_runs_on; else echo ${{ inputs.runs-on}}; fi)
-          default_create_pr=$(if [ -z "${{ inputs.create_pull_request }}" ]; then echo $default_create_pr; else echo ${{ inputs.create_pull_request }}; fi)
-          echo "test_group_cnt=$tgc" >> $GITHUB_OUTPUT
-          echo "test_group_ids=[$(seq -s ',' 1 $tgc)]" >> $GITHUB_OUTPUT
-          echo "runs-on=[{\"runs-on\": \"$runs_on\"}]" >> $GITHUB_OUTPUT
-          echo "runner=$runs_on" >> $GITHUB_OUTPUT
-          echo "create_pr=$default_create_pr" >> $GITHUB_OUTPUT
+
+          tgc_cnt_oom_and_non_oom=$(if [ -z "${{ inputs.test_group_cnt_oom_and_non_oom }}" ]; then echo $default_test_group_cnt_oom_and_non_oom; else echo ${{ inputs.test_group_cnt_oom_and_non_oom }}; fi)
+          tgc_cnt_crashed=$(if [ -z "${{ inputs.test_group_cnt_crashed }}" ]; then echo $default_test_group_cnt_crashed; else echo ${{ inputs.test_group_cnt_crashed }}; fi)
+          runs_on_non_oom=$(if [ -z "${{ inputs.runs-on-non-oom }}" ]; then echo $default_runs_on_non_oom; else echo ${{ inputs.runs-on-non-oom}}; fi)
+          runs_on_oom_and_crashed=$(if [ -z "${{ inputs.runs-on-oom-and-crashed }}" ]; then echo $default_runs_on_oom_and_crashed; else echo ${{ inputs.runs-on-oom-and-crashed}}; fi)
+          create_pr_val=$(if [ -z "${{ inputs.create_pull_request }}" ]; then echo $default_create_pr; else echo ${{ inputs.create_pull_request }}; fi)
+
+          # Emit outputs
+          echo "test_group_cnt_oom_and_non_oom=$tgc_cnt_oom_and_non_oom" >> $GITHUB_OUTPUT
+          echo "test_group_ids_oom_and_non_oom=[$(seq -s ',' 1 $tgc_cnt_oom_and_non_oom)]" >> $GITHUB_OUTPUT
+          echo "test_group_cnt_crashed=$tgc_cnt_crashed" >> $GITHUB_OUTPUT
+          echo "test_group_ids_crashed=[$(seq -s ',' 1 $tgc_cnt_crashed)]" >> $GITHUB_OUTPUT
+          echo "runs-on-non-oom=[{\"runs-on\": \"$runs_on_non_oom\"}]" >> $GITHUB_OUTPUT
+          echo "runs-on-oom-and-crashed=[{\"runs-on\": \"$runs_on_oom_and_crashed\"}]" >> $GITHUB_OUTPUT
+          echo "runner=$runs_on_non_oom" >> $GITHUB_OUTPUT
+          echo "create_pr=$create_pr_val" >> $GITHUB_OUTPUT
+
+          # Emit pytest marker expressions as job outputs so downstream jobs can reference them.
+          echo "oom_pytest_marker=not skip_model_analysis and out_of_memory" >> $GITHUB_OUTPUT
+          echo "non_oom_pytest_marker=not (skip_model_analysis or out_of_memory)" >> $GITHUB_OUTPUT
 
   build:
     needs:
@@ -104,11 +147,11 @@ jobs:
     uses: ./.github/workflows/test-model-analysis-sub.yml
     secrets: inherit
     with:
-      test_mark: 'not (skip_model_analysis or out_of_memory)'
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
+      test_mark: ${{ needs.set-inputs.outputs.non_oom_pytest_marker }}
+      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt_oom_and_non_oom }}
+      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_oom_and_non_oom }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: ${{ needs.set-inputs.outputs.runs-on }}
+      runs-on: ${{ needs.set-inputs.outputs.runs-on-non-oom }}
       run_id: ${{ needs.build.outputs.run_id }}
       tests_to_filter: ${{ inputs.tests_to_filter }}
       allow-fail: true
@@ -122,28 +165,181 @@ jobs:
     uses: ./.github/workflows/test-model-analysis-sub.yml
     secrets: inherit
     with:
-      test_mark: 'not skip_model_analysis and out_of_memory'
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
+      test_mark: ${{ needs.set-inputs.outputs.oom_pytest_marker }}
+      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt_oom_and_non_oom }}
+      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_oom_and_non_oom }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "tt-ubuntu-2204-n300-llmbox-stable"}]'
+      runs-on: ${{ needs.set-inputs.outputs.runs-on-oom-and-crashed }}
       run_id: ${{ needs.build.outputs.run_id }}
       tests_to_filter: ${{ inputs.tests_to_filter }}
       allow-fail: true
       max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
       split-by-count: true
 
-  generate-models-ops-tests:
+  extract-crashed-tests-from-non-oom:
+    runs-on: ubuntu-latest
+    needs:
+      - docker-build
+      - set-inputs
+      - build
+      - extract-unique-ops-configuration-non-oom
+    if: always()
+    env:
+      CRASHED_TESTS_OUTPUT_DIR_PATH: crashed_tests_output_logs/
+      CRASHED_TESTS_ARTIFACT_PREFIX: unique-ops-configs-crashed-tests
+    outputs:
+      crashed-tests: ${{ steps.extract-crashed-tests.outputs.crashed-tests }}
+      contains-crashed-tests: ${{ steps.extract-crashed-tests.outputs.contains-crashed-tests }}
+    steps:
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
 
+      - name: Git safe dir
+        run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
+
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github/download-artifacts.sh
+
+      - name: Download Unique Ops Config Crashed Logs
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          bash .github/download-artifacts.sh "${{ github.repository }}" "${{ github.run_id }}" "${{ env.CRASHED_TESTS_OUTPUT_DIR_PATH }}" "${{ env.CRASHED_TESTS_ARTIFACT_PREFIX }}"
+
+      - name: Extract Crashed Cases
+        id: extract-crashed-tests
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          logs_dir="${{ env.CRASHED_TESTS_OUTPUT_DIR_PATH }}"
+          crashed_tests=""
+          contains_crashed_tests=false
+
+          # Exit early with safe outputs if logs dir missing
+          if [ ! -d "$logs_dir" ]; then
+            echo "crashed-tests<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$crashed_tests" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+            echo "contains-crashed-tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          tmpfile="$(mktemp)"
+          trap 'rm -f "$tmpfile"' EXIT
+
+          # Collect .log files
+          files=()
+          while IFS= read -r -d '' f; do
+            files+=("$f")
+          done < <(find "$logs_dir" -type f -name '*.log' -print0)
+
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "crashed-tests<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$crashed_tests" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+            echo "contains-crashed-tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Sort logs deterministically
+          IFS=$'\n' sorted_files=($(printf '%s\n' "${files[@]}" | sort -V))
+          unset IFS
+
+          # Extract crash test tokens
+          : > "$tmpfile"
+          for file in "${sorted_files[@]}"; do
+            perl -nE 'while ( /([^\s]+::[^\s]+)/g ) { say $1 }' "$file" 2>/dev/null >> "$tmpfile" || true
+            printf '\n' >> "$tmpfile"
+          done
+
+          # Filter unwanted lines (errors, tracebacks, etc.)
+          filtered_tmp="$(mktemp)"
+          trap 'rm -f "$filtered_tmp" "$tmpfile"' EXIT
+
+          while IFS= read -r line || [ -n "$line" ]; do
+            line="$(printf '%s' "$line" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+            [ -z "$line" ] && continue
+            low="$(printf '%s' "$line" | tr '[:upper:]' '[:lower:]')"
+            if printf '%s\n' "$low" | grep -qiE '(error|exception|traceback|killed|oom|failed|critical)'; then
+              continue
+            fi
+            if printf '%s\n' "$line" | grep -qE '^[=-]{2,}$'; then
+              continue
+            fi
+            if printf '%s\n' "$line" | grep -qE '^[^[:space:]]+::[^[:space:]]+(\[[^]]+\])?$'; then
+              printf '%s\n' "$line" >> "$filtered_tmp"
+            fi
+          done < "$tmpfile"
+
+          mapfile -t tokens < <(awk 'NF && !seen[$0]++ { print }' "$filtered_tmp")
+          rm -f "$filtered_tmp" || true
+
+          joined=""
+          if [ "${#tokens[@]}" -gt 0 ]; then
+            joined=$(printf '%s,' "${tokens[@]}")
+            joined=${joined%,}
+          fi
+
+          # Fix missing commas between concatenated forge/ entries
+          if [ -n "$joined" ]; then
+            joined="$(perl -pe 's/\s+(?=forge\/)//g' <<< "$joined")"
+            joined="$(perl -pe 's/([^,])(?=forge\/)/\1,/g' <<< "$joined")"
+          fi
+
+          if [ -n "$joined" ]; then
+            contains_crashed_tests=true
+            crashed_tests="$joined"
+          fi
+
+          echo "crashed-tests<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$crashed_tests" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "contains-crashed-tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"
+
+      - name: show outputs
+        run: |
+          echo "crashed-tests (raw): ${{ steps.extract-crashed-tests.outputs.crashed-tests }}"
+          echo "contains-crashed-tests: ${{ steps.extract-crashed-tests.outputs.contains-crashed-tests }}"
+
+  extract-unique-ops-configuration-from-crashed-tests:
+    if: ${{ always() && needs.extract-crashed-tests-from-non-oom.outputs.contains-crashed-tests == 'true' }}
+    needs:
+      - docker-build
+      - set-inputs
+      - build
+      - extract-unique-ops-configuration-non-oom
+      - extract-crashed-tests-from-non-oom
+    uses: ./.github/workflows/test-model-analysis-sub.yml
+    secrets: inherit
+    with:
+      test_mark: ${{ needs.set-inputs.outputs.non_oom_pytest_marker }}
+      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt_crashed }}
+      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_crashed }}
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      runs-on: ${{ needs.set-inputs.outputs.runs-on-oom-and-crashed }}
+      run_id: ${{ needs.build.outputs.run_id }}
+      tests_to_filter: ${{ needs.extract-crashed-tests-from-non-oom.outputs.crashed-tests }}
+      allow-fail: true
+      max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
+      split-by-count: true
+
+  generate-models-ops-tests:
     needs:
       - docker-build
       - set-inputs
       - build
       - extract-unique-ops-configuration-non-oom
       - extract-unique-ops-configuration-oom
-
+      - extract-unique-ops-configuration-from-crashed-tests
+      - extract-crashed-tests-from-non-oom
     runs-on: ["in-service", "${{ needs.set-inputs.outputs.runner }}" ]
-
     container:
       image: ${{ needs.docker-build.outputs.docker-image }}
       options: --device /dev/tenstorrent/0
@@ -154,9 +350,7 @@ jobs:
         - /lib/modules:/lib/modules
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
         - /mnt/dockercache:/mnt/dockercache
-
     steps:
-
       - name: Set reusable strings
         id: strings
         shell: bash
@@ -194,7 +388,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          bash .github/download-model-analysis-artifacts.sh "${{ github.repository }}" "${{ github.run_id }}" "${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }}"
+          bash .github/download-artifacts.sh "${{ github.repository }}" "${{ github.run_id }}" "${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }}" "${{ env.UNIQUE_OPS_CONFIG_ARTIFACT_PREFIX }}"
 
       - name: Download wheel
         if: ${{ needs.build.outputs.run_id }}
@@ -285,14 +479,16 @@ jobs:
       - build
       - extract-unique-ops-configuration-non-oom
       - extract-unique-ops-configuration-oom
+      - extract-unique-ops-configuration-from-crashed-tests
+      - extract-crashed-tests-from-non-oom
       - generate-models-ops-tests
     uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       test_mark: 'nightly_models_ops'
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
+      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt_oom_and_non_oom }}
+      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_oom_and_non_oom }}
       runs-on: '[{"runs-on": "n150"}]'
       sh-runner: true
       run_id: ${{ needs.build.outputs.run_id }}
