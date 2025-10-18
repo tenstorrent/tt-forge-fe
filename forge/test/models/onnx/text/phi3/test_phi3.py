@@ -20,7 +20,7 @@ from test.models.models_utils import TextModelWrapper
 variants = ["microsoft/phi-3-mini-4k-instruct", "microsoft/phi-3-mini-128k-instruct"]
 
 
-@pytest.mark.out_of_memory
+@pytest.mark.skip_model_analysis
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_causal_lm_onnx(variant, forge_tmp_path):
