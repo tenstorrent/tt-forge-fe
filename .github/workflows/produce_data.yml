@@ -10,6 +10,7 @@ on:
       - "On nightly Blackhole"
       - "Test"
       - "Performance benchmark"
+      - "Model Analysis"
     types:
       - completed
 
