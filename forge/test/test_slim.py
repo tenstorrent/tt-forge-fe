@@ -9,7 +9,7 @@ import forge
 from forge.verify.verify import verify
 
 
-@pytest.mark.slim_wheel
+@pytest.mark.slim
 @pytest.mark.parametrize(
     "shape, dtype",
     [
