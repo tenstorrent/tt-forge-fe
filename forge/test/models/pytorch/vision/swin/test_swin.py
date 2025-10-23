@@ -32,7 +32,10 @@ from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 variants = [
-    pytest.param(ModelVariant.SWIN_TINY_HF, marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2998")),
+    pytest.param(
+        ModelVariant.SWIN_TINY_HF,
+        marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2998")
+    ),
     pytest.param(ModelVariant.SWINV2_TINY_HF, marks=pytest.mark.xfail),
 ]
 
