@@ -47,8 +47,7 @@ from test.models.pytorch.vision.yolo.model_utils.yolox_utils import (
 
 variants = [
     pytest.param(
-        "yolox_nano",
-        marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2997")
+        "yolox_nano", marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2997")
     ),
     pytest.param("yolox_tiny"),
     pytest.param("yolox_s"),
