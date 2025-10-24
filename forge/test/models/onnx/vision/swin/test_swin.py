@@ -56,6 +56,7 @@ def test_swin_v2_tiny_image_classification_onnx(variant, forge_tmp_path):
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2998")
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_masked_onnx(variant, forge_tmp_path):
 

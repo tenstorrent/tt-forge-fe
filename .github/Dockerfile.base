@@ -75,6 +75,7 @@ RUN pip install cmake \
 
 # Set environment variables for toolchain directories
 ENV TTFORGE_TOOLCHAIN_DIR=/opt/ttforge-toolchain
+ENV TTMLIR_TOOLCHAIN_DIR=/opt/ttmlir-toolchain
 
 # Create a directory for the build and toolchain
 ARG BUILD_DIR=/home/build

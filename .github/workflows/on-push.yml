@@ -30,5 +30,6 @@ jobs:
       test_group_cnt: 2
       test_group_ids: '[1,2]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      base-docker-image: ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ github.run_id }}
       runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'

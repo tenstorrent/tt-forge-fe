@@ -97,6 +97,7 @@ jobs:
       test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
       test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      base-docker-image: ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       run_id: ${{ needs.build.outputs.run_id }}
 
@@ -113,6 +114,7 @@ jobs:
       test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
       test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      base-docker-image: ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ needs.build.outputs.run_id }}
       runs-on: '[{"runs-on": "n150"}]'
 
@@ -130,6 +132,7 @@ jobs:
       test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_os }}
       run_id: ${{ needs.build.outputs.run_id }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      base-docker-image: ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       test-expression: 'inference'
       allow-fail: true
@@ -149,6 +152,7 @@ jobs:
       test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_os }}
       run_id: ${{ needs.build.outputs.run_id }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      base-docker-image: ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       allow-fail: true
       sh-runner: true
