@@ -74,9 +74,7 @@ RUN pip install cmake \
     pytest
 
 # Set environment variables for toolchain directories
-ENV TTMLIR_TOOLCHAIN_DIR=/opt/ttmlir-toolchain
 ENV TTFORGE_TOOLCHAIN_DIR=/opt/ttforge-toolchain
-ENV TTMLIR_PYTHON_VERSION=python3.11
 
 # Create a directory for the build and toolchain
 ARG BUILD_DIR=/home/build
@@ -91,7 +89,7 @@ RUN python3.11 -m venv $TTFORGE_VENV_DIR
 # Copy and install core requirements in the forge-fe virtual environment
 COPY env/core_requirements.txt /tmp/core_requirements.txt
 RUN source $TTFORGE_VENV_DIR/bin/activate && \
-    pip install --ignore-installed -r /tmp/core_requirements.txt
+    pip install --no-cache-dir -r /tmp/core_requirements.txt
 
 # Ensure venv Python is used by default in derived contexts
 ENV PATH="/opt/ttforge-toolchain/venv/bin:${PATH}"

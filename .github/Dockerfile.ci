@@ -5,9 +5,6 @@ SHELL ["/bin/bash", "-c"]
 
 # Set environment variables
 ENV PROJECT_NAME=tt-forge-fe
-ENV TTMLIR_TOOLCHAIN_DIR=/opt/ttmlir-toolchain
-ENV TTFORGE_TOOLCHAIN_DIR=/opt/ttforge-toolchain
-ENV TTMLIR_PYTHON_VERSION=python3.11
 ENV TTFORGE_VENV_DIR=/opt/ttforge-toolchain/venv
 
 # Create a directory for the build and toolchain
@@ -27,7 +24,7 @@ RUN git log -1
 
 # Install dev requirements into the same venv as base using env/activate
 RUN source env/activate && \
-    pip install --ignore-installed -r env/dev_requirements.txt
+    pip install --no-cache-dir -r env/dev_requirements.txt
 
 # Build the toolchain
 WORKDIR $BUILD_DIR/$PROJECT_NAME
