@@ -181,6 +181,20 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           path: forge/test/models_ops
 
+      - name: Install wheel
+        shell: bash
+        run: |
+          source env/activate
+          TT_FORGE_FE_WHEEL=$(find "./artifacts/" -name "tt_forge_fe*.whl" | head -1)
+          if [ -n "$TT_FORGE_FE_WHEEL" ]; then
+            echo "Installing wheel: $TT_FORGE_FE_WHEEL"
+            pip install "$TT_FORGE_FE_WHEEL"
+          else
+            echo "No wheel file found in artifacts directory"
+            ls -la ./artifacts/
+            exit 1
+          fi
+
       - name: Collect Test
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
