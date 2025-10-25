@@ -93,12 +93,18 @@ RUN python3.11 -m venv $TTFORGE_VENV_DIR
 # Copy project files
 COPY . /tmp/tt-forge-fe/
 
-# Install core requirements and forge in development mode
+# Install core requirements and build forge
 RUN source $TTFORGE_VENV_DIR/bin/activate && \
     pip install --no-cache-dir -r /tmp/tt-forge-fe/env/core_requirements.txt && \
     cd /tmp/tt-forge-fe && \
     source env/activate && \
-    pip install -e . && \
+    # Build the environment
+    cmake -B env/build env && \
+    cmake --build env/build && \
+    # Build TT-Forge-FE
+    cmake -G Ninja -B build -DCMAKE_CXX_COMPILER=clang++-17 -DCMAKE_C_COMPILER=clang-17 && \
+    cmake --build build && \
+    # Install in development mode
     cd / && \
     rm -rf /tmp/tt-forge-fe
 

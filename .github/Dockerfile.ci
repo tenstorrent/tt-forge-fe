@@ -30,11 +30,14 @@ RUN source env/activate && \
 # Build and install the toolchain
 WORKDIR $BUILD_DIR/$PROJECT_NAME
 
-# Install forge and build toolchain
+# Build and install forge
 RUN source env/activate && \
-    pip install -e . && \
+    # Build the environment
     cmake -B env/build env && \
-    cmake --build env/build
+    cmake --build env/build && \
+    # Build TT-Forge-FE
+    cmake -G Ninja -B build -DCMAKE_CXX_COMPILER=clang++-17 -DCMAKE_C_COMPILER=clang-17 && \
+    cmake --build build && \
 
 FROM ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:${FROM_TAG} AS ci
 
@@ -54,11 +57,15 @@ COPY --from=ci-build $TTFORGE_TOOLCHAIN_DIR $TTFORGE_TOOLCHAIN_DIR
 RUN du -h --max-depth=2 $TTMLIR_TOOLCHAIN_DIR && \
     du -h --max-depth=2 $TTFORGE_TOOLCHAIN_DIR
 
+# Copy build artifacts from ci-build stage
+COPY --from=ci-build $BUILD_DIR/$PROJECT_NAME/build /tmp/tt-forge-fe/build
+
 # Copy project files and install forge in final stage
 COPY . /tmp/tt-forge-fe/
 RUN source $TTFORGE_VENV_DIR/bin/activate && \
     cd /tmp/tt-forge-fe && \
     source env/activate && \
+    # Install in development mode with pre-built artifacts
     pip install -e . && \
     cd / && \
     rm -rf /tmp/tt-forge-fe
