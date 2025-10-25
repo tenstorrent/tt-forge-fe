@@ -79,28 +79,17 @@ ENV TTMLIR_TOOLCHAIN_DIR=/opt/ttmlir-toolchain
 
 # Create a directory for the build and toolchain
 ARG BUILD_DIR=/home/build
+
 RUN mkdir -p $BUILD_DIR && \
     mkdir -p $TTMLIR_TOOLCHAIN_DIR && \
     mkdir -p $TTFORGE_TOOLCHAIN_DIR
-
-# Set up Python environment variables
-ENV TTFORGE_PYTHON_VERSION=python3.11
-ENV TTFORGE_VENV_DIR=/opt/ttforge-toolchain/venv
-
 # Create the virtual environment that forge-fe will use
+ENV TTFORGE_VENV_DIR=/opt/ttforge-toolchain/venv
 RUN python3.11 -m venv $TTFORGE_VENV_DIR
-
-# Copy project files
-COPY . /tmp/tt-forge-fe/
-
-# Install core requirements and forge in development mode
+# Copy and install core requirements in the forge-fe virtual environment
+COPY env/core_requirements.txt /tmp/core_requirements.txt
 RUN source $TTFORGE_VENV_DIR/bin/activate && \
-    pip install --no-cache-dir -r /tmp/tt-forge-fe/env/core_requirements.txt && \
-    cd /tmp/tt-forge-fe && \
-    source env/activate && \
-    pip install -e . && \
-    cd / && \
-    rm -rf /tmp/tt-forge-fe
+    pip install --no-cache-dir -r /tmp/core_requirements.txt
 
 # Ensure venv Python is used by default in derived contexts
 ENV PATH="/opt/ttforge-toolchain/venv/bin:${PATH}"

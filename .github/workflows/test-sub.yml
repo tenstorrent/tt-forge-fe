@@ -22,10 +22,6 @@ on:
         description: 'Docker image to use for build'
         required: true
         type: string
-      base-docker-image:
-        description: 'Base Docker image to use for slim tests'
-        required: true
-        type: string
       runs-on:
         description: 'Runs on'
         required: false
@@ -86,7 +82,7 @@ jobs:
     continue-on-error: ${{ inputs.allow-fail }}
 
     container:
-      image: ${{ (inputs.test_mark == 'slim') && inputs.base-docker-image || (inputs.sh-runner && format('harbor.ci.tenstorrent.net/{0}', inputs.docker-image) || inputs.docker-image) }}
+      image: ${{ inputs.sh-runner && format('harbor.ci.tenstorrent.net/{0}', inputs.docker-image) || inputs.docker-image }}
       options: --device /dev/tenstorrent/0
       volumes:
         - /dev/hugepages:/dev/hugepages
@@ -124,7 +120,7 @@ jobs:
           sparse-checkout: |
             .github/workflows/
             env/
-            forge/
+            forge/test
             pytest.ini
             conftest.py
             .test_durations
@@ -141,11 +137,6 @@ jobs:
           git submodule foreach --recursive git clean -ffdx
           git submodule foreach --recursive git reset --hard
 
-      - name: Create temporary directory for artifacts
-        run: mkdir -p ./artifacts/
-
-
-
       - name: Download wheel
         if: ${{ inputs.run_id }}
         continue-on-error: true
@@ -154,7 +145,6 @@ jobs:
           name: forge-wheel
           run_id: ${{ inputs.run_id }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          path: ./artifacts/
 
       - name: Find and download forge wheel
         if: ${{ !inputs.run_id }}
@@ -168,8 +158,13 @@ jobs:
           repo: tenstorrent/tt-forge-fe
           check_artifacts: true
           search_artifacts: true
-          path: ./artifacts/
 
+      - name: Install wheel
+        shell: bash
+        run: |
+          source env/activate
+          pip install tt_tvm*.whl --upgrade
+          pip install tt_forge_fe*.whl --upgrade
 
       - name: Download Generated Models Ops Tests
         if: ${{ inputs.run_models_ops_tests }}
@@ -180,7 +175,6 @@ jobs:
           run_id: ${{ inputs.run_id }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           path: forge/test/models_ops
-
 
       - name: Collect Test
         env:

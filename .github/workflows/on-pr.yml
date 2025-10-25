@@ -53,6 +53,20 @@ jobs:
     secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  test-slim:
+    needs:
+      - docker-build
+      - build
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      test_mark: 'slim'
+      test_group_cnt: 1
+      test_group_ids: '[1]'
+      docker-image: ${{ needs.docker-build.outputs.base-image }}
+      run_id: ${{ github.run_id }}
+      runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
+
   test:
     needs:
       - docker-build
@@ -64,7 +78,6 @@ jobs:
       test_group_cnt: 2
       test_group_ids: '[1,2]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      base-docker-image: ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ github.run_id }}
       runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
 
@@ -96,6 +109,7 @@ jobs:
       - docker-build
       - build-docs
       - build
+      - test-slim
       - test
       - perf-benchmark
     runs-on: Ubuntu-latest
