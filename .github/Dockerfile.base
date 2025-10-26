@@ -3,6 +3,7 @@ SHELL ["/bin/bash", "-c"]
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
+ENV PROJECT_NAME=tt-forge-fe
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -91,5 +92,13 @@ COPY env/core_requirements.txt /tmp/core_requirements.txt
 RUN source $TTFORGE_VENV_DIR/bin/activate && \
     pip install --no-cache-dir -r /tmp/core_requirements.txt
 
+# Copy the project to the container for building
+ADD . $BUILD_DIR/$PROJECT_NAME
+
+# Build the toolchain
+WORKDIR $BUILD_DIR/$PROJECT_NAME
+RUN source env/activate && \
+    cmake -B env/build env && \
+    cmake --build env/build
 # Ensure venv Python is used by default in derived contexts
 ENV PATH="/opt/ttforge-toolchain/venv/bin:${PATH}"

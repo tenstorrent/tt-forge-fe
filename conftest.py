@@ -13,7 +13,13 @@ from forge.forge_property_utils import (
     ForgePropertyHandler,
     forge_property_handler_var,
 )
-from forge._C.verif import malloc_trim
+
+try:
+    from forge._C.verif import malloc_trim
+except ImportError:
+    # For test-slim, we don't have the C extensions
+    def malloc_trim():
+        pass
 
 
 def pytest_addoption(parser):
