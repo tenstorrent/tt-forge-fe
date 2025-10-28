@@ -25,6 +25,7 @@ opencv-contrib-python==4.9.0.80
 yolov6detect==0.4.1
 peft==0.15.1
 safetensors==0.6.0.dev0
+yolox
 yolov5==7.0.9
 # Required by the Whisper model package for audio processing
 librosa
