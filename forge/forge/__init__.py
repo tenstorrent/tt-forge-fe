@@ -26,18 +26,18 @@ def set_home_paths():
         logger.remove()
         logger.add(sys.stdout)
 
-    # TT_METAL_HOME should be one of the following:
+    # TT_METAL_RUNTIME_ROOT should be one of the following:
     in_wheel_path = forge_path / "forge/tt-metal"
     in_source_path = (forge_path.parent.resolve() / "third_party/tt-mlir/third_party/tt-metal/src/tt-metal").resolve()
 
-    if "TT_METAL_HOME" not in os.environ:
+    if "TT_METAL_RUNTIME_ROOT" not in os.environ:
         if in_wheel_path.exists():
-            os.environ["TT_METAL_HOME"] = str(in_wheel_path)
+            os.environ["TT_METAL_RUNTIME_ROOT"] = str(in_wheel_path)
         elif in_source_path.exists():
-            os.environ["TT_METAL_HOME"] = str(in_source_path)
+            os.environ["TT_METAL_RUNTIME_ROOT"] = str(in_source_path)
         else:
             logger.error(
-                f"TT_METAL_HOME environment variable is not set. Tried setting it to {in_wheel_path} and {in_source_path}, but neither exists. Something is wrong with the installation."
+                f"TT_METAL_RUNTIME_ROOT environment variable is not set. Tried setting it to {in_wheel_path} and {in_source_path}, but neither exists. Something is wrong with the installation."
             )
             exit(1)
 
@@ -49,14 +49,14 @@ def set_home_paths():
     else:
         logger.error("Neither wheel nor source path exist for tt-metal. Please check your installation.")
 
-    if pathlib.Path(os.environ["TT_METAL_HOME"]) not in [in_wheel_path, in_source_path]:
-        if pathlib.Path(os.environ["TT_METAL_HOME"]).exists():
+    if pathlib.Path(os.environ["TT_METAL_RUNTIME_ROOT"]) not in [in_wheel_path, in_source_path]:
+        if pathlib.Path(os.environ["TT_METAL_RUNTIME_ROOT"]).exists():
             logger.warning(
-                f"TT_METAL_HOME environment variable is set to {os.environ['TT_METAL_HOME']}, which looks like a non-standard path. Please check if this is intentional. If set incorrectly, it will cause issues during runtime."
+                f"TT_METAL_RUNTIME_ROOT environment variable is set to {os.environ['TT_METAL_RUNTIME_ROOT']}, which looks like a non-standard path. Please check if this is intentional. If set incorrectly, it will cause issues during runtime."
             )
         else:
             logger.error(
-                f"TT_METAL_HOME environment variable is set to {os.environ['TT_METAL_HOME']}, which does not exist. Please check if this is intentional. Unset it so that the default path is used or set it to the correct path."
+                f"TT_METAL_RUNTIME_ROOT environment variable is set to {os.environ['TT_METAL_RUNTIME_ROOT']}, which does not exist. Please check if this is intentional. Unset it so that the default path is used or set it to the correct path."
             )
             exit(1)
 
