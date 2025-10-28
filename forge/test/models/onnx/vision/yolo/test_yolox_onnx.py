@@ -33,10 +33,6 @@ from forge.forge_property_utils import (
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
 
-from test.models.pytorch.vision.yolo.model_utils.yolox_utils import (
-    print_detection_results,
-)
-
 variants = [
     pytest.param(
         "yolox_nano", marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2997")
@@ -62,6 +58,9 @@ def test_yolox_pytorch(variant, forge_tmp_path):
 
     from yolox.data.data_augment import preproc as preprocess
     from yolox.exp import get_exp
+    from test.models.pytorch.vision.yolo.model_utils.yolox_utils import (
+        print_detection_results,
+    )
 
 
     pcc = 0.99
