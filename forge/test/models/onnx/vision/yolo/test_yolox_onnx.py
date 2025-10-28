@@ -46,7 +46,7 @@ variants = [
 ]
 
 
-# @pytest.mark.nightly
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_yolox_pytorch(variant, forge_tmp_path):
 
