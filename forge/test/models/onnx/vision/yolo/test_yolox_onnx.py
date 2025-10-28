@@ -46,7 +46,7 @@ variants = [
 ]
 
 
-@pytest.mark.nightly
+# @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_yolox_pytorch(variant, forge_tmp_path):
 
@@ -61,7 +61,6 @@ def test_yolox_pytorch(variant, forge_tmp_path):
     from test.models.pytorch.vision.yolo.model_utils.yolox_utils import (
         print_detection_results,
     )
-
 
     pcc = 0.99
     if variant == "yolox_nano":
