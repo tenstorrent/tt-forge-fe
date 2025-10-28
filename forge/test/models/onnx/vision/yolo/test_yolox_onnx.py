@@ -2,12 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import subprocess
-
-subprocess.run(
-    ["pip", "install", "yolox==0.3.0", "--no-deps"]
-)  # Install yolox==0.3.0 without installing its dependencies
-
 """
 Reason to install yolox=0.3.0 through subprocess :
 requirements of yolox=0.3.0 can be found here https://github.com/Megvii-BaseDetection/YOLOX/blob/0.3.0/requirements.txt
@@ -27,8 +21,6 @@ import requests
 import torch
 import onnx
 from third_party.tt_forge_models.tools.utils import get_file
-from yolox.data.data_augment import preproc as preprocess
-from yolox.exp import get_exp
 
 import forge
 from forge.forge_property_utils import (
@@ -40,10 +32,6 @@ from forge.forge_property_utils import (
 )
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
-
-from test.models.pytorch.vision.yolo.model_utils.yolox_utils import (
-    print_detection_results,
-)
 
 variants = [
     pytest.param(
@@ -58,9 +46,21 @@ variants = [
 ]
 
 
-@pytest.mark.nightly
+# @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_yolox_pytorch(variant, forge_tmp_path):
+
+    import subprocess
+
+    subprocess.run(
+        ["pip", "install", "yolox==0.3.0", "--no-deps"]
+    )  # Install yolox==0.3.0 without installing its dependencies
+
+    from yolox.data.data_augment import preproc as preprocess
+    from yolox.exp import get_exp
+    from test.models.pytorch.vision.yolo.model_utils.yolox_utils import (
+        print_detection_results,
+    )
 
     pcc = 0.99
     if variant == "yolox_nano":
