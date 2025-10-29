@@ -2,16 +2,10 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-"""
-Reason to install yolox=0.3.0 through subprocess :
-requirements of yolox=0.3.0 can be found here https://github.com/Megvii-BaseDetection/YOLOX/blob/0.3.0/requirements.txt
-onnx==1.8.1 and onnxruntime==1.8.0 are required by yolox which are incompatible with our package versions
-Dependencies required by yolox for pytorch implemetation are already present in pybuda and packages related to onnx is not needed
-pip install yolox==0.3.0 --no-deps can be used to install a package without installing its dependencies through terminal
-But in pybuda packages were installed through requirements.txt file not though terminal.
-unfortunately there is no way to include --no-deps in  requirements.txt file.
-for this reason , yolox==0.3.0 is intalled through subprocess.
-"""
+from test.utils import install_yolox_if_missing
+
+# Install yolox==0.3.0 without installing its dependencies
+assert install_yolox_if_missing()
 
 import os
 
@@ -21,6 +15,8 @@ import requests
 import torch
 import onnx
 from third_party.tt_forge_models.tools.utils import get_file
+from yolox.data.data_augment import preproc as preprocess
+from yolox.exp import get_exp
 
 import forge
 from forge.forge_property_utils import (
@@ -32,6 +28,10 @@ from forge.forge_property_utils import (
 )
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
+
+from test.models.pytorch.vision.yolo.model_utils.yolox_utils import (
+    print_detection_results,
+)
 
 variants = [
     pytest.param(
@@ -46,21 +46,9 @@ variants = [
 ]
 
 
-# @pytest.mark.nightly
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_yolox_pytorch(variant, forge_tmp_path):
-
-    import subprocess
-
-    subprocess.run(
-        ["pip", "install", "yolox==0.3.0", "--no-deps"]
-    )  # Install yolox==0.3.0 without installing its dependencies
-
-    from yolox.data.data_augment import preproc as preprocess
-    from yolox.exp import get_exp
-    from test.models.pytorch.vision.yolo.model_utils.yolox_utils import (
-        print_detection_results,
-    )
 
     pcc = 0.99
     if variant == "yolox_nano":
