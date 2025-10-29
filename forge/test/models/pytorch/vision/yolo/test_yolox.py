@@ -2,6 +2,11 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+from test.utils import install_yolox_if_missing
+
+# Install yolox==0.3.0 without installing its dependencies
+assert install_yolox_if_missing()
+
 import pytest
 import torch
 from third_party.tt_forge_models.yolox.pytorch import ModelLoader, ModelVariant

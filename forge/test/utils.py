@@ -11,6 +11,10 @@ import shutil
 import urllib
 from filelock import FileLock
 import tarfile
+import importlib
+import subprocess
+import sys
+from typing import Optional
 
 import numpy as np
 import torch
@@ -167,3 +171,82 @@ def reset_seeds():
     np.random.seed(0)
     torch.manual_seed(0)
     tf.random.set_seed(0)
+
+
+def install_yolox_if_missing(
+    version: str = "0.3.0",
+    package_name: str = "yolox",
+) -> bool:
+    """Install yolox==<version> without dependencies if not already installed.
+
+    Reason to install yolox=0.3.0 through subprocess :
+    requirements of yolox=0.3.0 can be found here https://github.com/Megvii-BaseDetection/YOLOX/blob/0.3.0/requirements.txt
+    onnx==1.8.1 and onnxruntime==1.8.0 are required by yolox which are incompatible with our package versions
+    Dependencies required by yolox for pytorch implemetation are already present in pybuda and packages related to onnx is not needed
+    pip install yolox==0.3.0 --no-deps can be used to install a package without installing its dependencies through terminal
+    But in pybuda packages were installed through requirements.txt file not though terminal.
+    unfortunately there is no way to include --no-deps in  requirements.txt file.
+    for this reason , yolox==0.3.0 is intalled through subprocess.
+
+    Returns True if yolox is present (already or after installation).
+    Raises subprocess.CalledProcessError on pip failure or ImportError if import fails after install.
+    """
+    # 1) Quick check: is package already installed and version matches?
+    try:
+        installed_ver: Optional[str] = importlib.metadata.version(package_name)
+    except importlib.metadata.PackageNotFoundError:
+        installed_ver = None
+
+    if installed_ver is not None:
+        if installed_ver == version:
+            logger.info(f"{package_name}=={version} already installed. Skipping installation.")
+            return True
+        else:
+            logger.info(
+                f"{package_name} is installed (version={installed_ver}) but requested version is {version}. Proceeding to install requested version."
+            )
+
+    # 2) Edge-case: module importable but metadata missing
+    spec = importlib.util.find_spec(package_name)
+    if spec is not None and installed_ver is None:
+        logger.info(
+            f"{package_name} appears importable but metadata not found. Will attempt to (re)install {package_name}=={version}."
+        )
+
+    logger.info(f"Installing {package_name}=={version} (no deps, no build isolation)...")
+    pip_cmd = [
+        sys.executable,
+        "-m",
+        "pip",
+        "install",
+        f"{package_name}=={version}",
+        "--no-deps",
+        "--no-build-isolation",
+    ]
+
+    # 3) Run pip and capture output for debugging if it fails
+    proc = subprocess.run(pip_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    if proc.returncode != 0:
+        logger.error(f"pip install failed (rc={proc.returncode}). stdout:\n{proc.stdout}\nstderr:\n{proc.stderr}")
+        # raise so caller can see failure
+        raise subprocess.CalledProcessError(proc.returncode, pip_cmd, output=proc.stdout, stderr=proc.stderr)
+
+    # 4) Verify import after install
+    importlib.invalidate_caches()
+    try:
+        importlib.import_module(package_name)
+    except Exception as e:
+        logger.error(f"Import of {package_name} failed after installation: {e}")
+        raise
+
+    # 5) final version sanity check
+    try:
+        installed_ver_after = importlib.metadata.version(package_name)
+    except importlib.metadata.PackageNotFoundError:
+        installed_ver_after = None
+
+    if installed_ver_after != version:
+        logger.warning(f"Installed {package_name} version is {installed_ver_after} (requested {version}).")
+
+    logger.info(f"{package_name}=={installed_ver_after} is installed and importable.")
+    return True
