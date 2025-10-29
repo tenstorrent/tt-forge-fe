@@ -20,7 +20,6 @@ variants = [
 ]
 
 
-@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_resnet(variant):
