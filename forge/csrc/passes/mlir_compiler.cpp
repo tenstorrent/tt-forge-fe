@@ -143,11 +143,11 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
 
         tt::log_info(LogMLIRCompiler, "C++ code for SharedObject generated successfully.");
 
-        const char* TT_METAL_HOME = std::getenv("TT_METAL_HOME");
+        const char* TT_METAL_RUNTIME_ROOT = std::getenv("TT_METAL_RUNTIME_ROOT");
         const char* FORGE_HOME = std::getenv("FORGE_HOME");
-        if (TT_METAL_HOME == nullptr)
+        if (TT_METAL_RUNTIME_ROOT == nullptr)
         {
-            throw std::runtime_error("TT_METAL_HOME environment variable is not set.");
+            throw std::runtime_error("TT_METAL_RUNTIME_ROOT environment variable is not set.");
         }
         if (FORGE_HOME == nullptr)
         {
@@ -159,14 +159,14 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
         fs::path standalone_dir;
         if (std::getenv("FORGE_IN_WHEEL"))
         {
-            metal_src_dir = fs::path(std::string(TT_METAL_HOME));
+            metal_src_dir = fs::path(std::string(TT_METAL_RUNTIME_ROOT));
             metal_lib_dir = fs::path(std::string(FORGE_HOME)) / "forge/lib";
             standalone_dir = fs::path(std::string(FORGE_HOME)) / "forge/tools/ttnn-standalone";
         }
         else if (std::getenv("FORGE_IN_SOURCE"))
         {
-            metal_src_dir = fs::path(std::string(TT_METAL_HOME));
-            metal_lib_dir = fs::path(std::string(TT_METAL_HOME)).parent_path() / "tt-metal/build/lib";
+            metal_src_dir = fs::path(std::string(TT_METAL_RUNTIME_ROOT));
+            metal_lib_dir = fs::path(std::string(TT_METAL_RUNTIME_ROOT)).parent_path() / "tt-metal/build/lib";
             standalone_dir =
                 fs::path(std::string(FORGE_HOME)).parent_path() / "third_party/tt-mlir/tools/ttnn-standalone";
         }
