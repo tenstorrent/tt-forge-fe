@@ -67,10 +67,17 @@ on:
         required: false
         type: boolean
         default: false
+      test_kind:
+        description: 'Which tests to run for generated models ops: "inference" = run inference-only tests; "training" = run training-only tests; "both" = run both inference and training tests.'
+        required: false
+        type: choice
+        default: "inference"
+        options:
+          - "inference"
+          - "training"
+          - "both"
   schedule:
     - cron: '0 0 * * *'  # Runs at 12:00 UTC every day
-  # push:
-  #   branches: [ "pchandrasekaran/support_model_analysis_oom" ]
 
 permissions:
   packages: write
@@ -99,6 +106,8 @@ jobs:
       create_pr: ${{ steps.set-inputs.outputs.create_pr }}
       oom_pytest_marker: ${{ steps.set-inputs.outputs.oom_pytest_marker }}
       non_oom_pytest_marker: ${{ steps.set-inputs.outputs.non_oom_pytest_marker }}
+      test_kind: ${{ steps.set-inputs.outputs.test_kind }}
+      test_kind_marker: ${{ steps.set-inputs.outputs.test_kind_marker }}
     steps:
       - name: Inputs Management
         id: set-inputs
@@ -108,12 +117,38 @@ jobs:
           default_runs_on_non_oom=n150
           default_runs_on_oom_and_crashed=tt-ubuntu-2204-n300-llmbox-stable
           default_create_pr=false
+          default_test_kind=inference
 
           tgc_cnt_oom_and_non_oom=$(if [ -z "${{ inputs.test_group_cnt_oom_and_non_oom }}" ]; then echo $default_test_group_cnt_oom_and_non_oom; else echo ${{ inputs.test_group_cnt_oom_and_non_oom }}; fi)
           tgc_cnt_crashed=$(if [ -z "${{ inputs.test_group_cnt_crashed }}" ]; then echo $default_test_group_cnt_crashed; else echo ${{ inputs.test_group_cnt_crashed }}; fi)
           runs_on_non_oom=$(if [ -z "${{ inputs.runs-on-non-oom }}" ]; then echo $default_runs_on_non_oom; else echo ${{ inputs.runs-on-non-oom}}; fi)
           runs_on_oom_and_crashed=$(if [ -z "${{ inputs.runs-on-oom-and-crashed }}" ]; then echo $default_runs_on_oom_and_crashed; else echo ${{ inputs.runs-on-oom-and-crashed}}; fi)
           create_pr_val=$(if [ -z "${{ inputs.create_pull_request }}" ]; then echo $default_create_pr; else echo ${{ inputs.create_pull_request }}; fi)
+
+          # Resolve test_kind input and set marker expression
+          test_kind_val=$(if [ -z "${{ inputs.test_kind }}" ]; then echo $default_test_kind; else echo ${{ inputs.test_kind }}; fi)
+          # Normalize to lowercase just in case (bash)
+          test_kind_val=$(printf '%s' "$test_kind_val" | tr '[:upper:]' '[:lower:]')
+
+          # Determine the pytest-style marker expression based on choice:
+          # - inference  => "inference and not training"
+          # - training   => "training and not inference"
+          # - both       => "inference or training"
+          case "$test_kind_val" in
+            inference)
+              test_kind_marker="inference and not training"
+              ;;
+            training)
+              test_kind_marker="training and not inference"
+              ;;
+            both)
+              test_kind_marker="inference or training"
+              ;;
+            *)
+              # fallback to safe default (both)
+              test_kind_marker="inference or training"
+              ;;
+          esac
 
           # Emit outputs
           echo "test_group_cnt_oom_and_non_oom=$tgc_cnt_oom_and_non_oom" >> $GITHUB_OUTPUT
@@ -128,6 +163,10 @@ jobs:
           # Emit pytest marker expressions as job outputs so downstream jobs can reference them.
           echo "oom_pytest_marker=not skip_model_analysis and out_of_memory" >> $GITHUB_OUTPUT
           echo "non_oom_pytest_marker=not (skip_model_analysis or out_of_memory)" >> $GITHUB_OUTPUT
+
+          # Emit test_kind values
+          echo "test_kind=$test_kind_val" >> $GITHUB_OUTPUT
+          echo "test_kind_marker=$test_kind_marker" >> $GITHUB_OUTPUT
 
   build:
     needs:
@@ -494,5 +533,5 @@ jobs:
       run_id: ${{ needs.build.outputs.run_id }}
       run_models_ops_tests: true
       max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
-      test-expression: 'inference and not training'
+      test-expression: ${{ needs.set-inputs.outputs.test_kind_marker }}
       allow-fail: true
