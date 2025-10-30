@@ -23,6 +23,8 @@ set(TTFORGE_CSRC_INCLUDES
     ${CMAKE_SOURCE_DIR}/third_party/json/single_include
     ${CMAKE_SOURCE_DIR}/third_party/pybind11_json/include
     ${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/include
+    ${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/runtime/include
+    ${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/install/include
     ${CMAKE_SOURCE_DIR}/third_party/tt-mlir/runtime/include
     ${CMAKE_SOURCE_DIR}/third_party/tt-mlir/include
     ${TTMLIR_TOOLCHAIN_DIR}/include
