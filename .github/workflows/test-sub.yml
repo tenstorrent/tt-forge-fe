@@ -119,6 +119,7 @@ jobs:
         with:
           sparse-checkout: |
             .github/workflows/
+            .github/download-artifacts.sh
             env/
             forge/test
             pytest.ini
@@ -166,15 +167,25 @@ jobs:
           pip install tt_tvm*.whl --upgrade
           pip install tt_forge_fe*.whl --upgrade
 
+      # - name: Download Generated Models Ops Tests
+      #   if: ${{ inputs.run_models_ops_tests }}
+      #   continue-on-error: true
+      #   uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
+      #   with:
+      #     name: generated-models-ops-tests
+      #     run_id: ${{ inputs.run_id }}
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     path: forge/test/models_ops
+
       - name: Download Generated Models Ops Tests
         if: ${{ inputs.run_models_ops_tests }}
-        continue-on-error: true
-        uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
-        with:
-          name: generated-models-ops-tests
-          run_id: ${{ inputs.run_id }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          path: forge/test/models_ops
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OUTPUT_DIR_PATH: forge/test/models_ops
+          ARTIFACT_PREFIX: generated-models-ops-tests
+        run: |
+          bash .github/download-artifacts.sh "${{ github.repository }}" "${{ inputs.run_id }}" "${{ env.OUTPUT_DIR_PATH }}" "${{ env.ARTIFACT_PREFIX }}"
 
       - name: Collect Test
         env:

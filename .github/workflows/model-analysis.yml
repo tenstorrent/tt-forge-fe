@@ -78,6 +78,8 @@ on:
           - "both"
   schedule:
     - cron: '0 0 * * *'  # Runs at 12:00 UTC every day
+  push:
+    branches: [ "pchandrasekaran/support_model_analysis_oom" ]
 
 permissions:
   packages: write
@@ -87,13 +89,13 @@ run-name: "Model Analysis Non-OOM (${{inputs.runs-on-non-oom}}-${{inputs.test_gr
 
 jobs:
 
-  docker-build:
-    uses: ./.github/workflows/build-image.yml
-    secrets: inherit
+  # docker-build:
+  #   uses: ./.github/workflows/build-image.yml
+  #   secrets: inherit
 
   set-inputs:
     runs-on: ubuntu-latest
-    needs: docker-build
+    # needs: docker-build
     if: always()
     outputs:
       test_group_cnt_oom_and_non_oom: ${{ steps.set-inputs.outputs.test_group_cnt_oom_and_non_oom }}
@@ -112,7 +114,7 @@ jobs:
       - name: Inputs Management
         id: set-inputs
         run: |
-          default_test_group_cnt_oom_and_non_oom=12
+          default_test_group_cnt_oom_and_non_oom=1
           default_test_group_cnt_crashed=4
           default_runs_on_non_oom=n150
           default_runs_on_oom_and_crashed=tt-ubuntu-2204-n300-llmbox-stable
@@ -168,369 +170,369 @@ jobs:
           echo "test_kind=$test_kind_val" >> $GITHUB_OUTPUT
           echo "test_kind_marker=$test_kind_marker" >> $GITHUB_OUTPUT
 
-  build:
-    needs:
-      - docker-build
-      - set-inputs
-    uses: ./.github/workflows/build.yml
-    secrets: inherit
-    with:
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      build: 'Release'
+  # build:
+  #   needs:
+  #     - docker-build
+  #     - set-inputs
+  #   uses: ./.github/workflows/build.yml
+  #   secrets: inherit
+  #   with:
+  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  #     build: 'Release'
 
-  extract-unique-ops-configuration-non-oom:
-    needs:
-      - docker-build
-      - set-inputs
-      - build
-    uses: ./.github/workflows/test-model-analysis-sub.yml
-    secrets: inherit
-    with:
-      test_mark: ${{ needs.set-inputs.outputs.non_oom_pytest_marker }}
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt_oom_and_non_oom }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_oom_and_non_oom }}
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: ${{ needs.set-inputs.outputs.runs-on-non-oom }}
-      run_id: ${{ needs.build.outputs.run_id }}
-      tests_to_filter: ${{ inputs.tests_to_filter }}
-      allow-fail: true
-      max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
+  # extract-unique-ops-configuration-non-oom:
+  #   needs:
+  #     - docker-build
+  #     - set-inputs
+  #     - build
+  #   uses: ./.github/workflows/test-model-analysis-sub.yml
+  #   secrets: inherit
+  #   with:
+  #     test_mark: ${{ needs.set-inputs.outputs.non_oom_pytest_marker }}
+  #     test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt_oom_and_non_oom }}
+  #     test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_oom_and_non_oom }}
+  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  #     runs-on: ${{ needs.set-inputs.outputs.runs-on-non-oom }}
+  #     run_id: ${{ needs.build.outputs.run_id }}
+  #     tests_to_filter: ${{ inputs.tests_to_filter }}
+  #     allow-fail: true
+  #     max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
 
-  extract-unique-ops-configuration-oom:
-    needs:
-      - docker-build
-      - set-inputs
-      - build
-    uses: ./.github/workflows/test-model-analysis-sub.yml
-    secrets: inherit
-    with:
-      test_mark: ${{ needs.set-inputs.outputs.oom_pytest_marker }}
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt_oom_and_non_oom }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_oom_and_non_oom }}
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: ${{ needs.set-inputs.outputs.runs-on-oom-and-crashed }}
-      run_id: ${{ needs.build.outputs.run_id }}
-      tests_to_filter: ${{ inputs.tests_to_filter }}
-      allow-fail: true
-      max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
-      split-by-count: true
+  # extract-unique-ops-configuration-oom:
+  #   needs:
+  #     - docker-build
+  #     - set-inputs
+  #     - build
+  #   uses: ./.github/workflows/test-model-analysis-sub.yml
+  #   secrets: inherit
+  #   with:
+  #     test_mark: ${{ needs.set-inputs.outputs.oom_pytest_marker }}
+  #     test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt_oom_and_non_oom }}
+  #     test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_oom_and_non_oom }}
+  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  #     runs-on: ${{ needs.set-inputs.outputs.runs-on-oom-and-crashed }}
+  #     run_id: ${{ needs.build.outputs.run_id }}
+  #     tests_to_filter: ${{ inputs.tests_to_filter }}
+  #     allow-fail: true
+  #     max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
+  #     split-by-count: true
 
-  extract-crashed-tests-from-non-oom:
-    runs-on: ubuntu-latest
-    needs:
-      - docker-build
-      - set-inputs
-      - build
-      - extract-unique-ops-configuration-non-oom
-    if: always()
-    env:
-      CRASHED_TESTS_OUTPUT_DIR_PATH: crashed_tests_output_logs/
-      CRASHED_TESTS_ARTIFACT_PREFIX: unique-ops-configs-crashed-tests
-    outputs:
-      crashed-tests: ${{ steps.extract-crashed-tests.outputs.crashed-tests }}
-      contains-crashed-tests: ${{ steps.extract-crashed-tests.outputs.contains-crashed-tests }}
-    steps:
-      - name: Set reusable strings
-        id: strings
-        shell: bash
-        run: |
-          echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+  # extract-crashed-tests-from-non-oom:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - docker-build
+  #     - set-inputs
+  #     - build
+  #     - extract-unique-ops-configuration-non-oom
+  #   if: always()
+  #   env:
+  #     CRASHED_TESTS_OUTPUT_DIR_PATH: crashed_tests_output_logs/
+  #     CRASHED_TESTS_ARTIFACT_PREFIX: unique-ops-configs-crashed-tests
+  #   outputs:
+  #     crashed-tests: ${{ steps.extract-crashed-tests.outputs.crashed-tests }}
+  #     contains-crashed-tests: ${{ steps.extract-crashed-tests.outputs.contains-crashed-tests }}
+  #   steps:
+  #     - name: Set reusable strings
+  #       id: strings
+  #       shell: bash
+  #       run: |
+  #         echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
 
-      - name: Git safe dir
-        run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
+  #     - name: Git safe dir
+  #       run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
 
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            .github/download-artifacts.sh
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         sparse-checkout: |
+  #           .github/download-artifacts.sh
 
-      - name: Download Unique Ops Config Crashed Logs
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          bash .github/download-artifacts.sh "${{ github.repository }}" "${{ github.run_id }}" "${{ env.CRASHED_TESTS_OUTPUT_DIR_PATH }}" "${{ env.CRASHED_TESTS_ARTIFACT_PREFIX }}"
+  #     - name: Download Unique Ops Config Crashed Logs
+  #       shell: bash
+  #       env:
+  #         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       run: |
+  #         bash .github/download-artifacts.sh "${{ github.repository }}" "${{ github.run_id }}" "${{ env.CRASHED_TESTS_OUTPUT_DIR_PATH }}" "${{ env.CRASHED_TESTS_ARTIFACT_PREFIX }}"
 
-      - name: Extract Crashed Cases
-        id: extract-crashed-tests
-        shell: bash
-        run: |
-          set -euo pipefail
+  #     - name: Extract Crashed Cases
+  #       id: extract-crashed-tests
+  #       shell: bash
+  #       run: |
+  #         set -euo pipefail
 
-          logs_dir="${{ env.CRASHED_TESTS_OUTPUT_DIR_PATH }}"
-          crashed_tests=""
-          contains_crashed_tests=false
+  #         logs_dir="${{ env.CRASHED_TESTS_OUTPUT_DIR_PATH }}"
+  #         crashed_tests=""
+  #         contains_crashed_tests=false
 
-          # Exit early with safe outputs if logs dir missing
-          if [ ! -d "$logs_dir" ]; then
-            echo "crashed-tests<<EOF" >> "$GITHUB_OUTPUT"
-            echo "$crashed_tests" >> "$GITHUB_OUTPUT"
-            echo "EOF" >> "$GITHUB_OUTPUT"
-            echo "contains-crashed-tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
+  #         # Exit early with safe outputs if logs dir missing
+  #         if [ ! -d "$logs_dir" ]; then
+  #           echo "crashed-tests<<EOF" >> "$GITHUB_OUTPUT"
+  #           echo "$crashed_tests" >> "$GITHUB_OUTPUT"
+  #           echo "EOF" >> "$GITHUB_OUTPUT"
+  #           echo "contains-crashed-tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"
+  #           exit 0
+  #         fi
 
-          tmpfile="$(mktemp)"
-          trap 'rm -f "$tmpfile"' EXIT
+  #         tmpfile="$(mktemp)"
+  #         trap 'rm -f "$tmpfile"' EXIT
 
-          # Collect .log files
-          files=()
-          while IFS= read -r -d '' f; do
-            files+=("$f")
-          done < <(find "$logs_dir" -type f -name '*.log' -print0)
+  #         # Collect .log files
+  #         files=()
+  #         while IFS= read -r -d '' f; do
+  #           files+=("$f")
+  #         done < <(find "$logs_dir" -type f -name '*.log' -print0)
 
-          if [ "${#files[@]}" -eq 0 ]; then
-            echo "crashed-tests<<EOF" >> "$GITHUB_OUTPUT"
-            echo "$crashed_tests" >> "$GITHUB_OUTPUT"
-            echo "EOF" >> "$GITHUB_OUTPUT"
-            echo "contains-crashed-tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
+  #         if [ "${#files[@]}" -eq 0 ]; then
+  #           echo "crashed-tests<<EOF" >> "$GITHUB_OUTPUT"
+  #           echo "$crashed_tests" >> "$GITHUB_OUTPUT"
+  #           echo "EOF" >> "$GITHUB_OUTPUT"
+  #           echo "contains-crashed-tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"
+  #           exit 0
+  #         fi
 
-          # Sort logs deterministically
-          IFS=$'\n' sorted_files=($(printf '%s\n' "${files[@]}" | sort -V))
-          unset IFS
+  #         # Sort logs deterministically
+  #         IFS=$'\n' sorted_files=($(printf '%s\n' "${files[@]}" | sort -V))
+  #         unset IFS
 
-          # Extract crash test tokens
-          : > "$tmpfile"
-          for file in "${sorted_files[@]}"; do
-            perl -nE 'while ( /([^\s]+::[^\s]+)/g ) { say $1 }' "$file" 2>/dev/null >> "$tmpfile" || true
-            printf '\n' >> "$tmpfile"
-          done
+  #         # Extract crash test tokens
+  #         : > "$tmpfile"
+  #         for file in "${sorted_files[@]}"; do
+  #           perl -nE 'while ( /([^\s]+::[^\s]+)/g ) { say $1 }' "$file" 2>/dev/null >> "$tmpfile" || true
+  #           printf '\n' >> "$tmpfile"
+  #         done
 
-          # Filter unwanted lines (errors, tracebacks, etc.)
-          filtered_tmp="$(mktemp)"
-          trap 'rm -f "$filtered_tmp" "$tmpfile"' EXIT
+  #         # Filter unwanted lines (errors, tracebacks, etc.)
+  #         filtered_tmp="$(mktemp)"
+  #         trap 'rm -f "$filtered_tmp" "$tmpfile"' EXIT
 
-          while IFS= read -r line || [ -n "$line" ]; do
-            line="$(printf '%s' "$line" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
-            [ -z "$line" ] && continue
-            low="$(printf '%s' "$line" | tr '[:upper:]' '[:lower:]')"
-            if printf '%s\n' "$low" | grep -qiE '(error|exception|traceback|killed|oom|failed|critical)'; then
-              continue
-            fi
-            if printf '%s\n' "$line" | grep -qE '^[=-]{2,}$'; then
-              continue
-            fi
-            if printf '%s\n' "$line" | grep -qE '^[^[:space:]]+::[^[:space:]]+(\[[^]]+\])?$'; then
-              printf '%s\n' "$line" >> "$filtered_tmp"
-            fi
-          done < "$tmpfile"
+  #         while IFS= read -r line || [ -n "$line" ]; do
+  #           line="$(printf '%s' "$line" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+  #           [ -z "$line" ] && continue
+  #           low="$(printf '%s' "$line" | tr '[:upper:]' '[:lower:]')"
+  #           if printf '%s\n' "$low" | grep -qiE '(error|exception|traceback|killed|oom|failed|critical)'; then
+  #             continue
+  #           fi
+  #           if printf '%s\n' "$line" | grep -qE '^[=-]{2,}$'; then
+  #             continue
+  #           fi
+  #           if printf '%s\n' "$line" | grep -qE '^[^[:space:]]+::[^[:space:]]+(\[[^]]+\])?$'; then
+  #             printf '%s\n' "$line" >> "$filtered_tmp"
+  #           fi
+  #         done < "$tmpfile"
 
-          mapfile -t tokens < <(awk 'NF && !seen[$0]++ { print }' "$filtered_tmp")
-          rm -f "$filtered_tmp" || true
+  #         mapfile -t tokens < <(awk 'NF && !seen[$0]++ { print }' "$filtered_tmp")
+  #         rm -f "$filtered_tmp" || true
 
-          joined=""
-          if [ "${#tokens[@]}" -gt 0 ]; then
-            joined=$(printf '%s,' "${tokens[@]}")
-            joined=${joined%,}
-          fi
+  #         joined=""
+  #         if [ "${#tokens[@]}" -gt 0 ]; then
+  #           joined=$(printf '%s,' "${tokens[@]}")
+  #           joined=${joined%,}
+  #         fi
 
-          # Fix missing commas between concatenated forge/ entries
-          if [ -n "$joined" ]; then
-            joined="$(perl -pe 's/\s+(?=forge\/)//g' <<< "$joined")"
-            joined="$(perl -pe 's/([^,])(?=forge\/)/\1,/g' <<< "$joined")"
-          fi
+  #         # Fix missing commas between concatenated forge/ entries
+  #         if [ -n "$joined" ]; then
+  #           joined="$(perl -pe 's/\s+(?=forge\/)//g' <<< "$joined")"
+  #           joined="$(perl -pe 's/([^,])(?=forge\/)/\1,/g' <<< "$joined")"
+  #         fi
 
-          if [ -n "$joined" ]; then
-            contains_crashed_tests=true
-            crashed_tests="$joined"
-          fi
+  #         if [ -n "$joined" ]; then
+  #           contains_crashed_tests=true
+  #           crashed_tests="$joined"
+  #         fi
 
-          echo "crashed-tests<<EOF" >> "$GITHUB_OUTPUT"
-          echo "$crashed_tests" >> "$GITHUB_OUTPUT"
-          echo "EOF" >> "$GITHUB_OUTPUT"
-          echo "contains-crashed-tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"
+  #         echo "crashed-tests<<EOF" >> "$GITHUB_OUTPUT"
+  #         echo "$crashed_tests" >> "$GITHUB_OUTPUT"
+  #         echo "EOF" >> "$GITHUB_OUTPUT"
+  #         echo "contains-crashed-tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"
 
-      - name: show outputs
-        run: |
-          echo "crashed-tests (raw): ${{ steps.extract-crashed-tests.outputs.crashed-tests }}"
-          echo "contains-crashed-tests: ${{ steps.extract-crashed-tests.outputs.contains-crashed-tests }}"
+  #     - name: show outputs
+  #       run: |
+  #         echo "crashed-tests (raw): ${{ steps.extract-crashed-tests.outputs.crashed-tests }}"
+  #         echo "contains-crashed-tests: ${{ steps.extract-crashed-tests.outputs.contains-crashed-tests }}"
 
-  extract-unique-ops-configuration-from-crashed-tests:
-    if: ${{ always() && needs.extract-crashed-tests-from-non-oom.outputs.contains-crashed-tests == 'true' }}
-    needs:
-      - docker-build
-      - set-inputs
-      - build
-      - extract-unique-ops-configuration-non-oom
-      - extract-crashed-tests-from-non-oom
-    uses: ./.github/workflows/test-model-analysis-sub.yml
-    secrets: inherit
-    with:
-      test_mark: ${{ needs.set-inputs.outputs.non_oom_pytest_marker }}
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt_crashed }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_crashed }}
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: ${{ needs.set-inputs.outputs.runs-on-oom-and-crashed }}
-      run_id: ${{ needs.build.outputs.run_id }}
-      tests_to_filter: ${{ needs.extract-crashed-tests-from-non-oom.outputs.crashed-tests }}
-      allow-fail: true
-      max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
-      split-by-count: true
+  # extract-unique-ops-configuration-from-crashed-tests:
+  #   if: ${{ always() && needs.extract-crashed-tests-from-non-oom.outputs.contains-crashed-tests == 'true' }}
+  #   needs:
+  #     - docker-build
+  #     - set-inputs
+  #     - build
+  #     - extract-unique-ops-configuration-non-oom
+  #     - extract-crashed-tests-from-non-oom
+  #   uses: ./.github/workflows/test-model-analysis-sub.yml
+  #   secrets: inherit
+  #   with:
+  #     test_mark: ${{ needs.set-inputs.outputs.non_oom_pytest_marker }}
+  #     test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt_crashed }}
+  #     test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_crashed }}
+  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  #     runs-on: ${{ needs.set-inputs.outputs.runs-on-oom-and-crashed }}
+  #     run_id: ${{ needs.build.outputs.run_id }}
+  #     tests_to_filter: ${{ needs.extract-crashed-tests-from-non-oom.outputs.crashed-tests }}
+  #     allow-fail: true
+  #     max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
+  #     split-by-count: true
 
-  generate-models-ops-tests:
-    needs:
-      - docker-build
-      - set-inputs
-      - build
-      - extract-unique-ops-configuration-non-oom
-      - extract-unique-ops-configuration-oom
-      - extract-unique-ops-configuration-from-crashed-tests
-      - extract-crashed-tests-from-non-oom
-    runs-on: ["in-service", "${{ needs.set-inputs.outputs.runner }}" ]
-    container:
-      image: ${{ needs.docker-build.outputs.docker-image }}
-      options: --device /dev/tenstorrent/0
-      volumes:
-        - /dev/hugepages:/dev/hugepages
-        - /dev/hugepages-1G:/dev/hugepages-1G
-        - /etc/udev/rules.d:/etc/udev/rules.d
-        - /lib/modules:/lib/modules
-        - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
-        - /mnt/dockercache:/mnt/dockercache
-    steps:
-      - name: Set reusable strings
-        id: strings
-        shell: bash
-        run: |
-          echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
-          echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
+  # generate-models-ops-tests:
+  #   needs:
+  #     - docker-build
+  #     - set-inputs
+  #     - build
+  #     - extract-unique-ops-configuration-non-oom
+  #     - extract-unique-ops-configuration-oom
+  #     - extract-unique-ops-configuration-from-crashed-tests
+  #     - extract-crashed-tests-from-non-oom
+  #   runs-on: ["in-service", "${{ needs.set-inputs.outputs.runner }}" ]
+  #   container:
+  #     image: ${{ needs.docker-build.outputs.docker-image }}
+  #     options: --device /dev/tenstorrent/0
+  #     volumes:
+  #       - /dev/hugepages:/dev/hugepages
+  #       - /dev/hugepages-1G:/dev/hugepages-1G
+  #       - /etc/udev/rules.d:/etc/udev/rules.d
+  #       - /lib/modules:/lib/modules
+  #       - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+  #       - /mnt/dockercache:/mnt/dockercache
+  #   steps:
+  #     - name: Set reusable strings
+  #       id: strings
+  #       shell: bash
+  #       run: |
+  #         echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+  #         echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
 
-      - name: Git safe dir
-        run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
+  #     - name: Git safe dir
+  #       run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
 
-      - uses: actions/checkout@v4
-        with:
-            submodules: recursive
-            fetch-depth: 0 # Fetch all history and tags
-            token: ${{ secrets.GH_TOKEN }}
+  #     - uses: actions/checkout@v4
+  #       with:
+  #           submodules: recursive
+  #           fetch-depth: 0 # Fetch all history and tags
+  #           token: ${{ secrets.GH_TOKEN }}
 
-      # Clean everything from submodules (needed to avoid issues
-      # with cmake generated files leftover from previous builds)
-      - name: Cleanup submodules
-        run: |
-            git submodule foreach --recursive git clean -ffdx
-            git submodule foreach --recursive git reset --hard
+  #     # Clean everything from submodules (needed to avoid issues
+  #     # with cmake generated files leftover from previous builds)
+  #     - name: Cleanup submodules
+  #       run: |
+  #           git submodule foreach --recursive git clean -ffdx
+  #           git submodule foreach --recursive git reset --hard
 
-      - name: Set environment variables
-        shell: bash
-        run: |
-            OUTPUT=$(bash .github/model-analysis-config.sh)
-            # Assign the script output to GitHub environment variables
-            echo "$OUTPUT" | while IFS= read -r line; do
-              echo "$line" >> $GITHUB_ENV
-            done
+  #     - name: Set environment variables
+  #       shell: bash
+  #       run: |
+  #           OUTPUT=$(bash .github/model-analysis-config.sh)
+  #           # Assign the script output to GitHub environment variables
+  #           echo "$OUTPUT" | while IFS= read -r line; do
+  #             echo "$line" >> $GITHUB_ENV
+  #           done
 
-      - name: Download all Models Unique Ops Config artifacts
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          bash .github/download-artifacts.sh "${{ github.repository }}" "${{ github.run_id }}" "${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }}" "${{ env.UNIQUE_OPS_CONFIG_ARTIFACT_PREFIX }}"
+  #     - name: Download all Models Unique Ops Config artifacts
+  #       shell: bash
+  #       env:
+  #         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       run: |
+  #         bash .github/download-artifacts.sh "${{ github.repository }}" "${{ github.run_id }}" "${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }}" "${{ env.UNIQUE_OPS_CONFIG_ARTIFACT_PREFIX }}"
 
-      - name: Download wheel
-        if: ${{ needs.build.outputs.run_id }}
-        continue-on-error: true
-        uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
-        with:
-          name: forge-wheel
-          run_id: ${{ needs.build.outputs.run_id }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Download wheel
+  #       if: ${{ needs.build.outputs.run_id }}
+  #       continue-on-error: true
+  #       uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
+  #       with:
+  #         name: forge-wheel
+  #         run_id: ${{ needs.build.outputs.run_id }}
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install wheel
-        shell: bash
-        run: |
-          source env/activate
-          pip install tt_tvm*.whl --force-reinstall
-          pip install tt_forge_fe*.whl --force-reinstall
+  #     - name: Install wheel
+  #       shell: bash
+  #       run: |
+  #         source env/activate
+  #         pip install tt_tvm*.whl --force-reinstall
+  #         pip install tt_forge_fe*.whl --force-reinstall
 
-      - name: Generate Models Ops tests
-        shell: bash
-        run: |
-          source env/activate
-          set -o pipefail # Ensures that the exit code reflects the first command that fails
+  #     - name: Generate Models Ops tests
+  #       shell: bash
+  #       run: |
+  #         source env/activate
+  #         set -o pipefail # Ensures that the exit code reflects the first command that fails
 
-          command_args=(
-            "--extracted_unique_ops_config_directory_path" "${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }}"
-            "--models_ops_test_output_directory_path" "${{ env.MODELS_OPS_TEST_OUTPUT_DIR_PATH }}"
-            "--models_ops_test_package_name" "${{ env.MODELS_OPS_TEST_PACKAGE_NAME }}"
-          )
+  #         command_args=(
+  #           "--extracted_unique_ops_config_directory_path" "${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }}"
+  #           "--models_ops_test_output_directory_path" "${{ env.MODELS_OPS_TEST_OUTPUT_DIR_PATH }}"
+  #           "--models_ops_test_package_name" "${{ env.MODELS_OPS_TEST_PACKAGE_NAME }}"
+  #         )
 
-          if [ -n "${{ inputs.ops_to_filter }}" ]; then
-            # Split on commas and trim whitespace
-            IFS=',' read -r -a ops_filters <<< "${{ inputs.ops_to_filter }}"
-            command_args+=("--ops_to_filter")
-            for of in "${ops_filters[@]}"; do
-              command_args+=("$(echo "$of" | xargs)")
-            done
-          fi
+  #         if [ -n "${{ inputs.ops_to_filter }}" ]; then
+  #           # Split on commas and trim whitespace
+  #           IFS=',' read -r -a ops_filters <<< "${{ inputs.ops_to_filter }}"
+  #           command_args+=("--ops_to_filter")
+  #           for of in "${ops_filters[@]}"; do
+  #             command_args+=("$(echo "$of" | xargs)")
+  #           done
+  #         fi
 
-          if [[ "${{ inputs.override_existing_ops }}" == "true" && -n "${{ inputs.tests_to_filter }}" ]]; then
-            command_args+=("--override_existing_ops")
-          fi
+  #         if [[ "${{ inputs.override_existing_ops }}" == "true" && -n "${{ inputs.tests_to_filter }}" ]]; then
+  #           command_args+=("--override_existing_ops")
+  #         fi
 
-          python scripts/model_analysis/combine_and_generate_ops_tests.py "${command_args[@]}" \
-            2>&1 | tee ${{ env.SCRIPT_OUTPUT_LOG }}
+  #         python scripts/model_analysis/combine_and_generate_ops_tests.py "${command_args[@]}" \
+  #           2>&1 | tee ${{ env.SCRIPT_OUTPUT_LOG }}
 
-      - name: Upload Script Output Logs
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: script-outputs
-          path: ${{ env.SCRIPT_OUTPUT_LOG }}
+  #     - name: Upload Script Output Logs
+  #       uses: actions/upload-artifact@v4
+  #       if: success() || failure()
+  #       with:
+  #         name: script-outputs
+  #         path: ${{ env.SCRIPT_OUTPUT_LOG }}
 
-      - name: Upload Models Unique Ops Output
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: models-unique-ops-output
-          path: ${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }}
+  #     - name: Upload Models Unique Ops Output
+  #       uses: actions/upload-artifact@v4
+  #       if: success() || failure()
+  #       with:
+  #         name: models-unique-ops-output
+  #         path: ${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }}
 
-      - name: Upload Generated Models Ops Tests
-        uses: actions/upload-artifact@v4
-        if: ${{ needs.set-inputs.outputs.create_pr == 'false' }}
-        with:
-          name: generated-models-ops-tests
-          path: ${{ env.GENERATED_MODELS_OPS_TESTS_PATH }}
+  #     - name: Upload Generated Models Ops Tests
+  #       uses: actions/upload-artifact@v4
+  #       if: ${{ needs.set-inputs.outputs.create_pr == 'false' }}
+  #       with:
+  #         name: generated-models-ops-tests
+  #         path: ${{ env.GENERATED_MODELS_OPS_TESTS_PATH }}
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
-        if: ${{ needs.set-inputs.outputs.create_pr == 'true' }}
-        with:
-          branch: ${{ env.BRANCH_NAME }}
-          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          base: main
-          commit-message: ${{ env.COMMIT_MESSAGE }}
-          title: ${{ env.TITLE }}
-          body: ${{ env.BODY }}
-          delete-branch: true
-          token: ${{ secrets.GH_TOKEN }}
-          add-paths: |
-              ${{ env.GENERATED_MODELS_OPS_TESTS_PATH }}
+  #     - name: Create Pull Request
+  #       uses: peter-evans/create-pull-request@v7
+  #       if: ${{ needs.set-inputs.outputs.create_pr == 'true' }}
+  #       with:
+  #         branch: ${{ env.BRANCH_NAME }}
+  #         committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+  #         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+  #         base: main
+  #         commit-message: ${{ env.COMMIT_MESSAGE }}
+  #         title: ${{ env.TITLE }}
+  #         body: ${{ env.BODY }}
+  #         delete-branch: true
+  #         token: ${{ secrets.GH_TOKEN }}
+  #         add-paths: |
+  #             ${{ env.GENERATED_MODELS_OPS_TESTS_PATH }}
 
   run-models-ops-tests:
     if: ${{ needs.set-inputs.outputs.create_pr == 'false' }}
     needs:
-      - docker-build
+      # - docker-build
       - set-inputs
-      - build
-      - extract-unique-ops-configuration-non-oom
-      - extract-unique-ops-configuration-oom
-      - extract-unique-ops-configuration-from-crashed-tests
-      - extract-crashed-tests-from-non-oom
-      - generate-models-ops-tests
+      # - build
+      # - extract-unique-ops-configuration-non-oom
+      # - extract-unique-ops-configuration-oom
+      # - extract-unique-ops-configuration-from-crashed-tests
+      # - extract-crashed-tests-from-non-oom
+      # - generate-models-ops-tests
     uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      docker-image: 'ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ci-ubuntu-22-04:dt-ed6af31978440ebe5d5cfae98890a3308c0454858859950abb154c03d7fe5244'
       test_mark: 'nightly_models_ops'
       test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt_oom_and_non_oom }}
       test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_oom_and_non_oom }}
       runs-on: '[{"runs-on": "n150"}]'
       sh-runner: true
-      run_id: ${{ needs.build.outputs.run_id }}
+      run_id: 18934082022
       run_models_ops_tests: true
       max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
       test-expression: ${{ needs.set-inputs.outputs.test_kind_marker }}
