@@ -6,8 +6,8 @@ import math
 import torch
 import torch.nn as nn
 
-from forge.op_repo import TensorShape
-from test.operators.utils.utils import TensorUtils
+from ...utils import TensorShape
+from ...utils import TensorUtils
 
 
 class ModelFromAnotherOp(nn.Module):

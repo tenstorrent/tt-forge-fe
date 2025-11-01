@@ -55,45 +55,28 @@
 from typing import Callable, List, Dict, Union, Optional
 from loguru import logger
 
-import forge
 import torch
 
-from forge.verify.config import VerifyConfig
-from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
-
-from test.operators.utils import ValueRanges
-from test.operators.utils import VerifyUtils
-from test.operators.utils import InputSource
-from test.operators.utils import TestVector
-from test.operators.utils import TestCollection
-from test.operators.utils import TestPlan
-from test.operators.utils import TestSuite
-from test.operators.utils import FailingRulesConverter
-from test.operators.utils import TestCollectionCommon
-from test.operators.utils import TestCollectionTorch
-from test.operators.utils import FailingReasons
-from test.operators.utils.compat import TestDevice
-from test.operators.utils.utils import PytorchUtils
-
-from forge.op_repo import TensorShape
+from ...utils import (
+    FailingReasons,
+    FailingRulesConverter,
+    InputSource,
+    PytorchUtils,
+    TestCollection,
+    TestCollectionCommon,
+    TestCollectionTorch,
+    TestDevice,
+    TestPlan,
+    TestSuite,
+    TestVector,
+    ValueCheckerUtils,
+    ValueRanges,
+    VerifyConfig,
+    VerifyUtils,
+)
 
 from .models import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 from .failing_rules import FailingRulesData
-
-
-class DivVerifyUtils(VerifyUtils):
-    @classmethod
-    def create_torch_inputs(
-        cls, input_shapes, dev_data_format=None, value_range=None, random_seed=None
-    ) -> List[torch.Tensor]:
-        inputs = super().create_torch_inputs(input_shapes, dev_data_format, value_range, random_seed)
-
-        # Avoid zero value in the second operand to avoid division by zero
-        tensor = inputs[1]
-        tensor = torch.where(tensor == 0, torch.tensor(1), tensor)
-        inputs[1] = tensor
-
-        return inputs
 
 
 class TestVerification:
@@ -105,6 +88,17 @@ class TestVerification:
     }
 
     @classmethod
+    def create_torch_inputs_div(cls, verify_config) -> List[torch.Tensor]:
+        inputs = VerifyUtils.create_torch_inputs(verify_config)
+
+        # Avoid zero value in the second operand to avoid division by zero
+        tensor = inputs[1]
+        tensor = torch.where(tensor == 0, torch.tensor(1), tensor)
+        inputs[1] = tensor
+
+        return inputs
+
+    @classmethod
     def verify(
         cls,
         test_device: TestDevice,
@@ -112,12 +106,10 @@ class TestVerification:
         value_range: Optional[ValueRanges] = None,
         VerifyUtils=VerifyUtils,
         # number_of_operands: int = 2,
-        # input_params: List[Dict] = [],
     ):
         """Common verification function for all tests"""
 
         number_of_operands: int = 2
-        input_params: List[Dict] = []
 
         warm_reset = False
 
@@ -168,23 +160,24 @@ class TestVerification:
 
         # Using AllCloseValueChecker in all cases except for integer data formats
         # and logical operators ge, ne, gt, lt:
-        verify_config: VerifyConfig
         if dev_data_format in TestCollectionTorch.int.dev_data_formats:
-            verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
+            value_checker = ValueCheckerUtils.automatic()
         else:
-            verify_config = VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2))
+            value_checker = ValueCheckerUtils.all_close(rtol=1e-2, atol=1e-2)
 
-        VerifyUtils.verify(
+        verify_config = VerifyConfig(
             model=pytorch_model,
             test_device=test_device,
             input_shapes=input_shapes,
-            input_params=input_params,
             dev_data_format=dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             value_range=value_range,
             warm_reset=warm_reset,
-            verify_config=verify_config,
+            value_checker=value_checker,
         )
+        if test_vector.operator == "div":
+            verify_config.inputs = cls.create_torch_inputs_div(verify_config=verify_config)
+        VerifyUtils.verify(verify_config)
 
 
 class TestParamsData:
@@ -466,7 +459,6 @@ class TestPlansData:
         value_range=ValueRanges.LARGE,
         generate_kwargs=lambda test_vector: TestParamsData.kwargs_rounding_modes,
         quick_mix=False,
-        VerifyUtils=DivVerifyUtils,
     )
 
     remainder: TestPlan = BinaryTestPlanBuilder.build_test_plan(
