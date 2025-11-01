@@ -72,12 +72,12 @@ variants = [
     ),
     pytest.param(
         ModelVariant.FALCON_10B,
-        marks=[pytest.mark.xfail, pytest.mark.out_of_memory],
+        marks=[pytest.mark.xfail, pytest.mark.skip_model_analysis],
     ),
     pytest.param(
         ModelVariant.FALCON_MAMBA_7B,
         marks=[
-            pytest.mark.out_of_memory,
+            pytest.mark.skip_model_analysis,
         ],
     ),
 ]

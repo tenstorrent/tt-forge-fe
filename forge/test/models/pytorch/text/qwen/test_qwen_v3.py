@@ -35,10 +35,10 @@ from forge.verify.verify import verify
 from test.models.models_utils import TextModelWrapper
 
 causal_lm_variants = [
-    pytest.param(CausalLMVariant.QWEN_3_32B, marks=[pytest.mark.out_of_memory]),
-    pytest.param(CausalLMVariant.QWEN_3_30B_A3B, marks=[pytest.mark.out_of_memory]),
-    pytest.param(CausalLMVariant.QWQ_32B, marks=[pytest.mark.out_of_memory]),
-    pytest.param(CausalLMVariant.QWEN_3_14B, marks=[pytest.mark.out_of_memory]),
+    pytest.param(CausalLMVariant.QWEN_3_32B, marks=[pytest.mark.skip_model_analysis]),
+    pytest.param(CausalLMVariant.QWEN_3_30B_A3B, marks=[pytest.mark.skip_model_analysis]),
+    pytest.param(CausalLMVariant.QWQ_32B, marks=[pytest.mark.skip_model_analysis]),
+    pytest.param(CausalLMVariant.QWEN_3_14B, marks=[pytest.mark.skip_model_analysis]),
     CausalLMVariant.QWEN_3_0_6B,
     CausalLMVariant.QWEN_3_1_7B,
     CausalLMVariant.QWEN_3_4B,

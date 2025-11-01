@@ -34,7 +34,7 @@ class StableDiffusionXLWrapper(torch.nn.Module):
         return noise_pred
 
 
-@pytest.mark.out_of_memory
+@pytest.mark.skip_model_analysis
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["stable-diffusion-xl-base-1.0"])
 def test_stable_diffusion_generation(variant, forge_tmp_path):
