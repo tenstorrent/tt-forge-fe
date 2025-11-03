@@ -26,6 +26,11 @@
 #include "utils/logger.hpp"
 
 // MLIR headers
+#include "mlir/Dialect/Arith/IR/Arith.h"
+#include "mlir/Dialect/MLProgram/IR/MLProgram.h"
+#include "mlir/Dialect/Tensor/IR/Tensor.h"
+#include "mlir/Dialect/LLVMIR/LLVMDialect.h"
+#include "mlir/Dialect/LLVMIR/Transforms/InlinerInterfaceImpl.h"
 #include "mlir/Dialect/Func/Extensions/InlinerExtension.h"
 #include "mlir/IR/BuiltinOps.h"
 
