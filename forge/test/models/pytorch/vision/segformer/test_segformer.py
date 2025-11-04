@@ -84,15 +84,14 @@ def test_segformer_image_classification_pytorch(variant):
 
 
 variants_semseg = [
-    pytest.param(SemSegVariant.B0_FINETUNED),
-    pytest.param(SemSegVariant.B1_FINETUNED),
+    pytest.param(SemSegVariant.B0_FINETUNED, marks=pytest.mark.nightly),
+    pytest.param(SemSegVariant.B1_FINETUNED, marks=pytest.mark.nightly),
     pytest.param(SemSegVariant.B2_FINETUNED, marks=pytest.mark.xfail),
     pytest.param(SemSegVariant.B3_FINETUNED, marks=pytest.mark.xfail),
     pytest.param(SemSegVariant.B4_FINETUNED, marks=pytest.mark.xfail),
 ]
 
 
-@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants_semseg)
 def test_segformer_semantic_segmentation_pytorch(variant):
 

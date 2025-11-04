@@ -96,7 +96,6 @@ def test_detr_detection(variant):
     )
 
 
-@pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",
     [
