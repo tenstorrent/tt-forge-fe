@@ -6,7 +6,7 @@ on:
       test_group_cnt_oom_and_non_oom:
         description: 'Test group count for both OOM and Non-OOM(OOM stands for Out Of Memory)'
         required: false
-        default: "12"
+        default: "7"
         type: choice
         options:
           - "2"
@@ -78,6 +78,8 @@ on:
           - "both"
   schedule:
     - cron: '0 0 * * *'  # Runs at 12:00 UTC every day
+  push:
+    branches: [ "pchandrasekaran/support_model_analysis_oom" ]
 
 permissions:
   packages: write
@@ -108,16 +110,18 @@ jobs:
       non_oom_pytest_marker: ${{ steps.set-inputs.outputs.non_oom_pytest_marker }}
       test_kind: ${{ steps.set-inputs.outputs.test_kind }}
       test_kind_marker: ${{ steps.set-inputs.outputs.test_kind_marker }}
+      tests_to_filter: ${{ steps.set-inputs.outputs.tests_to_filter }}
     steps:
       - name: Inputs Management
         id: set-inputs
         run: |
-          default_test_group_cnt_oom_and_non_oom=12
+          default_test_group_cnt_oom_and_non_oom=7
           default_test_group_cnt_crashed=4
           default_runs_on_non_oom=n150
           default_runs_on_oom_and_crashed=tt-ubuntu-2204-n300-llmbox-stable
           default_create_pr=false
           default_test_kind=inference
+          default_test_to_filter="forge/test/models/onnx,forge/test/models/paddlepaddle"
 
           tgc_cnt_oom_and_non_oom=$(if [ -z "${{ inputs.test_group_cnt_oom_and_non_oom }}" ]; then echo $default_test_group_cnt_oom_and_non_oom; else echo ${{ inputs.test_group_cnt_oom_and_non_oom }}; fi)
           tgc_cnt_crashed=$(if [ -z "${{ inputs.test_group_cnt_crashed }}" ]; then echo $default_test_group_cnt_crashed; else echo ${{ inputs.test_group_cnt_crashed }}; fi)
@@ -150,6 +154,35 @@ jobs:
               ;;
           esac
 
+          updated_test_to_filter=""
+          input_tests="${{ inputs.tests_to_filter }}"
+          if [ -n "$input_tests" ]; then
+            # Convert both input and defaults into arrays
+            IFS=',' read -r -a test_filters <<< "$input_tests"
+            IFS=',' read -r -a default_test_filters <<< "$default_test_to_filter"
+
+            # Iterate over provided test filters
+            for tf in "${test_filters[@]}"; do
+              tf_trimmed="$(echo "$tf" | xargs)"  # trim whitespace
+              for df in "${default_test_filters[@]}"; do
+                if [[ "$tf_trimmed" == "$df" ]]; then
+                  updated_test_to_filter+="$tf_trimmed,"
+                fi
+              done
+            done
+
+            # Remove trailing comma
+            updated_test_to_filter="${updated_test_to_filter%,}"
+            if [ -z "$updated_test_to_filter" ]; then
+              updated_test_to_filter="$default_test_to_filter"
+            fi
+          else
+            updated_test_to_filter="$default_test_to_filter"
+          fi
+
+          echo "Updated tests_to_filter = $updated_test_to_filter"
+
+
           # Emit outputs
           echo "test_group_cnt_oom_and_non_oom=$tgc_cnt_oom_and_non_oom" >> $GITHUB_OUTPUT
           echo "test_group_ids_oom_and_non_oom=[$(seq -s ',' 1 $tgc_cnt_oom_and_non_oom)]" >> $GITHUB_OUTPUT
@@ -159,14 +192,11 @@ jobs:
           echo "runs-on-oom-and-crashed=[{\"runs-on\": \"$runs_on_oom_and_crashed\"}]" >> $GITHUB_OUTPUT
           echo "runner=$runs_on_non_oom" >> $GITHUB_OUTPUT
           echo "create_pr=$create_pr_val" >> $GITHUB_OUTPUT
-
-          # Emit pytest marker expressions as job outputs so downstream jobs can reference them.
           echo "oom_pytest_marker=not skip_model_analysis and out_of_memory" >> $GITHUB_OUTPUT
           echo "non_oom_pytest_marker=not (skip_model_analysis or out_of_memory)" >> $GITHUB_OUTPUT
-
-          # Emit test_kind values
           echo "test_kind=$test_kind_val" >> $GITHUB_OUTPUT
           echo "test_kind_marker=$test_kind_marker" >> $GITHUB_OUTPUT
+          echo "tests_to_filter=$updated_test_to_filter" >> $GITHUB_OUTPUT
 
   build:
     needs:
@@ -192,7 +222,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: ${{ needs.set-inputs.outputs.runs-on-non-oom }}
       run_id: ${{ needs.build.outputs.run_id }}
-      tests_to_filter: ${{ inputs.tests_to_filter }}
+      tests_to_filter: ${{ needs.set-inputs.outputs.tests_to_filter }}
       allow-fail: true
       max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
 
@@ -210,7 +240,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: ${{ needs.set-inputs.outputs.runs-on-oom-and-crashed }}
       run_id: ${{ needs.build.outputs.run_id }}
-      tests_to_filter: ${{ inputs.tests_to_filter }}
+      tests_to_filter: ${{ needs.set-inputs.outputs.tests_to_filter }}
       allow-fail: true
       max-job-duration-minutes: 1440 # Set job level execution timeout to 1 day
       split-by-count: true
