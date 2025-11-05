@@ -33,6 +33,7 @@ from test.models.models_utils import TextModelWrapper
         ),
         pytest.param(
             "Qwen/Qwen2.5-3B-Instruct",
+            marks=[pytest.mark.skip_model_analysis],
         ),
     ],
 )

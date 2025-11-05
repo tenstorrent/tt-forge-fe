@@ -78,8 +78,6 @@ on:
           - "both"
   schedule:
     - cron: '0 0 * * *'  # Runs at 12:00 UTC every day
-  push:
-    branches: [ "pchandrasekaran/support_model_analysis_oom" ]
 
 permissions:
   packages: write
