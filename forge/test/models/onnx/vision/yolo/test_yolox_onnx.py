@@ -56,7 +56,7 @@ def test_yolox_pytorch(variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH,
+        framework=Framework.ONNX,
         model=ModelArch.YOLOX,
         variant=variant,
         source=Source.TORCH_HUB,
