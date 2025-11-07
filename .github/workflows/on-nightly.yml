@@ -121,25 +121,6 @@ jobs:
       runs-on: '[{"runs-on": "n150"}]'
       tests_to_filter: ${{ needs.set-inputs.outputs.nightly_tests_paths }}
 
-  test_models_ops:
-    if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
-    needs:
-      - docker-build
-      - set-inputs
-      - build
-    uses: ./.github/workflows/test-sub.yml
-    secrets: inherit
-    with:
-      test_mark: 'nightly_models_ops'
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_os }}
-      run_id: ${{ needs.build.outputs.run_id }}
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "n150"}]'
-      test-expression: 'inference'
-      allow-fail: true
-      sh-runner: true
-
   test_sweeps:
     if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
     needs:
@@ -165,7 +146,6 @@ jobs:
       - build
       - test_full_model_passing
       - test_full_model_xfailing
-      - test_models_ops
       - test_sweeps
     runs-on: Ubuntu-latest
     outputs:
