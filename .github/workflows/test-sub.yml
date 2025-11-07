@@ -66,6 +66,10 @@ on:
         required: false
         type: number
         default: 360
+      tests_to_filter:
+        description: 'Filter specific tests'
+        required: false
+        type: string
 
 jobs:
   run-tests:
@@ -198,9 +202,20 @@ jobs:
             "-m" "${{ inputs.test_mark }}"
             "--collect-only"
           )
+
           if [ -n "${{ inputs.test-expression }}" ]; then
             pytest_args+=("-k" "${{ inputs.test-expression }}")
           fi
+
+          if [ -n "${{ inputs.tests_to_filter }}" ]; then
+            # Split on commas and trim whitespace
+            IFS=',' read -r -a test_filters <<< "${{ inputs.tests_to_filter }}"
+            pytest_args+=("--tests_to_filter")
+            for tf in "${test_filters[@]}"; do
+              pytest_args+=("$(echo "$tf" | xargs)")
+            done
+          fi
+
           pytest "${pytest_args[@]}" -q \
                 | sed -n '/^Collected tests /,/^collected /p' | sed '/^[Cc]ollected /d' >.pytest_tests_to_run
 
