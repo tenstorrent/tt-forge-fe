@@ -177,7 +177,7 @@ source env/activate
 5. Initialize and update submodules:
 
 ```bash
-sudo git submodule update --init --recursive -f
+git submodule update --init --recursive
 ```
 
 6. Build the environment:
