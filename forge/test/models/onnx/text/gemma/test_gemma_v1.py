@@ -23,6 +23,7 @@ import torch
         ),
         pytest.param(
             "google/gemma-1.1-7b-it",
+            marks=[pytest.mark.skip_model_analysis],
         ),
     ],
 )

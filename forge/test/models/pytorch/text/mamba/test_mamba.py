@@ -25,13 +25,13 @@ variants = [
     pytest.param(
         ModelVariant.MAMBA_2_8B,
         marks=[
-            pytest.mark.out_of_memory,
+            pytest.mark.skip_model_analysis,
         ],
     ),
     pytest.param(
         ModelVariant.MAMBA_1_4B,
         marks=[
-            pytest.mark.out_of_memory,
+            pytest.mark.skip_model_analysis,
         ],
     ),
     pytest.param(

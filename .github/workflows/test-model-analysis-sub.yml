@@ -49,6 +49,11 @@ on:
         required: false
         type: number
         default: 360
+      split-by-count:
+        description: 'If true, forces test splitting to be based purely on the number of tests per group (equal test count), ignoring historical test duration data.'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   run-tests:
@@ -60,7 +65,7 @@ jobs:
         build: ${{ fromJson(inputs.runs-on) }}
         test_group_id: ${{ fromJSON(inputs.test_group_ids) }}
 
-    runs-on: ${{ inputs.sh-runner && format('tt-beta-ubuntu-2204-{0}-large-stable', matrix.build.runs-on) || fromJson(format('["{0}", "in-service"]', matrix.build.runs-on)) }}
+    runs-on: ${{ (inputs.sh-runner && format('tt-beta-ubuntu-2204-{0}-large-stable', matrix.build.runs-on)) || (contains(matrix.build.runs-on, 'llmbox') && matrix.build.runs-on) || fromJson(format('["{0}", "in-service"]', matrix.build.runs-on)) }}
 
     continue-on-error: ${{ inputs.allow-fail }}
 
@@ -189,12 +194,34 @@ jobs:
           fi
 
       - name: Extract and Export Unique Ops Configuration
+        id: extract-and-export-unique-ops-configs
         shell: bash
         run: |
           set -o pipefail
           source env/activate
           echo "Collecting tests for group ${{ matrix.test_group_id }} with mark '${{ inputs.test_mark }}'..."
           set +e
+
+          contains_crashed_tests=false
+
+          # ensure we always write the output on exit (success or failure)
+          trap 'echo "contains_crashed_tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"' EXIT
+
+          # Use the new input to decide whether to force a count-based split
+          SHOULD_SPLIT_BY_COUNT='${{ inputs.split-by-count }}'
+          if [[ "$SHOULD_SPLIT_BY_COUNT" == "true" ]]; then
+              DURATIONS_FILE=".test_durations"
+
+              # Removing the durations file forces the 'least_duration' algorithm
+              # to fall back to an equal test count split.
+              if [[ -f $DURATIONS_FILE ]]; then
+                echo "Input 'split-by-count' is true. Found existing $DURATIONS_FILE. Removing it to force count-based split."
+                rm -f "$DURATIONS_FILE"
+              else
+                echo "Input 'split-by-count' is true, but $DURATIONS_FILE not found. Continuing."
+              fi
+          fi
+
           pytest_args=(
             "--splits" "${{ inputs.test_group_cnt }}"
             "--group" "${{ matrix.test_group_id }}"
@@ -232,6 +259,9 @@ jobs:
                -v \
             2>&1 | tee extract-and-export-unique-ops-configs.log
           exit_code=${PIPESTATUS[0]}
+          if [ -f "crashed_pytest.log" ]; then
+            contains_crashed_tests=true
+          fi
           exit $exit_code
 
       - name: Upload Extract And Export Unique Ops Configs Log
@@ -254,6 +284,13 @@ jobs:
         with:
           name: models-unique-ops-config-${{ steps.fetch-job-id.outputs.job_id }}
           path: generated_modules/
+
+      - name: Upload Unique Ops Configs Crashed Tests Log
+        uses: actions/upload-artifact@v4
+        if: ${{ always() && steps.extract-and-export-unique-ops-configs.outputs.contains_crashed_tests == 'true' }}
+        with:
+          name: unique-ops-configs-crashed-tests-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: crashed_pytest.log
 
       - name: Extract and Run Failed tests
         id: extract-and-run-failed-tests

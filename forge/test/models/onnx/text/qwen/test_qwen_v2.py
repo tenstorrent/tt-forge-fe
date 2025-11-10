@@ -24,9 +24,7 @@ from test.models.models_utils import TextModelWrapper
         pytest.param(
             "Qwen/Qwen2.5-1.5B",
         ),
-        pytest.param(
-            "Qwen/Qwen2.5-3B",
-        ),
+        pytest.param("Qwen/Qwen2.5-3B", marks=[pytest.mark.skip_model_analysis]),
         pytest.param(
             "Qwen/Qwen2.5-0.5B-Instruct",
         ),
@@ -35,6 +33,7 @@ from test.models.models_utils import TextModelWrapper
         ),
         pytest.param(
             "Qwen/Qwen2.5-3B-Instruct",
+            marks=[pytest.mark.skip_model_analysis],
         ),
     ],
 )

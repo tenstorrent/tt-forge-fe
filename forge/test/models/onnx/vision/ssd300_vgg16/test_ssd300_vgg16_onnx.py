@@ -31,7 +31,7 @@ def test_ssd300_vgg16(variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH,
+        framework=Framework.ONNX,
         model=ModelArch.SSD300VGG16,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,

@@ -28,7 +28,7 @@ class Wrapper(torch.nn.Module):
 variants = ["openai/whisper-large-v3"]
 
 
-@pytest.mark.out_of_memory
+@pytest.mark.skip_model_analysis
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_whisper_large_v3_onnx(variant, tmp_path):

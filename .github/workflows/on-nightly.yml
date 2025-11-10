@@ -52,6 +52,7 @@ jobs:
       test_group_cnt: ${{ steps.set-inputs.outputs.test_group_cnt }}
       test_group_ids: ${{ steps.set-inputs.outputs.test_group_ids }}
       test_group_ids_os: ${{ steps.set-inputs.outputs.test_group_ids_os }}
+      nightly_tests_paths: ${{ steps.set-inputs.outputs.nightly_tests_paths }}
       run_ops_sweeps: ${{ steps.set-inputs.outputs.run_ops_sweeps }}
     steps:
       - name: Set Inputs
@@ -59,6 +60,7 @@ jobs:
         run: |
           default_test_group_cnt=10
           default_run_ops_sweeps=Yes
+          nightly_tests_paths="forge/test/mlir,forge/test/models/jax,forge/test/models/tensorflow,forge/test/models/onnx,forge/test/models/paddlepaddle"
 
           ros_res=$(if [ -z "${{ inputs.run_ops_sweeps }}" ]; then echo $default_run_ops_sweeps; else echo ${{ inputs.run_ops_sweeps }}; fi)
           if [ -z "${{ inputs.rebuild }}" ]; then
@@ -73,6 +75,7 @@ jobs:
           echo "test_group_ids_os=[$test_group_ids]" >> $GITHUB_OUTPUT
           #echo "test_group_ids_os=[$(if [ $ros_res == 'No' ]; then echo; else echo $test_group_ids; fi)]" >> $GITHUB_OUTPUT
           echo "run_ops_sweeps=$(if [ $ros_res == 'No' ]; then echo; else echo true; fi)" >> $GITHUB_OUTPUT
+          echo "nightly_tests_paths=$nightly_tests_paths" >> $GITHUB_OUTPUT
 
   build:
     needs:
@@ -99,6 +102,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       run_id: ${{ needs.build.outputs.run_id }}
+      tests_to_filter: ${{ needs.set-inputs.outputs.nightly_tests_paths }}
 
   test_full_model_xfailing:
     if: success() || failure()
@@ -115,25 +119,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ needs.build.outputs.run_id }}
       runs-on: '[{"runs-on": "n150"}]'
-
-  test_models_ops:
-    if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
-    needs:
-      - docker-build
-      - set-inputs
-      - build
-    uses: ./.github/workflows/test-sub.yml
-    secrets: inherit
-    with:
-      test_mark: 'nightly_models_ops'
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_os }}
-      run_id: ${{ needs.build.outputs.run_id }}
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "n150"}]'
-      test-expression: 'inference'
-      allow-fail: true
-      sh-runner: true
+      tests_to_filter: ${{ needs.set-inputs.outputs.nightly_tests_paths }}
 
   test_sweeps:
     if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
@@ -160,7 +146,6 @@ jobs:
       - build
       - test_full_model_passing
       - test_full_model_xfailing
-      - test_models_ops
       - test_sweeps
     runs-on: Ubuntu-latest
     outputs:

@@ -13,16 +13,15 @@ from forge.forge_property_utils import Framework, Source, Task, ModelArch, recor
 from test.models.pytorch.vision.sam.model_utils.model import get_model_inputs
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.parametrize(
     "variant",
     [
         pytest.param(
             "facebook/sam-vit-huge",
-            marks=[pytest.mark.out_of_memory],
         ),
         pytest.param(
             "facebook/sam-vit-large",
-            marks=[pytest.mark.out_of_memory],
         ),
         pytest.param("facebook/sam-vit-base", marks=pytest.mark.xfail()),
     ],
