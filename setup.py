@@ -4,10 +4,13 @@
 import os
 import pathlib
 import subprocess
+import sys
+from datetime import datetime
 from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
 from pathlib import Path
 import re
+import urllib.request
 
 
 class TTExtension(Extension):
@@ -157,6 +160,116 @@ model_requirements = collect_model_requirements(model_requirements_root)
 
 requirements = core_requirements + linux_requirements + model_requirements
 
+
+# Parse build type from command line arguments
+def parse_build_type():
+    """
+    Parse --build-type argument from command line.
+    This is passed from build.yml: python3 setup.py bdist_wheel --build-type release
+    Defaults to "release" if not provided.
+    """
+    build_type = None
+    args_to_remove = []
+
+    for i, arg in enumerate(sys.argv):
+        if arg == "--build-type":
+            if i + 1 < len(sys.argv):
+                build_type = sys.argv[i + 1]
+                args_to_remove = [i, i + 1]
+                break
+            else:
+                raise ValueError("--build-type argument requires a value")
+
+    # Remove the arguments so setuptools doesn't see them
+    for i in reversed(args_to_remove):
+        sys.argv.pop(i)
+
+    # Default to Release if not provided
+    if build_type is None:
+        build_type = "release"
+
+    return build_type.lower()
+
+
+def get_git_commit_hash(repo_path: str = ".") -> str:
+    """Get full git commit hash from a repository path."""
+    try:
+        commit_hash = (
+            subprocess.check_output(
+                ["git", "rev-parse", "HEAD"],
+                cwd=repo_path,
+                stderr=subprocess.DEVNULL,
+            )
+            .decode("ascii")
+            .strip()
+        )
+        return commit_hash
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        raise ValueError(f"Failed to get git commit hash from {repo_path}: {e}")
+
+
+def get_tt_mlir_commit_hash() -> str:
+    """
+    Get tt-mlir SHA from the git submodule.
+    In tt-forge-fe, tt-mlir is a git submodule, so we get the commit hash directly.
+    """
+    mlir_path = "third_party/tt-mlir"
+    if not os.path.exists(mlir_path):
+        raise ValueError(f"tt-mlir submodule not found at {mlir_path}")
+
+    return get_git_commit_hash(mlir_path)
+
+
+def get_tt_metal_commit_hash() -> str:
+    """
+    Fetch tt-metal SHA from tt-mlir repo's CMakeLists.txt.
+    Matches tt-xla approach: https://github.com/tenstorrent/tt-xla/blob/main/python_package/setup.py#L86
+    """
+
+    mlir_sha = get_tt_mlir_commit_hash()
+
+    # Fetch tt-metal SHA from tt-mlir repo
+    tt_mlir_url = f"https://raw.githubusercontent.com/tenstorrent/tt-mlir/{mlir_sha}/third_party/CMakeLists.txt"
+    try:
+        with urllib.request.urlopen(tt_mlir_url) as response:
+            tt_mlir_content = response.read().decode("utf-8")
+    except Exception as e:
+        raise ValueError(f"Failed to fetch tt-mlir CMakeLists.txt from {tt_mlir_url}: {e}")
+
+    metal_match = re.search(r'set\(TT_METAL_VERSION "([^"]+)"\)', tt_mlir_content)
+    if not metal_match:
+        raise ValueError("Failed to extract TT_METAL_VERSION from tt-mlir CMakeLists.txt")
+
+    return metal_match.group(1)
+
+
+def get_build_date() -> str:
+    """Get build date in YYYY-MM-DD format."""
+    return datetime.now().strftime("%Y-%m-%d")
+
+
+def format_build_summary(build_type: str) -> str:
+    """Format build metadata summary string."""
+    commit_hash = get_git_commit_hash()
+    tt_mlir_commit = get_tt_mlir_commit_hash()
+    tt_metal_commit = get_tt_metal_commit_hash()
+    built_date = get_build_date()
+
+    return (
+        f"commit={commit_hash}, "
+        f"tt-mlir-commit={tt_mlir_commit}, "
+        f"tt-metal-commit={tt_metal_commit}, "
+        f"built-date={built_date}, "
+        f"build-type={build_type}"
+    )
+
+
+# Parse build type from command line
+build_type = parse_build_type()
+
+# Get build metadata summary
+build_summary = format_build_summary(build_type)
+
 # Compute a dynamic version from git
 short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
 date = (
@@ -175,6 +288,7 @@ packages = [p for p in find_packages("forge") if not p.startswith("test")]
 setup(
     name="tt_forge_fe",
     version=version,
+    description=build_summary,
     install_requires=requirements,
     packages=packages,
     package_dir={"forge": "forge/forge"},

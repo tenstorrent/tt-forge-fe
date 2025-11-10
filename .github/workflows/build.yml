@@ -120,11 +120,25 @@ jobs:
       shell: bash
       run: |
         source env/activate
-        python3 setup.py bdist_wheel
+        python3 setup.py bdist_wheel --build-type ${{ matrix.build.build-type }}
         cd third_party/tvm/python
         python3 setup.py bdist_wheel
         cd ../../..
         cp third_party/tvm/python/dist/*.whl dist/
+
+    - name: Validate build type of wheel build
+      shell: bash
+      run: |
+          source env/activate
+          #Inspect the wheel build type on wheel file without installing the wheel
+          pip install wheel-inspect
+          wheel_summary=$(wheel2json ${{ steps.strings.outputs.work-dir }}/python_package/dist/tt_forge_fe*.whl | jq -r '.dist_info.metadata.summary')
+          match=$(echo "$wheel_summary" | grep -oP "build-type=${{ matrix.build.build-type }}" || true)
+          echo "Wheel summary: $wheel_summary"
+          if [ -z "$match" ]; then
+              echo "Wheel summary does not match build type: ${{ matrix.build.build-type }}"
+              exit 1
+          fi
 
     - name: Upload Build
       uses: actions/upload-artifact@v4
