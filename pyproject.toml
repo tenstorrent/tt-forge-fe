@@ -4,7 +4,6 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tt_forge_fe"
-description = "AI/ML framework for Tenstorrent devices"
 readme = "README.md"
 license = { file = "LICENSE" }
 authors = [
@@ -21,4 +20,4 @@ classifiers = [
 ]
 
 # We will dynamically provide `version` and `dependencies` in setup.py
-dynamic = ["version", "dependencies"]
+dynamic = ["version", "dependencies", "description"]
