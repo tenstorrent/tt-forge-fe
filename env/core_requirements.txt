@@ -4,5 +4,5 @@ loguru==0.5.3
 psutil==5.9.8
 pybind11>=2.10.0
 pytest>=8.0.0
-torch @ https://download.pytorch.org/whl/cpu/torch-2.7.0%2Bcpu-cp311-cp311-manylinux_2_28_x86_64.whl ; python_version == "3.11"
-torchvision @ https://download.pytorch.org/whl/cpu/torchvision-0.22.0%2Bcpu-cp311-cp311-manylinux_2_28_x86_64.whl ; python_version == "3.11"
+torch @ https://download.pytorch.org/whl/cpu/torch-2.7.1%2Bcpu-cp311-cp311-manylinux_2_28_x86_64.whl ; python_version == "3.11"
+torchvision @ https://download.pytorch.org/whl/cpu/torchvision-0.22.1%2Bcpu-cp311-cp311-manylinux_2_28_x86_64.whl ; python_version == "3.11"
