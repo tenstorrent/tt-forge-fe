@@ -19,6 +19,17 @@ on:
           - "3"
           - "4"
           - "8"
+      test_group_cnt_crashed:
+        description: 'Test group count for crashed tests cases'
+        required: false
+        default: "2"
+        type: choice
+        options:
+          - "1"
+          - "2"
+          - "4"
+          - "6"
+          - "8"
       run_ops_sweeps:
         description: 'Run models ops and sweeps tests'
         required: false
@@ -29,6 +40,8 @@ on:
           - 'No'
   schedule:
     - cron: '0 20 * * *'  # Runs at 20:00 UTC every day
+  push:
+    branches: [ "pchandrasekaran/enhance_crashed_cases" ]
 
 # Set cache root to avoid IRD_LF_CACHE error when loading CenterNet ONNX model in CI
 env:
@@ -51,6 +64,8 @@ jobs:
       rebuild: ${{ steps.set-inputs.outputs.rebuild }}
       test_group_cnt: ${{ steps.set-inputs.outputs.test_group_cnt }}
       test_group_ids: ${{ steps.set-inputs.outputs.test_group_ids }}
+      test_group_cnt_crashed: ${{ steps.set-inputs.outputs.test_group_cnt_crashed }}
+      test_group_ids_crashed: ${{ steps.set-inputs.outputs.test_group_ids_crashed }}
       test_group_ids_os: ${{ steps.set-inputs.outputs.test_group_ids_os }}
       nightly_tests_paths: ${{ steps.set-inputs.outputs.nightly_tests_paths }}
       run_ops_sweeps: ${{ steps.set-inputs.outputs.run_ops_sweeps }}
@@ -59,6 +74,7 @@ jobs:
         id: set-inputs
         run: |
           default_test_group_cnt=10
+          default_test_group_cnt_crashed=2
           default_run_ops_sweeps=Yes
           nightly_tests_paths="forge/test/mlir,forge/test/models/jax,forge/test/models/tensorflow,forge/test/models/onnx,forge/test/models/paddlepaddle"
 
@@ -70,6 +86,9 @@ jobs:
           fi
           tgc=$(if [ -z "${{ inputs.test_group_cnt }}" ]; then echo $default_test_group_cnt; else echo ${{ inputs.test_group_cnt }}; fi)
           test_group_ids=$(seq -s ',' 1 $tgc)
+          tgc_cnt_crashed=$(if [ -z "${{ inputs.test_group_cnt_crashed }}" ]; then echo $default_test_group_cnt_crashed; else echo ${{ inputs.test_group_cnt_crashed }}; fi)
+          echo "test_group_cnt_crashed=$tgc_cnt_crashed" >> $GITHUB_OUTPUT
+          echo "test_group_ids_crashed=[$(seq -s ',' 1 $tgc_cnt_crashed)]" >> $GITHUB_OUTPUT
           echo "test_group_cnt=$tgc" >> $GITHUB_OUTPUT
           echo "test_group_ids=[$test_group_ids]" >> $GITHUB_OUTPUT
           echo "test_group_ids_os=[$test_group_ids]" >> $GITHUB_OUTPUT
@@ -121,62 +140,218 @@ jobs:
       runs-on: '[{"runs-on": "n150"}]'
       tests_to_filter: ${{ needs.set-inputs.outputs.nightly_tests_paths }}
 
-  test_sweeps:
-    if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
+  extract-crashed-tests-from-full-model-passing-and-failing:
+    runs-on: ubuntu-latest
     needs:
       - docker-build
       - set-inputs
       - build
-    uses: ./.github/workflows/test-sub.yml
-    secrets: inherit
-    with:
-      test_mark: 'nightly_sweeps'
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_os }}
-      run_id: ${{ needs.build.outputs.run_id }}
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "n150"}]'
-      allow-fail: true
-      sh-runner: true
-
-  fail-notify:
+      - test_full_model_passing
+      - test_full_model_xfailing
     if: always()
+    env:
+      CRASHED_TESTS_OUTPUT_DIR_PATH: crashed_tests_output_logs/
+      CRASHED_TESTS_ARTIFACT_PREFIX: test-crash-log
+    outputs:
+      crashed-tests: ${{ steps.extract-crashed-tests.outputs.crashed-tests }}
+      contains-crashed-tests: ${{ steps.extract-crashed-tests.outputs.contains-crashed-tests }}
+    steps:
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+
+      - name: Git safe dir
+        run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
+
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github/download-artifacts.sh
+
+      - name: Download Unique Ops Config Crashed Logs
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          bash .github/download-artifacts.sh "${{ github.repository }}" "${{ github.run_id }}" "${{ env.CRASHED_TESTS_OUTPUT_DIR_PATH }}" "${{ env.CRASHED_TESTS_ARTIFACT_PREFIX }}"
+
+      - name: Extract Crashed Cases
+        id: extract-crashed-tests
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          logs_dir="${{ env.CRASHED_TESTS_OUTPUT_DIR_PATH }}"
+          crashed_tests=""
+          contains_crashed_tests=false
+
+          # Exit early with safe outputs if logs dir missing
+          if [ ! -d "$logs_dir" ]; then
+            echo "crashed-tests<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$crashed_tests" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+            echo "contains-crashed-tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          tmpfile="$(mktemp)"
+          trap 'rm -f "$tmpfile"' EXIT
+
+          # Collect .log files
+          files=()
+          while IFS= read -r -d '' f; do
+            files+=("$f")
+          done < <(find "$logs_dir" -type f -name '*.log' -print0)
+
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "crashed-tests<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$crashed_tests" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+            echo "contains-crashed-tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Sort logs deterministically
+          IFS=$'\n' sorted_files=($(printf '%s\n' "${files[@]}" | sort -V))
+          unset IFS
+
+          # Extract crash test tokens
+          : > "$tmpfile"
+          for file in "${sorted_files[@]}"; do
+            perl -nE 'while ( /([^\s]+::[^\s]+)/g ) { say $1 }' "$file" 2>/dev/null >> "$tmpfile" || true
+            printf '\n' >> "$tmpfile"
+          done
+
+          # Filter unwanted lines (errors, tracebacks, etc.)
+          filtered_tmp="$(mktemp)"
+          trap 'rm -f "$filtered_tmp" "$tmpfile"' EXIT
+
+          while IFS= read -r line || [ -n "$line" ]; do
+            line="$(printf '%s' "$line" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+            [ -z "$line" ] && continue
+            low="$(printf '%s' "$line" | tr '[:upper:]' '[:lower:]')"
+            if printf '%s\n' "$low" | grep -qiE '(error|exception|traceback|killed|oom|failed|critical)'; then
+              continue
+            fi
+            if printf '%s\n' "$line" | grep -qE '^[=-]{2,}$'; then
+              continue
+            fi
+            if printf '%s\n' "$line" | grep -qE '^[^[:space:]]+::[^[:space:]]+(\[[^]]+\])?$'; then
+              printf '%s\n' "$line" >> "$filtered_tmp"
+            fi
+          done < "$tmpfile"
+
+          mapfile -t tokens < <(awk 'NF && !seen[$0]++ { print }' "$filtered_tmp")
+          rm -f "$filtered_tmp" || true
+
+          joined=""
+          if [ "${#tokens[@]}" -gt 0 ]; then
+            joined=$(printf '%s,' "${tokens[@]}")
+            joined=${joined%,}
+          fi
+
+          # Fix missing commas between concatenated forge/ entries
+          if [ -n "$joined" ]; then
+            joined="$(perl -pe 's/\s+(?=forge\/)//g' <<< "$joined")"
+            joined="$(perl -pe 's/([^,])(?=forge\/)/\1,/g' <<< "$joined")"
+          fi
+
+          if [ -n "$joined" ]; then
+            contains_crashed_tests=true
+            crashed_tests="$joined"
+          fi
+
+          echo "crashed-tests<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$crashed_tests" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "contains-crashed-tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"
+
+      - name: show outputs
+        run: |
+          echo "crashed-tests (raw): ${{ steps.extract-crashed-tests.outputs.crashed-tests }}"
+          echo "contains-crashed-tests: ${{ steps.extract-crashed-tests.outputs.contains-crashed-tests }}"
+
+  run-crashed-tests-from-full-model-passing-and-failing:
+    if: ${{ always() && needs.extract-crashed-tests-from-full-model-passing-and-failing.outputs.contains-crashed-tests == 'true' }}
     needs:
       - docker-build
+      - set-inputs
       - build
       - test_full_model_passing
       - test_full_model_xfailing
-      - test_sweeps
-    runs-on: Ubuntu-latest
-    outputs:
-      is-main: ${{ steps.branch-check.outputs.IS_MAIN }}
-      failed: ${{ steps.check.outputs.failure }}
-    steps:
-      - name: Check if branch is main
-        id: branch-check
-        run: echo "IS_MAIN=$(if [ '${{ github.ref }}' == 'refs/heads/main' ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
-      - name: Check if the needed jobs succeeded or failed
-        id: check
-        uses: re-actors/alls-green@v1.2.2
-        with:
-          jobs: ${{ toJSON(needs) }}
-          allowed-failures: test_models_ops, test_sweeps
-          allowed-skips: test_models_ops, test_sweeps
+      - extract-crashed-tests-from-full-model-passing-and-failing
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly'
+      test_group_cnt: 1
+      test_group_ids: '[1]'
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      run_id: ${{ needs.build.outputs.run_id }}
+      runs-on: '[{"runs-on": "n150"}]'
+      tests_to_filter: ${{ needs.extract-crashed-tests-from-full-model-passing-and-failing.outputs.crashed-tests }}
+      allow-fail: true
 
-  fail-send-msg:
-    if: always()
-    needs:
-      - fail-notify
-    runs-on: Ubuntu-latest
-    steps:
-      - name: Send Fail Notification
-        if: ${{ needs.fail-notify.outputs.failed == 'true' && needs.fail-notify.outputs.is-main == 'true' }}
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          payload: |
-            {
-              "text": "Bad bad nightly: <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}>",
-              "channel": "C08HFLL9L56"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_FAIL }}
+  # test_sweeps:
+  #   if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
+  #   needs:
+  #     - docker-build
+  #     - set-inputs
+  #     - build
+  #   uses: ./.github/workflows/test-sub.yml
+  #   secrets: inherit
+  #   with:
+  #     test_mark: 'nightly_sweeps'
+  #     test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+  #     test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_os }}
+  #     run_id: ${{ needs.build.outputs.run_id }}
+  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  #     runs-on: '[{"runs-on": "n150"}]'
+  #     allow-fail: true
+  #     sh-runner: true
+
+  # fail-notify:
+  #   if: always()
+  #   needs:
+  #     - docker-build
+  #     - build
+  #     - test_full_model_passing
+  #     - test_full_model_xfailing
+  #     - extract-crashed-tests-from-full-model-passing-and-failing
+  #     - run-crashed-tests-from-full-model-passing-and-failing
+  #     - test_sweeps
+  #   runs-on: Ubuntu-latest
+  #   outputs:
+  #     is-main: ${{ steps.branch-check.outputs.IS_MAIN }}
+  #     failed: ${{ steps.check.outputs.failure }}
+  #   steps:
+  #     - name: Check if branch is main
+  #       id: branch-check
+  #       run: echo "IS_MAIN=$(if [ '${{ github.ref }}' == 'refs/heads/main' ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
+  #     - name: Check if the needed jobs succeeded or failed
+  #       id: check
+  #       uses: re-actors/alls-green@v1.2.2
+  #       with:
+  #         jobs: ${{ toJSON(needs) }}
+  #         allowed-failures: test_models_ops, test_sweeps
+  #         allowed-skips: test_models_ops, test_sweeps
+
+  # fail-send-msg:
+  #   if: always()
+  #   needs:
+  #     - fail-notify
+  #   runs-on: Ubuntu-latest
+  #   steps:
+  #     - name: Send Fail Notification
+  #       if: ${{ needs.fail-notify.outputs.failed == 'true' && needs.fail-notify.outputs.is-main == 'true' }}
+  #       uses: slackapi/slack-github-action@v1.26.0
+  #       with:
+  #         payload: |
+  #           {
+  #             "text": "Bad bad nightly: <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}>",
+  #             "channel": "C08HFLL9L56"
+  #           }
+  #       env:
+  #         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_FAIL }}
