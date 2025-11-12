@@ -226,20 +226,13 @@ def get_tt_metal_commit_hash() -> str:
     Matches tt-xla approach: https://github.com/tenstorrent/tt-xla/blob/main/python_package/setup.py#L86
     """
 
-    mlir_sha = get_tt_mlir_commit_hash()
-
-    # Fetch tt-metal SHA from tt-mlir repo
-    tt_mlir_url = f"https://raw.githubusercontent.com/tenstorrent/tt-mlir/{mlir_sha}/third_party/CMakeLists.txt"
-    try:
-        with urllib.request.urlopen(tt_mlir_url) as response:
-            tt_mlir_content = response.read().decode("utf-8")
-    except Exception as e:
-        raise ValueError(f"Failed to fetch tt-mlir CMakeLists.txt from {tt_mlir_url}: {e}")
-
-    metal_match = re.search(r'set\(TT_METAL_VERSION "([^"]+)"\)', tt_mlir_content)
+    # Extract tt-metal SHA from third_party/tt-mlir/third_party/CMakeLists.txt 
+    cmake_file = pathlib.Path(__file__).resolve().parent / "third_party" / "tt-mlir" / "third_party" / "CMakeLists.txt"
+    with cmake_file.open() as f:
+        cmake_content = f.read()
+    metal_match = re.search(r'set\(TT_METAL_VERSION "([^"]+)"\)', cmake_content)
     if not metal_match:
         raise ValueError("Failed to extract TT_METAL_VERSION from tt-mlir CMakeLists.txt")
-
     return metal_match.group(1)
 
 
