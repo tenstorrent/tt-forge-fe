@@ -10,7 +10,6 @@ from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
 from pathlib import Path
 import re
-import urllib.request
 
 
 class TTExtension(Extension):
@@ -226,7 +225,7 @@ def get_tt_metal_commit_hash() -> str:
     Matches tt-xla approach: https://github.com/tenstorrent/tt-xla/blob/main/python_package/setup.py#L86
     """
 
-    # Extract tt-metal SHA from third_party/tt-mlir/third_party/CMakeLists.txt 
+    # Extract tt-metal SHA from third_party/tt-mlir/third_party/CMakeLists.txt
     cmake_file = pathlib.Path(__file__).resolve().parent / "third_party" / "tt-mlir" / "third_party" / "CMakeLists.txt"
     with cmake_file.open() as f:
         cmake_content = f.read()
