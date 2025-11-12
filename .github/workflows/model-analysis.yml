@@ -244,136 +244,19 @@ jobs:
       split-by-count: true
 
   extract-crashed-tests-from-non-oom:
-    runs-on: ubuntu-latest
     needs:
       - docker-build
       - set-inputs
       - build
       - extract-unique-ops-configuration-non-oom
     if: always()
-    env:
-      CRASHED_TESTS_OUTPUT_DIR_PATH: crashed_tests_output_logs/
-      CRASHED_TESTS_ARTIFACT_PREFIX: unique-ops-configs-crashed-tests
-    outputs:
-      crashed-tests: ${{ steps.extract-crashed-tests.outputs.crashed-tests }}
-      contains-crashed-tests: ${{ steps.extract-crashed-tests.outputs.contains-crashed-tests }}
-    steps:
-      - name: Set reusable strings
-        id: strings
-        shell: bash
-        run: |
-          echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
-
-      - name: Git safe dir
-        run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
-
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            .github/download-artifacts.sh
-
-      - name: Download Unique Ops Config Crashed Logs
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          bash .github/download-artifacts.sh "${{ github.repository }}" "${{ github.run_id }}" "${{ env.CRASHED_TESTS_OUTPUT_DIR_PATH }}" "${{ env.CRASHED_TESTS_ARTIFACT_PREFIX }}"
-
-      - name: Extract Crashed Cases
-        id: extract-crashed-tests
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          logs_dir="${{ env.CRASHED_TESTS_OUTPUT_DIR_PATH }}"
-          crashed_tests=""
-          contains_crashed_tests=false
-
-          # Exit early with safe outputs if logs dir missing
-          if [ ! -d "$logs_dir" ]; then
-            echo "crashed-tests<<EOF" >> "$GITHUB_OUTPUT"
-            echo "$crashed_tests" >> "$GITHUB_OUTPUT"
-            echo "EOF" >> "$GITHUB_OUTPUT"
-            echo "contains-crashed-tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          tmpfile="$(mktemp)"
-          trap 'rm -f "$tmpfile"' EXIT
-
-          # Collect .log files
-          files=()
-          while IFS= read -r -d '' f; do
-            files+=("$f")
-          done < <(find "$logs_dir" -type f -name '*.log' -print0)
-
-          if [ "${#files[@]}" -eq 0 ]; then
-            echo "crashed-tests<<EOF" >> "$GITHUB_OUTPUT"
-            echo "$crashed_tests" >> "$GITHUB_OUTPUT"
-            echo "EOF" >> "$GITHUB_OUTPUT"
-            echo "contains-crashed-tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # Sort logs deterministically
-          IFS=$'\n' sorted_files=($(printf '%s\n' "${files[@]}" | sort -V))
-          unset IFS
-
-          # Extract crash test tokens
-          : > "$tmpfile"
-          for file in "${sorted_files[@]}"; do
-            perl -nE 'while ( /([^\s]+::[^\s]+)/g ) { say $1 }' "$file" 2>/dev/null >> "$tmpfile" || true
-            printf '\n' >> "$tmpfile"
-          done
-
-          # Filter unwanted lines (errors, tracebacks, etc.)
-          filtered_tmp="$(mktemp)"
-          trap 'rm -f "$filtered_tmp" "$tmpfile"' EXIT
-
-          while IFS= read -r line || [ -n "$line" ]; do
-            line="$(printf '%s' "$line" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
-            [ -z "$line" ] && continue
-            low="$(printf '%s' "$line" | tr '[:upper:]' '[:lower:]')"
-            if printf '%s\n' "$low" | grep -qiE '(error|exception|traceback|killed|oom|failed|critical)'; then
-              continue
-            fi
-            if printf '%s\n' "$line" | grep -qE '^[=-]{2,}$'; then
-              continue
-            fi
-            if printf '%s\n' "$line" | grep -qE '^[^[:space:]]+::[^[:space:]]+(\[[^]]+\])?$'; then
-              printf '%s\n' "$line" >> "$filtered_tmp"
-            fi
-          done < "$tmpfile"
-
-          mapfile -t tokens < <(awk 'NF && !seen[$0]++ { print }' "$filtered_tmp")
-          rm -f "$filtered_tmp" || true
-
-          joined=""
-          if [ "${#tokens[@]}" -gt 0 ]; then
-            joined=$(printf '%s,' "${tokens[@]}")
-            joined=${joined%,}
-          fi
-
-          # Fix missing commas between concatenated forge/ entries
-          if [ -n "$joined" ]; then
-            joined="$(perl -pe 's/\s+(?=forge\/)//g' <<< "$joined")"
-            joined="$(perl -pe 's/([^,])(?=forge\/)/\1,/g' <<< "$joined")"
-          fi
-
-          if [ -n "$joined" ]; then
-            contains_crashed_tests=true
-            crashed_tests="$joined"
-          fi
-
-          echo "crashed-tests<<EOF" >> "$GITHUB_OUTPUT"
-          echo "$crashed_tests" >> "$GITHUB_OUTPUT"
-          echo "EOF" >> "$GITHUB_OUTPUT"
-          echo "contains-crashed-tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"
-
-      - name: show outputs
-        run: |
-          echo "crashed-tests (raw): ${{ steps.extract-crashed-tests.outputs.crashed-tests }}"
-          echo "contains-crashed-tests: ${{ steps.extract-crashed-tests.outputs.contains-crashed-tests }}"
+    uses: ./.github/workflows/extract-crashed-tests.yml
+    secrets: inherit
+    with:
+      repo: ${{ github.repository }}
+      run_id: ${{ github.run_id }}
+      output_dir: crashed_tests_output_logs/
+      artifact_prefix: unique-ops-configs-crashed-tests
 
   extract-unique-ops-configuration-from-crashed-tests:
     if: ${{ always() && needs.extract-crashed-tests-from-non-oom.outputs.contains-crashed-tests == 'true' }}

@@ -20,7 +20,7 @@ on:
           - "4"
           - "8"
       run_ops_sweeps:
-        description: 'Run models ops and sweeps tests'
+        description: 'Run sweeps tests'
         required: false
         default: 'No'
         type: choice
@@ -121,6 +121,43 @@ jobs:
       runs-on: '[{"runs-on": "n150"}]'
       tests_to_filter: ${{ needs.set-inputs.outputs.nightly_tests_paths }}
 
+  extract-crashed-tests-from-full-model-passing-and-failing:
+    needs:
+      - docker-build
+      - set-inputs
+      - build
+      - test_full_model_passing
+      - test_full_model_xfailing
+    if: always()
+    uses: ./.github/workflows/extract-crashed-tests.yml
+    secrets: inherit
+    with:
+      repo: ${{ github.repository }}
+      run_id: ${{ github.run_id }}
+      output_dir: crashed_tests_output_logs/
+      artifact_prefix: test-crash-log
+
+  run-crashed-tests-from-full-model-passing-and-failing:
+    if: ${{ always() && needs.extract-crashed-tests-from-full-model-passing-and-failing.outputs.contains-crashed-tests == 'true' }}
+    needs:
+      - docker-build
+      - set-inputs
+      - build
+      - test_full_model_passing
+      - test_full_model_xfailing
+      - extract-crashed-tests-from-full-model-passing-and-failing
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly'
+      test_group_cnt: ${{ needs.extract-crashed-tests-from-full-model-passing-and-failing.outputs.crashed-test-cnt }}
+      test_group_ids: ${{ needs.extract-crashed-tests-from-full-model-passing-and-failing.outputs.crashed-test-ids }}
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      run_id: ${{ needs.build.outputs.run_id }}
+      runs-on: '[{"runs-on": "n150"}]'
+      tests_to_filter: ${{ needs.extract-crashed-tests-from-full-model-passing-and-failing.outputs.crashed-tests }}
+      allow-fail: true
+
   test_sweeps:
     if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
     needs:
@@ -146,6 +183,8 @@ jobs:
       - build
       - test_full_model_passing
       - test_full_model_xfailing
+      - extract-crashed-tests-from-full-model-passing-and-failing
+      - run-crashed-tests-from-full-model-passing-and-failing
       - test_sweeps
     runs-on: Ubuntu-latest
     outputs:

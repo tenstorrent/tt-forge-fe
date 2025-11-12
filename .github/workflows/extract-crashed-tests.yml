@@ -1,0 +1,185 @@
+name: Extract crashed tests
+
+on:
+  workflow_call:
+    inputs:
+      repo:
+        description: 'Repository to fetch artifacts from (owner/repo)'
+        required: true
+        type: string
+      run_id:
+        description: 'Workflow run id to fetch artifacts for'
+        required: true
+        type: string
+      output_dir:
+        description: 'Directory to place downloaded artifacts'
+        required: true
+        type: string
+      artifact_prefix:
+        description: 'Artifact name prefix to match'
+        required: true
+        type: string
+    outputs:
+      crashed-tests:
+        description: "Comma-separated list of all crashed test names detected from the artifacts."
+        value: ${{ jobs.extract.outputs.crashed-tests }}
+      contains-crashed-tests:
+        description: "Boolean flag indicating whether any crashed tests were found."
+        value: ${{ jobs.extract.outputs.contains-crashed-tests }}
+      crashed-test-cnt:
+        description: "Total number of crashed test groups identified during extraction."
+        value: ${{ jobs.extract.outputs.crashed-test-cnt }}
+      crashed-test-ids:
+        description: "Array of job indices corresponding to each crashed test group."
+        value: ${{ jobs.extract.outputs.crashed-test-ids }}
+
+permissions:
+  contents: read
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    outputs:
+      crashed-tests: ${{ steps.extract-crashed-tests.outputs.crashed-tests }}
+      contains-crashed-tests: ${{ steps.extract-crashed-tests.outputs.contains-crashed-tests }}
+      crashed-test-cnt: ${{ steps.extract-crashed-tests.outputs.crashed-test-cnt }}
+      crashed-test-ids: ${{ steps.extract-crashed-tests.outputs.crashed-test-ids }}
+    steps:
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+
+      - name: Git safe dir
+        run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
+
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github/download-artifacts.sh
+
+      - name: Download Unique Ops Config Crashed Logs
+        shell: bash
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          bash .github/download-artifacts.sh "${{ inputs.repo }}" "${{ inputs.run_id }}" "${{ inputs.output_dir }}" "${{ inputs.artifact_prefix }}"
+
+      - name: Extract Crashed Cases
+        id: extract-crashed-tests
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          logs_dir="${{ inputs.output_dir }}"
+          crashed_tests=""
+          contains_crashed_tests=false
+          number_crashed_tests_per_job=4
+
+          # Exit early with safe outputs if logs dir missing
+          if [ ! -d "$logs_dir" ]; then
+            echo "crashed-tests<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$crashed_tests" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+            echo "contains-crashed-tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"
+            echo "crashed-test-cnt=0" >> "$GITHUB_OUTPUT"
+            echo "crashed-test-ids=[]" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          tmpfile="$(mktemp)"
+          trap 'rm -f "$tmpfile"' EXIT
+
+          # Collect .log files
+          files=()
+          while IFS= read -r -d '' f; do
+            files+=("$f")
+          done < <(find "$logs_dir" -type f -name '*.log' -print0)
+
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "crashed-tests<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$crashed_tests" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+            echo "contains-crashed-tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"
+            echo "crashed-test-cnt=0" >> "$GITHUB_OUTPUT"
+            echo "crashed-test-ids=[]" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Sort logs deterministically
+          IFS=$'\n' sorted_files=($(printf '%s\n' "${files[@]}" | sort -V))
+          unset IFS
+
+          # Extract crash test tokens
+          : > "$tmpfile"
+          for file in "${sorted_files[@]}"; do
+            perl -nE 'while ( /([^\s]+::[^\s]+)/g ) { say $1 }' "$file" 2>/dev/null >> "$tmpfile" || true
+            printf '\n' >> "$tmpfile"
+          done
+
+          # Filter unwanted lines (errors, tracebacks, etc.)
+          filtered_tmp="$(mktemp)"
+          trap 'rm -f "$filtered_tmp" "$tmpfile"' EXIT
+
+          while IFS= read -r line || [ -n "$line" ]; do
+            line="$(printf '%s' "$line" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+            [ -z "$line" ] && continue
+            low="$(printf '%s' "$line" | tr '[:upper:]' '[:lower:]')"
+            if printf '%s\n' "$low" | grep -qiE '(error|exception|traceback|killed|oom|failed|critical)'; then
+              continue
+            fi
+            if printf '%s\n' "$line" | grep -qE '^[=-]{2,}$'; then
+              continue
+            fi
+            if printf '%s\n' "$line" | grep -qE '^[^[:space:]]+::[^[:space:]]+(\[[^]]+\])?$'; then
+              printf '%s\n' "$line" >> "$filtered_tmp"
+            fi
+          done < "$tmpfile"
+
+          mapfile -t tokens < <(awk 'NF && !seen[$0]++ { print }' "$filtered_tmp")
+          rm -f "$filtered_tmp" || true
+
+          joined=""
+          if [ "${#tokens[@]}" -gt 0 ]; then
+            joined=$(printf '%s,' "${tokens[@]}")
+            joined=${joined%,}
+          fi
+
+          # Fix missing commas between concatenated forge/ entries
+          if [ -n "$joined" ]; then
+            joined="$(perl -pe 's/\s+(?=forge\/)//g' <<< "$joined")"
+            joined="$(perl -pe 's/([^,])(?=forge\/)/\1,/g' <<< "$joined")"
+          fi
+
+          if [ -n "$joined" ]; then
+            contains_crashed_tests=true
+            crashed_tests="$joined"
+          fi
+
+          # Count crashed tokens and group into jobs
+          crashed_test_count=${#tokens[@]}
+
+          if [ "$crashed_test_count" -gt 0 ]; then
+            crashed_job_count=$(( (crashed_test_count + number_crashed_tests_per_job - 1) / number_crashed_tests_per_job ))
+            crashed_job_ids=$(seq -s ',' 1 "$crashed_job_count")
+            crashed_job_ids_formatted="[$crashed_job_ids]"
+          else
+            crashed_job_count=0
+            crashed_job_ids_formatted="[]"
+          fi
+
+          echo "crashed-tests<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$crashed_tests" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "contains-crashed-tests=${contains_crashed_tests}" >> "$GITHUB_OUTPUT"
+          echo "crashed-test-cnt=${crashed_job_count}" >> "$GITHUB_OUTPUT"
+          echo "crashed-test-ids=${crashed_job_ids_formatted}" >> "$GITHUB_OUTPUT"
+
+      - name: show outputs
+        run: |
+          echo "crashed-tests (raw): ${{ steps.extract-crashed-tests.outputs.crashed-tests }}"
+          echo "contains-crashed-tests: ${{ steps.extract-crashed-tests.outputs.contains-crashed-tests }}"
+          echo "crashed-test-cnt: ${{ steps.extract-crashed-tests.outputs.crashed-test-cnt }}"
+          echo "crashed-test-ids: ${{ steps.extract-crashed-tests.outputs.crashed-test-ids }}"
