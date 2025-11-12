@@ -251,6 +251,8 @@ jobs:
           python .github/workflows/test_runner.py  \
                --junit-xml=${{ steps.strings.outputs.test_report_path }} \
                --log-memory-usage \
+               --runxfail \
+               -vss \
                $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi)
           exit_code=$?
 

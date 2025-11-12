@@ -29,6 +29,8 @@ on:
           - 'No'
   schedule:
     - cron: '0 20 * * *'  # Runs at 20:00 UTC every day
+  push:
+    branches: [ "pchandrasekaran/check_nightly_crashes" ]
 
 # Set cache root to avoid IRD_LF_CACHE error when loading CenterNet ONNX model in CI
 env:
@@ -58,7 +60,7 @@ jobs:
       - name: Set Inputs
         id: set-inputs
         run: |
-          default_test_group_cnt=10
+          default_test_group_cnt=2
           default_run_ops_sweeps=Yes
           nightly_tests_paths="forge/test/mlir,forge/test/models/jax,forge/test/models/tensorflow,forge/test/models/onnx,forge/test/models/paddlepaddle"
 
@@ -87,7 +89,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       build: ${{ needs.set-inputs.outputs.rebuild }}
 
-  test_full_model_passing:
+  test_nightly_models_non_shared:
     if: success() || failure()
     needs:
       - set-inputs
@@ -96,87 +98,104 @@ jobs:
     uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
-      test_mark: 'nightly and not xfail'
+      test_mark: 'nightly'
       test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
       test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       run_id: ${{ needs.build.outputs.run_id }}
-      tests_to_filter: ${{ needs.set-inputs.outputs.nightly_tests_paths }}
+      tests_to_filter: 'forge/test/models/paddlepaddle/text/ernie/test_ernie.py::test_ernie_question_answering[ernie-1.0],forge/test/models/paddlepaddle/text/glm/test_glm.py::test_glm[THUDM/glm-large-chinese],forge/test/models/onnx/timeseries/test_nbeats_onnx.py::test_nbeats_with_seasonality_basis_onnx[seasionality_basis],forge/test/models/paddlepaddle/text/roberta/test_roberta.py::test_roberta_sequence_classification[hfl/rbt4]'
 
-  test_full_model_xfailing:
-    if: success() || failure()
-    needs:
-      - docker-build
-      - set-inputs
-      - build
-    uses: ./.github/workflows/test-sub.yml
-    secrets: inherit
-    with:
-      test_mark: 'nightly and xfail'
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      run_id: ${{ needs.build.outputs.run_id }}
-      runs-on: '[{"runs-on": "n150"}]'
-      tests_to_filter: ${{ needs.set-inputs.outputs.nightly_tests_paths }}
+  # test_full_model_passing:
+  #   if: success() || failure()
+  #   needs:
+  #     - set-inputs
+  #     - docker-build
+  #     - build
+  #   uses: ./.github/workflows/test-sub.yml
+  #   secrets: inherit
+  #   with:
+  #     test_mark: 'nightly and not xfail'
+  #     test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+  #     test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
+  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  #     runs-on: '[{"runs-on": "n150"}]'
+  #     run_id: ${{ needs.build.outputs.run_id }}
+  #     tests_to_filter: ${{ needs.set-inputs.outputs.nightly_tests_paths }}
 
-  test_sweeps:
-    if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
-    needs:
-      - docker-build
-      - set-inputs
-      - build
-    uses: ./.github/workflows/test-sub.yml
-    secrets: inherit
-    with:
-      test_mark: 'nightly_sweeps'
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_os }}
-      run_id: ${{ needs.build.outputs.run_id }}
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "n150"}]'
-      allow-fail: true
-      sh-runner: true
+  # test_full_model_xfailing:
+  #   if: success() || failure()
+  #   needs:
+  #     - docker-build
+  #     - set-inputs
+  #     - build
+  #   uses: ./.github/workflows/test-sub.yml
+  #   secrets: inherit
+  #   with:
+  #     test_mark: 'nightly and xfail'
+  #     test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+  #     test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
+  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  #     run_id: ${{ needs.build.outputs.run_id }}
+  #     runs-on: '[{"runs-on": "n150"}]'
+  #     tests_to_filter: ${{ needs.set-inputs.outputs.nightly_tests_paths }}
 
-  fail-notify:
-    if: always()
-    needs:
-      - docker-build
-      - build
-      - test_full_model_passing
-      - test_full_model_xfailing
-      - test_sweeps
-    runs-on: Ubuntu-latest
-    outputs:
-      is-main: ${{ steps.branch-check.outputs.IS_MAIN }}
-      failed: ${{ steps.check.outputs.failure }}
-    steps:
-      - name: Check if branch is main
-        id: branch-check
-        run: echo "IS_MAIN=$(if [ '${{ github.ref }}' == 'refs/heads/main' ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
-      - name: Check if the needed jobs succeeded or failed
-        id: check
-        uses: re-actors/alls-green@v1.2.2
-        with:
-          jobs: ${{ toJSON(needs) }}
-          allowed-failures: test_models_ops, test_sweeps
-          allowed-skips: test_models_ops, test_sweeps
+  # test_sweeps:
+  #   if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
+  #   needs:
+  #     - docker-build
+  #     - set-inputs
+  #     - build
+  #   uses: ./.github/workflows/test-sub.yml
+  #   secrets: inherit
+  #   with:
+  #     test_mark: 'nightly_sweeps'
+  #     test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+  #     test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_os }}
+  #     run_id: ${{ needs.build.outputs.run_id }}
+  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  #     runs-on: '[{"runs-on": "n150"}]'
+  #     allow-fail: true
+  #     sh-runner: true
 
-  fail-send-msg:
-    if: always()
-    needs:
-      - fail-notify
-    runs-on: Ubuntu-latest
-    steps:
-      - name: Send Fail Notification
-        if: ${{ needs.fail-notify.outputs.failed == 'true' && needs.fail-notify.outputs.is-main == 'true' }}
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          payload: |
-            {
-              "text": "Bad bad nightly: <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}>",
-              "channel": "C08HFLL9L56"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_FAIL }}
+  # fail-notify:
+  #   if: always()
+  #   needs:
+  #     - docker-build
+  #     - build
+  #     - test_full_model_passing
+  #     - test_full_model_xfailing
+  #     - test_sweeps
+  #   runs-on: Ubuntu-latest
+  #   outputs:
+  #     is-main: ${{ steps.branch-check.outputs.IS_MAIN }}
+  #     failed: ${{ steps.check.outputs.failure }}
+  #   steps:
+  #     - name: Check if branch is main
+  #       id: branch-check
+  #       run: echo "IS_MAIN=$(if [ '${{ github.ref }}' == 'refs/heads/main' ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
+  #     - name: Check if the needed jobs succeeded or failed
+  #       id: check
+  #       uses: re-actors/alls-green@v1.2.2
+  #       with:
+  #         jobs: ${{ toJSON(needs) }}
+  #         allowed-failures: test_models_ops, test_sweeps
+  #         allowed-skips: test_models_ops, test_sweeps
+
+  # fail-send-msg:
+  #   if: always()
+  #   needs:
+  #     - fail-notify
+  #   runs-on: Ubuntu-latest
+  #   steps:
+  #     - name: Send Fail Notification
+  #       if: ${{ needs.fail-notify.outputs.failed == 'true' && needs.fail-notify.outputs.is-main == 'true' }}
+  #       uses: slackapi/slack-github-action@v1.26.0
+  #       with:
+  #         payload: |
+  #           {
+  #             "text": "Bad bad nightly: <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}>",
+  #             "channel": "C08HFLL9L56"
+  #           }
+  #       env:
+  #         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_FAIL }}
