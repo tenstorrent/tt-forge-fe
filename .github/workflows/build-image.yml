@@ -15,8 +15,11 @@ on:
         type: string
     outputs:
       docker-image:
-        description: "Built docker image name"
+        description: "Built CI docker image name"
         value: ${{ jobs.build-image.outputs.docker-image }}
+      base-image:
+        description: "Built base IRD docker image name"
+        value: ${{ jobs.build-image.outputs.base-image }}
 
 
 permissions:
@@ -29,6 +32,7 @@ jobs:
     runs-on: tt-ubuntu-2204-large-stable
     outputs:
       docker-image: ${{ steps.build.outputs.docker-image }}
+      base-image: ${{ steps.build.outputs.base-image }}
     steps:
       - name: Fix permissions
         shell: bash
@@ -73,12 +77,16 @@ jobs:
         id: build
         shell: bash
         run: |
-          # Output the image name
+          # Output the image names
           set pipefail
           .github/build-docker-images.sh | tee docker.log
-          DOCKER_CI_IMAGE=$(tail -n 1 docker.log)
+          DOCKER_TAG=$(./.github/get-docker-tag.sh)
+          DOCKER_CI_IMAGE="ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ird-ubuntu-22-04:$DOCKER_TAG"
+          DOCKER_BASE_IMAGE="ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:$DOCKER_TAG"
           echo "DOCKER_CI_IMAGE $DOCKER_CI_IMAGE"
+          echo "DOCKER_BASE_IMAGE $DOCKER_BASE_IMAGE"
           echo "docker-image=$DOCKER_CI_IMAGE" >> "$GITHUB_OUTPUT"
+          echo "base-image=$DOCKER_BASE_IMAGE" >> "$GITHUB_OUTPUT"
 
   set-latest:
     # Set the latest tag on the IRD image

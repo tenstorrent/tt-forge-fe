@@ -24,6 +24,9 @@ WORKDIR $BUILD_DIR/$PROJECT_NAME
 # Show last commit
 RUN git log -1
 
+# Install dev requirements into the same venv as base using env/activate
+RUN source env/activate && \
+    pip install --no-cache-dir -r env/dev_requirements.txt
 # Build the toolchain
 WORKDIR $BUILD_DIR/$PROJECT_NAME
 RUN source env/activate && \
