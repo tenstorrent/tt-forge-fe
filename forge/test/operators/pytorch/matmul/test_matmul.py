@@ -5,24 +5,27 @@
 import math
 import torch
 
-from typing import List, Dict
+from typing import List
 from loguru import logger
 
-from forge.verify.config import VerifyConfig
-from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
-
-from test.operators.utils import TensorUtils, VerifyUtils
-from test.operators.utils import FailingReasons
-from test.operators.utils import ValueRanges
-from test.operators.utils import InputSource
-from test.operators.utils import ShapeUtils
-from test.operators.utils import TestVector
-from test.operators.utils import TestPlan
-from test.operators.utils import TestCollection
-from test.operators.utils import TestCollectionCommon
-from test.operators.utils import TestCollectionTorch
-from test.operators.utils.utils import PytorchUtils, TestDevice
-from test.operators.pytorch.ids.loader import TestIdsDataLoader
+from ...utils import (
+    FailingReasons,
+    InputSource,
+    PytorchUtils,
+    ShapeUtils,
+    TensorUtils,
+    TestCollection,
+    TestCollectionCommon,
+    TestCollectionTorch,
+    TestDevice,
+    TestPlan,
+    TestVector,
+    ValueCheckerUtils,
+    ValueRanges,
+    VerifyConfig,
+    VerifyUtils,
+)
+from ..ids import TestIdsDataLoader
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -87,7 +90,6 @@ class TestVerification:
         cls,
         test_device: TestDevice,
         test_vector: TestVector,
-        input_params: List[Dict] = [],
         warm_reset: bool = False,
     ):
         model_type = cls.MODEL_TYPES[test_vector.input_source]
@@ -111,19 +113,19 @@ class TestVerification:
 
         logger.trace(f"***input_shapes: {input_shapes}")
 
-        verify_config = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99, rtol=1e-2, atol=1e-2))
+        value_checker = ValueCheckerUtils.automatic(pcc=0.99, rtol=1e-2, atol=1e-2)
 
-        VerifyUtils.verify(
+        verify_config = VerifyConfig(
             model=pytorch_model,
             test_device=test_device,
             input_shapes=input_shapes,
-            input_params=input_params,
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             warm_reset=warm_reset,
             value_range=value_range,
-            verify_config=verify_config,
+            value_checker=value_checker,
         )
+        VerifyUtils.verify(verify_config)
 
 
 class TestIdsData:
