@@ -203,3 +203,90 @@ def test_batch_norm():
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model)
+
+@pytest.mark.parametrize(
+    "batch_size, output_channels, input_channels, input_height, input_width, filter_height, filter_width, stride_h, stride_w",
+    (
+        (1, 16, 64, 56, 56, 4, 4, 1, 1),  # Flipped output/input channels
+        (1, 64, 64, 56, 56, 3, 3, 1, 1),
+        (1, 128, 128, 28, 28, 3, 3, 2, 2), # Stride > 1
+        (1, 128, 128, 14, 14, 3, 3, 1, 1),
+        (1, 256, 256, 14, 14, 3, 3, 2, 2), # Stride > 1
+        (1, 256, 256, 7, 7, 3, 3, 1, 1),
+        (1, 64, 64, 8, 8, 3, 3, 1, 1),
+        (1, 64, 64, 16, 16, 3, 3, 1, 1),
+        (1, 256, 256, 7, 7, 3, 3, 1, 1),
+        (1, 64, 256, 28, 28, 1, 1, 2, 2), # Flipped output/input channels, Stride > 1
+    ),
+)
+@pytest.mark.parametrize(
+    "weights_dtype",
+    [
+        pytest.param(
+            tf.bfloat16, marks=pytest.mark.xfail(reason="dtypes are not properly lowered from tensorflow #281")
+        ),
+        tf.float32,
+    ],
+)
+@pytest.mark.parametrize(
+    "activations_dtype",
+    [
+        tf.bfloat16,
+        tf.float32,
+    ],
+)
+@pytest.mark.parametrize("has_bias", [False, True], ids=["no_bias", "with_bias"])
+@pytest.mark.push
+def test_conv2d_transpose(
+    batch_size,
+    output_channels,
+    input_channels,
+    input_height,
+    input_width,
+    filter_height,
+    filter_width,
+    stride_h,
+    stride_w,
+    activations_dtype,
+    weights_dtype,
+    has_bias,
+):
+    tf.random.set_seed(0)
+    if (
+        activations_dtype == tf.float32
+        and weights_dtype == tf.float32
+        and input_height == input_width == 28
+        and input_channels == output_channels == 256
+    ):
+        pytest.skip("Circular buffer grows beyond maximum L1 size.")
+
+    # Padding logic for Conv2DTranspose is different, but 'same' and 'valid' are still supported.
+    # same logic as test_conv2d to ensure parity.
+    padding = "same" if stride_h == stride_w == 1 and filter_height % 2 == 1 else "valid"
+
+    class Conv2dTranspose(tf.keras.Model):
+        def __init__(self):
+            super().__init__()
+            self.conv2d_transpose = tf.keras.layers.Conv2DTranspose(
+                output_channels, # `filters` argument specifies output channels
+                (filter_height, filter_width),
+                strides=[stride_h, stride_w],
+                padding=padding,
+                data_format="channels_last",
+                dtype=weights_dtype,
+                use_bias=has_bias,
+                # Note: output_padding is not tested here, but could be added.
+                # It defaults to None which is fine for most cases.
+            )
+
+        def call(self, x):
+            return self.conv2d_transpose(x)
+
+    # Input shape uses input_channels
+    inputs = [tf.random.uniform((batch_size, input_height, input_width, input_channels), dtype=activations_dtype)]
+
+    framework_model = Conv2dTranspose()
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
