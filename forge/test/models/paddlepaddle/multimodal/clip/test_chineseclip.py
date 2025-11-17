@@ -89,7 +89,6 @@ def test_chineseclip_vision(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2998")
 @pytest.mark.parametrize("variant", variants)
 def test_chineseclip(variant):
     # Record Forge properties
