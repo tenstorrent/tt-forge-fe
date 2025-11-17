@@ -209,14 +209,14 @@ def test_batch_norm():
     (
         (1, 16, 64, 56, 56, 4, 4, 1, 1),  # Flipped output/input channels
         (1, 64, 64, 56, 56, 3, 3, 1, 1),
-        (1, 128, 128, 28, 28, 3, 3, 2, 2), # Stride > 1
+        (1, 128, 128, 28, 28, 3, 3, 2, 2),  # Stride > 1
         (1, 128, 128, 14, 14, 3, 3, 1, 1),
-        (1, 256, 256, 14, 14, 3, 3, 2, 2), # Stride > 1
+        (1, 256, 256, 14, 14, 3, 3, 2, 2),  # Stride > 1
         (1, 256, 256, 7, 7, 3, 3, 1, 1),
         (1, 64, 64, 8, 8, 3, 3, 1, 1),
         (1, 64, 64, 16, 16, 3, 3, 1, 1),
         (1, 256, 256, 7, 7, 3, 3, 1, 1),
-        (1, 64, 256, 28, 28, 1, 1, 2, 2), # Flipped output/input channels, Stride > 1
+        (1, 64, 256, 28, 28, 1, 1, 2, 2),  # Flipped output/input channels, Stride > 1
     ),
 )
 @pytest.mark.parametrize(
@@ -268,7 +268,7 @@ def test_conv2d_transpose(
         def __init__(self):
             super().__init__()
             self.conv2d_transpose = tf.keras.layers.Conv2DTranspose(
-                output_channels, # `filters` argument specifies output channels
+                output_channels,  # `filters` argument specifies output channels
                 (filter_height, filter_width),
                 strides=[stride_h, stride_w],
                 padding=padding,
