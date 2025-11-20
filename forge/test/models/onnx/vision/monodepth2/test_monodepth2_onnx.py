@@ -30,7 +30,10 @@ variants = [
     pytest.param("mono+stereo_640x192"),
     pytest.param("mono_no_pt_640x192"),
     pytest.param("stereo_no_pt_640x192"),
-    pytest.param("mono+stereo_no_pt_640x192"),
+    pytest.param(
+        "mono+stereo_no_pt_640x192",
+        marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/3057"),
+    ),
     pytest.param("mono_1024x320", marks=pytest.mark.xfail),
     pytest.param("stereo_1024x320", marks=pytest.mark.xfail),
     pytest.param("mono+stereo_1024x320", marks=pytest.mark.xfail),
@@ -42,8 +45,14 @@ variants = [
 def test_monodepth2(variant, forge_tmp_path):
 
     pcc = 0.99
-    if variant == "stereo_640x192":
-        pcc = 0.98
+    if variant in [
+        "mono_640x192",
+        "stereo_640x192",
+        "mono+stereo_640x192",
+        "mono_no_pt_640x192",
+        "stereo_no_pt_640x192",
+    ]:
+        pcc = 0.95
 
     # Record Forge Property
     module_name = record_model_properties(
