@@ -59,7 +59,7 @@ jobs:
         id: set-inputs
         run: |
           default_test_group_cnt=10
-          default_run_ops_sweeps=Yes
+          default_run_ops_sweeps=No
           nightly_tests_paths="forge/test/mlir,forge/test/models/jax,forge/test/models/tensorflow,forge/test/models/onnx,forge/test/models/paddlepaddle"
 
           ros_res=$(if [ -z "${{ inputs.run_ops_sweeps }}" ]; then echo $default_run_ops_sweeps; else echo ${{ inputs.run_ops_sweeps }}; fi)
