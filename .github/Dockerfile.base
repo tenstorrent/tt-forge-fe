@@ -45,7 +45,7 @@ RUN pip install --upgrade pip setuptools wheel
 RUN wget https://apt.llvm.org/llvm.sh && \
     chmod u+x llvm.sh && \
     ./llvm.sh 17 && \
-    apt install -y libc++-17-dev libc++abi-17-dev && \
+    apt install -y libc++-17-dev libc++abi-17-dev libstdc++-12-dev && \
     ln -s /usr/bin/clang-17 /usr/bin/clang && \
     ln -s /usr/bin/clang++-17 /usr/bin/clang++
 
