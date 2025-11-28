@@ -65,17 +65,6 @@ RUN wget https://apt.llvm.org/llvm.sh && \
     ln -s /usr/bin/clang-17 /usr/bin/clang && \
     ln -s /usr/bin/clang++-17 /usr/bin/clang++
 
-# Install mpi-ulfm from the tenstorrent repo
-RUN set -eux; \
-    apt-get update && \
-    apt-get install -y -f \
-        wget ca-certificates && \
-    TMP_DIR="$(mktemp -d)" && \
-    DEB_URL="https://github.com/dmakoviichuk-tt/mpi-ulfm/releases/download/v5.0.7-ulfm/openmpi-ulfm_5.0.7-1_amd64.deb" && \
-    wget -qO "$TMP_DIR/ompi.deb" "$DEB_URL" && \
-    apt-get install -f -y "$TMP_DIR/ompi.deb" && \
-    rm -rf "$TMP_DIR"
-
 # Install python packages
 RUN pip install cmake \
     pytest
