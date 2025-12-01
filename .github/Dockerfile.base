@@ -50,7 +50,7 @@ RUN add-apt-repository ppa:deadsnakes/ppa && \
     python3.11 \
     python3.11-dev \
     python3.11-venv \
-    python3.11-distutils
+    python3-pip
 
 # Setup / install metal dependencies
 RUN wget https://raw.githubusercontent.com/tenstorrent/tt-metal/${TT_METAL_DEPENDENCIES_COMMIT}/{install_dependencies.sh,tt_metal/sfpi-info.sh,tt_metal/sfpi-version} && \
