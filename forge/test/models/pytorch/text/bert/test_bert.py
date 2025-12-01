@@ -2,20 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-
-import forge
-from forge.forge_property_utils import (
-    Framework,
-    ModelArch,
-    ModelGroup,
-    ModelPriority,
-    Source,
-    Task,
-    record_model_properties,
-)
-from forge.verify.config import VerifyConfig
-from forge.verify.value_checkers import AutomaticValueChecker
-from forge.verify.verify import verify
 from third_party.tt_forge_models.bert.masked_lm.pytorch.loader import (
     ModelLoader as MaskedLMLoader,
 )
@@ -46,6 +32,20 @@ from third_party.tt_forge_models.bert.token_classification.pytorch.loader import
 from third_party.tt_forge_models.bert.token_classification.pytorch.loader import (
     ModelVariant as TokenClassificationVariant,
 )
+
+import forge
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+    record_model_properties,
+)
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
+from forge.verify.verify import verify
 
 
 @pytest.mark.nightly

@@ -3,22 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from transformers.modeling_outputs import (
-    MaskedLMOutput,
-    QuestionAnsweringModelOutput,
-    SequenceClassifierOutput,
-    TokenClassifierOutput,
-)
-
-import forge
-from forge.forge_property_utils import (
-    Framework,
-    ModelArch,
-    Source,
-    Task,
-    record_model_properties,
-)
-from forge.verify.verify import verify
 
 # Import the model loaders and variants from the new location
 from third_party.tt_forge_models.distilbert.masked_lm.pytorch.loader import (
@@ -45,6 +29,22 @@ from third_party.tt_forge_models.distilbert.token_classification.pytorch.loader 
 from third_party.tt_forge_models.distilbert.token_classification.pytorch.loader import (
     ModelVariant as TokenClassificationVariant,
 )
+from transformers.modeling_outputs import (
+    MaskedLMOutput,
+    QuestionAnsweringModelOutput,
+    SequenceClassifierOutput,
+    TokenClassifierOutput,
+)
+
+import forge
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
+from forge.verify.verify import verify
 
 
 # Wrapper to return tensor outputs

@@ -2,17 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-
-import forge
-from forge.forge_property_utils import (
-    Framework,
-    ModelArch,
-    Source,
-    Task,
-    record_model_properties,
-)
-from forge.verify.config import AutomaticValueChecker, VerifyConfig
-from forge.verify.verify import verify
 from third_party.tt_forge_models.albert.masked_lm.pytorch import (
     ModelLoader as MaskedLMLoader,
 )
@@ -37,6 +26,17 @@ from third_party.tt_forge_models.albert.token_classification.pytorch import (
 from third_party.tt_forge_models.albert.token_classification.pytorch import (
     ModelVariant as TokenClassificationVariant,
 )
+
+import forge
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
+from forge.verify.config import AutomaticValueChecker, VerifyConfig
+from forge.verify.verify import verify
 
 masked_lm_params = [
     pytest.param(MaskedLMVariant.BASE_V1),
