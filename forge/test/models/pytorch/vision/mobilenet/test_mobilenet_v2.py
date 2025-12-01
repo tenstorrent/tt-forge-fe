@@ -4,7 +4,6 @@
 
 import pytest
 import torch
-from third_party.tt_forge_models.mobilenetv2.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -21,10 +20,10 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
+from third_party.tt_forge_models.mobilenetv2.pytorch import ModelLoader, ModelVariant
 
 
 @pytest.mark.nightly
-@pytest.mark.push
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", [ModelVariant.MOBILENET_V2_TORCH_HUB])
 def test_mobilenetv2_basic(variant):

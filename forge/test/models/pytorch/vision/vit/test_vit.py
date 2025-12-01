@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from third_party.tt_forge_models.vit.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -20,9 +19,10 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
+from third_party.tt_forge_models.vit.pytorch import ModelLoader, ModelVariant
 
 variants = [
-    pytest.param(ModelVariant.BASE, marks=pytest.mark.push),
+    ModelVariant.BASE,
     ModelVariant.LARGE,
 ]
 

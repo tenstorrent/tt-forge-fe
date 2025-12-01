@@ -4,7 +4,6 @@
 
 import pytest
 import torch
-from third_party.tt_forge_models.resnext.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -17,11 +16,11 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
+from third_party.tt_forge_models.resnext.pytorch import ModelLoader, ModelVariant
 
 variants = [ModelVariant.RESNEXT50_32X4D, ModelVariant.RESNEXT101_32X8D, ModelVariant.RESNEXT101_32X8D_WSL]
 
 
-@pytest.mark.push
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_resnext_torchhub_pytorch(variant):

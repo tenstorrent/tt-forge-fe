@@ -4,7 +4,6 @@
 # Reference: https://huggingface.co/deepmind/language-perceiver
 
 import pytest
-from third_party.tt_forge_models.perceiver.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -15,12 +14,12 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
+from third_party.tt_forge_models.perceiver.pytorch import ModelLoader, ModelVariant
 
 variants = [ModelVariant.LANGUAGE_PERCEIVER]
 
 
 @pytest.mark.nightly
-@pytest.mark.push
 @pytest.mark.parametrize("variant", variants)
 def test_perceiverio_masked_lm_pytorch(variant):
 

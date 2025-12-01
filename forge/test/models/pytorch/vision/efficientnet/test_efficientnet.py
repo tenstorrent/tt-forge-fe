@@ -4,7 +4,6 @@
 
 import pytest
 import torch
-from third_party.tt_forge_models.efficientnet.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -20,12 +19,13 @@ from forge.forge_property_utils import (
 )
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
+from third_party.tt_forge_models.efficientnet.pytorch import ModelLoader, ModelVariant
 
 ## https://huggingface.co/docs/timm/models/efficientnet
 
 # TIMM variants using loader enums
 variants = [
-    pytest.param(ModelVariant.TIMM_EFFICIENTNET_B0, id="efficientnet_b0", marks=[pytest.mark.push]),
+    pytest.param(ModelVariant.TIMM_EFFICIENTNET_B0, id="efficientnet_b0"),
     pytest.param(ModelVariant.TIMM_EFFICIENTNET_B4, id="efficientnet_b4"),
     pytest.param(ModelVariant.HF_TIMM_EFFICIENTNET_B0_RA_IN1K, id="hf_hub_timm_efficientnet_b0_ra_in1k"),
     pytest.param(ModelVariant.HF_TIMM_EFFICIENTNET_B4_RA2_IN1K, id="hf_hub_timm_efficientnet_b4_ra2_in1k"),

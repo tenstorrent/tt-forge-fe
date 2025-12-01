@@ -4,7 +4,6 @@
 
 import pytest
 import torch
-from third_party.tt_forge_models.autoencoder.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -17,6 +16,7 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
+from third_party.tt_forge_models.autoencoder.pytorch import ModelLoader, ModelVariant
 
 
 @pytest.mark.nightly
@@ -49,7 +49,6 @@ def test_conv_ae_pytorch():
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.push
 @pytest.mark.nightly
 def test_linear_ae_pytorch():
     # Record Forge Property

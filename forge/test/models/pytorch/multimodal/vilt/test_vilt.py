@@ -3,18 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from third_party.tt_forge_models.vilt.masked_lm.pytorch import (
-    ModelLoader as MaskedLMLoader,
-)
-from third_party.tt_forge_models.vilt.masked_lm.pytorch import (
-    ModelVariant as MaskedLMVariant,
-)
-from third_party.tt_forge_models.vilt.question_answering.pytorch import (
-    ModelLoader as QuestionAnsweringLoader,
-)
-from third_party.tt_forge_models.vilt.question_answering.pytorch import (
-    ModelVariant as QuestionAnsweringVariant,
-)
 
 import forge
 from forge._C import DataFormat
@@ -28,6 +16,18 @@ from forge.forge_property_utils import (
 )
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
+from third_party.tt_forge_models.vilt.masked_lm.pytorch import (
+    ModelLoader as MaskedLMLoader,
+)
+from third_party.tt_forge_models.vilt.masked_lm.pytorch import (
+    ModelVariant as MaskedLMVariant,
+)
+from third_party.tt_forge_models.vilt.question_answering.pytorch import (
+    ModelLoader as QuestionAnsweringLoader,
+)
+from third_party.tt_forge_models.vilt.question_answering.pytorch import (
+    ModelVariant as QuestionAnsweringVariant,
+)
 
 from test.models.pytorch.multimodal.vilt.model_utils.model import (
     ViLtEmbeddingWrapper,
@@ -56,7 +56,6 @@ qa_variants = [QuestionAnsweringVariant.VQA]
 
 
 @pytest.mark.nightly
-@pytest.mark.push
 @pytest.mark.parametrize("variant", qa_variants)
 def test_vilt_question_answering_hf_pytorch(variant):
     # Record Forge Property
