@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from third_party.tt_forge_models.mobilenetv1.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -18,10 +17,10 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
+from third_party.tt_forge_models.mobilenetv1.pytorch import ModelLoader, ModelVariant
 
 
 @pytest.mark.nightly
-@pytest.mark.push
 @pytest.mark.parametrize("variant", [ModelVariant.MOBILENET_V1_GITHUB])
 def test_mobilenetv1_basic(variant):
     # Record Forge Property

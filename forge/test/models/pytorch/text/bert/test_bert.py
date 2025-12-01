@@ -2,6 +2,20 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+
+import forge
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+    record_model_properties,
+)
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
+from forge.verify.verify import verify
 from third_party.tt_forge_models.bert.masked_lm.pytorch.loader import (
     ModelLoader as MaskedLMLoader,
 )
@@ -33,24 +47,9 @@ from third_party.tt_forge_models.bert.token_classification.pytorch.loader import
     ModelVariant as TokenClassificationVariant,
 )
 
-import forge
-from forge.forge_property_utils import (
-    Framework,
-    ModelArch,
-    ModelGroup,
-    ModelPriority,
-    Source,
-    Task,
-    record_model_properties,
-)
-from forge.verify.config import VerifyConfig
-from forge.verify.value_checkers import AutomaticValueChecker
-from forge.verify.verify import verify
-
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", [MaskedLMVariant.BERT_BASE_UNCASED])
-@pytest.mark.push
 def test_bert_masked_lm_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
@@ -84,7 +83,7 @@ def test_bert_masked_lm_pytorch(variant):
 
 
 variants = [
-    pytest.param(QuestionAnsweringVariant.PHIYODR_BERT_LARGE_FINETUNED_SQUAD2, marks=[pytest.mark.push]),
+    QuestionAnsweringVariant.PHIYODR_BERT_LARGE_FINETUNED_SQUAD2,
     QuestionAnsweringVariant.BERT_LARGE_CASED_WHOLE_WORD_MASKING_FINETUNED_SQUAD,
 ]
 
@@ -196,7 +195,6 @@ def test_bert_token_classification_pytorch(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.push
 @pytest.mark.parametrize(
     "variant", [SentenceEmbeddingGenerationVariant.EMRECAN_BERT_BASE_TURKISH_CASED_MEAN_NLI_STSB_TR]
 )

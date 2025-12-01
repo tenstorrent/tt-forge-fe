@@ -4,7 +4,6 @@
 
 import pytest
 import torch
-from third_party.tt_forge_models.mobilenetv3.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -19,9 +18,10 @@ from forge.forge_property_utils import (
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
+from third_party.tt_forge_models.mobilenetv3.pytorch import ModelLoader, ModelVariant
 
 variants = [
-    pytest.param(ModelVariant.MOBILENET_V3_LARGE, marks=[pytest.mark.push]),
+    pytest.param(ModelVariant.MOBILENET_V3_LARGE),
     pytest.param(ModelVariant.MOBILENET_V3_SMALL),
 ]
 
