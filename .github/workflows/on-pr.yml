@@ -54,8 +54,8 @@ jobs:
     secrets: inherit
     with:
       test_mark: 'push'
-      test_group_cnt: 2
-      test_group_ids: '[1,2]'
+      test_group_cnt: 3
+      test_group_ids: '[1,2,3]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ github.run_id }}
       runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
