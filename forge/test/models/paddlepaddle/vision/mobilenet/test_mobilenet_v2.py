@@ -14,6 +14,7 @@ from paddle.vision.models import mobilenet_v2
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 
+@pytest.mark.push
 @pytest.mark.nightly
 def test_mobilenetv2_basic():
     # Record model details

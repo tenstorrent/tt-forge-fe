@@ -21,7 +21,7 @@ from test.utils import download_model
 import onnx
 import forge
 
-variants = ["densenet121", "densenet161", "densenet169"]
+variants = [pytest.param("densenet121", marks=pytest.mark.push), "densenet161", "densenet169"]
 
 
 @pytest.mark.nightly

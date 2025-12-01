@@ -20,7 +20,7 @@ from forge.verify.verify import verify
 
 
 variants = [
-    ModelVariant.Y_040,
+    pytest.param(ModelVariant.Y_040, marks=pytest.mark.push),
     ModelVariant.Y_064,
     ModelVariant.Y_080,
     ModelVariant.Y_120,

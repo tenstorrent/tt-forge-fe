@@ -20,7 +20,7 @@ from test.models.pytorch.vision.mobilenet.model_utils.utils import (
 import onnx
 import torch
 
-variants = ["mobilenet_v3_small"]
+variants = [pytest.param("mobilenet_v3_small", marks=pytest.mark.push)]
 
 
 @pytest.mark.nightly

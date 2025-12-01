@@ -33,7 +33,7 @@ varaints = [
         "mixer_b16_224_in21k",
         marks=[pytest.mark.xfail],
     ),
-    pytest.param("mixer_b16_224_miil"),
+    pytest.param("mixer_b16_224_miil", marks=pytest.mark.push),
     pytest.param(
         "mixer_b16_224_miil_in21k",
         marks=[pytest.mark.xfail],
@@ -56,6 +56,7 @@ varaints = [
     ),
     pytest.param(
         "mixer_s16_224",
+        marks=pytest.mark.push,
     ),
     pytest.param(
         "mixer_s32_224",

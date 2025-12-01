@@ -14,7 +14,7 @@ from forge.forge_property_utils import Framework, Source, Task, ModelArch, recor
 
 
 variants = [
-    pytest.param("google/vit-base-patch16-224"),
+    pytest.param("google/vit-base-patch16-224", marks=pytest.mark.push),
     pytest.param(
         "google/vit-large-patch16-224",
         marks=[

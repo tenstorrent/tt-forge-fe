@@ -23,7 +23,12 @@ from test.models.pytorch.vision.resnext.model_utils.utils import (
 from test.utils import download_model
 import onnx
 
-variants = ["resnext14_32x4d", "resnext26_32x4d", "resnext50_32x4d", "resnext101_64x4d"]
+variants = [
+    pytest.param("resnext14_32x4d", marks=pytest.mark.push),
+    "resnext26_32x4d",
+    "resnext50_32x4d",
+    "resnext101_64x4d",
+]
 
 
 @pytest.mark.nightly

@@ -21,7 +21,7 @@ from test.models.pytorch.vision.wideresnet.model_utils.utils import (
 import onnx
 
 
-variants = ["wide_resnet50_2", "wide_resnet101_2"]
+variants = [pytest.param("wide_resnet50_2", marks=pytest.mark.push), "wide_resnet101_2"]
 
 
 @pytest.mark.nightly

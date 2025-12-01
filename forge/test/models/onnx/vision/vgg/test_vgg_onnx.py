@@ -26,11 +26,11 @@ from test.models.models_utils import print_cls_results
 from test.utils import download_model
 
 variants = [
-    pytest.param("vgg11"),
+    pytest.param("vgg11", marks=pytest.mark.push),
     pytest.param("vgg13"),
     pytest.param("vgg16"),
     pytest.param("vgg19"),
-    pytest.param("bn_vgg19"),
+    pytest.param("bn_vgg19", marks=pytest.mark.push),
     pytest.param("bn_vgg19b"),
 ]
 

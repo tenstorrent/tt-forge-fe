@@ -13,6 +13,7 @@ from test.models.onnx.vision.yolo.model_utils.yolo_utils import load_yolo_model_
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 
+@pytest.mark.push
 @pytest.mark.nightly
 def test_yolov10(forge_tmp_path):
     # Record Forge Property

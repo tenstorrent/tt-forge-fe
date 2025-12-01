@@ -23,11 +23,11 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 
 variants = [
-    "hrnet_w18_small_v1",
+    pytest.param("hrnet_w18_small_v1", marks=pytest.mark.push),
     "hrnet_w18_small_v2",
     "hrnetv2_w18",
     "hrnetv2_w30",
-    "hrnetv2_w44",
+    pytest.param("hrnetv2_w44", marks=pytest.mark.push),
     "hrnetv2_w48",
     "hrnetv2_w64",
 ]
