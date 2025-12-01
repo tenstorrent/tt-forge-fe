@@ -21,11 +21,11 @@ from test.models.pytorch.vision.wideresnet.model_utils.utils import (
 import onnx
 
 
-variants = [pytest.param("wide_resnet50_2", marks=pytest.mark.push), "wide_resnet101_2"]
+variants = [pytest.param("wide_resnet50_2", marks=pytest.mark.push, id="wide_resnet50_2"), "wide_resnet101_2"]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_wideresnet_onnx(variant, forge_tmp_path):
 
     # Record Forge Property

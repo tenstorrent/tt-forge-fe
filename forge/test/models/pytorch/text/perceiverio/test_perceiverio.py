@@ -4,6 +4,7 @@
 # Reference: https://huggingface.co/deepmind/language-perceiver
 
 import pytest
+from third_party.tt_forge_models.perceiver.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge.forge_property_utils import (
@@ -14,7 +15,6 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
-from third_party.tt_forge_models.perceiver.pytorch import ModelLoader, ModelVariant
 
 variants = [ModelVariant.LANGUAGE_PERCEIVER]
 

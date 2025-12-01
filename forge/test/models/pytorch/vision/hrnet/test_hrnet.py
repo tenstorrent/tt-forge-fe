@@ -4,6 +4,7 @@
 
 import pytest
 import torch
+from third_party.tt_forge_models.hrnet.pytorch import ModelLoader, ModelVariant
 
 import forge
 from forge._C import DataFormat
@@ -17,7 +18,6 @@ from forge.forge_property_utils import (
 )
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
-from third_party.tt_forge_models.hrnet.pytorch import ModelLoader, ModelVariant
 
 # OSMR (pytorchcv) variants using loader enums
 variants = [
