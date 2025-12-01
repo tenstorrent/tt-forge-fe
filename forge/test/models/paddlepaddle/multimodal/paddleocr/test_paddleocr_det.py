@@ -29,6 +29,7 @@ os.makedirs(cache_dir, exist_ok=True)
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(marker="https://github.com/tenstorrent/tt-mlir/issues/6092")
 @pytest.mark.parametrize(
     "variant,url",
     [(f"{variant}_det_{lang}", url) for variant, urls in model_urls.items() for lang, url in urls.items()],
