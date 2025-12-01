@@ -18,6 +18,7 @@ from test.models.models_utils import print_cls_results, preprocess_inputs
 from test.utils import download_model
 
 
+@pytest.mark.push
 @pytest.mark.nightly
 def test_alexnet_onnx(forge_tmp_path):
 

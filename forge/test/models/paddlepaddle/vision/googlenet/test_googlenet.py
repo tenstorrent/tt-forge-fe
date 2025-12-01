@@ -14,6 +14,7 @@ from paddle.vision.models import googlenet
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 
+@pytest.mark.push
 @pytest.mark.nightly
 def test_googlenet():
     # Record model details

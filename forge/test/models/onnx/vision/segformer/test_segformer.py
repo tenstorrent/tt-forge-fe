@@ -71,7 +71,7 @@ def test_segformer_image_classification_onnx(variant, forge_tmp_path):
 
 
 variants_semseg = [
-    "nvidia/segformer-b0-finetuned-ade-512-512",
+    pytest.param("nvidia/segformer-b0-finetuned-ade-512-512", marks=pytest.mark.push),
     "nvidia/segformer-b1-finetuned-ade-512-512",
     pytest.param("nvidia/segformer-b2-finetuned-ade-512-512", marks=pytest.mark.xfail),
     pytest.param("nvidia/segformer-b3-finetuned-ade-512-512", marks=pytest.mark.xfail),

@@ -88,6 +88,7 @@ def test_chineseclip_vision(variant):
     verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.96)))
 
 
+@pytest.mark.push
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_chineseclip(variant):

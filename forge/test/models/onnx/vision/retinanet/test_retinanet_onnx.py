@@ -23,7 +23,7 @@ from test.models.pytorch.vision.retinanet.model_utils.model_utils import img_pre
 from test.models.pytorch.vision.retinanet.model_utils.model import Model
 
 variants = [
-    "retinanet_rn18fpn",
+    pytest.param("retinanet_rn18fpn", marks=pytest.mark.push),
     "retinanet_rn34fpn",
     "retinanet_rn50fpn",
     "retinanet_rn101fpn",

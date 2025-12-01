@@ -61,6 +61,7 @@ def test_bert_sequence_classification(variant, input):
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.push
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant, input", [(key, value["mask"]) for key, value in inputs_map.items()])
 def test_bert_maskedlm(variant, input):

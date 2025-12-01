@@ -12,7 +12,7 @@ import onnx
 from test.models.onnx.text.gliner.model_utils.model_utils import export_onnx, prepare_inputs
 from forge.forge_property_utils import Framework, ModelArch, Source, Task, record_model_properties
 
-variants = ["urchade/gliner_multi-v2.1"]
+variants = [pytest.param("urchade/gliner_multi-v2.1", marks=pytest.mark.push)]
 
 
 @pytest.mark.nightly

@@ -18,7 +18,7 @@ import onnx
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["squeezebert/squeezebert-mnli"])
+@pytest.mark.parametrize("variant", [pytest.param("squeezebert/squeezebert-mnli", marks=pytest.mark.push)])
 def test_squeezebert_sequence_classification_onnx(variant, forge_tmp_path):
     # Record Forge Property
     module_name = record_model_properties(
