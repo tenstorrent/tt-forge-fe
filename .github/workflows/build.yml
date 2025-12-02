@@ -252,6 +252,12 @@ jobs:
           source env/activate
           cmake --build ${{ steps.strings.outputs.build-output-dir }} -- run_unit_tests
 
+      - name: Verify editable installation
+        shell: bash
+        run: |
+          source env/activate
+          python3 -c "import forge; print(dir(forge)); assert 'compile' in dir(forge)"
+
       - name: Prepare code coverage report
         run: |
           lcov --directory build --capture --output-file coverage.info --gcov-tool ${{ steps.strings.outputs.work-dir }}/.github/workflows/gcov_for_clang.sh

@@ -11,6 +11,45 @@ from setuptools.command.build_ext import build_ext
 from pathlib import Path
 import re
 
+from setuptools.command.editable_wheel import editable_wheel
+from wheel.wheelfile import WheelFile
+
+# WORKAROUND: make editable installation work
+#
+# The setuptools generates `MetaPathFinder` and hooks them to the python import machinery (via `sys.meta_path`),
+# to be able to resolve imports of packages in editable installation. These finders are used as a fallback
+# when python isn't able to find the package from the `sys.path`.
+#
+# However, their logic isn't able to resolve `import forge` properly. The problem is that the `forge` package
+# is contained in the `forge` directory, which is a subdirectory of the root of the repository. If we execute
+# `import forge` from the root of the repository, the `importlib` will find the top-level directory `forge` and
+# won't fallback to the `MetaPathFinder` logic.
+#
+# To workaround this, we create our `.pth` file and add it to the editable wheel. Python will automatically
+# load this file and populate the `sys.path` with the paths specified in the `.pth` file.
+#
+# NOTE: Needs `wheel` to be installed.
+class EditableWheel(editable_wheel):
+    def run(self):
+        # Build the editable wheel first.
+        super().run()
+
+        # Create a .pth file with paths to the repo root, ttnn and tools directories.
+        # This file gets loaded automatically by the python interpreter and its content gets populated into `sys.path`;
+        # i.e. as if these paths were added to the PYTHONPATH.
+        pth_filename = "forge-custom.pth"
+        pth_content = f"{Path(__file__).parent / 'forge' }\n"
+
+        print(f"EditableWheel.run: adding {pth_filename} to the wheel")
+
+        # Find .whl file in the dist_dir (e.g. `forge-0.1*.whl`)
+        wheel = next((f for f in os.listdir(self.dist_dir) if f.endswith(".whl") and "editable" in f), None)
+
+        assert wheel, f"Expected to see editable wheel in dist dir: {self.dist_dir}, but didn't find one"
+
+        # Add the .pth file to the wheel archive.
+        WheelFile(os.path.join(self.dist_dir, wheel), mode="a").writestr(pth_filename, pth_content)
+
 
 class TTExtension(Extension):
     def __init__(self, name):
@@ -19,6 +58,8 @@ class TTExtension(Extension):
 
 class CMakeBuild(build_ext):
     def run(self):
+        if self.editable_mode:
+            return
         for ext in self.extensions:
             if "forge" in ext.name:
                 self.build_forge(ext)
@@ -285,7 +326,7 @@ setup(
     packages=packages,
     package_dir={"forge": "forge/forge"},
     ext_modules=[forge_c],
-    cmdclass={"build_ext": CMakeBuild},
+    cmdclass={"build_ext": CMakeBuild, "editable_wheel": EditableWheel},
     long_description=long_description,
     long_description_content_type="text/markdown",
     zip_safe=False,
