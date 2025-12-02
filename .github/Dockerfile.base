@@ -4,6 +4,8 @@ SHELL ["/bin/bash", "-c"]
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
 
+ARG TT_METAL_DEPENDENCIES_COMMIT=e1d6113542dba5683fed6e0e2363fbf26042631e
+
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     software-properties-common \
@@ -41,25 +43,6 @@ RUN apt-get update && apt-get install -y \
 # Upgrade pip, setuptools, wheel (do this *after* installing python3-pip)
 RUN pip install --upgrade pip setuptools wheel
 
-# Install clang 17
-RUN wget https://apt.llvm.org/llvm.sh && \
-    chmod u+x llvm.sh && \
-    ./llvm.sh 17 && \
-    apt install -y libc++-17-dev libc++abi-17-dev && \
-    ln -s /usr/bin/clang-17 /usr/bin/clang && \
-    ln -s /usr/bin/clang++-17 /usr/bin/clang++
-
-# Install mpi-ulfm from the tenstorrent repo
-RUN set -eux; \
-    apt-get update && \
-    apt-get install -y -f \
-        wget ca-certificates && \
-    TMP_DIR="$(mktemp -d)" && \
-    DEB_URL="https://github.com/dmakoviichuk-tt/mpi-ulfm/releases/download/v5.0.7-ulfm/openmpi-ulfm_5.0.7-1_amd64.deb" && \
-    wget -qO "$TMP_DIR/ompi.deb" "$DEB_URL" && \
-    apt-get install -f -y "$TMP_DIR/ompi.deb" && \
-    rm -rf "$TMP_DIR"
-
 # Install deadsnakes PPA for latest Python versions
 RUN add-apt-repository ppa:deadsnakes/ppa && \
     apt-get update && \
@@ -68,6 +51,19 @@ RUN add-apt-repository ppa:deadsnakes/ppa && \
     python3.11-dev \
     python3.11-venv \
     python3-pip
+
+# Setup / install metal dependencies
+RUN wget https://raw.githubusercontent.com/tenstorrent/tt-metal/${TT_METAL_DEPENDENCIES_COMMIT}/{install_dependencies.sh,tt_metal/sfpi-info.sh,tt_metal/sfpi-version} && \
+    chmod u+x sfpi-info.sh && \
+    bash install_dependencies.sh --docker
+
+# Install clang 17
+RUN wget https://apt.llvm.org/llvm.sh && \
+    chmod u+x llvm.sh && \
+    ./llvm.sh 17 && \
+    apt install -y libc++-17-dev libc++abi-17-dev && \
+    ln -s /usr/bin/clang-17 /usr/bin/clang && \
+    ln -s /usr/bin/clang++-17 /usr/bin/clang++
 
 # Install python packages
 RUN pip install cmake \
