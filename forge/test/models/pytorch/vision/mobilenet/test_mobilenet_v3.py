@@ -21,7 +21,7 @@ from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 variants = [
-    pytest.param(ModelVariant.MOBILENET_V3_LARGE, marks=[pytest.mark.push]),
+    pytest.param(ModelVariant.MOBILENET_V3_LARGE),
     pytest.param(ModelVariant.MOBILENET_V3_SMALL),
 ]
 

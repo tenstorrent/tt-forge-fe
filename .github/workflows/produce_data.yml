@@ -5,7 +5,6 @@ on:
   workflow_run:
     workflows: # List workflow that we want to collect data for
       - "On PR"
-      - "On push"
       - "On nightly"
       - "On nightly Blackhole"
       - "Test"

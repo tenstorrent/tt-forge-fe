@@ -20,7 +20,7 @@ variants = [
 ]
 
 
-@pytest.mark.push
+@pytest.mark.pr_models_regression
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_resnet_onnx(variant, forge_tmp_path):

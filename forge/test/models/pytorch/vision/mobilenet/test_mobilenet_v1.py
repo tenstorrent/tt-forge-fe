@@ -21,7 +21,6 @@ from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
-@pytest.mark.push
 @pytest.mark.parametrize("variant", [ModelVariant.MOBILENET_V1_GITHUB])
 def test_mobilenetv1_basic(variant):
     # Record Forge Property

@@ -14,6 +14,7 @@ from paddle.vision.models import alexnet
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 
+@pytest.mark.pr_models_regression
 @pytest.mark.nightly
 def test_alexnet():
     # Record model details

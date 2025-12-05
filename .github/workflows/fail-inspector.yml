@@ -73,7 +73,7 @@ jobs:
             github_token: ${{secrets.GH_TOKEN}}
             commit: ${{ matrix.build.commit }}
             workflow_conclusion: completed
-            workflow: on-push.yml
+            workflow: on-pr.yml
             name: forge-wheel
             check_artifacts: true
 

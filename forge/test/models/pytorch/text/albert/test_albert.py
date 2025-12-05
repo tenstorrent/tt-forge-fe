@@ -39,11 +39,11 @@ from forge.verify.config import AutomaticValueChecker, VerifyConfig
 from forge.verify.verify import verify
 
 masked_lm_params = [
-    pytest.param(MaskedLMVariant.BASE_V1, marks=[pytest.mark.push]),
+    pytest.param(MaskedLMVariant.BASE_V1),
     pytest.param(MaskedLMVariant.LARGE_V1),
     pytest.param(MaskedLMVariant.XLARGE_V1),
     pytest.param(MaskedLMVariant.XXLARGE_V1),
-    pytest.param(MaskedLMVariant.BASE_V2, marks=[pytest.mark.push]),
+    pytest.param(MaskedLMVariant.BASE_V2),
     pytest.param(MaskedLMVariant.LARGE_V2),
     pytest.param(MaskedLMVariant.XLARGE_V2),
     pytest.param(MaskedLMVariant.XXLARGE_V2),
@@ -90,13 +90,13 @@ def test_albert_masked_lm_pytorch(variant):
 # To make them suitable for specific tasks, they need to be fine-tuned on a labeled dataset for that task.
 
 token_classification_params = [
-    pytest.param(TokenClassificationVariant.BASE_V1, marks=[pytest.mark.push]),
+    pytest.param(TokenClassificationVariant.BASE_V1),
     pytest.param(TokenClassificationVariant.LARGE_V1),
     pytest.param(TokenClassificationVariant.XLARGE_V1),
     pytest.param(TokenClassificationVariant.XXLARGE_V1),
-    pytest.param(TokenClassificationVariant.BASE_V2, marks=[pytest.mark.push]),
+    pytest.param(TokenClassificationVariant.BASE_V2),
     pytest.param(TokenClassificationVariant.LARGE_V2),
-    pytest.param(TokenClassificationVariant.XLARGE_V2, marks=[pytest.mark.xfail]),
+    pytest.param(TokenClassificationVariant.XLARGE_V2),
     pytest.param(TokenClassificationVariant.XXLARGE_V2),
 ]
 
@@ -175,7 +175,6 @@ def test_albert_question_answering_pytorch(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.push
 @pytest.mark.parametrize("variant", [SequenceClassificationVariant.IMDB])
 def test_albert_sequence_classification_pytorch(variant):
 

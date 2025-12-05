@@ -26,6 +26,7 @@ from test.models.pytorch.vision.autoencoder.model_utils.linear_autoencoder impor
 )
 
 
+@pytest.mark.pr_models_regression
 @pytest.mark.nightly
 def test_linear_ae_pytorch(forge_tmp_path):
     # Record Forge Property

@@ -23,6 +23,7 @@ from test.models.pytorch.vision.ssd300_resnet50.model_utils.image_utils import (
 )
 
 
+@pytest.mark.pr_models_regression
 @pytest.mark.nightly
 def test_pytorch_ssd300_resnet50(forge_tmp_path):
     # Record Forge Property

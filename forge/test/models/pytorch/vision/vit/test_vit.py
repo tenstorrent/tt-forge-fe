@@ -22,7 +22,7 @@ from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 variants = [
-    pytest.param(ModelVariant.BASE, marks=pytest.mark.push),
+    ModelVariant.BASE,
     ModelVariant.LARGE,
 ]
 

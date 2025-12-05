@@ -26,7 +26,7 @@ import onnx
 @pytest.mark.parametrize(
     "variant",
     [
-        "mnoukhov/gpt2-imdb-sentiment-classifier",
+        pytest.param("mnoukhov/gpt2-imdb-sentiment-classifier", marks=pytest.mark.pr_models_regression),
     ],
 )
 def test_gpt2_sequence_classification_onnx(variant, forge_tmp_path):
