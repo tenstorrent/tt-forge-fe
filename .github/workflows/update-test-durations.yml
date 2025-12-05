@@ -7,6 +7,59 @@ description: |
 
 on:
   workflow_dispatch:
+    inputs:
+      override_test_durations:
+        description: |
+          If true, merge the newly collected test durations into the repository's existing
+          `.test_durations` file instead of blindly overwriting it.
+          In merge mode the workflow updates only tests whose duration changed by at least
+          `duration_offset` seconds.
+        required: false
+        type: boolean
+        default: false
+      duration_offset:
+        description: |
+          Minimum difference (in seconds) required to consider a duration change significant.
+          When `override_test_durations` is true, a test duration will be considered "updated"
+          only if the absolute difference between the new and the existing value is >= this offset.
+        required: false
+        type: number
+        default: 50
+      enable_auto_pr_merge:
+        description: |
+          If true, the workflow will attempt to automatically merge the created pull request
+          after it is created.
+        required: false
+        type: boolean
+        default: false
+
+  workflow_call:
+    inputs:
+      override_test_durations:
+        description: |
+          If true, merge the newly collected test durations into the repository's existing
+          `.test_durations` file instead of blindly overwriting it.
+          In merge mode the workflow updates only tests whose duration changed by at least
+          `duration_offset` seconds.
+        required: false
+        type: boolean
+        default: false
+      duration_offset:
+        description: |
+          Minimum difference (in seconds) required to consider a duration change significant.
+          When `override_test_durations` is true, a test duration will be considered "updated"
+          only if the absolute difference between the new and the existing value is >= this offset.
+        required: false
+        type: number
+        default: 50
+      enable_auto_pr_merge:
+        description: |
+          If true, the workflow will attempt to automatically merge the created pull request
+          after it is created.
+        required: false
+        type: boolean
+        default: false
+
 
 permissions:
   packages: write
@@ -23,12 +76,22 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          echo "Upgrading pip and installing Python deps..."
+          python -m pip install --upgrade pip
+          pip install openpyxl loguru
       - name: Process nightly test durations
         id: get-test-durations
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
+          set -euo pipefail
+
           repo="tenstorrent/tt-forge-fe"
+          reports_dir="${RUNNER_TEMP:-/tmp}/reports"
+          mkdir -p "$reports_dir"
 
           get_test_results_from_wf() {
             local wf_name="$1"
@@ -56,11 +119,19 @@ jobs:
               fi
             done
             curr_wf_id=$(jq -r ".[$counter].databaseId" runs.json)
-            curr_wf_att=$(jq -r ".[$counter].attempt" runs.json)
-            echo "curr_$3_wf_link=\"https://github.com/$repo/actions/runs/$curr_wf_id/attempts/$curr_wf_att\"" >> "$GITHUB_OUTPUT"
+
+            echo "Selected run details:"
+            echo " - Workflow Name: $wf_name"
+            echo " - Workflow ID: $curr_wf_id"
+            echo "curr_$3_wf_link=\"https://github.com/$repo/actions/runs/$curr_wf_id\"" >> "$GITHUB_OUTPUT"
             rm -f runs.json
 
-            gh run download $curr_wf_id --pattern "test-reports-*" -R $repo -D ${{runner.temp}}/reports
+            echo "Downloading artifacts 'test-reports-*' for run id $curr_wf_id into $reports_dir ..."
+            if gh run download "$curr_wf_id" --pattern "test-reports-*" -R "$repo" -D "$reports_dir"; then
+              echo " -> Download completed."
+            else
+              echo " -> Warning: gh run download failed or no matching artifacts found for run id $curr_wf_id."
+            fi
           }
 
           # get test results from the last nightly that was success or failure
@@ -69,10 +140,24 @@ jobs:
           # get test results from the last successful push
           get_test_results_from_wf "on-push.yml" "success" "push"
 
-          python .github/workflows/get_test_duration_from_junit_xmls.py ${{runner.temp}}/reports .test_durations
-          echo "" >> .test_durations
-          echo "----- NEW DURATIONS"
-          cat .test_durations
+          default_duration_offset=50
+          # inputs are expanded by GH runner; fall back to default if empty
+          offset=$(if [ -z "${{ inputs.duration_offset }}" ]; then echo $default_duration_offset; else echo ${{ inputs.duration_offset }}; fi)
+          echo "Using offset: $offset"
+
+          # build args for the Python script
+          command_args=(
+            "--junit_xml_report_dir_path" "$reports_dir"
+            "--out_file_path" ".test_durations"
+            "--xlsx_report_file_path" "test_duration_report.xlsx"
+            "--offset" "$offset"
+          )
+          if [[ -n "${{ inputs.override_test_durations }}" && "${{ inputs.override_test_durations }}" == "true" ]]; then
+            command_args+=("--override_test_durations")
+          fi
+
+          echo "Running Python duration extractor with args: ${command_args[*]}"
+          python .github/workflows/get_test_duration_from_junit_xmls.py "${command_args[@]}"
 
           echo "TODAY=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
 
@@ -92,10 +177,17 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
 
       - name: Enable Pull Request Automerge
-        if: ${{ steps.create-pr.outputs.pull-request-number }}
+        if: ${{ inputs.enable_auto_pr_merge == 'true' && steps.create-pr.outputs.pull-request-number }}
         run: gh pr merge --squash --auto "${{ steps.create-pr.outputs.pull-request-number }}"
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Upload Test Duration Report
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: test-duration-report
+          path: test_duration_report.xlsx
 
       - name: Generate Summary
         run: |
