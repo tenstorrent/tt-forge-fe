@@ -40,15 +40,12 @@ jobs:
       mlir_override: ${{ inputs.mlir_override }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
   build-docs:
-    needs: docker-build
     uses: ./.github/workflows/build-docs.yml
     permissions:
       contents: read
       pages: write
       id-token: write
     secrets: inherit
-    with:
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
   test:
     needs:
       - docker-build
