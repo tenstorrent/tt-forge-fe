@@ -22,7 +22,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 
 variants = [
-    pytest.param("facebook/deit-base-patch16-224", marks=pytest.mark.push),
+    pytest.param("facebook/deit-base-patch16-224", marks=pytest.mark.pr_models_regression),
     "facebook/deit-small-patch16-224",
     "facebook/deit-tiny-patch16-224",
 ]

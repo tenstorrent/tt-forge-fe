@@ -77,7 +77,7 @@ def test_blip_vision(variant):
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.push
+@pytest.mark.pr_models_regression
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_blip(variant):

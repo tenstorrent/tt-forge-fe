@@ -22,7 +22,9 @@ import onnx
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", [pytest.param("deepmind/language-perceiver", marks=pytest.mark.push)])
+@pytest.mark.parametrize(
+    "variant", [pytest.param("deepmind/language-perceiver", marks=pytest.mark.pr_models_regression)]
+)
 def test_perceiverio_masked_lm_onnx(variant, forge_tmp_path):
 
     # Record Forge Property

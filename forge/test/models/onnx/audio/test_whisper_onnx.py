@@ -32,7 +32,7 @@ class Wrapper(torch.nn.Module):
 
 
 variants = [
-    pytest.param("openai/whisper-tiny", marks=pytest.mark.push),
+    pytest.param("openai/whisper-tiny", marks=pytest.mark.pr_models_regression),
     "openai/whisper-base",
     "openai/whisper-small",
     pytest.param("openai/whisper-medium", marks=pytest.mark.xfail),

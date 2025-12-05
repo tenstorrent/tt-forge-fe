@@ -27,7 +27,7 @@ from test.models.pytorch.vision.monodepth2.model_utils.utils import (
 variants = [
     pytest.param("mono_640x192"),
     pytest.param("stereo_640x192"),
-    pytest.param("mono+stereo_640x192", marks=pytest.mark.push),
+    pytest.param("mono+stereo_640x192", marks=pytest.mark.pr_models_regression),
     pytest.param("mono_no_pt_640x192"),
     pytest.param("stereo_no_pt_640x192"),
     pytest.param(

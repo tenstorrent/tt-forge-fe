@@ -24,7 +24,7 @@ from test.utils import download_model
 import onnx
 
 variants = [
-    pytest.param("resnext14_32x4d", marks=pytest.mark.push),
+    pytest.param("resnext14_32x4d", marks=pytest.mark.pr_models_regression),
     "resnext26_32x4d",
     "resnext50_32x4d",
     "resnext101_64x4d",

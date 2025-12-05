@@ -17,7 +17,7 @@ from test.models.pytorch.vision.ghostnet.model_utils.utils import load_ghostnet_
 import onnx
 import torch
 
-variants = [pytest.param("ghostnet_100", marks=pytest.mark.push), "ghostnet_100.in1k"]
+variants = [pytest.param("ghostnet_100", marks=pytest.mark.pr_models_regression), "ghostnet_100.in1k"]
 
 
 @pytest.mark.nightly

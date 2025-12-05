@@ -19,7 +19,7 @@ from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.mnist.model_utils.utils import load_input, load_model
 
 
-@pytest.mark.push
+@pytest.mark.pr_models_regression
 @pytest.mark.nightly
 def test_mnist(forge_tmp_path):
 

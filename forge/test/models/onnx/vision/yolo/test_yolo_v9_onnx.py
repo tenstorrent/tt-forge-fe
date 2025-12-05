@@ -23,7 +23,7 @@ from test.models.pytorch.vision.yolo.model_utils.yolo_utils import (
 )
 
 
-@pytest.mark.push
+@pytest.mark.pr_models_regression
 @pytest.mark.nightly
 def test_yolov9(forge_tmp_path):
     # Record Forge Property

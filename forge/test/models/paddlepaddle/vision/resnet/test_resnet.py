@@ -16,7 +16,7 @@ from forge.verify.verify import verify
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 variants = [
-    pytest.param("resnet18", marks=pytest.mark.push),
+    pytest.param("resnet18", marks=pytest.mark.pr_models_regression),
     "resnet34",
     "resnet50",
     "resnet101",

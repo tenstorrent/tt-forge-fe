@@ -24,7 +24,7 @@ from test.utils import download_model
 opset_versions = [17]
 
 
-@pytest.mark.push
+@pytest.mark.pr_models_regression
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["bert-base-uncased"])
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)

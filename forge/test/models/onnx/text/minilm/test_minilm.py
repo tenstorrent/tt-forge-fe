@@ -15,7 +15,9 @@ from test.models.models_utils import mean_pooling
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", [pytest.param("sentence-transformers/all-MiniLM-L6-v2", marks=pytest.mark.push)])
+@pytest.mark.parametrize(
+    "variant", [pytest.param("sentence-transformers/all-MiniLM-L6-v2", marks=pytest.mark.pr_models_regression)]
+)
 def test_minilm_sequence_classification_onnx(variant, forge_tmp_path):
     # Record Forge Property
     module_name = record_model_properties(

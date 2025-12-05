@@ -17,7 +17,7 @@ variants = ["albert-chinese-tiny"]
 inputs = [["一，[MASK]，三，四"]]
 
 
-@pytest.mark.push
+@pytest.mark.pr_models_regression
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.parametrize("input", inputs)
