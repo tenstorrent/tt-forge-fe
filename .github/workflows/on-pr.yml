@@ -49,6 +49,20 @@ jobs:
     secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  test-slim:
+    needs:
+      - docker-build
+      - build
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      test_mark: 'slim'
+      test_group_cnt: 1
+      test_group_ids: '[1]'
+      docker-image: ${{ needs.docker-build.outputs.base-image }}
+      run_id: ${{ github.run_id }}
+      runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
+
   test:
     needs:
       - docker-build
@@ -71,6 +85,7 @@ jobs:
       - docker-build
       - build-docs
       - build
+      - test-slim
       - test
     runs-on: Ubuntu-latest
     steps:
