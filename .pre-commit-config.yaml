@@ -34,9 +34,3 @@ repos:
       - id: unimport
         args: ["--ignore-init", "--gitignore"]
         files: ^forge/test/models/pytorch  # Targets only pytorch models tests
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-        files: ^forge/test/models/pytorch  # Targets only pytorch models tests
-        args: ["--settings-path", ".isort.cfg", "--filter-files"]

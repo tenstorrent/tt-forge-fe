@@ -75,20 +75,13 @@ void verify_input_descs(
 std::vector<tt::Tensor> run_program(runtime::Binary& binary, int program_idx, std::vector<tt::Tensor>& inputs)
 {
     auto& system = TTSystem::get_system();
-    for (auto& device : system.devices)
-    {
-        if (!device->is_open())
-        {
-            device->open_device();
-        }
-    }
 
     // For now, we only support a single device.
     constexpr size_t device_id = 0;
     auto& tt_device = system.devices[device_id];
     if (!tt_device->is_open())
     {
-        log_fatal(LogTTDevice, "Failed to open device");
+        tt_device->open_device();
     }
 
     auto& device = *tt_device->rt_device;
