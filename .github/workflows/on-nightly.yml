@@ -19,16 +19,26 @@ on:
           - "3"
           - "4"
           - "8"
+          - "12"
+          - "16"
+          - "20"
       run_ops_sweeps:
-        description: 'Run models ops and sweeps tests'
+        description: 'Run sweeps tests'
         required: false
         default: 'No'
         type: choice
         options:
           - 'Yes'
           - 'No'
-  schedule:
-    - cron: '0 20 * * *'  # Runs at 20:00 UTC every day
+      runs-on:
+        description: 'Runs on'
+        required: false
+        type: choice
+        default: n150
+        options:
+          - n150
+          - n300
+          - p150
 
 # Set cache root to avoid IRD_LF_CACHE error when loading CenterNet ONNX model in CI
 env:
@@ -54,12 +64,24 @@ jobs:
       test_group_ids_os: ${{ steps.set-inputs.outputs.test_group_ids_os }}
       nightly_tests_paths: ${{ steps.set-inputs.outputs.nightly_tests_paths }}
       run_ops_sweeps: ${{ steps.set-inputs.outputs.run_ops_sweeps }}
+      runs-on: ${{ steps.set-inputs.outputs.runs-on }}
+      continue_on_crash: ${{ steps.set-inputs.outputs.continue_on_crash }}
     steps:
       - name: Set Inputs
         id: set-inputs
         run: |
           default_test_group_cnt=10
           default_run_ops_sweeps=No
+          continue_on_crash=false
+          # Determine runs-on (default based on input or n150)
+          runs_on_val=$(if [ -z "${{ inputs.runs-on }}" ]; then echo "n150"; else echo "${{ inputs.runs-on }}"; fi)
+
+          # Set defaults based on runner type
+          if [ "$runs_on_val" == "p150" ]; then
+            default_test_group_cnt=20
+            continue_on_crash=true
+          fi
+
           nightly_tests_paths="forge/test/mlir,forge/test/models/jax,forge/test/models/tensorflow,forge/test/models/onnx,forge/test/models/paddlepaddle"
 
           ros_res=$(if [ -z "${{ inputs.run_ops_sweeps }}" ]; then echo $default_run_ops_sweeps; else echo ${{ inputs.run_ops_sweeps }}; fi)
@@ -76,6 +98,8 @@ jobs:
           #echo "test_group_ids_os=[$(if [ $ros_res == 'No' ]; then echo; else echo $test_group_ids; fi)]" >> $GITHUB_OUTPUT
           echo "run_ops_sweeps=$(if [ $ros_res == 'No' ]; then echo; else echo true; fi)" >> $GITHUB_OUTPUT
           echo "nightly_tests_paths=$nightly_tests_paths" >> $GITHUB_OUTPUT
+          echo "runs-on=[{\"runs-on\": \"$runs_on_val\"}]" >> $GITHUB_OUTPUT
+          echo "continue_on_crash=$continue_on_crash" >> $GITHUB_OUTPUT
 
   build:
     needs:
@@ -100,9 +124,10 @@ jobs:
       test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
       test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "n150"}]'
+      runs-on: ${{ needs.set-inputs.outputs.runs-on }}
       run_id: ${{ needs.build.outputs.run_id }}
       tests_to_filter: ${{ needs.set-inputs.outputs.nightly_tests_paths }}
+      continue-on-crash: ${{ needs.set-inputs.outputs.continue_on_crash }}
 
   test_full_model_xfailing:
     if: success() || failure()
@@ -118,8 +143,9 @@ jobs:
       test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ needs.build.outputs.run_id }}
-      runs-on: '[{"runs-on": "n150"}]'
+      runs-on: ${{ needs.set-inputs.outputs.runs-on }}
       tests_to_filter: ${{ needs.set-inputs.outputs.nightly_tests_paths }}
+      continue-on-crash: ${{ needs.set-inputs.outputs.continue_on_crash }}
 
   test_sweeps:
     if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
@@ -135,7 +161,7 @@ jobs:
       test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_os }}
       run_id: ${{ needs.build.outputs.run_id }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "n150"}]'
+      runs-on: ${{ needs.set-inputs.outputs.runs-on }}
       allow-fail: true
       sh-runner: true
 

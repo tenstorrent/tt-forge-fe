@@ -76,8 +76,6 @@ on:
           - "inference"
           - "training"
           - "both"
-  schedule:
-    - cron: '0 0 * * *'  # Runs at 12:00 UTC every day
 
 permissions:
   packages: write
