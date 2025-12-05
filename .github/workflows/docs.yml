@@ -18,16 +18,9 @@ permissions:
 
 jobs:
 
-  docker-build:
-    uses: ./.github/workflows/build-image.yml
-    secrets: inherit
-
   build-docs:
-    needs: docker-build
     uses: ./.github/workflows/build-docs.yml
     secrets: inherit
-    with:
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
 
   # Deployment job
   deploy:
