@@ -18,7 +18,7 @@ from forge.forge_property_utils import Framework, Source, Task, ModelArch, recor
 variants = ["densenet121"]
 
 
-@pytest.mark.push
+@pytest.mark.pr_models_regression
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_densenet_pd(variant):

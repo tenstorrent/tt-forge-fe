@@ -31,7 +31,7 @@ def generate_model_yoloV5I320_imgcls_torchhub_pytorch(variant, size):
 
 
 size = [
-    pytest.param("n", id="yolov5n", marks=pytest.mark.push),
+    pytest.param("n", id="yolov5n", marks=pytest.mark.pr_models_regression),
     pytest.param("s", id="yolov5s"),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),

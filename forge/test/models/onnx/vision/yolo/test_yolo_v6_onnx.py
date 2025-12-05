@@ -42,7 +42,7 @@ class YoloV6Wrapper(torch.nn.Module):
         return y.to(x.dtype)
 
 
-@pytest.mark.push
+@pytest.mark.pr_models_regression
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_yolo_v6_pytorch(variant, forge_tmp_path):

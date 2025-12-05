@@ -17,7 +17,7 @@ from third_party.tt_forge_models.googlenet.pytorch import ModelLoader, ModelVari
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(ModelVariant.GOOGLENET, marks=pytest.mark.push),
+        pytest.param(ModelVariant.GOOGLENET, marks=pytest.mark.pr_models_regression),
     ],
 )
 @pytest.mark.nightly

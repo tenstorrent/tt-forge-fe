@@ -51,7 +51,6 @@ def test_ernie_for_sequence_classification(variant):
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.push
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_ernie_maskedlm(variant):

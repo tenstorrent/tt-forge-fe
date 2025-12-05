@@ -28,7 +28,6 @@ cache_dir = os.path.join("forge/test/models/paddlepaddle/multimodal/paddleocr", 
 os.makedirs(cache_dir, exist_ok=True)
 
 
-@pytest.mark.push
 @pytest.mark.nightly
 @pytest.mark.xfail(marker="https://github.com/tenstorrent/tt-mlir/issues/6092")
 @pytest.mark.parametrize(

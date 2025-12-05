@@ -26,7 +26,7 @@ import torch
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", [pytest.param("seasionality_basis", marks=pytest.mark.push)])
+@pytest.mark.parametrize("variant", [pytest.param("seasionality_basis", marks=pytest.mark.pr_models_regression)])
 def test_nbeats_with_seasonality_basis_onnx(variant, forge_tmp_path):
     # Record Forge Property
     module_name = record_model_properties(
@@ -73,7 +73,7 @@ def test_nbeats_with_seasonality_basis_onnx(variant, forge_tmp_path):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", [pytest.param("generic_basis", marks=pytest.mark.push)])
+@pytest.mark.parametrize("variant", [pytest.param("generic_basis")])
 def test_nbeats_with_generic_basis(variant, forge_tmp_path):
 
     # Record Forge Property
@@ -114,7 +114,7 @@ def test_nbeats_with_generic_basis(variant, forge_tmp_path):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", [pytest.param("trend_basis", marks=pytest.mark.push)])
+@pytest.mark.parametrize("variant", [pytest.param("trend_basis")])
 def test_nbeats_with_trend_basis(variant, forge_tmp_path):
 
     # Record Forge Property

@@ -20,7 +20,7 @@ from forge.verify.verify import verify
 
 
 variants = [
-    pytest.param(ModelVariant.Y_040, marks=pytest.mark.push),
+    pytest.param(ModelVariant.Y_040, marks=pytest.mark.pr_models_regression),
     ModelVariant.Y_064,
     ModelVariant.Y_080,
     ModelVariant.Y_120,

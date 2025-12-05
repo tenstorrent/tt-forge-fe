@@ -20,7 +20,7 @@ from test.models.pytorch.vision.mobilenet.model_utils.utils import (
 )
 import onnx
 
-variants = [pytest.param("mobilenet_v1", marks=pytest.mark.push)]
+variants = [pytest.param("mobilenet_v1", marks=pytest.mark.pr_models_regression)]
 
 
 @pytest.mark.parametrize("variant", variants)
