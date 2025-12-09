@@ -20,7 +20,6 @@ variants = [ModelVariant.LANGUAGE_PERCEIVER]
 
 
 @pytest.mark.nightly
-@pytest.mark.push
 @pytest.mark.parametrize("variant", variants)
 def test_perceiverio_masked_lm_pytorch(variant):
 

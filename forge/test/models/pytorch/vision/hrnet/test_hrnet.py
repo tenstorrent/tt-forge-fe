@@ -21,7 +21,7 @@ from forge.verify.verify import VerifyConfig, verify
 
 # OSMR (pytorchcv) variants using loader enums
 variants = [
-    pytest.param(ModelVariant.HRNET_W18_SMALL_V1_OSMR, marks=pytest.mark.push),
+    pytest.param(ModelVariant.HRNET_W18_SMALL_V1_OSMR),
     pytest.param(ModelVariant.HRNET_W18_SMALL_V2_OSMR),
     pytest.param(ModelVariant.HRNETV2_W18_OSMR),
     pytest.param(ModelVariant.HRNETV2_W30_OSMR),

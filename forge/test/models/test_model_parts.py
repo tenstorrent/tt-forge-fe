@@ -19,7 +19,7 @@ from transformers import BartForSequenceClassification
 @pytest.mark.xfail(
     reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen, PCC got=0.4923030518607919"
 )  # https://github.com/tenstorrent/tt-forge-fe/issues/1793
-@pytest.mark.push
+@pytest.mark.nightly
 def test_inplace_updation():
     class Inplace_updation(nn.Module):
         def __init__(self):
@@ -74,6 +74,7 @@ def test_inplace_updation():
 )
 @pytest.mark.skip_model_analysis
 @pytest.mark.push
+@pytest.mark.nightly
 def test_clamp(input_shape, clamp_min, clamp_max, dtype):
     class Clamp(nn.Module):
         def __init__(self):
@@ -108,7 +109,7 @@ def test_clamp(input_shape, clamp_min, clamp_max, dtype):
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.push
+@pytest.mark.nightly
 def test_rotary_pos_emb():
     class RotaryPosEmb(torch.nn.Module):
         def __init__(self):
@@ -142,7 +143,7 @@ def test_rotary_pos_emb():
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.push
+@pytest.mark.nightly
 @pytest.mark.parametrize(
     "dim",
     [-4, -3, -2, -1, 0, 1, 2, 3],
@@ -171,6 +172,7 @@ def test_remove_concat_pass(dim):
 
 @pytest.mark.skip_model_analysis
 @pytest.mark.push
+@pytest.mark.nightly
 @pytest.mark.parametrize(
     "input_shape, flip_dim",
     [
@@ -215,6 +217,7 @@ def test_flip(input_shape, flip_dim):
 
 @pytest.mark.skip_model_analysis
 @pytest.mark.push
+@pytest.mark.nightly
 def test_stack_and_reshape_onnx():
     class stack_reshape(nn.Module):
         def __init__(self):
@@ -313,6 +316,7 @@ def test_ssdlite320_mobilenet_v3_large_problematic_block(variant):
 @pytest.mark.skip_model_analysis
 @pytest.mark.push
 @pytest.mark.xfail
+@pytest.mark.nightly
 def test_gather_to_take_onnx():
     class take(nn.Module):
         def __init__(self):
@@ -359,6 +363,7 @@ def test_gather_to_take_onnx():
 @pytest.mark.skip_model_analysis
 @pytest.mark.xfail
 @pytest.mark.push
+@pytest.mark.nightly
 def test_concat_block():
     class concat(nn.Module):
         def __init__(self):
@@ -523,6 +528,7 @@ def test_scatter_elements(shape):
 
 @pytest.mark.skip_model_analysis
 @pytest.mark.xfail
+@pytest.mark.push
 @pytest.mark.nightly
 def test_bart_cls_head_onnx():
     class wrapper(nn.Module):
@@ -570,6 +576,7 @@ def test_bart_cls_head_onnx():
 
 @pytest.mark.skip_model_analysis
 @pytest.mark.nightly
+@pytest.mark.push
 @pytest.mark.parametrize(
     "shape,axis,index",
     [

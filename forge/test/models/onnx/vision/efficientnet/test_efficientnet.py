@@ -18,7 +18,7 @@ from PIL import Image
 from torchvision import transforms
 
 params = [
-    pytest.param("efficientnet_b0", marks=[pytest.mark.push]),
+    pytest.param("efficientnet_b0", marks=[pytest.mark.pr_models_regression]),
     pytest.param("efficientnet_b1"),
     pytest.param("efficientnet_b2"),
     pytest.param("efficientnet_b2a"),

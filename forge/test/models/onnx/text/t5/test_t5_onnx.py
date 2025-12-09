@@ -28,7 +28,7 @@ class Wrapper(torch.nn.Module):
         return output
 
 
-variants = ["t5-small"]
+variants = [pytest.param("t5-small", marks=pytest.mark.pr_models_regression)]
 
 
 @pytest.mark.nightly

@@ -32,6 +32,7 @@ def generate_model_inceptionV4_imgcls_timm_pytorch(variant):
 variants = [
     pytest.param(
         "inception_v4",
+        marks=pytest.mark.pr_models_regression,
     ),
     pytest.param(
         "inception_v4.tf_in1k",

@@ -29,6 +29,7 @@ variants_with_weights = {
 }
 
 
+@pytest.mark.pr_models_regression
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
 def test_mobilenetv3_ssd_onnx(variant, forge_tmp_path):

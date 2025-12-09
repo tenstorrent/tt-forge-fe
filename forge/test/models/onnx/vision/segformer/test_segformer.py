@@ -14,7 +14,7 @@ from test.models.models_utils import get_sample_data
 from test.utils import download_model
 
 variants_img_classification = [
-    pytest.param("nvidia/mit-b0", marks=pytest.mark.push),
+    pytest.param("nvidia/mit-b0", marks=pytest.mark.pr_models_regression),
     pytest.param("nvidia/mit-b2"),
     pytest.param("nvidia/mit-b3", marks=pytest.mark.xfail),
     pytest.param("nvidia/mit-b4", marks=pytest.mark.xfail),
@@ -71,7 +71,7 @@ def test_segformer_image_classification_onnx(variant, forge_tmp_path):
 
 
 variants_semseg = [
-    "nvidia/segformer-b0-finetuned-ade-512-512",
+    pytest.param("nvidia/segformer-b0-finetuned-ade-512-512", marks=pytest.mark.pr_models_regression),
     "nvidia/segformer-b1-finetuned-ade-512-512",
     pytest.param("nvidia/segformer-b2-finetuned-ade-512-512", marks=pytest.mark.xfail),
     pytest.param("nvidia/segformer-b3-finetuned-ade-512-512", marks=pytest.mark.xfail),

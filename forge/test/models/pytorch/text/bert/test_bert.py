@@ -50,7 +50,6 @@ from forge.verify.verify import verify
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", [MaskedLMVariant.BERT_BASE_UNCASED])
-@pytest.mark.push
 def test_bert_masked_lm_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
@@ -84,7 +83,7 @@ def test_bert_masked_lm_pytorch(variant):
 
 
 variants = [
-    pytest.param(QuestionAnsweringVariant.PHIYODR_BERT_LARGE_FINETUNED_SQUAD2, marks=[pytest.mark.push]),
+    QuestionAnsweringVariant.PHIYODR_BERT_LARGE_FINETUNED_SQUAD2,
     QuestionAnsweringVariant.BERT_LARGE_CASED_WHOLE_WORD_MASKING_FINETUNED_SQUAD,
 ]
 
@@ -196,7 +195,6 @@ def test_bert_token_classification_pytorch(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.push
 @pytest.mark.parametrize(
     "variant", [SentenceEmbeddingGenerationVariant.EMRECAN_BERT_BASE_TURKISH_CASED_MEAN_NLI_STSB_TR]
 )
