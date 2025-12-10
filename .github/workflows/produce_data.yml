@@ -6,7 +6,6 @@ on:
     workflows: # List workflow that we want to collect data for
       - "On PR"
       - "On nightly"
-      - "On nightly Blackhole"
       - "Test"
       - "Model Analysis"
     types:
