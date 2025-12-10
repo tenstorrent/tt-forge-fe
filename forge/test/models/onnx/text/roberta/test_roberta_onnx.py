@@ -19,7 +19,9 @@ from forge.verify.value_checkers import AutomaticValueChecker
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["cardiffnlp/twitter-roberta-base-sentiment"])
+@pytest.mark.parametrize(
+    "variant", [pytest.param("cardiffnlp/twitter-roberta-base-sentiment", marks=pytest.mark.pr_models_regression)]
+)
 def test_roberta_sentiment_onnx(variant, forge_tmp_path):
 
     # Record Forge Property

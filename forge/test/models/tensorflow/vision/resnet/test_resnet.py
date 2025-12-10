@@ -14,7 +14,7 @@ from forge.verify.verify import verify
 from test.models.tensorflow.vision.resnet.model_utils.image_utils import get_sample_inputs
 
 
-@pytest.mark.push
+@pytest.mark.pr_models_regression
 @pytest.mark.nightly
 def test_resnet_tensorflow():
 

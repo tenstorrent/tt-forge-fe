@@ -56,6 +56,7 @@ varaints = [
     ),
     pytest.param(
         "mixer_s16_224",
+        marks=pytest.mark.pr_models_regression,
     ),
     pytest.param(
         "mixer_s32_224",

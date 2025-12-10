@@ -24,7 +24,6 @@ from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
-@pytest.mark.push
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", [ModelVariant.MOBILENET_V2_TORCH_HUB])
 def test_mobilenetv2_basic(variant):

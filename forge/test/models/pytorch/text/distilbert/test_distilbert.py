@@ -67,7 +67,7 @@ class DistilBertWrapper(torch.nn.Module):
 
 
 variants = [
-    pytest.param(MaskedLMVariant.DISTILBERT_BASE_CASED, marks=[pytest.mark.push]),
+    MaskedLMVariant.DISTILBERT_BASE_CASED,
     MaskedLMVariant.DISTILBERT_BASE_UNCASED,
     MaskedLMVariant.DISTILBERT_BASE_MULTILINGUAL_CASED,
 ]

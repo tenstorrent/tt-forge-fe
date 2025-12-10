@@ -49,7 +49,6 @@ def test_conv_ae_pytorch():
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.push
 @pytest.mark.nightly
 def test_linear_ae_pytorch():
     # Record Forge Property

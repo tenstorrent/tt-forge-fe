@@ -43,7 +43,9 @@ def get_sample_data(model_name):
 
 
 variants = [
-    pytest.param("deepmind/vision-perceiver-conv", id="deepmind/vision-perceiver-conv"),
+    pytest.param(
+        "deepmind/vision-perceiver-conv", marks=pytest.mark.pr_models_regression, id="deepmind/vision-perceiver-conv"
+    ),
     pytest.param(
         "deepmind/vision-perceiver-learned",
         marks=pytest.mark.xfail,

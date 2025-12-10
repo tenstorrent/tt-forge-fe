@@ -56,7 +56,6 @@ qa_variants = [QuestionAnsweringVariant.VQA]
 
 
 @pytest.mark.nightly
-@pytest.mark.push
 @pytest.mark.parametrize("variant", qa_variants)
 def test_vilt_question_answering_hf_pytorch(variant):
     # Record Forge Property

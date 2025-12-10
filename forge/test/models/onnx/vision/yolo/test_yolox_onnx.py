@@ -37,11 +37,11 @@ variants = [
     pytest.param(
         "yolox_nano", marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2997")
     ),
-    pytest.param("yolox_tiny"),
+    pytest.param("yolox_tiny", marks=pytest.mark.pr_models_regression),
     pytest.param("yolox_s"),
     pytest.param("yolox_m"),
     pytest.param("yolox_l"),
-    pytest.param("yolox_darknet", marks=pytest.mark.xfail),
+    pytest.param("yolox_darknet"),
     pytest.param("yolox_x", marks=pytest.mark.xfail),
 ]
 

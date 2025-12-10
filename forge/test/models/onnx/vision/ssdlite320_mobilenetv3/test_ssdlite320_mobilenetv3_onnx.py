@@ -22,6 +22,7 @@ variants_with_weights = {
 }
 
 
+@pytest.mark.pr_models_regression
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
 def test_ssdlite320_mobilenetv3(variant, forge_tmp_path):

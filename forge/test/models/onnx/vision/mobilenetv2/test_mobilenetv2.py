@@ -18,7 +18,7 @@ from third_party.tt_forge_models.mobilenetv2.pytorch import ModelLoader, ModelVa
 
 params = [
     pytest.param("mobilenetv2_050"),
-    pytest.param("mobilenetv2_100", marks=[pytest.mark.push]),
+    pytest.param("mobilenetv2_100", marks=[pytest.mark.pr_models_regression]),
     pytest.param("mobilenetv2_110d"),
     pytest.param("mobilenetv2_140"),
 ]
