@@ -83,6 +83,7 @@ jobs:
       - build-docs
       - build
       - test
+      - test-models
     runs-on: Ubuntu-latest
     steps:
     - name: Check if the needed jobs succeeded or failed
