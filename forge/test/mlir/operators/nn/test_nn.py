@@ -854,11 +854,7 @@ def test_grid_sample(img, grid, align_corners, test_device):
         ((1, 256, 60, 80), (3, 3)),
         ((1, 256, 30, 40), (3, 3)),
         ((1, 256, 15, 20), (3, 3)),
-        pytest.param(
-            (1, 56, 150, 200),
-            (6, 7),
-            marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/3055"),
-        ),
+        ((1, 56, 150, 200), (6, 7)),
         ((1, 5, 20, 20), (4, 13)),
     ],
 )
