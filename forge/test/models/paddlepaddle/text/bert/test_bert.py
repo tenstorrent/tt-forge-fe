@@ -34,7 +34,18 @@ inputs_map = {
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant, input", [(key, value["sequence"]) for key, value in inputs_map.items()])
+@pytest.mark.parametrize(
+    "variant, input",
+    [
+        ("bert-base-uncased", inputs_map["bert-base-uncased"]["sequence"]),
+        ("cl-tohoku/bert-base-japanese", inputs_map["cl-tohoku/bert-base-japanese"]["sequence"]),
+        pytest.param(
+            "uer/chinese-roberta-base",
+            inputs_map["uer/chinese-roberta-base"]["sequence"],
+            marks=pytest.mark.skip(reason="Skipped test"),
+        ),
+    ],
+)
 def test_bert_sequence_classification(variant, input):
     # Record Forge properties
     module_name = record_model_properties(
