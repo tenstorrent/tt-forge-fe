@@ -21,6 +21,7 @@ from forge.verify.verify import verify
 from test.models.pytorch.vision.ssd300_resnet50.model_utils.image_utils import (
     prepare_input,
 )
+from test.utils import download_model
 
 
 @pytest.mark.pr_models_regression
@@ -35,7 +36,9 @@ def test_pytorch_ssd300_resnet50(forge_tmp_path):
     )
 
     # STEP 2 : prepare model
-    framework_model = torch.hub.load("NVIDIA/DeepLearningExamples:torchhub", "nvidia_ssd", pretrained=False)
+    framework_model = download_model(
+        torch.hub.load, "NVIDIA/DeepLearningExamples:torchhub", "nvidia_ssd", pretrained=False
+    )
     url = "https://api.ngc.nvidia.com/v2/models/nvidia/ssd_pyt_ckpt_amp/versions/19.09.0/files/nvidia_ssdpyt_fp16_190826.pt"
     checkpoint_path = "nvidia_ssdpyt_fp16_190826.pt"
 
