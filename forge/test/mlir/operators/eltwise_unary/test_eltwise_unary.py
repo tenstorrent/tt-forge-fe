@@ -763,11 +763,7 @@ def test_argmax(shape, dim, keepdim):
         ("bhwc,wkc->bhwk", [(1, 8, 8, 16), (8, 32, 16)]),
         ("bhwc,wkc->bhwk", [(2, 16, 16, 32), (16, 64, 32)]),
         ("bhwc,wkc->bhwk", [(5, 10, 10, 20), (10, 40, 20)]),
-        pytest.param(
-            "bhwc,wkc->bhwk",
-            [(6, 12, 12, 128), (12, 256, 128)],
-            marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/3055"),
-        ),
+        ("bhwc,wkc->bhwk", [(6, 12, 12, 128), (12, 256, 128)]),
         ("bchw,bkc->bkhw", [(2, 4, 1, 1), (2, 1, 4)]),
         ("bchw,bkc->bkhw", [(1, 4, 1, 1), (1, 2, 4)]),
         ("bmchw,bnmc->bmhwn", [(1, 2, 2, 1, 1), (1, 1, 2, 2)]),
