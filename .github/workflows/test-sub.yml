@@ -248,9 +248,10 @@ jobs:
         shell: bash
         run: |
           source env/activate
-          python .github/workflows/test_runner.py  \
+          LOGGER_TYPES=All LOGGER_LEVEL=TRACE LOGURU_LEVEL=TRACE python .github/workflows/test_runner.py  \
                --junit-xml=${{ steps.strings.outputs.test_report_path }} \
                --log-memory-usage \
+               -vss \
                $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi)
           exit_code=$?
 
