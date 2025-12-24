@@ -64,7 +64,7 @@ def default_loader(path: str):
 
 def yolov5_loader(path: str, variant: str = "ultralytics/yolov5"):
     try:
-        model = torch.hub.load(variant, "custom", path=path)
+        model = download_model(torch.hub.load, variant, "custom", path=path)
         return model
     except Exception as e:
         print(f"YOLOv5 loading error: {e}")

@@ -30,13 +30,10 @@ variants = [
     pytest.param("mono+stereo_640x192", marks=pytest.mark.pr_models_regression),
     pytest.param("mono_no_pt_640x192"),
     pytest.param("stereo_no_pt_640x192"),
-    pytest.param(
-        "mono+stereo_no_pt_640x192",
-        marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/3057"),
-    ),
-    pytest.param("mono_1024x320", marks=pytest.mark.xfail),
-    pytest.param("stereo_1024x320", marks=pytest.mark.xfail),
-    pytest.param("mono+stereo_1024x320", marks=pytest.mark.xfail),
+    pytest.param("mono+stereo_no_pt_640x192"),
+    pytest.param("mono_1024x320"),
+    pytest.param("stereo_1024x320"),
+    pytest.param("mono+stereo_1024x320"),
 ]
 
 
