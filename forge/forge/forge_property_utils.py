@@ -44,48 +44,48 @@ class Framework(BaseEnum):
 
 
 class Task(BaseEnum):
-    SPEECH_TRANSLATE = ("speech_translate", "Speech Translation")
-    MUSIC_GENERATION = ("music_generation", "Music Generation")
-    SPEECH_RECOGNITION = ("speech_recognition", "Speech Recognition")
-    QA = ("qa", "Question Answering")
-    MASKED_LM = ("mlm", "Masked Language Modeling")
-    CAUSAL_LM = ("clm", "Causal Language Modeling")
-    TOKEN_CLASSIFICATION = ("token_cls", "Token Classification")
-    SEQUENCE_CLASSIFICATION = ("seq_cls", "Sequence Classification")
-    IMAGE_CLASSIFICATION = ("img_cls", "Image Classification")
-    IMAGE_SEGMENTATION = ("img_seg", "Image Segmentation")
-    POSE_ESTIMATION = ("pose_estimation", "Pose Estimation")
-    DEPTH_PREDICTION = ("depth_prediction", "Depth Prediction")
-    TEXT_GENERATION = ("text_gen", "Text Generation")
-    OBJECT_DETECTION = ("obj_det", "Object Detection")
-    SEMANTIC_SEGMENTATION = ("sem_seg", "Semantic Segmentation")
-    MASKED_IMAGE_MODELING = ("masked_img", "Masked Image Modeling")
-    CONDITIONAL_GENERATION = ("cond_gen", "Conditional Generation")
-    IMAGE_ENCODING = ("img_enc", "Image Encoding")
-    TEXT_ENCODING = ("text_enc", "Text Encoding")
-    IMAGE_TEXT_PAIRING = ("img_text_pairing", "Image Text Pairing")
-    IMAGE_CAPTIONING = ("img_captioning", "Image Captioning")
-    VISUAL_BACKBONE = ("visual_bb", "Visual Backbone")
-    DEPTH_ESTIMATION = ("depth_estimation", "Depth Estimation")
-    SCENE_TEXT_RECOGNITION = ("scene_text_recognition", "Scene Text Recognition")
-    SCENE_TEXT_DETECTION = ("scene_text_detection", "Scene Text Detection")
-    TEXT_TO_SPEECH = ("text_to_speech", "Text to Speech")
-    SENTENCE_EMBEDDING_GENERATION = ("sentence_embed_gen", "Sentence Embedding Generation")
-    MULTIMODAL_TEXT_GENERATION = ("multimodal_text_gen", "Multimodal Text Generation")
+    SPEECH_TRANSLATE = ("nlp_translation", "Speech Translation")
+    MUSIC_GENERATION = ("mm_tts", "Music Generation")
+    SPEECH_RECOGNITION = ("audio_asr", "Speech Recognition")
+    QA = ("nlp_qa", "Question Answering")
+    MASKED_LM = ("nlp_masked_lm", "Masked Language Modeling")
+    CAUSAL_LM = ("nlp_causal_lm", "Causal Language Modeling")
+    TOKEN_CLASSIFICATION = ("nlp_token_cls", "Token Classification")
+    SEQUENCE_CLASSIFICATION = ("nlp_text_cls", "Sequence Classification")
+    IMAGE_CLASSIFICATION = ("cv_image_cls", "Image Classification")
+    IMAGE_SEGMENTATION = ("cv_image_seg", "Image Segmentation")
+    POSE_ESTIMATION = ("cv_keypoint_det", "Pose Estimation")
+    DEPTH_PREDICTION = ("cv_depth_est", "Depth Prediction")
+    TEXT_GENERATION = ("nlp_causal_lm", "Text Generation")
+    OBJECT_DETECTION = ("cv_object_det", "Object Detection")
+    SEMANTIC_SEGMENTATION = ("cv_image_seg", "Semantic Segmentation")
+    MASKED_IMAGE_MODELING = ("cv_mask_gen", "Masked Image Modeling")
+    CONDITIONAL_GENERATION = ("conditional_generation", "Conditional Generation")
+    IMAGE_ENCODING = ("cv_image_fe", "Image Encoding")
+    TEXT_ENCODING = ("nlp_embed_gen", "Text Encoding")
+    IMAGE_TEXT_PAIRING = ("mm_visual_qa", "Image Text Pairing")
+    IMAGE_CAPTIONING = ("mm_image_capt", "Image Captioning")
+    VISUAL_BACKBONE = ("cv_image_fe", "Visual Backbone")
+    DEPTH_ESTIMATION = ("cv_depth_est", "Depth Estimation")
+    SCENE_TEXT_RECOGNITION = ("cv_image_cls", "Scene Text Recognition")
+    SCENE_TEXT_DETECTION = ("cv_object_det", "Scene Text Detection")
+    TEXT_TO_SPEECH = ("mm_tts", "Text to Speech")
+    SENTENCE_EMBEDDING_GENERATION = ("nlp_embed_gen", "Sentence Embedding Generation")
+    MULTIMODAL_TEXT_GENERATION = ("mm_causal_lm", "Multimodal Text Generation")
     ATOMIC_ML = ("atomic_ml", "Atomic Machine Learning")
-    REALTIME_MAP_CONSTRUCTION = ("realtime_map_construction", "Realtime Map Construction")
-    PLANNING_ORIENTED_DRIVING = ("planning_oriented_driving", "Planning-Oriented Driving")
-    OPTICAL_CHARACTER_RECOGNITION = ("optical_character_recognition", "Optical Character Recognition")
-    NOVEL_VIEW_SYNTHESIS = ("novel_view_synthesis", "Novel View Synthesis")
-    BRAIN_TUMOR_SEGMENTATION = ("brain_tumor_segmentation", "Brain Tumor Segmentation")
-    TEXT_TO_VIDEO_GENERATION = ("text_to_video_generation", "Text-to-Video generation")
-    SENETNCE_SEGMENTATION = ("sentence_segmentation", "Sentence Segmentation")
-    TIME_SERIES_FORECASTING = ("time_series_forecasting", "Time Series Forecasting")
+    REALTIME_MAP_CONSTRUCTION = ("cv_depth_est", "Realtime Map Construction")
+    PLANNING_ORIENTED_DRIVING = ("cv_img_to_img", "Planning-Oriented Driving")
+    OPTICAL_CHARACTER_RECOGNITION = ("cv_image_cls", "Optical Character Recognition")
+    NOVEL_VIEW_SYNTHESIS = ("cv_img_to_img", "Novel View Synthesis")
+    BRAIN_TUMOR_SEGMENTATION = ("cv_image_seg", "Brain Tumor Segmentation")
+    TEXT_TO_VIDEO_GENERATION = ("mm_video_ttt", "Text-to-Video generation")
+    SENETNCE_SEGMENTATION = ("nlp_text_cls", "Sentence Segmentation")
+    TIME_SERIES_FORECASTING = ("atomic_ml", "Time Series Forecasting")
 
 
 class Source(BaseEnum):
     HUGGINGFACE = ("hf", "Hugging Face")
-    TORCH_HUB = ("torchhub", "Torch Hub")
+    TORCH_HUB = ("torch_hub", "Torch Hub")
     TIMM = ("timm", "TIMM")
     OSMR = ("osmr", "OSMR")
     TORCHVISION = ("torchvision", "Torchvision")
@@ -263,9 +263,13 @@ class ExecutionRunMode(Enum):
     INFERENCE = ("INFERENCE", "inference")
     TRAINING = ("TRAINING", "training")
 
+    def __init__(self, full: str, short: str):
+        self.full = full
+        self.short = short
+
     @classmethod
     def to_str(cls, value):
-        return value.name
+        return value.short
 
     @classmethod
     def from_training_param(cls, training: bool):
@@ -1005,11 +1009,11 @@ def record_model_properties(
         variant = str(variant)
 
     # Record individual properties
-    fph.add("tags.model_info.framework", framework.full)
-    fph.add("tags.model_info.model_arch", model.full)
+    fph.add("tags.model_info.framework", framework.short)
+    fph.add("tags.model_info.model_arch", model.short)
     fph.add("tags.model_info.variant_name", variant)
-    fph.add("tags.model_info.task", task.full)
-    fph.add("tags.model_info.source", source.full)
+    fph.add("tags.model_info.task", task.short)
+    fph.add("tags.model_info.source", source.short)
 
     # This should also be tagged with: tags.model_info.<priority/group>, but it requires changes in reporter too.
     # Leaving it as it is for now.
