@@ -32,7 +32,6 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_retinanet(variant, forge_tmp_path):
 

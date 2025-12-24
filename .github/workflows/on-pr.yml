@@ -44,13 +44,6 @@ jobs:
     with:
       mlir_override: ${{ inputs.mlir_override }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-  build-docs:
-    uses: ./.github/workflows/build-docs.yml
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    secrets: inherit
   test:
     needs:
       - docker-build
@@ -63,7 +56,7 @@ jobs:
       test_group_ids: '[1,2]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ github.run_id }}
-      runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
+      runs-on: '[{"runs-on": "n150"}]'
 
   test-models:
     needs:
@@ -72,12 +65,13 @@ jobs:
     uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
-      test_mark: 'pr_models_regression'
-      test_group_cnt: 3
-      test_group_ids: '[1,2,3]'
+      test_mark: 'nightly'
+      test_group_cnt: 8
+      test_group_ids: '[1,2,3,4,5,6,7,8]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ github.run_id }}
-      runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
+      runs-on: '[{"runs-on": "n150"}]'
+      tests_to_filter: 'forge/test/models/tensorflow,forge/test/models/onnx,forge/test/models/paddlepaddle'
 
   check-all-green:
     if: always()
@@ -85,7 +79,6 @@ jobs:
       - pre-commit
       - spdx
       - docker-build
-      - build-docs
       - build
       - test
       - test-models
