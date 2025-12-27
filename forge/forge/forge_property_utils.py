@@ -265,7 +265,7 @@ class ExecutionRunMode(Enum):
 
     @classmethod
     def to_str(cls, value):
-        return value.name
+        return value.value[1]
 
     @classmethod
     def from_training_param(cls, training: bool):
@@ -278,7 +278,7 @@ class ExecutionPass(Enum):
 
     @classmethod
     def to_str(cls, value):
-        return value.name
+        return value.value[1]
 
     @classmethod
     def from_str(cls, value):
@@ -1005,11 +1005,11 @@ def record_model_properties(
         variant = str(variant)
 
     # Record individual properties
-    fph.add("tags.model_info.framework", framework.full)
-    fph.add("tags.model_info.model_arch", model.full)
+    fph.add("tags.model_info.framework", framework.short)
+    fph.add("tags.model_info.model_arch", model.short)
     fph.add("tags.model_info.variant_name", variant)
-    fph.add("tags.model_info.task", task.full)
-    fph.add("tags.model_info.source", source.full)
+    fph.add("tags.model_info.task", task.short)
+    fph.add("tags.model_info.source", source.short)
 
     # This should also be tagged with: tags.model_info.<priority/group>, but it requires changes in reporter too.
     # Leaving it as it is for now.
