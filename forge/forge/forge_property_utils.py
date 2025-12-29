@@ -73,7 +73,7 @@ class Task(BaseEnum):
     SENTENCE_EMBEDDING_GENERATION = ("nlp_embed_gen", "Sentence Embedding Generation")
     MULTIMODAL_TEXT_GENERATION = ("mm_causal_lm", "Multimodal Text Generation")
     ATOMIC_ML = ("atomic_ml", "Atomic Machine Learning")
-    REALTIME_MAP_CONSTRUCTION = ("cv_depth_est", "Realtime Map Construction")
+    REALTIME_MAP_CONSTRUCTION = ("realtime_map_construction", "Realtime Map Construction")
     PLANNING_ORIENTED_DRIVING = ("cv_img_to_img", "Planning-Oriented Driving")
     OPTICAL_CHARACTER_RECOGNITION = ("cv_image_cls", "Optical Character Recognition")
     NOVEL_VIEW_SYNTHESIS = ("cv_img_to_img", "Novel View Synthesis")
@@ -259,17 +259,9 @@ def build_module_name(
     return module_name
 
 
-class ExecutionRunMode(Enum):
-    INFERENCE = ("INFERENCE", "inference")
-    TRAINING = ("TRAINING", "training")
-
-    def __init__(self, full: str, short: str):
-        self.full = full
-        self.short = short
-
-    @classmethod
-    def to_str(cls, value):
-        return value.short
+class ExecutionRunMode(BaseEnum):
+    INFERENCE = ("inference", "INFERENCE")
+    TRAINING = ("training", "TRAINING")
 
     @classmethod
     def from_training_param(cls, training: bool):
@@ -716,7 +708,7 @@ class ForgePropertyHandler:
         Args:
             execution_run_mode (ExecutionRunMode): The execution run mode value.
         """
-        self.add("tags.run_mode", ExecutionRunMode.to_str(execution_run_mode))
+        self.add("tags.run_mode", execution_run_mode.short)
 
     def record_execution_pass(self, execution_pass: ExecutionPass):
 
