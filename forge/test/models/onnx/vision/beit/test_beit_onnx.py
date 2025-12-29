@@ -36,7 +36,7 @@ def test_beit_onnx(variant, forge_tmp_path):
         model=ModelArch.BEIT,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and input

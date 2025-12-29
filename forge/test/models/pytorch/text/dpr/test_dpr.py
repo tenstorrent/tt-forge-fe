@@ -50,7 +50,7 @@ def test_dpr_context_encoder_pytorch(variant):
         variant=variant.value,
         suffix="context_encoder",
         source=Source.HUGGINGFACE,
-        task=Task.QA,
+        task=Task.NLP_QA,
     )
 
     # Load model using the new loader
@@ -92,7 +92,7 @@ def test_dpr_question_encoder_pytorch(variant):
         variant=variant.value,
         suffix="question_encoder",
         source=Source.HUGGINGFACE,
-        task=Task.QA,
+        task=Task.NLP_QA,
     )
 
     # Load model using the new loader
@@ -138,7 +138,7 @@ def test_dpr_reader_pytorch(variant):
         variant=variant.value,
         suffix="reader",
         source=Source.HUGGINGFACE,
-        task=Task.QA,
+        task=Task.NLP_QA,
     )
 
     # Load model using the new loader

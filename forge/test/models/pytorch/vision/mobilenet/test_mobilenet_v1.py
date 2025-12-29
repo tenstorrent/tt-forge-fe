@@ -29,7 +29,7 @@ def test_mobilenetv1_basic(variant):
         model=ModelArch.MOBILENETV1,
         variant="basic",
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load the model and input
@@ -69,7 +69,7 @@ def test_mobilenetv1_hf(variant):
         model=ModelArch.MOBILENETV1,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load the model and input
@@ -112,7 +112,7 @@ def test_mobilenet_v1_timm(variant):
         model=ModelArch.MOBILENETV1,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load the model and inputs

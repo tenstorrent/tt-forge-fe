@@ -24,7 +24,7 @@ from forge.verify.verify import verify
 def test_rcnn_pytorch():
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model=ModelArch.RCNN, source=Source.TORCHVISION, task=Task.OBJECT_DETECTION
+        framework=Framework.PYTORCH, model=ModelArch.RCNN, source=Source.TORCHVISION, task=Task.CV_OBJECT_DETECTION
     )
 
     # Load RCNN model using the new loader
@@ -40,7 +40,7 @@ def test_rcnn_pytorch():
             model=ModelArch.RCNN,
             suffix=f"rect_{idx}",
             source=Source.TORCHVISION,
-            task=Task.OBJECT_DETECTION,
+            task=Task.CV_OBJECT_DETECTION,
         )
 
         data_format_override = DataFormat.Float16_b

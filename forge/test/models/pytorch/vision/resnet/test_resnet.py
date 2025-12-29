@@ -36,7 +36,7 @@ def test_resnet_hf():
         model=ModelArch.RESNET,
         variant="50",
         source=Source.HUGGINGFACE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
     )
@@ -85,7 +85,7 @@ def test_resnet_timm(variant):
         model=ModelArch.RESNET,
         source=Source.TIMM,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and inputs
@@ -134,7 +134,7 @@ def test_resnet_torchvision(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.RESNET,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
 

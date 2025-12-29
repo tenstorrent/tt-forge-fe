@@ -36,7 +36,7 @@ def test_gemma_2b(variant):
         model=ModelArch.GEMMA,
         variant=variant.value,
         source=Source.HUGGINGFACE,
-        task=Task.TEXT_GENERATION,
+        task=Task.NLP_CAUSAL_LM,
     )
     pytest.xfail(reason="Requires multi-chip support")
 
@@ -71,7 +71,7 @@ def test_gemma_pytorch_v2(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.GEMMA,
         variant=variant.value,
-        task=Task.QA,
+        task=Task.NLP_QA,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
@@ -114,7 +114,7 @@ def test_gemma_pytorch_27b(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.FLUX,
         variant=variant.value,
-        task=Task.QA,
+        task=Task.NLP_QA,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

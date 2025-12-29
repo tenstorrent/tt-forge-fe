@@ -51,7 +51,7 @@ def test_yolov5_320x320(size, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.YOLOV5,
         variant="yolov5" + size,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.TORCH_HUB,
         suffix="320x320",
     )

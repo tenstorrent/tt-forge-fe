@@ -27,7 +27,7 @@ def test_squeezebert_sequence_classification_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.SQUEEZEBERT,
         variant=variant,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 

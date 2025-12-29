@@ -31,7 +31,7 @@ def test_yolo_world_inference():
         framework=Framework.PYTORCH,
         model=ModelArch.YOLOWORLD,
         variant="default",
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
         source=Source.GITHUB,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

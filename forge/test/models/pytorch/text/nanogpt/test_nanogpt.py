@@ -47,7 +47,7 @@ def test_nanogpt_text_generation(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.NANOGPT,
         variant=variant.value,
-        task=Task.TEXT_GENERATION,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
 

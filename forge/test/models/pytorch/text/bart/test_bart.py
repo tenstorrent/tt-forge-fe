@@ -44,7 +44,7 @@ def test_pt_bart_classifier(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.BART,
         variant=variant,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
     pytest.xfail(reason="Fatal Python error: Segmentation fault")

@@ -23,7 +23,7 @@ def test_bevdepth():
         framework=Framework.PYTORCH,
         model=ModelArch.BEVDEPTH,
         source=Source.GITHUB,
-        task=Task.DEPTH_ESTIMATION,
+        task=Task.CV_DEPTH_ESTIMATION,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
     )

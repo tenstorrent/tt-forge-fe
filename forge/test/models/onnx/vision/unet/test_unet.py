@@ -21,7 +21,7 @@ def test_unet_onnx(forge_tmp_path):
         model=ModelArch.UNET,
         variant="base",
         source=Source.TORCH_HUB,
-        task=Task.IMAGE_SEGMENTATION,
+        task=Task.CV_IMAGE_SEGMENTATION,
     )
 
     # Load the torch model

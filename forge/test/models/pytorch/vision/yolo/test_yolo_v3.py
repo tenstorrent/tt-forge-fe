@@ -29,7 +29,7 @@ def test_yolo_v3():
         framework=Framework.PYTORCH,
         model=ModelArch.YOLOV3,
         variant="default",
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
         source=Source.GITHUB,
     )
 

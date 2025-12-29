@@ -27,7 +27,7 @@ def test_qwen2_token_classification(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.QWENV2,
         variant=variant,
-        task=Task.TOKEN_CLASSIFICATION,
+        task=Task.NLP_TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
     pytest.xfail(reason="Requires multi-chip support")

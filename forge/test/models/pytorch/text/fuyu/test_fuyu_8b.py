@@ -29,7 +29,7 @@ def test_fuyu8b(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.FUYU,
         variant=variant.value,
-        task=Task.QA,
+        task=Task.NLP_QA,
         source=Source.HUGGINGFACE,
     )
     pytest.xfail(reason="Requires multi-chip support")

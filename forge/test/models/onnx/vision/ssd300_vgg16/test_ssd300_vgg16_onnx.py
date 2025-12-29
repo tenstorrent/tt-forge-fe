@@ -34,7 +34,7 @@ def test_ssd300_vgg16(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.SSD300VGG16,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
 

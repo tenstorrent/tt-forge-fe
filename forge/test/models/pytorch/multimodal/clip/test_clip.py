@@ -32,7 +32,7 @@ def test_clip_pytorch(variant):
         variant=variant.value,
         suffix="text",
         source=Source.HUGGINGFACE,
-        task=Task.TEXT_GENERATION,
+        task=Task.NLP_CAUSAL_LM,
     )
 
     # Load model and inputs using ModelLoader

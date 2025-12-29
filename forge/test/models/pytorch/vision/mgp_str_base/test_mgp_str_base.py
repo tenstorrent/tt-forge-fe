@@ -41,7 +41,7 @@ def test_mgp_scene_text_recognition():
         model=ModelArch.MGP,
         variant="default",
         source=Source.HUGGINGFACE,
-        task=Task.SCENE_TEXT_RECOGNITION,
+        task=Task.CV_IMAGE_ENCODING,
     )
 
     # Load model and input

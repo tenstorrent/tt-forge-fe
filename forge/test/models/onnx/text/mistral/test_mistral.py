@@ -27,7 +27,7 @@ def test_mistral_v0_3_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.MISTRAL,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
     pytest.xfail(reason="Segmentation Fault")

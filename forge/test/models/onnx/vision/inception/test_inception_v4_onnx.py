@@ -50,7 +50,7 @@ def test_inception_v4_timm_onnx(variant, forge_tmp_path):
         model=ModelArch.INCEPTION,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model + input

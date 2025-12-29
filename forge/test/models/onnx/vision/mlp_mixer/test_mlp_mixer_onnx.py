@@ -79,7 +79,7 @@ def test_mlp_mixer_timm_onnx(variant, forge_tmp_path):
         model=ModelArch.MLPMIXER,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     load_pretrained_weights = True

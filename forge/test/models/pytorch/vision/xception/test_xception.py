@@ -59,7 +59,7 @@ def test_xception_timm(variant):
         model=ModelArch.XCEPTION,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and inputs

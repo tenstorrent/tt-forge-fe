@@ -29,7 +29,7 @@ def test_ghostnet_onnx(variant, forge_tmp_path):
         model=ModelArch.GHOSTNET,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load the model and input

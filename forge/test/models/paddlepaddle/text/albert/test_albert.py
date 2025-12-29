@@ -27,7 +27,7 @@ def test_albert_maskedlm(variant, input):
         framework=Framework.PADDLE,
         model=ModelArch.ALBERT,
         variant=variant[7:],
-        task=Task.MASKED_LM,
+        task=Task.NLP_MASKED_LM,
         source=Source.PADDLENLP,
     )
 

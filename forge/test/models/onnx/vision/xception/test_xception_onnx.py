@@ -31,7 +31,7 @@ def test_xception_onnx(variant, forge_tmp_path):
         model=ModelArch.XCEPTION,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load the model and input

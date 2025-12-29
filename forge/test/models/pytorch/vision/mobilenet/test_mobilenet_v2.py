@@ -33,7 +33,7 @@ def test_mobilenetv2_basic(variant):
         model=ModelArch.MOBILENETV2,
         variant="basic",
         source=Source.TORCH_HUB,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
     )
@@ -79,7 +79,7 @@ def test_mobilenetv2_hf(variant):
         model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load the model and inputs
@@ -120,7 +120,7 @@ def test_mobilenetv2_timm(variant):
         model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load the model and inputs
@@ -161,7 +161,7 @@ def test_mobilenetv2_deeplabv3(variant):
         model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load the model and inputs
@@ -197,7 +197,7 @@ def test_mobilenetv2_torchvision(variant):
         model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and input

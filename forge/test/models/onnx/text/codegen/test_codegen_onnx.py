@@ -45,7 +45,7 @@ def test_codegen(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.CODEGEN,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
 

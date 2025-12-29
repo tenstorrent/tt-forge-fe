@@ -22,7 +22,7 @@ def test_uniad():
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.UNIAD,
-        task=Task.PLANNING_ORIENTED_DRIVING,
+        task=Task.CV_PLANNING_ORIENTED_DRIVING,
         source=Source.GITHUB,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

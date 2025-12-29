@@ -82,7 +82,7 @@ def test_distilbert_masked_lm_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.DISTILBERT,
         variant=variant.value,
-        task=Task.MASKED_LM,
+        task=Task.NLP_MASKED_LM,
         source=Source.HUGGINGFACE,
     )
 
@@ -117,7 +117,7 @@ def test_distilbert_question_answering_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.DISTILBERT,
         variant=variant.value,
-        task=Task.QA,
+        task=Task.NLP_QA,
         source=Source.HUGGINGFACE,
     )
 
@@ -152,7 +152,7 @@ def test_distilbert_sequence_classification_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.DISTILBERT,
         variant=variant.value,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 
@@ -187,7 +187,7 @@ def test_distilbert_token_classification_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.DISTILBERT,
         variant=variant.value,
-        task=Task.TOKEN_CLASSIFICATION,
+        task=Task.NLP_TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 

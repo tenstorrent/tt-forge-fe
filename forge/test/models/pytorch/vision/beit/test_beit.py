@@ -35,7 +35,7 @@ def test_beit_image_classification_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.BEIT,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
         group=ModelGroup.GENERALITY,
         priority=ModelPriority.P2,

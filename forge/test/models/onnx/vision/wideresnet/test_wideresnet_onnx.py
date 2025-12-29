@@ -37,7 +37,7 @@ def test_wideresnet_onnx(variant, forge_tmp_path):
         model=ModelArch.WIDERESNET,
         source=Source.TIMM,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load Model and input

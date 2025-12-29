@@ -52,7 +52,7 @@ def test_efficientnet_timm(variant):
         model=ModelArch.EFFICIENTNET,
         variant=variant.value,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         group=group,
         priority=priority,
     )
@@ -108,7 +108,7 @@ def test_efficientnet_torchvision(variant):
         model=ModelArch.EFFICIENTNET,
         variant=variant.value,
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and inputs

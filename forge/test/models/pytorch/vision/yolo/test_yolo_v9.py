@@ -30,7 +30,7 @@ def test_yolov9():
         framework=Framework.PYTORCH,
         model=ModelArch.YOLOV9,
         variant="default",
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
         source=Source.GITHUB,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

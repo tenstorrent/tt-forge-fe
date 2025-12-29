@@ -28,7 +28,7 @@ def test_pytorch_ssd300_resnet50():
         framework=Framework.PYTORCH,
         model=ModelArch.SSD300RESNET50,
         source=Source.TORCH_HUB,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and inputs

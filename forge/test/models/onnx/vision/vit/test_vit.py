@@ -33,7 +33,7 @@ def test_vit_classify_224(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.VITBASE,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
     if variant == "google/vit-large-patch16-224":

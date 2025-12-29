@@ -34,7 +34,7 @@ def test_nanogpt_text_generation_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.NANOGPT,
         variant=variant,
-        task=Task.TEXT_GENERATION,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
 

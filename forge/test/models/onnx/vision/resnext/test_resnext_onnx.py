@@ -41,7 +41,7 @@ def test_resnext_onnx(variant, forge_tmp_path):
         model=ModelArch.RESNEXT,
         source=Source.OSMR,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load the model and prepare input data

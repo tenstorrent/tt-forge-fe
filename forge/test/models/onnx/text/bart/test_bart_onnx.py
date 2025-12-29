@@ -36,7 +36,7 @@ def test_bart_classifier_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.BART,
         variant=variant,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 

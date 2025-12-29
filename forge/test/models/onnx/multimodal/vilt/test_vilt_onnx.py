@@ -52,7 +52,7 @@ def generate_model_vilt_question_answering_hf_pytorch(variant):
 
     # Wrapper
     text_vision_embedding_model = ViLtEmbeddingWrapper(model)
-    vilt_model = ViltModelWrapper(model, task=Task.QA.short)
+    vilt_model = ViltModelWrapper(model, task=Task.NLP_QA.short)
     embedding_output, attention_mask = text_vision_embedding_model(**encoding)
     return vilt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], model
 
@@ -67,7 +67,7 @@ def test_vilt_question_answering_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.ONNX, model=ModelArch.VILT, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+        framework=Framework.ONNX, model=ModelArch.VILT, variant=variant, task=Task.NLP_QA, source=Source.HUGGINGFACE
     )
     torch_model, inputs, model = generate_model_vilt_question_answering_hf_pytorch(variant)
 

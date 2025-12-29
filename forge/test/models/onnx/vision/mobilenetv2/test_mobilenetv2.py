@@ -34,7 +34,7 @@ def test_mobilenetv2_onnx(variant, forge_tmp_path):
         model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load mobilenetv2 model
@@ -81,7 +81,7 @@ def test_mobilenetv2_onnx_torchvision(variant, forge_tmp_path):
         model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and input
