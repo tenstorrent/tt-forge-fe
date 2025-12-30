@@ -29,7 +29,7 @@ def test_detr_detection_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.DETR,
         variant=variant,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
         source=Source.HUGGINGFACE,
     )
 
@@ -66,7 +66,7 @@ def test_detr_segmentation_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.DETR,
         variant=variant,
-        task=Task.SEMANTIC_SEGMENTATION,
+        task=Task.CV_IMAGE_SEGMENTATION,
         source=Source.HUGGINGFACE,
     )
 
@@ -103,7 +103,7 @@ def test_detr_onnx_torchhub(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.DETR,
         variant=variant,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
         source=Source.TORCH_HUB,
     )
 

@@ -31,7 +31,7 @@ def test_unet_osmr_cityscape_pytorch():
         model=ModelArch.UNET,
         variant="cityscape",
         source=Source.OSMR,
-        task=Task.IMAGE_SEGMENTATION,
+        task=Task.CV_IMAGE_SEGMENTATION,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
     )
@@ -60,7 +60,7 @@ def test_unet_qubvel_pytorch():
         model=ModelArch.UNET,
         variant="qubvel",
         source=Source.TORCH_HUB,
-        task=Task.IMAGE_SEGMENTATION,
+        task=Task.CV_IMAGE_SEGMENTATION,
     )
     pytest.xfail("https://github.com/tenstorrent/tt-forge-fe/issues/2940")
 
@@ -87,7 +87,7 @@ def test_unet_torchhub_pytorch():
         framework=Framework.PYTORCH,
         model=ModelArch.UNET,
         source=Source.TORCH_HUB,
-        task=Task.IMAGE_SEGMENTATION,
+        task=Task.CV_IMAGE_SEGMENTATION,
     )
 
     loader = ModelLoader(variant=ModelVariant.TORCHHUB_BRAIN_UNET)
@@ -113,7 +113,7 @@ def test_unet_carvana():
         framework=Framework.PYTORCH,
         model=ModelArch.UNETCARVANA,
         source=Source.GITHUB,
-        task=Task.IMAGE_SEGMENTATION,
+        task=Task.CV_IMAGE_SEGMENTATION,
     )
 
     framework_model = UNET(in_channels=3, out_channels=1).to(torch.bfloat16)

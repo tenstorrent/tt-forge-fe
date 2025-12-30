@@ -82,7 +82,7 @@ def test_qwen_coder_clm_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.QWENCODER,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=group,
         priority=priority,

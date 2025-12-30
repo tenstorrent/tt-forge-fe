@@ -38,7 +38,7 @@ def test_whisper_large_v3_onnx(variant, tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.WHISPER,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
 

@@ -27,7 +27,7 @@ def test_blip_text(variant):
         model=ModelArch.BLIPTEXT,
         variant=variant,
         source=Source.PADDLENLP,
-        task=Task.TEXT_ENCODING,
+        task=Task.NLP_TEXT_ENCODING,
     )
 
     # Load Model and Tokenizer
@@ -56,7 +56,7 @@ def test_blip_vision(variant):
         model=ModelArch.BLIPVISION,
         variant=variant,
         source=Source.PADDLENLP,
-        task=Task.IMAGE_ENCODING,
+        task=Task.CV_IMAGE_ENCODING,
     )
 
     # Load Model and Tokenizer
@@ -87,7 +87,7 @@ def test_blip(variant):
         model=ModelArch.BLIP,
         variant=variant,
         source=Source.PADDLENLP,
-        task=Task.IMAGE_CAPTIONING,
+        task=Task.MM_IMAGE_CAPTIONING,
     )
 
     # Load Model and Tokenizer

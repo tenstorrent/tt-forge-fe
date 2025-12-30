@@ -26,7 +26,7 @@ def test_fuyu_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.FUYU,
         variant=variant.value,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
 

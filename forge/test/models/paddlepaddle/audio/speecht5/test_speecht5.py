@@ -30,7 +30,7 @@ def test_speecht5_text_to_speech(variant):
         model=ModelArch.SPEECHT5,
         variant=variant,
         source=Source.PADDLENLP,
-        task=Task.TEXT_TO_SPEECH,
+        task=Task.MM_TEXT_TO_SPEECH,
     )
 
     # Load Model and Tokenizer

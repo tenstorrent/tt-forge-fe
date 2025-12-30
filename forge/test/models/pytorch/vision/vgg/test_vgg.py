@@ -40,7 +40,7 @@ def test_vgg_osmr_pytorch(variant):
         model=ModelArch.VGG,
         variant=variant.value,
         source=Source.OSMR,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
     )
 
     # Load model and inputs via loader
@@ -91,7 +91,7 @@ def test_vgg_19_hf_pytorch():
         model=ModelArch.VGG,
         variant="19",
         source=Source.HUGGINGFACE,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
     )
 
     loader = ModelLoader(variant=variant)
@@ -128,7 +128,7 @@ def test_vgg_bn19_timm_pytorch():
         model=ModelArch.VGG,
         variant="vgg19_bn",
         source=Source.TIMM,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
     )
 
     loader = ModelLoader(variant=variant)
@@ -165,7 +165,7 @@ def test_vgg_bn19_torchhub_pytorch():
         model=ModelArch.VGG,
         variant=variant,
         source=Source.TORCH_HUB,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
     )
 
     # Load model and inputs via loader
@@ -214,7 +214,7 @@ def test_vgg_torchvision(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.VGG,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
 

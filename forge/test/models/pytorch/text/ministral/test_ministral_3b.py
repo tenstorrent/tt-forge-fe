@@ -29,7 +29,7 @@ def test_ministral_3b(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.MINISTRAL,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

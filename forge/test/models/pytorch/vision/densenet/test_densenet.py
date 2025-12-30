@@ -50,7 +50,7 @@ def test_densenet_121_hf_xray_pytorch(variant):
         model=ModelArch.DENSENET,
         variant=variant,
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and inputs
@@ -100,7 +100,7 @@ def test_densenet_pytorch(variant):
         model=ModelArch.DENSENET,
         variant=variant,
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and inputs

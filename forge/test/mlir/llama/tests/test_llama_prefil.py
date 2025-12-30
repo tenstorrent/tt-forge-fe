@@ -82,7 +82,7 @@ def test_llama_prefil_on_device_decode_on_cpu(model_path):
         model=model_name,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.TEXT_GENERATION,
+        task=Task.NLP_CAUSAL_LM,
         group=group,
     )
 

@@ -37,7 +37,7 @@ def test_clip_onnx(variant, forge_tmp_path):
         variant=variant,
         suffix="text",
         source=Source.HUGGINGFACE,
-        task=Task.TEXT_GENERATION,
+        task=Task.NLP_CAUSAL_LM,
     )
 
     # Load Model and input

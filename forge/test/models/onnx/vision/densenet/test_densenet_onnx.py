@@ -34,7 +34,7 @@ def test_densenet_onnx(variant, forge_tmp_path):
         model=ModelArch.DENSENET,
         variant=variant,
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model

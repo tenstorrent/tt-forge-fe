@@ -49,7 +49,7 @@ def test_phi3_causal_lm(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.PHI3,
         variant=variant.value,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
@@ -83,7 +83,7 @@ def test_phi3_token_classification(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.PHI3,
         variant=variant.value,
-        task=Task.TOKEN_CLASSIFICATION,
+        task=Task.NLP_TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 
@@ -115,7 +115,7 @@ def test_phi3_sequence_classification(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.PHI3,
         variant=variant.value,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
     pytest.xfail(reason="Requires multi-chip support")

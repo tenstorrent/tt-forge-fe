@@ -30,7 +30,7 @@ def test_resnext_torchhub_pytorch(variant):
         model=ModelArch.RESNEXT,
         source=Source.TORCH_HUB,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and inputs
@@ -79,7 +79,7 @@ def test_resnext_osmr_pytorch(variant):
         model=ModelArch.RESNEXT,
         source=Source.OSMR,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and inputs

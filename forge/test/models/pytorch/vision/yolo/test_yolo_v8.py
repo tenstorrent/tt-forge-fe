@@ -46,7 +46,7 @@ def test_yolov8(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.YOLOV8,
         variant=variant,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
         source=Source.GITHUB,
         group=group,
         priority=priority,

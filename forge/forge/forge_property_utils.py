@@ -44,48 +44,43 @@ class Framework(BaseEnum):
 
 
 class Task(BaseEnum):
-    SPEECH_TRANSLATE = ("speech_translate", "Speech Translation")
-    MUSIC_GENERATION = ("music_generation", "Music Generation")
-    SPEECH_RECOGNITION = ("speech_recognition", "Speech Recognition")
-    QA = ("qa", "Question Answering")
-    MASKED_LM = ("mlm", "Masked Language Modeling")
-    CAUSAL_LM = ("clm", "Causal Language Modeling")
-    TOKEN_CLASSIFICATION = ("token_cls", "Token Classification")
-    SEQUENCE_CLASSIFICATION = ("seq_cls", "Sequence Classification")
-    IMAGE_CLASSIFICATION = ("img_cls", "Image Classification")
-    IMAGE_SEGMENTATION = ("img_seg", "Image Segmentation")
-    POSE_ESTIMATION = ("pose_estimation", "Pose Estimation")
-    DEPTH_PREDICTION = ("depth_prediction", "Depth Prediction")
-    TEXT_GENERATION = ("text_gen", "Text Generation")
-    OBJECT_DETECTION = ("obj_det", "Object Detection")
-    SEMANTIC_SEGMENTATION = ("sem_seg", "Semantic Segmentation")
-    MASKED_IMAGE_MODELING = ("masked_img", "Masked Image Modeling")
-    CONDITIONAL_GENERATION = ("cond_gen", "Conditional Generation")
-    IMAGE_ENCODING = ("img_enc", "Image Encoding")
-    TEXT_ENCODING = ("text_enc", "Text Encoding")
-    IMAGE_TEXT_PAIRING = ("img_text_pairing", "Image Text Pairing")
-    IMAGE_CAPTIONING = ("img_captioning", "Image Captioning")
-    VISUAL_BACKBONE = ("visual_bb", "Visual Backbone")
-    DEPTH_ESTIMATION = ("depth_estimation", "Depth Estimation")
-    SCENE_TEXT_RECOGNITION = ("scene_text_recognition", "Scene Text Recognition")
-    SCENE_TEXT_DETECTION = ("scene_text_detection", "Scene Text Detection")
-    TEXT_TO_SPEECH = ("text_to_speech", "Text to Speech")
-    SENTENCE_EMBEDDING_GENERATION = ("sentence_embed_gen", "Sentence Embedding Generation")
-    MULTIMODAL_TEXT_GENERATION = ("multimodal_text_gen", "Multimodal Text Generation")
+    # NLP Tasks
+    NLP_SEQUENCE_CLASSIFICATION = ("nlp_text_cls", "NLP Sequence Classification")
+    NLP_TOKEN_CLASSIFICATION = ("nlp_token_cls", "NLP Token Classification")
+    NLP_TEXT_ENCODING = ("nlp_embed_gen", "NLP Text Encoding")
+    NLP_QA = ("nlp_qa", "NLP Question Answering")
+    NLP_CAUSAL_LM = ("nlp_causal_lm", "NLP Causal Language Modeling")
+    NLP_MASKED_LM = ("nlp_masked_lm", "NLP Masked Language Modeling")
+    NLP_TRANSLATION = ("nlp_translation", "NLP Translation")
+    # Audio Tasks
+    AUDIO_SPEECH_RECOGNITION = ("audio_asr", "Audio Speech Recognition")
+    # CV Tasks
+    CV_IMAGE_CLASSIFICATION = ("cv_image_cls", "CV Image Classification")
+    CV_IMAGE_SEGMENTATION = ("cv_image_seg", "CV Image Segmentation")
+    CV_OBJECT_DETECTION = ("cv_object_det", "CV Object Detection")
+    CV_DEPTH_ESTIMATION = ("cv_depth_est", "CV Depth Estimation")
+    CV_PLANNING_ORIENTED_DRIVING = ("cv_img_to_img", "CV Planning-Oriented Driving")
+    CV_NOVEL_VIEW_SYNTHESIS = ("cv_img_to_img", "CV Novel View Synthesis")
+    CV_IMAGE_ENCODING = ("cv_image_fe", "CV Image Encoding")
+    CV_MASKED_IMAGE_MODELING = ("cv_mask_gen", "CV Masked Image Modeling")
+    CV_POSE_ESTIMATION = ("cv_keypoint_det", "CV Pose Estimation")
+    # MM Tasks
+    MM_IMAGE_CAPTIONING = ("mm_image_capt", "MM Image Captioning")
+    MM_IMAGE_TEXT_PAIRING = ("mm_visual_qa", "MM Image Text Pairing")
+    MM_TEXT_TO_SPEECH = ("mm_tts", "MM Text to Speech")
+    MM_MUSIC_GENERATION = ("mm_tts", "MM Music Generation")
+    MM_TEXT_TO_VIDEO_GENERATION = ("mm_video_ttt", "MM Text-to-Video Generation")
+    MM_CAUSAL_LM = ("mm_causal_lm", "MM Causal Language Modeling")
+    # Other Tasks
+    CONDITIONAL_GENERATION = ("conditional_generation", "Conditional Generation")
     ATOMIC_ML = ("atomic_ml", "Atomic Machine Learning")
+    TIME_SERIES_FORECASTING = ("atomic_ml", "Time Series Forecasting")
     REALTIME_MAP_CONSTRUCTION = ("realtime_map_construction", "Realtime Map Construction")
-    PLANNING_ORIENTED_DRIVING = ("planning_oriented_driving", "Planning-Oriented Driving")
-    OPTICAL_CHARACTER_RECOGNITION = ("optical_character_recognition", "Optical Character Recognition")
-    NOVEL_VIEW_SYNTHESIS = ("novel_view_synthesis", "Novel View Synthesis")
-    BRAIN_TUMOR_SEGMENTATION = ("brain_tumor_segmentation", "Brain Tumor Segmentation")
-    TEXT_TO_VIDEO_GENERATION = ("text_to_video_generation", "Text-to-Video generation")
-    SENETNCE_SEGMENTATION = ("sentence_segmentation", "Sentence Segmentation")
-    TIME_SERIES_FORECASTING = ("time_series_forecasting", "Time Series Forecasting")
 
 
 class Source(BaseEnum):
     HUGGINGFACE = ("hf", "Hugging Face")
-    TORCH_HUB = ("torchhub", "Torch Hub")
+    TORCH_HUB = ("torch_hub", "Torch Hub")
     TIMM = ("timm", "TIMM")
     OSMR = ("osmr", "OSMR")
     TORCHVISION = ("torchvision", "Torchvision")
@@ -259,13 +254,9 @@ def build_module_name(
     return module_name
 
 
-class ExecutionRunMode(Enum):
-    INFERENCE = ("INFERENCE", "inference")
-    TRAINING = ("TRAINING", "training")
-
-    @classmethod
-    def to_str(cls, value):
-        return value.name
+class ExecutionRunMode(BaseEnum):
+    INFERENCE = ("inference", "INFERENCE")
+    TRAINING = ("training", "TRAINING")
 
     @classmethod
     def from_training_param(cls, training: bool):
@@ -712,7 +703,7 @@ class ForgePropertyHandler:
         Args:
             execution_run_mode (ExecutionRunMode): The execution run mode value.
         """
-        self.add("tags.run_mode", ExecutionRunMode.to_str(execution_run_mode))
+        self.add("tags.run_mode", execution_run_mode.short)
 
     def record_execution_pass(self, execution_pass: ExecutionPass):
 
@@ -1005,11 +996,11 @@ def record_model_properties(
         variant = str(variant)
 
     # Record individual properties
-    fph.add("tags.model_info.framework", framework.full)
-    fph.add("tags.model_info.model_arch", model.full)
+    fph.add("tags.model_info.framework", framework.short)
+    fph.add("tags.model_info.model_arch", model.short)
     fph.add("tags.model_info.variant_name", variant)
-    fph.add("tags.model_info.task", task.full)
-    fph.add("tags.model_info.source", source.full)
+    fph.add("tags.model_info.task", task.short)
+    fph.add("tags.model_info.source", source.short)
 
     # This should also be tagged with: tags.model_info.<priority/group>, but it requires changes in reporter too.
     # Leaving it as it is for now.

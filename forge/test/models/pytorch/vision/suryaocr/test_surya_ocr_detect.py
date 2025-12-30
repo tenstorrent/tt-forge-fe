@@ -31,7 +31,7 @@ def test_surya_ocr():
         framework=Framework.PYTORCH,
         model=ModelArch.SURYAOCR,
         variant="ocr_detection",
-        task=Task.OPTICAL_CHARACTER_RECOGNITION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.GITHUB,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

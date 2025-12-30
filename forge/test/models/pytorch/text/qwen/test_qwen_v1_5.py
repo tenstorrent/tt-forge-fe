@@ -38,7 +38,7 @@ def test_qwen1_5_causal_lm(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.QWEN15,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
 
@@ -68,7 +68,7 @@ def test_qwen1_5_chat(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.QWEN15,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
 

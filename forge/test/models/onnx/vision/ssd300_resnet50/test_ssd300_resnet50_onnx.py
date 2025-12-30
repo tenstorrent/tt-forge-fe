@@ -32,7 +32,7 @@ def test_pytorch_ssd300_resnet50(forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.SSD300RESNET50,
         source=Source.TORCH_HUB,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # STEP 2 : prepare model

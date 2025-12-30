@@ -92,7 +92,7 @@ def test_llama3_causal_lm_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.LLAMA3,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=group,
         priority=priority,
@@ -166,7 +166,7 @@ def test_llama3_sequence_classification_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.LLAMA3,
         variant=variant,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 

@@ -49,7 +49,7 @@ def test_whisper_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.WHISPER,
         variant=variant,
-        task=Task.SPEECH_RECOGNITION,
+        task=Task.AUDIO_SPEECH_RECOGNITION,
         source=Source.HUGGINGFACE,
     )
 

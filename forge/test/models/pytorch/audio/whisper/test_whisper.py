@@ -73,7 +73,7 @@ def test_whisper(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.WHISPER,
         variant=variant.value,
-        task=Task.SPEECH_RECOGNITION,
+        task=Task.AUDIO_SPEECH_RECOGNITION,
         source=Source.HUGGINGFACE,
     )
     if variant == WhisperVariant.WHISPER_LARGE:

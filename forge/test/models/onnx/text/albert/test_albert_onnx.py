@@ -47,7 +47,7 @@ def test_albert_masked_lm_onnx(size, variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.ALBERT,
         variant=f"{size}_{variant}",
-        task=Task.MASKED_LM,
+        task=Task.NLP_MASKED_LM,
         source=Source.HUGGINGFACE,
     )
 

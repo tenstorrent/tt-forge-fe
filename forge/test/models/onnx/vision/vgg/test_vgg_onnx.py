@@ -51,7 +51,7 @@ def test_vgg_osmr_pytorch(variant, forge_tmp_path):
         model=ModelArch.VGG,
         variant=variant,
         source=Source.OSMR,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
     )
 
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)

@@ -18,8 +18,8 @@ from forge.forge_property_utils import (
 from forge.verify.verify import verify
 
 VARIANT_TO_TASK = {
-    ModelVariant.GPT2_BASE: Task.TEXT_GENERATION,
-    ModelVariant.GPT2_SEQUENCE_CLASSIFICATION: Task.SEQUENCE_CLASSIFICATION,
+    ModelVariant.GPT2_BASE: Task.NLP_CAUSAL_LM,
+    ModelVariant.GPT2_SEQUENCE_CLASSIFICATION: Task.NLP_SEQUENCE_CLASSIFICATION,
 }
 
 VARIANTS = [

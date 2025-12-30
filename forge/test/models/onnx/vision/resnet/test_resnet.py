@@ -32,7 +32,7 @@ def test_resnet_onnx(variant, forge_tmp_path):
         model=ModelArch.RESNET,
         variant="50",
         source=Source.HUGGINGFACE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load processor and Model

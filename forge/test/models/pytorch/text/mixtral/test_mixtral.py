@@ -25,7 +25,7 @@ def test_mixtral_8x7b(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.MIXTRAL,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

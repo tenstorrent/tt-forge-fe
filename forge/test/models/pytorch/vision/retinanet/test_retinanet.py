@@ -44,7 +44,7 @@ def test_retinanet(variant):
         model=ModelArch.RETINANET,
         variant=variant.value,
         source=Source.GITHUB,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
     )
 
     # Load model and inputs using ModelLoader
@@ -79,7 +79,7 @@ def test_retinanet_torchvision(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.RETINANET,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
     pytest.xfail(reason="Fatal Python error: Aborted")

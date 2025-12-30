@@ -23,7 +23,7 @@ def test_bevformer():
         framework=Framework.PYTORCH,
         model=ModelArch.BEVFORMER,
         source=Source.GITHUB,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
     )

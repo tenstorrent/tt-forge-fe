@@ -86,7 +86,7 @@ def test_opt_causal_lm(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.OPT,
         variant=variant.value,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
 
@@ -122,7 +122,11 @@ def test_opt_qa(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model=ModelArch.OPT, variant=variant.value, task=Task.QA, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model=ModelArch.OPT,
+        variant=variant.value,
+        task=Task.NLP_QA,
+        source=Source.HUGGINGFACE,
     )
 
     # Load model and inputs using model loader
@@ -164,7 +168,7 @@ def test_opt_sequence_classification(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.OPT,
         variant=variant.value,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 

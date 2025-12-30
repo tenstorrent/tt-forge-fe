@@ -32,7 +32,7 @@ def test_perceiverio_masked_lm_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.PERCEIVERIO,
         variant=variant,
-        task=Task.MASKED_LM,
+        task=Task.NLP_MASKED_LM,
         source=Source.HUGGINGFACE,
     )
 

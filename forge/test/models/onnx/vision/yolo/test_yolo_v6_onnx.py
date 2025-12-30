@@ -53,7 +53,7 @@ def test_yolo_v6_pytorch(variant, forge_tmp_path):
         model=ModelArch.YOLOV6,
         variant=variant,
         source=Source.TORCH_HUB,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
     )
 
     # STEP 2 :prepare model

@@ -41,7 +41,7 @@ def test_retinanet(variant, forge_tmp_path):
         model=ModelArch.RETINANET,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
     )
 
     # Prepare model

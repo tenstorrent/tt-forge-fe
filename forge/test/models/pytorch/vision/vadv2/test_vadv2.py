@@ -23,7 +23,7 @@ def test_vadv2():
         framework=Framework.PYTORCH,
         model=ModelArch.VADV2,
         source=Source.GITHUB,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
     )

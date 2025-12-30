@@ -26,7 +26,7 @@ def test_ministral(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.MINISTRAL,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
 

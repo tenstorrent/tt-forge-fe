@@ -27,7 +27,7 @@ def test_t5_conditional_generation(variant):
         framework=Framework.PADDLE,
         model=ModelArch.T5,
         variant=variant[3:],
-        task=Task.TEXT_GENERATION,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.PADDLENLP,
     )
 

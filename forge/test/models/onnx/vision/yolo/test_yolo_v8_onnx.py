@@ -21,7 +21,7 @@ def test_yolov8(forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.YOLOV8,
         variant="default",
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
         source=Source.GITHUB,
     )
 

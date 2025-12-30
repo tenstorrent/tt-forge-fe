@@ -41,7 +41,7 @@ def test_yolov5_320x320(restore_package_versions, variant):
         framework=Framework.PYTORCH,
         model=ModelArch.YOLOV5,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.TORCH_HUB,
         suffix="320x320",
     )
@@ -100,7 +100,7 @@ def test_yolov5_640x640(restore_package_versions, variant):
         framework=Framework.PYTORCH,
         model=ModelArch.YOLOV5,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.TORCH_HUB,
         suffix="640x640",
     )
@@ -154,7 +154,7 @@ def test_yolov5_480x480(restore_package_versions, variant):
         framework=Framework.PYTORCH,
         model=ModelArch.YOLOV5,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.TORCH_HUB,
         suffix="480x480",
     )
@@ -198,7 +198,7 @@ def test_yolov5_1280x1280(restore_package_versions, variant):
         framework=Framework.PYTORCH,
         model=ModelArch.YOLOV5,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.TORCH_HUB,
         suffix="1280x1280",
     )

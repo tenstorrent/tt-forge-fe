@@ -32,7 +32,7 @@ def test_rmbg(variant):
         model=ModelArch.RMBG20,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.IMAGE_SEGMENTATION,
+        task=Task.CV_IMAGE_SEGMENTATION,
     )
 
     # Load model and input

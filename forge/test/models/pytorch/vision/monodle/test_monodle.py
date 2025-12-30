@@ -27,7 +27,7 @@ def test_monodle_pytorch():
         model=ModelArch.MONODLE,
         variant=ModelVariant.DLA34,
         source=Source.GITHUB,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
     )
     pytest.xfail(reason="Floating point exception(core dumped)")
 

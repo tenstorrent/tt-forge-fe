@@ -28,7 +28,7 @@ def test_densenet_pd(variant):
         model=ModelArch.DENSENET,
         variant=variant[8:],
         source=Source.PADDLE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load framework model

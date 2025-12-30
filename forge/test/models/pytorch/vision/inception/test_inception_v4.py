@@ -30,7 +30,7 @@ def test_inception_v4_osmr_pytorch(variant):
         model=ModelArch.INCEPTION,
         variant=variant,
         source=Source.OSMR,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and inputs
@@ -75,7 +75,7 @@ def test_inception_v4_timm_pytorch(variant):
         model=ModelArch.INCEPTION,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and inputs

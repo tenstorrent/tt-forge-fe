@@ -34,7 +34,7 @@ def test_codegen(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.CODEGEN,
         variant=variant.value,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
 

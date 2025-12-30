@@ -22,7 +22,7 @@ def test_detr3d():
     record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.DETR3D,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
         source=Source.GITHUB,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

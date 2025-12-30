@@ -50,7 +50,7 @@ def test_mgp_scene_text_recognition_onnx(variant, forge_tmp_path):
         model=ModelArch.MGP,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.SCENE_TEXT_RECOGNITION,
+        task=Task.CV_IMAGE_ENCODING,
     )
 
     # Load model and wrap

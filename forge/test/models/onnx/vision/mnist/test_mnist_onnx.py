@@ -28,7 +28,7 @@ def test_mnist(forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.MNIST,
         source=Source.GITHUB,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and input
