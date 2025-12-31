@@ -625,6 +625,7 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
 
     modules_ = []
     if context.compiler_cfg.compile_tvm_to_python and context.graph is None:
+        logger.info("Converting framework modules to Forge modules")
         module_inputs = context.inputs
         for module in context.modules:
             if not isinstance(module, ForgeModule):
@@ -639,16 +640,19 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
                 context.inputs = module_inputs
 
             modules_.append(module)
+        logger.info("Framework to Forge module conversion completed")
 
     record_execution(ExecutionStage.FAILED_FORGE_INITIAL_GRAPH_PASS)
 
     if context.graph is None:
+        logger.info("Generating initial Forge graph from modules")
         context.graph, context.outputs, context.intermediate_tensors, context.inputs, _ = generate_graph(
             context,
             modules_,
             return_intermediate=context.verify_cfg.intermediates,
             target_tensors=context.targets,
         )
+        logger.info("Initial Forge graph generation completed")
 
     context.graph.set_microbatch(context.microbatch_size)
     dump_graph(context.graph, context.graph_name, "initial_graph")
