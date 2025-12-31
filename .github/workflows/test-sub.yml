@@ -70,6 +70,11 @@ on:
         description: 'Filter specific tests'
         required: false
         type: string
+      enable-verbose-output:
+        description: 'Enable verbose pytest output (-svv flag). Shows print statements and detailed test execution information'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   run-tests:
@@ -251,7 +256,8 @@ jobs:
           python .github/workflows/test_runner.py  \
                --junit-xml=${{ steps.strings.outputs.test_report_path }} \
                --log-memory-usage \
-               $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi)
+               $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi) \
+               $(if [ "${{inputs.enable-verbose-output}}" = "true" ]; then echo "-svv"; fi)
           exit_code=$?
 
           if [ -f "crashed_pytest.log" ]; then
