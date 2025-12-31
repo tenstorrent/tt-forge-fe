@@ -1838,6 +1838,7 @@ def generate_forge_module(
 
     if not reload:
         module_name = graph_name if counter == 0 else f"{graph_name}_{counter}"
+        logger.info(f"Generating Forge module: {module_name}")
         module_writers, flattened_inputs = compile_tvm_to_python(
             framework_mod,
             graph_name,
@@ -1847,6 +1848,7 @@ def generate_forge_module(
             verify_cfg=verify_cfg,
             input_names=input_names,
         )
+        logger.info(f"Forge module generation completed: {module_name}")
     else:
         module_writers, flattened_inputs = load_writers_metadata(graph_name, inputs)
 
@@ -1933,6 +1935,7 @@ def compile_tvm_to_python(
     # Load here to avoid importing tvm unnecessarily when this file is loaded
     from forge.tvm_calls.forge_compile import load_tvm_graph
 
+    logger.info(f"Running TVM graph compilation (framework: {framework})")
     json_graphs, flattened_pytorch_inputs, weights = load_tvm_graph(
         inputs,
         framework_mod.module,
@@ -1943,12 +1946,13 @@ def compile_tvm_to_python(
         verify_cfg=verify_cfg,
         input_names=input_names,
     )
+    logger.info("TVM graph compilation completed")
 
     def _determine_node_dtype(node):
         if "framework_dtype" in node["attrs"].keys() and node["attrs"]["framework_dtype"] != "N/A":
             return node["attrs"]["framework_dtype"]
         else:
-            logger.debug(
+            logger.trace(
                 f"Node '{node['forge_name']}' does not have a framework dtype specified. Using TVM generated dtype."
             )
             return node["attrs"]["dtype"][0][0]
