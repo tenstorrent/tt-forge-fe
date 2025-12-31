@@ -70,6 +70,11 @@ on:
         description: 'Filter specific tests'
         required: false
         type: string
+      enable-verbose-output:
+        description: 'Enable verbose pytest output (-svv flag). Shows print statements and detailed test execution information'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   run-tests:
@@ -248,11 +253,18 @@ jobs:
         shell: bash
         run: |
           source env/activate
-          python .github/workflows/test_runner.py  \
+
+          cmd="python .github/workflows/test_runner.py \
                --junit-xml=${{ steps.strings.outputs.test_report_path }} \
                --log-memory-usage \
-               $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi)
-          exit_code=$?
+               $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi)"
+
+          if [ "${{inputs.enable-verbose-output}}" = "true" ]; then
+            cmd="$cmd -svv 2>&1 | tee test_runner_verbose.log"
+          fi
+
+          eval "$cmd"
+          exit_code=${PIPESTATUS[0]}
 
           if [ -f "crashed_pytest.log" ]; then
             echo "Creating crash summary for the job..."
@@ -266,7 +278,7 @@ jobs:
         if: success() || failure()
         with:
           name: test-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
-          path: pytest.log
+          path: ${{ inputs.enable-verbose-output == 'true' && 'test_runner_verbose.log' || 'pytest.log' }}
 
       - name: Upload Test Crash Log
         uses: actions/upload-artifact@v4
