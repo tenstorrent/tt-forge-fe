@@ -253,21 +253,18 @@ jobs:
         shell: bash
         run: |
           source env/activate
+
+          cmd="python .github/workflows/test_runner.py \
+               --junit-xml=${{ steps.strings.outputs.test_report_path }} \
+               --log-memory-usage \
+               $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi)"
+
           if [ "${{inputs.enable-verbose-output}}" = "true" ]; then
-            # Capture all output (including crashes) to file when verbose is enabled
-            python .github/workflows/test_runner.py  \
-                 --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-                 --log-memory-usage \
-                 $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi) \
-                 -svv 2>&1 | tee test_runner_verbose.log
-            exit_code=${PIPESTATUS[0]}
-          else
-            python .github/workflows/test_runner.py  \
-                 --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-                 --log-memory-usage \
-                 $(if [ "${{inputs.continue-on-crash}}" = "true" ]; then echo "--continue-after-crash"; fi)
-            exit_code=$?
+            cmd="$cmd -svv 2>&1 | tee test_runner_verbose.log"
           fi
+
+          eval "$cmd"
+          exit_code=${PIPESTATUS[0]}
 
           if [ -f "crashed_pytest.log" ]; then
             echo "Creating crash summary for the job..."
@@ -278,7 +275,7 @@ jobs:
 
       - name: Upload Test Log
         uses: actions/upload-artifact@v4
-        if: always()
+        if: success() || failure()
         with:
           name: test-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
           path: ${{ inputs.enable-verbose-output == 'true' && 'test_runner_verbose.log' || 'pytest.log' }}
