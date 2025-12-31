@@ -40,3 +40,4 @@ jobs:
       run_id: ${{ github.run_id }}
       runs-on: '[{"runs-on": "n150"}]'
       tests_to_filter: 'forge/test/models/tensorflow,forge/test/models/onnx,forge/test/models/paddlepaddle'
+      enable-verbose-output: true
