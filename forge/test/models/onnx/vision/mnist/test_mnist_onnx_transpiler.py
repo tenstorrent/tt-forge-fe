@@ -14,6 +14,8 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
+from forge.verify.config import DeprecatedVerifyConfig
+from forge.config import CompilerConfig
 
 from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.mnist.model_utils.utils import load_input, load_model
@@ -30,8 +32,7 @@ def test_mnist(forge_tmp_path):
         source=Source.GITHUB,
         task=Task.CV_IMAGE_CLASSIFICATION,
     )
-
-    module_name = module_name + "_tvm"
+    module_name = module_name + "_transpiler"
 
     # Load model and input
     framework_model = load_model()
@@ -54,11 +55,29 @@ def test_mnist(forge_tmp_path):
     onnx.checker.check_model(onnx_model)
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
-    # Forge compile ONNX model
+    # Create compiler config to use transpiler instead of TVM
+    # Enable all transpiler debug and verification features
+    compiler_cfg = CompilerConfig(
+        compile_transpiler_to_python=True,  # Enable transpiler path
+        compile_tvm_to_python=False,  # Disable TVM path
+        transpiler_enable_debug=True,  # Enable debug mode for transpiler (ONNX Runtime comparison)
+    )
+
+    # Create verify config with all verification flags enabled
+    verify_cfg = DeprecatedVerifyConfig(
+        # Transpiler-specific verification
+        verify_transpiler_graph=True,  # Compare Framework output vs TIR graph output after transpiler conversion
+        verify_forge_codegen_vs_framework=True,  # Compare Framework output vs Forge codegen outputs
+    )
+
+    # Forge compile ONNX model using transpiler
+    # Pass framework_model (OnnxModule) instead of raw onnx_model for transpiler compatibility
     compiled_model = forge.compile(
-        onnx_model,
+        framework_model,
         sample_inputs=inputs,
         module_name=module_name,
+        compiler_cfg=compiler_cfg,
+        verify_cfg=verify_cfg,
     )
 
     # Model verification and inference
