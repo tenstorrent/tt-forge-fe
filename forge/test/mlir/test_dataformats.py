@@ -123,19 +123,7 @@ def test_conv2d_bnorm_bfloat16_pytorch(shape):
 @pytest.mark.parametrize(
     "in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode, input_shape",
     [
-        pytest.param(
-            64,
-            128,
-            (7, 7),
-            4,
-            (3, 5),
-            1,
-            False,
-            1,
-            "zeros",
-            (16, 64, 80, 80),
-            marks=pytest.mark.xfail(reason="Out of Memory: Not enough space to allocate 13107200 B L1 buffer"),
-        ),
+        pytest.param(64, 128, (7, 7), 4, (3, 5), 1, False, 1, "zeros", (16, 64, 80, 80)),
     ],
 )
 @pytest.mark.push
