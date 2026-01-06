@@ -34,7 +34,7 @@ def test_bert_masked_lm_onnx(variant, forge_tmp_path, opset_version):
         framework=Framework.ONNX,
         model=ModelArch.BERT,
         variant=variant,
-        task=Task.MASKED_LM,
+        task=Task.NLP_MASKED_LM,
         source=Source.HUGGINGFACE,
     )
 
@@ -89,7 +89,7 @@ def test_bert_question_answering_onnx(variant, forge_tmp_path, opset_version):
         framework=Framework.ONNX,
         model=ModelArch.BERT,
         variant=variant,
-        task=Task.QA,
+        task=Task.NLP_QA,
         source=Source.HUGGINGFACE,
     )
 
@@ -150,7 +150,7 @@ def test_bert_sentence_embedding_generation_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.BERT,
         variant=variant,
-        task=Task.SENTENCE_EMBEDDING_GENERATION,
+        task=Task.NLP_TEXT_ENCODING,
         source=Source.HUGGINGFACE,
     )
 

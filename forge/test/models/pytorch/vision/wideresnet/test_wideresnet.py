@@ -38,7 +38,7 @@ def test_wideresnet_pytorch(variant):
         model=ModelArch.WIDERESNET,
         variant=variant,
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and inputs
@@ -83,7 +83,7 @@ def test_wideresnet_timm(variant):
         model=ModelArch.WIDERESNET,
         source=Source.TIMM,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and inputs via loader (TIMM source)

@@ -38,7 +38,7 @@ def test_deepseek_math_inference_no_cache(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.DEEPSEEK,
         variant=variant,
-        task=Task.QA,
+        task=Task.NLP_QA,
         source=Source.HUGGINGFACE,
     )
     pytest.xfail(reason="Requires multi-chip support")

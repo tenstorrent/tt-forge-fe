@@ -57,7 +57,7 @@ def test_phi2_causal_lm_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.PHI2,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=group,
         priority=priority,
@@ -99,7 +99,7 @@ def test_phi2_token_classification_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.PHI2,
         variant=variant,
-        task=Task.TOKEN_CLASSIFICATION,
+        task=Task.NLP_TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 
@@ -141,7 +141,7 @@ def test_phi2_sequence_classification_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.PHI2,
         variant=variant,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 

@@ -33,7 +33,7 @@ def test_googlenet_pytorch(variant):
         model=ModelArch.GOOGLENET,
         variant=variant,
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and inputs

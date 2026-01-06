@@ -28,7 +28,7 @@ def test_oft():
         framework=Framework.PYTORCH,
         model=ModelArch.OFT,
         variant="default",
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
         source=Source.GITHUB,
     )
     pytest.xfail(reason="Getting hang at generate_initial_graph pass")

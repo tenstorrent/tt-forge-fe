@@ -33,7 +33,7 @@ def test_distilbert_token_classification_pytorch(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.DISTILBERT,
         variant=variant,
-        task=Task.TOKEN_CLASSIFICATION,
+        task=Task.NLP_TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 

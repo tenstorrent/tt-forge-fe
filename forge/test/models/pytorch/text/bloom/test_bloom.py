@@ -44,7 +44,7 @@ def test_bloom():
         model=ModelArch.BLOOM,
         variant="default",
         source=Source.HUGGINGFACE,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
     )
 
     # Load model and input

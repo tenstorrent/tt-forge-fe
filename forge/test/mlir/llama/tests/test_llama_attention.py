@@ -137,7 +137,7 @@ def test_llama_attention_prefill_mode(model_path):
         model=model_name,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.TEXT_GENERATION,
+        task=Task.NLP_CAUSAL_LM,
         group=group,
     )
 
@@ -242,7 +242,7 @@ def test_llama_attention_decode_mode(model_path):
         model=model_name,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.TEXT_GENERATION,
+        task=Task.NLP_CAUSAL_LM,
         group=group,
     )
 

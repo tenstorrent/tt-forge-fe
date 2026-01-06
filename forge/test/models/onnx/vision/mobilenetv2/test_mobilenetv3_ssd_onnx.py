@@ -40,7 +40,7 @@ def test_mobilenetv3_ssd_onnx(variant, forge_tmp_path):
         model=ModelArch.MOBILENETV3SSD,
         variant=variant,
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and input

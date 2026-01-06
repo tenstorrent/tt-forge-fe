@@ -25,7 +25,7 @@ def test_monodle_onnx(forge_tmp_path):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.ONNX, model=ModelArch.MONODLE, source=Source.TORCHVISION, task=Task.OBJECT_DETECTION
+        framework=Framework.ONNX, model=ModelArch.MONODLE, source=Source.TORCHVISION, task=Task.CV_OBJECT_DETECTION
     )
 
     pytest.xfail(reason="Fatal Python error: Floating point exception")

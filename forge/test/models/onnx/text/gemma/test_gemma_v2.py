@@ -34,7 +34,11 @@ def test_gemma_v2_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.ONNX, model=ModelArch.GEMMA, variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.ONNX,
+        model=ModelArch.GEMMA,
+        variant=variant,
+        task=Task.NLP_CAUSAL_LM,
+        source=Source.HUGGINGFACE,
     )
 
     pytest.xfail(reason="Requires multi-chip support")

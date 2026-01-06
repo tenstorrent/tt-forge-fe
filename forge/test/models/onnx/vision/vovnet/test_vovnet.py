@@ -45,7 +45,7 @@ def test_vovnet_osmr_pytorch(variant, forge_tmp_path):
         model=ModelArch.VOVNET,
         variant=variant,
         source=Source.OSMR,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
     )
     pytest.xfail(reason="Segmentation Fault")
 
@@ -83,7 +83,7 @@ def test_vovnet_v1_39_stigma_onnx(variant, forge_tmp_path):
         model=ModelArch.VOVNETV1,
         variant=variant,
         source=Source.TORCH_HUB,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
     )
     pytest.xfail(reason="Segmentation Fault")
 
@@ -121,7 +121,7 @@ def test_vovnet_v1_57_stigma_onnx(variant, forge_tmp_path):
         model=ModelArch.VOVNET,
         variant=variant,
         source=Source.TORCH_HUB,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
     )
     pytest.xfail(reason="Segmentation Fault")
 
@@ -166,7 +166,7 @@ def test_vovnet_timm_onnx(variant, forge_tmp_path):
         model=ModelArch.VOVNET,
         variant=variant,
         source=Source.TORCH_HUB,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
         group=group,
         priority=priority,
     )

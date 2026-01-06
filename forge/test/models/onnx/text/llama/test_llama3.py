@@ -47,7 +47,7 @@ def test_llama3_causal_lm_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.LLAMA3,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
     if variant in [

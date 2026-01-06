@@ -45,7 +45,7 @@ def test_yolox_pytorch(variant):
         model=ModelArch.YOLOX,
         variant=variant,
         source=Source.TORCH_HUB,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
     )
 
     # Load model and inputs

@@ -44,7 +44,7 @@ def test_vit_classify_224_hf_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.VIT,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
         group=group,
         priority=priority,
@@ -94,7 +94,7 @@ def test_vit_torchvision(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.VIT,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
 

@@ -30,7 +30,7 @@ def test_falcon(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.FALCON,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
 
@@ -104,7 +104,7 @@ def test_falcon_3(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.FALCON3,
         variant=variant.value,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=group,
         priority=priority,

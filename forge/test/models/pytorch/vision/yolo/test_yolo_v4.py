@@ -36,7 +36,7 @@ def test_yolo_v4():
         framework=Framework.PYTORCH,
         model=ModelArch.YOLOV4,
         variant="default",
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
         source=Source.GITHUB,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
@@ -84,7 +84,7 @@ def test_yolov4_tiny():
     record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.YOLOV4,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
         source=Source.GITHUB,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

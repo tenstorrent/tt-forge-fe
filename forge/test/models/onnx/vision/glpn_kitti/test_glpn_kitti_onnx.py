@@ -39,7 +39,7 @@ def test_glpn_kitti(variant, forge_tmp_path):
         model=ModelArch.GLPNKITTI,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.DEPTH_ESTIMATION,
+        task=Task.CV_DEPTH_ESTIMATION,
     )
     pytest.xfail(reason="Requires multi-chip support")
 

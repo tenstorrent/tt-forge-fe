@@ -38,7 +38,7 @@ def test_xglm_causal_lm(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.XGLM,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
 

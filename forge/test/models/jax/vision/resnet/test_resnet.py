@@ -29,7 +29,7 @@ def test_resnet(variant):
         model=ModelArch.RESNET,
         variant="50",
         source=Source.HUGGINGFACE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     framework_model = download_model(FlaxResNetForImageClassification.from_pretrained, variant, return_dict=False)

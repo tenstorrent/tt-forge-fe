@@ -24,7 +24,7 @@ def test_minilm_sequence_classification_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.MINILM,
         variant=variant,
-        task=Task.SEQUENCE_CLASSIFICATION,
+        task=Task.NLP_SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 

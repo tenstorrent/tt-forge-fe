@@ -37,7 +37,7 @@ def test_deit_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.DEIT,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 

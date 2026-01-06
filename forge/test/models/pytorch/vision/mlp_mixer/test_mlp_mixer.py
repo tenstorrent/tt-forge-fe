@@ -59,7 +59,7 @@ def test_mlp_mixer_timm_pytorch(variant):
         model=ModelArch.MLPMIXER,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and inputs
@@ -95,7 +95,7 @@ def test_mlp_mixer_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.MLPMIXER,
         source=Source.GITHUB,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and input

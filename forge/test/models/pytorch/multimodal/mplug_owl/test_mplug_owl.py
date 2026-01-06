@@ -26,7 +26,7 @@ def test_mplug_owl(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.MPLUGOWL,
         variant=variant,
-        task=Task.MULTIMODAL_TEXT_GENERATION,
+        task=Task.MM_CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
@@ -43,7 +43,7 @@ def test_mplug_owl2():
     record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.MPLUGOWL2,
-        task=Task.MULTIMODAL_TEXT_GENERATION,
+        task=Task.MM_CAUSAL_LM,
         source=Source.GITHUB,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

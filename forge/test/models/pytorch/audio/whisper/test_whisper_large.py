@@ -29,7 +29,7 @@ def test_whisper_large_v3(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.WHISPER,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
     )

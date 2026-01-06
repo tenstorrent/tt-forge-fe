@@ -52,7 +52,7 @@ def test_segformer_image_classification_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.SEGFORMER,
         variant=variant.value,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
         group=group,
         priority=priority,
@@ -100,7 +100,7 @@ def test_segformer_semantic_segmentation_pytorch(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.SEGFORMER,
         variant=variant.value,
-        task=Task.SEMANTIC_SEGMENTATION,
+        task=Task.CV_IMAGE_SEGMENTATION,
         source=Source.HUGGINGFACE,
     )
 

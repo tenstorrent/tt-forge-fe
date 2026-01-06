@@ -41,7 +41,7 @@ def test_paddleocr_det(variant, url):
         model=ModelArch.PADDLEOCR,
         variant=variant,
         source=Source.PADDLE,
-        task=Task.SCENE_TEXT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
     )
 
     # Fetch model

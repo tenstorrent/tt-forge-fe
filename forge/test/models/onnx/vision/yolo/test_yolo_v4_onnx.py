@@ -29,7 +29,7 @@ def test_yolo_v4(forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.YOLOV4,
         variant="default",
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
         source=Source.GITHUB,
     )
     pytest.xfail(reason="Requires multi-chip support")

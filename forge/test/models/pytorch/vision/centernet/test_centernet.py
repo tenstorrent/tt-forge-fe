@@ -22,7 +22,7 @@ def test_centernet():
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.CENTERNET,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
         source=Source.GITHUB,
         group=ModelGroup.RED,
         priority=ModelPriority.P1,

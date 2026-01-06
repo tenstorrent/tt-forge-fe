@@ -38,7 +38,7 @@ def test_ssdlite320_mobilenetv3(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.SSDLITE320MOBILENETV3,
         variant=variant,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
         source=Source.TORCHVISION,
     )
     pytest.xfail(reason="Fatal Python error: Aborted")

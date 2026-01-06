@@ -50,7 +50,7 @@ def test_mamba(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.MAMBA,
         variant=variant.value,
-        task=Task.CAUSAL_LM,
+        task=Task.NLP_CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
     if variant in [ModelVariant.MAMBA_2_8B, ModelVariant.MAMBA_1_4B]:

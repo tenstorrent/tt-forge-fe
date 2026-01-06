@@ -45,7 +45,7 @@ def test_paddleocr_rec(variant, url):
         model=ModelArch.PADDLEOCR,
         variant=variant,
         source=Source.PADDLE,
-        task=Task.SCENE_TEXT_RECOGNITION,
+        task=Task.CV_IMAGE_ENCODING,
     )
 
     pytest.xfail(reason="Skipping the tests due to hang in runtime")

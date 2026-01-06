@@ -49,7 +49,7 @@ def test_swin_hf_image_classification(variant):
         model=ModelArch.SWIN,
         variant=variant,
         source=Source.HUGGINGFACE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     dtype_override = None
@@ -100,7 +100,7 @@ def test_swin_v2_tiny_masked(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.SWIN,
         variant=variant,
-        task=Task.MASKED_IMAGE_MODELING,
+        task=Task.CV_MASKED_IMAGE_MODELING,
         source=Source.HUGGINGFACE,
     )
 
@@ -145,7 +145,7 @@ def test_swin_torchvision(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.SWIN,
         variant=variant.value,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
         group=group,
         priority=priority,

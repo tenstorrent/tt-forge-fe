@@ -28,7 +28,7 @@ def test_googlenet_onnx_export_from_pytorch(variant, forge_tmp_path):
         model=ModelArch.GOOGLENET,
         variant=variant,
         source=Source.TORCHVISION,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and input

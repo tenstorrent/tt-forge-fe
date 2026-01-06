@@ -60,7 +60,7 @@ def test_yolox_pytorch(variant, forge_tmp_path):
         model=ModelArch.YOLOX,
         variant=variant,
         source=Source.TORCH_HUB,
-        task=Task.OBJECT_DETECTION,
+        task=Task.CV_OBJECT_DETECTION,
     )
 
     # prepare model

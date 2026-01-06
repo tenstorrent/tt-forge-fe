@@ -33,7 +33,7 @@ def test_resnet_pd(variant):
         model=ModelArch.RESNET,
         variant=variant[6:],
         source=Source.PADDLE,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load framework model

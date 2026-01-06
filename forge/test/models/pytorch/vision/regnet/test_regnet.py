@@ -37,7 +37,7 @@ def test_regnet_img_classification(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.REGNET,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 
@@ -95,7 +95,7 @@ def test_regnet_torchvision(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.REGNET,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
     if variant == ModelVariant.Y_128GF:

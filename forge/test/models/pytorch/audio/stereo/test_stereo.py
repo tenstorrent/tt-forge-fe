@@ -44,7 +44,7 @@ def test_stereo(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.STEREO,
         variant=variant,
-        task=Task.MUSIC_GENERATION,
+        task=Task.MM_MUSIC_GENERATION,
         source=Source.HUGGINGFACE,
     )
     if variant == ModelVariant.LARGE:

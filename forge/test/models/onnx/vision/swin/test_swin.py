@@ -27,7 +27,7 @@ def test_swin_v2_tiny_image_classification_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.SWIN,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
     pytest.xfail(reason="Segmentation Fault")
@@ -65,7 +65,7 @@ def test_swin_v2_tiny_masked_onnx(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.SWIN,
         variant=variant,
-        task=Task.MASKED_IMAGE_MODELING,
+        task=Task.CV_MASKED_IMAGE_MODELING,
         source=Source.HUGGINGFACE,
     )
 
@@ -105,7 +105,7 @@ def test_swin_torchvision(variant, forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.SWIN,
         variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
 

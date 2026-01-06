@@ -34,7 +34,7 @@ def test_linear_ae_pytorch(forge_tmp_path):
         framework=Framework.ONNX,
         model=ModelArch.AUTOENCODER,
         variant="linear",
-        task=Task.IMAGE_ENCODING,
+        task=Task.CV_IMAGE_ENCODING,
         source=Source.GITHUB,
     )
 

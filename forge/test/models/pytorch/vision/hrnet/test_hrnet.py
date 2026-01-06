@@ -54,7 +54,7 @@ def test_hrnet_osmr_pytorch(variant):
         model=ModelArch.HRNET,
         variant=variant.value,
         source=Source.OSMR,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load model and inputs
@@ -110,7 +110,7 @@ def test_hrnet_timm_pytorch(variant):
         model=ModelArch.HRNET,
         variant=variant,
         source=Source.TIMM,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     if variant in [

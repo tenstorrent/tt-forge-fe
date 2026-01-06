@@ -43,7 +43,7 @@ def test_hrnet_onnx(variant, forge_tmp_path):
         model=ModelArch.HRNET,
         variant=variant,
         source=Source.OSMR,
-        task=Task.IMAGE_CLASSIFICATION,
+        task=Task.CV_IMAGE_CLASSIFICATION,
     )
 
     # Load the model
