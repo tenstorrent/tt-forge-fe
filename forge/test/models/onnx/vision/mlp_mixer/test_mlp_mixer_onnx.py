@@ -145,7 +145,9 @@ def test_mlp_mixer_timm_onnx(variant, forge_tmp_path):
     )
 
     # Verify model
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
+    fw_out, co_out = verify(
+        inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc))
+    )
 
     # Print classification results
     print_cls_results(fw_out[0], co_out[0], use_1k_labels=use_1k_labels)
