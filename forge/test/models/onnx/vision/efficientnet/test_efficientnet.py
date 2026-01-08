@@ -93,7 +93,7 @@ variants = [
     ),
     pytest.param(
         "efficientnet-b7", marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/3126")
-    )
+    ),
 ]
 
 
