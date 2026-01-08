@@ -29,27 +29,53 @@ def set_home_paths():
     # TT_METAL_RUNTIME_ROOT should be one of the following:
     in_wheel_path = forge_path / "forge/tt-metal"
     in_source_path = (forge_path.parent.resolve() / "third_party/tt-mlir/third_party/tt-metal/src/tt-metal").resolve()
+    
+    external_source_path = None
+    external_ttmlir = os.environ.get("TTMLIR_SOURCE_DIR")
+    if not external_ttmlir:
+        cmake_cache = forge_path.parent.resolve() / "build/CMakeCache.txt"
+        if cmake_cache.exists():
+            with cmake_cache.open() as f:
+                for line in f:
+                    if line.startswith("TTMLIR_SOURCE_DIR:"):
+                        cached_path = line.split("=", 1)[1].strip()
+                        if cached_path:
+                            external_ttmlir = cached_path
+                            break
+    
+    if external_ttmlir:
+        external_source_path = (pathlib.Path(external_ttmlir) / "third_party/tt-metal/src/tt-metal").resolve()
 
     if "TT_METAL_RUNTIME_ROOT" not in os.environ:
         if in_wheel_path.exists():
             os.environ["TT_METAL_RUNTIME_ROOT"] = str(in_wheel_path)
+        elif external_source_path and external_source_path.exists():
+            os.environ["TT_METAL_RUNTIME_ROOT"] = str(external_source_path)
         elif in_source_path.exists():
             os.environ["TT_METAL_RUNTIME_ROOT"] = str(in_source_path)
         else:
+            tried_paths = [in_wheel_path, in_source_path]
+            if external_source_path:
+                tried_paths.insert(1, external_source_path)
             logger.error(
-                f"TT_METAL_RUNTIME_ROOT environment variable is not set. Tried setting it to {in_wheel_path} and {in_source_path}, but neither exists. Something is wrong with the installation."
+                f"TT_METAL_RUNTIME_ROOT environment variable is not set. Tried setting it to {', '.join(str(p) for p in tried_paths)}, but none exist. Something is wrong with the installation."
             )
             exit(1)
 
     # Check whether we're running from a wheel or from source
+    valid_source_paths = [in_source_path]
+    if external_source_path:
+        valid_source_paths.append(external_source_path)
+    
     if in_wheel_path.exists():
         os.environ["FORGE_IN_WHEEL"] = "1"
-    elif in_source_path.exists():
+    elif any(p.exists() for p in valid_source_paths):
         os.environ["FORGE_IN_SOURCE"] = "1"
     else:
         logger.error("Neither wheel nor source path exist for tt-metal. Please check your installation.")
 
-    if pathlib.Path(os.environ["TT_METAL_RUNTIME_ROOT"]) not in [in_wheel_path, in_source_path]:
+    all_valid_paths = [in_wheel_path] + valid_source_paths
+    if pathlib.Path(os.environ["TT_METAL_RUNTIME_ROOT"]) not in all_valid_paths:
         if pathlib.Path(os.environ["TT_METAL_RUNTIME_ROOT"]).exists():
             logger.warning(
                 f"TT_METAL_RUNTIME_ROOT environment variable is set to {os.environ['TT_METAL_RUNTIME_ROOT']}, which looks like a non-standard path. Please check if this is intentional. If set incorrectly, it will cause issues during runtime."

@@ -250,12 +250,23 @@ def get_git_commit_hash(repo_path: str = ".") -> str:
 
 def get_tt_mlir_commit_hash() -> str:
     """
-    Get tt-mlir SHA from the git submodule.
-    In tt-forge-fe, tt-mlir is a git submodule, so we get the commit hash directly.
+    Get tt-mlir SHA from the git submodule or external tt-mlir.
+    In tt-forge-fe, tt-mlir can be a git submodule or an external build specified
+    via TTMLIR_SOURCE_DIR environment variable or CMake cache.
     """
-    mlir_path = "third_party/tt-mlir"
+    mlir_path = os.environ.get("TTMLIR_SOURCE_DIR", "third_party/tt-mlir")
+    cmake_cache = Path("build/CMakeCache.txt")
+    if cmake_cache.exists() and mlir_path == "third_party/tt-mlir":
+        with cmake_cache.open() as f:
+            for line in f:
+                if line.startswith("TTMLIR_SOURCE_DIR:"):
+                    cached_path = line.split("=", 1)[1].strip()
+                    if cached_path and cached_path != "third_party/tt-mlir":
+                        mlir_path = cached_path
+                        break
+    
     if not os.path.exists(mlir_path):
-        raise ValueError(f"tt-mlir submodule not found at {mlir_path}")
+        raise ValueError(f"tt-mlir not found at {mlir_path}")
 
     return get_git_commit_hash(mlir_path)
 
@@ -265,9 +276,19 @@ def get_tt_metal_commit_hash() -> str:
     Fetch tt-metal SHA from tt-mlir repo's CMakeLists.txt.
     Matches tt-xla approach: https://github.com/tenstorrent/tt-xla/blob/main/python_package/setup.py#L86
     """
+    mlir_path = os.environ.get("TTMLIR_SOURCE_DIR", "third_party/tt-mlir")
+    cmake_cache = Path("build/CMakeCache.txt")
+    if cmake_cache.exists() and mlir_path == "third_party/tt-mlir":
+        with cmake_cache.open() as f:
+            for line in f:
+                if line.startswith("TTMLIR_SOURCE_DIR:"):
+                    cached_path = line.split("=", 1)[1].strip()
+                    if cached_path and cached_path != "third_party/tt-mlir":
+                        mlir_path = cached_path
+                        break
 
-    # Extract tt-metal SHA from third_party/tt-mlir/third_party/CMakeLists.txt
-    cmake_file = pathlib.Path(__file__).resolve().parent / "third_party" / "tt-mlir" / "third_party" / "CMakeLists.txt"
+    # Extract tt-metal SHA from tt-mlir/third_party/CMakeLists.txt
+    cmake_file = pathlib.Path(mlir_path) / "third_party" / "CMakeLists.txt"
     with cmake_file.open() as f:
         cmake_content = f.read()
     metal_match = re.search(r'set\(TT_METAL_VERSION "([^"]+)"\)', cmake_content)
