@@ -29,7 +29,7 @@ def set_home_paths():
     # TT_METAL_RUNTIME_ROOT should be one of the following:
     in_wheel_path = forge_path / "forge/tt-metal"
     in_source_path = (forge_path.parent.resolve() / "third_party/tt-mlir/third_party/tt-metal/src/tt-metal").resolve()
-    
+
     external_source_path = None
     external_ttmlir = os.environ.get("TTMLIR_SOURCE_DIR")
     if not external_ttmlir:
@@ -42,7 +42,7 @@ def set_home_paths():
                         if cached_path:
                             external_ttmlir = cached_path
                             break
-    
+
     if external_ttmlir:
         external_source_path = (pathlib.Path(external_ttmlir) / "third_party/tt-metal/src/tt-metal").resolve()
 
@@ -66,7 +66,7 @@ def set_home_paths():
     valid_source_paths = [in_source_path]
     if external_source_path:
         valid_source_paths.append(external_source_path)
-    
+
     if in_wheel_path.exists():
         os.environ["FORGE_IN_WHEEL"] = "1"
     elif any(p.exists() for p in valid_source_paths):

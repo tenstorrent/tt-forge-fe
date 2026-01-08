@@ -264,7 +264,7 @@ def get_tt_mlir_commit_hash() -> str:
                     if cached_path and cached_path != "third_party/tt-mlir":
                         mlir_path = cached_path
                         break
-    
+
     if not os.path.exists(mlir_path):
         raise ValueError(f"tt-mlir not found at {mlir_path}")
 
