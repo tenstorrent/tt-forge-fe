@@ -14,9 +14,9 @@ set(TTMLIR_BUILD_DIR "${TTMLIR_SOURCE_DIR}/build")
 set(TTMLIR_INSTALL_PREFIX "${TTMLIR_BUILD_DIR}/install")
 set(METAL_LIB_DIR "${TTMLIR_SOURCE_DIR}/third_party/tt-metal/src/tt-metal/build/lib")
 
-if(TTMLIR_USE_EXTERNAL)    
+if(TTMLIR_USE_EXTERNAL)
     if(NOT EXISTS "${TTMLIR_BUILD_DIR}")
-        message(FATAL_ERROR 
+        message(FATAL_ERROR
             "External tt-mlir build directory not found: ${TTMLIR_BUILD_DIR}\n"
             "Please ensure tt-mlir is built:\n"
             "  cd ${TTMLIR_SOURCE_DIR}\n"
@@ -35,7 +35,7 @@ if(TTMLIR_USE_EXTERNAL)
             message(FATAL_ERROR "Failed to install tt-mlir SharedLib component")
         endif()
     endif()
-    
+
     # Auto-install TTNNStandalone component if needed
     if(NOT EXISTS "${TTMLIR_INSTALL_PREFIX}/lib/libTTNNCompileSo.so")
         message(STATUS "Installing tt-mlir TTNNStandalone component...")
@@ -48,7 +48,7 @@ if(TTMLIR_USE_EXTERNAL)
             message(FATAL_ERROR "Failed to install tt-mlir TTNNStandalone component")
         endif()
     endif()
-    
+
     # Copy TTMLIRRuntime if not in install dir (it's not part of standard install components)
     if(NOT EXISTS "${TTMLIR_INSTALL_PREFIX}/lib/libTTMLIRRuntime.so")
         if(EXISTS "${TTMLIR_BUILD_DIR}/runtime/lib/libTTMLIRRuntime.so")
@@ -56,12 +56,12 @@ if(TTMLIR_USE_EXTERNAL)
             file(COPY "${TTMLIR_BUILD_DIR}/runtime/lib/libTTMLIRRuntime.so"
                  DESTINATION "${TTMLIR_INSTALL_PREFIX}/lib/")
         else()
-            message(FATAL_ERROR 
+            message(FATAL_ERROR
                 "libTTMLIRRuntime.so not found in ${TTMLIR_BUILD_DIR}/runtime/lib/\n"
                 "Please ensure tt-mlir was built with TTMLIR_ENABLE_RUNTIME=ON")
         endif()
     endif()
-    
+
     set(REQUIRED_LIBS
         "${TTMLIR_INSTALL_PREFIX}/lib/libTTMLIRCompiler.so"
         "${TTMLIR_INSTALL_PREFIX}/lib/libTTNNCompileSo.so"
@@ -72,11 +72,11 @@ if(TTMLIR_USE_EXTERNAL)
             message(FATAL_ERROR "Required library still missing after auto-install: ${lib}")
         endif()
     endforeach()
-    
+
     add_custom_target(tt-mlir
         COMMENT "Using external tt-mlir from ${TTMLIR_SOURCE_DIR}"
     )
-    
+
     message(STATUS "External tt-mlir validated successfully")
     message(STATUS "  Source: ${TTMLIR_SOURCE_DIR}")
     message(STATUS "  Build:  ${TTMLIR_BUILD_DIR}")
