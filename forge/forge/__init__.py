@@ -45,6 +45,7 @@ def set_home_paths():
 
     if external_ttmlir:
         external_source_path = (pathlib.Path(external_ttmlir) / "third_party/tt-metal/src/tt-metal").resolve()
+        os.environ["TTMLIR_SOURCE_DIR"] = external_ttmlir
 
     if "TT_METAL_RUNTIME_ROOT" not in os.environ:
         if in_wheel_path.exists():

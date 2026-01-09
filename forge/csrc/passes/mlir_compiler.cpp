@@ -172,8 +172,17 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
         {
             metal_src_dir = fs::path(std::string(TT_METAL_RUNTIME_ROOT));
             metal_lib_dir = fs::path(std::string(TT_METAL_RUNTIME_ROOT)).parent_path() / "tt-metal/build/lib";
-            standalone_dir =
-                fs::path(std::string(FORGE_HOME)).parent_path() / "third_party/tt-mlir/tools/ttnn-standalone";
+            // Use TTMLIR_SOURCE_DIR if set (external tt-mlir), otherwise fall back to submodule path.
+            const char* ttmlir_source_dir = std::getenv("TTMLIR_SOURCE_DIR");
+            if (ttmlir_source_dir)
+            {
+                standalone_dir = fs::path(ttmlir_source_dir) / "tools/ttnn-standalone";
+            }
+            else
+            {
+                standalone_dir =
+                    fs::path(std::string(FORGE_HOME)).parent_path() / "third_party/tt-mlir/tools/ttnn-standalone";
+            }
         }
         else
         {
