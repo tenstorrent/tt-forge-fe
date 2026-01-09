@@ -117,6 +117,7 @@ def test_mlp_mixer_timm_onnx(variant, forge_tmp_path):
     pixel_values = transform(image).unsqueeze(0)
 
     inputs = [pixel_values]
+    pcc = 0.99
     if variant == "mixer_b16_224_miil":
         pcc = 0.95
 
