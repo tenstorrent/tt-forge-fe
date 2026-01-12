@@ -27,14 +27,10 @@ variants = [
     ModelVariant.DLA60,
     pytest.param(ModelVariant.DLA60X, marks=pytest.mark.pr_models_regression),
     ModelVariant.DLA60X_C,
-    pytest.param(
-        ModelVariant.DLA102, marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2947")
-    ),
+    pytest.param(ModelVariant.DLA102),
     pytest.param(ModelVariant.DLA102X),
     ModelVariant.DLA102X2,
-    pytest.param(
-        ModelVariant.DLA169, marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2947")
-    ),
+    pytest.param(ModelVariant.DLA169),
 ]
 
 
