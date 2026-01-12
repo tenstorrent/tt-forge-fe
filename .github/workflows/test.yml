@@ -3,24 +3,16 @@ name: Test
 on:
   workflow_dispatch:
     inputs:
-      rebuild:
-        description: 'Rebuild the Forge'
+      mlir_override:
+        description: 'Git SHA of commit in tenstorrent/tt-mlir or branch name (triggers build)'
         required: false
-        default: false
-        type: boolean
-      preset:
-        description: 'Test preset to run'
+        type: string
+      workflow_runners:
+        description: 'Workflow run ID to fetch wheels from (skip build)'
         required: false
-        default: 'Custom'
-        type: choice
-        options:
-          - Full Model Passing
-          - Full Model XFailing
-          - Models Ops
-          - Sweeps
-          - Custom
+        type: string
       test_mark:
-        description: 'Test mark to run (custom preset)'
+        description: 'Test mark to run'
         required: false
         default: 'push'
         type: string
@@ -32,11 +24,6 @@ on:
           - n150
           - n300
           - p150
-      sh-runner:
-        description: 'Run tests using shared runners'
-        required: false
-        default: true
-        type: boolean
       test_group_cnt:
         description: 'Test group count'
         required: false
@@ -48,6 +35,11 @@ on:
           - "3"
           - "4"
           - "8"
+      sh-runner:
+        description: 'Run tests using shared runners'
+        required: false
+        default: false
+        type: boolean
       on-crash:
         description: 'If test crashes, continue or restart test suite'
         required: false
@@ -56,14 +48,6 @@ on:
         options:
           - "Continue"
           - "Restart"
-      operators:
-        description: 'Operators to test (comma separated)'
-        required: false
-        type: string
-      filters:
-        description: 'Filters for tests (comma separated)'
-        required: false
-        type: string
       tests_to_filter:
         description: 'Filter specific tests (comma separated)'
         required: false
@@ -73,7 +57,7 @@ permissions:
   packages: write
   checks: write
 
-run-name: "Test (Rebuild: ${{ inputs.rebuild }} - Preset: ${{ inputs.preset }} - Mark: ${{ inputs.test_mark }} - ${{ inputs.sh-runner && format('{0}-shared', inputs.runs-on) || (inputs.runs-on) }} - ${{ inputs.test_group_cnt }} - Ops: ${{ inputs.operators }} - Filters: ${{ inputs.filters }} - Tests to Filter: ${{ inputs.tests_to_filter }})"
+run-name: "Test (Mark: ${{ inputs.test_mark }} - ${{ inputs.sh-runner && format('{0}-shared', inputs.runs-on) || (inputs.runs-on) }} - ${{ inputs.test_group_cnt }} - Run ID: ${{ inputs.workflow_runners }} - MLIR Override: ${{ inputs.mlir_override }} - Tests to Filter: ${{ inputs.tests_to_filter }})"
 
 jobs:
 
@@ -84,19 +68,17 @@ jobs:
         run: |
           echo "## Input Parameters" >> $GITHUB_STEP_SUMMARY
           echo "- Branch: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Rebuild: ${{ inputs.rebuild }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Preset: ${{ inputs.preset }}" >> $GITHUB_STEP_SUMMARY
           echo "- Test Mark: ${{ inputs.test_mark }}" >> $GITHUB_STEP_SUMMARY
           echo "- Runs On: ${{ inputs.runs-on }}" >> $GITHUB_STEP_SUMMARY
           echo "- Shared Runner: ${{ inputs.sh-runner }}" >> $GITHUB_STEP_SUMMARY
           echo "- Test Group Count: ${{ inputs.test_group_cnt }}" >> $GITHUB_STEP_SUMMARY
           echo "- On Crash: ${{ inputs.on-crash }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Operators: ${{ inputs.operators }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Filters: ${{ inputs.filters }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Workflow Runners (Run ID): ${{ inputs.workflow_runners }}" >> $GITHUB_STEP_SUMMARY
+          echo "- MLIR Override: ${{ inputs.mlir_override }}" >> $GITHUB_STEP_SUMMARY
           echo "- Tests to Filter: ${{ inputs.tests_to_filter }}" >> $GITHUB_STEP_SUMMARY
       - name: Save inputs to file
         run: |
-          echo '{ "branch_name": "${{ github.ref_name }}", "rebuild": "${{ inputs.rebuild }}", "preset": "${{ inputs.preset }}", "test_mark": "${{ inputs.test_mark }}", "runs-on": "${{ inputs.runs-on }}", "sh-runner": "$${{ inputs.sh-runner }}", "test_group_cnt": "${{ inputs.test_group_cnt }}", "on-crash": "${{ inputs.on-crash }}", "operators": "${{ inputs.operators }}", "filters": "${{ inputs.filters }}", "tests_to_filter": "${{ inputs.tests_to_filter }}" }' > inputs.json
+          echo '{ "branch_name": "${{ github.ref_name }}", "test_mark": "${{ inputs.test_mark }}", "runs-on": "${{ inputs.runs-on }}", "sh-runner": "$${{ inputs.sh-runner }}", "test_group_cnt": "${{ inputs.test_group_cnt }}", "on-crash": "${{ inputs.on-crash }}", "workflow_runners": "${{ inputs.workflow_runners }}", "mlir_override": "${{ inputs.mlir_override }}", "tests_to_filter": "${{ inputs.tests_to_filter }}" }' > inputs.json
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -106,6 +88,8 @@ jobs:
   docker-build:
     uses: ./.github/workflows/build-image.yml
     secrets: inherit
+    with:
+      mlir_override: ${{ inputs.mlir_override }}
 
   set-inputs:
     runs-on: ubuntu-latest
@@ -116,8 +100,6 @@ jobs:
       test_group_ids: ${{ steps.set-inputs.outputs.test_group_ids }}
       test_mark: ${{ steps.set-inputs.outputs.test_mark }}
       runs-on: ${{ steps.set-inputs.outputs.runs-on }}
-      operators: ${{ steps.set-inputs.outputs.operators }}
-      filters: ${{ steps.set-inputs.outputs.filters }}
       tests_to_filter: ${{ steps.set-inputs.outputs.tests_to_filter }}
       run_id: ${{ steps.set-inputs.outputs.runid }}
       continue_on_crash: ${{ inputs.on-crash == 'Continue' }}
@@ -125,39 +107,21 @@ jobs:
       - name: Inputs Management
         id: set-inputs
         run: |
-          if [ ${{ inputs.rebuild }} == 'true' ]; then
+          if [ -n "${{ inputs.mlir_override }}" ]; then
+            echo "buildtype=All" >> $GITHUB_OUTPUT
+            echo "runid=${{ github.run_id }}" >> $GITHUB_OUTPUT
+          elif [ -n "${{ inputs.workflow_runners }}" ]; then
+            echo "buildtype=None" >> $GITHUB_OUTPUT
+            echo "runid=${{ inputs.workflow_runners }}" >> $GITHUB_OUTPUT
+          else
             echo "buildtype=Release" >> $GITHUB_OUTPUT
             echo "runid=${{ github.run_id }}" >> $GITHUB_OUTPUT
-          else
-            echo "buildtype=None" >> $GITHUB_OUTPUT
           fi
           echo "test_group_cnt=${{ inputs.test_group_cnt }}" >> $GITHUB_OUTPUT
           echo "test_group_ids=[$(seq -s ',' 1 ${{ inputs.test_group_cnt }})]" >> $GITHUB_OUTPUT
           echo "runs-on=[{\"runs-on\": \"${{ inputs.runs-on }}\"}]" >> $GITHUB_OUTPUT
-          echo "operators=${{ inputs.operators }}" >> $GITHUB_OUTPUT
-          echo "filters=${{ inputs.filters }}" >> $GITHUB_OUTPUT
           echo "tests_to_filter=${{ inputs.tests_to_filter }}" >> $GITHUB_OUTPUT
-          case "${{ inputs.preset }}" in
-            "Full Model Passing")
-              echo "test_mark=nightly and not xfail" >> $GITHUB_OUTPUT
-              ;;
-            "Full Model XFailing")
-              echo "test_mark=nightly and xfail" >> $GITHUB_OUTPUT
-              ;;
-            "Models Ops")
-              echo "test_mark=nightly_models_ops" >> $GITHUB_OUTPUT
-              ;;
-            "Sweeps")
-              echo "test_mark=nightly_sweeps" >> $GITHUB_OUTPUT
-              ;;
-            "Custom")
-              echo "test_mark=${{ inputs.test_mark }}" >> $GITHUB_OUTPUT
-              ;;
-            *)
-              echo "Invalid preset"
-              exit 1
-              ;;
-          esac
+          echo "test_mark=${{ inputs.test_mark }}" >> $GITHUB_OUTPUT
 
   build:
     needs:
@@ -168,6 +132,7 @@ jobs:
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       build: ${{ needs.set-inputs.outputs.buildtype}}
+      mlir_override: ${{ inputs.mlir_override }}
 
   run-tests:
     if: success() || failure()
@@ -184,7 +149,6 @@ jobs:
       test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
       runs-on: ${{ needs.set-inputs.outputs.runs-on }}
       sh-runner: ${{ inputs.sh-runner }}
-      operators: ${{ needs.set-inputs.outputs.operators }}
-      filters: ${{ needs.set-inputs.outputs.filters }}
       tests_to_filter: ${{ needs.set-inputs.outputs.tests_to_filter }}
       run_id: ${{ needs.set-inputs.outputs.run_id }}
+      continue-on-crash: ${{ needs.set-inputs.outputs.continue_on_crash }}
