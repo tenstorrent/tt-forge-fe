@@ -12,7 +12,6 @@ from test.models.onnx.vision.unet.model_utils.utils import load_inputs
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_unet_onnx(forge_tmp_path):
 
     # Build Module Name
