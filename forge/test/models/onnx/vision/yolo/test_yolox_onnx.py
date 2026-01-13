@@ -35,7 +35,7 @@ from test.models.pytorch.vision.yolo.model_utils.yolox_utils import (
 
 variants = [
     pytest.param("yolox_nano"),
-    pytest.param("yolox_tiny", marks=pytest.mark.pr_models_regression),
+    pytest.param("yolox_tiny"),
     pytest.param("yolox_s"),
     pytest.param("yolox_m"),
     pytest.param("yolox_l"),
