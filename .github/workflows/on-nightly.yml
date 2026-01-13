@@ -8,11 +8,6 @@ permissions:
   packages: write
   checks: write
 
-# Set cache root to avoid IRD_LF_CACHE error when loading CenterNet ONNX model in CI
-env:
-  DOCKER_CACHE_ROOT: /mnt/dockercache
-  IRD_LF_CACHE: ${{ vars.IRD_LF_CACHE }}
-
 jobs:
   docker-build:
     uses: ./.github/workflows/build-image.yml

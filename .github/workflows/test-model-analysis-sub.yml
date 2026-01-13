@@ -83,7 +83,6 @@ jobs:
     env:
       HF_TOKEN: ${{ secrets.HF_TOKEN }}
       HF_HOME: /mnt/dockercache/huggingface
-      IRD_LF_CACHE: ${{ vars.IRD_LF_CACHE }}
       FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
       HF_HUB_DISABLE_PROGRESS_BARS: 1
       FORGE_DISABLE_REPORTIFY_DUMP: 1
@@ -191,6 +190,16 @@ jobs:
             pip install "${forge_wheels[@]}" --force-reinstall || true
           else
             echo "No tt_forge_fe wheel found; continuing."
+          fi
+
+      - name: Set caching env variables
+        shell: bash
+        run: |
+          shared_runners=${{ inputs.sh-runner }}
+          if [ "$shared_runners" = "true" ]; then
+            echo "IRD_LF_CACHE=${{ vars.IRD_LF_CACHE }}" >> $GITHUB_ENV
+          else
+            echo "DOCKER_CACHE_ROOT=/mnt/dockercache" >> $GITHUB_ENV
           fi
 
       - name: Extract and Export Unique Ops Configuration
