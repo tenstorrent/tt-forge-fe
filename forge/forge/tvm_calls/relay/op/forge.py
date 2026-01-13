@@ -1043,13 +1043,17 @@ def compile_for_forge(
         logger.trace(relay_module.functions)
         dump_graph(relay_module, graph_name, "before_compiling")
 
+        logger.info("Running TVM Relay compile passes")
         relay_module = run_relay_compile_passes(relay_module)
+        logger.info("TVM Relay compile passes completed")
         dump_graph(relay_module, graph_name, "after_relay_passes")
         record_execution(ExecutionStage.FAILED_TVM_PATTERN_CALLBACKS)
 
+        logger.info("Running TVM Forge compile passes")
         compiled_relay_module = run_forge_compile_passes(
             relay_module, params, inputs, target, framework_outputs, verify_cfg
         )
+        logger.info("TVM Forge compile passes completed")
         dump_graph(compiled_relay_module, graph_name, "after_forge_passes")
         record_execution(ExecutionStage.FAILED_TVM_GRAPH_PARTITIONING)
 

@@ -78,6 +78,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ github.run_id }}
       runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
+      enable-verbose-output: true
 
   check-all-green:
     if: always()

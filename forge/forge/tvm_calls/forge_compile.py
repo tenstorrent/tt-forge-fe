@@ -630,7 +630,9 @@ def compile_paddle_for_forge(paddlemod, *inputs, graph_name, compiler_cfg, verif
     named_inputs = {name: inp.shape for name, inp in zip(input_names, paddle_inputs)}
 
     # Generate TVM module
+    logger.info("Running TVM frontend conversion: PaddlePaddle to Relay IR")
     mod, params = tvm.relay.frontend.from_paddle(traced_model, named_inputs)
+    logger.info("TVM frontend conversion completed")
 
     record_execution(ExecutionStage.FAILED_TVM_RELAY_IO_FLATTENING)
 
@@ -713,9 +715,11 @@ def compile_tvm_for_forge(
             verify_tvm_compile(mod, params, inputs, target, golden_outputs, "compile_for_forge", verify_cfg=verify_cfg)
 
     # Reconstruct Ops + export forge graph
+    logger.info("Running TVM partition")
     mod, forge_params = partition_for_forge(
         mod, graph_name=graph_name, compiler_cfg=compiler_cfg, input_names=input_names
     )
+    logger.info("TVM partition completed")
     tvm.relay.build_module.build(mod, target=target, params=params)
     record_execution(ExecutionStage.FAILED_FORGE_MODULE_GENERATION)
 
@@ -814,7 +818,9 @@ def compile_onnx_for_forge(onnx_mod, onnx_path, *inputs, graph_name, compiler_cf
         if cached_graphs is not None:
             return cached_graphs, inputs
 
+    logger.info("Running TVM frontend conversion: ONNX to Relay IR")
     mod, params = relay.frontend.from_onnx(onnx_mod, input_shape_dict, freeze_params=False)
+    logger.info("TVM frontend conversion completed")
     mod = relay.transform.DynamicToStatic()(mod)
     record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
 
